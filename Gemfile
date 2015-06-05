@@ -52,5 +52,8 @@ group :production do
 
   # used by Heroku to serve static assets
   gem 'rails_12factor'
+
+  # Puma is a production server
+  gem 'puma'
 end
 
