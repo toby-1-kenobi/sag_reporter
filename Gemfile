@@ -45,6 +45,14 @@ group :development, :test do
   gem 'spring'
 end
 
+group :test do
+  # For colouring test results red and green
+  gem 'minitest-reporters'
+
+  # For stopping test backtraces reaching beyound my own code
+  gem 'mini_backtrace'
+end
+
 group :production do
 
   # PosgreSQL for Heroku production environment
