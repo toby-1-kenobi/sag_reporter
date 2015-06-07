@@ -26,14 +26,21 @@ class UserTest < ActiveSupport::TestCase
   end
 
   # In India mobile phone numbers are 10 digits
-  test "phone number should not be too long" do
+  test "phone number should be length 10" do
     @user.phone = "1" * 11
     assert_not @user.valid?
-  end
-
-  test "phone number should not be too short" do
     @user.phone = "1" * 9
     assert_not @user.valid?
   end
+
+  test "phone number should be only digits" do
+    @user.phone = "a" * 10
+    assert_not @user.valid?
+    @user.phone = "+123456789"
+    assert_not @user.valid?
+    @user.phone = "1234 56789"
+    assert_not @user.valid?
+  end
+
 
 end
