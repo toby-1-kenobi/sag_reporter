@@ -15,4 +15,9 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
+  test "blank phone is invalid" do
+    @user.phone = "     "
+    assert_not @user.valid?
+  end
+
 end
