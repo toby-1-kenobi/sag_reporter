@@ -1,3 +1,30 @@
 @import "materialize/components/color";
 $primary-color: color("blue", "lighten-2") !default;
 @import 'materialize';
+
+
+@mixin box_sizing {
+  -moz-box-sizing:    border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing:         border-box;
+}
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+
+.debug_dump {
+  clear: both;
+  float: left;
+  width: 96%;
+  margin-top: 45px;
+  margin-left: 2%;
+  padding: 1ex;
+  @include box_sizing;
+  @include border-radius(5px);
+  border: 1px solid black;
+  background-color: #eee;
+}
