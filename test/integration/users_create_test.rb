@@ -11,6 +11,8 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
                                password_confirmation: "bar" }
     end
     assert_template 'users/new'
+    assert_select 'div#error_explanation'
+    assert_select 'ul#error-list'
   end
 
   test "valid user create" do
@@ -22,6 +24,7 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
                                             password_confirmation: "PassWord.123" }
     end
     assert_template 'users/show'
+    assert_not flash.empty?
   end
 
 end
