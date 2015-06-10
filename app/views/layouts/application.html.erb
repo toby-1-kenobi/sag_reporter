@@ -8,7 +8,15 @@
 </head>
 <body>
 
-  <%= yield %>
+  <%= render 'layouts/header' %>
+  <main>
+    <div class="container">
+      <% flash.each do |message_type, message| %>
+        <div class="card-panel amber lighten-2"><i class="mdi-<%= message_type %>"></i> <%= message %></div>
+      <% end %>
+      <%= yield %>
+    </div>
+  </main>
   <%= debug(params) if Rails.env.development? %>
 
 </body>
