@@ -1,5 +1,5 @@
 @import "materialize/components/color";
-$primary-color: color("blue", "lighten-2") !default;
+$primary-color: color("cyan", "darken-2") !default;
 @import 'materialize';
 
 
@@ -27,4 +27,15 @@ $primary-color: color("blue", "lighten-2") !default;
   @include border-radius(5px);
   border: 1px solid black;
   background-color: #eee;
+}
+
+// sticky footer
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
 }
