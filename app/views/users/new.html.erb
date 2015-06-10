@@ -1,4 +1,30 @@
 <% provide(:title, 'Add New User') %>
 <% provide(:heading, 'Add User') %>
 <%= render 'layouts/header' %>
-<p>This will be a page for administrators to add new users.</p>
+<div class="row">
+  <%= form_for(@user, html: {class: "col s12"}) do |f| %>
+    <div class="row">
+      <div class="input-field col s8">
+        <%= f.text_field :name %>
+        <%= f.label :name %>
+      </div>
+      <div class="input-field col s4">
+        <%= f.text_field :phone %>
+        <%= f.label :phone %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <%= f.password_field :password %>
+        <%= f.label :password %>
+      </div>
+      <div class="input-field col s6">
+        <%= f.password_field :password_confirmation %>
+        <%= f.label :password_confirmation, "Confirm Password" %>
+      </div>
+    </div>
+    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      Create New User <i class="mdi-content-add right"></i>
+    <% end %>
+  <% end %>
+</div>
