@@ -13,4 +13,15 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
     assert_template 'users/new'
   end
 
+  test "valid user create" do
+    get adduser_path
+    assert_difference 'User.count', 1 do
+      post_via_redirect users_path, user: { name:  "Example User",
+                                            phone: "1029384756",
+                                            password:              "PassWord.123",
+                                            password_confirmation: "PassWord.123" }
+    end
+    assert_template 'users/show'
+  end
+
 end
