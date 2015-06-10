@@ -3,6 +3,7 @@
 <%= render 'layouts/header' %>
 <div class="row">
   <%= form_for(@user, html: {class: "col s12"}) do |f| %>
+    <%= render 'shared/error_messages' %>
     <div class="row">
       <div class="input-field col s8">
         <%= f.text_field :name %>
