@@ -6,20 +6,24 @@
     <%= render 'shared/error_messages' %>
     <div class="row">
       <div class="input-field col s8">
+        <i class="mdi-action-account-circle prefix"></i>
         <%= f.text_field :name %>
         <%= f.label :name %>
       </div>
       <div class="input-field col s4">
+        <i class="mdi-communication-phone prefix"></i>
         <%= f.text_field :phone %>
         <%= f.label :phone %>
       </div>
     </div>
     <div class="row">
       <div class="input-field col s6">
+        <i class="mdi-communication-vpn-key prefix"></i>
         <%= f.password_field :password %>
         <%= f.label :password %>
       </div>
       <div class="input-field col s6">
+        <i class="mdi-communication-vpn-key prefix"></i>
         <%= f.password_field :password_confirmation %>
         <%= f.label :password_confirmation, "Confirm Password" %>
       </div>
