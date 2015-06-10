@@ -1,12 +1,18 @@
 <% if @user.errors.any? %>
-  <div id="error_explanation">
-    <div class="card-panel red">
-      <span class="white-text">The form contains <%= pluralize(@user.errors.count, "error") %>.</span>
+  <div id="error_explanation" class="card red">
+    <div class="card-content">
+      <span class="card-title white-text">
+        <i class="mdi-alert-error"></i>
+        The form contains <%= pluralize(@user.errors.count, "error") %>.
+        <i class="mdi-navigation-more-vert right"></i>
+      </span>
     </div>
-    <ul>
-    <% @user.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
-    <% end %>
-    </ul>
+    <div class="card-action">
+      <ul id="error-list" class="collection">
+      <% @user.errors.full_messages.each do |msg| %>
+        <li class="collection-item"><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
   </div>
 <% end %>
