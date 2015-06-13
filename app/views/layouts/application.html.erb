@@ -12,7 +12,14 @@
   <main>
     <div class="container">
       <% flash.each do |message_type, message| %>
-        <div class="card-panel amber lighten-2"><i class="mdi-<%= message_type %>"></i> <%= message %></div>
+        <% if flash_values[message_type] %>
+          <div class="card-panel <%= flash_values[message_type][:colour] %>">
+            <i class="<%= flash_values[message_type][:icon] %>"></i>
+            <span class="<%= flash_values[message_type][:text_colour] %>"><%= message %></span>
+          </div>
+        <% else %>
+          <div class="card-panel light-blue"><%= message %></div>
+        <% end %>
       <% end %>
       <%= yield %>
     </div>
