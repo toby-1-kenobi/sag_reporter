@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
       log_in user
       redirect_to user
     else
-      flash.now["error"] = 'Phone number or password not correct' # Not quite right!
+      flash.now["error"] = 'Phone number or password not correct'
       render 'new'
     end
   end
