@@ -38,4 +38,9 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", user_path(@user), count: 0
   end
 
+  test "login with remembering" do
+    log_in_as(@user)
+    assert_not_nil cookies['remember_token']
+  end
+
 end
