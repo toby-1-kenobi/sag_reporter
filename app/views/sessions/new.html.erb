@@ -1,0 +1,39 @@
+<% provide(:title, "Log in") %>
+<h1>Log in</h1>
+
+<div class="row">
+  <%= form_for(:session, url: login_path, html: {class: "col s12"}) do |f| %>
+
+    <div class="row">
+      <div class="input-field col s12">
+        <i class="mdi-communication-phone prefix"></i>
+        <%= f.text_field :phone %>
+        <%= f.label :phone %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <i class="mdi-communication-vpn-key prefix"></i>
+        <%= f.password_field :password %>
+        <%= f.label :password %>
+      </div>
+    </div>
+    
+    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      Log in <i class="mdi-action-exit-to-app right"></i>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="row">
+
+  <div class="card teal lighten-3">
+    <div class="card-action">
+      <p class="grey-text text-darken-3">
+        <i class="small mdi-action-info-outline"></i>
+        If you don't know how to log in, please contact your NBASE supervisor for instructions.
+      </p>
+    </div>
+  </div>
+
+</div>

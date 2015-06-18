@@ -2,6 +2,35 @@
 <nav class="top-nav <%= yield(:colour) %>">
   <div class="nav-wrapper">
     <a href="#" class="brand-logo center">NBASE Reporter</a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <% if logged_in? %>
+        <li>
+          <%= link_to root_path do %>
+            <i class="mdi-action-home left"></i>
+            Home
+          <% end %>
+        </li>
+        <li>
+          <%= link_to current_user do %>
+            <i class="mdi-action-account-circle left"></i>
+            <%= current_user.name %>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to logout_path, method: "delete" do %>
+            <i class="mdi-action-exit-to-app left"></i>
+            Logout
+          <% end %>
+        </li>
+      <% else %>
+        <li>
+          <%= link_to login_path do %>
+            <i class="mdi-communication-vpn-key left"></i>
+            Login
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
   </div>
 </nav>
 </header>
