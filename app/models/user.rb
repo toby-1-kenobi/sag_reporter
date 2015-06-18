@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   validates :name, presence: true, length: { maximum: 50 }
   validates :phone, presence: true, length: { is: 10 }, format: { with: /\A\d+\Z/ }, uniqueness: true
   has_secure_password
-  validates :password, presence: true, length: { minimum: 6 }
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   # Returns the hash digest of the given string.
   def User.digest(string)
