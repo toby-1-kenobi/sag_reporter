@@ -2,7 +2,12 @@ require 'test_helper'
 
 class UsersCreateTest < ActionDispatch::IntegrationTest
 
-  test "invalid signup information" do
+  def setup
+    @user = users(:michael)
+  end
+  
+  test "invalid user create" do
+    log_in_as(@user)
     get adduser_path
     assert_no_difference 'User.count' do
       post users_path, user: { name:  "",
@@ -16,6 +21,7 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
   end
 
   test "valid user create" do
+    log_in_as(@user)
     get adduser_path
     assert_difference 'User.count', 1 do
       post_via_redirect users_path, user: { name:  "Example User",

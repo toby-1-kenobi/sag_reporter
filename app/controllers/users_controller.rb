@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
 
+  before_action :require_login
+
   def new
   	@user = User.new
   end
@@ -36,6 +38,14 @@ class UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:name, :phone, :password, :password_confirmation)
+    end
+
+    # Confirms a logged-in user.
+    def require_login
+      unless logged_in?
+        flash["warning"] = "Please log in."
+        redirect_to login_url
+      end
     end
 
 end

@@ -1,7 +1,13 @@
 require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
-  test "should get new" do
+
+  def setup
+    @user = users(:michael)
+  end
+
+  test "should get new" do 	
+    log_in_as(@user)
     get :new
     assert_response :success
   end
