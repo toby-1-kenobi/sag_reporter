@@ -1,6 +1,12 @@
 class UsersController < ApplicationController
 
   before_action :require_login
+  
+  # A user's profile can only be edited by themselves or their supervisor or an admin
+  before_action :authorised_user, only: [:edit, :update]
+
+  # Only an admin user can add more users
+  before_action :admin_user, only: [:new, :create]
 
   def new
   	@user = User.new
@@ -46,6 +52,21 @@ class UsersController < ApplicationController
         flash["warning"] = "Please log in."
         redirect_to login_url
       end
+    end
+
+    # Confirms authorised user.
+    def authorised_user
+      @user = User.find(params[:id])
+      redirect_to(root_url) unless
+          current_user?(@user)
+      #    or @user.supervisor?(current_user)
+      #    or current_user.admin?
+    end
+
+    # Confirms admin user.
+    def authorised_user
+      @user = User.find(params[:id])
+      #redirect_to(root_url) unless @user.admin?
     end
 
 end
