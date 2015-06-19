@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   before_action :authorised_user, only: [:edit, :update]
 
   # Only an admin user can add more users
-  before_action :admin_user, only: [:new, :create]
+  #before_action :admin_user, only: [:new, :create]
 
   def new
   	@user = User.new
@@ -64,7 +64,7 @@ class UsersController < ApplicationController
     end
 
     # Confirms admin user.
-    def authorised_user
+    def admin_user
       @user = User.find(params[:id])
       #redirect_to(root_url) unless @user.admin?
     end
