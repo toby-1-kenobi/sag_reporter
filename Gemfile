@@ -29,6 +29,9 @@ gem 'bcrypt', '~> 3.1.7'
 # Populate db with multiple entities
 gem 'faker'
 
+# Pagination helper
+gem 'will_paginate'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
