@@ -2,6 +2,8 @@
 <h1><i class="mdi-social-people"></i>
  All users</h1>
 
+<%= will_paginate %>
+
 <ul class="users collection">
   <% @users.each do |user| %>
     <li class="collection-item">
@@ -10,3 +12,5 @@
     </li>
   <% end %>
 </ul>
+
+<%= will_paginate %>

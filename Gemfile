@@ -30,7 +30,7 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'faker'
 
 # Pagination helper
-gem 'will_paginate'
+gem 'will_paginate', '~> 3.0.6'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
