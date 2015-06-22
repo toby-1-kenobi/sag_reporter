@@ -4,8 +4,13 @@
 module WillPaginate
   module ActionView
     def will_paginate(collection = nil, options = {})
+      options, collection = collection, nil if collection.is_a? Hash
+      collection ||= infer_collection_from_controller
+
+      options = options.symbolize_keys
       options[:renderer] ||= MaterializeLinkRenderer
-      super.try :html_safe
+
+      super(collection, options)
     end
  
     class MaterializeLinkRenderer < LinkRenderer
