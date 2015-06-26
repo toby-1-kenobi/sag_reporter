@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   before_action :authorised_user, only: [:edit, :update]
 
   # Only an admin user can add more users
-  #before_action :admin_user, only: [:new, :create]
+  #before_action :admin_user, only: [:new, :create, :destroy]
 
   def new
   	@user = User.new
@@ -42,6 +42,14 @@ class UsersController < ApplicationController
     else
       render 'edit'
     end
+  end
+
+  def destroy
+  	@user = User.find(params[:id])
+    @name = @user.name
+    @user.destroy
+    flash[:success] = "User #{@name} deleted"
+    redirect_to users_url
   end
 
   private
