@@ -1,15 +1,15 @@
-<% if @user.errors.any? %>
+<% if object.errors.any? %>
   <div id="error_explanation" class="card red">
     <div class="card-content">
       <span class="card-title white-text">
         <i class="mdi-alert-error"></i>
-        The form contains <%= pluralize(@user.errors.count, "error") %>.
+        The form contains <%= pluralize(object.errors.count, "error") %>.
         <i class="mdi-navigation-more-vert right"></i>
       </span>
     </div>
     <div class="card-action">
       <ul id="error-list" class="collection">
-      <% @user.errors.full_messages.each do |msg| %>
+      <% object.errors.full_messages.each do |msg| %>
         <li class="collection-item"><%= msg %></li>
       <% end %>
       </ul>
