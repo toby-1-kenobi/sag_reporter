@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150701123102) do
+ActiveRecord::Schema.define(version: 20150702171429) do
 
   create_table "permissions", force: :cascade do |t|
     t.string   "name"
@@ -25,6 +25,17 @@ ActiveRecord::Schema.define(version: 20150701123102) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "roles_permissions", force: :cascade do |t|
+    t.integer  "role_id"
+    t.integer  "permission_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "roles_permissions", ["permission_id"], name: "index_roles_permissions_on_permission_id"
+  add_index "roles_permissions", ["role_id", "permission_id"], name: "index_roles_permissions_on_role_id_and_permission_id", unique: true
+  add_index "roles_permissions", ["role_id"], name: "index_roles_permissions_on_role_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "name"
