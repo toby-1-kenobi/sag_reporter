@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150702171429) do
+ActiveRecord::Schema.define(version: 20150703120720) do
 
   create_table "permissions", force: :cascade do |t|
     t.string   "name"
@@ -44,8 +44,10 @@ ActiveRecord::Schema.define(version: 20150702171429) do
     t.datetime "updated_at",      null: false
     t.string   "password_digest"
     t.string   "remember_digest"
+    t.integer  "role_id"
   end
 
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true
+  add_index "users", ["role_id"], name: "index_users_on_role_id"
 
 end
