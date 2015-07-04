@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150703120720) do
+ActiveRecord::Schema.define(version: 20150704065402) do
 
   create_table "permissions", force: :cascade do |t|
     t.string   "name"
@@ -19,6 +19,8 @@ ActiveRecord::Schema.define(version: 20150703120720) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
+
+  add_index "permissions", ["name"], name: "index_permissions_on_name", unique: true
 
   create_table "roles", force: :cascade do |t|
     t.string   "name"
