@@ -5,9 +5,14 @@ Rails.application.routes.draw do
   resources :users
 
   get    'adduser' => 'users#new'
+
   get    'login'   => 'sessions#new'
   post   'login'   => 'sessions#create'
   delete 'logout'  => 'sessions#destroy'
+  
+  get    'roles'   => 'roles#index'
+  patch  'roles'   => 'roles#update'
+  post   'roles'   => 'roles#create'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
