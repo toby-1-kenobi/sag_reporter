@@ -13,22 +13,22 @@ module ApplicationHelper
   def flash_values
 	  flash_value = {
 	  	"error" => {
-	  	  icon: "mdi-alert-error",
+	  	  icon: "error",
 	  	  colour: "red",
 	  	  text_colour: "grey-text text-lighten-2"
 	  	},
 	  	"warning" => {
-	  	  icon: "mdi-alert-warning",
+	  	  icon: "warning",
 	  	  colour: "amber",
 	  	  text_colour: "grey-text text-lighten-2"
 	  	},
 	  	"success" => {
-	  	  icon: "mdi-action-done",
+	  	  icon: "done",
 	  	  colour: "green",
 	  	  text_colour: "grey-text text-lighten-2"
 	  	},
 	  	"info" => {
-	  	  icon: "mdi-action-info",
+	  	  icon: "info",
 	  	  colour: "teal",
 	  	  text_colour: "grey-text text-lighten-2"
 	  	}

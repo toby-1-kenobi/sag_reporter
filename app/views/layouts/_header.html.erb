@@ -6,26 +6,26 @@
       <% if logged_in? %>
         <li>
           <%= link_to root_path do %>
-            <i class="mdi-action-home left"></i>
+            <i class="material-icons left">home</i>
             Home
           <% end %>
         </li>
         <li>
           <%= link_to current_user do %>
-            <i class="mdi-action-account-circle left"></i>
+            <i class="material-icons left">account_circle</i>
             <%= current_user.name %>
           <% end %>
         </li>
         <li>
           <%= link_to logout_path, method: "delete" do %>
-            <i class="mdi-action-exit-to-app left"></i>
+            <i class="material-icons left">exit_to_app</i>
             Logout
           <% end %>
         </li>
       <% else %>
         <li>
           <%= link_to login_path do %>
-            <i class="mdi-communication-vpn-key left"></i>
+            <i class="material-icons left">vpn_key</i>
             Login
           <% end %>
         </li>

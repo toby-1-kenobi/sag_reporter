@@ -1,9 +1,9 @@
     <li class="collection-item">
-      <i class="mdi-social-person"></i>
+      <i class="material-icons">person</i>
       <%= link_to user.name, user %>
       <% unless current_user?(user) %>
         <%= link_to user, method: :delete, class: "waves-effect waves-red btn-flat", data: { confirm: "Delete #{user.name}?" } do %>
-        <i class="mdi-action-delete"></i>
+        <i class="material-icons">delete</i>
         <% end %>
       <% end %>
     </li>
