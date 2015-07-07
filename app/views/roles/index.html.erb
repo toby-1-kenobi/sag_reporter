@@ -18,7 +18,7 @@
   	  	<% @roles.each do |role| %>
   		  <td>
   		    <%= check_box_tag(role.name + '[' + perm.name + ']', 1, {checked: role.permissions.include?(perm)}) %>
-  		    <%= label_tag(role.name + '[' + perm.name + ']', "yes", {class: "hidden"}) %>
+  		    <%= label_tag(role.name + '[' + perm.name + ']', "") %>
   		  </td>
   		<% end %>
   	  </tr>
