@@ -1,0 +1,31 @@
+<% provide(:title, 'User Roles') %>
+<h1>User Roles</h1>
+<%= form_tag("/roles", method: "patch") do %>
+<table class="hoverable responsive-table">
+  <thead>
+  	<tr>
+  		<th>Permissions</th>
+  		<% @roles.each do |role| %>
+  		  <th><%= role.name %></th>
+  		<% end %>
+  	</tr>
+  </thead>
+  <tbody>
+    
+  	<% @perms.each do |perm| %>
+  	  <tr>
+  	  	<td><%= perm.description %></td>
+  	  	<% @roles.each do |role| %>
+  		  <td>
+  		    <%= check_box_tag(role.name + '[' + perm.name + ']', 1, {checked: role.permissions.include?(perm)}) %>
+  		    <%= label_tag(role.name + '[' + perm.name + ']', "yes", {class: "hidden"}) %>
+  		  </td>
+  		<% end %>
+  	  </tr>
+  	<% end %>
+  </tbody>
+</table>
+  <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+    Update <i class="mdi-content-create right"></i>
+  <% end %>
+<% end %>
