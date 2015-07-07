@@ -8,6 +8,10 @@
   		<% @roles.each do |role| %>
   		  <th><%= role.name %></th>
   		<% end %>
+  		<th>
+  		  <!-- New Role Modal Trigger -->
+  		  <button class="btn waves-effect waves-light modal-trigger" data-target="new_role_modal"><i class="mdi-content-add right"></i>New Role</button>
+  		</th>
   	</tr>
   </thead>
   <tbody>
@@ -17,11 +21,7 @@
   	  	<td><%= perm.description %></td>
   	  	<% @roles.each do |role| %>
   		  <td>
-  		    <% if role.permissions.include?(perm) %>
-  		      <%= check_box_tag('roles[' + role.name + '][' + perm.name + ']', 1, {checked: true}) %>
-  		    <% else %>
-  		      <%= check_box_tag('roles[' + role.name + '][' + perm.name + ']', 1) %>
-  		    <% end %>
+  		    <%= check_box_tag('roles[' + role.name + '][' + perm.name + ']', 1, role.permissions.include?(perm)) %>
   		    <%= label_tag('roles[' + role.name + '][' + perm.name + ']', "") %>
   		  </td>
   		<% end %>
@@ -33,3 +33,22 @@
     Update <i class="mdi-content-create right"></i>
   <% end %>
 <% end %>
+
+<!-- New Role Modal Structure -->
+<div id="new_role_modal" class="modal">
+  <%= form_for(@new_role, method: "post") do |f| %>
+    <div class="modal-content">
+      <h4>New Role</h4>
+      <%= f.text_field :name %>
+      <%= f.label :name %>
+    </div>
+    <div class="modal-footer">
+      <%= button_tag( :class => "modal-action modal-close btn-flat waves-effect waves-light") do %>
+        Create Role <i class="mdi-content-add right"></i>
+      <% end %>
+      <button class="modal-action modal-close btn-flat waves-effect waves-light">
+        Cancel <i class="mdi-navigation-cancel right"></i>
+      </button>
+    </div>
+  <% end %>
+</div>	

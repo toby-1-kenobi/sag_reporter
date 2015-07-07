@@ -3,6 +3,7 @@ class RolesController < ApplicationController
   def index
   	@roles = Role.all
   	@perms = Permission.all
+  	@new_role = Role.new
   end
 
   def update
@@ -23,8 +24,21 @@ class RolesController < ApplicationController
   end
 
   def create
-  	# insert code to create new role.
+  	unless params["role"].empty?
+      @role = Role.new(role_params)
+      if @role.save
+        flash["success"] = "Role " + @role.name + " Created."
+      else
+        flash["error"] = "Failed to create role: " + @role.name
+      end
+    end
   	redirect_to roles_url
   end
+
+  private
+
+    def role_params
+      params.require(:role).permit(:name)
+    end
 
 end
