@@ -10,6 +10,7 @@ class UsersController < ApplicationController
 
   def new
   	@user = User.new
+    @roles = Role.all
   end
 
   def show
@@ -32,6 +33,7 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find(params[:id])
+    @roles = Role.all
   end
 
   def update
@@ -55,7 +57,7 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:name, :phone, :password, :password_confirmation)
+      params.require(:user).permit(:name, :phone, :password, :password_confirmation, :role_id)
     end
 
     # Confirms a logged-in user.
@@ -70,10 +72,10 @@ class UsersController < ApplicationController
     # Confirms authorised user.
     def authorised_user
       @user = User.find(params[:id])
-      redirect_to(root_url) unless
-          current_user?(@user)
+      redirect_to(root_url) unless 
+          current_user?(@user) or current_user.can_edit_user?
+        
       #    or @user.supervisor?(current_user)
-      #    or current_user.admin?
     end
 
     # Confirms admin user.

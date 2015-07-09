@@ -27,6 +27,16 @@
         <%= f.label :password_confirmation, "Confirm Password" %>
       </div>
     </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <%= f.select(:role_id) do %>
+          <% @roles.each do |role| %>
+            <%= content_tag(:option, role.name, value: role.id) %>
+          <% end %>
+        <% end %>
+        <%= f.label :role_id, "Select role" %>
+      </div>
+    </div>
     <%= button_tag( :class => "btn waves-effect waves-light right") do %>
       Create New User <i class="mdi-content-add right"></i>
     <% end %>
