@@ -9,8 +9,10 @@
   		  <th><%= role.name %></th>
   		<% end %>
   		<th>
-  		  <!-- New Role Modal Trigger -->
-  		  <button class="btn waves-effect waves-light modal-trigger" data-target="new_role_modal"><i class="mdi-content-add right"></i>New Role</button>
+        <% if current_user.can_create_role? %>
+  		    <!-- New Role Modal Trigger -->
+  		    <button class="btn waves-effect waves-light modal-trigger" data-target="new_role_modal"><i class="mdi-content-add right"></i>New Role</button>
+        <% end %>
   		</th>
   	</tr>
   </thead>
@@ -21,7 +23,7 @@
   	  	<td><%= perm.description %></td>
   	  	<% @roles.each do |role| %>
   		  <td>
-  		    <%= check_box_tag('roles[' + role.name + '][' + perm.name + ']', 1, role.permissions.include?(perm)) %>
+  		    <%= check_box_tag('roles[' + role.name + '][' + perm.name + ']', 1, role.permissions.include?(perm), disabled: !current_user.can_edit_role?) %>
   		    <%= label_tag('roles[' + role.name + '][' + perm.name + ']', "") %>
   		  </td>
   		<% end %>
@@ -29,8 +31,10 @@
   	<% end %>
   </tbody>
 </table>
-  <%= button_tag( :class => "btn waves-effect waves-light right") do %>
-    Update <i class="mdi-content-create right"></i>
+  <% if current_user.can_edit_role? %>
+    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      Update <i class="mdi-content-create right"></i>
+    <% end %>
   <% end %>
 <% end %>
 
