@@ -11,15 +11,15 @@ class UsersController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    permitted_user ['create_user'] 
+    permitted_action ['create_user'] 
   end
 
   before_action only: [:destroy] do
-    permitted_user ['delete_user']
+    permitted_action ['delete_user']
   end
-  
+
   before_action only: [:index] do
-    permitted_user ['view_all_users']
+    permitted_action ['view_all_users']
   end
 
   def new
@@ -74,15 +74,6 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :phone, :password, :password_confirmation, :role_id)
     end
 
-    # Confirms a logged-in user.
-    def require_login
-      unless logged_in?
-      	store_location
-        flash["warning"] = "Please log in."
-        redirect_to login_url
-      end
-    end
-
     # Confirms authorised user for edit.
     def authorised_user_edit
       @user = User.find(params[:id])
@@ -97,12 +88,6 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless 
           current_user?(@user) or current_user.can_view_all_users?
       #    or @user.supervisor?(current_user)
-    end
-
-    # Confirms permissions.
-    def permitted_user (permission_names)
-      # if the users permissions do not instersect with those given then redirect to root
-      redirect_to(root_url) if (permission_names & current_user.permissions.map(&:name)).empty?
     end
 
 end

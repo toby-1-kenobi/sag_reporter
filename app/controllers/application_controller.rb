@@ -4,7 +4,8 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  # Access sessions helper from application controllers.
+  # Access sessions helper and roles helper from application controllers.
   include SessionsHelper
+  include RolesHelper
 
 end

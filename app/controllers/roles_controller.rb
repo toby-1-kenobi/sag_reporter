@@ -1,5 +1,20 @@
 class RolesController < ApplicationController
 
+  before_action :require_login
+
+  # Let only permitted users do some things
+  before_action only: [:new, :create] do
+    permitted_action ['create_role'] 
+  end
+  
+  before_action only: [:index] do
+    permitted_action ['view_roles']
+  end
+  
+  before_action only: [:edit, :update] do
+    permitted_action ['edit_roles']
+  end
+
   def index
   	@roles = Role.all
   	@perms = Permission.all
