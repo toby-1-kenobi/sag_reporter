@@ -12,9 +12,11 @@ class RolesController < ApplicationController
   	# is a permission that should be in that role. No other permission should be.
   	# So for each role clear the permissions, then add permissions
   	# from the keys of the inner hash.
+    Role.all.each do |role|
+      role.permissions.clear
+    end
   	params['roles'].each_pair do |role_name, permissions|
   	  role = Role.find_by_name(role_name)
-  	  role.permissions.clear
   	  permissions.each_key do |perm_name|
   	  	role.permissions << Permission.find_by_name(perm_name)
   	  end
