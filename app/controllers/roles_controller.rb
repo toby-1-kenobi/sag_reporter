@@ -11,8 +11,8 @@ class RolesController < ApplicationController
     permitted_action ['view_roles']
   end
   
-  before_action only: [:edit, :update] do
-    permitted_action ['edit_roles']
+  before_action only: [:update] do
+    permitted_action ['edit_role']
   end
 
   def index
