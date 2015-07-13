@@ -4,15 +4,15 @@ class RolesController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    permitted_action ['create_role'] 
+    redirect_to root_path unless current_user.can_create_role?
   end
   
   before_action only: [:index] do
-    permitted_action ['view_roles']
+    redirect_to root_path unless current_user.can_view_roles?
   end
   
   before_action only: [:update] do
-    permitted_action ['edit_role']
+    redirect_to root_path unless current_user.can_edit_role?
   end
 
   def index
