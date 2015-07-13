@@ -71,7 +71,13 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:name, :phone, :password, :password_confirmation, :role_id)
+      @user = User.find(params[:id])
+      # current user cannot change own role
+      if current_user?(@user)
+        params.require(:user).permit(:name, :phone, :password, :password_confirmation)
+      else
+        params.require(:user).permit(:name, :phone, :password, :password_confirmation, :role_id)
+      end
     end
 
     # Confirms authorised user for edit.
