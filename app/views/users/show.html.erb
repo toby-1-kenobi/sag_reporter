@@ -1,7 +1,9 @@
 <% provide(:title, 'Show User: ' + @user.name) %>
-<%= link_to edit_user_path(@user), class: "waves-effect right btn" do %>
-  <i class="mdi-content-create left"></i>
-  Edit
+<% if current_user.can_edit_user? || current_user?(@user) %>
+  <%= link_to edit_user_path(@user), class: "waves-effect right btn" do %>
+    <i class="mdi-content-create left"></i>
+    Edit
+  <% end %>
 <% end %>
 <h1><i class="mdi-action-account-circle prefix"></i> <%= @user.name %></h1>
 <p>Phone: <%= @user.phone %></p>
