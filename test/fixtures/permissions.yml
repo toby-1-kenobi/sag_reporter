@@ -1,9 +1,29 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-  description: MyString
+create_user:
+  name: create_user
+  description: Create a new user
 
-two:
-  name: MyString
-  description: MyString
+edit_user:
+  name: edit_user
+  description: Edit any user details
+
+view_all_users:
+  name: view_all_users
+  description: View all users
+
+delete_user:
+  name: delete_user
+  description: Delete any other user
+
+view_roles:
+  name: view_roles
+  description: View all roles with permissions
+
+edit_role:
+  name: edit_role
+  description: Edit any role with its permissions
+
+create_role:
+  name: create_role
+  description: Create a new role
