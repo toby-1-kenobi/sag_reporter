@@ -37,6 +37,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @roles = Role.all
     if @user.save
       flash["success"] = "New User Created!"
       redirect_to @user
@@ -71,9 +72,8 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      @user = User.find(params[:id])
       # current user cannot change own role
-      if current_user?(@user)
+      if params[:id] and current_user?(User.find(params[:id]))
         params.require(:user).permit(:name, :phone, :password, :password_confirmation)
       else
         params.require(:user).permit(:name, :phone, :password, :password_confirmation, :role_id)
