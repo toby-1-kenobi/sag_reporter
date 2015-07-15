@@ -1,5 +1,5 @@
 <% provide(:title, "Edit #{@user.name}'s profile") %>
-<h1><i class="material-icons">create</i> Edit your profile</h1>
+<h1><i class="material-icons large">create</i> Edit your profile</h1>
 <div class="row">
   <%= form_for(@user, html: {class: "col s12"}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
