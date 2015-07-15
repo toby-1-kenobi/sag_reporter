@@ -33,13 +33,24 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
-  test "phone number should be only digits" do
+  test "phone number should have 10 digits" do
     @user.phone = "a" * 10
     assert_not @user.valid?
     @user.phone = "+123456789"
     assert_not @user.valid?
     @user.phone = "1234 56789"
     assert_not @user.valid?
+  end
+
+  test "phone number may have prefixes digits" do
+    @user.phone = "+91 0123-456-789"
+    assert @user.valid?
+    @user.phone = "01234 567890"
+    assert @user.valid?
+    @user.phone = "91 0123-4-789"
+    assert @user.valid?
+    @user.phone = "0012 347 895"
+    assert @user.valid?
   end
 
   test "phone numbers should be unique" do
