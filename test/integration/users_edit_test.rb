@@ -3,7 +3,8 @@ require 'test_helper'
 class UsersEditTest < ActionDispatch::IntegrationTest
 
   def setup
-    @user = users(:michael)
+    @user = users(:andrew)
+    @pleb_user = users(:peter)
   end
 
   test "unsuccessful edit" do
@@ -11,13 +12,40 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     get edit_user_path(@user)
     assert_template 'users/edit'
     patch user_path(@user), user: { name:  "",
-                                    email: "55555",
+                                    phone: "55555",
                                     password:              "foo",
                                     password_confirmation: "bar" }
     assert_template 'users/edit'
   end
 
-  test "successful edit with friendly forwarding" do
+  test "cannot edit own role" do
+    log_in_as(@user)
+    get edit_user_path(@user)
+    role = @user.role
+    patch user_path(@user), user: { name:  @user.name,
+                                    phone: @user.phone,
+                                    password:              "",
+                                    password_confirmation: "",
+                                    role_id: @pleb_user.role.id }
+    @user.reload
+    assert_equal role,  @user.role
+  end
+
+  test "successful edit role of other user" do
+    log_in_as(@user)
+    get edit_user_path(@pleb_user)
+    patch user_path(@pleb_user), user: { name:  @pleb_user.name,
+                                    phone: @pleb_user.phone,
+                                    password:              "",
+                                    password_confirmation: "",
+                                    role_id: @user.role.id }
+    assert_not flash.empty?
+    assert_redirected_to @pleb_user
+    @pleb_user.reload
+    assert_equal @pleb_user.role,  @user.role
+  end
+
+  test "successful edit self with friendly forwarding" do
     get edit_user_path(@user)
     log_in_as(@user)
     assert_redirected_to edit_user_path(@user)

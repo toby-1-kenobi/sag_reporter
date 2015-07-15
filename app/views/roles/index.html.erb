@@ -1,0 +1,58 @@
+<% provide(:title, 'User Roles') %>
+<h1>User Roles</h1>
+<%= form_tag("/roles", method: "patch") do %>
+<table class="hoverable responsive-table">
+  <thead>
+  	<tr>
+  		<th>Permissions</th>
+  		<% @roles.each do |role| %>
+  		  <th><%= role.name %></th>
+  		<% end %>
+  		<th>
+        <% if current_user.can_create_role? %>
+  		    <!-- New Role Modal Trigger -->
+  		    <button class="btn waves-effect waves-light modal-trigger" data-target="new_role_modal"><i class="mdi-content-add right"></i>New Role</button>
+        <% end %>
+  		</th>
+  	</tr>
+  </thead>
+  <tbody>
+    
+  	<% @perms.each do |perm| %>
+  	  <tr>
+  	  	<td><%= perm.description %></td>
+  	  	<% @roles.each do |role| %>
+  		  <td>
+  		    <%= check_box_tag('roles[' + role.name + '][' + perm.name + ']', 1, role.permissions.include?(perm), disabled: !current_user.can_edit_role?) %>
+  		    <%= label_tag('roles[' + role.name + '][' + perm.name + ']', "") %>
+  		  </td>
+  		<% end %>
+  	  </tr>
+  	<% end %>
+  </tbody>
+</table>
+  <% if current_user.can_edit_role? %>
+    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      Update <i class="mdi-content-create right"></i>
+    <% end %>
+  <% end %>
+<% end %>
+
+<!-- New Role Modal Structure -->
+<div id="new_role_modal" class="modal">
+  <%= form_for(@new_role, method: "post") do |f| %>
+    <div class="modal-content">
+      <h4>New Role</h4>
+      <%= f.text_field :name %>
+      <%= f.label :name %>
+    </div>
+    <div class="modal-footer">
+      <%= button_tag( :class => "modal-action modal-close btn-flat waves-effect waves-light") do %>
+        Create Role <i class="mdi-content-add right"></i>
+      <% end %>
+      <button class="modal-action modal-close btn-flat waves-effect waves-light">
+        Cancel <i class="mdi-navigation-cancel right"></i>
+      </button>
+    </div>
+  <% end %>
+</div>	

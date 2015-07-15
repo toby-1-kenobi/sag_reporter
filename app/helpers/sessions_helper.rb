@@ -35,6 +35,15 @@ module SessionsHelper
     !current_user.nil?
   end
 
+  # Confirms a logged-in user.
+    def require_login
+      unless logged_in?
+        store_location
+        flash["warning"] = "Please log in."
+        redirect_to login_url
+      end
+  end
+
   # Forgets a persistent session.
   def forget(user)
     user.forget

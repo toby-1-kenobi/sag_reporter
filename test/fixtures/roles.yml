@@ -1,0 +1,18 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+admin:
+  name: admin
+  permissions: create_user, edit_user, view_all_users, delete_user, view_roles, edit_role, create_role
+
+evaluator:
+  name: evaluator
+
+reporter:
+  name: reporter
+
+pleb:
+  name: pleb
+
+view:
+  name: view but not edit
+  permissions: view_all_users, view_roles

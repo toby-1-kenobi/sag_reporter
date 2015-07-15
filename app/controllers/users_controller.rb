@@ -2,14 +2,29 @@ class UsersController < ApplicationController
 
   before_action :require_login
   
-  # A user's profile can only be edited by themselves or their supervisor or an admin
-  before_action :authorised_user, only: [:edit, :update]
+  # A user's profile can only be edited or seen by
+  #    themselves or
+  #    their supervisor or
+  #    someone with permission
+  before_action :authorised_user_edit, only: [:edit, :update]
+  before_action :authorised_user_show, only: [:show]
 
-  # Only an admin user can add more users
-  #before_action :admin_user, only: [:new, :create, :destroy]
+  # Let only permitted users do some things
+  before_action only: [:new, :create] do
+    redirect_to root_path unless current_user.can_create_user?
+  end
+
+  before_action only: [:destroy] do
+    redirect_to root_path unless current_user.can_delete_user?
+  end
+
+  before_action only: [:index] do
+    redirect_to root_path unless current_user.can_view_all_users?
+  end
 
   def new
   	@user = User.new
+    @roles = Role.all
   end
 
   def show
@@ -22,6 +37,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @roles = Role.all
     if @user.save
       flash["success"] = "New User Created!"
       redirect_to @user
@@ -32,6 +48,7 @@ class UsersController < ApplicationController
 
   def edit
     @user = User.find(params[:id])
+    @roles = Role.all
   end
 
   def update
@@ -55,31 +72,28 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:name, :phone, :password, :password_confirmation)
-    end
-
-    # Confirms a logged-in user.
-    def require_login
-      unless logged_in?
-      	store_location
-        flash["warning"] = "Please log in."
-        redirect_to login_url
+      # current user cannot change own role
+      if params[:id] and current_user?(User.find(params[:id]))
+        params.require(:user).permit(:name, :phone, :password, :password_confirmation)
+      else
+        params.require(:user).permit(:name, :phone, :password, :password_confirmation, :role_id)
       end
     end
 
-    # Confirms authorised user.
-    def authorised_user
+    # Confirms authorised user for edit.
+    def authorised_user_edit
       @user = User.find(params[:id])
-      redirect_to(root_url) unless
-          current_user?(@user)
+      redirect_to(root_url) unless 
+          current_user?(@user) or current_user.can_edit_user?
       #    or @user.supervisor?(current_user)
-      #    or current_user.admin?
     end
 
-    # Confirms admin user.
-    def admin_user
+    # Confirms authorised user for show.
+    def authorised_user_show
       @user = User.find(params[:id])
-      #redirect_to(root_url) unless @user.admin?
+      redirect_to(root_url) unless 
+          current_user?(@user) or current_user.can_view_all_users?
+      #    or @user.supervisor?(current_user)
     end
 
 end

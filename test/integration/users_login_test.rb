@@ -3,7 +3,7 @@ require 'test_helper'
 class UsersLoginTest < ActionDispatch::IntegrationTest
 
   def setup
-    @user = users(:michael)
+    @user = users(:andrew)
   end
 
   test "login with invalid information" do
@@ -13,7 +13,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_not is_logged_in?
     assert_template 'sessions/new'
     assert_not flash.empty?
-    get root_path
+    get login_path
     assert flash.empty?
   end
 
@@ -29,7 +29,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", user_path(@user)
     delete logout_path
     assert_not is_logged_in?
-    assert_redirected_to root_url
+    assert_redirected_to login_url
     # Simulate a user clicking logout in a second window.
     delete logout_path
     follow_redirect!

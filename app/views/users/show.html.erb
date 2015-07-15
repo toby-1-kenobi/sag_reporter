@@ -1,7 +1,10 @@
 <% provide(:title, 'Show User: ' + @user.name) %>
-<%= link_to edit_user_path(@user), class: "waves-effect right btn" do %>
-  <i class="material-icons left">create</i>
-  Edit
+<% if current_user.can_edit_user? || current_user?(@user) %>
+  <%= link_to edit_user_path(@user), class: "waves-effect right btn" do %>
+    <i class="material-icons left">create</i>
+    Edit
+  <% end %>
 <% end %>
 <h1><i class="material-icons prefix large">account_circle</i> <%= @user.name %></h1>
-<p>phone: <%= @user.phone %></p>
+<p>Phone: <%= @user.phone %></p>
+<p>Role: <%= @user.role.name %></p>

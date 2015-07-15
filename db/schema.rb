@@ -11,7 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150615180417) do
+ActiveRecord::Schema.define(version: 20150714170739) do
+
+  create_table "permissions", force: :cascade do |t|
+    t.string   "name"
+    t.string   "description"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "permissions", ["name"], name: "index_permissions_on_name", unique: true
+
+  create_table "permissions_roles", id: false, force: :cascade do |t|
+    t.integer "role_id"
+    t.integer "permission_id"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "name"
@@ -20,8 +40,10 @@ ActiveRecord::Schema.define(version: 20150615180417) do
     t.datetime "updated_at",      null: false
     t.string   "password_digest"
     t.string   "remember_digest"
+    t.integer  "role_id"
   end
 
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true
+  add_index "users", ["role_id"], name: "index_users_on_role_id"
 
 end

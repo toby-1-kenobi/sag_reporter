@@ -1,5 +1,8 @@
 class User < ActiveRecord::Base
   
+  belongs_to :role
+  has_many :permissions, through: :role
+
   attr_accessor :remember_token
 
   validates :name, presence: true, length: { maximum: 50 }
@@ -35,5 +38,39 @@ class User < ActiveRecord::Base
   def forget
     update_attribute(:remember_digest, nil)
   end
+
+  # allow method names such as is_a_ROLE1_or_ROLE2?
+  # where ROLE1 and ROLE2 are the names of a valid roles
+  # or can_PERM1_or_PERM2?
+  # where PERM1 and PERM2 are the names of a valid permissions
+  def method_missing(method_id, *args)
+    if match = matches_dynamic_role_check?(method_id)
+      tokenize(match.captures.first).each do |role_name|
+        return true if role.name.downcase == role_name
+      end
+      return false
+    elsif match = matches_dynamic_perm_check?(method_id)
+      tokenize(match.captures.first).each do |perm_name|
+         return true if permissions.find_by_name(perm_name)
+      end
+      return false
+    else
+      super
+    end
+  end
+
+      private
+
+      def tokenize(string_to_split)
+        string_to_split.split(/_or_/)
+      end
+
+      def matches_dynamic_role_check?(method_id)
+        /^is_an?_([a-zA-Z]\w*)\?$/.match(method_id.to_s)
+      end
+
+      def matches_dynamic_perm_check?(method_id)
+        /^can_([a-zA-Z]\w*)\?$/.match(method_id.to_s)
+      end
 
 end
