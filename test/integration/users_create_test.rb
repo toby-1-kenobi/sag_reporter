@@ -3,7 +3,7 @@ require 'test_helper'
 class UsersCreateTest < ActionDispatch::IntegrationTest
 
   def setup
-    @user = users(:michael)
+    @user = users(:andrew)
   end
   
   test "invalid user create" do

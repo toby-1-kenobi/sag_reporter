@@ -4,5 +4,11 @@ admin:
   name: admin
   permissions: create_user, edit_user, view_all_users, delete_user, view_roles, edit_role, create_roler
 
+evaluator:
+  name: evaluator
+
 reporter:
   name: reporter
+
+pleb:
+  name: pleb

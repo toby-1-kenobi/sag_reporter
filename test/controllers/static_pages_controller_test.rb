@@ -3,7 +3,7 @@ require 'test_helper'
 class StaticPagesControllerTest < ActionController::TestCase
 
   def setup
-    @user = users(:michael)
+    @user = users(:andrew)
   end
 
   test "should get home" do
