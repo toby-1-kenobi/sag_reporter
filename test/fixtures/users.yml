@@ -23,6 +23,12 @@ peter:
   password_digest: <%= User.digest('password') %>
   role: pleb
 
+vera:
+  name: Vera View
+  phone: 0987654325
+  password_digest: <%= User.digest('password') %>
+  role: view
+
 <% 30.times do |n| %>
 user_<%= n %>:
   name:  <%= "User #{n}" %>

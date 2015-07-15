@@ -57,4 +57,28 @@ class UsersControllerTest < ActionController::TestCase
     assert_redirected_to root_url
   end
 
+  test "should redirect create when not logged in" do
+    post :create, user: {
+      name: @user.name,
+      phone: @user.phone,
+      password:              "PassWord.123",
+      password_confirmation: "PassWord.123",
+      role_id: Role.all.first.id
+    }
+    assert_not flash.empty?
+    assert_redirected_to login_url
+  end
+
+  test "should redirect createe when not have permission" do
+    log_in_as(@other_user)
+    post :create, user: {
+      name: @user.name,
+      phone: @user.phone,
+      password:              "PassWord.123",
+      password_confirmation: "PassWord.123",
+      role_id: Role.all.first.id
+    }
+    assert_redirected_to root_url
+  end
+
 end
