@@ -11,7 +11,7 @@
   		<th>
         <% if current_user.can_create_role? %>
   		    <!-- New Role Modal Trigger -->
-  		    <button class="btn waves-effect waves-light modal-trigger" data-target="new_role_modal"><i class="mdi-content-add right"></i>New Role</button>
+  		    <button class="btn waves-effect waves-light modal-trigger" data-target="new_role_modal"><i class="material-icons right">add</i>New Role</button>
         <% end %>
   		</th>
   	</tr>
@@ -33,7 +33,7 @@
 </table>
   <% if current_user.can_edit_role? %>
     <%= button_tag( :class => "btn waves-effect waves-light right") do %>
-      Update <i class="mdi-content-create right"></i>
+      Update <i class="material-icons right">create</i>
     <% end %>
   <% end %>
 <% end %>
@@ -48,10 +48,10 @@
     </div>
     <div class="modal-footer">
       <%= button_tag( :class => "modal-action modal-close btn-flat waves-effect waves-light") do %>
-        Create Role <i class="mdi-content-add right"></i>
+        Create Role <i class="material-icons right">add</i>
       <% end %>
       <button class="modal-action modal-close btn-flat waves-effect waves-light">
-        Cancel <i class="mdi-navigation-cancel right"></i>
+        Cancel <i class="material-icons right">cancel</i>
       </button>
     </div>
   <% end %>
