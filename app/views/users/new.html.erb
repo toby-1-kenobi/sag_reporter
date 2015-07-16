@@ -29,20 +29,33 @@
     </div>
     <div class="row">
       <div class="input-field col s6">
-        <%= f.select(:role_id) do %>
-          <% @roles.each do |role| %>
-            <%= content_tag(:option, role.name, value: role.id) %>
-          <% end %>
-        <% end %>
-        <%= f.label :role_id, "Select role" %>
-      </div>
-      <div class="input-field col s6">
         <%= f.select(:mother_tongue_id) do %>
           <% @languages.each do |lang| %>
             <%= content_tag(:option, lang.name, value: lang.id) %>
           <% end %>
         <% end %>
-        <%= f.label :mother_tongue_id, "Select mother tongue" %>
+        <%= f.label :mother_tongue_id, "Mother tongue" %>
+      </div>
+      <div class="input-field col s6">
+        <a class='dropdown-button btn-flat' href='#' data-activates='speaks_dropdown' data-hover="true">Able to speak...</a>
+        <ul id='speaks_dropdown' class='dropdown-content'>
+          <% @languages.each do |lang| %>
+            <li>
+              <%= check_box_tag('speaks[' + lang.id.to_s + ']', 1, @user.speaks.include?(lang)) %>
+              <%= label_tag('speaks[' + lang.id.to_s + ']', lang.name) %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <%= f.select(:role_id) do %>
+          <% @roles.each do |role| %>
+            <%= content_tag(:option, role.name, value: role.id) %>
+          <% end %>
+        <% end %>
+        <%= f.label :role_id, "Role", {:class => "active"} %>
       </div>
     </div>
     <%= button_tag( :class => "btn waves-effect waves-light right") do %>
