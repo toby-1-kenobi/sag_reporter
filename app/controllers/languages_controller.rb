@@ -2,6 +2,19 @@ class LanguagesController < ApplicationController
   
   before_action :require_login
 
+    # Let only permitted users do some things
+  before_action only: [:new, :create] do
+    redirect_to root_path unless current_user.can_create_language?
+  end
+
+  before_action only: [:index] do
+    redirect_to root_path unless current_user.can_view_all_languages?
+  end
+
+  before_action only: [:edit, :update] do
+    redirect_to root_path unless current_user.can_edit_language?
+  end
+
   def index
   	@languages = Language.all
   end
