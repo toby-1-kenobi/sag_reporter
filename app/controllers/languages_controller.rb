@@ -16,7 +16,7 @@ class LanguagesController < ApplicationController
   end
 
   def index
-  	@languages = Language.order(:name)
+  	@languages = Language.order("LOWER(name)")
   end
 
   def new
