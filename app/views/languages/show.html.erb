@@ -6,7 +6,7 @@
   <% end %>
 <% end %>
 <h1><%= @language.name %></h1>
-<p><%= @language.lwc? ? "language of wider communication" : "minority language" %></p>
+<p class="lwc"><%= @language.lwc? ? "language of wider communication" : "minority language" %></p>
 <p><%= @language.description %></p>
 <% if current_user.can_view_all_languages? %>
   <%= link_to languages_path, class: "waves-effect right btn" do %>
