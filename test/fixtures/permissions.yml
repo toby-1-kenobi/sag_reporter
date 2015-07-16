@@ -27,3 +27,15 @@ edit_role:
 create_role:
   name: create_role
   description: Create a new role
+
+view_all_languages:
+  name: view_all_languages
+  description: View all languages
+
+create_language:
+  name: create_language
+  description: Add another language
+
+edit_language:
+  name: edit_language
+  description: Edit details about a language
