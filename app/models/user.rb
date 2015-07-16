@@ -2,6 +2,7 @@ class User < ActiveRecord::Base
   
   belongs_to :role
   has_many :permissions, through: :role
+  belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
 
   attr_accessor :remember_token
 

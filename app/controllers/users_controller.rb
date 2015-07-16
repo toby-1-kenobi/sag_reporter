@@ -25,6 +25,7 @@ class UsersController < ApplicationController
   def new
   	@user = User.new
     @roles = Role.all
+    @languages = Language.all
   end
 
   def show
@@ -37,11 +38,12 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    @roles = Role.all
     if @user.save
       flash["success"] = "New User Created!"
       redirect_to @user
     else
+      @roles = Role.all
+      @languages = Language.all
       render 'new'
     end
   end
@@ -49,6 +51,7 @@ class UsersController < ApplicationController
   def edit
     @user = User.find(params[:id])
     @roles = Role.all
+    @languages = Language.all
   end
 
   def update
@@ -57,6 +60,8 @@ class UsersController < ApplicationController
       flash["success"] = "Profile updated"
       redirect_to @user
     else
+      @roles = Role.all
+      @languages = Language.all
       render 'edit'
     end
   end
@@ -74,9 +79,22 @@ class UsersController < ApplicationController
     def user_params
       # current user cannot change own role
       if params[:id] and current_user?(User.find(params[:id]))
-        params.require(:user).permit(:name, :phone, :password, :password_confirmation)
+        params.require(:user).permit(
+          :name,
+          :phone,
+          :password,
+          :password_confirmation,
+          :mother_tongue_id
+        )
       else
-        params.require(:user).permit(:name, :phone, :password, :password_confirmation, :role_id)
+        params.require(:user).permit(
+          :name,
+          :phone,
+          :password,
+          :password_confirmation,
+          :mother_tongue_id,
+          :role_id
+        )
       end
     end
 
