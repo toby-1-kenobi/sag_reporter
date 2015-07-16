@@ -1,2 +1,8 @@
-<h1>Languages#index</h1>
-<p>Find me in app/views/languages/index.html.erb</p>
+<% provide(:title, 'All language') %>
+<h1>All languages</h1>
+
+<ul class="languages collection">
+  <%= render @languages %>
+</ul>
+
+

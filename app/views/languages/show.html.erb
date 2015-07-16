@@ -1,2 +1,10 @@
-<h1>Languages#show</h1>
-<p>Find me in app/views/languages/show.html.erb</p>
+<% provide(:title, 'Show Language: ' + @language.name) %>
+<% if current_user.can_edit_language? %>
+  <%= link_to edit_language_path(@language), class: "waves-effect right btn" do %>
+    <i class="material-icons left">create</i>
+    Edit
+  <% end %>
+<% end %>
+<h1><%= @language.name %></h1>
+<p><%= @language.lwc? ? "language of wider communication" : "minority language" %></p>
+<p><%= @language.description %></p>

@@ -1,0 +1,8 @@
+    <li class="collection-item">
+      <%= link_to language.name, language %>
+      <% if current_user.can_delete_language? %>
+        <%= link_to language, method: :delete, class: "waves-effect waves-red btn-flat", data: { confirm: "Delete #{language.name}?" } do %>
+        <i class="material-icons">delete</i>
+        <% end %>
+      <% end %>
+    </li>
