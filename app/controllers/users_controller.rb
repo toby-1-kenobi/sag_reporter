@@ -57,6 +57,12 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     if @user.update_attributes(user_params)
+      @user.spoken_languages.clear
+      if params['speaks']
+        params['speaks'].each do |lang_id_arr|
+          @user.spoken_languages << Language.find_by_id(lang_id_arr.first.to_i)
+        end
+      end
       flash["success"] = "Profile updated"
       redirect_to @user
     else

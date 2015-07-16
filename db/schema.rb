@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150716095402) do
+ActiveRecord::Schema.define(version: 20150716120749) do
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 20150716095402) do
     t.string   "password_digest"
     t.string   "remember_digest"
     t.integer  "role_id"
-    t.integer  "mother_tongue_id"
+    t.integer  "mother_tongue_id", null: false
   end
 
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id"

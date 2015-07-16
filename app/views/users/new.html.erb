@@ -41,7 +41,7 @@
         <ul id='speaks_dropdown' class='dropdown-content'>
           <% @languages.each do |lang| %>
             <li>
-              <%= check_box_tag('speaks[' + lang.id.to_s + ']', 1, @user.speaks.include?(lang)) %>
+              <%= check_box_tag('speaks[' + lang.id.to_s + ']', 1, @user.spoken_languages.include?(lang)) %>
               <%= label_tag('speaks[' + lang.id.to_s + ']', lang.name) %>
             </li>
           <% end %>

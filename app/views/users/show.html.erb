@@ -8,4 +8,9 @@
 <h1><i class="material-icons prefix large">account_circle</i> <%= @user.name %></h1>
 <p>Phone: <%= @user.pretty_phone %></p>
 <p>Mother tongue: <%= @user.mother_tongue.name %></p>
+<% if @user.spoken_languages and !@user.spoken_languages.empty? %>
+  <p>Can speak:
+  <% language_names = @user.spoken_languages.map { |e| e.name } %>
+  <%= language_names.join(', ') %></p>
+<% end %>
 <p>Role: <%= @user.role.name %></p>
