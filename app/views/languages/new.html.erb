@@ -1,2 +1,28 @@
-<h1>Languages#new</h1>
-<p>Find me in app/views/languages/new.html.erb</p>
+<% provide(:title, 'Add Another Language') %>
+<h1>Add Language</h1>
+<div class="row">
+  <%= form_for(@language, html: {class: "col s12"}) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.text_field :name %>
+        <%= f.label :name %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.text_area :description %>
+        <%= f.label :description %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.check_box :lwc %>
+        <%= f.label :lwc, "Language of Wider Communication" %>
+      </div>
+    </div>
+    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      Add Language <i class="material-icons right">add</i>
+    <% end %>
+  <% end %>
+</div>
