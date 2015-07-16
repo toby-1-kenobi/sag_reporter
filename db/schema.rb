@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150716063110) do
+ActiveRecord::Schema.define(version: 20150716095402) do
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -20,6 +20,13 @@ ActiveRecord::Schema.define(version: 20150716063110) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
+
+  create_table "languages_users", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "language_id"
+  end
+
+  add_index "languages_users", ["user_id", "language_id"], name: "index_languages_users_on_user_id_and_language_id", unique: true
 
   create_table "permissions", force: :cascade do |t|
     t.string   "name"

@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   belongs_to :role
   has_many :permissions, through: :role
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
+  has_and_belongs_to_many :speaks, class_name: 'Language'
 
   attr_accessor :remember_token
 
@@ -45,6 +46,16 @@ class User < ActiveRecord::Base
   # Pretty print phone number
   def pretty_phone
     self.phone.slice(0..3) + ' ' + self.phone.slice(4..6) + ' ' + self.phone.slice(7..-1)
+  end
+
+  # override speaks so that a user's mother tongue is included
+  def speaks
+    languages = super
+    if self.mother_tongue
+      languages << self.mother_tongue unless languages.include?(self.mother_tongue)
+    else
+      languages
+    end
   end
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
