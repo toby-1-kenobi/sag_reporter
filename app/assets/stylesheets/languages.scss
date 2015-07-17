@@ -6,14 +6,27 @@
 
 .collection-item {
 	span.lwc {
-		float: right;
-		margin: -0.3em;
-		background-color: #BBBBFF;
+		margin-top: -0.3em;
+		margin-right: 1em;
+		background-color: #CCCCFF;
 		font-size: small;
 		padding: 0.3em;
 		@include box_sizing;
 		@include border-radius(4px);
 	}
+	span.colour {
+		min-width: 10em;
+		@include box_sizing;
+		@include border-radius(4px);
+		margin-right: 1em;
+	}
+}
+
+h1.coloured {
+	@include box_sizing;
+	@include border-radius(4px);
+	display: inline-block;
+	padding: 10px;
 }
 
 p.lwc {

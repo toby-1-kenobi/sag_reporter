@@ -1,6 +1,8 @@
-    <li class="collection-item">
-      <%= link_to language.name, language %>
+
+    <%= link_to language, class: "collection-item" do %>
+      <%= language.name %>
+      <span class="secondary-content colour <%= language.colour %>">&nbsp;</span>
       <% if language.lwc? %>
-        <span class="lwc">LWC</span>
+        <span class="secondary-content lwc">LWC</span>
       <% end %>
-    </li>
+    <% end %>
