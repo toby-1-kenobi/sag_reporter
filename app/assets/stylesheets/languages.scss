@@ -37,3 +37,16 @@ p.lwc {
 	display: inline-block;
 	background-color: #BBBBFF;
 }
+
+#colour_picker {
+	margin: 1ex;
+	table {
+		tbody {
+			tr {
+				td {
+					margin: 5px;
+				}
+			}
+		}
+	}
+}

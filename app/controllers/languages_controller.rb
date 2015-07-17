@@ -33,7 +33,7 @@ class LanguagesController < ApplicationController
 
   def update
     @language = Language.find(params[:id])
-    if @language.update_attributes(lang_params)
+    if @language.update_attributes(combine_colour(lang_params))
       flash["success"] = "Language updated"
       redirect_to @language
     else
@@ -42,7 +42,7 @@ class LanguagesController < ApplicationController
   end
 
   def create
-    @language = Language.new(lang_params)
+    @language = Language.new(combine_colour(lang_params))
     if @language.save
       flash["success"] = "New language added!"
       redirect_to @language
@@ -54,7 +54,18 @@ class LanguagesController < ApplicationController
     private
 
     def lang_params
-      params.require(:language).permit(:name, :description, :lwc)
+      params.require(:language).permit(:name, :description, :lwc, :colour, :colour_darkness)
+    end
+
+    def combine_colour(params)
+      unless params[:colour] == "black" or params[:colour] == "white"
+        if params[:colour_darkness].to_i > 0
+      	  params[:colour] << " darken-" << params[:colour_darkness]
+        elsif params[:colour_darkness].to_i < 0
+      	  params[:colour] << " lighten-" << params[:colour_darkness].slice(1..-1)
+        end
+      end
+      params.except!(:colour_darkness)
     end
   
 end
