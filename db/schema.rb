@@ -11,14 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150716120749) do
+ActiveRecord::Schema.define(version: 20150716172236) do
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
     t.boolean  "lwc"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.string   "colour",      default: "#FFFFFF", null: false
   end
 
   create_table "languages_users", id: false, force: :cascade do |t|
