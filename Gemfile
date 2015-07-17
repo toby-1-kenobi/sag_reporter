@@ -33,7 +33,7 @@ gem 'faker'
 gem 'will_paginate', '~> 3.0.6'
 
 # Colour picker
-gem 'jquery-minicolors-rails'
+# gem 'jquery-minicolors-rails'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
