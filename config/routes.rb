@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
 
-
   root 'static_pages#home'
 
   resources :users
   resources :languages
+  resources :topics
 
   get    'adduser' => 'users#new'
 
