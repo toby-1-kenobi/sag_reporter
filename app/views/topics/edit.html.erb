@@ -1,2 +1,43 @@
-<h1>Topics#edit</h1>
-<p>Find me in app/views/topics/edit.html.erb</p>
+<% provide(:title, 'Edit Topic') %>
+<h1><i class="material-icons large">create</i> Edit Topic</h1>
+<div class="row">
+  <%= form_for(@topic, html: {class: "col s12"}) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.text_field :name %>
+        <%= f.label :name %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.text_area :description %>
+        <%= f.label :description %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12">
+        <a class='dropdown-button btn-flat' href='#' data-activates='colour_picker' data-hover="true" data-constrainwidth="false">Colour...</a>
+        <div id='colour_picker' class='dropdown-content'>
+          <table>
+          	<tbody>
+          	  <% materialize_colours.each_with_index do |colour, index| %>
+          	    <%= '<tr>'.html_safe if index % @colour_columns == 0 %>
+          	    <td class="<%= colour %>"><%= f.radio_button :colour, colour, checked: @topic.colour.starts_with?(colour) %>
+          		<%= f.label "colour_#{colour}", colour.capitalize, class: colour == "black" ? "white-text" : "black-text" %></td>
+          	    <%= '</tr>'.html_safe if (index + 1) % @colour_columns == 0 %>
+          	  <% end %>	
+          	</tbody>
+          </table>
+          <p class="range-field">
+          	<label for="topic[colour_darkness]">Colour Darkness</label>
+          	<input type="range" name="topic[colour_darkness]" id="topic[colour_darkness]" min="-5" max="4" />
+          </p>
+        </div>
+      </div>
+    </div>
+    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      Update topic <i class="material-icons right">create</i>
+    <% end %>
+  <% end %>
+</div>
