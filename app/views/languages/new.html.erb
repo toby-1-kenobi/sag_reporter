@@ -25,62 +25,12 @@
         <div id='colour_picker' class='dropdown-content'>
           <table>
           	<tbody>
-          	  <tr>
-          		<td class="red"><%= f.radio_button :colour, "red", checked: @language.colour.starts_with?("red") %>
-          		<%= f.label :colour_red, "Red", class: "black-text" %></td>
-          		<td class="pink"><%= f.radio_button :colour, "pink", checked: @language.colour.starts_with?("pink") %>
-          		<%= f.label :colour_pink, "Pink", class: "black-text" %></td>
-          		<td class="purple"><%= f.radio_button :colour, "purple", checked: @language.colour.starts_with?("purple") %>
-          		<%= f.label :colour_purple, "Purple", class: "black-text" %></td>
-          	  </tr>
-          	  <tr>
-          		<td class="deep-purple"><%= f.radio_button :colour, "deep-purple", checked: @language.colour.starts_with?("deep-purple") %>
-          		<%= f.label "colour_deep-purple", "Deep-purple", class: "black-text" %></td>
-          		<td class="indigo"><%= f.radio_button :colour, "indigo", checked: @language.colour.starts_with?("indigo") %>
-          		<%= f.label :colour_indigo, "Indigo", class: "black-text" %></td>
-          		<td class="blue"><%= f.radio_button :colour, "blue", checked: @language.colour.starts_with?("blue") %>
-          		<%= f.label :colour_blue, "Blue", class: "black-text" %></td>
-          	  </tr>
-          	  <tr>
-          		<td class="light-blue"><%= f.radio_button :colour, "light-blue", checked: @language.colour.starts_with?("light-blue") %>
-          		<%= f.label "colour_light-blue", "Light-blue", class: "black-text" %></td>
-          		<td class="cyan"><%= f.radio_button :colour, "cyan", checked: @language.colour.starts_with?("cyan") %>
-          		<%= f.label :colour_cyan, "Cyan", class: "black-text" %></td>
-          		<td class="teal"><%= f.radio_button :colour, "teal", checked: @language.colour.starts_with?("teal") %>
-          		<%= f.label :colour_teal, "Teal", class: "black-text" %></td>
-          	  </tr>
-          	  <tr>
-          		<td class="green"><%= f.radio_button :colour, "green", checked: @language.colour.starts_with?("green") %>
-          		<%= f.label :colour_green, "Green", class: "black-text" %></td>
-          		<td class="light-green"><%= f.radio_button :colour, "light-green", checked: @language.colour.starts_with?("light-green") %>
-          		<%= f.label "colour_light-green", "Light-green", class: "black-text" %></td>
-          		<td class="lime"><%= f.radio_button :colour, "lime", checked: @language.colour.starts_with?("lime") %>
-          		<%= f.label :colour_lime, "Lime", class: "black-text" %></td>
-          	  </tr>
-          	  <tr>
-          		<td class="yellow"><%= f.radio_button :colour, "yellow", checked: @language.colour.starts_with?("yellow") %>
-          		<%= f.label :colour_yellow, "Yellow", class: "black-text" %></td>
-          		<td class="amber"><%= f.radio_button :colour, "amber", checked: @language.colour.starts_with?("amber") %>
-          		<%= f.label :colour_amber, "Amber", class: "black-text" %></td>
-          		<td class="orange"><%= f.radio_button :colour, "orange", checked: @language.colour.starts_with?("orange") %>
-          		<%= f.label :colour_orange, "Orange", class: "black-text" %></td>
-          	  </tr>
-          	  <tr>
-          		<td class="deep-orange"><%= f.radio_button :colour, "deep-orange", checked: @language.colour.starts_with?("deep-orange") %>
-          		<%= f.label "colour_deep-orange", "Deep-orange", class: "black-text" %></td>
-          		<td class="brown"><%= f.radio_button :colour, "brown", checked: @language.colour.starts_with?("brown") %>
-          		<%= f.label :colour_brown, "Brown", class: "black-text" %></td>
-          		<td class="grey"><%= f.radio_button :colour, "grey", checked: @language.colour.starts_with?("grey") %>
-          		<%= f.label :colour_grey, "Grey", class: "black-text" %></td>
-          	  </tr>
-          	  <tr>
-          		<td class="blue-grey"><%= f.radio_button :colour, "blue-grey", checked: @language.colour.starts_with?("blue-grey") %>
-          		<%= f.label "colour_blue-grey", "Blue-grey", class: "black-text" %></td>
-          		<td class="black"><%= f.radio_button :colour, "black", checked: @language.colour.starts_with?("black") %>
-          		<%= f.label :colour_black, "Black", class: "white-text" %></td>
-          		<td class="white"><%= f.radio_button :colour, "white", checked: @language.colour.starts_with?("white") %>
-          		<%= f.label :colour_white, "White", class: "black-text" %></td>
-          	  </tr>
+          	  <% materialize_colours.each_with_index do |colour, index| %>
+          	    <%= '<tr>'.html_safe if index % @colour_columns == 0 %>
+          	    <td class="<%= colour %>"><%= f.radio_button :colour, colour, checked: @language.colour.starts_with?(colour) %>
+          		<%= f.label "colour_#{colour}", colour.capitalize, class: colour == "black" ? "white-text" : "black-text" %></td>
+          	    <%= '</tr>'.html_safe if (index + 1) % @colour_columns == 0 %>
+          	  <% end %>
           	</tbody>
           </table>
           <p class="range-field">

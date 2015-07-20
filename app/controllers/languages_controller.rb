@@ -23,10 +23,12 @@ class LanguagesController < ApplicationController
 
   def new
   	@language = Language.new
+  	@colour_columns = 3
   end
 
   def edit
   	@language = Language.find(params[:id])
+  	@colour_columns = 3
   end
 
   def show
