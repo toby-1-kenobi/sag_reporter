@@ -1,2 +1,15 @@
-<h1>Topics#show</h1>
-<p>Find me in app/views/topics/show.html.erb</p>
+<% provide(:title, 'Show LCI Topic: ' + @topic.name) %>
+<h1 class="coloured <%= @topic.colour %> <%= @topic.colour.include?('darken') || @topic.colour == "black" ? "white-text" : "black-text" %>"><%= @topic.name %></h1>
+<p><%= @topic.description %></p>
+<% if current_user.can_edit_topic? %>
+  <%= link_to edit_topic_path(@topic), class: "waves-effect right btn" do %>
+    <i class="material-icons left">create</i>
+    Edit
+  <% end %>
+<% end %>
+<% if current_user.can_view_all_topics? %>
+  <%= link_to topics_path, class: "waves-effect btn" do %>
+    All Topics
+  <% end %>
+<% end %>
+

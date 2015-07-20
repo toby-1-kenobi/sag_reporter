@@ -19,6 +19,7 @@ class TopicsController < ApplicationController
 
   def new
   	@topic = Topic.new
+  	@colour_columns = 3
   end
 
   def index
@@ -31,6 +32,7 @@ class TopicsController < ApplicationController
 
   def edit
   	@topic = Topic.find(params[:id])
+  	@colour_columns = 3
   end
 
   def update
@@ -56,7 +58,7 @@ class TopicsController < ApplicationController
     private
 
     def topic_params
-      params.require(:topic).permit(:name, :description, :lwc, :colour, :colour_darkness)
+      params.require(:topic).permit(:name, :description, :colour, :colour_darkness)
     end
 
 end
