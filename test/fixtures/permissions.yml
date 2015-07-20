@@ -39,3 +39,15 @@ create_language:
 edit_language:
   name: edit_language
   description: Edit details about a language
+
+view_all_topics:
+  name: view_all_topics
+  description: View all topics
+
+create_topic:
+  name: create_topic
+  description: Add another topic
+
+edit_topic:
+  name: edit_topic
+  description: Edit details about a topic
