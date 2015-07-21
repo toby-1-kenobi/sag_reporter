@@ -7,7 +7,7 @@ class RolesControllerTest < ActionController::TestCase
     @pleb_user = users(:peter)
   end
 
-  test "should get index" do 	
+  test "should get index" do
     log_in_as(@admin_user)
     get :index
     assert_response :success

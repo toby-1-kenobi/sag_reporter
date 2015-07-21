@@ -5,6 +5,7 @@ class UsersEditTest < ActionDispatch::IntegrationTest
   def setup
     @user = users(:andrew)
     @pleb_user = users(:peter)
+    @english = languages(:english)
   end
 
   test "unsuccessful edit" do
@@ -26,7 +27,9 @@ class UsersEditTest < ActionDispatch::IntegrationTest
                                     phone: @user.phone,
                                     password:              "",
                                     password_confirmation: "",
-                                    role_id: @pleb_user.role.id }
+                                    role_id: @pleb_user.role.id,
+                                    mother_tongue_id: @english.id
+                                  }
     @user.reload
     assert_equal role,  @user.role
   end
@@ -38,7 +41,9 @@ class UsersEditTest < ActionDispatch::IntegrationTest
                                     phone: @pleb_user.phone,
                                     password:              "",
                                     password_confirmation: "",
-                                    role_id: @user.role.id }
+                                    role_id: @user.role.id,
+                                    mother_tongue_id: @english.id
+                                  }
     assert_not flash.empty?
     assert_redirected_to @pleb_user
     @pleb_user.reload

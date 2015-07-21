@@ -14,7 +14,8 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
                                phone: "1234",
                                password:              "foo",
                                password_confirmation: "bar",
-                               role_id: Role.all.first.id
+                               role_id: Role.all.first.id,
+                               mother_tongue_id: Language.all.first.id
                              }
     end
     assert_template 'users/new'
@@ -30,7 +31,8 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
                                             phone: "1029384756",
                                             password:              "PassWord.123",
                                             password_confirmation: "PassWord.123",
-                                            role_id: Role.all.first.id
+                                            role_id: Role.all.first.id,
+                                            mother_tongue_id: Language.all.first.id
                                           }
     end
     assert_template 'users/show'

@@ -12,7 +12,7 @@ class UsersIndexTest < ActionDispatch::IntegrationTest
     get users_path
     assert_template 'users/index'
     assert_select 'ul.pagination'
-    User.paginate(page: 1).each do |user|
+    User.order("LOWER(name)").paginate(page: 1).each do |user|
       assert_select 'a[href=?]', user_path(user), text: user.name
       if user == @user
         # no delete link for self
@@ -26,7 +26,7 @@ class UsersIndexTest < ActionDispatch::IntegrationTest
   test "index without delete links" do
     log_in_as(@view_user)
     get users_path
-    User.paginate(page: 1).each do |user|
+    User.order("LOWER(name)").paginate(page: 1).each do |user|
       assert_select 'a[href=?]', user_path(user), text: user.name
       assert_select 'a[href=?][data-method=delete]', user_path(user), count: 0
     end

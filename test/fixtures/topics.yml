@@ -1,11 +1,6 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-  description: MyText
-  colour: MyString
-
-two:
-  name: MyString
-  description: MyText
-  colour: MyString
+education:
+  name: Education
+  description: We want people to have access to education in the medium of their own language
+  colour: light-blue
