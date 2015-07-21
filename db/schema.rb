@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150721062617) do
+ActiveRecord::Schema.define(version: 20150721111852) do
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -21,6 +21,13 @@ ActiveRecord::Schema.define(version: 20150721062617) do
     t.datetime "updated_at",                    null: false
     t.string   "colour",      default: "white", null: false
   end
+
+  create_table "languages_reports", id: false, force: :cascade do |t|
+    t.integer "report_id"
+    t.integer "language_id"
+  end
+
+  add_index "languages_reports", ["report_id", "language_id"], name: "index_languages_reports_on_report_id_and_language_id", unique: true
 
   create_table "languages_users", id: false, force: :cascade do |t|
     t.integer "user_id"
@@ -55,6 +62,13 @@ ActiveRecord::Schema.define(version: 20150721062617) do
   add_index "reports", ["reporter"], name: "index_reports_on_reporter"
   add_index "reports", ["state"], name: "index_reports_on_state"
   add_index "reports", ["type"], name: "index_reports_on_type"
+
+  create_table "reports_topics", id: false, force: :cascade do |t|
+    t.integer "report_id"
+    t.integer "topic_id"
+  end
+
+  add_index "reports_topics", ["report_id", "topic_id"], name: "index_reports_topics_on_report_id_and_topic_id", unique: true
 
   create_table "roles", force: :cascade do |t|
     t.string   "name"

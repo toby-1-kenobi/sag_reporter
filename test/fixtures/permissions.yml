@@ -66,4 +66,4 @@ edit_report:
 
 archive_report:
   name: archive_report
-  description: Archive any report
+  description: Archive or make active any report
