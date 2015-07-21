@@ -1,6 +1,6 @@
 class Report < ActiveRecord::Base
 
-	enum type: [ :hope, :event, :impact ]
+	enum report_type: [ :hope, :event, :impact ]
 	enum state: [ :archived, :active ]
 
 	has_and_belongs_to_many :languages
