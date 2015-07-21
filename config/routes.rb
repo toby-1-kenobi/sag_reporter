@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
 
+  get 'reports/new'
+
+  get 'reports/show'
+
+  get 'reports/edit'
+
+  get 'reports/index'
+
   root 'static_pages#home'
 
   resources :users

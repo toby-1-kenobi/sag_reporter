@@ -51,3 +51,19 @@ create_topic:
 edit_topic:
   name: edit_topic
   description: Edit details about a topic
+
+view_all_report:
+  name: view_all_reports
+  description: View all reports
+
+create_report:
+  name: create_report
+  description: Make a new report
+
+edit_report:
+  name: edit_report
+  description: Edit any report
+
+archive_report:
+  name: archive_report
+  description: Archive any report

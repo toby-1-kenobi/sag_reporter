@@ -1,13 +1,19 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  reporter: 1
-  content: MyText
-  type: 1
-  state: 1
+hope:
+  reporter: andrew
+  content: The pastor want to expand women's ministry
+  type: hope
+  state: active
 
-two:
-  reporter: 1
-  content: MyText
-  type: 1
-  state: 1
+event:
+  reporter: andrew
+  content: A new village library was opened
+  type: event
+  state: active
+
+event:
+  reporter: andrew
+  content: three new people in church
+  type: impact
+  state: active
