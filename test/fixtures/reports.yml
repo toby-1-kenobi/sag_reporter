@@ -3,17 +3,20 @@
 hope:
   reporter: andrew
   content: The pastor want to expand women's ministry
-  type: hope
+  report_type: hope
   state: active
+  languages: rajbanshi
 
 event:
   reporter: andrew
   content: A new village library was opened
-  type: event
+  report_type: event
   state: active
+  languages: toto
 
-event:
+impact:
   reporter: andrew
   content: three new people in church
-  type: impact
+  report_type: impact
   state: active
+  languages: toto, rajbanshi

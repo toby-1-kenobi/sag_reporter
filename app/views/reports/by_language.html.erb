@@ -1,2 +1,12 @@
-<h1>Reports#by_language</h1>
-<p>Find me in app/views/reports/by_language.html.erb</p>
+<% provide(:title, 'Reports grouped by Language') %>
+<h1>Reports Grouped by Language</h1>
+<ul class="collapsible" data-collapsible="accordion">
+  <% @reports.group_by_collection(@languages, &:languages).each do |language, lang_reports| %>
+    <li>
+      <div class="collapsible-header"><%= language.name %></div>
+      <div class="collapsible-body">
+        <%= render lang_reports %>
+      </div>
+    </li>
+  <% end %>
+</ul>

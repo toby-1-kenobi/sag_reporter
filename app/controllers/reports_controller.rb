@@ -38,6 +38,8 @@ class ReportsController < ApplicationController
   end
 
   def by_language
+  	@reports = Report.all
+  	@languages = Language.all
   end
 
   def by_topic
