@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150719171205) do
+ActiveRecord::Schema.define(version: 20150721062617) do
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -42,6 +42,19 @@ ActiveRecord::Schema.define(version: 20150719171205) do
     t.integer "role_id"
     t.integer "permission_id"
   end
+
+  create_table "reports", force: :cascade do |t|
+    t.integer  "reporter",               null: false
+    t.text     "content"
+    t.integer  "type",       default: 0, null: false
+    t.integer  "state",      default: 1, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "reports", ["reporter"], name: "index_reports_on_reporter"
+  add_index "reports", ["state"], name: "index_reports_on_state"
+  add_index "reports", ["type"], name: "index_reports_on_type"
 
   create_table "roles", force: :cascade do |t|
     t.string   "name"
