@@ -3,7 +3,7 @@
 <ul class="collapsible" data-collapsible="accordion">
   <% @reports.group_by_collection(@languages, &:languages).each do |language, lang_reports| %>
     <li>
-      <div class="collapsible-header"><%= language.name %></div>
+      <div class="collapsible-header <%= colour_class(language.colour) %>"><%= language.name %></div>
       <div class="collapsible-body">
         <%= render lang_reports %>
       </div>
