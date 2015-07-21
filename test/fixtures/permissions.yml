@@ -52,7 +52,7 @@ edit_topic:
   name: edit_topic
   description: Edit details about a topic
 
-view_all_report:
+view_all_reports:
   name: view_all_reports
   description: View all reports
 

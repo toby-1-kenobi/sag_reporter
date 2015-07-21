@@ -15,7 +15,7 @@ class ReportsController < ApplicationController
     redirect_to root_path unless current_user.can_edit_report?
   end
 
-  before_action only: [:archive] do
+  before_action only: [:archive, :unarchive] do
     redirect_to root_path unless current_user.can_archive_report?
   end
 
@@ -37,7 +37,16 @@ class ReportsController < ApplicationController
   def index
   end
 
+  def by_language
+  end
+
+  def by_topic
+  end
+
   def archive
+  end
+
+  def unarchive
   end
 
 end

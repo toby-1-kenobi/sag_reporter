@@ -1,18 +1,16 @@
 Rails.application.routes.draw do
 
-  get 'reports/new'
-
-  get 'reports/show'
-
-  get 'reports/edit'
-
-  get 'reports/index'
-
   root 'static_pages#home'
 
   resources :users
   resources :languages
   resources :topics
+  resources :reports do
+    collection do
+      get 'by_language'
+      get 'by_topic'
+    end
+  end
 
   get    'adduser' => 'users#new'
 
