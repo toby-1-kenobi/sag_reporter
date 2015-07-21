@@ -1,5 +1,6 @@
 <div class="card">
   <div class="card-content">
+  	<div><%= time_ago_in_words(report.created_at) %> ago</div>
   	<p><%= report.content %></p>
   </div>
 </div>
