@@ -1,2 +1,50 @@
-<h1>Reports#new</h1>
-<p>Find me in app/views/reports/new.html.erb</p>
+<% provide(:title, 'Make Report') %>
+<h1>Make a Report</h1>
+<div class="row">
+  <%= form_for(@report, html: {class: "col s12"}) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+    <div class="row">
+      <div class="input-field col s6">
+        <%= f.select(:report_type) do %>
+          <% Report.report_types.each do |report_type, int| %>
+            <%= content_tag(:option, report_type_text[report_type], value: report_type) %>
+          <% end %>
+        <% end %>
+        <%= f.label :report_type, "Report Type" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.text_area :content, class: "materialize-textarea" %>
+        <%= f.label :content, "Type your report here." %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <a class='dropdown-button btn-flat' href='#' data-activates='languages_dropdown' data-hover="true">Relates to languages...</a>
+        <ul id='languages_dropdown' class='dropdown-content'>
+          <% @minority_languages.each do |lang| %>
+            <li>
+              <%= check_box_tag('languages[' + lang.id.to_s + ']', 1, @report.languages.include?(lang)) %>
+              <%= label_tag('languages[' + lang.id.to_s + ']', lang.name) %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <div class="input-field col s6">
+        <a class='dropdown-button btn-flat' href='#' data-activates='topics_dropdown' data-hover="true">Relates to topics...</a>
+        <ul id='topics_dropdown' class='dropdown-content'>
+          <% @topics.each do |topic| %>
+            <li>
+              <%= check_box_tag('topics[' + topic.id.to_s + ']', 1, @report.topics.include?(topic)) %>
+              <%= label_tag('topics[' + topic.id.to_s + ']', topic.name) %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      Submit <i class="material-icons right">send</i>
+    <% end %>
+  <% end %>
+</div>

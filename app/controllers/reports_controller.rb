@@ -22,6 +22,9 @@ class ReportsController < ApplicationController
   end
 
   def new
+  	@report = Report.new
+  	@minority_languages = Language.where(lwc: false)
+  	@topics = Topic.all
   end
 
   def create
