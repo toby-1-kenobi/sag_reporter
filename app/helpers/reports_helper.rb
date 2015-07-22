@@ -14,4 +14,22 @@ module ReportsHelper
 	end
   end
 
+  # Assign a colour to each report type
+  def report_colour
+  	{
+  		'hope' => 'light-blue lighten-3',
+  		'event' => 'light-green lighten-3',
+  		'impact' => 'orange lighten-3'
+  	}
+  end
+
+  # Assign a name to each report type
+  def report_type_text
+  	{
+  		'hope' => 'Hope or Dream',
+  		'event' => 'Event',
+  		'impact' => 'Impact'
+  	}
+  end
+
 end

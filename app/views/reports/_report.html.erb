@@ -1,5 +1,5 @@
 <div class="card report" id="report-<%= report.id %>">
-  <div class="card-content">
+  <div class="card-content <%= report_colour[report.report_type] %>">
   	<div><%= time_ago_in_words(report.created_at) %> ago</div>
   	<div class="report_type"><%= report.report_type %></div>
   	<p><%= report.content %></p>
