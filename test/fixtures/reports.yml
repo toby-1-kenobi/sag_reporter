@@ -3,23 +3,23 @@
 hope:
   reporter: andrew
   content: The pastor want to expand women's ministry
-  report_type: hope
-  state: active
+  report_type: <%= Report.report_types['hope'] %>
+  state: <%= Report.states['active'] %>
   languages: rajbanshi
   created_at: <%= 2.hours.ago %>
 
 event:
   reporter: andrew
   content: A new village library was opened
-  report_type: event
-  state: active
+  report_type: <%= Report.report_types['event'] %>
+  state: <%= Report.states['active'] %>
   languages: toto
   created_at: <%= 3.days.ago %>
 
 impact:
   reporter: andrew
   content: three new people in church
-  report_type: impact
-  state: active
+  report_type: <%= Report.report_types['impact'] %>
+  state: <%= Report.states['active'] %>
   languages: toto, rajbanshi
   created_at: <%= 10.hours.ago %>
