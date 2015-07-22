@@ -4,3 +4,19 @@ education:
   name: Education
   description: We want people to have access to education in the medium of their own language
   colour: light-blue
+
+literacy:
+  name: Literacy
+  description: We want people to be able to read and write in their own language
+  colour: yellow
+
+bible:
+  name: Bible translation
+  description: We want people to have access to the scriptures in their own language
+  colour: green
+
+health:
+  name: Health
+  description: We want people to have access to resource and information in their own language
+    that enables them to maintain good health
+  colour: pink

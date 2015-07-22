@@ -1,5 +1,7 @@
 class ReportsController < ApplicationController
 
+  helper ColoursHelper
+
   before_action :require_login
 
     # Let only permitted users do some things

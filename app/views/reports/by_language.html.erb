@@ -5,7 +5,7 @@
     <li>
       <div class="collapsible-header <%= colour_class(language.colour) %>"><%= language.name %></div>
       <div class="collapsible-body">
-        <%= render lang_reports %>
+        <%= render partial: "report", collection: lang_reports, locals: { languages: false, topics: true} %>
       </div>
     </li>
   <% end %>

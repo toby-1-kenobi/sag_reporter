@@ -2,6 +2,8 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+@import 'common';
+
 .report {
 	.card-content {
 		.reporter {
@@ -9,6 +11,16 @@
 		}
 		.report_type {
 			float: right;
+		}
+		.report-languages, .report-topics {
+			div {
+				@include box_sizing;
+				@include border-radius(4px);
+				display: inline-block;
+				padding: 5px;
+				float: left;
+				margin: 5px;
+			}
 		}
 	}
 }
