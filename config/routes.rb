@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     collection do
       get 'by_language'
       get 'by_topic'
+      get 'by_reporter'
     end
   end
 

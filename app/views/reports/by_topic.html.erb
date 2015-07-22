@@ -1,2 +1,18 @@
-<h1>Reports#by_topic</h1>
-<p>Find me in app/views/reports/by_topic.html.erb</p>
+<% provide(:title, 'Reports grouped by Topic') %>
+<h1>Reports Grouped by Topic</h1>
+<ul class="collapsible" data-collapsible="accordion">
+  <% @reports.group_by_collection(@topics, &:topics).each do |topic, top_reports| %>
+    <li>
+      <div class="collapsible-header <%= colour_class(topic.colour) %>"><%= topic.name %></div>
+      <div class="collapsible-body <%= colour_class(topic.colour) %>">
+        <% top_reports.each_with_index do |report, index| %>
+          <%= '<div class="row">'.html_safe if index % 3 == 0 %>
+            <div class="col s12 m6 l4">
+              <%= render partial: "report", object: report, locals: {languages: true, topics: false} %>
+            </div>
+          <%= '</div>'.html_safe if (index + 1) % 3 == 0 %>
+        <% end %>
+      </div>
+    </li>
+  <% end %>
+</ul>

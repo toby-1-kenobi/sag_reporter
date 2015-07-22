@@ -7,7 +7,7 @@
   	<% if languages %>
   	  <div class="report-languages">
   	  	<% report.languages.each do |language| %>
-  	  	  <div class="<%= colour_class(language.colour) %>">language.name</div>
+  	  	  <div class="<%= colour_class(language.colour) %>"><%= language.name %></div>
   	  	<% end %>
   	  </div>
   	<% end %>
