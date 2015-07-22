@@ -54,3 +54,12 @@ h1 {
     top: 0.17em;
   }
 }
+
+ul.collapsible {
+  li {
+    .collapsible-body {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+  }
+}
