@@ -60,26 +60,51 @@ class ReportsController < ApplicationController
   end
 
   def edit
+  	@report = Report.find(params[:id])
+  	@minority_languages = Language.where(lwc: false)
+  	@topics = Topic.all
   end
 
   def update
+  	@report = Report.find(params[:id])
+  	if @report.update_attributes(report_params)
+      if params['report']['languages']
+      	@report.languages.clear
+        params['report']['languages'].each do |lang_id, value|
+          @report.languages << Language.find_by_id(lang_id.to_i)
+        end
+      end
+      if params['report']['topics']
+      	@report.topics.clear
+        params['report']['topics'].each do |top_id, value|
+          @report.topics << Topic.find_by_id(top_id.to_i)
+        end
+      end
+      flash["success"] = "Report Updated!"
+      redirect_back_or @report
+    end
   end
 
   def index
+  	@reports = Report.all
+  	store_location
   end
 
   def by_language
   	@reports = Report.all
   	@languages = Language.all
+  	store_location
   end
 
   def by_topic
   	@reports = Report.all
   	@topics = Topic.all
+  	store_location
   end
 
   def by_reporter
   	@reports = Report.all
+  	store_location
   end
 
   def archive
