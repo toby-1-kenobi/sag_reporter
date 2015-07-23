@@ -39,6 +39,11 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
+      if params['speaks']
+        params['speaks'].each do |lang_id_arr|
+          @user.spoken_languages << Language.find_by_id(lang_id_arr.first.to_i)
+        end
+      end
       flash["success"] = "New User Created!"
       redirect_to @user
     else
