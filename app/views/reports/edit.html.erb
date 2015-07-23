@@ -10,6 +10,16 @@
         <% end %>
         <%= f.label :report_type, "Report Type" %>
       </div>
+      <div class="input-field col s6">
+        <% if current_user.can_archive_report? %>
+          <% Report.states.each do |key, value| %>
+            <p>
+              <%= f.radio_button(:state, key, checked: @report.state == key) %>
+              <%= f.label "#{:state}_#{key}", key.capitalize %>
+            </p>
+          <% end %>
+        <% end %>
+      </div>
     </div>
     <div class="row">
       <div class="input-field col s12">

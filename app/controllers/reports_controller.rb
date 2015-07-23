@@ -120,7 +120,11 @@ class ReportsController < ApplicationController
     private
 
     def report_params
-      permitted = params.require(:report).permit(:report_type, :content)
+      if current_user.can_archive_report?
+        permitted = params.require(:report).permit(:report_type, :content, :state)
+      else
+    	permitted = params.require(:report).permit(:report_type, :content)
+      end
     end
 
 end
