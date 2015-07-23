@@ -4,7 +4,7 @@
 
 @import 'common';
 
-.report {
+div.report {
 	.card-content {
 		.reporter {
 			text-align: right;
@@ -24,5 +24,13 @@
 		.report-topics {
 			text-align: right;
 		}
+	}
+}
+
+li.report {
+	.reporter-name, .report-date {
+		border-right: solid white 1px;
+		margin-right: 1em;
+		padding-right: 1em;
 	}
 }

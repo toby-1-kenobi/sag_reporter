@@ -86,7 +86,7 @@ class ReportsController < ApplicationController
   end
 
   def index
-  	@reports = Report.all
+  	@reports = Report.order(:created_at => :desc ).paginate(page: params[:page])
   	store_location
   end
 
