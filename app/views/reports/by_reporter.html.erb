@@ -7,7 +7,7 @@
       <div class="collapsible-body">
         <% rep_reports.in_groups_of(3, false) do |report_group| %>
           <div class="row">
-            <%= render partial: "report", collection: report_group, locals: {languages: true, topics: true, wrapper: "col s12 m6 l4"} %>
+            <%= render partial: "report", collection: report_group, locals: {time: true, languages: true, topics: true, wrapper: "col s12 m6 l4"} %>
           </div>
         <% end %>
       </div>

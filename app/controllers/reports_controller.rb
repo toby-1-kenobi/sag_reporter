@@ -13,8 +13,13 @@ class ReportsController < ApplicationController
     redirect_to root_path unless current_user.can_view_all_reports?
   end
 
+  before_action only: [:show] do
+  	# show shows single report only to reporter when report first created
+  	redirect_to root_path unless current_user?(Report.find(params[:id]).reporter)
+  end
+
   before_action only: [:edit, :update] do
-    redirect_to root_path unless current_user.can_edit_report?
+    redirect_to root_path unless current_user.can_edit_report? or current_user?(Report.find(params[:id]).reporter)
   end
 
   before_action only: [:archive, :unarchive] do
@@ -28,9 +33,30 @@ class ReportsController < ApplicationController
   end
 
   def create
+  	full_params = report_params.merge({reporter: current_user})
+  	@report = Report.new(full_params)
+    if @report.save
+      if params['report']['languages']
+        params['report']['languages'].each do |lang_id, value|
+          @report.languages << Language.find_by_id(lang_id.to_i)
+        end
+      end
+      if params['report']['topics']
+        params['report']['topics'].each do |top_id, value|
+          @report.topics << Topic.find_by_id(top_id.to_i)
+        end
+      end
+      flash["success"] = "New Report Submitted!"
+      redirect_to @report
+    else
+  	  @minority_languages = Language.where(lwc: false)
+  	  @topics = Topic.all
+      render 'new'
+    end
   end
 
   def show
+  	@report = Report.find(params[:id])
   end
 
   def edit
@@ -61,5 +87,11 @@ class ReportsController < ApplicationController
 
   def unarchive
   end
+
+    private
+
+    def report_params
+      permitted = params.require(:report).permit(:report_type, :content)
+    end
 
 end
