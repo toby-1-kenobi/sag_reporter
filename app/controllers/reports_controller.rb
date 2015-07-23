@@ -108,9 +108,13 @@ class ReportsController < ApplicationController
   end
 
   def archive
+  	@report = Report.find(params[:id]).archived!
+  	redirect_back_or @report
   end
 
   def unarchive
+  	@report = Report.find(params[:id]).active!
+  	redirect_back_or @report
   end
 
     private

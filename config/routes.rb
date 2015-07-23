@@ -11,6 +11,10 @@ Rails.application.routes.draw do
       get 'by_topic'
       get 'by_reporter'
     end
+    member do
+      patch 'archive'
+      patch 'unarchive'
+    end
   end
 
   get    'adduser' => 'users#new'

@@ -1,5 +1,13 @@
 <% provide(:title, 'Reports grouped by Reporter') %>
 <h1>Reports grouped by Reporter</h1>
+  <div class="switch">
+    <label>
+      Hide archived
+      <input type="checkbox" id="show_archived_reports">
+      <span class="lever"></span>
+      Show archived
+    </label>
+  </div>
 <ul class="collapsible" data-collapsible="accordion">
   <% @reports.group_by(&:reporter).each do |reporter, rep_reports| %>
     <li>
