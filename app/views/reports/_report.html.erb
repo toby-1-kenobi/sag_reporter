@@ -1,7 +1,7 @@
 <% if wrapper %>
   <div class="report-wrapper <%= report.state %> <%= wrapper %>">
 <% end %>
-<div class="card report <%= report.state %> <%= "hide" if report.archived? %> <%= report_colour[report.report_type] %>" id="report-<%= report.id %>">
+<div class="card report <%= report.state %> <%= "hide" if report.archived? %> <%= report_colour[report.report_type] %>" id="report-<%= report.id %>" data-date="<%= report.created_at %>">
   <div class="card-content">
     <% if time %>
   	  <div><%= time_ago_in_words(report.created_at) %> ago</div>

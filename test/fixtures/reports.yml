@@ -2,24 +2,35 @@
 
 hope:
   reporter: andrew
-  content: The pastor want to expand women's ministry
+  content: The pastor wants to expand women's ministry
   report_type: <%= Report.report_types['hope'] %>
   state: <%= Report.states['active'] %>
-  languages: rajbanshi
-  created_at: <%= 2.hours.ago %>
+  languages: toto
+  created_at: <%= 2.days.ago %>
 
 event:
-  reporter: andrew
+  reporter: emma
   content: A new village library was opened
   report_type: <%= Report.report_types['event'] %>
   state: <%= Report.states['active'] %>
   languages: toto
-  created_at: <%= 3.days.ago %>
+  topics: education
+  created_at: <%= 2.weeks.ago %>
 
 impact:
-  reporter: andrew
-  content: three new people in church
+  reporter: richard
+  content: three new people in church due to Bible storytelling
   report_type: <%= Report.report_types['impact'] %>
   state: <%= Report.states['active'] %>
-  languages: toto, rajbanshi
-  created_at: <%= 10.hours.ago %>
+  languages: toto
+  topics: bible
+  created_at: <%= 2.months.ago %>
+
+old:
+  reporter: andrew
+  content: old report
+  report_type: <%= Report.report_types['impact'] %>
+  state: <%= Report.states['active'] %>
+  languages: toto
+  topics: bible
+  created_at: <%= 2.years.ago %>
