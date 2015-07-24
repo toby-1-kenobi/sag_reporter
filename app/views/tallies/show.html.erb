@@ -6,14 +6,19 @@
 
 <div class=" coloured <%= colour_class(@tally.topic.colour) %> right"><%= @tally.topic.name %></div>
 
-<h2>Tally Totals</h2>
 <table>
   <thead>
     <tr><td>Language</td><td>Total</tr>
   </thead>
   <tbody>
-    <% @tally.languages.each do |language| %>
-    <tr><td><%= language.name %></td><td><%= @updates_by_language[language].map{ |u| u.amount.to_i }.inject(0, :+) %></td></tr>
+    <% 
+    grand_total = 0
+    @tally.languages.each do |language|
+    	lang_total = @updates_by_language[language].map{ |u| u.amount.to_i }.inject(0, :+)
+    	grand_total = grand_total + lang_total
+    %>
+    <tr class="<%= colour_class(language.colour) %>"><td><%= language.name %></td><td><%= @updates_by_language[language].map{ |u| u.amount.to_i }.inject(0, :+) %></td></tr>
   <% end %>
+  <tr><td><strong>Grand Total</strong></td><td><strong><%= grand_total %></strong></td>
   </tbody>
 </table>
