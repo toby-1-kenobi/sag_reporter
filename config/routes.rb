@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'tally_updates/index'
+
   resources :tallies
   root 'static_pages#home'
 

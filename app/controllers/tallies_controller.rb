@@ -22,6 +22,7 @@ class TalliesController < ApplicationController
   end
 
   def show
+    @updates_by_language = @tally.tally_updates.group_by(&:language)
   end
 
   def new

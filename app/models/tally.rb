@@ -5,5 +5,6 @@ class Tally < ActiveRecord::Base
 	belongs_to :topic
 	has_many :language_tallies, class_name: 'LanguagesTally'
 	has_many :languages, through: :language_tallies
+	has_many :tally_updates, through: :language_tallies
 	
 end

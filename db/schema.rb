@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150724110836) do
+ActiveRecord::Schema.define(version: 20150724160502) do
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -97,6 +97,15 @@ ActiveRecord::Schema.define(version: 20150724110836) do
 
   add_index "tallies", ["state"], name: "index_tallies_on_state"
   add_index "tallies", ["topic_id"], name: "index_tallies_on_topic_id"
+
+  create_table "tally_updates", force: :cascade do |t|
+    t.integer  "languages_tally_id"
+    t.integer  "amount",             default: 0, null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "tally_updates", ["languages_tally_id"], name: "index_tally_updates_on_languages_tally_id"
 
   create_table "topics", force: :cascade do |t|
     t.string   "name",                          null: false
