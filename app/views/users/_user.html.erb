@@ -1,4 +1,4 @@
-    <li class="collection-item">
+    <li class="collection-item" id="user-<%= user.id %>">
       <i class="material-icons">person</i>
       <%= link_to user.name, user %>
       <% if current_user.can_delete_user? && !current_user?(user) %>

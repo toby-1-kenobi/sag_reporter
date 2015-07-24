@@ -5,6 +5,17 @@ Rails.application.routes.draw do
   resources :users
   resources :languages
   resources :topics
+  resources :reports do
+    collection do
+      get 'by_language'
+      get 'by_topic'
+      get 'by_reporter'
+    end
+    member do
+      patch 'archive'
+      patch 'unarchive'
+    end
+  end
 
   get    'adduser' => 'users#new'
 

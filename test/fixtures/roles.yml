@@ -5,18 +5,22 @@ admin:
   permissions: create_user, edit_user, view_all_users,
     delete_user, view_roles, edit_role, create_role,
     view_all_languages, create_language, edit_language,
-    view_all_topics, create_topic, edit_topic
+    view_all_topics, create_topic, edit_topic,
+    view_all_reports, create_report, edit_report, archive_report
 
 evaluator:
   name: evaluator
-  permissions: view_all_languages, edit_language, view_all_topics
+  permissions: view_all_languages, edit_language, view_all_topics,
+    view_all_reports, create_report, edit_report, archive_report
 
 reporter:
   name: reporter
+  permissions: create_report
 
 pleb:
   name: pleb
 
 view:
   name: view but not edit
-  permissions: view_all_users, view_roles, view_all_languages, view_all_topics
+  permissions: view_all_users, view_roles,
+    view_all_languages, view_all_topics, view_all_reports

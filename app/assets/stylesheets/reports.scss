@@ -1,0 +1,36 @@
+// Place all the styles related to the reports controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import 'common';
+
+div.report {
+	.card-content {
+		.reporter {
+			text-align: right;
+		}
+		.report_type {
+			float: right;
+		}
+		.report-languages, .report-topics {
+			div {
+				@include box_sizing;
+				@include border-radius(4px);
+				display: inline-block;
+				padding: 5px;
+				margin: 5px;
+			}
+		}
+		.report-topics {
+			text-align: right;
+		}
+	}
+}
+
+li.report {
+	.reporter-name, .report-date {
+		border-right: solid white 1px;
+		margin-right: 1em;
+		padding-right: 1em;
+	}
+}

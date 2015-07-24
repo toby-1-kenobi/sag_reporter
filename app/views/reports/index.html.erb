@@ -1,0 +1,12 @@
+<% provide(:title, 'All reports') %>
+<h1>All reports</h1>
+  <%= render partial: "show_archived_switch" %>
+
+<%= will_paginate %>
+
+<ul class="reports collection">
+  <%= render partial: "report_listing", collection: @reports %>
+</ul>
+
+<%= will_paginate %>
+

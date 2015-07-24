@@ -26,4 +26,8 @@ module ColoursHelper
   	]
   end
 
+  def colour_class(colour_str)
+    "#{colour_str} #{colour_str.include?('darken') || colour_str == 'black' ? 'white-text' : 'black-text'}"
+  end
+
 end

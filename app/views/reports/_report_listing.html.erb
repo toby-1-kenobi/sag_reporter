@@ -1,0 +1,6 @@
+    <li class="collection-item report <%= " archived hide" if report_listing.archived? %> <%= report_colour[report_listing.report_type] %>" id="report-<%= report_listing.id %>">
+      <span class="report-date"><%= time_ago_in_words report_listing.created_at %> ago</span>
+      <span class="reporter-name"><%= report_listing.reporter.name %></span>
+      <% content = report_listing.content.length > 52 ? report_listing.content[0..50] << '...' : report_listing.content %>
+      <span class="report-content"><%= content %></span>
+    </li>

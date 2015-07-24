@@ -35,11 +35,7 @@
     </div>
     <div class="row">
       <div class="input-field col s6">
-        <%= f.select(:mother_tongue_id) do %>
-          <% @languages.each do |lang| %>
-            <%= content_tag(:option, lang.name, value: lang.id) %>
-          <% end %>
-        <% end %>
+        <%= f.select(:mother_tongue_id, @languages.collect{|l| [l.name, l.id]}) %>
         <%= f.label :mother_tongue_id, "Select mother tongue" %>
       </div>
       <div class="input-field col s6">
@@ -57,11 +53,7 @@
     <% if !current_user?(@user) %>
       <div class="row">
         <div class="input-field col s6">
-          <%= f.select(:role_id) do %>
-            <% @roles.each do |role| %>
-              <%= content_tag(:option, role.name, {value: role.id, selected: ("selected" if @user.role_id == role.id)}) %>
-            <% end %>
-          <% end %>
+          <%= f.select(:role_id, @roles.collect{|r| [r.name, r.id]}) %>
           <%= f.label :role_id, "Select role" %>
         </div>
       </div>

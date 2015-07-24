@@ -1,0 +1,48 @@
+<% if wrapper %>
+  <div class="report-wrapper <%= report.state %> <%= wrapper %>">
+<% end %>
+<div class="card report <%= report.state %> <%= "hide" if report.archived? %> <%= report_colour[report.report_type] %>" id="report-<%= report.id %>" data-date="<%= report.created_at %>">
+  <div class="card-content">
+    <% if time %>
+  	  <div><%= time_ago_in_words(report.created_at) %> ago</div>
+  	<% end %>
+  	<div class="report_type"><%= report_type_text[report.report_type] %></div>
+  	<p><%= report.content %></p>
+  	<div class="reporter"><%= report.reporter.name %></div>
+  	<% if languages %>
+  	  <div class="report-languages">
+  	  	<% report.languages.each do |language| %>
+  	  	  <div class="<%= colour_class(language.colour) %>"><%= language.name %></div>
+  	  	<% end %>
+  	  </div>
+  	<% end %>
+  	<% if topics %>
+  	  <div class="report-topics">
+  	  	<% report.topics.each do |topic| %>
+  	  	  <div class="<%= colour_class(topic.colour) %>"><%= topic.name %></div>
+  	  	<% end %>
+  	  </div>
+  	<% end %>
+  </div>
+  <div class="card-action">
+  <% if current_user.can_archive_report? %>
+    <% if report.archived? %>
+  	  <%= link_to unarchive_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Un-Archive", method: :patch do %>
+  	    <i class="material-icons">publish</i>
+      <% end %>
+    <% else %>
+  	  <%= link_to archive_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Archive", method: :patch do %>
+  	    <i class="material-icons">archive</i>
+      <% end %>
+    <% end %>
+  <% end %>
+  <% if current_user.can_edit_report? %>
+  	  <%= link_to edit_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
+  	    <i class="material-icons">create</i>
+      <% end %>
+  <% end %>
+  </div>
+</div>
+<% if wrapper %>
+  </div>
+<% end %>
