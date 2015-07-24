@@ -1,6 +1,5 @@
-<p id="notice"><%= notice %></p>
-
-<h1>Listing Tallies</h1>
+<% provide(:title, 'All tallies') %>
+<h1>All Tallies</h1>
 
 <table>
   <thead>
@@ -18,12 +17,11 @@
         <td><%= tally.description %></td>
         <td><%= link_to 'Show', tally %></td>
         <td><%= link_to 'Edit', edit_tally_path(tally) %></td>
-        <td><%= link_to 'Destroy', tally, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<br>
+<br />
 
 <%= link_to 'New Tally', new_tally_path %>

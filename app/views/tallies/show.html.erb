@@ -1,4 +1,4 @@
-<p id="notice"><%= notice %></p>
+<% provide(:title, "Tally: #{@tally.name}") %>
 
 <p>
   <strong>Name:</strong>
@@ -10,5 +10,16 @@
   <%= @tally.description %>
 </p>
 
+<p>
+  <strong>Topic:</strong>
+  <%= @tally.topic.name %>
+</p>
+
+<p>
+  <strong>Languages:</strong>
+  <% @tally.languages.each do |language| %>
+  <%= language.name %><br />
+  <% end %>
+</p>
 <%= link_to 'Edit', edit_tally_path(@tally) %> |
-<%= link_to 'Back', tallies_path %>
+<%= link_to 'All Tallies', tallies_path %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150724063106) do
+ActiveRecord::Schema.define(version: 20150724110836) do
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -28,6 +28,16 @@ ActiveRecord::Schema.define(version: 20150724063106) do
   end
 
   add_index "languages_reports", ["report_id", "language_id"], name: "index_languages_reports_on_report_id_and_language_id", unique: true
+
+  create_table "languages_tallies", force: :cascade do |t|
+    t.integer  "language_id"
+    t.integer  "tally_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "languages_tallies", ["language_id"], name: "index_languages_tallies_on_language_id"
+  add_index "languages_tallies", ["tally_id"], name: "index_languages_tallies_on_tally_id"
 
   create_table "languages_users", id: false, force: :cascade do |t|
     t.integer "user_id"

@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  language_id: 
+  tally_id: 
+
+two:
+  language_id: 
+  tally_id: 

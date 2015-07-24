@@ -1,9 +1,16 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-  description: MyText
+books:
+  name: Village Libraries Books
+  description: Number of unique NBASE books available in village libraries.
+  topic: literacy
 
-two:
-  name: MyString
-  description: MyText
+dictionaries:
+  name: Dictionary Entries
+  description: Number of entries in NBASE mother tongue dictionaries.
+  topic: education
+
+storytelling:
+  name: Bible Storytelling
+  description: Number of not-yet-Christians hearing crafted Bible stories.
+  topic: Bible

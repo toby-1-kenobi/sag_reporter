@@ -1,5 +1,7 @@
+<% provide(:title, 'Create a Tally') %>
 <h1>New Tally</h1>
 
-<%= render 'form' %>
+<div class="row">
+  <%= render partial: 'form', locals: {form_action: 'new'} %>
+</div>
 
-<%= link_to 'Back', tallies_path %>

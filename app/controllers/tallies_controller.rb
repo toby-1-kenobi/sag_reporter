@@ -1,63 +1,88 @@
 class TalliesController < ApplicationController
-  before_action :set_tally, only: [:show, :edit, :update, :destroy]
 
-  # GET /tallies
-  # GET /tallies.json
+  before_action :require_login
+
+  # Let only permitted users do some things
+  before_action only: [:new, :create] do
+    redirect_to root_path unless current_user.can_create_tally?
+  end
+  
+  before_action only: [:index, :show] do
+    redirect_to root_path unless current_user.can_view_all_tallies?
+  end
+  
+  before_action only: [:edit, :update] do
+    redirect_to root_path unless current_user.can_edit_tally?
+  end
+
+  before_action :set_tally, only: [:show, :edit, :update]
+
   def index
     @tallies = Tally.all
   end
 
-  # GET /tallies/1
-  # GET /tallies/1.json
   def show
   end
 
-  # GET /tallies/new
   def new
     @tally = Tally.new
+    @minority_languages = Language.where(lwc: false)
+    @topics = Topic.all
   end
 
-  # GET /tallies/1/edit
   def edit
+    @minority_languages = Language.where(lwc: false)
+    @topics = Topic.all
   end
 
-  # POST /tallies
-  # POST /tallies.json
   def create
     @tally = Tally.new(tally_params)
 
     respond_to do |format|
       if @tally.save
-        format.html { redirect_to @tally, notice: 'Tally was successfully created.' }
+        if params['tally']['languages']
+          params['tally']['languages'].each do |lang_id, value|
+            @tally.languages << Language.find_by_id(lang_id.to_i)
+          end
+        end
+        format.html do
+          flash["success"] = "Tally #{@tally.name} created!"
+          redirect_to @tally
+        end
         format.json { render :show, status: :created, location: @tally }
       else
-        format.html { render :new }
+        format.html do
+          @minority_languages = Language.where(lwc: false)
+          @topics = Topic.all
+          render :new
+        end
         format.json { render json: @tally.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # PATCH/PUT /tallies/1
-  # PATCH/PUT /tallies/1.json
   def update
     respond_to do |format|
       if @tally.update(tally_params)
-        format.html { redirect_to @tally, notice: 'Tally was successfully updated.' }
+        @tally.languages.clear
+        if params['tally']['languages']
+          params['tally']['languages'].each do |lang_id, value|
+            @tally.languages << Language.find_by_id(lang_id.to_i)
+          end
+        end
+        format.html do
+          flash["success"] = "Tally #{@tally.name} Updated!"
+          redirect_to @tally
+        end
         format.json { render :show, status: :ok, location: @tally }
       else
-        format.html { render :edit }
+        format.html do
+          @minority_languages = Language.where(lwc: false)
+          @topics = Topic.all
+          render :edit
+        end
         format.json { render json: @tally.errors, status: :unprocessable_entity }
       end
-    end
-  end
-
-  # DELETE /tallies/1
-  # DELETE /tallies/1.json
-  def destroy
-    @tally.destroy
-    respond_to do |format|
-      format.html { redirect_to tallies_url, notice: 'Tally was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 
@@ -69,6 +94,6 @@ class TalliesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def tally_params
-      params.require(:tally).permit(:name, :description)
+      params.require(:tally).permit(:name, :description, :topic_id)
     end
 end

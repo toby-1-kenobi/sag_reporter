@@ -1,6 +1,6 @@
-<h1>Editing Tally</h1>
+<% provide(:title, 'Edit a Tally') %>
+<h1>Edit Tally</h1>
 
-<%= render 'form' %>
-
-<%= link_to 'Show', @tally %> |
-<%= link_to 'Back', tallies_path %>
+<div class="row">
+  <%= render partial: 'form', locals: {form_action: 'edit'} %>
+</div>

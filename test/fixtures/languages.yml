@@ -16,7 +16,7 @@ bengali:
   name: Bengali
   description: Also known as Bangla. State language of West Bengal
   lwc: true
-  colour: "deep orange"
+  colour: "deep-orange"
 
 toto:
   name: Toto
@@ -31,3 +31,21 @@ rajbanshi:
   description: Translation of gospels and acts undergoing testing in 2015.
   lwc: false
   colour: 'green lighten-1'
+
+bodo:
+  name: Bodo
+  description: Bodo language description
+  lwc: false
+  colour: 'pink lighten-1'
+
+sadri:
+  name: Sadri
+  description: Sadri language description
+  lwc: false
+  colour: 'brown lighten-1'
+
+santali:
+  name: Santali
+  description: Santali language description
+  lwc: false
+  colour: 'yellow lighten-1'
