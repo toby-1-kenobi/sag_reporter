@@ -67,3 +67,23 @@ edit_report:
 archive_report:
   name: archive_report
   description: Archive or make active any report
+
+view_all_tallies:
+  name: view_all_tallies
+  description: View all tallies
+
+create_tally:
+  name: create_tally
+  description: Make a new tally
+
+edit_tally:
+  name: edit_tally
+  description: Edit any tally
+
+archive_tally:
+  name: archive_tally
+  description: Archive or make active any tally
+
+increase_tally:
+  name: increase_tally
+  description: Increase a tally

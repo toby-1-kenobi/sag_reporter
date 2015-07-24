@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150722100531) do
+ActiveRecord::Schema.define(version: 20150724063106) do
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -75,6 +75,18 @@ ActiveRecord::Schema.define(version: 20150722100531) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "tallies", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "state",       default: 1, null: false
+    t.integer  "topic_id"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "tallies", ["state"], name: "index_tallies_on_state"
+  add_index "tallies", ["topic_id"], name: "index_tallies_on_topic_id"
 
   create_table "topics", force: :cascade do |t|
     t.string   "name",                          null: false

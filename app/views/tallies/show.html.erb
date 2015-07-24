@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @tally.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @tally.description %>
+</p>
+
+<%= link_to 'Edit', edit_tally_path(@tally) %> |
+<%= link_to 'Back', tallies_path %>

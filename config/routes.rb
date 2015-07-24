@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :tallies
   root 'static_pages#home'
 
   resources :users
