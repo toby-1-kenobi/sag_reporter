@@ -38,6 +38,9 @@ gem 'groupdate'
 # create charts
 gem 'chartkick'
 
+# Use PostgreSQL as the database for Active Record
+gem 'pg'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
@@ -45,9 +48,6 @@ gem 'chartkick'
 # gem 'capistrano-rails', group: :development
 
 group :development, :test do
-
-  # Use sqlite3 as the database for Active Record
-  gem 'sqlite3'
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
@@ -68,9 +68,6 @@ group :test do
 end
 
 group :production do
-
-  # PosgreSQL for Heroku production environment
-  gem 'pg'
 
   # used by Heroku to serve static assets
   gem 'rails_12factor'

@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20150724160502) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "languages", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
@@ -27,7 +30,7 @@ ActiveRecord::Schema.define(version: 20150724160502) do
     t.integer "language_id"
   end
 
-  add_index "languages_reports", ["report_id", "language_id"], name: "index_languages_reports_on_report_id_and_language_id", unique: true
+  add_index "languages_reports", ["report_id", "language_id"], name: "index_languages_reports_on_report_id_and_language_id", unique: true, using: :btree
 
   create_table "languages_tallies", force: :cascade do |t|
     t.integer  "language_id"
@@ -36,15 +39,15 @@ ActiveRecord::Schema.define(version: 20150724160502) do
     t.datetime "updated_at",  null: false
   end
 
-  add_index "languages_tallies", ["language_id"], name: "index_languages_tallies_on_language_id"
-  add_index "languages_tallies", ["tally_id"], name: "index_languages_tallies_on_tally_id"
+  add_index "languages_tallies", ["language_id"], name: "index_languages_tallies_on_language_id", using: :btree
+  add_index "languages_tallies", ["tally_id"], name: "index_languages_tallies_on_tally_id", using: :btree
 
   create_table "languages_users", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "language_id"
   end
 
-  add_index "languages_users", ["user_id", "language_id"], name: "index_languages_users_on_user_id_and_language_id", unique: true
+  add_index "languages_users", ["user_id", "language_id"], name: "index_languages_users_on_user_id_and_language_id", unique: true, using: :btree
 
   create_table "permissions", force: :cascade do |t|
     t.string   "name"
@@ -53,7 +56,7 @@ ActiveRecord::Schema.define(version: 20150724160502) do
     t.datetime "updated_at",  null: false
   end
 
-  add_index "permissions", ["name"], name: "index_permissions_on_name", unique: true
+  add_index "permissions", ["name"], name: "index_permissions_on_name", unique: true, using: :btree
 
   create_table "permissions_roles", id: false, force: :cascade do |t|
     t.integer "role_id"
@@ -69,16 +72,16 @@ ActiveRecord::Schema.define(version: 20150724160502) do
     t.datetime "updated_at",              null: false
   end
 
-  add_index "reports", ["report_type"], name: "index_reports_on_report_type"
-  add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id"
-  add_index "reports", ["state"], name: "index_reports_on_state"
+  add_index "reports", ["report_type"], name: "index_reports_on_report_type", using: :btree
+  add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id", using: :btree
+  add_index "reports", ["state"], name: "index_reports_on_state", using: :btree
 
   create_table "reports_topics", id: false, force: :cascade do |t|
     t.integer "report_id"
     t.integer "topic_id"
   end
 
-  add_index "reports_topics", ["report_id", "topic_id"], name: "index_reports_topics_on_report_id_and_topic_id", unique: true
+  add_index "reports_topics", ["report_id", "topic_id"], name: "index_reports_topics_on_report_id_and_topic_id", unique: true, using: :btree
 
   create_table "roles", force: :cascade do |t|
     t.string   "name"
@@ -95,8 +98,8 @@ ActiveRecord::Schema.define(version: 20150724160502) do
     t.datetime "updated_at",              null: false
   end
 
-  add_index "tallies", ["state"], name: "index_tallies_on_state"
-  add_index "tallies", ["topic_id"], name: "index_tallies_on_topic_id"
+  add_index "tallies", ["state"], name: "index_tallies_on_state", using: :btree
+  add_index "tallies", ["topic_id"], name: "index_tallies_on_topic_id", using: :btree
 
   create_table "tally_updates", force: :cascade do |t|
     t.integer  "languages_tally_id"
@@ -105,7 +108,7 @@ ActiveRecord::Schema.define(version: 20150724160502) do
     t.datetime "updated_at",                     null: false
   end
 
-  add_index "tally_updates", ["languages_tally_id"], name: "index_tally_updates_on_languages_tally_id"
+  add_index "tally_updates", ["languages_tally_id"], name: "index_tally_updates_on_languages_tally_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
     t.string   "name",                          null: false
@@ -126,8 +129,8 @@ ActiveRecord::Schema.define(version: 20150724160502) do
     t.integer  "mother_tongue_id", null: false
   end
 
-  add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id"
-  add_index "users", ["phone"], name: "index_users_on_phone", unique: true
-  add_index "users", ["role_id"], name: "index_users_on_role_id"
+  add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
+  add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
+  add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
 end

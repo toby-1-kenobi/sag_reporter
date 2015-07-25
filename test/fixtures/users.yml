@@ -33,16 +33,3 @@ vera:
   password_digest: <%= User.digest('password') %>
   mother_tongue: english
   role: view
-
-<% 30.times do |n| %>
-user_<%= n %>:
-  name:  <%= "User #{n}" %>
-  <% if n < 10 %>
-  phone: <%= "000000000#{n}" %>
-  <% else %>
-  phone: <%= "00000000#{n}" %>
-  <% end %>
-  password_digest: <%= User.digest('password') %>
-  mother_tongue: english
-  role: reporter
-<% end %>
