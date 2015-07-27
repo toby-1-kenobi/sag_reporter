@@ -4,7 +4,9 @@
   <%= @tally.description %>
 </p>
 
+<% if @tally.topic %>
 <div class=" coloured <%= colour_class(@tally.topic.colour) %> right"><%= @tally.topic.name %></div>
+<% end %>
 
 <table>
   <thead>
