@@ -1,7 +1,65 @@
 <% provide(:title, "Home") %>
 <h1><i class="material-icons large">home</i> home</h1>
+
 <div class="collection">
-  <a href="#" class="collection-item waves-effect"><i class="material-icons">create</i> Make report</a>
+
+  <% if current_user.can_create_report? %>
+    <%= link_to new_report_path, class: "collection-item waves-effect" do %>
+      <i class="material-icons">create</i>
+      Make report
+    <% end %>
+  <% end %>
+
+  <% if current_user.can_view_all_tallies? %>
+    <%= link_to tallies_path, class: "collection-item waves-effect" do %>
+      <i class="material-icons">assessment</i>
+      View tallies
+    <% end %>
+  <% end %>
+
+  <a href="#" class="collection-item waves-effect"><i class="material-icons">face</i> View my people</a>
+
   <a href="#" class="collection-item waves-effect"><i class="material-icons">assignment</i> View my goals</a>
+
   <a href="#" class="collection-item waves-effect"><i class="material-icons">message</i> View my messages</a>
+
+  <% if current_user.can_view_all_reports? %>
+    <%= link_to reports_path, class: "collection-item waves-effect" do %>
+      <i class="material-icons">dashboard</i>
+      View all reports
+    <% end %>
+  <% end %>
+
+  <% if current_user.can_view_all_users? %>
+    <%= link_to users_path, class: "collection-item waves-effect" do %>
+      <i class="material-icons">people</i>
+      View all users
+    <% end %>
+  <% end %>
+
+
+  <% if current_user.can_view_roles? %>
+    <%= link_to roles_path, class: "collection-item waves-effect" do %>
+      <i class="material-icons">people_outline</i>
+      View roles and permissions
+    <% end %>
+  <% end %>
+
+
+  <% if current_user.can_view_all_languages? %>
+    <%= link_to languages_path, class: "collection-item waves-effect" do %>
+      <i class="material-icons">language</i>
+      View all languages
+    <% end %>
+  <% end %>
+
+
+  <% if current_user.can_view_all_topics? %>
+    <%= link_to topics_path, class: "collection-item waves-effect" do %>
+      <i class="material-icons">local_offer</i>
+      View all topics
+    <% end %>
+  <% end %>
+
+
 </div>
