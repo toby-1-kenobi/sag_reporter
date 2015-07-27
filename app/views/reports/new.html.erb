@@ -1,5 +1,5 @@
 <% provide(:title, 'Make Report') %>
-<h1>Make a Report</h1>
+<h1><i class="material-icons large">create</i> Make a Report</h1>
 <div class="row">
   <%= form_for(@report, html: {class: "col s12"}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
@@ -15,6 +15,7 @@
     </div>
     <div class="row">
       <div class="input-field col s12">
+        <i class="material-icons prefix">create</i>
         <%= f.text_area :content, class: "materialize-textarea" %>
         <%= f.label :content, "Type your report here." %>
       </div>
@@ -24,7 +25,7 @@
       <div class="file-field input-field col s12">
         <input class="file-path validate" type="text"/>
         <div class="btn-flat">
-          <i class="material-icons right">insert_photo</i>
+          <i class="material-icons left">insert_photo</i>
           <span>Include Photo</span>
           <input type="file" />
         </div>
@@ -32,7 +33,9 @@
     </div>
     <div class="row">
       <div class="input-field col s6">
-        <a class='dropdown-button btn-flat' href='#' data-activates='languages_dropdown' data-hover="true">Relates to languages...</a>
+        <a class='dropdown-button btn-flat' href='#' data-activates='languages_dropdown' data-hover="true">
+        <i class="material-icons left">language</i>
+        Relates to languages...</a>
         <ul id='languages_dropdown' class='dropdown-content'>
           <% @minority_languages.each do |lang| %>
             <li>
@@ -43,7 +46,9 @@
         </ul>
       </div>
       <div class="input-field col s6">
-        <a class='dropdown-button btn-flat' href='#' data-activates='topics_dropdown' data-hover="true">Relates to topics...</a>
+        <a class='dropdown-button btn-flat' href='#' data-activates='topics_dropdown' data-hover="true">
+        <i class="material-icons">local_offer</i>
+        Relates to topics...</a>
         <ul id='topics_dropdown' class='dropdown-content'>
           <% @topics.each do |topic| %>
             <li>
