@@ -23,6 +23,7 @@ class TalliesController < ApplicationController
 
   def show
     @updates_by_language = @tally.tally_updates.group_by(&:language)
+    @graph_data = graph_data
   end
 
   def new
@@ -96,5 +97,14 @@ class TalliesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def tally_params
       params.require(:tally).permit(:name, :description, :topic_id)
+    end
+
+    # Collect data for graphs
+    def graph_data
+      data = Hash.new
+      Language.where(lwc: false).each do |language|
+        data[language.name] = @tally.tally_updates.includes(:language).where("languages_tallies.language_id" => language.id)
+      end
+      return data
     end
 end
