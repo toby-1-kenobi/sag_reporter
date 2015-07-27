@@ -1,7 +1,7 @@
 <% provide(:title, "Home") %>
 <h1><i class="material-icons large">home</i> home</h1>
 
-<div class="collection">
+<div class="collection" id="home-menu">
 
   <% if current_user.can_create_report? %>
     <%= link_to new_report_path, class: "collection-item waves-effect" do %>
