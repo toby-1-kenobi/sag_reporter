@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150724160502) do
+ActiveRecord::Schema.define(version: 20150727095209) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -106,9 +106,11 @@ ActiveRecord::Schema.define(version: 20150724160502) do
     t.integer  "amount",             default: 0, null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.integer  "user_id"
   end
 
   add_index "tally_updates", ["languages_tally_id"], name: "index_tally_updates_on_languages_tally_id", using: :btree
+  add_index "tally_updates", ["user_id"], name: "index_tally_updates_on_user_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
     t.string   "name",                          null: false
@@ -133,4 +135,5 @@ ActiveRecord::Schema.define(version: 20150724160502) do
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
+  add_foreign_key "tally_updates", "users"
 end

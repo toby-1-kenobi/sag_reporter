@@ -1,13 +1,8 @@
 Rails.application.routes.draw do
-
-  get 'tally_updates/index'
-
-  resources :tallies
+  
   root 'static_pages#home'
 
-  resources :users
   resources :languages
-  resources :topics
   resources :reports do
     collection do
       get 'by_language'
@@ -19,6 +14,9 @@ Rails.application.routes.draw do
       patch 'unarchive'
     end
   end
+  resources :tallies
+  resources :topics
+  resources :users
 
   get    'adduser' => 'users#new'
 
@@ -29,6 +27,9 @@ Rails.application.routes.draw do
   get    'roles'   => 'roles#index'
   patch  'roles'   => 'roles#update'
   post   'roles'   => 'roles#create'
+
+  get  'tally_updates' => 'tally_updates#index'
+  post 'tally_updates' => 'tally_updates#create'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

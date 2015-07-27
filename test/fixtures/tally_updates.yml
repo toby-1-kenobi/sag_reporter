@@ -3,6 +3,7 @@
 tallies = [:books, :dictionaries, :storytelling]
 ranges = {books: (1..5), dictionaries: (1..80), storytelling: (1..20)}
 languages = [:toto, :rajbanshi, :bodo, :sadri, :santali]
+users = [:richard, :emma, :andrew]
 %>
 
 <% (1..150).each do |index| %>
@@ -10,5 +11,6 @@ languages = [:toto, :rajbanshi, :bodo, :sadri, :santali]
 update-<%= index %>:
   languages_tally: <%= "#{languages.sample}-#{tally}" %>
   amount: <%= rand(ranges[tally]) %>
+  user: <%= users.sample %>
   created_at: <%= rand(1.year).seconds.ago %>
 <% end %>

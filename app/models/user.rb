@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :spoken_languages, class_name: 'Language'
+  has_many :tally_updates
 
   attr_accessor :remember_token
 
