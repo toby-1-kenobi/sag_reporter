@@ -34,3 +34,22 @@ old:
   languages: toto
   topics: bible
   created_at: <%= 2.years.ago %>
+
+<%
+users = [:richard, :emma, :andrew]
+report_types = [:hope, :event, :impact]
+states = ["active", "active", "active", "active", "active", "active", "active", "archived"]
+languages = [:toto, :rajbanshi, :bodo, :sadri, :santali]
+topics = [:education, :literacy, :bible, :health]
+%>
+<% (1..80).each do |index| %>
+report-<%= index %>:
+  reporter: <%= users.sample %>
+  content: <%= Faker::Lorem.paragraph %>
+  report_type: <%= Report.report_types[report_types.sample] %>
+  state: <%= Report.states[states.sample] %>
+  languages: <%= languages.sample %>
+  topics: <%= topics.sample %>
+  created_at: <%= rand(13.months).seconds.ago %>
+<% end %>
+

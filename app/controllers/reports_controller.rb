@@ -86,24 +86,24 @@ class ReportsController < ApplicationController
   end
 
   def index
-  	@reports = Report.order(:created_at => :desc ).paginate(page: params[:page])
+  	@reports = Report.order(:created_at => :desc).paginate(page: params[:page])
   	store_location
   end
 
   def by_language
-  	@reports = Report.all
+  	@reports = Report.order(:created_at => :desc)
   	@languages = Language.all
   	store_location
   end
 
   def by_topic
-  	@reports = Report.all
+  	@reports = Report.all.order(:created_at => :desc)
   	@topics = Topic.all
   	store_location
   end
 
   def by_reporter
-  	@reports = Report.all
+  	@reports = Report.all.order(:created_at => :desc)
   	store_location
   end
 
