@@ -1,6 +1,13 @@
 <% provide(:title, 'All reports') %>
 <h1>All reports</h1>
-  <%= render partial: "show_archived_switch" %>
+<div class="row">
+  <div class="col s6">
+    <%= render partial: "show_archived_switch" %>
+  </div>
+  <div class="col s6">
+    <%= render partial: "selector" %>
+  </div>
+</div>
 
 <%= will_paginate %>
 

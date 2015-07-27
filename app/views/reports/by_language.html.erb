@@ -1,6 +1,11 @@
 <% provide(:title, 'Reports grouped by Language') %>
 <h1>Reports grouped by Language</h1>
 <div class="row">
+  <div class="col s6 offset-s6">
+    <%= render partial: "selector" %>
+  </div>
+</div>
+<div class="row">
   <div class="col s6">
     <%= render partial: "show_archived_switch" %>
   </div>

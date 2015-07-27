@@ -1,12 +1,17 @@
 <% provide(:title, "Tally: #{@tally.name}") %>
-<h1><%= @tally.name %> Tally</h1>
-<p>
-  <%= @tally.description %>
-</p>
+<h1><i class="material-icons large">assessment</i> <%= @tally.name %> Tally</h1>
 
 <% if @tally.topic %>
-<div class=" coloured <%= colour_class(@tally.topic.colour) %> right"><%= @tally.topic.name %></div>
+<div class="tally-topic coloured <%= colour_class(@tally.topic.colour) %> left"><%= @tally.topic.name %></div>
 <% end %>
+
+<p>
+  <%= @tally.description %>
+  <%= link_to edit_tally_path, class: "btn waves-effect waves-light right" do %>
+    <i class="material-icons right">edit</i>
+    Edit
+  <% end %>
+</p>
 
 <table>
   <thead>

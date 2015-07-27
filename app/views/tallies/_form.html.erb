@@ -14,7 +14,9 @@
   </div>
   <div class="row">
     <div class="input-field col s6">
-      <a class='dropdown-button btn-flat' href='#' data-activates='languages_dropdown' data-hover="true">Relates to languages...</a>
+      <a class='dropdown-button btn-flat' href='#' data-activates='languages_dropdown' data-hover="true">
+      <i class="material-icons left">language</i>
+      Relates to languages...</a>
       <ul id='languages_dropdown' class='dropdown-content'>
         <% @minority_languages.each do |lang| %>
           <li>
@@ -36,12 +38,16 @@
       <% end %>
     <% elsif form_action == 'edit' %>
       <%= button_tag( :class => "btn waves-effect waves-light right") do %>
-        Update Tally <i class="material-icons right">create</i>
+        Update Tally <i class="material-icons right">edit</i>
       <% end %>
     <% else %>
       <%= button_tag( :class => "btn waves-effect waves-light right") do %>
         Submit
       <% end %>
+    <% end %>
+    <%= link_to tallies_path, class: "btn waves-effect waves-light left" do %>
+      <i class="material-icons right">cancel</i>
+      Cancel
     <% end %>
   </div>
 <% end %>
