@@ -40,7 +40,7 @@ users = [:richard, :emma, :andrew]
 report_types = [:hope, :event, :impact]
 states = ["active", "active", "active", "active", "active", "active", "active", "archived"]
 languages = [:toto, :rajbanshi, :bodo, :sadri, :santali]
-topics = [:education, :literacy, :bible, :health]
+topics = [:education, :literacy, :bible, :health, :engagement, :planting, :leadership]
 %>
 <% (1..80).each do |index| %>
 report-<%= index %>:
