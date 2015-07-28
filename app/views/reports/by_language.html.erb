@@ -18,6 +18,7 @@
     <li>
       <div class="collapsible-header <%= colour_class(language.colour) %>"><%= language.name %></div>
       <div class="collapsible-body <%= colour_class(language.colour) %>">
+        <p><%= language.description %></p>
         <% lang_reports.in_groups_of(3, false) do |report_group| %>
           <div class="row">
             <%= render partial: "report", collection: report_group, locals: {time: true, languages: false, topics: true, wrapper: "col s12 m6 l4"} %>
