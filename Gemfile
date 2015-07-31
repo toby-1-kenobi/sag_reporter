@@ -62,6 +62,9 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
+  # For creating test-doubles
+  gem 'mocha', require: false
 end
 
 group :test do
@@ -70,6 +73,12 @@ group :test do
 
   # For stopping test backtraces reaching beyound my own code
   gem 'mini_backtrace'
+
+  # Capybara lets us simulate users interacting with the interface
+  gem 'minitest-rails-capybara'
+
+  # For more readable test code using spec syntax
+  gem 'minitest-spec-rails'
 end
 
 group :production do
