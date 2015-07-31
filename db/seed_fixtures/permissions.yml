@@ -1,0 +1,89 @@
+
+
+create_user:
+  name: create_user
+  description: Create a new user
+
+edit_user:
+  name: edit_user
+  description: Edit any user details
+
+view_all_users:
+  name: view_all_users
+  description: View all users
+
+delete_user:
+  name: delete_user
+  description: Delete any other user
+
+view_roles:
+  name: view_roles
+  description: View all roles with permissions
+
+edit_role:
+  name: edit_role
+  description: Edit any role with its permissions
+
+create_role:
+  name: create_role
+  description: Create a new role
+
+view_all_languages:
+  name: view_all_languages
+  description: View all languages
+
+create_language:
+  name: create_language
+  description: Add another language
+
+edit_language:
+  name: edit_language
+  description: Edit details about a language
+
+view_all_topics:
+  name: view_all_topics
+  description: View all topics
+
+create_topic:
+  name: create_topic
+  description: Add another topic
+
+edit_topic:
+  name: edit_topic
+  description: Edit details about a topic
+
+view_all_reports:
+  name: view_all_reports
+  description: View all reports
+
+create_report:
+  name: create_report
+  description: Make a new report
+
+edit_report:
+  name: edit_report
+  description: Edit any report
+
+archive_report:
+  name: archive_report
+  description: Archive or make active any report
+
+view_all_tallies:
+  name: view_all_tallies
+  description: View all tallies
+
+create_tally:
+  name: create_tally
+  description: Make a new tally
+
+edit_tally:
+  name: edit_tally
+  description: Edit any tally
+
+archive_tally:
+  name: archive_tally
+  description: Archive or make active any tally
+
+increase_tally:
+  name: increase_tally
+  description: Increase a tally

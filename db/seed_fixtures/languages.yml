@@ -1,0 +1,48 @@
+
+english:
+  name: English
+  description: Desireable international language
+  lwc: true
+  colour: 'indigo lighten-3'
+
+hindi:
+  name: Hindi
+  description: National language
+  lwc: true
+  colour: 'lime lighten-2'
+
+bengali:
+  name: Bengali
+  description: Also known as Bangla. State language of West Bengal
+  lwc: true
+  colour: "deep-orange"
+
+toto:
+  name: Toto
+  description: "About 1500 speakers all located in one village near Bhutan. Most speakers also fluent in Nepali. Educated Totos literate in Bengali. Script developed in 2015 with new characters. More MT literacy required."
+  lwc: false
+  colour: 'blue-grey lighten-1'
+
+rajbanshi:
+  name: Rajbanshi
+  description: Translation of gospels and acts undergoing testing in 2015.
+  lwc: false
+  colour: 'green lighten-1'
+
+bodo:
+  name: Bodo
+  description: Bodo language description
+  lwc: false
+  colour: 'pink lighten-1'
+
+sadri:
+  name: Sadri
+  description: Sadri language description
+  lwc: false
+  colour: 'brown lighten-1'
+
+santali:
+  name: Santali
+  description: Santali language description
+  lwc: false
+  colour: 'yellow lighten-1'

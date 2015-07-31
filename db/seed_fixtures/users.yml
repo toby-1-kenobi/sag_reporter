@@ -1,0 +1,6 @@
+rachel:
+  name: Rachel Lloyd-Williams
+  phone: 7602330833
+  password_digest: <%= User.digest('password') %>
+  mother_tongue: english
+  role: admin
