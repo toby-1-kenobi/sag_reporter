@@ -1,6 +1,9 @@
 # Make the will_paginate gem Materialize-friendly.
 # https://gist.github.com/jkcorrea/050fd220999afb72210d
 
+require 'will_paginate/view_helpers/link_renderer'
+require 'will_paginate/view_helpers/action_view'
+
 module WillPaginate
   module ActionView
     def will_paginate(collection = nil, options = {})
