@@ -1,8 +1,11 @@
 require 'test_helper'
 
 class TalliesControllerTest < ActionController::TestCase
+  
   setup do
-    @tally = tallies(:one)
+    @tally = tallies(:books)
+    @user = users(:andrew)
+    log_in_as(@user)
   end
 
   test "should get index" do
@@ -39,11 +42,4 @@ class TalliesControllerTest < ActionController::TestCase
     assert_redirected_to tally_path(assigns(:tally))
   end
 
-  test "should destroy tally" do
-    assert_difference('Tally.count', -1) do
-      delete :destroy, id: @tally
-    end
-
-    assert_redirected_to tallies_path
-  end
 end

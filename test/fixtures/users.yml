@@ -36,3 +36,12 @@ vera:
   password_digest: <%= User.digest('password') %>
   mother_tongue: english
   role: view
+
+<% 30.times do |i| %>
+user-<%= i %>:
+  name: <%= Faker::Name.name %>
+  phone: <%= Faker::Number.number(10) %>
+  password_digest: <%= User.digest('password') %>
+  mother_tongue: english
+  role: pleb
+<% end %>
