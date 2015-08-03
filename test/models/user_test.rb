@@ -8,8 +8,21 @@ class UserTest < ActiveSupport::TestCase
       phone: "9876543210", 
       password: "foobar", 
       password_confirmation: "foobar",
-      role: Role.all.first,
-      mother_tongue: Language.all.first)
+      role: Role.take,
+      mother_tongue: Language.take)
+  end
+
+  it "is in all geo_states only when not assigned to any" do
+    @user = User.new(
+      name: "Example User", 
+      phone: "5555555555", 
+      password: "foobar", 
+      password_confirmation: "foobar",
+      role: Role.take,
+      mother_tongue: Language.take)
+    @user.must_be :in_all_geo_states?
+    @user.geo_state = GeoState.take
+    @user.wont_be :in_all_geo_states?
   end
 
   test "should be valid" do

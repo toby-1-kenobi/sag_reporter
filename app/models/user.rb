@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :spoken_languages, class_name: 'Language'
   has_many :tally_updates
+  belongs_to :geo_state
+  delegate :zone, to: :geo_state
 
   attr_accessor :remember_token
 
@@ -50,14 +52,9 @@ class User < ActiveRecord::Base
     self.phone.slice(0..3) + ' ' + self.phone.slice(4..6) + ' ' + self.phone.slice(7..-1)
   end
 
-  # override speaks so that a user's mother tongue is included
-  def speaks
-    languages = super or Array.new
-    if self.mother_tongue
-      languages << self.mother_tongue unless languages.include?(self.mother_tongue)
-    else
-      languages
-    end
+  # True if this user belongs to all states instead of one
+  def in_all_geo_states?
+    true unless self.geo_state
   end
 
   # allow method names such as is_a_ROLE1_or_ROLE2?

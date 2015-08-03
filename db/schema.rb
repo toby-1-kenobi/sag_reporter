@@ -11,10 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150727095209) do
+ActiveRecord::Schema.define(version: 20150803105655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "geo_states", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.integer  "zone_id",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "geo_states", ["zone_id"], name: "index_geo_states_on_zone_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -129,11 +138,21 @@ ActiveRecord::Schema.define(version: 20150727095209) do
     t.string   "remember_digest"
     t.integer  "role_id"
     t.integer  "mother_tongue_id", null: false
+    t.integer  "geo_state_id"
   end
 
+  add_index "users", ["geo_state_id"], name: "index_users_on_geo_state_id", using: :btree
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
+  create_table "zones", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "geo_states", "zones"
   add_foreign_key "tally_updates", "users"
+  add_foreign_key "users", "geo_states"
 end
