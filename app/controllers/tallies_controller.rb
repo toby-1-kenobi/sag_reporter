@@ -100,6 +100,8 @@ class TalliesController < ApplicationController
     end
 
     # Collect data for graphs
+    # a hash with language names for keys and values are ActiveRecord sets
+    # of tally_updates associated with that language and the present tally
     def graph_data
       data = Hash.new
       Language.where(lwc: false).each do |language|
