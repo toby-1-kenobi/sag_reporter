@@ -72,7 +72,7 @@ group :test do
   gem 'minitest-reporters'
 
   # For stopping test backtraces reaching beyound my own code
-  gem 'mini_backtrace'
+  #gem 'mini_backtrace'
 
   # Capybara lets us simulate users interacting with the interface
   gem 'minitest-rails-capybara'
