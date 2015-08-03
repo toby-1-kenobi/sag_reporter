@@ -1,0 +1,4 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/geo_states.yml")).result %>
+ 

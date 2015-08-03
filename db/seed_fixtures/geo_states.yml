@@ -1,0 +1,103 @@
+ap:
+  name: Arunachal Pradesh
+  zone: north-east
+
+assam:
+  name: Assam
+  zone: north-east
+
+manipur:
+  name: Manipur
+  zone: north-east
+
+meghalaya:
+  name: Meghalaya
+  zone: north-east
+
+mizoram:
+  name: Mizoram
+  zone: north-east
+
+nagaland:
+  name: Nagaland
+  zone: north-east
+
+sikkim:
+  name: Sikkim
+  zone: north-east
+
+tripura:
+  name: Tripura
+  zone: north-east
+
+nb:
+  name: (northern) West Bengal
+  zone: north-east
+
+bihar:
+  name: Bihar
+  zone: hindi
+
+up:
+  name: Uttar Pradesh
+  zone: hindi
+
+haryana:
+  name: Haryana
+  zone: hindi
+
+hp:
+  name: Himachal Pradesh
+  zone: north-west
+
+jammu-kashmir:
+  name: Jammu and Kashmir
+  zone: north-west
+
+punjab:
+  name: Punjab
+  zone: north-west
+
+uttarakhand:
+  name: Uttarakhand
+  zone: north-west
+
+rajasthan:
+  name: Rajasthan
+  zone: west
+
+gujarat:
+  name: Gujarat
+  zone: west
+
+ap:
+  name: Andhra Pradesh
+  zone: south
+
+tamil-nadu:
+  name: Tamil Nadu
+  zone: south
+
+karnataka:
+  name: Karnataka
+  zone: south
+
+kerala:
+  name: Kerala
+  zone: south
+
+telangana:
+  name: Telangana
+  zone: south
+
+jharkhand:
+  name: Jharkhand
+  zone: east
+
+odisha:
+  name: Odisha
+  zone: east
+
+swb:
+  name: (southern) West Bengal
+  zone: east

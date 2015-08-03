@@ -1,0 +1,20 @@
+north-east:
+  name: North East
+
+east:
+  name: East
+
+hindi:
+  name: Hindi
+
+north-west:
+  name: North West
+
+west:
+  name: West
+
+south:
+  name: South
+
+central:
+  name: Central
