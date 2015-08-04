@@ -83,6 +83,10 @@ group :test do
 
   # For more readable test code using spec syntax
   gem 'minitest-spec-rails'
+
+  # Open browser on page that is being tested whe test fails.
+  gem 'launchy'
+
 end
 
 group :production do
