@@ -4,18 +4,28 @@
 <div class="collection" id="home-menu">
 
   <% if current_user.can_create_report? %>
-    <%= link_to new_report_path, class: "collection-item waves-effect" do %>
+    <%= link_to new_report_path, class: "collection-item waves-effect", id: "field-report-link" do %>
       <i class="material-icons">create</i>
-      Make report
+      Make a field report
     <% end %>
   <% end %>
 
+
+  <% if current_user.can_create_event? %>
+    <%= link_to events_new_path, class: "collection-item waves-effect", id: "event-report-link" do %>
+      <i class="material-icons">event</i>
+      Report on an event
+    <% end %>
+  <% end %>
+
+
   <% if current_user.can_view_all_tallies? %>
-    <%= link_to tallies_path, class: "collection-item waves-effect" do %>
+    <%= link_to tallies_path, class: "collection-item waves-effect", id: "tallies-link" do %>
       <i class="material-icons">assessment</i>
       View tallies
     <% end %>
   <% end %>
+
 
   <a href="#" class="collection-item waves-effect"><i class="material-icons">face</i> View my people</a>
 
@@ -23,15 +33,17 @@
 
   <a href="#" class="collection-item waves-effect"><i class="material-icons">message</i> View my messages</a>
 
+
   <% if current_user.can_view_all_reports? %>
-    <%= link_to reports_path, class: "collection-item waves-effect" do %>
+    <%= link_to reports_path, class: "collection-item waves-effect", id: "view-reports-link" do %>
       <i class="material-icons">dashboard</i>
       View all reports
     <% end %>
   <% end %>
 
+
   <% if current_user.can_view_all_users? %>
-    <%= link_to users_path, class: "collection-item waves-effect" do %>
+    <%= link_to users_path, class: "collection-item waves-effect", id: "view-users-link" do %>
       <i class="material-icons">people</i>
       View all users
     <% end %>
@@ -39,7 +51,7 @@
 
 
   <% if current_user.can_view_roles? %>
-    <%= link_to roles_path, class: "collection-item waves-effect" do %>
+    <%= link_to roles_path, class: "collection-item waves-effect", id: "view-roles-link" do %>
       <i class="material-icons">people_outline</i>
       View roles and permissions
     <% end %>
@@ -47,7 +59,7 @@
 
 
   <% if current_user.can_view_all_languages? %>
-    <%= link_to languages_path, class: "collection-item waves-effect" do %>
+    <%= link_to languages_path, class: "collection-item waves-effect", id: "view-languages-link" do %>
       <i class="material-icons">language</i>
       View all languages
     <% end %>
@@ -55,7 +67,7 @@
 
 
   <% if current_user.can_view_all_topics? %>
-    <%= link_to topics_path, class: "collection-item waves-effect" do %>
+    <%= link_to topics_path, class: "collection-item waves-effect", id: "view-topics-link" do %>
       <i class="material-icons">local_offer</i>
       View all topics
     <% end %>

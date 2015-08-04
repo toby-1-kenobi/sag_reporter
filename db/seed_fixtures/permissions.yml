@@ -87,3 +87,7 @@ archive_tally:
 increase_tally:
   name: increase_tally
   description: Increase a tally
+
+create_event:
+  name: create_event
+  description: Report on an event
