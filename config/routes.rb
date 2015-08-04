@@ -31,6 +31,8 @@ Rails.application.routes.draw do
   get  'tally_updates' => 'tally_updates#index'
   post 'tally_updates' => 'tally_updates#create'
 
+  get 'events/new'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -11,10 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150727095209) do
+ActiveRecord::Schema.define(version: 20150804072043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "events", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "label",              null: false
+    t.date     "event_date",         null: false
+    t.text     "location"
+    t.integer  "participant_amount"
+    t.text     "purpose"
+    t.text     "content"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -135,5 +149,10 @@ ActiveRecord::Schema.define(version: 20150727095209) do
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
+  add_foreign_key "events", "users"
+  add_foreign_key "languages_tallies", "languages"
+  add_foreign_key "languages_tallies", "tallies"
+  add_foreign_key "tallies", "topics"
+  add_foreign_key "tally_updates", "languages_tallies"
   add_foreign_key "tally_updates", "users"
 end
