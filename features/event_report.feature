@@ -3,6 +3,7 @@ Feature: Reporting on an event
   Background:
     Given seed data is loaded into the database
     Given I am an admin
+    Given I login
 
   Scenario: I can find the event reporting page and see its components
     When I visit the home page
@@ -14,7 +15,7 @@ Feature: Reporting on an event
     And I see a textarea for the event location
     And I see a number field for the number of participants
     And I see a text field for a participant name
-    And I see some checkbox fields for minority languages
+    And I see a multi-select for minority languages
     And I see a selectbox for event purpose
     And I see yes/no radio buttons for things said at the event
     And I see a textarea for event content

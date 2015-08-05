@@ -1,2 +1,73 @@
-<h1>Events#new</h1>
-<p>Find me in app/views/events/new.html.erb</p>
+<% provide(:title, 'Report on an event') %>
+<h1><i class="material-icons large">event</i> Report on an Event</h1>
+<div class="row">
+  <%= form_for(@event, html: {class: "col s12"}) do |f| %>
+    <div class="row">
+      <div class="input-field col s8">
+        <i class="material-icons prefix">label</i>
+        <%= f.text_field :event_label %>
+        <%= f.label :event_label, "Event Label" %>
+      </div>
+      <div class="input-field col s4">
+        <i class="material-icons prefix">today</i>
+        <%= f.date_field :event_date, class: "datepicker active" %>
+        <%= f.label :event_date, "Date" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6 m4">
+        <i class="material-icons prefix">location_on</i>
+        <%= f.text_area :location, class: "materialize-textarea" %>
+        <%= f.label :location, "Location (village, block, district)" %>
+      </div>
+      <div class="input-field people-increase col s6 m4">
+        <i class="material-icons prefix">people</i>
+        <%= text_field_tag :people %>
+        <%= label_tag :people, "Contributing people", {class: "tooltipped", "data-position" => "bottom", "data-delay" => "50", "data-tooltip" => "Write one name in each row"} %>
+      </div>
+      <div class="input-field col s6 m4">
+        <%= f.number_field :participant_amount %>
+        <%= f.label :participant_amount, "Total amount of participants" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <%= render partial: "shared/multiselect", locals: {
+        	text: "Languages involved...",
+        	icon: "language",
+        	object: "event",
+        	attribute: "languages",
+        	collection: @minority_languages,
+        	selected: Hash.new
+        } %>
+      </div>
+      <div class="input-field col s6">
+        <!--i class="material-icons prefix">directions_walk</i-->
+        <%= select("event", "purpose", Event.purpose_text.invert, {include_blank: "something else"}) %>
+        <%= f.label :purpose, "Purpose: To enable..." %>
+      </div>
+    </div>
+    <% yes_no_questions.each do |code, question| %>
+      <div class="row">
+        <div class="col s12">
+          <div class="yes-no-question">
+            <i class="material-icons">question_answer</i>
+            <%= question %>
+            <div class="input-field right">
+          	  <%= radio_button_tag(code, "no") %>
+          	  <%= label_tag("#{code}_no", "No") %>
+          	  <%= radio_button_tag(code, "yes") %>
+          	  <%= label_tag("#{code}_yes", "Yes") %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="row">
+      <div class="input-field col s12">
+        <i class="material-icons prefix">event_available</i>
+        <%= f.text_area :content, class: "materialize-textarea" %>
+        <%= f.label :content, "If anything else happened in the event that should be recorded, write it here." %>
+      </div>
+  <% end %>
+</div>

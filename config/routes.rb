@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   
   root 'static_pages#home'
 
+  resources :events
   resources :languages
   resources :reports do
     collection do
