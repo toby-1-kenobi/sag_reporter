@@ -11,7 +11,7 @@ Given(/^seed data is loaded into the database$/) do
 end
 
 Given(/^I am an admin$/) do
-  @admin_user = User.create(
+  @me = User.create(
   	  name: 'Andrew',
   	  phone: '7777777777',
   	  password:              'password',
@@ -19,13 +19,20 @@ Given(/^I am an admin$/) do
   	  mother_tongue: Language.take,
   	  role: Role.find_by_name('admin')
   	)
-  _(@admin_user).wont_be_nil
-  _(@admin_user.can_create_event?).must_equal true
-  log_in_as(@admin_user)
+  _(@me).wont_be_nil
+  _(@me.can_create_event?).must_equal true
+end
+
+Given(/^I login$/) do
+  visit login_path
+  fill_in "Phone", with: @me.phone
+  fill_in "Password", with: "password"
+  click_on "Log in"
 end
 
 When(/^I visit the home page$/) do
   visit root_path
+  _(current_path).must_equal root_path
 end
 
 Then(/^I see a link to the new event page$/) do
@@ -33,47 +40,48 @@ Then(/^I see a link to the new event page$/) do
 end
 
 When(/^I follow the link to the new event page$/) do
-  pending # express the regexp above with the code you wish you had
+  click_on 'event-report-link'
 end
 
 Then(/^I am on the new event page$/) do
-  pending # express the regexp above with the code you wish you had
+  _(current_path).must_equal events_new_path
 end
 
 Then(/^I see a text field for the event label$/) do
-  pending # express the regexp above with the code you wish you had
+  page.find_field("Event Label").visible?
 end
 
 Then(/^I see a date field for the event$/) do
-  pending # express the regexp above with the code you wish you had
+  page.find_field("Date", type: "date").visible?
 end
 
 Then(/^I see a textarea for the event location$/) do
-  pending # express the regexp above with the code you wish you had
+  page.find_field("Location", type: "textarea").visible?
 end
 
 Then(/^I see a number field for the number of participants$/) do
-  pending # express the regexp above with the code you wish you had
+  page.find_field("event_participant_amount", type: "number").visible?
 end
 
 Then(/^I see a text field for a participant name$/) do
-  pending # express the regexp above with the code you wish you had
+  page.find_field("Contributing people").visible?
 end
 
-Then(/^I see some checkbox fields for minority languages$/) do
-  pending # express the regexp above with the code you wish you had
+Then(/^I see a multi\-select for minority languages$/) do
+  page.find_field("Toto", type: "checkbox")
 end
 
 Then(/^I see a selectbox for event purpose$/) do
-  pending # express the regexp above with the code you wish you had
+  page.find_field("event_purpose", type: "select").visible?
 end
 
 Then(/^I see yes\/no radio buttons for things said at the event$/) do
-  pending # express the regexp above with the code you wish you had
+  page.find_field("mt_society_yes", type: "radio").visible?
+  page.find_field("mt_society_no", type: "radio").visible?
 end
 
 Then(/^I see a textarea for event content$/) do
-  pending # express the regexp above with the code you wish you had
+  page.find_field("event_content", type: "textarea").visible?
 end
 
 When(/^I put text in the participant name field$/) do
