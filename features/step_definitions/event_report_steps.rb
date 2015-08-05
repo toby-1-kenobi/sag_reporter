@@ -64,7 +64,7 @@ Then(/^I see a number field for the number of participants$/) do
 end
 
 Then(/^I see a text field for a participant name$/) do
-  page.find_field("Contributing people").visible?
+  page.find_field("people").visible?
 end
 
 Then(/^I see a multi\-select for minority languages$/) do
@@ -85,15 +85,15 @@ Then(/^I see a textarea for event content$/) do
 end
 
 When(/^I put text in the participant name field$/) do
-  pending # express the regexp above with the code you wish you had
+  fill_in "people", with: "Fred"
 end
 
 Then(/^I see another participant name field$/) do
-  pending # express the regexp above with the code you wish you had
+  page.find_field("people", count: 2)
 end
 
 When(/^I click a yes radio button$/) do
-  pending # express the regexp above with the code you wish you had
+  choose "mt_society_yes"
 end
 
 Then(/^I see a textarea for the thing said at the event$/) do

@@ -59,6 +59,20 @@
           	  <%= radio_button_tag(code, "yes") %>
           	  <%= label_tag("#{code}_yes", "Yes") %>
             </div>
+            <div class="yes-response hide">
+              <div class="row response-input">
+              	<div class="input-field col s6">
+              	  <%= text_area_tag("#{code}-response", "", class: "materialize-textarea") %>
+              	  <%= label_tag("#{code}-response", "What was said?") %>
+              	</div>
+              	<div class="col s6">
+          	      <%= radio_button_tag(code, "impact") %>
+          	      <%= label_tag("#{code}_impact", "This has already happened") %>
+          	      <%= radio_button_tag(code, "hope") %>
+          	      <%= label_tag("#{code}_hope", "Will hope this will happen in the future") %>
+              	</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
