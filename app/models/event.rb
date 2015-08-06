@@ -1,6 +1,8 @@
 class Event < ActiveRecord::Base
 
 	enum purpose: [ :plan, :disciple, :serve, :distribute, :develop_leaders ]
+	
+  belongs_to :record_creator, class_name: "User", foreign_key: "user_id"
 
     def self.purpose_text
     	{

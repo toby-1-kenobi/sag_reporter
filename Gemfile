@@ -17,6 +17,9 @@ gem 'coffee-rails', '~> 4.1.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
+# Also we need jQuery-UI for autocomplete on fields
+gem 'jquery-ui-rails'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 
@@ -42,6 +45,9 @@ gem 'groupdate'
 
 # create charts
 gem 'chartkick'
+
+# autocomplete in text fields
+gem 'rails4-autocomplete'
 
 # Use PostgreSQL as the database for Active Record
 gem 'pg'

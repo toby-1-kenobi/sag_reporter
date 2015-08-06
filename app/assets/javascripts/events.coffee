@@ -3,9 +3,9 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 addField = ->
-  newField = $('<input type="text" name="people">')
-  $(this).unbind()
-  newField.keypress addField
+  newField = $('<input type="text" name="people" value="" data-autocomplete="/events/autocomplete_person_name" />')
+  $(this).off 'keypress', addField
+  newField.on 'keypress', addField
   $(this).after newField
   return
 
@@ -37,7 +37,7 @@ $(document).ready ->
     selectMonths: true, 
     selectYears: 3
 
-  $('.people-increase input:last').keypress addField
+  $('.people-increase input:last').on 'keypress', addField
   $('.yes-response textarea:last-of-type').keypress addTextArea
 
   $('.yes-no-question input:radio').change ->

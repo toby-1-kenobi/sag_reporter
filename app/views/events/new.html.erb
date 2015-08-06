@@ -22,8 +22,8 @@
       </div>
       <div class="input-field people-increase col s6 m4">
         <i class="material-icons prefix">people</i>
-        <%= text_field_tag :people %>
-        <%= label_tag :people, "Contributing people", {class: "tooltipped", "data-position" => "bottom", "data-delay" => "50", "data-tooltip" => "Write one name in each row"} %>
+        <%= autocomplete_field_tag "people", '', autocomplete_person_name_events_path %>
+        <%= label_tag :people, "Contributing people", {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Write one name in each row"} %>
       </div>
       <div class="input-field col s6 m4">
         <%= f.number_field :participant_amount %>
