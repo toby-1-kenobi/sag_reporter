@@ -7,8 +7,7 @@ module EventsHelper
 			'need_society' => "Was anything said about <strong>needs of society</strong>?".html_safe,
 			'need_church' => "Was anything said about <strong>needs of the churches</strong>?".html_safe,
 			'hope' => "Were any other <strong>hopes or dreams</strong> shared?".html_safe,
-			'impact' => "Were any other <strong>impact stories</strong> shared?".html_safe,
-			'decisions' => "Are there any <strong>decisions or actions</strong> to be carried out?".html_safe
+			'impact' => "Were any other <strong>impact stories</strong> shared?".html_safe
 		}
 	end
 end
