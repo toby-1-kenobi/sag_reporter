@@ -87,6 +87,9 @@ group :test do
   # Open browser on page that is being tested whe test fails.
   gem 'launchy'
 
+  # Drives a web browser for testing
+  gem 'selenium-webdriver'
+
 end
 
 group :production do
