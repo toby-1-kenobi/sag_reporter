@@ -1,4 +1,5 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
   name: MyString
@@ -8,7 +9,7 @@ one:
   intern: false
   facilitator: false
   pastor: false
-  language_id: 
+  language: 
 
 two:
   name: MyString
@@ -18,4 +19,4 @@ two:
   intern: false
   facilitator: false
   pastor: false
-  language_id: 
+  language: 
