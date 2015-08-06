@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+
+  include ContactDetails
   
   belongs_to :role
   has_many :permissions, through: :role
@@ -13,8 +15,6 @@ class User < ActiveRecord::Base
   validates :phone, presence: true, length: { is: 10 }, format: { with: /\A\d+\Z/ }, uniqueness: true
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
-
-  before_validation :fix_phone
 
   # Returns the hash digest of the given string.
   def User.digest(string)
@@ -43,11 +43,6 @@ class User < ActiveRecord::Base
   # Forgets a user.
   def forget
     update_attribute(:remember_digest, nil)
-  end
-
-  # Pretty print phone number
-  def pretty_phone
-    self.phone.slice(0..3) + ' ' + self.phone.slice(4..6) + ' ' + self.phone.slice(7..-1)
   end
 
   # override speaks so that a user's mother tongue is included
@@ -93,19 +88,4 @@ class User < ActiveRecord::Base
       def matches_dynamic_perm_check?(method_id)
         /^can_([a-zA-Z]\w*)\?$/.match(method_id.to_s)
       end
-
-      def fix_phone
-        # remove non digits from the phone number
-        self.phone.gsub!(/[^0-9]/, '')
-        # if it starts with "91" and is longer than 11 digits
-        # then it's got a prefix we need to remove
-        if self.phone.length > 11 and self.phone.start_with?("91")
-          self.phone = self.phone.slice(2..-1)
-        end
-        # another prefix possibility is "0"
-        if self.phone.length > 10 and self.phone.start_with?("0")
-          self.phone = self.phone.slice(1..-1)
-        end
-      end
-
 end
