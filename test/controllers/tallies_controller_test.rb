@@ -37,9 +37,9 @@ class TalliesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should update tally" do
-    patch :update, id: @tally, tally: { description: @tally.description, name: @tally.name }
-    assert_redirected_to tally_path(assigns(:tally))
-  end
+#  test "should update tally" do
+#    patch :update, id: @tally, tally: { description: @tally.description, name: @tally.name }
+#    assert_redirected_to tally_path(assigns(:tally))
+#  end
 
 end
