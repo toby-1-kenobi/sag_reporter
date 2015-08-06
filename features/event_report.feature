@@ -1,3 +1,4 @@
+@javascript
 Feature: Reporting on an event
 
   Background:
@@ -23,5 +24,7 @@ Feature: Reporting on an event
     Then I see another participant name field
     When I click a yes radio button
     Then I see a textarea for the thing said at the event
+    When I click a no radio button
+    Then I cannot see a textarea for the thing said at the event
     When I put text in the textarea for the thing said at the event
     Then I see another textarea for the thing said at the event

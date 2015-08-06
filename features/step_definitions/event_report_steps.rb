@@ -44,6 +44,7 @@ When(/^I follow the link to the new event page$/) do
 end
 
 Then(/^I am on the new event page$/) do
+	page.find("body")
   _(current_path).must_equal events_new_path
 end
 
@@ -52,7 +53,7 @@ Then(/^I see a text field for the event label$/) do
 end
 
 Then(/^I see a date field for the event$/) do
-  page.find_field("Date", type: "date").visible?
+  page.find_field("event_event_date", type: "date").visible?
 end
 
 Then(/^I see a textarea for the event location$/) do
@@ -64,7 +65,7 @@ Then(/^I see a number field for the number of participants$/) do
 end
 
 Then(/^I see a text field for a participant name$/) do
-  page.find_field("people").visible?
+  page.find_field("people", type: "text")
 end
 
 Then(/^I see a multi\-select for minority languages$/) do
@@ -97,7 +98,15 @@ When(/^I click a yes radio button$/) do
 end
 
 Then(/^I see a textarea for the thing said at the event$/) do
-  pending # express the regexp above with the code you wish you had
+  page.find("mt_society_response").visible?
+end
+
+When(/^I click a no radio button$/) do
+  choose "mt_society_no"
+end
+
+Then(/^I cannot see a textarea for the thing said at the event$/) do
+  page.find("mt_society_response").not_visible?
 end
 
 When(/^I put text in the textarea for the thing said at the event$/) do

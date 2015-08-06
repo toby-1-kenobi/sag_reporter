@@ -66,10 +66,12 @@
               	  <%= label_tag("#{code}-response", "What was said?") %>
               	</div>
               	<div class="col s6">
-          	      <%= radio_button_tag(code, "impact") %>
-          	      <%= label_tag("#{code}_impact", "This has already happened") %>
-          	      <%= radio_button_tag(code, "hope") %>
-          	      <%= label_tag("#{code}_hope", "Will hope this will happen in the future") %>
+          	      <%= radio_button_tag("#{code}-res", "impact") %>
+          	      <%= label_tag("#{code}-res_impact", "This has already happened") %>
+          	      <%= radio_button_tag("#{code}-res", "hope") %>
+          	      <%= label_tag("#{code}-res_hope", "Will hope this will happen in the future") %>
+          	      <%= radio_button_tag("#{code}-res", "challenge") %>
+          	      <%= label_tag("#{code}-res_challenge", "This is a challenge") %>
               	</div>
               </div>
             </div>
