@@ -1,4 +1,6 @@
 require 'minitest'
+require "minitest/rails/capybara"
+require "minitest/spec"
 
 module MiniTestAssertions
 

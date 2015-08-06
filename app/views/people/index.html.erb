@@ -1,6 +1,7 @@
-<% provide(:title, 'All people') %>
+<% title = @showing_all ? "All people" : "My contacts" %>
+<% provide(:title, title) %>
 <h1><i class="material-icons large">people</i>
- All people</h1>
+ <%= title %></h1>
 
 <%= will_paginate %>
 
@@ -9,3 +10,5 @@
 </ul>
 
 <%= will_paginate %>
+
+<%= link_to "Show all people", people_path, class: "btn waves-effect" %>

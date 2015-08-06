@@ -27,7 +27,10 @@
   <% end %>
 
 
-  <a href="#" class="collection-item waves-effect"><i class="material-icons">face</i> View my people</a>
+  <%= link_to contacts_people_path, class: "collection-item waves-effect", id: "view-contacts-link" do %>
+    <i class="material-icons">face</i> 
+    View my contacts
+  <% end %>
 
   <a href="#" class="collection-item waves-effect"><i class="material-icons">assignment</i> View my goals</a>
 

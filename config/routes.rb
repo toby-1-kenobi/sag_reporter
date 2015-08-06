@@ -1,12 +1,14 @@
 Rails.application.routes.draw do
   
-  resources :people
   root 'static_pages#home'
 
   resources :events do
     get :autocomplete_person_name, :on => :collection
   end
   resources :languages
+  resources :people do
+    get :contacts, on: :collection
+  end
   resources :reports do
     collection do
       get 'by_language'

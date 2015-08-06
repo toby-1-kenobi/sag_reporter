@@ -55,21 +55,3 @@ end
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
-
-module UserSessions
-  
-  # Returns true if a test user is logged in.
-  def is_logged_in?
-    !session[:user_id].nil?
-  end
-
-  # Logs in a test user.
-  def log_in_as(user, options = {})
-    password    = options[:password]    || 'password'
-    post login_path, session: { phone:       user.phone,
-                                  password:    password}
-  end
-
-end
-
-World(UserSessions)
