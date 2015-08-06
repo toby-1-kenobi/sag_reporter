@@ -10,5 +10,4 @@ user-<%= i %>:
   intern: false
   facilitator: false
   pastor: false
-  language: english
 <% end %>
