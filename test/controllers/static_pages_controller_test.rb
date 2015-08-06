@@ -10,7 +10,7 @@ class StaticPagesControllerTest < ActionController::TestCase
   	log_in_as(@user)
     get :home
     assert_response :success
-    assert_select "title", "Home | NBASE reporter"
+    assert_select "title", "Home | Last Command reporter"
   end
 
 end

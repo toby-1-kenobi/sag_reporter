@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804072043) do
+ActiveRecord::Schema.define(version: 20150806030053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,21 @@ ActiveRecord::Schema.define(version: 20150804072043) do
   end
 
   add_index "languages_users", ["user_id", "language_id"], name: "index_languages_users_on_user_id_and_language_id", unique: true, using: :btree
+
+  create_table "people", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.string   "phone"
+    t.text     "address"
+    t.boolean  "intern"
+    t.boolean  "facilitator"
+    t.boolean  "pastor"
+    t.integer  "language_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "people", ["language_id"], name: "index_people_on_language_id", using: :btree
 
   create_table "permissions", force: :cascade do |t|
     t.string   "name"
@@ -152,6 +167,7 @@ ActiveRecord::Schema.define(version: 20150804072043) do
   add_foreign_key "events", "users"
   add_foreign_key "languages_tallies", "languages"
   add_foreign_key "languages_tallies", "tallies"
+  add_foreign_key "people", "languages"
   add_foreign_key "tallies", "topics"
   add_foreign_key "tally_updates", "languages_tallies"
   add_foreign_key "tally_updates", "users"
