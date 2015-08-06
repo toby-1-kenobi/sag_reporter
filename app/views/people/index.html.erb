@@ -1,0 +1,11 @@
+<% provide(:title, 'All people') %>
+<h1><i class="material-icons large">people</i>
+ All people</h1>
+
+<%= will_paginate %>
+
+<ul class="people collection">
+  <%= render @people %>
+</ul>
+
+<%= will_paginate %>

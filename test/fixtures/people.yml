@@ -1,22 +1,14 @@
 # Read about fixtures at
 # http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-one:
-  name: MyString
-  description: MyText
-  phone: MyString
-  address: MyText
-  intern: false
-  facilitator: false
-  pastor: false
-  language: 
 
-two:
-  name: MyString
-  description: MyText
-  phone: MyString
-  address: MyText
+<% 35.times do |i| %>
+user-<%= i %>:
+  name: <%= Faker::Name.name %>
+  description: <%= Faker::Lorem.paragraph %>
+  phone: <%= Faker::Number.number(10) %>
   intern: false
   facilitator: false
   pastor: false
-  language: 
+  language: english
+<% end %>
