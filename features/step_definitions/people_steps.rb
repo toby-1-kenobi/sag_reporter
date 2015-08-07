@@ -31,3 +31,28 @@ Then(/^I see the names of more people$/) do
   _(page.has_content? "Barney").must_equal true
   _(page.has_content? "Betty").must_equal true
 end
+
+When(/^I visit the contacts page$/) do
+  visit contacts_people_path
+end
+
+When(/^I click on Add Contact$/) do
+  click_on "Add contact"
+end
+
+When(/^I fill in the person form$/) do
+  fill_in "Name", with: "Bam Bam"
+  click_on "Create New Person"
+end
+
+Then(/^I am on a page showing my new contact$/) do
+  _(page.has_content? "Bam Bam").must_equal true
+end
+
+When(/^I click on my contacts$/) do
+  click_on "My Contacts"
+end
+
+Then(/^I see the name of the new contact$/) do
+  _(page.has_content? "Bam Bam").must_equal true
+end

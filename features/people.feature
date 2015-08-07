@@ -13,3 +13,11 @@ Feature: People
     Then I see the names of only my contacts
     When I click on show all people
     Then I see the names of more people
+
+  Scenario: I can add a new contact
+    When I visit the contacts page
+    And I click on Add Contact
+    And I fill in the person form
+    Then I am on a page showing my new contact
+    When I click on my contacts
+    Then I see the name of the new contact
