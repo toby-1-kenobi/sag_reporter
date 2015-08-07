@@ -9,3 +9,7 @@
 </ul>
 
 <%= will_paginate %>
+
+<% if current_user.can_create_user? %>
+  <%= link_to "Add user", new_user_path, class: "btn waves-effect" %>
+<% end %>

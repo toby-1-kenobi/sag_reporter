@@ -81,30 +81,30 @@ class ReportsController < ApplicationController
         end
       end
       flash["success"] = "Report Updated!"
-      redirect_back_or @report
+      redirect_recent_or @report
     end
   end
 
   def index
   	@reports = Report.order(:created_at => :desc).paginate(page: params[:page])
-  	store_location
+  	recent_view
   end
 
   def by_language
   	@reports = Report.order(:created_at => :desc)
   	@languages = Language.all
-  	store_location
+  	recent_view
   end
 
   def by_topic
   	@reports = Report.all.order(:created_at => :desc)
   	@topics = Topic.all
-  	store_location
+  	recent_view
   end
 
   def by_reporter
   	@reports = Report.all.order(:created_at => :desc)
-  	store_location
+  	recent_view
   end
 
   def archive
@@ -125,6 +125,17 @@ class ReportsController < ApplicationController
       else
     	permitted = params.require(:report).permit(:report_type, :content)
       end
+    end
+  
+    # Redirects to recent view (or to the default).
+    def redirect_recent_or(default)
+      redirect_to(session[:report_recent_view] || default)
+      session.delete(:report_recent_view)
+    end
+
+    # Store which is the recent view in the session
+    def recent_view
+      session[:report_recent_view] = request.url if request.get?
     end
 
 end
