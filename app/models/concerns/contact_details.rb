@@ -16,7 +16,7 @@ module ContactDetails
   private
 
     def fix_phone
-      if self.phone
+      if self.phone and phone.length > 0
         # remove non digits from the phone number
         self.phone.gsub!(/[^0-9]/, '')
         # if it starts with "91" and is longer than 11 digits
@@ -28,6 +28,8 @@ module ContactDetails
         if self.phone.length > 10 and self.phone.start_with?("0")
           self.phone = self.phone.slice(1..-1)
         end
+      else
+        self.phone = nil
       end
     end
 

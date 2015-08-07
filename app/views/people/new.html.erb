@@ -1,0 +1,56 @@
+<% provide(:title, 'Add New Person') %>
+<h1><i class="material-icons large">person_add</i> Add Person</h1>
+<div class="row">
+  <%= form_for(@person, html: {class: "col s12"}) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+    <div class="row">
+      <div class="input-field col s8">
+        <i class="material-icons prefix">account_circle</i>
+        <%= f.text_field :name %>
+        <%= f.label :name %>
+      </div>
+      <div class="input-field col s4">
+        <i class="material-icons prefix">phone</i>
+        <%= f.telephone_field :phone %>
+        <%= f.label :phone %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+    	<%= f.text_area :description, class: "materialize-textarea" %>
+    	<%= f.label :description %>
+      </div>
+      <div class="col s6">
+      	<p>
+      	  <%= f.check_box :intern %>
+      	  <%= f.label :intern, "This person is a project intern" %>
+      	</p>
+      	<p>
+      	  <%= f.check_box :facilitator %>
+      	  <%= f.label :facilitator, "This person is a project facilitator" %>
+      	</p>
+      	<p>
+      	  <%= f.check_box :pastor %>
+      	  <%= f.label :pastor, "This person is a pastor" %>
+      	</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+    	<%= f.text_area :address, class: "materialize-textarea" %>
+    	<%= f.label :address %>
+      </div>
+      <div class="input-field col s6"> 
+        <%= f.collection_select(:language_id, Language.all, :id, :name) %>
+        <%= f.label :language_id, "Mother tongue" %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s3 offset-s8">
+        <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+          Create New Person <i class="material-icons right">add</i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

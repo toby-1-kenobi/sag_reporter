@@ -33,4 +33,11 @@ describe PeopleController do
   	_(assigns(:people)).wont_be_empty
   end
 
+  it "creates a new person with current user as record_creator" do
+  	post :create, person: {name: "Ben"}
+  	must_respond_with :redirect
+  	ben = Person.find_by_name("Ben")
+  	_(ben.record_creator).must_equal me
+  end
+
 end
