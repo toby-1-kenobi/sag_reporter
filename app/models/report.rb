@@ -1,6 +1,6 @@
 class Report < ActiveRecord::Base
 
-	enum report_type: [ :hope, :event, :impact ]
+	enum report_type: [ :hope, :challenge, :impact ]
 	enum state: [ :archived, :active ]
 
 	belongs_to :reporter, class_name: 'User'
