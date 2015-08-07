@@ -17,7 +17,7 @@ class RolesController < ApplicationController
 
   def index
   	@roles = Role.all
-  	@perms = Permission.all
+  	@permissions = Permission.all
   	@new_role = Role.new
   end
 
