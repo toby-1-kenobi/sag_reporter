@@ -1,5 +1,12 @@
 class PeopleController < ApplicationController
 
+  before_action :require_login
+
+  # Let only permitted users do some things
+  before_action only: [:index] do
+    redirect_to root_path unless current_user.can_view_all_people?
+  end
+
   def index
   	@people = Person.order("LOWER(name)").paginate(page: params[:page])
   	@showing_all = true

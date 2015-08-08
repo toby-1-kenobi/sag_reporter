@@ -7,14 +7,14 @@ admin:
     view_all_topics, create_topic, edit_topic,
     view_all_reports, create_report, edit_report, archive_report,
     view_all_tallies, create_tally, edit_tally, archive_tally, increase_tally,
-    create_event
+    create_event, view_all_people
 
 evaluator:
   name: evaluator
   permissions: view_all_languages, edit_language, view_all_topics,
     view_all_reports, create_report, edit_report, archive_report,
     view_all_tallies, create_tally, edit_tally, archive_tally, increase_tally,
-    create_event
+    create_event, view_all_people
 
 reporter:
   name: reporter
