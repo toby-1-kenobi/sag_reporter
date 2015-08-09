@@ -114,7 +114,17 @@ create_event:
   description: Report on an event
   category: <%= Permission.categories['events'] %>
 
+edit_event:
+  name: edit_event
+  description: Edit an event
+  category: <%= Permission.categories['events'] %>
+
 view_all_people:
   name: view_all_people
-  description: View contacts of other people
+  description: View contacts of other users
+  category: <%= Permission.categories['people'] %>
+
+edit_person:
+  name: edit_person
+  description: "Edit another user's contact"
   category: <%= Permission.categories['people'] %>
