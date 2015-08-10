@@ -98,23 +98,34 @@
         <div class="row yes-response hide">
           <div class="col s12">
 
-            <div class="row response-input">
+            <div class="row response-input row_0">
               <div class="input-field col s6">
-                <%= text_area_tag("#{code}-response", "", class: "materialize-textarea") %>
-                <%= label_tag("#{code}-response", "What was said, and who said it?") %>
+                <%= text_area_tag("#{code}-response_0", "", class: "materialize-textarea") %>
+                <%= label_tag("#{code}-response_0", "What was said, and who said it?") %>
               </div>
               <% unless code == "plan" or code == "impact" %>
               <div class="col s6">
                 <div>
-            	    <%= radio_button_tag("#{code}-res", "impact") %>
-            	    <%= label_tag("#{code}-res_impact_0", "This is an impact") %>
+            	    <%= radio_button_tag("#{code}-res_0", "impact") %>
+            	    <%= label_tag("#{code}-res_0_impact", "This is an impact") %>
                 </div>
                 <div>
-            	    <%= radio_button_tag("#{code}-res", "hope") %>
-          	      <%= label_tag("#{code}-res_plan_0", "This needs follow-up") %>
+            	    <%= radio_button_tag("#{code}-res_0", "plan") %>
+          	      <%= label_tag("#{code}-res_0_plan", "This needs follow-up") %>
                 </div>
               </div>
               <% end %>
+              <div class="input-field col s6">
+                <%= render partial: "shared/multiselect", locals: {
+                  text: "Languages involved...",
+                  icon: "language",
+                  object: code + '_0',
+                  attribute: "languages",
+                  display: :name,
+                  collection: @minority_languages,
+                  selected: Hash.new
+                } %>
+              </div>
             </div>
 
           </div>

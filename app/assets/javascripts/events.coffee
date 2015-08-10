@@ -12,27 +12,21 @@ addField = ->
 textAreaCount = 0
 decisionCount = 0
 
-addTextArea = ->
+addInputRow = ->
   textAreaCount += 1
-  newTextArea = $('<div class="row response-input">
-              	<div class="input-field col s6">
-              	  <textarea class="materialize-textarea" id="response"></textarea>
-                  <label for="response">Something else that was said</label>
-              	</div>
-              	<div class="col s6">
-              	  <div>
-          	        <input type="radio" name="res_' + textAreaCount + '" id="res_impact_' + textAreaCount + '" value="impact" />
-          	        <label for="res_impact_' + textAreaCount + '">This is an impact</label>
-          	      </div>
-          	      <div>
-          	        <input type="radio" name="res_' + textAreaCount + '" id="res_hope_' + textAreaCount + '" value="hope" />
-          	        <label for="res_plan_' + textAreaCount + '">We hope this will happen in the future</label>
-          	      </div>
-              	</div>
-              </div>')
-  $(this).unbind()
-  newTextArea.find('textarea').keypress addTextArea
-  $(this).parents('.response-input').after newTextArea
+  newInputRow = $('<div class="row response-input row_' + textAreaCount + '"></div>')
+  newInputRow.html($(this).parents('.response-input').html().replace(/_\d+/g, '_' + textAreaCount))
+  $(this).off 'keypress', addInputRow
+  newInputRow.find('textarea').on 'keypress', addInputRow
+  newInputRow.find('.dropdown-content').removeAttr('style')
+  $(this).parents('.response-input').after newInputRow
+  newInputRow.find('.dropdown-button').dropdown
+    inDuration: 300
+    outDuration: 225
+    constrain_width: true
+    hover: true
+    gutter: 0
+    belowOrigin: false
   return
 
 addNewDecision = ->
@@ -60,7 +54,7 @@ $(document).ready ->
     selectYears: 3
 
   $('.people-increase input:last').on 'keypress', addField
-  $('.response-input textarea').keypress addTextArea
+  $('.response-input textarea').on 'keypress', addInputRow
   $('#decision-response').keypress addNewDecision
 
   $('.yes-no-question input:radio').change ->
