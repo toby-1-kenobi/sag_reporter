@@ -18,7 +18,7 @@ module ReportsHelper
   def report_colour
   	{
   		'hope' => 'light-blue lighten-3',
-  		'event' => 'light-green lighten-3',
+  		'challenge' => 'light-green lighten-3',
   		'impact' => 'orange lighten-3'
   	}
   end
@@ -27,7 +27,7 @@ module ReportsHelper
   def report_type_text
   	{
   		'hope' => 'Hope or Dream',
-  		'event' => 'Event',
+  		'challenge' => 'Challenge',
   		'impact' => 'Impact'
   	}
   end

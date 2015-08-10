@@ -4,6 +4,7 @@ class Language < ActiveRecord::Base
   has_and_belongs_to_many :user_speakers, class_name: 'User'
   has_and_belongs_to_many :reports
   has_many :language_tallies, class_name: 'LanguagesTally', dependent: :destroy
+  has_and_belongs_to_many :impact_reports
   has_many :tallies, through: :language_tallies
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
