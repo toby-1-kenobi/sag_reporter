@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150810153948) do
+ActiveRecord::Schema.define(version: 20150810163209) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,6 +58,13 @@ ActiveRecord::Schema.define(version: 20150810153948) do
   add_index "impact_reports", ["event_id"], name: "index_impact_reports_on_event_id", using: :btree
   add_index "impact_reports", ["progress_marker_id"], name: "index_impact_reports_on_progress_marker_id", using: :btree
   add_index "impact_reports", ["reporter_id"], name: "index_impact_reports_on_reporter_id", using: :btree
+
+  create_table "impact_reports_languages", id: false, force: :cascade do |t|
+    t.integer "impact_report_id", null: false
+    t.integer "language_id",      null: false
+  end
+
+  add_index "impact_reports_languages", ["impact_report_id", "language_id"], name: "index_impact_reports_languages", unique: true, using: :btree
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
