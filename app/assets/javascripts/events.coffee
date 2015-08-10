@@ -22,15 +22,11 @@ addTextArea = ->
               	<div class="col s6">
               	  <div>
           	        <input type="radio" name="res_' + textAreaCount + '" id="res_impact_' + textAreaCount + '" value="impact" />
-          	        <label for="res_impact_' + textAreaCount + '">This has already happened</label>
+          	        <label for="res_impact_' + textAreaCount + '">This is an impact</label>
           	      </div>
           	      <div>
           	        <input type="radio" name="res_' + textAreaCount + '" id="res_hope_' + textAreaCount + '" value="hope" />
-          	        <label for="res_hope_' + textAreaCount + '">We hope this will happen in the future</label>
-          	      </div>
-          	      <div>
-          	        <input type="radio" name="res_' + textAreaCount + '" id="res_challenge_' + textAreaCount + '" value="challenge" />
-          	        <label for="res_challenge_' + textAreaCount + '">This is a challenge</label>
+          	        <label for="res_plan_' + textAreaCount + '">We hope this will happen in the future</label>
           	      </div>
               	</div>
               </div>')
