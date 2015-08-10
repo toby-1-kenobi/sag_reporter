@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150806081203) do
+ActiveRecord::Schema.define(version: 20150810153948) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,15 +20,44 @@ ActiveRecord::Schema.define(version: 20150806081203) do
     t.integer  "user_id"
     t.string   "event_label",        null: false
     t.date     "event_date",         null: false
-    t.text     "location"
     t.integer  "participant_amount"
     t.integer  "purpose"
     t.text     "content"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.string   "district"
+    t.string   "sub_district"
+    t.string   "village"
   end
 
   add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
+
+  create_table "events_purposes", id: false, force: :cascade do |t|
+    t.integer "event_id"
+    t.integer "purpose_id"
+  end
+
+  add_index "events_purposes", ["event_id", "purpose_id"], name: "index_events_purposes_on_event_id_and_purpose_id", unique: true, using: :btree
+  add_index "events_purposes", ["event_id"], name: "index_events_purposes_on_event_id", using: :btree
+  add_index "events_purposes", ["purpose_id"], name: "index_events_purposes_on_purpose_id", using: :btree
+
+  create_table "impact_reports", force: :cascade do |t|
+    t.text     "content",            null: false
+    t.integer  "reporter_id"
+    t.integer  "event_id"
+    t.boolean  "mt_society"
+    t.boolean  "mt_church"
+    t.boolean  "needs_society"
+    t.boolean  "needs_church"
+    t.integer  "progress_marker_id"
+    t.integer  "state"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "impact_reports", ["event_id"], name: "index_impact_reports_on_event_id", using: :btree
+  add_index "impact_reports", ["progress_marker_id"], name: "index_impact_reports_on_progress_marker_id", using: :btree
+  add_index "impact_reports", ["reporter_id"], name: "index_impact_reports_on_reporter_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -85,6 +114,7 @@ ActiveRecord::Schema.define(version: 20150806081203) do
     t.string   "description"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.integer  "category"
   end
 
   add_index "permissions", ["name"], name: "index_permissions_on_name", unique: true, using: :btree
@@ -92,6 +122,23 @@ ActiveRecord::Schema.define(version: 20150806081203) do
   create_table "permissions_roles", id: false, force: :cascade do |t|
     t.integer "role_id"
     t.integer "permission_id"
+  end
+
+  create_table "progress_markers", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "topic_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "progress_markers", ["topic_id"], name: "index_progress_markers_on_topic_id", using: :btree
+
+  create_table "purposes", force: :cascade do |t|
+    t.string   "name",        null: false
+    t.string   "description", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "reports", force: :cascade do |t|
@@ -167,10 +214,16 @@ ActiveRecord::Schema.define(version: 20150806081203) do
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
   add_foreign_key "events", "users"
+  add_foreign_key "events_purposes", "events"
+  add_foreign_key "events_purposes", "purposes"
+  add_foreign_key "impact_reports", "events"
+  add_foreign_key "impact_reports", "progress_markers"
+  add_foreign_key "impact_reports", "users", column: "reporter_id"
   add_foreign_key "languages_tallies", "languages"
   add_foreign_key "languages_tallies", "tallies"
   add_foreign_key "people", "languages"
   add_foreign_key "people", "users"
+  add_foreign_key "progress_markers", "topics"
   add_foreign_key "tallies", "topics"
   add_foreign_key "tally_updates", "languages_tallies"
   add_foreign_key "tally_updates", "users"
