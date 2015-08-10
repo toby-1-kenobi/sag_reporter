@@ -2,11 +2,12 @@
 # duplicates are avoided and you may specify if the fields of an
 # existing record should be updated.
 
+
 module FixtureParser
 
   require 'yaml'
 
-  # files_options_hash has fixtures file names as keys and then a has like this as values
+  # files_options_hash has fixtures file names as keys and then a hash like this as values
   # {
   #  model_name: 'Permission',
   #  key_field: 'name' # this field defines the record - if it's the same it should be the same record
@@ -20,7 +21,6 @@ module FixtureParser
   	files_options_hash.each_key do |filename|
   	  fixtures[filename] = YAML.load(ERB.new(File.read(filename)).result)
   	end
-  	#puts "all fixtures " + fixtures.inspect 
 
   	# before updating collect all the objects by names given in fixtures
   	all_objects = Hash.new
@@ -65,32 +65,38 @@ module FixtureParser
   	values_hash.each do |field, value|
   	  # if the field is an array we need to assign with 'push' instead of '='
   	  if model_instance.send(field).respond_to?("push") then push = true end
-      # it may be a comma seperated list, so split it
-      if value.respond_to?('split')
-        values_array = value.split(',').map(&:strip)
-      else
-      	values_array = [value]
-      end
+      # it may be a comma seperated list of fixtures so process it
+      values_array = replace_strings_with_fixtures(value, all_fixture_instances)
       values_array.each do |value|
-      	# if it refers to another fixture use the corresponding object as the value
-  	    if fixt = all_fixture_instances[value] and fixt != model_instance
-  	      if push
-  	      	model_instance.send(field).push(fixt)
-  	      else
-  	      	model_instance.send(field + '=', fixt)
-  	      end
+  	    if push
+  	      model_instance.send(field).push(value)
   	    else
-  	      if push
-  	      	model_instance.send(field).push(value)
-  	      else
-  	      	model_instance.send(field + '=', value)
-  	      end
-  	  	end
+  	      model_instance.send(field + '=', value)
+  	    end
   	  end
   	end
 
   	model_instance.save!
 
+  end
+
+  def replace_strings_with_fixtures(value, all_fixture_instances)
+  	if value.respond_to?("split")
+  	  # it might be a comma sperated list of fixtures
+  	  fixtures_array = value.split(',').map(&:strip)
+  	  fixtures_array.each_with_index do |fixture_name, index|
+  	  	if obj = all_fixture_instances[fixture_name]
+  	  	  fixtures_array[index] = obj
+  	  	else
+  	  	  # could not find one fixture
+  	  	  # it must just be a string after all
+  	  	  return [value]
+  	  	end
+  	  end
+  	  return fixtures_array
+  	end
+  	# it's not a string, return it in it's own array
+  	return [value]
   end
 
 end
