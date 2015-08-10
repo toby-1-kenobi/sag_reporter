@@ -9,29 +9,42 @@
           <div class="input-field col s12">
             <i class="material-icons prefix">label</i>
             <%= f.text_field :event_label %>
-            <%= f.label :event_label, "Event Label" %>
+            <%= f.label :event_label, "Event Name" %>
           </div>
         </div>
 
         <div class="row">
-          <div class="input-field col s4">
-            <i class="material-icons prefix">today</i>
-            <%= f.date_field :event_date, class: "datepicker active" %>
-            <%= f.label :event_date, "Date" %>
-          </div>
-          <div class="input-field col s8">
+          <div class="col s8">
             <i class="material-icons prefix">location_on</i>
-            <%= f.text_area :location, class: "materialize-textarea" %>
-            <%= f.label :location, "Location (village, block, district)" %>
+            <%= label_tag "Location" %>
+            <div class="input-field">
+              <%= f.text_field :district %>
+              <%= f.label :district %>
+            </div>
+            <div class="input-field">
+              <%= f.text_field :sub_district %>
+              <%= f.label :sub_district, "Sub-district" %>
+            </div>
+            <div class="input-field">
+              <%= f.text_field :village %>
+              <%= f.label :village %>
+            </div>
+          </div>
+          <div class="col s4">
+            <div class="input-field">
+              <i class="material-icons prefix">today</i>
+              <%= f.date_field :event_date, class: "datepicker active" %>
+              <%= f.label :event_date, "Date" %>
+            </div>
+            <div class="input-field">
+              <%= f.number_field :participant_amount %>
+              <%= f.label :participant_amount, "Total number of participants" %>
+            </div>
           </div>
         </div>
 
         <div class="row">
-          <div class="input-field col s6">
-            <%= f.number_field :participant_amount %>
-            <%= f.label :participant_amount, "Total amount of participants" %>
-          </div>
-          <div class="input-field col s6">
+          <div class="input-field col s12">
             <%= render partial: "shared/multiselect", locals: {
             	text: "Languages involved...",
             	icon: "language",
@@ -54,7 +67,7 @@
       <div class="input-field people-increase col s4">
         <i class="material-icons prefix">people</i>
         <%= autocomplete_field_tag "people", '', autocomplete_person_name_events_path %>
-        <%= label_tag :people, "Contributing people", {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Write one name in each row"} %>
+        <%= label_tag :people, "Key people involved", {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Write one name in each row"} %>
       </div>
     </div>
     <% yes_no_questions.each do |code, question| %>
@@ -81,20 +94,18 @@
                 <%= text_area_tag("#{code}-response", "", class: "materialize-textarea") %>
                 <%= label_tag("#{code}-response", "What was said, and who said it?") %>
               </div>
+              <% unless code == "plan" or code == "impact" %>
               <div class="col s6">
                 <div>
             	    <%= radio_button_tag("#{code}-res", "impact") %>
-            	    <%= label_tag("#{code}-res_impact", "This has already happened") %>
+            	    <%= label_tag("#{code}-res_impact_0", "This is an impact") %>
                 </div>
                 <div>
             	    <%= radio_button_tag("#{code}-res", "hope") %>
-          	      <%= label_tag("#{code}-res_hope", "Will hope this will happen in the future") %>
-                </div>
-                <div>
-          	      <%= radio_button_tag("#{code}-res", "challenge") %>
-          	      <%= label_tag("#{code}-res_challenge", "This is a challenge") %>
+          	      <%= label_tag("#{code}-res_plan_0", "This needs follow-up") %>
                 </div>
               </div>
+              <% end %>
             </div>
 
           </div>
