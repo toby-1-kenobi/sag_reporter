@@ -5,7 +5,7 @@
           <% collection.each do |item| %>
             <li>
               <%= check_box_tag("#{object}[#{attribute}][#{item.id.to_s}]", 1, selected.include?(item)) %>
-              <%= label_tag("#{object}[#{attribute}][#{item.id.to_s}]", item.name) %>
+              <%= label_tag("#{object}[#{attribute}][#{item.id.to_s}]", item.send(display)) %>
             </li>
           <% end %>
         </ul>
