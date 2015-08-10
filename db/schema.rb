@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150810104337) do
+ActiveRecord::Schema.define(version: 20150810111401) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,15 @@ ActiveRecord::Schema.define(version: 20150810104337) do
   end
 
   add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
+
+  create_table "events_purposes", id: false, force: :cascade do |t|
+    t.integer "event_id"
+    t.integer "purpose_id"
+  end
+
+  add_index "events_purposes", ["event_id", "purpose_id"], name: "index_events_purposes_on_event_id_and_purpose_id", unique: true, using: :btree
+  add_index "events_purposes", ["event_id"], name: "index_events_purposes_on_event_id", using: :btree
+  add_index "events_purposes", ["purpose_id"], name: "index_events_purposes_on_purpose_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -95,6 +104,13 @@ ActiveRecord::Schema.define(version: 20150810104337) do
   create_table "permissions_roles", id: false, force: :cascade do |t|
     t.integer "role_id"
     t.integer "permission_id"
+  end
+
+  create_table "purposes", force: :cascade do |t|
+    t.string   "name",        null: false
+    t.string   "description", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "reports", force: :cascade do |t|
@@ -170,6 +186,8 @@ ActiveRecord::Schema.define(version: 20150810104337) do
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
   add_foreign_key "events", "users"
+  add_foreign_key "events_purposes", "events"
+  add_foreign_key "events_purposes", "purposes"
   add_foreign_key "languages_tallies", "languages"
   add_foreign_key "languages_tallies", "tallies"
   add_foreign_key "people", "languages"

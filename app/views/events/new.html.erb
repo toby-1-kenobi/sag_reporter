@@ -50,6 +50,7 @@
             	icon: "language",
             	object: "event",
             	attribute: "languages",
+              display: :name,
             	collection: @minority_languages,
             	selected: Hash.new
             } %>
@@ -59,10 +60,18 @@
         <div class="row">
           <div class="input-field col s12">
             <!--i class="material-icons prefix">directions_walk</i-->
-            <%= select("event", "purpose", Event.purpose_text.invert, {    include_blank: "something else"}) %>
-            <%= f.label :purpose, "Purpose: To enable..." %>
+            <%= render partial: "shared/multiselect", locals: {
+              text: "Purpose: To enable...",
+              icon: "directions_walk",
+              object: "event",
+              attribute: "purposes",
+              display: :description,
+              collection: @all_purposes,
+              selected: Hash.new
+            } %>
           </div>
         </div>
+
       </div>
       <div class="input-field people-increase col s4">
         <i class="material-icons prefix">people</i>
