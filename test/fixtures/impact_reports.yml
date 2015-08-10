@@ -1,0 +1,24 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  content: MyText
+  reporter: 
+  event: 
+  mt_society: false
+  mt_church: false
+  needs_society: false
+  needs_church: false
+  progress_marker: 
+  state: 1
+
+two:
+  content: MyText
+  reporter: 
+  event: 
+  mt_society: false
+  mt_church: false
+  needs_society: false
+  needs_church: false
+  progress_marker: 
+  state: 1

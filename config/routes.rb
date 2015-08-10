@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   
+  resources :impact_reports
   root 'static_pages#home'
 
   resources :events do
