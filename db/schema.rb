@@ -11,11 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150810163209) do
-
+ActiveRecord::Schema.define(version: 20150811063038) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "attendances", force: :cascade do |t|
+    t.integer  "person_id",  null: false
+    t.integer  "event_id",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "attendances", ["event_id", "person_id"], name: "index_attendances_on_event_id_and_person_id", unique: true, using: :btree
+  add_index "attendances", ["event_id"], name: "index_attendances_on_event_id", using: :btree
+  add_index "attendances", ["person_id"], name: "index_attendances_on_person_id", using: :btree
 
   create_table "events", force: :cascade do |t|
     t.integer  "user_id"
@@ -32,6 +42,13 @@ ActiveRecord::Schema.define(version: 20150810163209) do
   end
 
   add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
+
+  create_table "events_languages", id: false, force: :cascade do |t|
+    t.integer "event_id",    null: false
+    t.integer "language_id", null: false
+  end
+
+  add_index "events_languages", ["event_id", "language_id"], name: "index_events_languages", unique: true, using: :btree
 
   create_table "events_purposes", id: false, force: :cascade do |t|
     t.integer "event_id"
@@ -221,10 +238,11 @@ ActiveRecord::Schema.define(version: 20150810163209) do
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
+  add_foreign_key "attendances", "events"
+  add_foreign_key "attendances", "people"
   add_foreign_key "events", "users"
   add_foreign_key "events_purposes", "events"
   add_foreign_key "events_purposes", "purposes"
-
   add_foreign_key "impact_reports", "events"
   add_foreign_key "impact_reports", "progress_markers"
   add_foreign_key "impact_reports", "users", column: "reporter_id"

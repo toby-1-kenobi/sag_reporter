@@ -6,6 +6,7 @@ class Language < ActiveRecord::Base
   has_many :language_tallies, class_name: 'LanguagesTally', dependent: :destroy
   has_and_belongs_to_many :impact_reports
   has_many :tallies, through: :language_tallies
+  has_and_belongs_to_many :events
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
 	
