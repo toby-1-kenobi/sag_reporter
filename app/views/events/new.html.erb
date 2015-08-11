@@ -2,6 +2,7 @@
 <h1><i class="material-icons large">event</i> Report on an Event</h1>
 <div class="row">
   <%= form_for(@event, html: {class: "col s12"}) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
     <div class="row">
       <div class="col s8">
 
@@ -79,7 +80,7 @@
         <%= label_tag :people, "Key people involved", {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Write one name in each row"} %>
       </div>
     </div>
-    <% yes_no_questions.each do |code, question| %>
+    <% Event.yes_no_questions.each do |code, question| %>
       <div class="yes-no-question">
 
         <div class="row">
@@ -98,20 +99,20 @@
         <div class="row yes-response hide">
           <div class="col s12">
 
-            <div class="row response-input row_0">
+            <div class="row response-input row__0">
               <div class="input-field col s6">
-                <%= text_area_tag("#{code}-response_0", "", class: "materialize-textarea") %>
-                <%= label_tag("#{code}-response_0", "What was said, and who said it?") %>
+                <%= text_area_tag("#{code}-response__0", "", class: "materialize-textarea") %>
+                <%= label_tag("#{code}-response__0", "What was said, and who said it?") %>
               </div>
               <% unless code == "plan" or code == "impact" %>
               <div class="col s6">
                 <div>
-            	    <%= radio_button_tag("#{code}-res_0", "impact") %>
-            	    <%= label_tag("#{code}-res_0_impact", "This is an impact") %>
+            	    <%= radio_button_tag("#{code}-type__0", "impact") %>
+            	    <%= label_tag("#{code}-type__0_impact", "This is an impact") %>
                 </div>
                 <div>
-            	    <%= radio_button_tag("#{code}-res_0", "plan") %>
-          	      <%= label_tag("#{code}-res_0_plan", "This needs follow-up") %>
+            	    <%= radio_button_tag("#{code}-type__0", "plan") %>
+          	      <%= label_tag("#{code}-type__0_plan", "This needs follow-up") %>
                 </div>
               </div>
               <% end %>
@@ -119,7 +120,7 @@
                 <%= render partial: "shared/multiselect", locals: {
                   text: "Languages involved...",
                   icon: "language",
-                  object: code + '_0',
+                  object: code + '-lang__0',
                   attribute: "languages",
                   display: :name,
                   collection: @minority_languages,
@@ -151,14 +152,14 @@
       <div class="row yes-response hide">
           <div class="col s12">
 
-            <div class="row decision-response-input">
+            <div class="row decision-response-input row__0">
               <div class="input-field col s6">
-                <%= text_area_tag("decision-response", "", class: "materialize-textarea") %>
-                <%= label_tag("decision-response", "What action must be taken?") %>
+                <%= text_area_tag("decision-response__0", "", class: "materialize-textarea") %>
+                <%= label_tag("decision-response__0", "What action must be taken?") %>
               </div>
               <div class="input-field col s6">
-                <%= autocomplete_field_tag "person-responsible", '', autocomplete_person_name_events_path %>
-                <%= label_tag("person-responsible", "The person responsible") %>
+                <%= autocomplete_field_tag "person-responsible__0", '', autocomplete_person_name_events_path %>
+                <%= label_tag("person-responsible__0", "The person responsible") %>
               </div>
             </div>
 
@@ -167,10 +168,18 @@
 
     </div>
     <div class="row">
-      <div class="input-field col s12">
+      <div class="input-field col s9">
         <i class="material-icons prefix">event_available</i>
         <%= f.text_area :content, class: "materialize-textarea" %>
         <%= f.label :content, "If anything else happened in the event that should be recorded, write it here." %>
       </div>
+    </div>
+    <div class="row">
+      <div>
+        <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+          Submit <i class="material-icons right">send</i>
+        <% end %>
+      </div>
+    </div>
   <% end %>
 </div>
