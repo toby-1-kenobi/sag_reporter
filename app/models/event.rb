@@ -7,6 +7,7 @@ class Event < ActiveRecord::Base
   has_many :people, through: :attendances
   has_many :impact_reports
   has_many :planning_reports, class_name: "Report"
+  has_many :action_points
 
   def self.yes_no_questions
     questions = Hash.new
