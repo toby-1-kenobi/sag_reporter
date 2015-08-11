@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150811063038) do
+ActiveRecord::Schema.define(version: 20150811074951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,15 +167,19 @@ ActiveRecord::Schema.define(version: 20150811063038) do
   end
 
   create_table "reports", force: :cascade do |t|
-    t.integer  "reporter_id",             null: false
+    t.integer  "reporter_id",              null: false
     t.text     "content"
-    t.integer  "report_type", default: 0, null: false
-    t.integer  "state",       default: 1, null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.integer  "state",        default: 1, null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.boolean  "mt_social"
+    t.boolean  "mt_church"
+    t.boolean  "needs_social"
+    t.boolean  "needs_church"
+    t.integer  "event_id"
   end
 
-  add_index "reports", ["report_type"], name: "index_reports_on_report_type", using: :btree
+  add_index "reports", ["event_id"], name: "index_reports_on_event_id", using: :btree
   add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id", using: :btree
   add_index "reports", ["state"], name: "index_reports_on_state", using: :btree
 
@@ -251,6 +255,7 @@ ActiveRecord::Schema.define(version: 20150811063038) do
   add_foreign_key "people", "languages"
   add_foreign_key "people", "users"
   add_foreign_key "progress_markers", "topics"
+  add_foreign_key "reports", "events"
   add_foreign_key "tallies", "topics"
   add_foreign_key "tally_updates", "languages_tallies"
   add_foreign_key "tally_updates", "users"
