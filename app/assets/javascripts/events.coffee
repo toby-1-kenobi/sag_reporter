@@ -36,7 +36,7 @@ addNewDecision = ->
   newDecision = $('<div class="row decision-response-input row__' + decisionCount + '"></div>')
   newDecision.html($(this).parents('.decision-response-input').html().replace(/__\d+/g, '__' + decisionCount))
   $(this).off 'keypress', addNewDecision
-  newDecision.find('#decision-response_' + decisionCount).on 'keypress', addNewDecision
+  newDecision.find('textarea').on 'keypress', addNewDecision
   $(this).parents('.decision-response-input').after newDecision
   return
 
@@ -48,7 +48,7 @@ $(document).ready ->
 
   $('.people-increase input:last').on 'keypress', addField
   $('.response-input textarea').on 'keypress', addInputRow
-  $('#decision-response').keypress addNewDecision
+  $('.decision-response-input textarea').on 'keypress', addNewDecision
 
   $('.yes-no-question input:radio').change ->
     answer = $('label[for=\'' + $(this).attr('id') + '\']').text()

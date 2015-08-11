@@ -48,15 +48,31 @@ class EventsController < ApplicationController
       	  	  }
       	  	  unless code == 'plan' || code == 'impact' then report_params[code] = true end
       	  	  if report_type[key] == "impact"
-      	  	    ImpactReport.create(report_params) or errors << "could not create impact report: " + content.slice(0..20)
+      	  	    ImpactReport.create(report_params) or errors << "could not create impact report: " + value.slice(0..20)
       	  	  else
-      	  	    Report.create(report_params) or errors << "could not create planning report: " + content.slice(0..20)
+      	  	    Report.create(report_params) or errors << "could not create planning report: " + value.slice(0..20)
       	  	  end
       	  	end
       	  end
       	end
       end
       # Create the action points
+      if params['decision'] == 'yes'
+        action_content = Hash[params.select{ |param| param[/^decision-response__\d+$/] }.map{ |k,v| [k.split('__').last,v] }]
+        action_person = Hash[params.select{ |param| param[/^person-responsible__\d+$/] }.map{ |k,v| [k.split('__').last,v] }]
+        action_content.each do |key, value|
+      	  unless value.empty?
+      	  	person = Person.find_or_create_by(name: action_person[key])
+      	  	action_params = {
+      	      content: value,
+      	  	  responsible: person,
+      	  	  record_creator: current_user,
+      	  	  event: @event
+      	  	}
+      	  	ActionPoint.create(action_params) or errors << "could not create action point: " + value.slice(0..20)
+      	  end
+      	end
+      end
 
       # Save the event for good measure
       @event.save

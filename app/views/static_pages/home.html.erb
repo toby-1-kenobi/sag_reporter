@@ -6,7 +6,7 @@
   <% if current_user.can_create_report? %>
     <%= link_to new_report_path, class: "collection-item waves-effect", id: "field-report-link" do %>
       <i class="material-icons">create</i>
-      Make a field report
+      Report on a conversation or observation
     <% end %>
   <% end %>
 
@@ -22,11 +22,14 @@
   <% if current_user.can_view_all_tallies? %>
     <%= link_to tallies_path, class: "collection-item waves-effect", id: "tallies-link" do %>
       <i class="material-icons">assessment</i>
-      View tallies
+      Report on Tallies for the month
     <% end %>
   <% end %>
 
+  <a href="#" class="collection-item waves-effect"><i class="material-icons">message</i> View my reports</a>
 
+  <a href="#" class="collection-item waves-effect"><i class="material-icons">message</i> View targets and progress</a>
+<!--
   <%= link_to contacts_people_path, class: "collection-item waves-effect", id: "view-contacts-link" do %>
     <i class="material-icons">face</i> 
     View my contacts
@@ -35,7 +38,7 @@
   <a href="#" class="collection-item waves-effect"><i class="material-icons">assignment</i> View my goals</a>
 
   <a href="#" class="collection-item waves-effect"><i class="material-icons">message</i> View my messages</a>
-
+-->
 
   <% if current_user.can_view_all_reports? %>
     <%= link_to reports_path, class: "collection-item waves-effect", id: "view-reports-link" do %>
