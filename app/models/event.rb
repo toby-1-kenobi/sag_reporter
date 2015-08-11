@@ -5,16 +5,17 @@ class Event < ActiveRecord::Base
   has_and_belongs_to_many :languages
   has_many :attendances, dependent: :destroy
   has_many :people, through: :attendances
+  has_many :impact_reports
+  has_many :planning_reports, class_name: "Report"
 
   def self.yes_no_questions
-    {
-      'mt_society' => "Was anything said about <strong>use of mother tongue in society</strong>?".html_safe,
-      'mt_church' => "Was anything said about <strong>use of mother tongue tools in the local churches</strong>?".html_safe,
-      'needs_society' => "Was anything said about <strong>needs of society</strong>?".html_safe,
-      'needs_church' => "Was anything said about <strong>needs of the churches</strong>?".html_safe,
-      'plan' => "Were any other <strong>hopes, dreams or challenges?</strong> shared?".html_safe,
-      'impact' => "Were any other <strong>impact stories</strong> shared?".html_safe
-    }
+    questions = Hash.new
+    Report.categories.each do |key, value|
+      questions[key] = "Was anything said about the <strong>#{value}</strong>?".html_safe
+    end
+    questions['plan'] = "Were any other <strong>hopes, dreams or challenges?</strong> shared?".html_safe
+    questions['impact'] = "Were any other <strong>impact stories</strong> shared?".html_safe
+    return questions
   end
 
 end

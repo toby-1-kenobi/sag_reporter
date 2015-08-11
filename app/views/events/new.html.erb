@@ -76,8 +76,8 @@
       </div>
       <div class="input-field people-increase col s4">
         <i class="material-icons prefix">people</i>
-        <%= autocomplete_field_tag "people", '', autocomplete_person_name_events_path %>
-        <%= label_tag :people, "Key people involved", {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Write one name in each row"} %>
+        <%= autocomplete_field_tag "person__0", '', autocomplete_person_name_events_path %>
+        <%= label_tag :person__0, "Key people involved", {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Write one name in each row"} %>
       </div>
     </div>
     <% Event.yes_no_questions.each do |code, question| %>
@@ -104,7 +104,11 @@
                 <%= text_area_tag("#{code}-response__0", "", class: "materialize-textarea") %>
                 <%= label_tag("#{code}-response__0", "What was said, and who said it?") %>
               </div>
-              <% unless code == "plan" or code == "impact" %>
+              <% if code == "impact" %>
+                <%= hidden_field_tag("#{code}-type__0", "impact") %>
+              <% elsif code == "plan" %>
+                <%= hidden_field_tag("#{code}-type__0", "plan") %>
+              <% else %>
               <div class="col s6">
                 <div>
             	    <%= radio_button_tag("#{code}-type__0", "impact") %>

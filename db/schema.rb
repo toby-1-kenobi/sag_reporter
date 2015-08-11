@@ -167,14 +167,14 @@ ActiveRecord::Schema.define(version: 20150811074951) do
   end
 
   create_table "reports", force: :cascade do |t|
-    t.integer  "reporter_id",              null: false
+    t.integer  "reporter_id",               null: false
     t.text     "content"
-    t.integer  "state",        default: 1, null: false
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.boolean  "mt_social"
+    t.integer  "state",         default: 1, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.boolean  "mt_society"
     t.boolean  "mt_church"
-    t.boolean  "needs_social"
+    t.boolean  "needs_society"
     t.boolean  "needs_church"
     t.integer  "event_id"
   end
