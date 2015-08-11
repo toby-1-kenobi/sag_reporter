@@ -1,16 +1,3 @@
 # Read about fixtures at
 # http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-one:
-  content: MyText
-  responsible: 
-  status: 1
-  record_creator: 
-  event: 
-
-two:
-  content: MyText
-  responsible: 
-  status: 1
-  record_creator: 
-  event: 

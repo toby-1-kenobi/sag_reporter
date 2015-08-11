@@ -3,7 +3,6 @@
 hope:
   reporter: andrew
   content: The pastor wants to expand women's ministry
-  report_type: <%= Report.report_types['hope'] %>
   state: <%= Report.states['active'] %>
   languages: toto
   created_at: <%= 2.days.ago %>
@@ -11,7 +10,6 @@ hope:
 event:
   reporter: emma
   content: A new village library was opened
-  report_type: <%= Report.report_types['event'] %>
   state: <%= Report.states['active'] %>
   languages: toto
   topics: education
@@ -20,7 +18,6 @@ event:
 impact:
   reporter: richard
   content: three new people in church due to Bible storytelling
-  report_type: <%= Report.report_types['impact'] %>
   state: <%= Report.states['active'] %>
   languages: toto
   topics: bible
@@ -29,7 +26,6 @@ impact:
 old:
   reporter: andrew
   content: old report
-  report_type: <%= Report.report_types['impact'] %>
   state: <%= Report.states['active'] %>
   languages: toto
   topics: bible
@@ -37,7 +33,6 @@ old:
 
 <%
 users = [:richard, :emma, :andrew]
-report_types = [:hope, :event, :impact]
 states = ["active", "active", "active", "active", "active", "active", "active", "archived"]
 languages = [:toto, :rajbanshi, :bodo, :sadri, :santali]
 topics = [:education, :literacy, :bible, :health, :engagement, :planting, :leadership]
@@ -46,7 +41,6 @@ topics = [:education, :literacy, :bible, :health, :engagement, :planting, :leade
 report-<%= index %>:
   reporter: <%= users.sample %>
   content: <%= Faker::Lorem.paragraph %>
-  report_type: <%= Report.report_types[report_types.sample] %>
   state: <%= Report.states[states.sample] %>
   languages: <%= languages.sample %>
   topics: <%= topics.sample %>
