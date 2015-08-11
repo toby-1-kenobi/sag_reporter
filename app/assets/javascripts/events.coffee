@@ -2,20 +2,22 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+personCount = 0
+textAreaCount = 0
+decisionCount = 0
+
 addField = ->
-  newField = $('<input type="text" name="people" value="" data-autocomplete="/events/autocomplete_person_name" />')
+  personCount += 1
+  newField = $('<input type="text" name="person__' + personCount + '" value="" data-autocomplete="/events/autocomplete_person_name" />')
   $(this).off 'keypress', addField
   newField.on 'keypress', addField
   $(this).after newField
   return
 
-textAreaCount = 0
-decisionCount = 0
-
 addInputRow = ->
   textAreaCount += 1
-  newInputRow = $('<div class="row response-input row_' + textAreaCount + '"></div>')
-  newInputRow.html($(this).parents('.response-input').html().replace(/_\d+/g, '_' + textAreaCount))
+  newInputRow = $('<div class="row response-input row__' + textAreaCount + '"></div>')
+  newInputRow.html($(this).parents('.response-input').html().replace(/__\d+/g, '__' + textAreaCount))
   $(this).off 'keypress', addInputRow
   newInputRow.find('textarea').on 'keypress', addInputRow
   newInputRow.find('.dropdown-content').removeAttr('style')
@@ -31,19 +33,10 @@ addInputRow = ->
 
 addNewDecision = ->
   decisionCount += 1
-  newDecision = $('<div class="row decision-response-input">
-              <div class="input-field col s6">
-                <textarea name="decision-response_' + decisionCount + '" id="decision-response_' + decisionCount + '" class="materialize-textarea">
-</textarea>
-                <label for="decision-response">What action must be taken?</label>
-              </div>
-              <div class="input-field col s6">
-                <input type="text" name="person-responsible_' + decisionCount + '" id="person-responsible_' + decisionCount + '" value="" data-autocomplete="/events/autocomplete_person_name" />
-                <label for="person-responsible_' + decisionCount + '">The person responsible</label>
-              </div>
-            </div>')
-  $(this).unbind()
-  newDecision.find('#decision-response_' + decisionCount).keypress addNewDecision
+  newDecision = $('<div class="row decision-response-input row__' + decisionCount + '"></div>')
+  newDecision.html($(this).parents('.decision-response-input').html().replace(/__\d+/g, '__' + decisionCount))
+  $(this).off 'keypress', addNewDecision
+  newDecision.find('#decision-response_' + decisionCount).on 'keypress', addNewDecision
   $(this).parents('.decision-response-input').after newDecision
   return
 
