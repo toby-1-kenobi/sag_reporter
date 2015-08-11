@@ -53,7 +53,7 @@ module FixtureParser
 
   	# now we've collected all the models we can update the ones that need updating
   	to_update.each do |fixture_name, values_hash|
-  	  update_model_instance(all_objects[fixture_name], values_hash, all_objects)
+  	  update_model_instance(all_objects[fixture_name], values_hash, all_objects.except(fixture_name))
   	end
 
   end
@@ -64,7 +64,10 @@ module FixtureParser
 
   	values_hash.each do |field, value|
   	  # if the field is an array we need to assign with 'push' instead of '='
-  	  if model_instance.send(field).respond_to?("push") then push = true end
+  	  if model_instance.send(field).respond_to?("push")
+  	  	model_instance.send(field).clear
+  	  	push = true
+  	  end
       # it may be a comma seperated list of fixtures so process it
       values_array = replace_strings_with_fixtures(value, all_fixture_instances)
       values_array.each do |value|
