@@ -11,11 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20150810111401) do
-=======
 ActiveRecord::Schema.define(version: 20150810163209) do
->>>>>>> reports
+
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,8 +42,6 @@ ActiveRecord::Schema.define(version: 20150810163209) do
   add_index "events_purposes", ["event_id"], name: "index_events_purposes_on_event_id", using: :btree
   add_index "events_purposes", ["purpose_id"], name: "index_events_purposes_on_purpose_id", using: :btree
 
-<<<<<<< HEAD
-=======
   create_table "impact_reports", force: :cascade do |t|
     t.text     "content",            null: false
     t.integer  "reporter_id"
@@ -72,7 +67,6 @@ ActiveRecord::Schema.define(version: 20150810163209) do
 
   add_index "impact_reports_languages", ["impact_report_id", "language_id"], name: "index_impact_reports_languages", unique: true, using: :btree
 
->>>>>>> reports
   create_table "languages", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
@@ -230,12 +224,10 @@ ActiveRecord::Schema.define(version: 20150810163209) do
   add_foreign_key "events", "users"
   add_foreign_key "events_purposes", "events"
   add_foreign_key "events_purposes", "purposes"
-<<<<<<< HEAD
-=======
+
   add_foreign_key "impact_reports", "events"
   add_foreign_key "impact_reports", "progress_markers"
   add_foreign_key "impact_reports", "users", column: "reporter_id"
->>>>>>> reports
   add_foreign_key "languages_tallies", "languages"
   add_foreign_key "languages_tallies", "tallies"
   add_foreign_key "people", "languages"
