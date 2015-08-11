@@ -11,10 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150811074951) do
+ActiveRecord::Schema.define(version: 20150811165707) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "action_points", force: :cascade do |t|
+    t.text     "content",                       null: false
+    t.integer  "responsible_id",                null: false
+    t.integer  "status",            default: 0, null: false
+    t.integer  "record_creator_id"
+    t.integer  "event_id"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "action_points", ["event_id"], name: "index_action_points_on_event_id", using: :btree
+  add_index "action_points", ["record_creator_id"], name: "index_action_points_on_record_creator_id", using: :btree
+  add_index "action_points", ["responsible_id"], name: "index_action_points_on_responsible_id", using: :btree
 
   create_table "attendances", force: :cascade do |t|
     t.integer  "person_id",  null: false
@@ -242,6 +256,9 @@ ActiveRecord::Schema.define(version: 20150811074951) do
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
+  add_foreign_key "action_points", "events"
+  add_foreign_key "action_points", "people", column: "responsible_id"
+  add_foreign_key "action_points", "users", column: "record_creator_id"
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
   add_foreign_key "events", "users"
