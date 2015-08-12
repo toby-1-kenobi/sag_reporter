@@ -1,10 +1,14 @@
 Rails.application.routes.draw do
   
-  resources :impact_reports
+  
   root 'static_pages#home'
 
   resources :events do
     get :autocomplete_person_name, :on => :collection
+  end
+  resources :impact_reports do
+    get 'tag', on: :collection
+    patch 'tag_update', on: :member
   end
   resources :languages
   resources :people do

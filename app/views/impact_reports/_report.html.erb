@@ -11,7 +11,9 @@
     <% Report.categories.select{ |key, sentence| report.send(key) }.each do |key, category| %>
       <p>Concerns the <%= category %>.</p>
     <% end %>
-  	<div class="reporter"><%= report.reporter.name %></div>
+    <% if report.reporter %>
+  	  <div class="reporter"><%= report.reporter.name %></div>
+    <% end %>
   	<% if languages %>
   	  <div class="report-languages">
   	  	<% report.languages.each do |language| %>
