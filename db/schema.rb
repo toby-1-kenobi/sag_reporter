@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150811165707) do
+ActiveRecord::Schema.define(version: 20150812052433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,8 +167,9 @@ ActiveRecord::Schema.define(version: 20150811165707) do
     t.string   "name"
     t.text     "description"
     t.integer  "topic_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "weight",      default: 1, null: false
   end
 
   add_index "progress_markers", ["topic_id"], name: "index_progress_markers_on_topic_id", using: :btree

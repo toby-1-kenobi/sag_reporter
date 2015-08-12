@@ -1,19 +1,19 @@
 
 english:
   name: English
-  description: Desireable international language
+  description: "Desireable international language"
   lwc: true
   colour: 'indigo lighten-3'
 
 hindi:
   name: Hindi
-  description: National language
+  description: "National language"
   lwc: true
   colour: 'lime lighten-2'
 
 bengali:
   name: Bengali
-  description: Also known as Bangla. State language of West Bengal
+  description: "Also known as Bangla. State language of West Bengal"
   lwc: true
   colour: "deep-orange"
 
@@ -25,24 +25,49 @@ toto:
 
 rajbanshi:
   name: Rajbanshi
-  description: Translation of gospels and acts undergoing testing in 2015.
+  description: "Translation of gospels and acts newrly ready in August 2015."
   lwc: false
   colour: 'green lighten-1'
 
 bodo:
   name: Bodo
-  description: Bodo language description
+  description: 
   lwc: false
   colour: 'pink lighten-1'
 
 sadri:
   name: Sadri
-  description: Sadri language description
+  description: "Translation of NT undergoing testing in August 2015"
   lwc: false
   colour: 'brown lighten-1'
 
 santali:
   name: Santali
-  description: Santali language description
+  description: 
   lwc: false
   colour: 'yellow lighten-1'
+
+munda:
+  name: Munda
+  lwc: false
+  colour: 'brown lighten-1'
+
+rabha:
+  name: Rabha
+  lwc: false
+  colour: 'purple lighten-2'
+
+kurux:
+  name: Kurux
+  lwc: false
+  colour: 'grey lighten-1'
+
+surjapuri:
+  name: Surjapuri
+  lwc: false
+  colour: 'red lighten-2'
+
+garo:
+  name: Garo
+  lwc: false
+  colour: 'cyan lighten-1'
