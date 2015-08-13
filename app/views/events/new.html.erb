@@ -77,7 +77,7 @@
       <div class="input-field people-increase col s4">
         <i class="material-icons prefix">people</i>
         <%= autocomplete_field_tag "person__0", '', autocomplete_person_name_events_path %>
-        <%= label_tag :person__0, "Key people involved", {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Write one name in each row"} %>
+        <%= label_tag :person__0, "People involved", {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Write one name in each row"} %>
       </div>
     </div>
     <% Event.yes_no_questions.each do |code, question| %>
