@@ -1,5 +1,7 @@
 
-    <%= link_to topic, class: "collection-item" do %>
-      <%= topic.name %>
-      <span class="secondary-content colour <%= topic.colour %>">&nbsp;</span>
-    <% end %>
+<div class="card outcome-area  <%= topic.colour %>" id="outcome-<%= topic.id %>">
+  <div class="card-content">
+    <span class="card-title"><%= topic.name %></span>
+    <p><%= topic.description %></p>
+  </div>
+</div>

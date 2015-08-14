@@ -1,0 +1,14 @@
+<% provide(:title, 'Assess outcome progress by language') %>
+<h1>Assess outcome progress by language</h1>
+
+<div id="outcome-area-select">
+  <p>First choose an outcome area to assess:</p>
+  <%= render @topics %>
+</div>
+
+<div style="display: none" id="language-select">
+  <p>Now choose a language to assess by:</p>
+  <div class="collection">
+  	<%= render partial: 'topics/language', collection: @languages %>
+  </div>
+</div>
