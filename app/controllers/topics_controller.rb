@@ -24,6 +24,7 @@ class TopicsController < ApplicationController
 
   def index
   	@topics = Topic.all
+    @languages = Language.all
   end
 
   def show
@@ -53,6 +54,16 @@ class TopicsController < ApplicationController
     else
       render 'new'
     end
+  end
+
+  def assess_progress_select
+    @topics = Topic.all
+    @languages = Language.where(lwc: false)
+  end
+
+  def assess_progress
+    @outcome_area = Topic.find(params[:topic_id])
+    @language = Language.find(params[:language_id])
   end
 
     private
