@@ -63,6 +63,7 @@ class TopicsController < ApplicationController
 
   def assess_progress
     @outcome_area = Topic.find(params[:topic_id])
+    @progress_markers_by_weight = ProgressMarker.where(topic: @outcome_area).group_by { |pm| pm.weight }
     @language = Language.find(params[:language_id])
   end
 

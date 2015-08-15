@@ -1,0 +1,24 @@
+<% provide(:title, "Assess #{@outcome_area.name} for #{@language.name}") %>
+<div class="row">
+  <div class="col s12 m6">
+  	<%= render partial: 'topic', object: @outcome_area %>
+  </div>
+  <div class="col s12 m6">
+  	<%= render partial: 'languages/language_card', object: @language %>
+  </div>
+</div>
+<% @progress_markers_by_weight.each do |weight, progress_marker_group| %>
+  <div class="row">
+    <h2><%= ProgressMarker.weight_text[weight] %></h2>
+    <ul class="collapsible" data-collapsible="accordion">
+      <% progress_marker_group.each do |progress_marker| %>
+        <li>
+          <div class="collapsible-header"><%= progress_marker.name %></div>
+          <div class="collapsible-body">
+            <p><%= progress_marker.description %></p>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
