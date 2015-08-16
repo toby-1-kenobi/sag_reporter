@@ -8,8 +8,8 @@
   	  <div><%= time_ago_in_words(report.created_at) %> ago</div>
   	<% end %>
   	<p><%= report.content %></p>
-    <% Report.categories.select{ |key, sentence| report.send(key) }.each do |key, category| %>
-      <p>Concerns the <%= category %>.</p>
+    <% unless Report.categories.select{ |key, sentence| report.send(key) }.empty? %>
+      <p class="concerning">Concerns <%= Report.categories.select{ |key, sentence| report.send(key) }.values.map { |v| "the #{v}" }.to_sentence() %>.</p>
     <% end %>
     <% if report.reporter %>
   	  <div class="reporter"><%= report.reporter.name %></div>

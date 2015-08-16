@@ -16,6 +16,19 @@
           <div class="collapsible-header"><%= progress_marker.name %></div>
           <div class="collapsible-body">
             <p><%= progress_marker.description %></p>
+            <% if @reports_by_progress_marker[progress_marker.id] %>
+              <% @reports_by_progress_marker[progress_marker.id].in_groups_of(3, false) do |report_group| %>
+				  <div class="row">
+				    <% report_group.each do |report| %>
+				      <div class="col s12 m6 l4">
+				        <%= render partial: "impact_reports/report", object: report, locals: {time: true, languages: false, topics: false, wrapper: false} %>
+				      </div>
+				    <% end %>
+				  </div>
+              <% end %>
+            <% else %>
+              <p>There are no impact reports for <%= @language.name %> with this progress marker.</p>
+            <% end %>
           </div>
         </li>
       <% end %>

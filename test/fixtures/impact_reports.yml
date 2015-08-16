@@ -1,15 +1,92 @@
 # Read about fixtures at
 # http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+<% 
+  def users
+    [
+    :richard,
+    :emma,
+    :andrew
+    ]
+  end
 
-<% bools = ['false', 'false', 'false', 'true'] %>
+  def states
+    [
+    "active",
+    "active",
+    "active",
+    "active",
+    "active",
+    "active",
+    "active",
+    "archived"
+    ]
+  end
+
+  def minority_languages
+    [
+    :toto,
+    :rajbanshi,
+    :bodo,
+    :sadri,
+    :santali,
+    :munda,
+    :rabha,
+    :kurux,
+    :surjapuri,
+    :garo
+    ]
+  end
+
+  def topics
+    [
+    :movement_building,
+    :language_development,
+    :social_development,
+    :hleadership_development,
+    :faith_development
+    ]
+  end
+
+  def sd_progress_markers
+    [
+    :existing_skills_valued,
+    :symptoms_known,
+    :disease_prevented,
+    :visiting_doctor,
+    :skills_for_income,
+    :skills_used,
+    :demonstrated_care,
+    :knowledge_spread,
+    :businesses_started,
+    :facilitators_self_dependent,
+    :new_initiatives,
+    :businesses_skills_taught,
+    :local_doctors_or_ngos_invloved
+    ]
+  end
+
+bools = ['false', 'false', 'false', 'true'] %>
 <% (1..15).each do |index| %>
-report-<%= index %>:
-  reporter: <%= User.all.map{ |u| u.name }.sample %>
+impact-report-unassigned-<%= index %>:
+  reporter: <%= users.sample %>
   content: <%= Faker::Lorem.paragraph %>
   state: <%= Report.states['active'] %>
-  languages: <%= Language.all.map{ |u| u.name }.sample %>
+  languages: <%= minority_languages.sample %>
   mt_society: <%= bools.sample %>
   mt_church: <%= bools.sample %>
   needs_society: <%= bools.sample %>
   needs_church: <%= bools.sample %>
+<% end %>
+
+<% (1..50).each do |index| %>
+impact-report-santali-sd-<%= index %>:
+  reporter: <%= users.sample %>
+  content: <%= Faker::Lorem.paragraph %>
+  state: <%= Report.states['active'] %>
+  languages: santali
+  mt_society: <%= bools.sample %>
+  mt_church: <%= bools.sample %>
+  needs_society: <%= bools.sample %>
+  needs_church: <%= bools.sample %>
+  progress_marker: <%= sd_progress_markers.sample %>
 <% end %>
