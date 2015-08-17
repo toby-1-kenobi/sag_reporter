@@ -36,5 +36,18 @@ $(document).ready ->
 
   $('.activity-level-select input').trigger 'change'
 
+  $('.month-select select').on 'change', ->
+    month = $(this).val()
+    $('.report').show().addClass('showing')
+    $('.report').filter((index) ->
+      reportDate = new Date($(this).attr('data-date'))
+      return reportDate.getMonth() + 1 != parseInt(month)
+    ).hide().removeClass('showing')
+    $('.progress-marker').each (index, element) ->
+      $(this).find('.report-count').html($(this).find('.report.showing').length)
+      return
+    return
+
+  $('.month-select select').trigger 'change'
 
   return
