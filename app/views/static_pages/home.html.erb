@@ -18,17 +18,19 @@
     <% end %>
   <% end %>
 
+  <a href="#" class="collection-item waves-effect">Report on a completed resource</a>
+
 
   <% if current_user.can_view_all_tallies? %>
     <%= link_to tallies_path, class: "collection-item waves-effect", id: "tallies-link" do %>
       <i class="material-icons">assessment</i>
-      Report on Tallies for the month
+      Report numbers for the month
     <% end %>
   <% end %>
 
-  <a href="#" class="collection-item waves-effect"><i class="material-icons">message</i> View my reports</a>
+  <a href="#" class="collection-item waves-effect">View my reports</a>
 
-  <a href="#" class="collection-item waves-effect"><i class="material-icons">message</i> View targets and progress</a>
+  <a href="#" class="collection-item waves-effect">View targets and progress</a>
 <!--
   <%= link_to contacts_people_path, class: "collection-item waves-effect", id: "view-contacts-link" do %>
     <i class="material-icons">face</i> 
