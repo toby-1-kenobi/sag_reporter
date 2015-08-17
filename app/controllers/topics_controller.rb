@@ -24,6 +24,7 @@ class TopicsController < ApplicationController
 
   def index
   	@topics = Topic.all
+    @languages = Language.all
   end
 
   def show
@@ -53,6 +54,34 @@ class TopicsController < ApplicationController
     else
       render 'new'
     end
+  end
+
+  def assess_progress_select
+    @topics = Topic.all
+    @languages = Language.where(lwc: false)
+  end
+
+  def assess_progress
+    @outcome_area = Topic.find(params[:topic_id])
+    @progress_markers_by_weight = ProgressMarker.where(topic: @outcome_area).group_by { |pm| pm.weight }
+    @language = Language.find(params[:language_id])
+    @reports_by_progress_marker = ImpactReport.joins(:progress_marker, :languages).where("progress_markers.topic_id" => @outcome_area, "languages.id" => @language).select{ |ir| ir.report_date >= 1.year.ago }.group_by{ |ir| ir.progress_marker_id }
+  end
+
+  def update_progress
+    outcome_area = Topic.find(params[:topic_id])
+    language = Language.find(params[:language_id])
+    # We're only updating progress markers where the marker has been selected as done
+    # so filter the hash before looping
+    params[:progress_marker].select{ |pm, l| params[:marker_complete][pm] }.each do |marker, level|
+      progress_marker = ProgressMarker.find(marker)
+      language_progress = LanguageProgress.find_or_create_by(language: language, progress_marker: progress_marker)
+      ProgressUpdate.create(language_progress: language_progress, progress: level, user: current_user)
+      flash.now['success'] = "Progress Markers updated for #{outcome_area.name}."
+    end
+    @topics = Topic.all
+    @languages = Language.where(lwc: false)
+    render 'assess_progress_select'
   end
 
     private
