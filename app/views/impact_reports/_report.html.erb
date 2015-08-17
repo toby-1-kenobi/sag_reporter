@@ -1,15 +1,15 @@
 <% if wrapper %>
   <div class="report-wrapper <%= report.state %> <%= wrapper %>">
 <% end %>
-<div class="card report <%= report.state %> <%= "hide" if report.archived? %> green lighten-3" id="report-<%= report.id %>" data-date="<%= report.created_at %>">
+<div class="card report <%= report.state %> <%= "hide" if report.archived? %> green lighten-3" id="report-<%= report.id %>" data-date="<%= report.report_date %>">
   <div class="card-content">
     <span class="card-title">Impact Report</span>
     <% if time %>
   	  <div><%= time_ago_in_words(report.created_at) %> ago</div>
   	<% end %>
   	<p><%= report.content %></p>
-    <% Report.categories.select{ |key, sentence| report.send(key) }.each do |key, category| %>
-      <p>Concerns the <%= category %>.</p>
+    <% unless Report.categories.select{ |key, sentence| report.send(key) }.empty? %>
+      <p class="concerning">Concerns <%= Report.categories.select{ |key, sentence| report.send(key) }.values.map { |v| "the #{v}" }.to_sentence() %>.</p>
     <% end %>
     <% if report.reporter %>
   	  <div class="reporter"><%= report.reporter.name %></div>

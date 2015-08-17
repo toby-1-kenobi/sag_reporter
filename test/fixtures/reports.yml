@@ -2,14 +2,14 @@
 
 hope:
   reporter: andrew
-  content: The pastor wants to expand women's ministry
+  content: "The pastor wants to expand women's ministry"
   state: <%= Report.states['active'] %>
-  languages: toto
+  languages: bodo
   created_at: <%= 2.days.ago %>
 
 event:
   reporter: emma
-  content: A new village library was opened
+  content: "No one is coming to the library"
   state: <%= Report.states['active'] %>
   languages: toto
   topics: education
@@ -17,7 +17,7 @@ event:
 
 impact:
   reporter: richard
-  content: three new people in church due to Bible storytelling
+  content: "We're going to make a CD of songs"
   state: <%= Report.states['active'] %>
   languages: toto
   topics: bible

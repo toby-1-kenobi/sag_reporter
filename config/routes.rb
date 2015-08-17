@@ -44,6 +44,10 @@ Rails.application.routes.draw do
 
   get 'events/new'
 
+  get 'outcomes' => 'topics#assess_progress_select'
+  get 'outcomes/:topic_id/:language_id' => 'topics#assess_progress'
+  post 'outcomes/:topic_id/:language_id' => 'topics#update_progress'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
