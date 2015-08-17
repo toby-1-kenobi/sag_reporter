@@ -18,7 +18,7 @@
     <% end %>
   <% end %>
 
-  <a href="#" class="collection-item waves-effect">Report on a completed resource</a>
+  <a href="#" class="collection-item waves-effect"><i class="material-icons">build</i>Report on a completed resource</a>
 
 
   <% if current_user.can_view_all_tallies? %>
@@ -28,9 +28,24 @@
     <% end %>
   <% end %>
 
-  <a href="#" class="collection-item waves-effect">View my reports</a>
+  <a href="#" class="collection-item waves-effect"><i class="material-icons">dashboard</i>View my reports</a>
 
-  <a href="#" class="collection-item waves-effect">View targets and progress</a>
+  <a href="#" class="collection-item waves-effect"><i class="material-icons">extension</i>View targets and progress</a>
+
+  <% if current_user.is_an_evaluator? %>
+    <%= link_to "impact_reports/tag", class: "collection-item waves-effect", id: "tallies-link" do %>
+      <i class="material-icons">label</i>
+      Tag impact reports
+    <% end %>
+  <% end %>
+
+  <% if current_user.is_an_evaluator? %>
+    <%= link_to "/outcomes", class: "collection-item waves-effect", id: "tallies-link" do %>
+      <i class="material-icons">check_circle</i>
+      Evaluate progress marker levels
+    <% end %>
+  <% end %>
+
 <!--
   <%= link_to contacts_people_path, class: "collection-item waves-effect", id: "view-contacts-link" do %>
     <i class="material-icons">face</i> 
@@ -77,7 +92,7 @@
   <% if current_user.can_view_all_topics? %>
     <%= link_to topics_path, class: "collection-item waves-effect", id: "view-topics-link" do %>
       <i class="material-icons">local_offer</i>
-      View all topics
+      View all outcome areas
     <% end %>
   <% end %>
 
