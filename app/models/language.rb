@@ -7,6 +7,7 @@ class Language < ActiveRecord::Base
   has_and_belongs_to_many :impact_reports
   has_many :tallies, through: :language_tallies
   has_and_belongs_to_many :events
+  has_many :language_progresses, dependent: :destroy
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
 	

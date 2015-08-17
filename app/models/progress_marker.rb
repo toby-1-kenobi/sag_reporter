@@ -1,6 +1,8 @@
 class ProgressMarker < ActiveRecord::Base
 
   belongs_to :topic
+  has_many :language_progresses, dependent: :destroy
+  has_many :languages, through: :language_progresses 
 
   def self.weight_text
   	{
