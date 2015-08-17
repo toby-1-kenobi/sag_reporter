@@ -29,7 +29,7 @@ include FixtureParser
 fixtures_dir = "#{Rails.root}/db/seed_fixtures"
 options_hash = {
 	"#{fixtures_dir}/permissions.yml" => { model_name: 'Permission', key_field: 'name', update?: true },
-	"#{fixtures_dir}/roles.yml" => { model_name: 'Role', key_field: 'name', update?: false },
+	"#{fixtures_dir}/roles.yml" => { model_name: 'Role', key_field: 'name', update?: true },
     "#{fixtures_dir}/purposes.yml" =>  { model_name: 'Purpose', key_field: 'name', update?: true },
 	"#{fixtures_dir}/languages.yml" => { model_name: 'Language', key_field: 'name', update?: false },
 	"#{fixtures_dir}/topics.yml" => { model_name: 'Topic', key_field: 'name', update?: true },
