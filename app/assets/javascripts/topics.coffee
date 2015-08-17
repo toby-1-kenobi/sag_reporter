@@ -29,12 +29,12 @@ $(document).ready ->
     $(this).css 'top', '0'
     return
 
-  $('.activity-level-select input').change ->
+  $('.activity-level-select').on 'change', ->
     spreadText = $('#pm-data #spread-' + $(this).val()).attr('label')
-    $(this).parents('.activity-level-select').find('.spreadness-text').html(spreadText)
+    $(this).parents('.progress-marker').find('.spreadness-text').html(spreadText)
     return
 
-  $('.activity-level-select input').trigger 'change'
+  $('.activity-level-select').trigger 'change'
 
   $('.month-select select').on 'change', ->
     month = $(this).val()
