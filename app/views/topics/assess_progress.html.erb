@@ -7,11 +7,14 @@
 </datalist>
 
 <div class="row">
-  <div class="col s12 m6">
+  <div class="col s12 m6 l5">
   	<%= render partial: 'topic', object: @outcome_area %>
   </div>
-  <div class="col s12 m6">
+  <div class="col s12 m6 l5">
   	<%= render partial: 'languages/language_card', object: @language %>
+  </div>
+  <div class="col s12 m6 l2 input-field month-select">
+    <%= select_month(Date.today) %>
   </div>
 </div>
 
@@ -20,8 +23,10 @@
     <h2><%= ProgressMarker.weight_text[weight] %></h2>
     <ul class="collapsible" data-collapsible="accordion">
       <% progress_marker_group.each do |progress_marker| %>
-        <li>
-          <div class="collapsible-header"><%= progress_marker.name %></div>
+        <li class="progress-marker">
+          <div class="collapsible-header"><%= progress_marker.name %>
+          <span class="right report-count tooltipped" data-tooltip="Number of reports here"><%= @reports_by_progress_marker[progress_marker.id].count %></span>
+          </div>
           <div class="collapsible-body">
 
             <div class="row">
