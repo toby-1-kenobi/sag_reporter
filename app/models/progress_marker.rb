@@ -12,4 +12,13 @@ class ProgressMarker < ActiveRecord::Base
   	}
   end
 
+  def self.spread_text
+  	{
+  		0 => "Not seen",
+  		1 => "Emerging",
+  		2 => "Growing well",
+  		3 => "Widespread"
+  	}
+  end
+
 end
