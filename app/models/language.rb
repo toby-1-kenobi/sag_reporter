@@ -8,6 +8,7 @@ class Language < ActiveRecord::Base
   has_many :tallies, through: :language_tallies
   has_and_belongs_to_many :events
   has_many :language_progresses, dependent: :destroy
+  has_many :progress_markers, through: :language_progresses
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
 	
