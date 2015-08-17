@@ -30,7 +30,7 @@
               </div>
               <div class="col s6 range-field activity-level-select">
                 <%= label_tag("#{progress_marker.id}_#{@language.id}", "Asses the level of activity this month for #{@language.name}") %>
-              	<%= range_field(progress_marker.id, @language.id, in: ProgressMarker.spread_text.keys, list: "pm-data") %>
+              	<%= range_field(progress_marker.id, @language.id, in: ProgressMarker.spread_text.keys, list: "pm-data", value: progress_marker.current_progress(@language)) %>
                 <div class="spreadness-text"></div>
               </div>
             </div>
