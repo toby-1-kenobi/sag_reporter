@@ -29,5 +29,12 @@ $(document).ready ->
     $(this).css 'top', '0'
     return
 
+  $('.activity-level-select input').change ->
+    spreadText = $('#pm-data #spread-' + $(this).val()).attr('label')
+    $(this).parents('.activity-level-select').find('.spreadness-text').html(spreadText)
+    return
+
+  $('.activity-level-select input').trigger 'change'
+
 
   return
