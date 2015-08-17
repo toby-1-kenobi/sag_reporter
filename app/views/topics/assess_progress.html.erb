@@ -1,4 +1,11 @@
 <% provide(:title, "Assess #{@outcome_area.name} for #{@language.name}") %>
+
+<datalist id="pm-data" class="hide">
+  <% ProgressMarker.spread_text.each do |key, text| %>
+    <option label="<%= text %>" id="spread-<%= key %>"><%= key %></option>
+  <% end %>
+</datalist>
+
 <div class="row">
   <div class="col s12 m6">
   	<%= render partial: 'topic', object: @outcome_area %>
@@ -7,19 +14,24 @@
   	<%= render partial: 'languages/language_card', object: @language %>
   </div>
 </div>
+
 <% @progress_markers_by_weight.each do |weight, progress_marker_group| %>
   <div class="row">
     <h2><%= ProgressMarker.weight_text[weight] %></h2>
     <ul class="collapsible" data-collapsible="accordion">
       <% progress_marker_group.each do |progress_marker| %>
         <li>
-          <div class="collapsible-header"><%= progress_marker.description %></div>
+          <div class="collapsible-header"><%= progress_marker.name %></div>
           <div class="collapsible-body">
 
             <div class="row">
-              <div class="col s6 range-field">
+              <div class="col s6">
+                <p><%= progress_marker.description %></p>
+              </div>
+              <div class="col s6 range-field activity-level-select">
                 <%= label_tag("#{progress_marker.id}_#{@language.id}", "Asses the level of activity this month for #{@language.name}") %>
-              	<%= range_field(progress_marker.id, @language.id, in: ProgressMarker.spread_text.keys) %>
+              	<%= range_field(progress_marker.id, @language.id, in: ProgressMarker.spread_text.keys, list: "pm-data") %>
+                <div class="spreadness-text"></div>
               </div>
             </div>
             
