@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   
   
+
   root 'static_pages#home'
 
   resources :events do
@@ -47,6 +48,8 @@ Rails.application.routes.draw do
   get 'outcomes' => 'topics#assess_progress_select'
   get 'outcomes/:topic_id/:language_id' => 'topics#assess_progress'
   post 'outcomes/:topic_id/:language_id' => 'topics#update_progress'
+
+  get 'outputs/report_numbers' => 'output_tallies#report_numbers', as: 'report_numbers'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
