@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :spoken_languages, class_name: 'Language'
   has_many :tally_updates
+  has_many :output_counts
 
   attr_accessor :remember_token
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150817113439) do
+ActiveRecord::Schema.define(version: 20150818065003) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -141,6 +141,31 @@ ActiveRecord::Schema.define(version: 20150817113439) do
   end
 
   add_index "languages_users", ["user_id", "language_id"], name: "index_languages_users_on_user_id_and_language_id", unique: true, using: :btree
+
+  create_table "output_counts", force: :cascade do |t|
+    t.integer  "output_tally_id",             null: false
+    t.integer  "user_id",                     null: false
+    t.integer  "language_id",                 null: false
+    t.integer  "amount",          default: 0, null: false
+    t.integer  "year",                        null: false
+    t.integer  "month",                       null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "output_counts", ["language_id"], name: "index_output_counts_on_language_id", using: :btree
+  add_index "output_counts", ["output_tally_id"], name: "index_output_counts_on_output_tally_id", using: :btree
+  add_index "output_counts", ["user_id"], name: "index_output_counts_on_user_id", using: :btree
+
+  create_table "output_tallies", force: :cascade do |t|
+    t.integer  "topic_id",    null: false
+    t.string   "name",        null: false
+    t.text     "description"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "output_tallies", ["topic_id"], name: "index_output_tallies_on_topic_id", using: :btree
 
   create_table "people", force: :cascade do |t|
     t.string   "name"
@@ -295,6 +320,10 @@ ActiveRecord::Schema.define(version: 20150817113439) do
   add_foreign_key "language_progresses", "progress_markers"
   add_foreign_key "languages_tallies", "languages"
   add_foreign_key "languages_tallies", "tallies"
+  add_foreign_key "output_counts", "languages"
+  add_foreign_key "output_counts", "output_tallies"
+  add_foreign_key "output_counts", "users"
+  add_foreign_key "output_tallies", "topics"
   add_foreign_key "people", "languages"
   add_foreign_key "people", "users"
   add_foreign_key "progress_markers", "topics"
