@@ -12,5 +12,9 @@ class Language < ActiveRecord::Base
   has_many :output_counts
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
+
+  def self.minorities
+    where(lwc: false)
+  end
 	
 end

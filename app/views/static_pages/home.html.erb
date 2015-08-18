@@ -22,7 +22,7 @@
 
 
   <% if current_user.can_view_all_tallies? %>
-    <%= link_to tallies_path, class: "collection-item waves-effect", id: "tallies-link" do %>
+    <%= link_to report_numbers_path, class: "collection-item waves-effect", id: "tallies-link" do %>
       <i class="material-icons">assessment</i>
       Report numbers for the month
     <% end %>
