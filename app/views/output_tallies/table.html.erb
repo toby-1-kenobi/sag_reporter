@@ -1,0 +1,32 @@
+<% provide(:title, 'Output Totals') %>
+
+<h1><i class="material-icons large">tab</i> output totals</h1>
+
+<ul class="collapsible" data-collapsible="accordion">
+  <% @languages.each do |language| %>
+    <li>
+      <div class="collapsible-header <%= colour_class(language.colour) %>"><%= language.name %></div>
+      <div class="collapsible-body">
+        <% table_data = language.table_data %>
+        <table>
+          <thead>
+            <tr>
+          	  <% table_data.shift.each do |cell_content| %>
+          	    <th><%= cell_content %></th>
+          	  <% end %>
+          	</tr>
+          </thead>
+          <tbody>
+          	<% table_data.each do |row| %>
+          	  <tr>
+          	  	<% row.each do |cell| %>
+          	  	  <td><%= cell %></td>
+          	  	<% end %>
+          	  </tr>
+          	<% end %>
+          </tbody>
+        </table>
+      </div>
+    </li>
+  <% end %>
+</ul>
