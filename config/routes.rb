@@ -52,6 +52,7 @@ Rails.application.routes.draw do
   get 'outputs/report_numbers' => 'output_tallies#report_numbers', as: 'report_numbers'
   post 'outputs/report_numbers' => 'output_tallies#update_numbers', as: 'update_numbers'
   get 'outputs' => 'output_tallies#table', as: 'outputs'
+  get 'outputs/:id' => 'languages#outputs_table'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

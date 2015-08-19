@@ -68,4 +68,20 @@ module FixtureIdentifiers
 	  ]
 	end
 
+	def output_tallies
+	  [
+	  	:community_meetings,
+	  	:volunteers,
+	  	:tools_printed,
+	  	:literacy_classes,
+	  	:drafted_verses,
+	  	:church_approved_verses,
+	  	:consultant_approved_verses,
+	  	:jf_screening,
+	  	:oral_bible_tools,
+	  	:scripture_resources,
+	  	:discipleship_meetings
+	  ]
+	end
+
 end

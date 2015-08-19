@@ -52,6 +52,10 @@ gem 'rails4-autocomplete'
 # Use PostgreSQL as the database for Active Record
 gem 'pg'
 
+# Output PDF files
+gem 'prawn'
+gem 'prawn-table'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 

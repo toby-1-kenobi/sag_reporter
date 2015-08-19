@@ -21,8 +21,8 @@
   <a href="#" class="collection-item waves-effect"><i class="material-icons">build</i>Report on a completed resource</a>
 
 
-  <% if current_user.can_view_all_tallies? %>
-    <%= link_to report_numbers_path, class: "collection-item waves-effect", id: "tallies-link" do %>
+  <% if current_user.can_report_numbers? %>
+    <%= link_to report_numbers_path, class: "collection-item waves-effect", id: "numbers-link" do %>
       <i class="material-icons">assessment</i>
       Report numbers for the month
     <% end %>
@@ -32,17 +32,24 @@
 
   <a href="#" class="collection-item waves-effect"><i class="material-icons">extension</i>View targets and progress</a>
 
-  <% if current_user.is_an_evaluator? %>
-    <%= link_to "impact_reports/tag", class: "collection-item waves-effect", id: "tallies-link" do %>
+  <% if current_user.can_tag_report? %>
+    <%= link_to "impact_reports/tag", class: "collection-item waves-effect", id: "tag-link" do %>
       <i class="material-icons">label</i>
       Tag impact reports
     <% end %>
   <% end %>
 
-  <% if current_user.is_an_evaluator? %>
-    <%= link_to "/outcomes", class: "collection-item waves-effect", id: "tallies-link" do %>
+  <% if current_user.can_evaluate_progress? %>
+    <%= link_to "/outcomes", class: "collection-item waves-effect", id: "evaluate-link" do %>
       <i class="material-icons">check_circle</i>
       Evaluate progress marker levels
+    <% end %>
+  <% end %>
+
+  <% if current_user.can_view_output_totals? %>
+    <%= link_to outputs_path, class: "collection-item waves-effect", id: "output-totals-link" do %>
+      <i class="material-icons">table</i>
+      View output totals
     <% end %>
   <% end %>
 
