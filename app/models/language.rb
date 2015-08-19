@@ -16,5 +16,28 @@ class Language < ActiveRecord::Base
   def self.minorities
     where(lwc: false)
   end
+
+    def table_data(options = {})
+    options[:from_date] ||= 1.year.ago - 1.month
+    options[:to_date] ||= 1.month.ago
+    dates_by_month = (options[:from_date].to_date..options[:to_date].to_date).select{ |d| d.day == 1}
+
+    table = Array.new
+
+    headers = ["Outputs"]
+    dates_by_month.each{ |date| headers.push(date.strftime("%B %Y")) }
+    table.push(headers)
+
+    OutputTally.all.order(:topic_id).each do |tally|
+      row = [tally.description]
+      dates_by_month.each do |date|
+        row.push(tally.total([self], date.year, date.month))
+      end
+      table.push(row)
+    end
+
+    return table
+
+  end
 	
 end

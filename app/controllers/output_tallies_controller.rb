@@ -11,7 +11,7 @@ class OutputTalliesController < ApplicationController
 
   	month = params['date']['month'].to_i
   	year = Date.today.year
-  	if month > Date.today.month then year = year -1 end
+  	if month > Date.today.month then year = year - 1 end
 
   	params['amounts'].select{ |k,v| v and params[k] and not params[k].empty? }.each do |code, amount|
   	  language = Language.find(params[code])
@@ -28,6 +28,10 @@ class OutputTalliesController < ApplicationController
   	flash.now['success'] = "Numbers recorded"
   	render 'static_pages/home'
 
+  end
+
+  def table
+  	@languages = Language.minorities
   end
 
 end
