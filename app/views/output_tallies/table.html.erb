@@ -7,6 +7,7 @@
     <li>
       <div class="collapsible-header <%= colour_class(language.colour) %>"><%= language.name %></div>
       <div class="collapsible-body">
+        <div class="row">
         <% table_data = language.table_data %>
         <table>
           <thead>
@@ -26,6 +27,14 @@
           	<% end %>
           </tbody>
         </table>
+        </div>
+
+        <div class="row">
+        <%= link_to "outputs/#{language.id}.pdf", class: "btn waves-effect waves-light right" do %>
+          <i class="material-icons">file_download</i>
+          Get PDF
+        <% end %>
+        </div>
       </div>
     </li>
   <% end %>

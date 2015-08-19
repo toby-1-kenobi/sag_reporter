@@ -5,20 +5,22 @@ admin:
     delete_user, view_roles, edit_role, create_role,
     view_all_languages, create_language, edit_language,
     view_all_topics, create_topic, edit_topic,
-    view_all_reports, create_report, edit_report, archive_report,
+    view_all_reports, create_report, edit_report, archive_report, tag_report,
     view_all_tallies, create_tally, edit_tally, archive_tally, increase_tally,
-    create_event, view_all_people
+    create_event, view_all_people, report_numbers, view_output_totals,
+    evaluate_progress
 
 manager:
   name: manager
+  permissions: view_output_totals
 
 evaluator:
   name: evaluator
-  permissions: create_report, edit_report, archive_report,
+  permissions: create_report, edit_report, archive_report, tag_report,
     view_all_tallies, create_tally, edit_tally, archive_tally, increase_tally,
-    create_event
+    create_event, report_numbers, view_output_totals, evaluate_progress
 
 reporter:
   name: reporter
   permissions: create_report, view_all_tallies, increase_tally,
-    create_event
+    create_event, report_numbers

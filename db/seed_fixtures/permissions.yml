@@ -84,6 +84,15 @@ archive_report:
   description: Archive or make active any report
   category: <%= Permission.categories['reports'] %>
 
+tag_report:
+  name: tag_report
+  description: Tag impact reports with progress markers
+  category: <%= Permission.categories['reports'] %>
+
+evaluate_progress:
+  name: evaluate_progress
+  description: Set progress marker levels
+
 view_all_tallies:
   name: view_all_tallies
   description: View all tallies
@@ -128,3 +137,13 @@ edit_person:
   name: edit_person
   description: "Edit another user's contact"
   category: <%= Permission.categories['people'] %>
+
+report_numbers:
+  name: report_numbers
+  description: "Report output numbers for each month"
+  category: <%= Permission.categories['outputs'] %>
+
+view_output_totals:
+  name: view_output_totals
+  description: "View total outputs"
+  category: <%= Permission.categories['outputs'] %>
