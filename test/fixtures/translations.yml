@@ -1,0 +1,12 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  translatable: 
+  language: 
+  content: MyText
+
+two:
+  translatable: 
+  language: 
+  content: MyText

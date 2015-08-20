@@ -71,5 +71,9 @@ class Language < ActiveRecord::Base
 
     return table
   end
+
+  def get_interface_fallback
+    Language.find_by_name("English") || Language.take
+  end
 	
 end
