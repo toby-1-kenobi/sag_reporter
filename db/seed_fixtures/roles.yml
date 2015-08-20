@@ -8,17 +8,17 @@ admin:
     view_all_reports, create_report, edit_report, archive_report, tag_report,
     view_all_tallies, create_tally, edit_tally, archive_tally, increase_tally,
     create_event, view_all_people, report_numbers, view_output_totals,
-    evaluate_progress
+    evaluate_progress, view_outcome_totals
 
 manager:
   name: manager
-  permissions: view_output_totals
+  permissions: view_output_totals, view_outcome_totals
 
 evaluator:
   name: evaluator
   permissions: create_report, edit_report, archive_report, tag_report,
     view_all_tallies, create_tally, edit_tally, archive_tally, increase_tally,
-    create_event, report_numbers, view_output_totals, evaluate_progress
+    create_event, report_numbers, evaluate_progress
 
 reporter:
   name: reporter

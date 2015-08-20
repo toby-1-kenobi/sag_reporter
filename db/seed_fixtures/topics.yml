@@ -1,22 +1,22 @@
 
 movement_building:
   name: Movement Building
-  description: "Local churches and communities drive and take responsibility for NBASE initiatives in their language community (LC)."
+  description: "A unified and visionary movement for mother tongue based transformation springing from the Gospel."
   colour: amber
 
 language_development:
   name: Language Development
-  description: "Community members strengthen the spoken and written use of minority languages in the Church, school and community."
+  description: "Communities using, reading and writing their language in church, school and community."
   colour: yellow
 
 social_development:
   name: Social Development
-  description: "Communities members practice a healthy lifestyle and support their families and neighbourhood in lives of dignity and harmony."
+  description: "Healthy, productive and dignified communities."
   colour: pink
 
 leadership_development:
   name: Leadership Development
-  description: "Community members are giving active leadership to the development of their Church, community, NBASE programme, and the wider society."
+  description: "Strong servant leadership in this movement and in local churches and the wider community."
   colour: lime
 
 faith_development:

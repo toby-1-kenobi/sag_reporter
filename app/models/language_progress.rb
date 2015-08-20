@@ -12,5 +12,10 @@ class LanguageProgress < ActiveRecord::Base
   	progress_updates.empty? ? 0 : progress_updates.order("created_at").last.progress
   end
 
+  def month_score(year = Date.today.year, month = Date.today.month)
+  	cutoff = Date.new(year, month, -1)
+  	progress_updates.where("created_at < ?", cutoff).empty? ? 0 : progress_updates.where("created_at < ?", cutoff).last.progress * progress_marker.weight
+  end
+
 end
 

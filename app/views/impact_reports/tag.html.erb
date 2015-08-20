@@ -6,7 +6,10 @@
   <% @progress_markers_by_oa.each do |oa, markers| %>
     <div id="<%= oa.id %>-data">
       <option value="">Select progress marker...</option>
-      <%= options_from_collection_for_select(markers, :id, :name) %>
+      <% markers.each do |marker| %>
+        <!--option class="tooltipped" data-position="right" data-delay="50" data-tooltip="<%= marker.description %>" value="<%= marker.id %>"><%= marker.name %></option-->
+        <option value="<%= marker.id %>"><%= marker.description %></option>
+      <% end %>
     </div>
   <% end %>
 </div>

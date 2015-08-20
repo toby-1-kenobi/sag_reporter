@@ -92,6 +92,12 @@ tag_report:
 evaluate_progress:
   name: evaluate_progress
   description: Set progress marker levels
+  category: <%= Permission.categories['outcomes'] %>
+
+view_outcome_totals:
+  name: view_outcome_totals
+  description: View outcome progress
+  category: <%= Permission.categories['outcomes'] %>
 
 view_all_tallies:
   name: view_all_tallies
