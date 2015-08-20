@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150820213725) do
+ActiveRecord::Schema.define(version: 20150820214336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -323,14 +323,16 @@ ActiveRecord::Schema.define(version: 20150820213725) do
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "phone"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
     t.string   "password_digest"
     t.string   "remember_digest"
     t.integer  "role_id"
-    t.integer  "mother_tongue_id", null: false
+    t.integer  "mother_tongue_id",      null: false
+    t.integer  "interface_language_id"
   end
 
+  add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
@@ -367,4 +369,5 @@ ActiveRecord::Schema.define(version: 20150820213725) do
   add_foreign_key "tally_updates", "users"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translatables"
+  add_foreign_key "users", "languages", column: "interface_language_id"
 end
