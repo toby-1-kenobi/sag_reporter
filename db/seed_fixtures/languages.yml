@@ -4,12 +4,14 @@ english:
   description: "Desireable international language"
   lwc: true
   colour: 'indigo lighten-3'
+  interface: true
 
 hindi:
   name: Hindi
   description: "National language"
   lwc: true
   colour: 'lime lighten-2'
+  interface: true
 
 bengali:
   name: Bengali

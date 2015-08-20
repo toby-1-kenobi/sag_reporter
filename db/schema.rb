@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150818065003) do
+ActiveRecord::Schema.define(version: 20150820213725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(version: 20150818065003) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.string   "colour",      default: "white", null: false
+    t.boolean  "interface",   default: false
   end
 
   create_table "languages_reports", id: false, force: :cascade do |t|
@@ -259,6 +260,17 @@ ActiveRecord::Schema.define(version: 20150818065003) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "string_translations", force: :cascade do |t|
+    t.integer  "translatable_id", null: false
+    t.integer  "language_id",     null: false
+    t.text     "content"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "string_translations", ["language_id"], name: "index_string_translations_on_language_id", using: :btree
+  add_index "string_translations", ["translatable_id"], name: "index_string_translations_on_translatable_id", using: :btree
+
   create_table "tallies", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
@@ -289,6 +301,24 @@ ActiveRecord::Schema.define(version: 20150818065003) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
   end
+
+  create_table "translatables", force: :cascade do |t|
+    t.string   "identifier", null: false
+    t.text     "content",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "translations", force: :cascade do |t|
+    t.integer  "translatable_id"
+    t.integer  "language_id"
+    t.text     "content"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "translations", ["language_id"], name: "index_translations_on_language_id", using: :btree
+  add_index "translations", ["translatable_id"], name: "index_translations_on_translatable_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "name"
@@ -330,7 +360,11 @@ ActiveRecord::Schema.define(version: 20150818065003) do
   add_foreign_key "progress_updates", "language_progresses"
   add_foreign_key "progress_updates", "users"
   add_foreign_key "reports", "events"
+  add_foreign_key "string_translations", "languages"
+  add_foreign_key "string_translations", "translatables"
   add_foreign_key "tallies", "topics"
   add_foreign_key "tally_updates", "languages_tallies"
   add_foreign_key "tally_updates", "users"
+  add_foreign_key "translations", "languages"
+  add_foreign_key "translations", "translatables"
 end
