@@ -40,7 +40,7 @@
   <% end %>
 
   <% if current_user.can_evaluate_progress? %>
-    <%= link_to "/outcomes", class: "collection-item waves-effect", id: "evaluate-link" do %>
+    <%= link_to select_to_assess_path, class: "collection-item waves-effect", id: "evaluate-link" do %>
       <i class="material-icons">check_circle</i>
       Evaluate progress marker levels
     <% end %>
@@ -50,6 +50,13 @@
     <%= link_to outputs_path, class: "collection-item waves-effect", id: "output-totals-link" do %>
       <i class="material-icons">tab</i>
       View output totals
+    <% end %>
+  <% end %>
+
+  <% if current_user.can_view_outcome_totals? %>
+    <%= link_to outcomes_path, class: "collection-item waves-effect", id: "outcome-totals-link" do %>
+      <i class="material-icons">tab</i>
+      View outcome progress
     <% end %>
   <% end %>
 

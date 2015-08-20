@@ -84,6 +84,10 @@ class TopicsController < ApplicationController
     render 'assess_progress_select'
   end
 
+  def outcomes
+    @languages = Language.minorities
+  end
+
     private
 
     def topic_params

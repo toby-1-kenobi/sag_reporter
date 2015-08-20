@@ -27,7 +27,7 @@
           <% progress_marker_group.each do |progress_marker| %>
             <li class="progress-marker">
               <div class="collapsible-header tooltipped" data-tooltip="<%= progress_marker.description %>"><%= progress_marker.name %>
-              <span class="right report-count"><%= @reports_by_progress_marker[progress_marker.id].count %></span>
+              <span class="right report-count"><%= @reports_by_progress_marker[progress_marker.id] ? @reports_by_progress_marker[progress_marker.id].count : 0 %></span>
               </div>
               <div class="collapsible-body">
 
