@@ -1,6 +1,6 @@
 existing_skills_valued:
   name: "Exisitng skills valued"
-  description: "Interns, CFs and NFs are valuing their own existing skills"
+  description: "People are valuing their own existing skills"
   topic: social_development
   weight: 1
 
@@ -12,7 +12,7 @@ symptoms_known:
 
 disease_prevented:
   name: "Disease prevented"
-  description: "Able to prevent some diseases"
+  description: "People are able to prevent some diseases"
   topic: social_development
   weight: 1
 
@@ -24,19 +24,19 @@ visiting_doctor:
 
 skills_for_income:
   name: "Skills for income"
-  description: "Interns, CFs and NFs are learning skills they can use for income"
+  description: "People are learning skills they can use for income"
   topic: social_development
   weight: 2
 
 skills_used:
   name: "Skills used"
-  description: "Interns, CFs and NFs are using their existing skills for economic stability"
+  description: "People are using their existing skills for economic stability"
   topic: social_development
   weight: 2
 
 demonstrated_care:
   name: "Demostrated care"
-  description: "Communities are recognising that Christians care about them, demonstrating God's love through social action"
+  description: "People are recognising that Christians care about them, demonstrating God's love through social action"
   topic: social_development
   weight: 2
 
@@ -48,61 +48,67 @@ knowledge_spread:
 
 businesses_started:
   name: "Businesses started"
-  description: "Interns, CFs and NFs are starting their own businesses"
+  description: "People are starting their own businesses"
   topic: social_development
   weight: 3
 
 facilitators_self_dependent:
   name: "Facilitators, self-dependent"
-  description: "Interns, CFs and NFs self-dependent for their income"
+  description: "People are self-dependent for their income"
   topic: social_development
   weight: 3
 
 new_initiatives:
   name: "New initiatives"
-  description: "Interns, CFs and NFs are organising for community social and economic development, including setting up microfinance groups, community initiatives and health awareness programmes"
+  description: "Members of the movement are organising for community social and economic development, including setting up microfinance groups, community initiatives and health awareness programmes"
   topic: social_development
   weight: 3
 
 businesses_skills_taught:
   name: "Businesses skills taught"
-  description: "Interns, CFs and NFs are teaching others skills about business"
+  description: "Members of the movement are teaching others skills about business"
   topic: social_development
   weight: 3
 
 local_doctors_or_ngos_invloved:
   name: "Local doctors or NGOs involved"
-  description: "Interns, CFs and NFs (and church leaders) are involving local doctors or NGOs in their social programmes"
+  description: "Members of the movement are involving local doctors or NGOs in their social programmes"
   topic: social_development
   weight: 3
 
 pastors_taking_responsibility:
-  name: "Pastors taking responsibility"
-  description: "NBASE pastors taking responsibility for guiding their interns"
+  name: "Leaders taking responsibility"
+  description: "Leaders in the movement are taking responsibility for guiding their interns"
   topic: movement_building
   weight: 1
 
 more_info_requested:
   name: "More info requested"
-  description: "Pastors and leaders asking for more information about mother tongue ministry and NBASE"
+  description: "People are asking for more information about mother tongue ministry and NBASE"
   topic: movement_building
   weight: 1
 
 network_meetings_attended:
   name: "Network meetings attended"
-  description: "Pastors and leaders are attending network meetings"
+  description: "Leaders are attending network meetings"
   topic: movement_building
   weight: 2
 
 nbase_promoted:
-  name: "NBASE promoted"
-  description: "Pastors, leaders, and other members of NBASE are telling others about NBASE and the value of MT ministry"
+  name: "MT promoted"
+  description: "Members of the movement are telling others about the value of mother tongue based ministry"
   topic: movement_building
   weight: 2
 
 materials_shared:
   name: "Materials shared"
-  description: "Pastors and leaders are sharing materials with other churches"
+  description: "Leaders are sharing materials with other churches"
+  topic: movement_building
+  weight: 2
+
+interest_from_others:
+  name: "Interest from others"
+  description: "Other agencies (NGOs, government and others) are expressing interest in mother tongue based community transformation"
   topic: movement_building
   weight: 2
 
@@ -118,39 +124,45 @@ churches_partnering:
   topic: movement_building
   weight: 3
 
+action_from_others:
+  name: "Action from others"
+  description: "Other agencies (NGOs, government and others) are meetng together about mother tongue based community transformation"
+  topic: movement_building
+  weight: 3
+
 merciful:
-  name: "Merciful"
-  description: "Merciful"
+  name: "Showing mercy"
+  description: "Leaders are showing mercy and compassion to others"
   topic: leadership_development
   weight: 1
 
-strengthening_and_teaching:
-  name: "Strengthening and teaching"
-  description: "Strengthening others, teaching others"
+showing kindness:
+  name: "showing kindness"
+  description: "Leaders are doing good works and showing kindness"
   topic: leadership_development
   weight: 1
 
 treats_others_as_equal:
   name: "Treats others as equal"
-  description: "Treats others as equal"
+  description: "Leaders are treating others as equal"
   topic: leadership_development
   weight: 2
 
 bibilical_foundation:
   name: "Biblical foundation"
-  description: "Biblical foundation – teaches Bible, models their life on the Bible"
+  description: "Leaders are basing their ministry on the Bible. They are teaching it and modelling their life on the teaching of the Bible"
   topic: leadership_development
   weight: 2
 
 prays_about_decisions:
   name: "Prays about decisions"
-  description: "Prays about decisions, prayer is foundation of ministry"
+  description: "Leaders are praying about decisions. Prayer is the foundation of their ministry"
   topic: leadership_development
   weight: 2
 
-discipling:
-  name: "Discipling"
-  description: "Leaders actively discipling others"
+resolves_division:
+  name: "Resolves division"
+  description: "Leaders are able to address and resolve any divisions well"
   topic: leadership_development
   weight: 3
 
@@ -180,13 +192,13 @@ mt_promoted:
 
 mt_church_contribution:
   name: "MT church contribution"
-  description: "NBASE churches are contributing 25% to mother-tongue resource production"
+  description: "Members' churches are contributing 25% to mother-tongue resource production"
   topic: language_development
   weight: 2
 
 mt_materials:
   name: "MT materials"
-  description: "People are writing materials in their mother-tongue. There is a MT newspaper"
+  description: "People are writing materials in their mother-tongue. There is a mother tongue newspaper"
   topic: language_development
   weight: 3
 
@@ -214,21 +226,21 @@ mt_radio_programmes:
   topic: language_development
   weight: 3
 
-knowing_God:
-  name: "Knowing God"
-  description: "Knowing God..."
-  topic: faith_development
-  weight: 1
-
 gospel_interest:
   name: "Gospel interest"
-  description: "Showing interest in the Gospel"
+  description: "The community is startng to show interest in the Gospel, asking questions"
   topic: faith_development
   weight: 1
 
-speaking_well:
-  name: "Speaking well"
-  description: "Believers are speaking well"
+sharing_faith:
+  name: "Sharing Faith"
+  description: "Believers are sharing their faith"
+  topic: faith_development
+  weight: 1
+
+believers_attend_church:
+  name: "Believers attend church"
+  description: "Believers are attending church"
   topic: faith_development
   weight: 1
 
@@ -240,13 +252,13 @@ understanding_gospel:
 
 attending_church:
   name: "Attending church"
-  description: "More people are starting to attend church"
+  description: "More people are starting to attend church and church activities"
   topic: faith_development
-  weight: 2
+  weight: 1
 
 bible_reading:
   name: "Bible reading"
-  description: "Reading the Bible"
+  description: "Communities are reading or listening to the Bible and accessing Scripture resources"
   topic: faith_development
   weight: 2
 
@@ -264,7 +276,7 @@ leading_to_christ:
 
 teaching_and_helping:
   name: "Teaching and helping"
-  description: "Interns, CFs, NFs, are preaching and teaching and helping others"
+  description: "Members of the movement are preaching and teaching and helping others"
   topic: faith_development
   weight: 3
 
@@ -276,6 +288,6 @@ reources_produced:
 
 making_disciples:
   name: "Making disciples"
-  description: "Making disciples"
+  description: "Church members are involved in ongoing discipleship of other Christians"
   topic: faith_development
   weight: 3
