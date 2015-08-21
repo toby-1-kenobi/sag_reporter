@@ -41,6 +41,12 @@ class Language < ActiveRecord::Base
       table.push(row)
     end
 
+    resources_row = ['Number of tools completed by the network']
+    dates_by_month.each_with_index do |date, index|
+      resources_row.push(MtResource.where(language: self, created_at: date..(dates_by_month[index + 1] || date + 1.month)).count)
+    end
+    table.push(resources_row)
+
     return table
 
   end

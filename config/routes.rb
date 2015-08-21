@@ -57,6 +57,8 @@ Rails.application.routes.draw do
   get 'outputs' => 'output_tallies#table', as: 'outputs'
   get 'outputs/:id' => 'languages#outputs_table'
 
+  get 'language/resources/:language_id' => 'mt_resources#language_overview'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
