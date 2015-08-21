@@ -17,6 +17,10 @@ class Language < ActiveRecord::Base
     where(lwc: false)
   end
 
+  def self.interface_fallback
+    Language.find_by_name("English") || Language.take
+  end
+
   def table_data(options = {})
     options[:from_date] ||= 1.year.ago - 1.month
     options[:to_date] ||= 1.month.ago
@@ -70,10 +74,6 @@ class Language < ActiveRecord::Base
     table.push(["Totals"] + dates_by_month.map{ |d| total_month_score(d.year, d.month) })
 
     return table
-  end
-
-  def get_interface_fallback
-    Language.find_by_name("English") || Language.take
   end
 	
 end
