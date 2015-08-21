@@ -1,10 +1,10 @@
         <a class='dropdown-button btn-flat' href='#' data-activates='<%= object %>-<%= attribute %>_dropdown' data-hover="true">
         <i class="material-icons left"><%= icon %></i>
         <%= text %></a>
-        <div id='<%= object %>-<%= attribute %>_dropdown' class='dropdown-content collection'>
+        <div id='<%= object %>-<%= attribute %>_dropdown' class='dropdown-content'>
           
           <% collection.each do |item| %>
-            <div class="collection-item">
+            <div>
               <%= check_box_tag("#{object}[#{attribute}][#{item.id.to_s}]", 1, selected.include?(item)) %>
               <%= label_tag("#{object}[#{attribute}][#{item.id.to_s}]", item.send(display)) %>
             </div>

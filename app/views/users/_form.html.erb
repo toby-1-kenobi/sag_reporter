@@ -33,15 +33,15 @@
         <%= f.label :mother_tongue_id, "Select mother tongue" %>
       </div>
       <div class="input-field col s6">
-        <a class='dropdown-button btn-flat' href='#' data-activates='speaks_dropdown' data-hover="true">Able to speak...</a>
-        <ul id='speaks_dropdown' class='dropdown-content'>
-          <% @languages.each do |lang| %>
-            <li>
-              <%= check_box_tag('speaks[' + lang.id.to_s + ']', 1, @user.spoken_languages.include?(lang)) %>
-              <%= label_tag('speaks[' + lang.id.to_s + ']', lang.name) %>
-            </li>
-          <% end %>
-        </ul>
+        <%= render partial: "shared/multiselect", locals: {
+          text: "Able to speak…",
+          icon: "language",
+          object: "user",
+          attribute: "speaks",
+          display: :name,
+          collection: @languages,
+          selected: @user.spoken_languages
+        } %>
       </div>
     </div>
 
