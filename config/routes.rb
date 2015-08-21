@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   
   
 
+  resources :mt_resources
   root 'static_pages#home'
 
   resources :events do
