@@ -205,7 +205,7 @@ anything_else_hindi:
   content: "इस घटना में जो कुछ हुआ हैं ,क्या ये दर्ज किया जाना चाहिए, तो यह यहाँ लिखिए।"
 
 report_numbers_hindi:
-  translatable: report_numbers
+  translatable: report_on_numbers
   language: hindi
   content: ""
 

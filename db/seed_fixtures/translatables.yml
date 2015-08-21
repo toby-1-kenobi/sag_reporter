@@ -166,7 +166,7 @@ anything_else:
   identifier: anything_else
   content: "If anything else happened in the event that should be recorded, write it here"
 
-report_numbers:
+report_on_numbers:
   identifier: report_numbers
   content: "Report on numbers"
 
