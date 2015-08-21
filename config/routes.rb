@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   
   
 
+  resources :mt_resources
   root 'static_pages#home'
 
   resources :events do
@@ -50,11 +51,14 @@ Rails.application.routes.draw do
   post 'outcomes/:topic_id/:language_id' => 'topics#update_progress'
   get 'outcomes' => 'topics#outcomes', as: 'outcomes'
   get 'outcomes/:id' => 'languages#outcomes_table'
+  get 'topics/get_chart/:language_id' => 'topics#get_chart', as: 'outcomes_chart'
 
   get 'outputs/report_numbers' => 'output_tallies#report_numbers', as: 'report_numbers'
   post 'outputs/report_numbers' => 'output_tallies#update_numbers', as: 'update_numbers'
   get 'outputs' => 'output_tallies#table', as: 'outputs'
   get 'outputs/:id' => 'languages#outputs_table'
+
+  get 'language/resources/:language_id' => 'mt_resources#language_overview'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

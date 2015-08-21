@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   has_many :tally_updates
   has_many :output_counts
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
+  has_many :mt_resources
 
   attr_accessor :remember_token
 

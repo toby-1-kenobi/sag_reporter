@@ -10,6 +10,7 @@ class Language < ActiveRecord::Base
   has_many :language_progresses, dependent: :destroy
   has_many :progress_markers, through: :language_progresses
   has_many :output_counts
+  has_many :mt_resources
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
 
@@ -39,6 +40,12 @@ class Language < ActiveRecord::Base
       end
       table.push(row)
     end
+
+    resources_row = ['Number of tools completed by the network']
+    dates_by_month.each_with_index do |date, index|
+      resources_row.push(MtResource.where(language: self, created_at: date..(dates_by_month[index + 1] || date + 1.month)).count)
+    end
+    table.push(resources_row)
 
     return table
 
@@ -74,6 +81,21 @@ class Language < ActiveRecord::Base
     table.push(["Totals"] + dates_by_month.map{ |d| total_month_score(d.year, d.month) })
 
     return table
+  end
+
+  def outcome_chart_data(options = {})
+    table_data = outcome_table_data(options)
+    headers = table_data.shift
+    headers.shift
+    chart_data = Array.new
+    table_data.each do |table_row|
+      chart_row = {name: table_row.shift, data: {}}
+      table_row.each_with_index do |datum, index|
+        chart_row[:data][headers[index]] = datum
+      end
+      chart_data.push(chart_row)
+    end
+    return chart_data
   end
 	
 end

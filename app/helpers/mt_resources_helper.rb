@@ -1,0 +1,2 @@
+module MtResourcesHelper
+end
