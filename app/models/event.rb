@@ -9,13 +9,13 @@ class Event < ActiveRecord::Base
   has_many :planning_reports, class_name: "Report"
   has_many :action_points
 
-  def self.yes_no_questions
+  def self.yes_no_questions(user)
     questions = Hash.new
     Report.categories.each do |key, value|
-      questions[key] = "Was anything said about the <strong>#{value}</strong>?".html_safe
+      questions[key] = "#{Translation.get_string('anything_said', user)} <strong>#{value.translation_for(user)}</strong>?".html_safe
     end
-    questions['plan'] = "Were any other <strong>hopes, dreams or challenges?</strong> shared?".html_safe
-    questions['impact'] = "Were any other <strong>impact stories</strong> shared?".html_safe
+    questions['plan'] = Translation.get_string('hopes_challenges', user)
+    questions['impact'] = Translation.get_string('other_impact', user)
     return questions
   end
 

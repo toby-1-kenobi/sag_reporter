@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :spoken_languages, class_name: 'Language'
   has_many :tally_updates
   has_many :output_counts
+  belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
 
   attr_accessor :remember_token
 

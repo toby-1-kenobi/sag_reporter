@@ -1,5 +1,5 @@
-<% provide(:title, 'Make Report') %>
-<h1><i class="material-icons large">create</i> Make a Report</h1>
+<% provide(:title, Translation.get_string('make_report', current_user)) %>
+<h1><i class="material-icons large">create</i> <%= Translation.get_string('make_report', current_user) %></h1>
 <div class="row">
   <%= form_for(@report, html: {class: "col s12"}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
@@ -8,7 +8,7 @@
       <div class="input-field col s12">
         <i class="material-icons prefix">create</i>
         <%= f.text_area :content, class: "materialize-textarea" %>
-        <%= f.label :content, "Type your report here." %>
+        <%= f.label :content, Translation.get_string('type_report', current_user) %>
       </div>
     </div>
 
@@ -17,7 +17,7 @@
         <input class="file-path validate" type="text"/>
         <div class="btn-flat">
           <i class="material-icons left">insert_photo</i>
-          <span>Include Photo</span>
+          <span><%= Translation.get_string('put_photo', current_user) %></span>
           <input type="file" />
         </div>
       </div>
@@ -26,15 +26,15 @@
     <div class="row">
       <div class="col s6">
         <%= radio_button_tag("report-type", "impact") %>
-        <%= label_tag("report-type_impact", "This is an impact report") %>
+        <%= label_tag("report-type_impact", Translation.get_string('this_impact', current_user)) %>
         <%= radio_button_tag("report-type", "planning") %>
-        <%= label_tag("report-type_planning", "This is a hope, challenge or future planning report") %>
+        <%= label_tag("report-type_planning", Translation.get_string('this_planning', current_user)) %>
       </div>
       <div class="col s6">
         <% Report.categories.each do |key, category| %>
           <div>
             <%= f.check_box(key) %>
-            <%= f.label(key, "Concerns the #{category}.") %>
+            <%= f.label(key, "#{Translation.get_string('report_about', current_user)} #{category.translation_for(current_user)}.") %>
           </div>
         <% end %>
       </div>
@@ -43,7 +43,7 @@
     <div class="row">
       <div class="input-field col s6">
         <%= render partial: "shared/multiselect", locals: {
-              text: "Relates to languages...",
+              text: Translation.get_string('relates_languages', current_user),
               icon: "language",
               object: "report",
               attribute: "languages",
@@ -54,7 +54,7 @@
       </div>
       <div class="input-field col s6">
         <%= render partial: "shared/multiselect", locals: {
-              text: "Relates to topics...",
+              text: Translation.get_string('relates_oa', current_user),
               icon: "local_offer",
               object: "report",
               attribute: "topics",
@@ -67,7 +67,7 @@
 
     <div class="row">
       <%= button_tag( :class => "btn waves-effect waves-light right") do %>
-        Submit <i class="material-icons right">send</i>
+        <%= Translation.get_string('submit', current_user) %> <i class="material-icons right">send</i>
       <% end %>
     </div>
   <% end %>
