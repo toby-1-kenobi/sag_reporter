@@ -6,7 +6,7 @@
   <% if current_user.can_create_report? %>
     <%= link_to new_report_path, class: "collection-item waves-effect", id: "field-report-link" do %>
       <i class="material-icons">create</i>
-      Report on a conversation or observation
+      <%= Translation.get_string('make_report', current_user) %>
     <% end %>
   <% end %>
 
@@ -14,7 +14,7 @@
   <% if current_user.can_create_event? %>
     <%= link_to events_new_path, class: "collection-item waves-effect", id: "event-report-link" do %>
       <i class="material-icons">event</i>
-      Report on an event
+      <%= Translation.get_string('report_event', current_user) %>
     <% end %>
   <% end %>
 
