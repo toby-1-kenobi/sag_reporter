@@ -82,5 +82,20 @@ class Language < ActiveRecord::Base
 
     return table
   end
+
+  def outcome_chart_data(options = {})
+    table_data = outcome_table_data(options)
+    headers = table_data.shift
+    headers.shift
+    chart_data = Array.new
+    table_data.each do |table_row|
+      chart_row = {name: table_row.shift, data: {}}
+      table_row.each_with_index do |datum, index|
+        chart_row[:data][headers[index]] = datum
+      end
+      chart_data.push(chart_row)
+    end
+    return chart_data
+  end
 	
 end
