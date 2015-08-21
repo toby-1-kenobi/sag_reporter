@@ -1,0 +1,2 @@
+class MtResourcesController < ApplicationController
+end

@@ -10,6 +10,7 @@ class Language < ActiveRecord::Base
   has_many :language_progresses, dependent: :destroy
   has_many :progress_markers, through: :language_progresses
   has_many :output_counts
+  has_many :mt_resources
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
 

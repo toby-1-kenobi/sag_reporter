@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150820214336) do
+ActiveRecord::Schema.define(version: 20150821103044) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,6 +142,21 @@ ActiveRecord::Schema.define(version: 20150820214336) do
   end
 
   add_index "languages_users", ["user_id", "language_id"], name: "index_languages_users_on_user_id_and_language_id", unique: true, using: :btree
+
+  create_table "mt_resources", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "name",                           null: false
+    t.text     "description"
+    t.integer  "language_id",                    null: false
+    t.boolean  "cc_share_alike", default: false, null: false
+    t.integer  "type",                           null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "mt_resources", ["language_id"], name: "index_mt_resources_on_language_id", using: :btree
+  add_index "mt_resources", ["type"], name: "index_mt_resources_on_type", using: :btree
+  add_index "mt_resources", ["user_id"], name: "index_mt_resources_on_user_id", using: :btree
 
   create_table "output_counts", force: :cascade do |t|
     t.integer  "output_tally_id",             null: false
@@ -352,6 +367,8 @@ ActiveRecord::Schema.define(version: 20150820214336) do
   add_foreign_key "language_progresses", "progress_markers"
   add_foreign_key "languages_tallies", "languages"
   add_foreign_key "languages_tallies", "tallies"
+  add_foreign_key "mt_resources", "languages"
+  add_foreign_key "mt_resources", "users"
   add_foreign_key "output_counts", "languages"
   add_foreign_key "output_counts", "output_tallies"
   add_foreign_key "output_counts", "users"
