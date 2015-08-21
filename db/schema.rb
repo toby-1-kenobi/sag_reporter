@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150821103044) do
+ActiveRecord::Schema.define(version: 20150821175441) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,17 @@ ActiveRecord::Schema.define(version: 20150821103044) do
   add_index "attendances", ["event_id", "person_id"], name: "index_attendances_on_event_id_and_person_id", unique: true, using: :btree
   add_index "attendances", ["event_id"], name: "index_attendances_on_event_id", using: :btree
   add_index "attendances", ["person_id"], name: "index_attendances_on_person_id", using: :btree
+
+  create_table "creations", force: :cascade do |t|
+    t.integer  "person_id"
+    t.integer  "mt_resource_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "creations", ["mt_resource_id"], name: "index_creations_on_mt_resource_id", using: :btree
+  add_index "creations", ["person_id", "mt_resource_id"], name: "index_people_mt_resources", unique: true, using: :btree
+  add_index "creations", ["person_id"], name: "index_creations_on_person_id", using: :btree
 
   create_table "events", force: :cascade do |t|
     t.integer  "user_id"
@@ -149,13 +160,13 @@ ActiveRecord::Schema.define(version: 20150821103044) do
     t.text     "description"
     t.integer  "language_id",                    null: false
     t.boolean  "cc_share_alike", default: false, null: false
-    t.integer  "type",                           null: false
+    t.integer  "category",                       null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
   end
 
+  add_index "mt_resources", ["category"], name: "index_mt_resources_on_category", using: :btree
   add_index "mt_resources", ["language_id"], name: "index_mt_resources_on_language_id", using: :btree
-  add_index "mt_resources", ["type"], name: "index_mt_resources_on_type", using: :btree
   add_index "mt_resources", ["user_id"], name: "index_mt_resources_on_user_id", using: :btree
 
   create_table "output_counts", force: :cascade do |t|
@@ -357,6 +368,8 @@ ActiveRecord::Schema.define(version: 20150821103044) do
   add_foreign_key "action_points", "users", column: "record_creator_id"
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
+  add_foreign_key "creations", "mt_resources"
+  add_foreign_key "creations", "people"
   add_foreign_key "events", "users"
   add_foreign_key "events_purposes", "events"
   add_foreign_key "events_purposes", "purposes"

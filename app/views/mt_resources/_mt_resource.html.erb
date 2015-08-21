@@ -1,0 +1,13 @@
+<div class="col s12 m6 l4">
+  <div class="card">
+    <div class="card-content yellow lighten-3">
+      <span class="card-title orange-text text-darken-2"><%= mt_resource.name %></span>
+      <% unless mt_resource.contributers.empty? %>
+        <p class="contributers">
+          <%= mt_resource.contributers.map{ |p| p.name }.join("<br />").html_safe %>
+        </p>
+      <% end %>
+      <p><%= mt_resource.description %></p>
+    </div>
+  </div>
+</div>
