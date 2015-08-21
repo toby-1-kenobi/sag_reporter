@@ -26,6 +26,7 @@ class UsersController < ApplicationController
   	@user = User.new
     @roles = Role.all
     @languages = Language.all
+    @interface_languages = Language.where(interface: true)
   end
 
   def show
@@ -57,6 +58,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @roles = Role.all
     @languages = Language.all
+    @interface_languages = Language.where(interface: true)
   end
 
   def update
@@ -95,7 +97,8 @@ class UsersController < ApplicationController
           :phone,
           :password,
           :password_confirmation,
-          :mother_tongue_id
+          :mother_tongue_id,
+          :interface_language_id
         )
       else
         params.require(:user).permit(
@@ -104,6 +107,7 @@ class UsersController < ApplicationController
           :password,
           :password_confirmation,
           :mother_tongue_id,
+          :interface_language_id,
           :role_id
         )
       end
