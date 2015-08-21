@@ -1,0 +1,13 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+<%
+(1..20).each do |index|
+%>
+resource-<%= index %>:
+  user: emma
+  category: <%= rand(3) %>
+  language: surjapuri
+  name: <%= Faker::Name.name %>
+  description: <%= Faker::Lorem.paragraph %>
+  created_at: <%= rand(8.months).seconds.ago %>
+<% end %>

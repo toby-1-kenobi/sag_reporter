@@ -1,0 +1,17 @@
+<% provide(:title, "Resource Overview for #{@language.name}") %>
+
+<h1>Resources for <%= @language.name%></h1>
+
+<ul class="collapsible">
+  <% @resources_by_category.each do |category, resources| %>
+  <li>
+    <div class="collapsible-header"><%= category.humanize.pluralize %><span class="right resource-count"><%= resources.length %></span></div>
+    <div class="collapsible-body">
+      <% resources.in_groups_of(3, false) do |mt_resources| %>
+        <div class="row"><%= render mt_resources %></div>
+      <% end %>
+    </div>
+  </li>
+  <% end %>
+</ul>
+<%= link_to "Add another resource", new_mt_resource_path, {class: "btn right waves-effect"} %>
