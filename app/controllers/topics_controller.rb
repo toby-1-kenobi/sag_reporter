@@ -88,6 +88,13 @@ class TopicsController < ApplicationController
     @languages = Language.minorities
   end
 
+  def get_chart
+    @language = Language.find(params[:language_id])
+    respond_to do |format|
+      format.js
+    end
+  end
+
     private
 
     def topic_params
