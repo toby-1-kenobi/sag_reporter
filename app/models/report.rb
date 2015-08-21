@@ -11,10 +11,10 @@ class Report < ActiveRecord::Base
 
   def self.categories
     {
-      'mt_society' => "use of mother tongue in society",
-      'mt_church' => "use of mother tongue tools in the local churches",
-      'needs_society' => "needs of society",
-      'needs_church' => "needs of the churches"
+      'mt_society' => Translatable.find_by_identifier('mt_in_society'),
+      'mt_church' => Translatable.find_by_identifier('mt_in_church'),
+      'needs_society' => Translatable.find_by_identifier('needs_society'),
+      'needs_church' => Translatable.find_by_identifier('needs_church')
     }
   end
 

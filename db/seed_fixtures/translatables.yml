@@ -20,7 +20,7 @@ this_planning:
 
 report_about:
   identifier: report_about
-  content: "This report is about..."
+  content: "This report is about"
 
 mt_in_society:
   identifier: mt_in_society
@@ -65,6 +65,10 @@ event_name:
 people_involved:
   identifier: people_involved
   content: "People involved"
+
+one_name_row:
+  identifier: one_name_row
+  content: "Write one name in each row"
 
 leaders_invloved:
   identifier: leaders_invloved
@@ -120,7 +124,7 @@ church_leaders_dev:
 
 anything_said:
   identifier: anything_said
-  content: "Was anything said about…"
+  content: "Was anything said about"
 
 hopes_challenges:
   identifier: hopes_challenges
@@ -142,13 +146,13 @@ need_followup:
   identifier: need_followup
   content: "This needs follow up"
 
-yes:
-  identifier: yes
-  content: "yes"
+affirm:
+  identifier: 'yes'
+  content: "Yes"
 
-no:
-  identifier: no
-  content: "no"
+neg:
+  identifier: 'no'
+  content: "No"
 
 what_action:
   identifier: what_action

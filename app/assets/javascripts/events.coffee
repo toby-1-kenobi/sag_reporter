@@ -21,7 +21,9 @@ addInputRow = ->
   $(this).off 'keypress', addInputRow
   newInputRow.find('textarea').on 'keypress', addInputRow
   newInputRow.find('.dropdown-content').removeAttr('style')
+  newInputRow.hide()
   $(this).parents('.response-input').after newInputRow
+  newInputRow.slideDown()
   newInputRow.find('.dropdown-button').dropdown
     inDuration: 300
     outDuration: 225
@@ -51,11 +53,11 @@ $(document).ready ->
   $('.decision-response-input textarea').on 'keypress', addNewDecision
 
   $('.yes-no-question input:radio').change ->
-    answer = $('label[for=\'' + $(this).attr('id') + '\']').text()
-    if answer == "Yes"
-      $(this).parents('.yes-no-question').find('.yes-response').removeClass('hide')
-    if answer == "No"
-      $(this).parents('.yes-no-question').find('.yes-response').addClass('hide')
+    answer = $(this).val()
+    if answer == "yes"
+      $(this).parents('.yes-no-question').find('.yes-response').hide().removeClass('hide').slideDown()
+    if answer == "no"
+      $(this).parents('.yes-no-question').find('.yes-response').slideUp()
     return
 
   return

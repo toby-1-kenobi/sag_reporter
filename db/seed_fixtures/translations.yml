@@ -162,7 +162,7 @@ hopes_challenges_hindi:
 other_impact_hindi:
   translatable: other_impact
   language: hindi
-  content: "किसी के द्वारा प्रभाव वाली कहानी चर्चा किये गए थें।
+  content: "किसी के द्वारा प्रभाव वाली कहानी चर्चा किये गए थें।"
 
 any_actions_hindi:
   translatable: any_actions
@@ -180,11 +180,13 @@ need_followup_hindi:
   content: "आवश्यकताओं की जरूरत  हैं"
 
 yes_hindi:
-  translatable: yes
+  translatable: affirm
+  language: hindi
   content: "सही"
 
 no_hindi:
-  translatable: no
+  translatable: neg
+  language: hindi
   content: "गलत"
 
 what_action_hindi:
@@ -194,6 +196,7 @@ what_action_hindi:
 
 person_responsible_hindi:
   translatable: person_responsible
+  language: hindi
   content: "जिम्मेदार व्यक्ति"
 
 anything_else_hindi:
