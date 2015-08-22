@@ -18,7 +18,10 @@
     <% end %>
   <% end %>
 
-  <a href="#" class="collection-item waves-effect"><i class="material-icons">build</i>Report on a completed resource</a>
+    <%= link_to new_mt_resource_path, class: "collection-item waves-effect", id: "new-resource-link" do %>
+      <i class="material-icons">build</i>
+      Report on a completed resource
+    <% end %>
 
 
   <% if current_user.can_report_numbers? %>
