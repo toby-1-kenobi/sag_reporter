@@ -38,13 +38,11 @@ vera:
   mother_tongue: english
   role: view
 
-<% geo_states = YAML.load_file('geo_states.yml') %>
-<% 30.times do |i| %>
+<% 5.times do |i| %>
 user-<%= i %>:
   name: <%= Faker::Name.name %>
   phone: <%= Faker::Number.number(10) %>
   password_digest: <%= User.digest('password') %>
   mother_tongue: english
   role: pleb
-  geo_state: <%= geo_states.keys.sample %>
 <% end %>
