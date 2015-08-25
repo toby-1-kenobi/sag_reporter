@@ -25,8 +25,9 @@ class UsersController < ApplicationController
   def new
   	@user = User.new
     @roles = Role.all
-    @languages = Language.all
+    @languages = Language.order(:name)
     @interface_languages = Language.where(interface: true)
+    @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
   end
 
   def show
@@ -58,8 +59,9 @@ class UsersController < ApplicationController
   def edit
     @user = User.find(params[:id])
     @roles = Role.all
-    @languages = Language.all
-    @interface_languages = Language.where(interface: true)
+    @languages = Language.order(:name)
+    @interface_languages = Language.where(interface: true).order(:name)
+    @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
   end
 
   def update
