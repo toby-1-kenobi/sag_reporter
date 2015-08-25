@@ -59,7 +59,7 @@ class LanguagesController < ApplicationController
     @language = Language.find(params[:id])
     respond_to do |format|
       format.pdf do
-        pdf = OutputsTablePdf.new(@language)
+        pdf = OutputsTablePdf.new(@language, current_user.geo_state)
         send_data pdf.render, filename: "#{@language.name}_outputs.pdf", type: 'application/pdf'
       end
     end
@@ -69,7 +69,7 @@ class LanguagesController < ApplicationController
     @language = Language.find(params[:id])
     respond_to do |format|
       format.pdf do
-        pdf = OutcomesTablePdf.new(@language)
+        pdf = OutcomesTablePdf.new(@language, current_user.geo_state)
         send_data pdf.render, filename: "#{@language.name}_outcomes.pdf", type: 'application/pdf'
       end
     end

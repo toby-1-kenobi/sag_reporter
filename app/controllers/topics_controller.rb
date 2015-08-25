@@ -64,7 +64,7 @@ class TopicsController < ApplicationController
     @outcome_area = Topic.find(params[:topic_id])
     @progress_markers_by_weight = ProgressMarker.where(topic: @outcome_area).group_by { |pm| pm.weight }
     @language = Language.find(params[:language_id])
-    @reports_by_progress_marker = ImpactReport.joins(:progress_marker, :languages).where("progress_markers.topic_id" => @outcome_area, "languages.id" => @language).select{ |ir| ir.report_date >= 1.year.ago }.group_by{ |ir| ir.progress_marker_id }
+    @reports_by_progress_marker = ImpactReport.where(geo_state: current_user.geo_state).joins(:progress_marker, :languages).where("progress_markers.topic_id" => @outcome_area, "languages.id" => @language).select{ |ir| ir.report_date >= 1.year.ago }.group_by{ |ir| ir.progress_marker_id }
   end
 
   def update_progress

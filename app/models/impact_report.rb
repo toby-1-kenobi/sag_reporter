@@ -1,5 +1,7 @@
 class ImpactReport < ActiveRecord::Base
 
+  include StateBased
+
   enum state: [ :archived, :active ]
 
   belongs_to :reporter, class_name: 'User'

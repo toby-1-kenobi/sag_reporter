@@ -27,7 +27,7 @@ class Language < ActiveRecord::Base
     Language.find_by_name("English") || Language.take
   end
 
-  def table_data(options = {})
+  def table_data(geo_state, options = {})
     options[:from_date] ||= 1.year.ago - 1.month
     options[:to_date] ||= 1.month.ago
     dates_by_month = (options[:from_date].to_date..options[:to_date].to_date).select{ |d| d.day == 1}
@@ -41,14 +41,14 @@ class Language < ActiveRecord::Base
     OutputTally.all.order(:topic_id).each do |tally|
       row = [tally.description]
       dates_by_month.each do |date|
-        row.push(tally.total([self], date.year, date.month))
+        row.push(tally.total(geo_state, [self], date.year, date.month))
       end
       table.push(row)
     end
 
     resources_row = ['Number of tools completed by the network']
     dates_by_month.each_with_index do |date, index|
-      resources_row.push(MtResource.where(language: self, created_at: date..(dates_by_month[index + 1] || date + 1.month)).count)
+      resources_row.push(MtResource.where(geo_state: geo_state, language: self, created_at: date..(dates_by_month[index + 1] || date + 1.month)).count)
     end
     table.push(resources_row)
 
@@ -56,15 +56,15 @@ class Language < ActiveRecord::Base
 
   end
 
-  def outcome_month_score(outcome_area, year = Date.today.year, month = Date.today.month)
-    LanguageProgress.includes(:progress_marker).where(language: self, "progress_markers.topic_id" => outcome_area.id).inject(0){ |sum, lp| sum + lp.month_score(year, month) }
+  def outcome_month_score(geo_state, outcome_area, year = Date.today.year, month = Date.today.month)
+    LanguageProgress.includes(:progress_marker).where(language: self, "progress_markers.topic_id" => outcome_area.id).inject(0){ |sum, lp| sum + lp.month_score(geo_state, year, month) }
   end
 
-  def total_month_score(year = Date.today.year, month = Date.today.month)
-    Topic.all.inject(0){ |sum, oa| sum + outcome_month_score(oa, year, month) }
+  def total_month_score(geo_state, year = Date.today.year, month = Date.today.month)
+    Topic.all.inject(0){ |sum, oa| sum + outcome_month_score(geo_state, oa, year, month) }
   end
 
-  def outcome_table_data(options = {})
+  def outcome_table_data(geo_state, options = {})
     options[:from_date] ||= 1.year.ago - 1.month
     options[:to_date] ||= 1.month.ago
     dates_by_month = (options[:from_date].to_date..options[:to_date].to_date).select{ |d| d.day == 1}
@@ -78,7 +78,7 @@ class Language < ActiveRecord::Base
     Topic.all.each do |outcome_area|
       row = [outcome_area.name]
       dates_by_month.each do |date|
-        row.push(outcome_month_score(outcome_area, date.year, date.month))
+        row.push(outcome_month_score(geo_state, outcome_area, date.year, date.month))
       end
       table.push(row)
     end
@@ -88,8 +88,8 @@ class Language < ActiveRecord::Base
     return table
   end
 
-  def outcome_chart_data(options = {})
-    table_data = outcome_table_data(options)
+  def outcome_chart_data(geo_state, options = {})
+    table_data = outcome_table_data(geo_state, options)
     headers = table_data.shift
     headers.shift
     chart_data = Array.new

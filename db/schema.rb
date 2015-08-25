@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150825103256) do
+ActiveRecord::Schema.define(version: 20150825203648) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,8 +64,10 @@ ActiveRecord::Schema.define(version: 20150825103256) do
     t.string   "district"
     t.string   "sub_district"
     t.string   "village"
+    t.integer  "geo_state_id"
   end
 
+  add_index "events", ["geo_state_id"], name: "index_events_on_geo_state_id", using: :btree
   add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
 
   create_table "events_languages", id: false, force: :cascade do |t|
@@ -112,9 +114,11 @@ ActiveRecord::Schema.define(version: 20150825103256) do
     t.integer  "state"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.integer  "geo_state_id"
   end
 
   add_index "impact_reports", ["event_id"], name: "index_impact_reports_on_event_id", using: :btree
+  add_index "impact_reports", ["geo_state_id"], name: "index_impact_reports_on_geo_state_id", using: :btree
   add_index "impact_reports", ["progress_marker_id"], name: "index_impact_reports_on_progress_marker_id", using: :btree
   add_index "impact_reports", ["reporter_id"], name: "index_impact_reports_on_reporter_id", using: :btree
 
@@ -179,9 +183,11 @@ ActiveRecord::Schema.define(version: 20150825103256) do
     t.integer  "category",                       null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.integer  "geo_state_id"
   end
 
   add_index "mt_resources", ["category"], name: "index_mt_resources_on_category", using: :btree
+  add_index "mt_resources", ["geo_state_id"], name: "index_mt_resources_on_geo_state_id", using: :btree
   add_index "mt_resources", ["language_id"], name: "index_mt_resources_on_language_id", using: :btree
   add_index "mt_resources", ["user_id"], name: "index_mt_resources_on_user_id", using: :btree
 
@@ -194,8 +200,10 @@ ActiveRecord::Schema.define(version: 20150825103256) do
     t.integer  "month",                       null: false
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
+    t.integer  "geo_state_id"
   end
 
+  add_index "output_counts", ["geo_state_id"], name: "index_output_counts_on_geo_state_id", using: :btree
   add_index "output_counts", ["language_id"], name: "index_output_counts_on_language_id", using: :btree
   add_index "output_counts", ["output_tally_id"], name: "index_output_counts_on_output_tally_id", using: :btree
   add_index "output_counts", ["user_id"], name: "index_output_counts_on_user_id", using: :btree
@@ -219,11 +227,13 @@ ActiveRecord::Schema.define(version: 20150825103256) do
     t.boolean  "facilitator"
     t.boolean  "pastor"
     t.integer  "language_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.integer  "user_id"
+    t.integer  "geo_state_id"
   end
 
+  add_index "people", ["geo_state_id"], name: "index_people_on_geo_state_id", using: :btree
   add_index "people", ["language_id"], name: "index_people_on_language_id", using: :btree
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
@@ -259,9 +269,11 @@ ActiveRecord::Schema.define(version: 20150825103256) do
     t.integer  "progress"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.integer  "geo_state_id"
   end
 
   add_index "progress_updates", ["created_at"], name: "index_progress_updates_on_created_at", using: :btree
+  add_index "progress_updates", ["geo_state_id"], name: "index_progress_updates_on_geo_state_id", using: :btree
   add_index "progress_updates", ["language_progress_id"], name: "index_progress_updates_on_language_progress_id", using: :btree
   add_index "progress_updates", ["user_id"], name: "index_progress_updates_on_user_id", using: :btree
 
@@ -283,9 +295,11 @@ ActiveRecord::Schema.define(version: 20150825103256) do
     t.boolean  "needs_society"
     t.boolean  "needs_church"
     t.integer  "event_id"
+    t.integer  "geo_state_id"
   end
 
   add_index "reports", ["event_id"], name: "index_reports_on_event_id", using: :btree
+  add_index "reports", ["geo_state_id"], name: "index_reports_on_geo_state_id", using: :btree
   add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id", using: :btree
   add_index "reports", ["state"], name: "index_reports_on_state", using: :btree
 
@@ -394,29 +408,36 @@ ActiveRecord::Schema.define(version: 20150825103256) do
   add_foreign_key "attendances", "people"
   add_foreign_key "creations", "mt_resources"
   add_foreign_key "creations", "people"
+  add_foreign_key "events", "geo_states"
   add_foreign_key "events", "users"
   add_foreign_key "events_purposes", "events"
   add_foreign_key "events_purposes", "purposes"
   add_foreign_key "geo_states", "zones"
   add_foreign_key "impact_reports", "events"
+  add_foreign_key "impact_reports", "geo_states"
   add_foreign_key "impact_reports", "progress_markers"
   add_foreign_key "impact_reports", "users", column: "reporter_id"
   add_foreign_key "language_progresses", "languages"
   add_foreign_key "language_progresses", "progress_markers"
   add_foreign_key "languages_tallies", "languages"
   add_foreign_key "languages_tallies", "tallies"
+  add_foreign_key "mt_resources", "geo_states"
   add_foreign_key "mt_resources", "languages"
   add_foreign_key "mt_resources", "users"
+  add_foreign_key "output_counts", "geo_states"
   add_foreign_key "output_counts", "languages"
   add_foreign_key "output_counts", "output_tallies"
   add_foreign_key "output_counts", "users"
   add_foreign_key "output_tallies", "topics"
+  add_foreign_key "people", "geo_states"
   add_foreign_key "people", "languages"
   add_foreign_key "people", "users"
   add_foreign_key "progress_markers", "topics"
+  add_foreign_key "progress_updates", "geo_states"
   add_foreign_key "progress_updates", "language_progresses"
   add_foreign_key "progress_updates", "users"
   add_foreign_key "reports", "events"
+  add_foreign_key "reports", "geo_states"
   add_foreign_key "string_translations", "languages"
   add_foreign_key "string_translations", "translatables"
   add_foreign_key "tallies", "topics"
