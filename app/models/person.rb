@@ -1,6 +1,7 @@
 class Person < ActiveRecord::Base
 
   include ContactDetails
+  include StateBased
 
   belongs_to :mother_tongue, class_name: "Language", foreign_key: "language_id"
   belongs_to :record_creator, class_name: "User", foreign_key: "user_id"
