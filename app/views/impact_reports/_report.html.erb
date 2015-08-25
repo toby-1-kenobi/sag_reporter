@@ -9,7 +9,7 @@
   	<% end %>
   	<p><%= report.content %></p>
     <% unless Report.categories.select{ |key, sentence| report.send(key) }.empty? %>
-      <p class="concerning">Concerns <%= Report.categories.select{ |key, sentence| report.send(key) }.values.map { |v| "the #{v}" }.to_sentence() %>.</p>
+      <p class="concerning hide">Concerns <%= Report.categories.select{ |key, sentence| report.send(key) }.values.map { |v| "the #{v}" }.to_sentence() %>.</p>
     <% end %>
     <% if report.reporter %>
   	  <div class="reporter"><%= report.reporter.name %></div>
