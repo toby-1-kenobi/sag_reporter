@@ -24,13 +24,13 @@
     </div>
 
     <div class="row">
-      <div class="col s6">
+      <div class="col s12 m6">
         <%= radio_button_tag("report-type", "impact") %>
         <%= label_tag("report-type_impact", Translation.get_string('this_impact', current_user)) %>
         <%= radio_button_tag("report-type", "planning") %>
         <%= label_tag("report-type_planning", Translation.get_string('this_planning', current_user)) %>
       </div>
-      <div class="col s6">
+      <div class="col s12 m6">
         <% Report.categories.each do |key, category| %>
           <div>
             <%= f.check_box(key) %>
@@ -41,7 +41,7 @@
     </div>
 
     <div class="row">
-      <div class="input-field col s6">
+      <div class="input-field col s12 m6">
         <%= render partial: "shared/multiselect", locals: {
               text: Translation.get_string('relates_languages', current_user),
               icon: "language",
@@ -52,7 +52,7 @@
               selected: Hash.new
         } %>
       </div>
-      <div class="input-field col s6">
+      <div class="input-field col s12 m6">
         <%= render partial: "shared/multiselect", locals: {
               text: Translation.get_string('relates_oa', current_user),
               icon: "local_offer",
@@ -66,9 +66,11 @@
     </div>
 
     <div class="row">
-      <%= button_tag( :class => "btn waves-effect waves-light right") do %>
-        <%= Translation.get_string('submit', current_user) %> <i class="material-icons right">send</i>
-      <% end %>
+      <div class="row s12">
+        <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+          <%= Translation.get_string('submit', current_user) %> <i class="material-icons right">send</i>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div>

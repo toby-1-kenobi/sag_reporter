@@ -4,7 +4,7 @@
   <%= form_for(@event, html: {class: "col s12"}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
     <div class="row">
-      <div class="col s8">
+      <div class="col s12 m8">
 
         <div class="row">
           <div class="input-field col s12">
@@ -15,7 +15,7 @@
         </div>
 
         <div class="row">
-          <div class="col s8">
+          <div class="col s12 m8">
             <i class="material-icons prefix">location_on</i>
             <%= label_tag Translation.get_string('location', current_user) %>
             <div class="input-field">
@@ -31,7 +31,7 @@
               <%= f.label :village, Translation.get_string('village', current_user) %>
             </div>
           </div>
-          <div class="col s4">
+          <div class="col s12 m4">
             <div class="input-field">
               <i class="material-icons prefix">today</i>
               <%= f.date_field :event_date, class: "datepicker active" %>
@@ -74,7 +74,7 @@
         </div>
 
       </div>
-      <div class="input-field people-increase col s4">
+      <div class="input-field people-increase col s12 m4">
         <i class="material-icons prefix">people</i>
         <%= autocomplete_field_tag "person__0", '', autocomplete_person_name_events_path %>
         <%= label_tag :person__0, Translation.get_string('people_involved', current_user), {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => Translation.get_string('one_name_row', current_user)} %>
@@ -84,11 +84,11 @@
       <div class="yes-no-question">
 
         <div class="row">
-          <div class="col s10">
+          <div class="col s12 m10">
             <i class="material-icons">question_answer</i>
             <span class="event-question"><%= question %></span>
           </div>
-          <div class="col s2 input-field">
+          <div class="col s12 m2 input-field">
           	<%= radio_button_tag(code, "no") %>
           	<%= label_tag("#{code}_no", Translation.get_string('no', current_user)) %>
           	<%= radio_button_tag(code, "yes") %>
@@ -100,7 +100,7 @@
           <div class="col s12">
 
             <div class="row response-input row__0">
-              <div class="input-field col s6">
+              <div class="input-field col s12 m6">
                 <%= text_area_tag("#{code}-response__0", "", class: "materialize-textarea") %>
                 <%= label_tag("#{code}-response__0", Translation.get_string('who_said_what', current_user)) %>
               </div>
@@ -109,7 +109,7 @@
               <% elsif code == "plan" %>
                 <%= hidden_field_tag("#{code}-type__0", "plan") %>
               <% else %>
-              <div class="col s6">
+              <div class="col s12 m6">
                 <div>
             	    <%= radio_button_tag("#{code}-type__0", "impact") %>
             	    <%= label_tag("#{code}-type__0_impact", Translation.get_string('this_impact', current_user)) %>
@@ -120,7 +120,7 @@
                 </div>
               </div>
               <% end %>
-              <div class="input-field col s6">
+              <div class="input-field col s12 m6">
                 <%= render partial: "shared/multiselect", locals: {
                   text: Translation.get_string('relates_languages', current_user),
                   icon: "language",
@@ -141,11 +141,11 @@
     <div class="yes-no-question">
 
       <div class="row">
-        <div class="col s10">
+        <div class="col s12 m10">
           <i class="material-icons">question_answer</i>
           <span class="event-question"><%= Translation.get_string('any_actions', current_user) %></span>
         </div>
-        <div class="col s2 input-field">
+        <div class="col s12 m2 input-field">
           <%= radio_button_tag("decision", "no") %>
           <%= label_tag("decision_no", Translation.get_string('no', current_user)) %>
           <%= radio_button_tag("decision", "yes") %>
@@ -157,11 +157,11 @@
           <div class="col s12">
 
             <div class="row decision-response-input row__0">
-              <div class="input-field col s6">
+              <div class="input-field col s12 m6">
                 <%= text_area_tag("decision-response__0", "", class: "materialize-textarea") %>
                 <%= label_tag("decision-response__0", Translation.get_string('what_action', current_user)) %>
               </div>
-              <div class="input-field col s6">
+              <div class="input-field col s12 m6">
                 <%= autocomplete_field_tag "person-responsible__0", '', autocomplete_person_name_events_path %>
                 <%= label_tag("person-responsible__0", Translation.get_string('person_responsible', current_user)) %>
               </div>
@@ -172,7 +172,7 @@
 
     </div>
     <div class="row">
-      <div class="input-field col s9">
+      <div class="input-field col s12 m9">
         <i class="material-icons prefix">event_available</i>
         <%= f.text_area :content, class: "materialize-textarea" %>
         <%= f.label :content, Translation.get_string('anything_else', current_user) %>
