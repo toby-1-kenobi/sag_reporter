@@ -1,8 +1,39 @@
 <header>
-<nav class="top-nav <%= yield(:colour) %>">
+<nav class="top-nav <%= yield(:colour) %>" role="navigation">
   <div class="nav-wrapper">
-    <a href="#" class="brand-logo center">Last Command Reporter</a>
-    <ul id="nav-mobile" class="right hide-on-med-and-down">
+    <a href="#" class="brand-logo center hide-on-small-and-down">Last Command Reporter</a>
+    <a href="#" class="brand-logo center show-on-small">LCR</a>
+    <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    <ul id="nav-head" class="right hide-on-med-and-down">
+      <% if logged_in? %>
+        <li>
+          <%= link_to root_path do %>
+            <i class="material-icons left">home</i>
+            Home
+          <% end %>
+        </li>
+        <li>
+          <%= link_to current_user do %>
+            <i class="material-icons left">account_circle</i>
+            <%= current_user.name %>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to logout_path, method: "delete" do %>
+            <i class="material-icons left">exit_to_app</i>
+            Logout
+          <% end %>
+        </li>
+      <% else %>
+        <li>
+          <%= link_to login_path do %>
+            <i class="material-icons left">vpn_key</i>
+            Login
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+    <ul id="nav-mobile" class="side-nav">
       <% if logged_in? %>
         <li>
           <%= link_to root_path do %>
