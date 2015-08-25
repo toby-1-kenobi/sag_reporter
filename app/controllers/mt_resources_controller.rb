@@ -4,7 +4,7 @@ class MtResourcesController < ApplicationController
 
   def new
   	@resource = MtResource.new
-    @languages = Language.minorities
+    @languages = Language.minorities(current_user.geo_state)
   end
 
   def language_overview
@@ -23,7 +23,7 @@ class MtResourcesController < ApplicationController
       flash['success'] = "New resource entered"
       redirect_to action: "language_overview", language_id: @resource.language_id
     else
-      @languages = Language.minorities
+      @languages = Language.minorities(current_user.geo_state)
       render new
     end
 

@@ -24,7 +24,6 @@ class TopicsController < ApplicationController
 
   def index
   	@topics = Topic.all
-    @languages = Language.all
   end
 
   def show
@@ -58,7 +57,7 @@ class TopicsController < ApplicationController
 
   def assess_progress_select
     @topics = Topic.all
-    @languages = Language.where(lwc: false)
+    @languages = Language.minorities(current_user.geo_state)
   end
 
   def assess_progress
@@ -80,12 +79,12 @@ class TopicsController < ApplicationController
       flash.now['success'] = "Progress Markers updated for #{outcome_area.name}."
     end
     @topics = Topic.all
-    @languages = Language.where(lwc: false)
+    @languages = Language.minorities(current_user.geo_state)
     render 'assess_progress_select'
   end
 
   def outcomes
-    @languages = Language.minorities
+    @languages = Language.minorities(current_user.geo_state)
   end
 
   def get_chart
