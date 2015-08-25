@@ -1,5 +1,7 @@
 class MtResource < ActiveRecord::Base
 
+  include StateBased
+
   enum category: [ :song, :drama, :big_book, :flashcard, :tract, :story, :primer ]
 
   belongs_to :user

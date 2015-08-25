@@ -8,7 +8,7 @@
       <div class="collapsible-header <%= colour_class(language.colour) %>"><%= language.name %></div>
       <div class="collapsible-body">
         <div class="row">
-        <% table_data = language.table_data %>
+        <% table_data = language.table_data(current_user.geo_state) %>
         <table class="striped">
           <thead>
             <tr>

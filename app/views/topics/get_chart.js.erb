@@ -1,2 +1,2 @@
 
-$('#chart-<%= @language.id %>').html("<%= escape_javascript(line_chart @language.outcome_chart_data, id: "chartkick-#{@language.id}") %>");
+$('#chart-<%= @language.id %>').html("<%= escape_javascript(line_chart @language.outcome_chart_data(current_user.geo_state), id: "chartkick-#{@language.id}") %>");

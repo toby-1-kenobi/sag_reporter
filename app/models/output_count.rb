@@ -1,5 +1,7 @@
 class OutputCount < ActiveRecord::Base
 
+  include StateBased
+
   belongs_to :output_tally
   belongs_to :user
   belongs_to :language
