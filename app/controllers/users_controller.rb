@@ -102,7 +102,8 @@ class UsersController < ApplicationController
           :password,
           :password_confirmation,
           :mother_tongue_id,
-          :interface_language_id
+          :interface_language_id,
+          :geo_state_id
         )
       else
         params.require(:user).permit(
@@ -112,6 +113,7 @@ class UsersController < ApplicationController
           :password_confirmation,
           :mother_tongue_id,
           :interface_language_id,
+          :geo_state_id,
           :role_id
         )
       end
