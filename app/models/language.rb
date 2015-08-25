@@ -11,6 +11,7 @@ class Language < ActiveRecord::Base
   has_many :progress_markers, through: :language_progresses
   has_many :output_counts
   has_many :mt_resources
+  has_and_belongs_to_many :geo_states
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
 

@@ -119,3 +119,207 @@ garo:
   name: Garo
   lwc: false
   colour: 'cyan lighten-1'
+
+assamese:
+  name: Assamese 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+oriya:
+  name: Oriya
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+karbi:
+  name: Karbi 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+shyam:
+  name: Shyam 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+deori:
+  name: Deori 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tiwa:
+  name: Tiwa 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+galo:
+  name: Galo 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+libo:
+  name: Libo 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+ramo:
+  name: Ramo 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bokar:
+  name: Bokar 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+memba:
+  name: Memba 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tagin:
+  name: Tagin 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+nyshi:
+  name: Nyshi 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+adi:
+  name: Adi 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+hillsmiri:
+  name: Hillsmiri 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+apatani:
+  name: Apatani 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+wancho:
+  name: Wancho 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tangso:
+  name: Tangso 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+puriok:
+  name: Puriok 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mompa:
+  name: Mompa 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+miji:
+  name: Miji 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+aka:
+  name: Aka 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+sherdukpen:
+  name: Sherdukpen 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+idu:
+  name: Idu 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+digaru_mishimi:
+  name: Digaru Mishimi 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+singpo:
+  name: Singpo 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+sartang:
+  name: Sartang 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bugun:
+  name: Bugun 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bokar:
+  name: Bokar 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+nah:
+  name: Nah 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mimba:
+  name: Mimba 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mizo:
+  name: Mizo
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+darlong:
+  name: Darlong
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kaipeng:
+  name: Kaipeng 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+ranglong:
+  name: Ranglong 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+molsom:
+  name: Molsom 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+hrangkhul:
+  name: Hrangkhul 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+chorei:
+  name: Chorei 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mog:
+  name: Mog 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+urang:
+  name: Urang 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+chakma:
+  name: Chakma
+  lwc: false

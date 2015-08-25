@@ -1,10 +1,16 @@
 ap:
   name: Arunachal Pradesh
   zone: north_east
+  languages: galo, libo, ramo, bokar, memba, tagin,
+    nyshi, adi, hillsmiri, apatani, wancho, tangso,
+    puriok, mompa, miji, aka, sherdukpen, idu, digaru_mishimi,
+    singpo, sartang, bugun, bokar, nah, mimba
 
 assam:
   name: Assam
   zone: north_east
+  languages: assamese, bengali, nepali, oriya, karbi, garo,
+    sadri, rabha, shyam, deori, bodo, tiwa
 
 manipur:
   name: Manipur
@@ -29,6 +35,7 @@ sikkim:
 tripura:
   name: Tripura
   zone: north_east
+  languages: mizo, darlong, kaipeng, ranglong, molsom, hrangkhul, chorei, mog, urang, chakma
 
 nb:
   name: (northern) West Bengal
