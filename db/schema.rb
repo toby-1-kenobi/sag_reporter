@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150821175441) do
+ActiveRecord::Schema.define(version: 20150825103256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,6 +92,13 @@ ActiveRecord::Schema.define(version: 20150821175441) do
   end
 
   add_index "geo_states", ["zone_id"], name: "index_geo_states_on_zone_id", using: :btree
+
+  create_table "geo_states_languages", id: false, force: :cascade do |t|
+    t.integer "geo_state_id", null: false
+    t.integer "language_id",  null: false
+  end
+
+  add_index "geo_states_languages", ["geo_state_id", "language_id"], name: "index_geo_states_languages_on_geo_state_id_and_language_id", unique: true, using: :btree
 
   create_table "impact_reports", force: :cascade do |t|
     t.text     "content",            null: false

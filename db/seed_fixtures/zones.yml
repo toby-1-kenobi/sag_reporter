@@ -1,4 +1,4 @@
-north-east:
+north_east:
   name: North East
 
 east:
@@ -7,7 +7,7 @@ east:
 hindi:
   name: Hindi
 
-north-west:
+north_west:
   name: North West
 
 west:
