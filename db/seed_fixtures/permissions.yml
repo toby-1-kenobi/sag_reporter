@@ -1,89 +1,155 @@
 
-
 create_user:
   name: create_user
   description: Create a new user
+  category: <%= Permission.categories['users'] %>
 
 edit_user:
   name: edit_user
   description: Edit any user details
+  category: <%= Permission.categories['users'] %>
 
 view_all_users:
   name: view_all_users
   description: View all users
+  category: <%= Permission.categories['users'] %>
 
 delete_user:
   name: delete_user
   description: Delete any other user
+  category: <%= Permission.categories['users'] %>
 
 view_roles:
   name: view_roles
   description: View all roles with permissions
+  category: <%= Permission.categories['roles'] %>
 
 edit_role:
   name: edit_role
   description: Edit any role with its permissions
+  category: <%= Permission.categories['roles'] %>
 
 create_role:
   name: create_role
   description: Create a new role
+  category: <%= Permission.categories['roles'] %>
 
 view_all_languages:
   name: view_all_languages
   description: View all languages
+  category: <%= Permission.categories['languages'] %>
 
 create_language:
   name: create_language
   description: Add another language
+  category: <%= Permission.categories['languages'] %>
 
 edit_language:
   name: edit_language
   description: Edit details about a language
+  category: <%= Permission.categories['languages'] %>
 
 view_all_topics:
   name: view_all_topics
   description: View all topics
+  category: <%= Permission.categories['topics'] %>
 
 create_topic:
   name: create_topic
   description: Add another topic
+  category: <%= Permission.categories['topics'] %>
 
 edit_topic:
   name: edit_topic
   description: Edit details about a topic
+  category: <%= Permission.categories['topics'] %>
 
 view_all_reports:
   name: view_all_reports
   description: View all reports
+  category: <%= Permission.categories['reports'] %>
 
 create_report:
   name: create_report
   description: Make a new report
+  category: <%= Permission.categories['reports'] %>
 
 edit_report:
   name: edit_report
   description: Edit any report
+  category: <%= Permission.categories['reports'] %>
 
 archive_report:
   name: archive_report
   description: Archive or make active any report
+  category: <%= Permission.categories['reports'] %>
+
+tag_report:
+  name: tag_report
+  description: Tag impact reports with progress markers
+  category: <%= Permission.categories['reports'] %>
+
+evaluate_progress:
+  name: evaluate_progress
+  description: Set progress marker levels
+  category: <%= Permission.categories['outcomes'] %>
+
+view_outcome_totals:
+  name: view_outcome_totals
+  description: View outcome progress
+  category: <%= Permission.categories['outcomes'] %>
 
 view_all_tallies:
   name: view_all_tallies
   description: View all tallies
+  category: <%= Permission.categories['tallies'] %>
 
 create_tally:
   name: create_tally
   description: Make a new tally
+  category: <%= Permission.categories['tallies'] %>
 
 edit_tally:
   name: edit_tally
   description: Edit any tally
+  category: <%= Permission.categories['tallies'] %>
 
 archive_tally:
   name: archive_tally
   description: Archive or make active any tally
+  category: <%= Permission.categories['tallies'] %>
 
 increase_tally:
   name: increase_tally
   description: Increase a tally
+  category: <%= Permission.categories['tallies'] %>
+
+create_event:
+  name: create_event
+  description: Report on an event
+  category: <%= Permission.categories['events'] %>
+
+edit_event:
+  name: edit_event
+  description: Edit an event
+  category: <%= Permission.categories['events'] %>
+
+view_all_people:
+  name: view_all_people
+  description: View contacts of other users
+  category: <%= Permission.categories['people'] %>
+
+edit_person:
+  name: edit_person
+  description: "Edit another user's contact"
+  category: <%= Permission.categories['people'] %>
+
+report_numbers:
+  name: report_numbers
+  description: "Report output numbers for each month"
+  category: <%= Permission.categories['outputs'] %>
+
+view_output_totals:
+  name: view_output_totals
+  description: "View total outputs"
+  category: <%= Permission.categories['outputs'] %>

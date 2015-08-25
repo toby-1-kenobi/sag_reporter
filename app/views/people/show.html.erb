@@ -1,0 +1,9 @@
+<% provide(:title, 'Show Person: ' + @person.name) %>
+<h1><%= @person.name %></h1>
+<%= link_to "My Contacts", contacts_people_path, class: "btn waves-effect" %>
+
+<% if current_user.can_view_all_people? %>
+  <%= link_to "Show all people", people_path, class: "btn waves-effect" %>
+<% end %>
+
+<%= link_to "Add contact", new_person_path, class: "btn waves-effect" %>

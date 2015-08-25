@@ -1,0 +1,51 @@
+<% if wrapper %>
+  <div class="report-wrapper <%= report.state %> <%= wrapper %>">
+<% end %>
+<div class="card report <%= report.state %> <%= "hide" if report.archived? %> green lighten-3" id="report-<%= report.id %>" data-date="<%= report.report_date %>">
+  <div class="card-content">
+    <span class="card-title">Impact Report</span>
+    <% if time %>
+  	  <div><%= time_ago_in_words(report.created_at) %> ago</div>
+  	<% end %>
+  	<p><%= report.content %></p>
+    <% unless Report.categories.select{ |key, sentence| report.send(key) }.empty? %>
+      <p class="concerning hide">Concerns <%= Report.categories.select{ |key, sentence| report.send(key) }.values.map { |v| "the #{v}" }.to_sentence() %>.</p>
+    <% end %>
+    <% if report.reporter %>
+  	  <div class="reporter"><%= report.reporter.name %></div>
+    <% end %>
+  	<% if languages %>
+  	  <div class="report-languages">
+  	  	<% report.languages.each do |language| %>
+  	  	  <div class="<%= colour_class(language.colour) %>"><%= language.name %></div>
+  	  	<% end %>
+  	  </div>
+  	<% end %>
+  	<% if topics and report.topic %>
+  	  <div class="report-topics">
+  	  	<div class="<%= colour_class(report.topic.colour) %>"><%= report.topic.name %></div>
+  	  </div>
+  	<% end %>
+  </div>
+  <div class="card-action">
+  <% if current_user.can_archive_report? %>
+    <% if report.archived? %>
+  	  <%= link_to unarchive_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Un-Archive", method: :patch do %>
+  	    <i class="material-icons">publish</i>
+      <% end %>
+    <% else %>
+  	  <%= link_to archive_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Archive", method: :patch do %>
+  	    <i class="material-icons">archive</i>
+      <% end %>
+    <% end %>
+  <% end %>
+  <% if current_user.can_edit_report? %>
+  	  <%= link_to edit_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
+  	    <i class="material-icons">edit</i>
+      <% end %>
+  <% end %>
+  </div>
+</div>
+<% if wrapper %>
+  </div>
+<% end %>

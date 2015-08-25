@@ -4,3 +4,10 @@ rachel:
   password_digest: <%= User.digest('password') %>
   mother_tongue: english
   role: admin
+
+toby:
+  name: Toby Anderson
+  phone: 8972247235
+  password_digest: <%= User.digest('password') %>
+  mother_tongue: english
+  role: admin

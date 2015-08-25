@@ -1,0 +1,52 @@
+<% provide(:title, 'Report Numbers') %>
+<div class="row">
+  <div class="col s12">
+    <h1><i class="material-icons large">assessment</i> report on numbers</h1>
+  </div>
+</div>
+<%= form_tag({controller: "output_tallies", action: "update_numbers"}, method: "post") do %>
+  <div class="row">
+    <div class="col s6 m4 l2 offset-s6 offset-m8 offset-l10 input-field">
+      <%= select_month(Date.today) %>
+    </div>
+  </div>
+
+  <% @output_tallies_by_topic.each do |topic, tally_group| %>
+    <div class="row outcome-area <%= colour_class(topic.colour) %>">
+      <div class="row">
+        <h2 class="col s12 outcome-area-name"><%= topic.name %></h2>
+      </div>
+      <% tally_group.each do |tally| %>
+        <div class="row">
+      	  <div class="col s12 tally-description"><%= tally.description %></div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+      	    <table>
+      	      <thead>
+      	        <tr><th data-field="language">Language</th><th data-field="amount">Amount</th></tr>
+      	      </thead>
+      	      <tbody>
+      	  	    <tr class="repeatable">
+      	  	      <td>
+      	  	        <%= select_tag("#{tally.id}__0", options_from_collection_for_select(@languages, :id, :name), prompt: "Select language") %>
+      	  	      </td>
+      	  	      <td>
+      	  	        <%= number_field("amounts", "#{tally.id}__0") %>
+      	  	      </td>
+      	  	    </tr>
+      	      </tbody>
+      	    </table>
+      	  </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="row">
+      <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+        Submit Numbers <i class="material-icons right">send</i>
+      <% end %>
+  </div>
+
+<% end %>

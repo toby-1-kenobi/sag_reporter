@@ -1,0 +1,19 @@
+<% if wrapper %>
+  <div class="report-wrapper <%= action_point.status %> <%= wrapper %>">
+<% end %>
+<div class="card action-point <%= action_point.status %> orange lighten-2" id="action-point-<%= action_point.id %>" data-date="<%= action_point.created_at %>">
+  <div class="card-content">
+    <span class="card-title">For Action</span>
+    <% if time %>
+  	  <div><%= time_ago_in_words(action_point.created_at) %> ago</div>
+  	<% end %>
+  	<p><%= action_point.content %></p>
+  	<p class="responsible"><%= action_point.responsible.name %></p>
+  </div>
+  <!--div class="card-action">
+  
+  </div-->
+</div>
+<% if wrapper %>
+  </div>
+<% end %>

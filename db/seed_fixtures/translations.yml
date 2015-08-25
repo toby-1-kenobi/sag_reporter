@@ -1,0 +1,291 @@
+make_report_hindi:
+  translatable: make_report
+  language: hindi
+  content: "रिपोर्ट तयार करे"
+
+type_report_hindi:
+  translatable: type_report
+  language: hindi
+  content: "रिपोर्ट यहाँ पर लिखे"
+
+put_photo_hindi:
+  translatable: put_photo
+  language: hindi
+  content: "चित्र दीजिए"
+
+this_impact_hindi:
+  translatable: this_impact
+  language: hindi
+  content: "यह आशा, चुनौतियों और भविष्य की योजना की रिपोर्ट हैं"
+
+this_planning_hindi:
+  translatable: this_planning
+  language: hindi
+  content: "क्या ये प्रभाव रिपोर्ट है"
+
+report_about_hindi:
+  translatable: report_about
+  language: hindi
+  content: "यह रिपोर्ट किस बारे में हैं"
+
+mt_in_society_hindi:
+  translatable: mt_in_society
+  language: hindi
+  content: "समाज में मात्रि भाषा का उयोग"
+
+mt_in_church_hindi:
+  translatable: mt_in_church
+  language: hindi
+  content: "स्थानिय चर्च मे मात् भाषा का उपकरण"
+
+needs_society_hindi:
+  translatable: needs_society
+  language: hindi
+  content: "समाज में जरूरत"
+
+needs_church_hindi:
+  translatable: needs_church
+  language: hindi
+  content: "चर्च में जरूरत "
+
+relates_languages_hindi:
+  translatable: relates_languages
+  language: hindi
+  content: "यह भाषा से संबंधित है"
+
+relates_oa_hindi:
+  translatable: relates_oa
+  language: hindi
+  content: "बहारी क्षेत्र से संबंधित या जुड़ा है"
+
+submit_hindi:
+  translatable: submit
+  language: hindi
+  content: "रिपोर्ट सबमिट करे"
+
+report_event_hindi:
+  translatable: report_event
+  language: hindi
+  content: "एक घटना पर रिपोर्ट"
+
+number_participants_hindi:
+  translatable: number_participants
+  language: hindi
+  content: "प्रतिभागियों की संख्या"
+
+event_name_hindi:
+  translatable: event_name
+  language: hindi
+  content: "घटना के नाम"
+
+people_involved_hindi:
+  translatable: people_involved
+  language: hindi
+  content: "शामिल लोग"
+
+leaders_invloved_hindi:
+  translatable: leaders_invloved
+  language: hindi
+  content: "लीड़र शामिल"
+
+location_hindi:
+  translatable: location
+  language: hindi
+  content: "स्थान"
+
+district_hindi:
+  translatable: district
+  language: hindi
+  content: "जिला"
+
+sub_dist_hindi:
+  translatable: sub_dist
+  language: hindi
+  language: hindi
+  content: "उप - जिला"
+
+village_hindi:
+  translatable: village
+  language: hindi
+  content: "गाँव"
+
+date_hindi:
+  translatable: date
+  language: hindi
+  content: "तारीख"
+
+purpose_hindi:
+  translatable: purpose
+  language: hindi
+  content: "उद्देश्य"
+
+enable_hindi:
+  translatable: enable
+  language: hindi
+  content: "सक्षम करने के लिए"
+
+church_plan_hindi:
+  translatable: church_plan
+  language: hindi
+  content: "चर्च , प्रार्थना चर्चा करने और उनकी स्थिति में क्या जरूरत है योजना बनाने के लिए"
+
+church_disciple_hindi:
+  translatable: church_disciple
+  language: hindi
+  content: "चर्च में कितने विश्वासियों शिष्य हैं"
+
+church_serve_hindi:
+  translatable: church_serve
+  language: hindi
+  content: "चर्च समाज की सेवा करने के लिए हैं"
+
+church_distribute_hindi:
+  translatable: church_distribute
+  language: hindi
+  content: "चर्च मातृभाषा उपकरण वितरित करने के लिए हैं"
+
+church_leaders_dev_hindi:
+  translatable: church_leaders_dev
+  language: hindi
+  content: "चर्च के लीड़रो को विकसित किया जाना चाहिए"
+
+anything_said_hindi:
+  translatable: anything_said
+  language: hindi
+  content: "क्या किसी ने इसके बारे में कुछ कहाँ"
+
+hopes_challenges_hindi:
+  translatable: hopes_challenges
+  language: hindi
+  content: "किसी भी अन्य उम्मीदें, सपने या चुनौतियों साझा किये गए थे"
+
+other_impact_hindi:
+  translatable: other_impact
+  language: hindi
+  content: "किसी के द्वारा प्रभाव वाली कहानी चर्चा किये गए थें।"
+
+any_actions_hindi:
+  translatable: any_actions
+  language: hindi
+  content: "क्या कहाँ और किसने कहाँ?"
+
+who_said_what_hindi:
+  translatable: who_said_what
+  language: hindi
+  content: "यह एक प्रभाव है"
+
+need_followup_hindi:
+  translatable: need_followup
+  language: hindi
+  content: "आवश्यकताओं की जरूरत  हैं"
+
+yes_hindi:
+  translatable: affirm
+  language: hindi
+  content: "सही"
+
+no_hindi:
+  translatable: neg
+  language: hindi
+  content: "गलत"
+
+what_action_hindi:
+  translatable: what_action
+  language: hindi
+  content: "क्या कार्रवाई की जानी चाहिए।"
+
+person_responsible_hindi:
+  translatable: person_responsible
+  language: hindi
+  content: "जिम्मेदार व्यक्ति"
+
+anything_else_hindi:
+  translatable: anything_else
+  language: hindi
+  content: "इस घटना में जो कुछ हुआ हैं ,क्या ये दर्ज किया जाना चाहिए, तो यह यहाँ लिखिए।"
+
+report_numbers_hindi:
+  translatable: report_on_numbers
+  language: hindi
+  content: ""
+
+oa_mb_hindi:
+  translatable: oa_mb
+  language: hindi
+  content: ""
+
+oa_ld_hindi:
+  translatable: oa_ld
+  language: hindi
+  content: ""
+
+oa_fd_hindi:
+  translatable: oa_fd
+  language: hindi
+  content: ""
+
+lang_hindi:
+  translatable: lang
+  language: hindi
+  content: ""
+
+amount_hindi:
+  translatable: amount
+  language: hindi
+  content: ""
+
+num_com_meetings_hindi:
+  translatable: num_com_meetings
+  language: hindi
+  content: ""
+
+num_volunteers_hindi:
+  translatable: num_volunteers
+  language: hindi
+  content: ""
+
+num_mt_hq_print_hindi:
+  translatable: num_mt_hq_print
+  language: hindi
+  content: ""
+
+num_lit_training_hindi:
+  translatable: num_lit_training
+  language: hindi
+  content: ""
+
+num_draft_hindi:
+  translatable: num_draft
+  language: hindi
+  content: ""
+
+num_church_appr_hindi:
+  translatable: num_church_appr
+  language: hindi
+  content: ""
+
+num_con_appr_hindi:
+  translatable: num_con_appr
+  language: hindi
+  content: ""
+
+num_jf_hindi:
+  translatable: num_jf
+  language: hindi
+  content: ""
+
+num_oral_hindi:
+  translatable: num_oral
+  language: hindi
+  content: ""
+
+num_scripture_dist_hindi:
+  translatable: num_scripture_dist
+  language: hindi
+  content: ""
+
+num_discipleship_hindi:
+  translatable: num_discipleship
+  language: hindi
+  content: ""
+

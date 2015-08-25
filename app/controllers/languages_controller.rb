@@ -55,6 +55,26 @@ class LanguagesController < ApplicationController
     end
   end
 
+  def outputs_table
+    @language = Language.find(params[:id])
+    respond_to do |format|
+      format.pdf do
+        pdf = OutputsTablePdf.new(@language)
+        send_data pdf.render, filename: "#{@language.name}_outputs.pdf", type: 'application/pdf'
+      end
+    end
+  end
+
+  def outcomes_table
+    @language = Language.find(params[:id])
+    respond_to do |format|
+      format.pdf do
+        pdf = OutcomesTablePdf.new(@language)
+        send_data pdf.render, filename: "#{@language.name}_outcomes.pdf", type: 'application/pdf'
+      end
+    end
+  end
+
     private
 
     def lang_params

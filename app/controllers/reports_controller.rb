@@ -34,14 +34,18 @@ class ReportsController < ApplicationController
 
   def create
   	full_params = report_params.merge({reporter: current_user})
-  	@report = Report.new(full_params)
+    if params["report-type"] == "planning" 
+  	  @report = Report.new(full_params)
+    else
+      @report = ImpactReport.new(full_params)
+    end
     if @report.save
       if params['report']['languages']
         params['report']['languages'].each do |lang_id, value|
           @report.languages << Language.find_by_id(lang_id.to_i)
         end
       end
-      if params['report']['topics']
+      if params['report']['topics'] and params["report-type"] == "planning"
         params['report']['topics'].each do |top_id, value|
           @report.topics << Topic.find_by_id(top_id.to_i)
         end
@@ -81,30 +85,30 @@ class ReportsController < ApplicationController
         end
       end
       flash["success"] = "Report Updated!"
-      redirect_back_or @report
+      redirect_recent_or @report
     end
   end
 
   def index
   	@reports = Report.order(:created_at => :desc).paginate(page: params[:page])
-  	store_location
+  	recent_view
   end
 
   def by_language
   	@reports = Report.order(:created_at => :desc)
   	@languages = Language.all
-  	store_location
+  	recent_view
   end
 
   def by_topic
   	@reports = Report.all.order(:created_at => :desc)
   	@topics = Topic.all
-  	store_location
+  	recent_view
   end
 
   def by_reporter
   	@reports = Report.all.order(:created_at => :desc)
-  	store_location
+  	recent_view
   end
 
   def archive
@@ -121,10 +125,21 @@ class ReportsController < ApplicationController
 
     def report_params
       if current_user.can_archive_report?
-        permitted = params.require(:report).permit(:report_type, :content, :state)
+        permitted = params.require(:report).permit(:content, :mt_society, :mt_church, :needs_society, :needs_church, :state)
       else
-    	permitted = params.require(:report).permit(:report_type, :content)
+    	  permitted = params.require(:report).permit(:content, :mt_society, :mt_church, :needs_society, :needs_church,)
       end
+    end
+  
+    # Redirects to recent view (or to the default).
+    def redirect_recent_or(default)
+      redirect_to(session[:report_recent_view] || default)
+      session.delete(:report_recent_view)
+    end
+
+    # Store which is the recent view in the session
+    def recent_view
+      session[:report_recent_view] = request.url if request.get?
     end
 
 end

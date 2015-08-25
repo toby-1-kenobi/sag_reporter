@@ -1,0 +1,5 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+
+<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/progress_markers.yml")).result %>

@@ -1,0 +1,236 @@
+make_report:
+  identifier: make_report
+  content: "Make a report"
+
+type_report:
+  identifier: type_report
+  content: "Type your report here"
+
+put_photo:
+  identifier: put_photo
+  content: "Put in a photo"
+
+this_impact:
+  identifier: this_impact
+  content: "This is an impact report"
+
+this_planning:
+  identifier: this_planning
+  content: "This is a hope, challenge or future-planning report"
+
+report_about:
+  identifier: report_about
+  content: "This report is about"
+
+mt_in_society:
+  identifier: mt_in_society
+  content: "The use of mother tongue in society"
+
+mt_in_church:
+  identifier: mt_in_church
+  content: "The use of mother tongue tools in the local churches"
+
+needs_society:
+  identifier: needs_society
+  content: "The needs of society"
+
+needs_church:
+  identifier: needs_church
+  content: "The needs of the churches"
+
+relates_languages:
+  identifier: relates_languages
+  content: "It relates to these languages"
+
+relates_oa:
+  identifier: relates_oa
+  content: "It relates to these outcome areas"
+
+submit:
+  identifier: submit
+  content: "Submit report"
+
+report_event:
+  identifier: report_event
+  content: "Report on an event"
+
+number_participants:
+  identifier: number_participants
+  content: "Total number of participants"
+
+event_name:
+  identifier: event_name
+  content: "Event name"
+
+people_involved:
+  identifier: people_involved
+  content: "People involved"
+
+one_name_row:
+  identifier: one_name_row
+  content: "Write one name in each row"
+
+leaders_invloved:
+  identifier: leaders_invloved
+  content: "Leaders involved"
+
+location:
+  identifier: location
+  content: "Location"
+
+district:
+  identifier: district
+  content: "District"
+
+sub_dist:
+  identifier: sub_dist
+  content: "Sub-district"
+
+village:
+  identifier: village
+  content: "Village"
+
+date:
+  identifier: date
+  content: "Date"
+
+purpose:
+  identifier: purpose
+  content: "Purpose"
+
+enable:
+  identifier: enable
+  content: "To enable…"
+
+church_plan:
+  identifier: church_plan
+  content: "Churches to pray, discuss and plan what is needed in their situation"
+
+church_disciple:
+  identifier: church_disciple
+  content: "Churches to disciple the believers"
+
+church_serve:
+  identifier: church_serve
+  content: "Churches to serve society"
+
+church_distribute:
+  identifier: church_distribute
+  content: "Churches to distribute mother tongue tools"
+
+church_leaders_dev:
+  identifier: church_leaders_dev
+  content: "Church leaders to be developed"
+
+anything_said:
+  identifier: anything_said
+  content: "Was anything said about"
+
+hopes_challenges:
+  identifier: hopes_challenges
+  content: "Were any other hopes, dreams or challenges shared?"
+
+other_impact:
+  identifier: other_impact
+  content: "Were any other impact stories shared?"
+
+any_actions:
+  identifier: any_actions
+  content: "Were there any decisions or actions to be carried out?"
+
+who_said_what:
+  identifier: who_said_what
+  content: "What was said and who said it?"
+
+need_followup:
+  identifier: need_followup
+  content: "This needs follow up"
+
+affirm:
+  identifier: 'yes'
+  content: "Yes"
+
+neg:
+  identifier: 'no'
+  content: "No"
+
+what_action:
+  identifier: what_action
+  content: "What action must be taken?"
+
+person_responsible:
+  identifier: person_responsible
+  content: "The person responsible"
+
+anything_else:
+  identifier: anything_else
+  content: "If anything else happened in the event that should be recorded, write it here"
+
+report_on_numbers:
+  identifier: report_numbers
+  content: "Report on numbers"
+
+oa_mb:
+  identifier: oa_mb
+  content: "Movement building"
+
+oa_ld:
+  identifier: oa_ld
+  content: "Language development"
+
+oa_fd:
+  identifier: oa_fd
+  content: "Faith development"
+
+lang:
+  identifier: lang
+  content: "Language"
+
+amount:
+  identifier: amount
+  content: "Amount"
+
+num_com_meetings:
+  identifier: num_com_meetings
+  content: "Number of community meetings"
+
+num_volunteers:
+  identifier: num_volunteers
+  content: "Number of volunteers mobilised"
+
+num_mt_hq_print:
+  identifier: num_mt_hq_print
+  content: "Number of distinct mother-tongue tools printed in high quality"
+
+num_lit_training:
+  identifier: num_lit_training
+  content: "Number of meetings for teaching literacy"
+
+num_draft:
+  identifier: num_draft
+  content: "Number of Scripture verses newly drafted"
+
+num_church_appr:
+  identifier: num_church_appr
+  content: "Number of Scripture verses church committee approved"
+
+num_con_appr:
+  identifier: num_con_appr
+  content: "Number of Scripture verses consultant approved"
+
+num_jf:
+  identifier: num_jf
+  content: "Number of times the Jesus Film was screened"
+
+num_oral:
+  identifier: num_oral
+  content: "Number of oral Bible tools distributed"
+
+num_scripture_dist:
+  identifier: num_scripture_dist
+  content: "Number of Scripture resources distributed"
+
+num_discipleship:
+  identifier: num_discipleship
+  content: "Number of discipleship meetings"
+

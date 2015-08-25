@@ -1,0 +1,9 @@
+    <li class="collection-item" id="person-<%= person.id %>">
+      <i class="material-icons">person</i>
+      <%= link_to person.name, person %>
+      <% if current_user.can_delete_person? %>
+        <%= link_to person, method: :delete, class: "waves-effect waves-red btn-flat", data: { confirm: "Delete #{person.name}?" } do %>
+        <i class="material-icons">delete</i>
+        <% end %>
+      <% end %>
+    </li>

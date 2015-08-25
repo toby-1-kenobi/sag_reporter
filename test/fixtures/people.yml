@@ -1,0 +1,13 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+
+<% 35.times do |i| %>
+user-<%= i %>:
+  name: <%= Faker::Name.name %>
+  description: <%= Faker::Lorem.paragraph %>
+  phone: <%= Faker::Number.number(10) %>
+  intern: false
+  facilitator: false
+  pastor: false
+<% end %>

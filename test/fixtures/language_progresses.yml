@@ -1,0 +1,50 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+ 
+<%
+
+	def minority_languages
+	  [
+		:toto,
+		:rajbanshi,
+		:bodo,
+		:sadri,
+		:santali,
+		:munda,
+		:rabha,
+		:kurux,
+		:surjapuri,
+		:garo
+	  ]
+	end
+
+	def sd_progress_markers
+	  [
+		:existing_skills_valued,
+		:symptoms_known,
+		:disease_prevented,
+		:visiting_doctor,
+		:skills_for_income,
+		:skills_used,
+		:demonstrated_care,
+		:knowledge_spread,
+		:businesses_started,
+		:facilitators_self_dependent,
+		:new_initiatives,
+		:businesses_skills_taught,
+		:local_doctors_or_ngos_invloved
+	  ]
+	end
+
+minority_languages.each do |language|
+  sd_progress_markers.each do |marker|
+%>
+
+<%= language %>_<%= marker %>:
+  language: <%= language %>
+  progress_marker: <%= marker %>
+
+<%
+  end
+end
+%>

@@ -1,0 +1,60 @@
+<% provide(:title, 'Show Event: ' + @event.event_label) %>
+
+<h1><%= @event.event_label %> - <%= @event.event_date.to_s(:rfc822) %></h1>
+
+<% if @event.record_creator %>
+  <p>
+   Reported by: <%= @event.record_creator.name %>
+   <%= time_ago_in_words @event.created_at %> ago.
+  </p>
+<% end %>
+
+<% @event.purposes.each do |purpose| %>
+  <p class="event-purpose">To enable <%= purpose.description %>.</p>
+<% end %>
+
+<% unless @event.languages.empty? %>
+  <p class="event-languages">Concerning <%= @event.languages.map{ |l| "<strong>#{l.name}</strong>" }.to_sentence.html_safe %> languages.</p>
+<% end %>
+
+<!--h2>People Attending</h2-->
+<% if @event.participant_amount %>
+  <p>A total of <%= @event.participant_amount %> people attended the event.</p>
+<% end %>
+<% unless @event.people.empty? %>
+  <ul class="collection event-attendees">
+  	<% @event.people.each do |person| %>
+  	  <li class="collection-item">
+  	  	<%= person.name %>
+  	  </li>
+  	<% end %>
+  </ul>
+<% end %>
+
+<!--h2>Impact Reports</h2-->
+<% @event.impact_reports.in_groups_of(3, false) do |report_group| %>
+  <div class="row">
+    <%= render partial: "impact_reports/report", collection: report_group, locals: {time: false, languages: true, topics: true, wrapper: "col s12 m6 l4"} %>
+  </div>
+<% end %>
+
+
+<!--h2>Planning Reports</h2-->
+<% @event.planning_reports.in_groups_of(3, false) do |report_group| %>
+  <div class="row">
+    <%= render partial: "reports/report", collection: report_group, locals: {time: false, languages: true, topics: true, wrapper: "col s12 m6 l4"} %>
+  </div>
+<% end %>
+
+<!--h2>Action Points</h2-->
+<% @event.action_points.in_groups_of(3, false) do |action_point_group| %>
+  <div class="row">
+    <%= render partial: "action_points/action_point", collection: action_point_group, locals: {time: false,  wrapper: "col s12 m6 l4"} %>
+  </div>
+<% end %>
+
+
+<% unless @event.content.empty? %>
+  <!--h2>Other event content</h2-->
+  <p><%= @event.content %></p>
+<% end %>

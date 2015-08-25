@@ -1,0 +1,22 @@
+<% title = @showing_all ? "All people" : "My contacts" %>
+<% provide(:title, title) %>
+<h1><i class="material-icons large">people</i>
+ <%= title %></h1>
+
+<%= will_paginate %>
+
+<ul class="people collection">
+  <%= render @people %>
+</ul>
+
+<%= will_paginate %>
+
+<% if !@showing_all and current_user.can_view_all_people? %>
+  <%= link_to "Show all people", people_path, class: "btn waves-effect" %>
+<% end %>
+
+<% if @showing_all %>
+  <%= link_to "My contacts", contacts_people_path, class: "btn waves-effect" %>
+<% end %>
+
+<%= link_to "Add contact", new_person_path, class: "btn waves-effect" %>

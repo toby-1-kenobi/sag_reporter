@@ -1,0 +1,293 @@
+existing_skills_valued:
+  name: "Exisitng skills valued"
+  description: "People are valuing their own existing skills"
+  topic: social_development
+  weight: 1
+
+symptoms_known:
+  name: "Symptoms known"
+  description: "Know the symptoms of common diseases and how to treat them"
+  topic: social_development
+  weight: 1
+
+disease_prevented:
+  name: "Disease prevented"
+  description: "People are able to prevent some diseases"
+  topic: social_development
+  weight: 1
+
+visiting_doctor:
+  name: "Visiting doctor"
+  description: "People in the community are going to the doctor if they have TB"
+  topic: social_development
+  weight: 1
+
+skills_for_income:
+  name: "Skills for income"
+  description: "People are learning skills they can use for income"
+  topic: social_development
+  weight: 2
+
+skills_used:
+  name: "Skills used"
+  description: "People are using their existing skills for economic stability"
+  topic: social_development
+  weight: 2
+
+demonstrated_care:
+  name: "Demostrated care"
+  description: "People are recognising that Christians care about them, demonstrating God's love through social action"
+  topic: social_development
+  weight: 2
+
+knowledge_spread:
+  name: "Knowledge spread"
+  description: "People are telling others about health and social awareness messages and helping others with their knowledge and skills"
+  topic: social_development
+  weight: 2
+
+businesses_started:
+  name: "Businesses started"
+  description: "People are starting their own businesses"
+  topic: social_development
+  weight: 3
+
+facilitators_self_dependent:
+  name: "Facilitators, self-dependent"
+  description: "People are self-dependent for their income"
+  topic: social_development
+  weight: 3
+
+new_initiatives:
+  name: "New initiatives"
+  description: "Members of the movement are organising for community social and economic development, including setting up microfinance groups, community initiatives and health awareness programmes"
+  topic: social_development
+  weight: 3
+
+businesses_skills_taught:
+  name: "Businesses skills taught"
+  description: "Members of the movement are teaching others skills about business"
+  topic: social_development
+  weight: 3
+
+local_doctors_or_ngos_invloved:
+  name: "Local doctors or NGOs involved"
+  description: "Members of the movement are involving local doctors or NGOs in their social programmes"
+  topic: social_development
+  weight: 3
+
+pastors_taking_responsibility:
+  name: "Leaders taking responsibility"
+  description: "Leaders in the movement are taking responsibility for guiding their interns"
+  topic: movement_building
+  weight: 1
+
+more_info_requested:
+  name: "More info requested"
+  description: "People are asking for more information about mother tongue ministry and NBASE"
+  topic: movement_building
+  weight: 1
+
+network_meetings_attended:
+  name: "Network meetings attended"
+  description: "Leaders are attending network meetings"
+  topic: movement_building
+  weight: 2
+
+nbase_promoted:
+  name: "MT promoted"
+  description: "Members of the movement are telling others about the value of mother tongue based ministry"
+  topic: movement_building
+  weight: 2
+
+materials_shared:
+  name: "Materials shared"
+  description: "Leaders are sharing materials with other churches"
+  topic: movement_building
+  weight: 2
+
+interest_from_others:
+  name: "Interest from others"
+  description: "Other agencies (NGOs, government and others) are expressing interest in mother tongue based community transformation"
+  topic: movement_building
+  weight: 2
+
+combined_mt_events:
+  name: "Combined MT events"
+  description: "Churches are conducting combined Gospel services and events in the mother tongue"
+  topic: movement_building
+  weight: 3
+
+churches_partnering:
+  name: "Churches partnering"
+  description: "Churches are partnering together for mother tongue ministry"
+  topic: movement_building
+  weight: 3
+
+action_from_others:
+  name: "Action from others"
+  description: "Other agencies (NGOs, government and others) are meetng together about mother tongue based community transformation"
+  topic: movement_building
+  weight: 3
+
+merciful:
+  name: "Showing mercy"
+  description: "Leaders are showing mercy and compassion to others"
+  topic: leadership_development
+  weight: 1
+
+showing kindness:
+  name: "showing kindness"
+  description: "Leaders are doing good works and showing kindness"
+  topic: leadership_development
+  weight: 1
+
+treats_others_as_equal:
+  name: "Treats others as equal"
+  description: "Leaders are treating others as equal"
+  topic: leadership_development
+  weight: 2
+
+bibilical_foundation:
+  name: "Biblical foundation"
+  description: "Leaders are basing their ministry on the Bible. They are teaching it and modelling their life on the teaching of the Bible"
+  topic: leadership_development
+  weight: 2
+
+prays_about_decisions:
+  name: "Prays about decisions"
+  description: "Leaders are praying about decisions. Prayer is the foundation of their ministry"
+  topic: leadership_development
+  weight: 2
+
+resolves_division:
+  name: "Resolves division"
+  description: "Leaders are able to address and resolve any divisions well"
+  topic: leadership_development
+  weight: 3
+
+mt_spoken:
+  name: "MT spoken"
+  description: "People are speaking their mother-tongue in church and in the community"
+  topic: language_development
+  weight: 1
+
+mt_worship:
+  name: "MT worship"
+  description: "In churches, people are worshipping God and conducting services in mother-tongue"
+  topic: language_development
+  weight: 2
+
+mt_reading:
+  name: "MT reading"
+  description: "People are reading materials in their mother-tongue"
+  topic: language_development
+  weight: 2
+
+mt_promoted:
+  name: "MT promoted"
+  description: "People are telling others about the value of using mother-tongue"
+  topic: language_development
+  weight: 2
+
+mt_church_contribution:
+  name: "MT church contribution"
+  description: "Members' churches are contributing 25% to mother-tongue resource production"
+  topic: language_development
+  weight: 2
+
+mt_materials:
+  name: "MT materials"
+  description: "People are writing materials in their mother-tongue. There is a mother tongue newspaper"
+  topic: language_development
+  weight: 3
+
+mt_books_sold:
+  name: "MT books sold"
+  description: "Bookstores are selling mother-tongue books"
+  topic: language_development
+  weight: 3
+
+mt_committees:
+  name: "MT committees"
+  description: "Communities are setting up language committees for their mother-tongue"
+  topic: language_development
+  weight: 3
+
+mt_church_programmes:
+  name: "MT church programmes"
+  description: "Churches are putting on big programmes (cultural / Gospel) in the mother-tongue"
+  topic: language_development
+  weight: 3
+
+mt_radio_programmes:
+  name: "MT radio programmes"
+  description: "Radio stations have a programmes in the mother-tongue"
+  topic: language_development
+  weight: 3
+
+gospel_interest:
+  name: "Gospel interest"
+  description: "The community is startng to show interest in the Gospel, asking questions"
+  topic: faith_development
+  weight: 1
+
+sharing_faith:
+  name: "Sharing Faith"
+  description: "Believers are sharing their faith"
+  topic: faith_development
+  weight: 1
+
+believers_attend_church:
+  name: "Believers attend church"
+  description: "Believers are attending church"
+  topic: faith_development
+  weight: 1
+
+understanding_gospel:
+  name: "Understanding Gospel"
+  description: "Communities are understanding the Gospel"
+  topic: faith_development
+  weight: 2
+
+attending_church:
+  name: "Attending church"
+  description: "More people are starting to attend church and church activities"
+  topic: faith_development
+  weight: 1
+
+bible_reading:
+  name: "Bible reading"
+  description: "Communities are reading or listening to the Bible and accessing Scripture resources"
+  topic: faith_development
+  weight: 2
+
+prayer:
+  name: "Prayer"
+  description: "Church members are people of prayer"
+  topic: faith_development
+  weight: 3
+
+leading_to_christ:
+  name: "Leading to Christ"
+  description: "Church members are leading others to Christ"
+  topic: faith_development
+  weight: 3
+
+teaching_and_helping:
+  name: "Teaching and helping"
+  description: "Members of the movement are preaching and teaching and helping others"
+  topic: faith_development
+  weight: 3
+
+reources_produced:
+  name: "Resources produced"
+  description: "Church members are producing MT Gospel resources"
+  topic: faith_development
+  weight: 3
+
+making_disciples:
+  name: "Making disciples"
+  description: "Church members are involved in ongoing discipleship of other Christians"
+  topic: faith_development
+  weight: 3

@@ -1,0 +1,19 @@
+plan:
+  name: 'plan'
+  description: "Churches to pray, discuss and plan what is needed in their situation"
+
+disciple:
+  name: 'disciple'
+  description: "Churches to disciple the believers"
+
+serve:
+  name: 'serve'
+  description: "Churches to serve society"
+
+distribute:
+  name: 'distribute'
+  description: "Churches to distribute mother tongue tools"
+
+develop_leaders:
+  name: 'develop_leaders'
+  description: "Church leaders to be developed"

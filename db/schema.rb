@@ -11,10 +11,78 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150803105655) do
+ActiveRecord::Schema.define(version: 20150821175441) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "action_points", force: :cascade do |t|
+    t.text     "content",                       null: false
+    t.integer  "responsible_id",                null: false
+    t.integer  "status",            default: 0, null: false
+    t.integer  "record_creator_id"
+    t.integer  "event_id"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "action_points", ["event_id"], name: "index_action_points_on_event_id", using: :btree
+  add_index "action_points", ["record_creator_id"], name: "index_action_points_on_record_creator_id", using: :btree
+  add_index "action_points", ["responsible_id"], name: "index_action_points_on_responsible_id", using: :btree
+
+  create_table "attendances", force: :cascade do |t|
+    t.integer  "person_id",  null: false
+    t.integer  "event_id",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "attendances", ["event_id", "person_id"], name: "index_attendances_on_event_id_and_person_id", unique: true, using: :btree
+  add_index "attendances", ["event_id"], name: "index_attendances_on_event_id", using: :btree
+  add_index "attendances", ["person_id"], name: "index_attendances_on_person_id", using: :btree
+
+  create_table "creations", force: :cascade do |t|
+    t.integer  "person_id"
+    t.integer  "mt_resource_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "creations", ["mt_resource_id"], name: "index_creations_on_mt_resource_id", using: :btree
+  add_index "creations", ["person_id", "mt_resource_id"], name: "index_people_mt_resources", unique: true, using: :btree
+  add_index "creations", ["person_id"], name: "index_creations_on_person_id", using: :btree
+
+  create_table "events", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "event_label",        null: false
+    t.date     "event_date",         null: false
+    t.integer  "participant_amount"
+    t.integer  "purpose"
+    t.text     "content"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "district"
+    t.string   "sub_district"
+    t.string   "village"
+  end
+
+  add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
+
+  create_table "events_languages", id: false, force: :cascade do |t|
+    t.integer "event_id",    null: false
+    t.integer "language_id", null: false
+  end
+
+  add_index "events_languages", ["event_id", "language_id"], name: "index_events_languages", unique: true, using: :btree
+
+  create_table "events_purposes", id: false, force: :cascade do |t|
+    t.integer "event_id"
+    t.integer "purpose_id"
+  end
+
+  add_index "events_purposes", ["event_id", "purpose_id"], name: "index_events_purposes_on_event_id_and_purpose_id", unique: true, using: :btree
+  add_index "events_purposes", ["event_id"], name: "index_events_purposes_on_event_id", using: :btree
+  add_index "events_purposes", ["purpose_id"], name: "index_events_purposes_on_purpose_id", using: :btree
 
   create_table "geo_states", force: :cascade do |t|
     t.string   "name",       null: false
@@ -25,6 +93,42 @@ ActiveRecord::Schema.define(version: 20150803105655) do
 
   add_index "geo_states", ["zone_id"], name: "index_geo_states_on_zone_id", using: :btree
 
+  create_table "impact_reports", force: :cascade do |t|
+    t.text     "content",            null: false
+    t.integer  "reporter_id"
+    t.integer  "event_id"
+    t.boolean  "mt_society"
+    t.boolean  "mt_church"
+    t.boolean  "needs_society"
+    t.boolean  "needs_church"
+    t.integer  "progress_marker_id"
+    t.integer  "state"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "impact_reports", ["event_id"], name: "index_impact_reports_on_event_id", using: :btree
+  add_index "impact_reports", ["progress_marker_id"], name: "index_impact_reports_on_progress_marker_id", using: :btree
+  add_index "impact_reports", ["reporter_id"], name: "index_impact_reports_on_reporter_id", using: :btree
+
+  create_table "impact_reports_languages", id: false, force: :cascade do |t|
+    t.integer "impact_report_id", null: false
+    t.integer "language_id",      null: false
+  end
+
+  add_index "impact_reports_languages", ["impact_report_id", "language_id"], name: "index_impact_reports_languages", unique: true, using: :btree
+
+  create_table "language_progresses", force: :cascade do |t|
+    t.integer  "language_id",        null: false
+    t.integer  "progress_marker_id", null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "language_progresses", ["language_id"], name: "index_language_progresses_on_language_id", using: :btree
+  add_index "language_progresses", ["progress_marker_id", "language_id"], name: "index_language_progresses_on_progress_marker_id_and_language_id", unique: true, using: :btree
+  add_index "language_progresses", ["progress_marker_id"], name: "index_language_progresses_on_progress_marker_id", using: :btree
+
   create_table "languages", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
@@ -32,6 +136,7 @@ ActiveRecord::Schema.define(version: 20150803105655) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.string   "colour",      default: "white", null: false
+    t.boolean  "interface",   default: false
   end
 
   create_table "languages_reports", id: false, force: :cascade do |t|
@@ -58,11 +163,69 @@ ActiveRecord::Schema.define(version: 20150803105655) do
 
   add_index "languages_users", ["user_id", "language_id"], name: "index_languages_users_on_user_id_and_language_id", unique: true, using: :btree
 
+  create_table "mt_resources", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "name",                           null: false
+    t.text     "description"
+    t.integer  "language_id",                    null: false
+    t.boolean  "cc_share_alike", default: false, null: false
+    t.integer  "category",                       null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "mt_resources", ["category"], name: "index_mt_resources_on_category", using: :btree
+  add_index "mt_resources", ["language_id"], name: "index_mt_resources_on_language_id", using: :btree
+  add_index "mt_resources", ["user_id"], name: "index_mt_resources_on_user_id", using: :btree
+
+  create_table "output_counts", force: :cascade do |t|
+    t.integer  "output_tally_id",             null: false
+    t.integer  "user_id",                     null: false
+    t.integer  "language_id",                 null: false
+    t.integer  "amount",          default: 0, null: false
+    t.integer  "year",                        null: false
+    t.integer  "month",                       null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "output_counts", ["language_id"], name: "index_output_counts_on_language_id", using: :btree
+  add_index "output_counts", ["output_tally_id"], name: "index_output_counts_on_output_tally_id", using: :btree
+  add_index "output_counts", ["user_id"], name: "index_output_counts_on_user_id", using: :btree
+
+  create_table "output_tallies", force: :cascade do |t|
+    t.integer  "topic_id",    null: false
+    t.string   "name",        null: false
+    t.text     "description"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "output_tallies", ["topic_id"], name: "index_output_tallies_on_topic_id", using: :btree
+
+  create_table "people", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.string   "phone"
+    t.text     "address"
+    t.boolean  "intern"
+    t.boolean  "facilitator"
+    t.boolean  "pastor"
+    t.integer  "language_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "user_id"
+  end
+
+  add_index "people", ["language_id"], name: "index_people_on_language_id", using: :btree
+  add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
+
   create_table "permissions", force: :cascade do |t|
     t.string   "name"
     t.string   "description"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.integer  "category"
   end
 
   add_index "permissions", ["name"], name: "index_permissions_on_name", unique: true, using: :btree
@@ -72,16 +235,50 @@ ActiveRecord::Schema.define(version: 20150803105655) do
     t.integer "permission_id"
   end
 
-  create_table "reports", force: :cascade do |t|
-    t.integer  "reporter_id",             null: false
-    t.text     "content"
-    t.integer  "report_type", default: 0, null: false
-    t.integer  "state",       default: 1, null: false
+  create_table "progress_markers", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.integer  "topic_id"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.integer  "weight",      default: 1, null: false
   end
 
-  add_index "reports", ["report_type"], name: "index_reports_on_report_type", using: :btree
+  add_index "progress_markers", ["topic_id"], name: "index_progress_markers_on_topic_id", using: :btree
+
+  create_table "progress_updates", force: :cascade do |t|
+    t.integer  "user_id",              null: false
+    t.integer  "language_progress_id", null: false
+    t.integer  "progress"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "progress_updates", ["created_at"], name: "index_progress_updates_on_created_at", using: :btree
+  add_index "progress_updates", ["language_progress_id"], name: "index_progress_updates_on_language_progress_id", using: :btree
+  add_index "progress_updates", ["user_id"], name: "index_progress_updates_on_user_id", using: :btree
+
+  create_table "purposes", force: :cascade do |t|
+    t.string   "name",        null: false
+    t.string   "description", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "reports", force: :cascade do |t|
+    t.integer  "reporter_id",               null: false
+    t.text     "content"
+    t.integer  "state",         default: 1, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.boolean  "mt_society"
+    t.boolean  "mt_church"
+    t.boolean  "needs_society"
+    t.boolean  "needs_church"
+    t.integer  "event_id"
+  end
+
+  add_index "reports", ["event_id"], name: "index_reports_on_event_id", using: :btree
   add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id", using: :btree
   add_index "reports", ["state"], name: "index_reports_on_state", using: :btree
 
@@ -97,6 +294,17 @@ ActiveRecord::Schema.define(version: 20150803105655) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "string_translations", force: :cascade do |t|
+    t.integer  "translatable_id", null: false
+    t.integer  "language_id",     null: false
+    t.text     "content"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "string_translations", ["language_id"], name: "index_string_translations_on_language_id", using: :btree
+  add_index "string_translations", ["translatable_id"], name: "index_string_translations_on_translatable_id", using: :btree
 
   create_table "tallies", force: :cascade do |t|
     t.string   "name"
@@ -129,19 +337,39 @@ ActiveRecord::Schema.define(version: 20150803105655) do
     t.datetime "updated_at",                    null: false
   end
 
+  create_table "translatables", force: :cascade do |t|
+    t.string   "identifier", null: false
+    t.text     "content",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "translations", force: :cascade do |t|
+    t.integer  "translatable_id"
+    t.integer  "language_id"
+    t.text     "content"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "translations", ["language_id"], name: "index_translations_on_language_id", using: :btree
+  add_index "translations", ["translatable_id"], name: "index_translations_on_translatable_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "phone"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
     t.string   "password_digest"
     t.string   "remember_digest"
     t.integer  "role_id"
-    t.integer  "mother_tongue_id", null: false
+    t.integer  "mother_tongue_id",      null: false
+    t.integer  "interface_language_id"
     t.integer  "geo_state_id"
   end
 
   add_index "users", ["geo_state_id"], name: "index_users_on_geo_state_id", using: :btree
+  add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
@@ -152,7 +380,43 @@ ActiveRecord::Schema.define(version: 20150803105655) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "action_points", "events"
+  add_foreign_key "action_points", "people", column: "responsible_id"
+  add_foreign_key "action_points", "users", column: "record_creator_id"
+  add_foreign_key "attendances", "events"
+  add_foreign_key "attendances", "people"
+  add_foreign_key "creations", "mt_resources"
+  add_foreign_key "creations", "people"
+  add_foreign_key "events", "users"
+  add_foreign_key "events_purposes", "events"
+  add_foreign_key "events_purposes", "purposes"
   add_foreign_key "geo_states", "zones"
+  add_foreign_key "impact_reports", "events"
+  add_foreign_key "impact_reports", "progress_markers"
+  add_foreign_key "impact_reports", "users", column: "reporter_id"
+  add_foreign_key "language_progresses", "languages"
+  add_foreign_key "language_progresses", "progress_markers"
+  add_foreign_key "languages_tallies", "languages"
+  add_foreign_key "languages_tallies", "tallies"
+  add_foreign_key "mt_resources", "languages"
+  add_foreign_key "mt_resources", "users"
+  add_foreign_key "output_counts", "languages"
+  add_foreign_key "output_counts", "output_tallies"
+  add_foreign_key "output_counts", "users"
+  add_foreign_key "output_tallies", "topics"
+  add_foreign_key "people", "languages"
+  add_foreign_key "people", "users"
+  add_foreign_key "progress_markers", "topics"
+  add_foreign_key "progress_updates", "language_progresses"
+  add_foreign_key "progress_updates", "users"
+  add_foreign_key "reports", "events"
+  add_foreign_key "string_translations", "languages"
+  add_foreign_key "string_translations", "translatables"
+  add_foreign_key "tallies", "topics"
+  add_foreign_key "tally_updates", "languages_tallies"
   add_foreign_key "tally_updates", "users"
+  add_foreign_key "translations", "languages"
+  add_foreign_key "translations", "translatables"
   add_foreign_key "users", "geo_states"
+  add_foreign_key "users", "languages", column: "interface_language_id"
 end
