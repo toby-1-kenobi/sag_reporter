@@ -26,6 +26,7 @@ class UsersController < ApplicationController
   	@user = User.new
     @roles = Role.all
     @languages = Language.all
+    @interface_languages = Language.where(interface: true)
   end
 
   def show
@@ -39,9 +40,9 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      if params['speaks']
-        params['speaks'].each do |lang_id_arr|
-          @user.spoken_languages << Language.find_by_id(lang_id_arr.first.to_i)
+      if params['user']['speaks']
+        params['user']['speaks'].keys.each do |lang_id|
+          @user.spoken_languages << Language.find_by_id(lang_id.to_i)
         end
       end
       flash["success"] = "New User Created!"
@@ -49,6 +50,7 @@ class UsersController < ApplicationController
     else
       @roles = Role.all
       @languages = Language.all
+      @interface_languages = Language.where(interface: true)
       render 'new'
     end
   end
@@ -57,15 +59,16 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @roles = Role.all
     @languages = Language.all
+    @interface_languages = Language.where(interface: true)
   end
 
   def update
     @user = User.find(params[:id])
     if @user.update_attributes(user_params)
       @user.spoken_languages.clear
-      if params['speaks']
-        params['speaks'].each do |lang_id_arr|
-          @user.spoken_languages << Language.find_by_id(lang_id_arr.first.to_i)
+      if params['user']['speaks']
+        params['user']['speaks'].keys.each do |lang_id|
+          @user.spoken_languages << Language.find_by_id(lang_id.to_i)
         end
       end
       flash["success"] = "Profile updated"
@@ -73,6 +76,7 @@ class UsersController < ApplicationController
     else
       @roles = Role.all
       @languages = Language.all
+      @interface_languages = Language.where(interface: true)
       render 'edit'
     end
   end
@@ -95,7 +99,8 @@ class UsersController < ApplicationController
           :phone,
           :password,
           :password_confirmation,
-          :mother_tongue_id
+          :mother_tongue_id,
+          :interface_language_id
         )
       else
         params.require(:user).permit(
@@ -104,6 +109,7 @@ class UsersController < ApplicationController
           :password,
           :password_confirmation,
           :mother_tongue_id,
+          :interface_language_id,
           :role_id
         )
       end

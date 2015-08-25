@@ -1,0 +1,54 @@
+<%= form_for(@resource, html: {class: "col s12"}) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
+  <div class="row">
+    <div class="col s12 m6">
+
+      <div class="row">
+        <div class="col s12 input-field">
+          <%= f.select :category, MtResource.categories.to_a.map { |t| [t[0].humanize, t[0]] } %>
+          <%= f.label(:category) %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s12 input-field">
+          <%= f.text_field(:name) %>
+          <%= f.label(:name) %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s12 input-field">
+          <%= f.text_area(:description, class: "materialize-textarea") %>
+          <%= f.label(:description) %>
+        </div>
+      </div>
+
+    </div>
+    <div class="col s12 m6 input-field contributers">
+      <i class="material-icons prefix">people</i>
+      <%= autocomplete_field_tag "person__0", '', autocomplete_person_name_events_path %>
+      <%= label_tag :person__0, "Contributers", {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => Translation.get_string('one_name_row', current_user)} %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col s12 m6 input-field">
+      <%= f.collection_select(:language_id, @languages, :id, :name) %>
+      <%= f.label(:language_id) %>
+    </div>
+    <div class="col s12 m6 input-field">
+      <%= f.check_box(:cc_share_alike) %>
+      <%= f.label(:cc_share_alike, "Creative Commons Share-Alike licence") %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col s12">
+      <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      <%= form_action == "new" ? "Add resource" : "Update" %> <i class="material-icons right">add</i>
+    <% end %>
+    </div>
+  </div>
+
+<% end %>

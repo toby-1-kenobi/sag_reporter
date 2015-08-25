@@ -15,6 +15,7 @@ emma:
   password_digest: <%= User.digest('password') %>
   mother_tongue: hindi
   role: evaluator
+  interface_language: hindi
 
 richard:
   name: Richard Reporter

@@ -1,0 +1,64 @@
+<%= form_for(@user, html: {class: "col s12"}) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+
+    <div class="row">
+      <div class="input-field col s8">
+        <i class="material-icons prefix">account_circle</i>
+        <%= f.text_field :name %>
+        <%= f.label :name, class: form_action == "edit" ? "active" : "" %>
+      </div>
+      <div class="input-field col s4">
+        <i class="material-icons prefix">phone</i>
+        <%= f.telephone_field :phone %>
+        <%= f.label :phone, class: form_action == "edit" ? "active" : "" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s6">
+        <i class="material-icons prefix">vpn_key</i>
+        <%= f.password_field :password %>
+        <%= f.label :password %>
+      </div>
+      <div class="input-field col s6">
+        <i class="material-icons prefix">vpn_key</i>
+        <%= f.password_field :password_confirmation %>
+        <%= f.label :password_confirmation, "Confirm Password" %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s6">
+        <%= f.select(:mother_tongue_id, @languages.collect{|l| [l.name, l.id]}) %>
+        <%= f.label :mother_tongue_id, "Select mother tongue" %>
+      </div>
+      <div class="input-field col s6">
+        <%= render partial: "shared/multiselect", locals: {
+          text: "Able to speak…",
+          icon: "language",
+          object: "user",
+          attribute: "speaks",
+          display: :name,
+          collection: @languages,
+          selected: @user.spoken_languages
+        } %>
+      </div>
+    </div>
+
+    <div class="row">
+      <% if !current_user?(@user) %>
+        <div class="input-field col s6">
+          <%= f.select(:role_id, @roles.collect{|r| [r.name, r.id]}) %>
+          <%= f.label :role_id, "Select role" %>
+        </div>
+      <% end %>
+      <div class="input-field col s6">
+        <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name) %>
+        <%= f.label :interface_language_id, "Language for using Reporter" %>
+      </div>
+    </div>
+
+    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      <%= form_action == "new" ? "Create New User" : "Update" %> <i class="material-icons right">create</i>
+    <% end %>
+  <% end %>

@@ -1,8 +1,21 @@
 Rails.application.routes.draw do
   
+  
+
+  resources :mt_resources
   root 'static_pages#home'
 
+  resources :events do
+    get :autocomplete_person_name, :on => :collection
+  end
+  resources :impact_reports do
+    get 'tag', on: :collection
+    patch 'tag_update', on: :member
+  end
   resources :languages
+  resources :people do
+    get :contacts, on: :collection
+  end
   resources :reports do
     collection do
       get 'by_language'
@@ -30,6 +43,22 @@ Rails.application.routes.draw do
 
   get  'tally_updates' => 'tally_updates#index'
   post 'tally_updates' => 'tally_updates#create'
+
+  get 'events/new'
+
+  get 'outcomes/select' => 'topics#assess_progress_select', as: 'select_to_assess'
+  get 'outcomes/:topic_id/:language_id' => 'topics#assess_progress', as: 'assess_progress'
+  post 'outcomes/:topic_id/:language_id' => 'topics#update_progress'
+  get 'outcomes' => 'topics#outcomes', as: 'outcomes'
+  get 'outcomes/:id' => 'languages#outcomes_table'
+  get 'topics/get_chart/:language_id' => 'topics#get_chart', as: 'outcomes_chart'
+
+  get 'outputs/report_numbers' => 'output_tallies#report_numbers', as: 'report_numbers'
+  post 'outputs/report_numbers' => 'output_tallies#update_numbers', as: 'update_numbers'
+  get 'outputs' => 'output_tallies#table', as: 'outputs'
+  get 'outputs/:id' => 'languages#outputs_table'
+
+  get 'language/resources/:language_id' => 'mt_resources#language_overview'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

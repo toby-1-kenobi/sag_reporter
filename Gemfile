@@ -17,6 +17,9 @@ gem 'coffee-rails', '~> 4.1.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
+# Also we need jQuery-UI for autocomplete on fields
+gem 'jquery-ui-rails'
+
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 
@@ -43,8 +46,15 @@ gem 'groupdate'
 # create charts
 gem 'chartkick'
 
+# autocomplete in text fields
+gem 'rails4-autocomplete'
+
 # Use PostgreSQL as the database for Active Record
 gem 'pg'
+
+# Output PDF files
+gem 'prawn'
+gem 'prawn-table'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
@@ -83,6 +93,13 @@ group :test do
 
   # For more readable test code using spec syntax
   gem 'minitest-spec-rails'
+
+  # Open browser on page that is being tested whe test fails.
+  gem 'launchy'
+
+  # Drives a web browser for testing
+  gem 'selenium-webdriver'
+
 end
 
 group :production do

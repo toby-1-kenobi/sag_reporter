@@ -1,0 +1,39 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+<%
+  def output_tallies
+    [
+      :community_meetings,
+      :volunteers,
+      :tools_printed,
+      :literacy_classes,
+      :drafted_verses,
+      :church_approved_verses,
+      :consultant_approved_verses,
+      :jf_screening,
+      :oral_bible_tools,
+      :scripture_resources,
+      :discipleship_meetings
+    ]
+  end
+
+  def users
+    [
+    :richard,
+    :emma,
+    :andrew
+    ]
+  end
+
+%>
+
+<% (1..50).each do |index| %>
+output_tally_<%= index %>:
+  output_tally: <%= output_tallies.sample %>
+  user: <%= users.sample %>
+  language: bodo
+  amount: <%= rand(1..10) %>
+  year: 2015
+  month: <%= rand(1..7) %>
+<% end %>
