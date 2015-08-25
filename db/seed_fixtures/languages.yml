@@ -260,11 +260,6 @@ bugun:
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
-bokar:
-  name: Bokar 
-  lwc: false
-  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
-
 nah:
   name: Nah 
   lwc: false
