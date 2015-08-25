@@ -4,7 +4,7 @@ north_east:
 east:
   name: East
 
-hindi:
+hindi_zone:
   name: Hindi
 
 north_west:

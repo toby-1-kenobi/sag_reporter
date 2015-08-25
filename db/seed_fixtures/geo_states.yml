@@ -44,15 +44,15 @@ nb:
 
 bihar:
   name: Bihar
-  zone: hindi
+  zone: hindi_zone
 
 up:
   name: Uttar Pradesh
-  zone: hindi
+  zone: hindi_zone
 
 haryana:
   name: Haryana
-  zone: hindi
+  zone: hindi_zone
 
 hp:
   name: Himachal Pradesh

@@ -47,6 +47,11 @@ module FixtureParser
   	  	  	to_update[fixture] = values_hash
   	  	  end
   	  	  all_objects[fixture] = model_instance
+          if model_instance.respond_to? "name"
+            puts "#{fixture}: #{model_instance.name}"
+          else
+            puts "#{fixture}: #{model_instance}"
+          end
   	  	end
   	  end
   	end
@@ -61,6 +66,11 @@ module FixtureParser
   # Update a model instance with values from a fixture.
   # Some values may refer to other fixtures
   def update_model_instance(model_instance, values_hash, all_fixture_instances)
+    if model_instance.respond_to? "name"
+      puts "updating #{model_instance.name}"
+    else
+      puts "updating #{model_instance}"
+    end
 
   	values_hash.each do |field, value|
   	  # if the field is an array we need to assign with 'push' instead of '='
@@ -71,6 +81,11 @@ module FixtureParser
       # it may be a comma seperated list of fixtures so process it
       values_array = replace_strings_with_fixtures(value, all_fixture_instances)
       values_array.each do |value|
+        if value.respond_to? "name"
+          puts "  #{field}: #{value.name}"
+        else
+          puts "  #{field}: #{value}"
+        end
   	    if push
   	      model_instance.send(field).push(value)
   	    else
