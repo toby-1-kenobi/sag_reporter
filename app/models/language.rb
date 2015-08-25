@@ -15,8 +15,12 @@ class Language < ActiveRecord::Base
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
 
-  def self.minorities
-    where(lwc: false)
+  def self.minorities(geo_state = nil)
+    if geo_state
+      includes(:geo_states).where(lwc: false, "geo_states.id" => geo_state.id)
+    else
+      where(lwc: false)
+    end
   end
 
   def self.interface_fallback
