@@ -1,6 +1,6 @@
 make_report:
   identifier: make_report
-  content: "Make a report"
+  content: "Make a short report"
 
 type_report:
   identifier: type_report
@@ -52,7 +52,7 @@ submit:
 
 report_event:
   identifier: report_event
-  content: "Report on an event"
+  content: "Report about an event"
 
 number_participants:
   identifier: number_participants
