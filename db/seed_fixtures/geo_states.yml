@@ -10,7 +10,7 @@ assam:
   name: Assam
   zone: north_east
   languages: assamese, bengali, nepali, oriya, karbi, garo,
-    sadri, rabha, shyam, deori, bodo, tiwa
+    sadri, rabha, shyam, deori, bodo, tiwa, mising
 
 manipur:
   name: Manipur
@@ -105,7 +105,18 @@ jharkhand:
 odisha:
   name: Odisha
   zone: east
+  languages: didei
 
 swb:
   name: (southern) West Bengal
   zone: east
+
+chhattisgarh:
+  name: Chhattisgarh
+  zone: central
+  lanuages: bhatri, muriya, dhurua, kamar, sabariya, abujhmadia
+
+mp:
+  name: Madhya Pradesh
+  zone: central
+  languages: poweri, rathwi, malvi, baiga, bagheli

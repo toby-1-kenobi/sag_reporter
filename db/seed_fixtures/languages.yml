@@ -140,6 +140,11 @@ shyam:
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
+mising:
+  name: Mising 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
 deori:
   name: Deori 
   lwc: false
@@ -318,3 +323,63 @@ urang:
 chakma:
   name: Chakma
   lwc: false
+
+bhatri:
+  name: Bhatri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+muriya:
+  name: Muriya
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+dhurua:
+  name: Dhurua
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kamar:
+  name: Kamar
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+sabariya:
+  name: Sabariya
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+abujhmadia:
+  name: Abujhmadia
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+didei:
+  name: "Didei (Gata)"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+poweri:
+  name: Poweri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+rathwi:
+  name: Rathwi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+malvi:
+  name: Malvi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+baiga:
+  name: Baiga
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bagheli:
+  name: Bagheli
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
