@@ -114,8 +114,8 @@ swb:
 chhattisgarh:
   name: Chhattisgarh
   zone: central
-  lanuages: bhatri, muriya, dhurua, kamar, sabariya, abujhmadia
-
+  languages: bhatri, muriya, dhurua, kamar, sabariya, abujhmadia
+  
 mp:
   name: Madhya Pradesh
   zone: central
