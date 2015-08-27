@@ -33,7 +33,7 @@ class EventsController < ApplicationController
       	end
       end
       # create all the reports and link them to the event
-      Event.yes_no_questions.each_key do |code|
+      Event.yes_no_questions(current_user).each_key do |code|
       	if params[code] == 'yes'
       	  # collect the parameters for this report, and make the keys match.
       	  content = Hash[params.select{ |param| param[/^#{code}-response__\d+$/] }.map{ |k,v| [k.split('__').last,v] }]
