@@ -5,21 +5,37 @@
 # http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
  
 <%
+  def states_languages
+    {
+      arunachal_pradesh:
+        [
+          :galo, :libo, :ramo, :memba, :tagin,
+          :nyshi, :adi, :hillsmiri, :apatani, :wancho, :tangso,
+          :puriok, :mompa, :miji, :aka, :sherdukpen, :idu, :digaru_mishimi,
+          :singpo, :sartang, :bugun, :bokar, :nah, :mimba 
+        ],
 
-	def minority_languages
-	  [
-		:toto,
-		:rajbanshi,
-		:bodo,
-		:sadri,
-		:santali,
-		:munda,
-		:rabha,
-		:kurux,
-		:surjapuri,
-		:garo
-	  ]
-	end
+      assam:
+        [
+          :assamese, :bengali, :nepali, :oriya, :karbi, :garo,
+          :sadri, :rabha, :shyam, :deori, :bodo, :tiwa, :mising
+        ],
+
+      tripura:
+        [ :mizo, :darlong, :kaipeng, :ranglong, :molsom, :hrangkhul, :chorei, :mog, :urang, :chakma],
+
+ 
+      nb:
+        [:toto, :rajbanshi, :bodo, :sadri, :santali, :munda, :rabha, :kurux, :surjapuri, :garo],
+
+      chhattisgarh:
+        [:bhatri, :muriya, :dhurua, :kamar, :sabariya, :abujhmadia],
+        
+      mp:
+        [:poweri, :rathwi, :malvi, :baiga, :bagheli]
+  }
+  end
+
 
 	def sd_progress_markers
 	  [
@@ -39,19 +55,21 @@
 	  ]
 	end
 
-minority_languages.each do |language|
-  sd_progress_markers.each do |marker|
-  	(1..8).each do |month|
-  	  if rand(5) > 3
+states_languages.keys.each do |state|
+  states_languages[state].each do |language|
+    sd_progress_markers.each do |marker|
+    	(1..7).each do |month|
+    	  if rand(5) > 3
 %>
 
 <%= language %>_<%= marker %>_<%= month %>:
   language_progress: <%= language %>_<%= marker %>
   created_at: <%= Date.new(2015, month, 15) %>
-  user: emma
+  user: toby
   progress: <%= rand(4) %>
-
+  geo_state: <%= state %>
 <%
+        end
   	  end
     end
   end

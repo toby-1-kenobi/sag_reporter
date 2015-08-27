@@ -3,20 +3,36 @@
  
 <%
 
-	def minority_languages
-	  [
-		:toto,
-		:rajbanshi,
-		:bodo,
-		:sadri,
-		:santali,
-		:munda,
-		:rabha,
-		:kurux,
-		:surjapuri,
-		:garo
-	  ]
-	end
+  def states_languages
+    {
+      arunachal_pradesh:
+        [
+          :galo, :libo, :ramo, :memba, :tagin,
+          :nyshi, :adi, :hillsmiri, :apatani, :wancho, :tangso,
+          :puriok, :mompa, :miji, :aka, :sherdukpen, :idu, :digaru_mishimi,
+          :singpo, :sartang, :bugun, :bokar, :nah, :mimba 
+        ],
+
+      assam:
+        [
+          :assamese, :bengali, :nepali, :oriya, :karbi,
+          :shyam, :deori, :tiwa, :mising
+        ],
+
+      tripura:
+        [ :mizo, :darlong, :kaipeng, :ranglong, :molsom, :hrangkhul, :chorei, :mog, :urang, :chakma],
+
+ 
+      nb:
+        [:toto, :rajbanshi, :bodo, :sadri, :santali, :munda, :rabha, :kurux, :surjapuri, :garo],
+
+      chhattisgarh:
+        [:bhatri, :muriya, :dhurua, :kamar, :sabariya, :abujhmadia],
+        
+      mp:
+        [:poweri, :rathwi, :malvi, :baiga, :bagheli]
+  	}
+  end
 
 	def sd_progress_markers
 	  [
@@ -36,8 +52,9 @@
 	  ]
 	end
 
-minority_languages.each do |language|
-  sd_progress_markers.each do |marker|
+states_languages.keys.each do |state|
+	states_languages[state].each do |language|
+	  sd_progress_markers.each do |marker|
 %>
 
 <%= language %>_<%= marker %>:
@@ -45,6 +62,7 @@ minority_languages.each do |language|
   progress_marker: <%= marker %>
 
 <%
+    end
   end
 end
 %>
