@@ -2,6 +2,14 @@ class MtResourcesController < ApplicationController
 
   before_action :require_login
 
+  before_action only: [:new, :create] do
+    redirect_to root_path unless current_user.can_add_resource?
+  end
+
+  before_action only: [:language_overview] do
+    redirect_to root_path unless current_user.can_view_all_resources?
+  end
+
   def new
   	@resource = MtResource.new
     @languages = Language.minorities(current_user.geo_state)
