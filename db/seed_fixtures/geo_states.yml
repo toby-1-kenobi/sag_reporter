@@ -45,10 +45,14 @@ nb:
 bihar:
   name: Bihar
   zone: hindi_zone
+  languages: angika, bhojpuri, magahi, maithili, surjapuri, panchpargania, vajjika,
+    santali, kortha, degaru, domari, musaha, tharu_chitw, tharu_koch, sadri
 
 up:
   name: Uttar Pradesh
   zone: hindi_zone
+  languages: awadhi, bagheli, bhojpuri, braj_bhasha, bundeli, kanauji, kanjari_gihari,
+    sapera, tharu_dangaura, tharu_kathoriya, tharu_rana
 
 haryana:
   name: Haryana
@@ -73,6 +77,7 @@ uttarakhand:
 rajasthan:
   name: Rajasthan
   zone: west
+  languages: mewari, dhundari, shekhawati, bagri, hadoti, mewati, wagri, od_rajput, braj_bhasha
 
 gujarat:
   name: Gujarat
@@ -101,12 +106,18 @@ telangana:
 jharkhand:
   name: Jharkhand
   zone: east
-  languages: panchpargania, kudhmali
+  languages: panchpargania, kudhmali, asuri, bijori, birhor, degaru, ho, kharia,
+    khirwar, khorta, kumarbhag_paharia, mahali, majhi, mal_paharia, mundari, sadri,
+    santali, sauria_paharia, turi
 
 odisha:
   name: Odisha
   zone: east
-  languages: didei
+  languages: didei, adivasi_odiya, bhunjia, bodo_parja, bondo, desiya, dabik_kui,
+    dom, gadaba_bodo, gadaba_ollar_pottangi, gadaba_gutuba, gata, ho, juang, juray,
+    kisan, kui, kutia, kuvi, lodha, manda, mirgan, munda, parenga, pengo, sambalpuri,
+    santali, sora
+
 
 swb:
   name: (southern) West Bengal
@@ -121,3 +132,8 @@ mp:
   name: Madhya Pradesh
   zone: central
   languages: poweri, rathwi, malvi, baiga, bagheli
+
+maharashtra:
+  name: Maharashtra
+  zone: north_west
+  languages: varahadi, ahirani, wadder, sikligar, gowlan, katakari
