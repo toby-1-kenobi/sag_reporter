@@ -27,6 +27,7 @@ require_relative 'fixture_parser'
 include FixtureParser
 
 fixtures_dir = "#{Rails.root}/db/seed_fixtures"
+test_fixtures_dir = "#{Rails.root}/test/fixtures"
 options_hash = {
 	"#{fixtures_dir}/permissions.yml" => { model_name: 'Permission', key_field: 'name', update?: true },
 	"#{fixtures_dir}/roles.yml" => { model_name: 'Role', key_field: 'name', update?: true },
@@ -38,8 +39,10 @@ options_hash = {
     "#{fixtures_dir}/translations.yml" => { model_name: 'Translation', key_field: 'id', update?: false },
 	"#{fixtures_dir}/topics.yml" => { model_name: 'Topic', key_field: 'name', update?: true },
     "#{fixtures_dir}/progress_markers.yml" => { model_name: 'ProgressMarker', key_field: 'name', update?: true },
-    "#{fixtures_dir}/output_tallies.yml" => { model_name: 'OutputTally', key_field: 'name', update?: true }
-#	"#{fixtures_dir}/users.yml" => { model_name: 'User', key_field: 'phone', update?: false }
+    "#{fixtures_dir}/output_tallies.yml" => { model_name: 'OutputTally', key_field: 'name', update?: true },
+    "#{test_fixtures_dir}/language_progresses.yml" => { model_name: 'LanguageProgress', key_field: nil, update?: true },
+    "#{test_fixtures_dir}/progress_updates.yml" => { model_name: 'ProgressUpdate', key_field: nil, update?: true },
+	"#{fixtures_dir}/users.yml" => { model_name: 'User', key_field: 'phone', update?: false }
 }
 parse_fixtures options_hash
 
