@@ -114,9 +114,22 @@ swb:
 chhattisgarh:
   name: Chhattisgarh
   zone: central
+<<<<<<< Updated upstream
   languages: bhatri, muriya, dhurua, kamar, sabariya, abujhmadia
+=======
+  languages: english, bhatri, muriya, dhurua, kamar, sabariya, abujhmadia, korwa, kodaku, sarguja
+>>>>>>> Stashed changes
 
 mp:
   name: Madhya Pradesh
   zone: central
+<<<<<<< Updated upstream
   languages: poweri, rathwi, malvi, baiga, bagheli
+=======
+  languages: english, poweri, rathwi, malvi, baiga, bagheli, bharia
+
+maharashtra:
+  name: Maharashtra
+  zone: north_west
+  languages: english, varahadi, ahirani, wadder, sikligar, gowlan, katakari, far_western_muria
+>>>>>>> Stashed changes

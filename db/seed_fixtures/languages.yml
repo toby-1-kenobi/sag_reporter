@@ -323,6 +323,7 @@ urang:
 chakma:
   name: Chakma
   lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
 bhatri:
   name: Bhatri
@@ -381,5 +382,450 @@ baiga:
 
 bagheli:
   name: Bagheli
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+haryanvi:
+  name: Haryanvi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+gharwali:
+  name: Gharwali
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kumaoni:
+  name: Kumaoni
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kangri:
+  name: kangri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+gaddi:
+  name: gaddi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+dogri:
+  name: dogri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+angika:
+  name: Angika
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bhojpuri:
+  name: Bhojpuri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+magahi:
+  name: Magahi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+maithili:
+  name: Maithili
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+panchpargania:
+  name: Panchpargania
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+vajjika:
+  name: Vajjika
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kortha:
+  name: Kortha
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+degaru:
+  name: Degaru
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+domari:
+  name: Domari
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+musaha:
+  name: Musaha
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tharu_chitw:
+  name: "Tharu, Chitw."
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tharu_koch:
+  name: "Tharu, Koch."
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+awadhi:
+  name: Awadhi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bagheli:
+  name: Bagheli
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bhojpuri:
+  name: Bhojpuri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+braj_bhasha:
+  name: Braj Bhasha
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bundeli:
+  name: Bundeli
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kanauji:
+  name: Kanauji
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kanjari_gihari:
+  name: "Kanjari / Gihari"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+sapera:
+  name: Sapera
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tharu_dangaura:
+  name: "Tharu, Dangaura"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tharu_kathoriya:
+  name: "Tharu, Kathoriya"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tharu_rana:
+  name: "Tharu, Rana"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kudhmali:
+  name: Kudhmali
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+asuri:
+  name: Asuri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bijori:
+  name: Bijori
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+birhor:
+  name: Birhor
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+Degaru:
+  name: Degaru
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+ho:
+  name: Ho
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kharia:
+  name: Kharia
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+khirwar:
+  name: Khirwar
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+khorta:
+  name: Khorta
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kumarbhag_paharia:
+  name: Kumarbhag Paharia
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mahali:
+  name: Mahali
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+majhi:
+  name: Majhi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mal_paharia:
+  name: Mal Paharia
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mundari:
+  name: Mundari
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+sauria_paharia:
+  name: Sauria Paharia
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+turi:
+  name: Turi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+adivasi_odiya:
+  name: Adivasi Odiya
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bhunjia:
+  name: Bhunjia
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bodo_parja:
+  name: Bodo Parja
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bondo:
+  name: Bondo
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+desiya:
+  name: Desiya
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+dabik_kui:
+  name: Dabik Kui
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+dom:
+  name: Dom
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+gadaba_bodo:
+  name: "Gadaba, Bodo"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+gadaba_ollar_pottangi:
+  name: "Gadaba, Ollar, Pottangi"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+gadaba_gutuba:
+  name: "Gadaba, gutuba"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+gata:
+  name: Gata
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+juang:
+  name: Juang
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+juray:
+  name: Juray
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kisan:
+  name: Kisan
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kui:
+  name: Kui
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kutia:
+  name: Kutia
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kuvi:
+  name: Kuvi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+lodha:
+  name: Lodha
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+manda:
+  name: Manda
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mirgan:
+  name: Mirgan
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+munda:
+  name: Munda
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+parenga:
+  name: Parenga
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+pengo:
+  name: Pengo
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+sambalpuri:
+  name: Sambalpuri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+sora:
+  name: Sora
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mewari:
+  name: Mewari
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+dhundari:
+  name: Dhundari
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+shekhawati:
+  name: Shekhawati
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bagri:
+  name: Bagri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+hadoti:
+  name: Hadoti
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mewati:
+  name: Mewati
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+wagri:
+  name: Wagri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+od_rajput:
+  name: Od Rajput
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+varahadi:
+  name: Varahadi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+ahirani:
+  name: Ahirani
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+wadder:
+  name: Wadder
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+sikligar:
+  name: Sikligarh
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+gowlan:
+  name: Gowlan
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+katakari:
+  name: Katakari
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+korwa:
+  name: Korwa
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kodaku:
+  name: Kodaku
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+sarguja:
+  name: Sarguja
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bharia:
+  name: Bharia
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+far_western_muria:
+  name: "(far western) Muria"
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
