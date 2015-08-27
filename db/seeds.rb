@@ -29,7 +29,7 @@ include FixtureParser
 fixtures_dir = "#{Rails.root}/db/seed_fixtures"
 test_fixtures_dir = "#{Rails.root}/test/fixtures"
 options_hash = {
-	"#{fixtures_dir}/permissions.yml" => { model_name: 'Permission', key_field: 'name', update?: false },
+	"#{fixtures_dir}/permissions.yml" => { model_name: 'Permission', key_field: 'name', update?: true },
 	"#{fixtures_dir}/roles.yml" => { model_name: 'Role', key_field: 'name', update?: true },
     "#{fixtures_dir}/geo_states.yml" => { model_name: 'GeoState', key_field: 'name', update?: true },
     "#{fixtures_dir}/zones.yml" => { model_name: 'Zone', key_field: 'name', update?: true },
