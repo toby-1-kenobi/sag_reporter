@@ -91,23 +91,27 @@ class ReportsController < ApplicationController
 
   def index
   	@reports = Report.order(:created_at => :desc).paginate(page: params[:page])
+    @impact_reports = ImpactReport.order(:created_at => :desc).paginate(page: params[:page])
   	recent_view
   end
 
   def by_language
   	@reports = Report.order(:created_at => :desc)
+    @impact_reports = ImpactReport.order(:created_at => :desc)
   	@languages = Language.all
   	recent_view
   end
 
   def by_topic
   	@reports = Report.all.order(:created_at => :desc)
+    @impact_reports = ImpactReport.order(:created_at => :desc)
   	@topics = Topic.all
   	recent_view
   end
 
   def by_reporter
   	@reports = Report.all.order(:created_at => :desc)
+    @impact_reports = ImpactReport.order(:created_at => :desc)
   	recent_view
   end
 
