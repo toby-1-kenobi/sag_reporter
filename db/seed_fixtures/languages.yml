@@ -383,3 +383,153 @@ bagheli:
   name: Bagheli
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+haryanvi:
+  name: Haryanvi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+gharwali:
+  name: Gharwali
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kumaoni:
+  name: Kumaoni
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kangri:
+  name: kangri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+gaddi:
+  name: gaddi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+dogri:
+  name: dogri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+angika:
+  name: Angika
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bhojpuri:
+  name: Bhojpuri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+magahi:
+  name: Magahi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+maithili:
+  name: Maithili
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+panchpargania:
+  name: Panchpargania
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+vajjika:
+  name: Vajjika
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kortha:
+  name: Kortha
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+degaru:
+  name: Degaru
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+domari:
+  name: Domari
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+mushaa:
+  name: Musaha
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tharu_chitw:
+  name: "Tharu, Chitw."
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tharu_koch:
+  name: "Tharu, Koch."
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+awadhi:
+  name: Awadhi
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bagheli:
+  name: Bagheli
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bhojpuri:
+  name: Bhojpuri
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+braj_bhasha:
+  name: Braj Bhasha
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+budeli:
+  name: Bundeli
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kanauji:
+  name: Kanauji
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kanjari_gihari:
+  name: "Kanjari / Gihari"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+sapera:
+  name: Sapera
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tharu_dangaura:
+  name: "Tharu, Dangaura"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tharu_kathoriya:
+  name: "Tharu, Kathoriya"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tharu_rana:
+  name: "Tharu, Rana"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kudhmali:
+  name: Kudhmali
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'

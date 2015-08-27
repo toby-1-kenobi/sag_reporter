@@ -101,6 +101,7 @@ telangana:
 jharkhand:
   name: Jharkhand
   zone: east
+  languages: panchpargania, kudhmali
 
 odisha:
   name: Odisha
@@ -115,7 +116,7 @@ chhattisgarh:
   name: Chhattisgarh
   zone: central
   languages: bhatri, muriya, dhurua, kamar, sabariya, abujhmadia
-  
+
 mp:
   name: Madhya Pradesh
   zone: central
