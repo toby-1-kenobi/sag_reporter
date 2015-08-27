@@ -153,3 +153,18 @@ view_output_totals:
   name: view_output_totals
   description: "View total outputs"
   category: <%= Permission.categories['outputs'] %>
+
+add_resource:
+  name: add_resource
+  description: "Add a new mother tongue resource"
+  category: <%= Permission.categories['outputs'] %>
+
+edit_resource:
+  name: edit_resource
+  description: "Edit a mother tongue resource"
+  category: <%= Permission.categories['outputs'] %>
+
+view_all_resources:
+  name: view_all_resources
+  description: "View all mother tongue resources"
+  category: <%= Permission.categories['outputs'] %>

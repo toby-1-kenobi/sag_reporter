@@ -14,4 +14,8 @@ class ImpactReport < ActiveRecord::Base
   	event ? event.event_date : created_at
   end
 
+  def report_type
+    "impact"
+  end
+
 end

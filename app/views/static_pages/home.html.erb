@@ -31,9 +31,11 @@
     <% end %>
   <% end %>
 
+<!--
   <a href="#" class="collection-item waves-effect"><i class="material-icons">dashboard</i>View my reports</a>
 
   <a href="#" class="collection-item waves-effect"><i class="material-icons">extension</i>View targets and progress</a>
+--> 
 
   <% if current_user.can_tag_report? %>
     <%= link_to "impact_reports/tag", class: "collection-item waves-effect", id: "tag-link" do %>

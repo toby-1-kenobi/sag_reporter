@@ -21,4 +21,12 @@ class Report < ActiveRecord::Base
     }
   end
 
+  def report_date
+    event ? event.event_date : created_at
+  end
+
+  def report_type
+    "planning"
+  end
+
 end
