@@ -3,6 +3,13 @@
 <div class="row">
   <%= form_for(@event, html: {class: "col s12"}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
+
+    <div class="row">
+      <div class="col s12 m6 l4 offset-m6 offset-l8 input-field">
+        <%= render partial: "shared/geo_state_input", locals: {form: f} %>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col s12 m8">
 

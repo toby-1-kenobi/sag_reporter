@@ -70,6 +70,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def geo_states
+    [geo_state]
+  end
+
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles
   # or can_PERM1_or_PERM2?
