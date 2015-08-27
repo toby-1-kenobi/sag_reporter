@@ -4,6 +4,12 @@
     <div class="col s12 m6">
 
       <div class="row">
+        <div class="col s12 m6 l4 offset-m6 offset-l8 input-field">
+          <%= render partial: "shared/geo_state_input", locals: {object: "mt_resource"} %>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col s12 input-field">
           <%= f.select :category, MtResource.categories.to_a.map { |t| [t[0].humanize, t[0]] } %>
           <%= f.label(:category) %>
