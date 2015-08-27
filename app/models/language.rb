@@ -28,8 +28,8 @@ class Language < ActiveRecord::Base
   end
 
   def table_data(geo_state, options = {})
-    options[:from_date] ||= 1.year.ago - 1.month
-    options[:to_date] ||= 1.month.ago
+    options[:from_date] ||= 6.months.ago
+    options[:to_date] ||= Date.today
     dates_by_month = (options[:from_date].to_date..options[:to_date].to_date).select{ |d| d.day == 1}
 
     table = Array.new
@@ -65,8 +65,8 @@ class Language < ActiveRecord::Base
   end
 
   def outcome_table_data(geo_state, options = {})
-    options[:from_date] ||= 1.year.ago - 1.month
-    options[:to_date] ||= 1.month.ago
+    options[:from_date] ||= 6.months.ago
+    options[:to_date] ||= Date.today
     dates_by_month = (options[:from_date].to_date..options[:to_date].to_date).select{ |d| d.day == 1}
 
     table = Array.new

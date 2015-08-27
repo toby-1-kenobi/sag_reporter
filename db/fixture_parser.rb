@@ -36,12 +36,18 @@ module FixtureParser
   	  fixtures_hash.each do |fixture, values_hash|
   	  	if files_options_hash[filename][:update?]
   	  	  # if we doing updates get or initialise it and apply the values then save
-  	  	  model_instance = model_class.find_or_initialize_by(key_field => values_hash[key_field])
+          if key_field
+  	  	    model_instance = model_class.find_or_initialize_by(key_field => values_hash[key_field])
+          else
+            model_instance = model_class.new
+          end
   	  	  all_objects[fixture] = model_instance
   	  	  to_update[fixture] = values_hash
   	  	else
   	  	  # if we're not updating check if it's there and add it if it's not
-  	  	  model_instance = model_class.find_by(key_field => values_hash[key_field])
+          if key_field
+  	  	    model_instance = model_class.find_by(key_field => values_hash[key_field])
+          end
   	  	  if !model_instance
   	  	  	model_instance = model_class.new
   	  	  	to_update[fixture] = values_hash
@@ -94,7 +100,16 @@ module FixtureParser
   	  end
   	end
 
-  	model_instance.save!
+    begin
+      if model_instance.valid?
+    	  model_instance.save!
+      else
+        puts "*** not valid: #{model_instance}"
+      end
+
+    rescue PG::UniqueViolation
+      puts "*** not unique: #{model_instance}"
+    end
 
   end
 
