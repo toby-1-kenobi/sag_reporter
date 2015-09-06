@@ -38,7 +38,7 @@ vera:
   mother_tongue: english
   role: view
 
-<% 5.times do |i| %>
+<% 35.times do |i| %>
 user-<%= i %>:
   name: <%= Faker::Name.name %>
   phone: <%= Faker::Number.number(10) %>

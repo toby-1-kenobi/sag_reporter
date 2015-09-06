@@ -14,8 +14,10 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
                                phone: "1234",
                                password:              "foo",
                                password_confirmation: "bar",
-                               role_id: Role.all.first.id,
-                               mother_tongue_id: Language.all.first.id
+                               role_id: Role.take.id,
+                               mother_tongue_id: Language.take.id,
+                               geo_state_id: GeoState.take.id,
+                               interface_language_id: languages(:english).id
                              }
     end
     assert_template 'users/new'
@@ -31,8 +33,10 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
                                             phone: "1029384756",
                                             password:              "PassWord.123",
                                             password_confirmation: "PassWord.123",
-                                            role_id: Role.all.first.id,
-                                            mother_tongue_id: Language.all.first.id
+                                            role_id: Role.take.id,
+                                            mother_tongue_id: Language.take.id,
+                                            geo_state_id: GeoState.take.id,
+                                            interface_language_id: languages(:english).id
                                           }
     end
     assert_template 'users/show'

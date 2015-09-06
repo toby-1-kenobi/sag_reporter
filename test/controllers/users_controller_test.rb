@@ -63,22 +63,40 @@ class UsersControllerTest < ActionController::TestCase
       phone: @user.phone,
       password:              "PassWord.123",
       password_confirmation: "PassWord.123",
-      role_id: Role.all.first.id
+      role_id: Role.take.id
     }
     assert_not flash.empty?
     assert_redirected_to login_url
   end
 
-  test "should redirect createe when not have permission" do
+  test "should redirect create when not have permission" do
     log_in_as(@other_user)
     post :create, user: {
       name: @user.name,
       phone: @user.phone,
       password:              "PassWord.123",
       password_confirmation: "PassWord.123",
-      role_id: Role.all.first.id
+      role_id: Role.take.id
     }
     assert_redirected_to root_url
   end
+
+  test "successful create" do
+    log_in_as(@user)
+    assert_difference 'User.count' do
+      post :create, user: {
+        name: "test user",
+        phone: "9988776655",
+        password:              "PassWord.123",
+        password_confirmation: "PassWord.123",
+        role_id: Role.take.id,
+        mother_tongue_id: Language.take.id,
+        geo_state_id: GeoState.take.id,
+        interface_language_id: languages(:english).id
+      }
+    end
+    assert_response :redirect
+  end
+
 
 end

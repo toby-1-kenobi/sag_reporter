@@ -5,7 +5,7 @@ class TopicsControllerTest < ActionController::TestCase
   def setup
     @admin_user = users(:andrew)
     @pleb_user = users(:peter)
-    @education = topics(:education)
+    @education = topics(:social_development)
   end
 
   test "should get new" do
