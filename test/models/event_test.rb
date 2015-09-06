@@ -1,7 +1,11 @@
 require 'test_helper'
 
-class EventTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+describe Event do
+
+  let(:event) { Event.new event_label: "label", event_date: Date.today }
+
+  it "must be valid" do
+    value(event).must_be :valid?
+  end
+  
 end

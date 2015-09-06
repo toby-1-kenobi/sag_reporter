@@ -15,7 +15,8 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     patch user_path(@user), user: { name:  "",
                                     phone: "55555",
                                     password:              "foo",
-                                    password_confirmation: "bar" }
+                                    password_confirmation: "bar",
+                                    mother_tongue_id: @english.id }
     assert_template 'users/edit'
   end
 

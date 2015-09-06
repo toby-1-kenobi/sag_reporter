@@ -4,7 +4,11 @@ require 'rails/test_help'
 require "minitest/reporters"
 require "minitest/rails/capybara"
 require "mocha/mini_test"
-Minitest::Reporters.use!
+Minitest::Reporters.use!(
+  Minitest::Reporters::ProgressReporter.new,
+  ENV,
+  Minitest.backtrace_filter
+)
 
 class ActiveSupport::TestCase
 	

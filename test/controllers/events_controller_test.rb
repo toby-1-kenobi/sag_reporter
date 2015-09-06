@@ -1,9 +1,14 @@
 require 'test_helper'
 
-class EventsControllerTest < ActionController::TestCase
-  test "should get new" do
+describe EventsController do
+
+  before do
+    log_in_as(users(:andrew))
+  end
+
+  it "should get new" do
     get :new
-    assert_response :success
+    value(response).must_be :success?
   end
 
 end
