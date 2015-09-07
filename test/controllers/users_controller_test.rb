@@ -98,5 +98,24 @@ class UsersControllerTest < ActionController::TestCase
     assert_response :redirect
   end
 
+  test "wont allow user to change own geo_state" do
+    log_in_as(@user)
+    states = GeoState.take 2
+    @user.geo_state = states[0]
+    assert @user.geo_state == states[0]
+    patch :update, id: @user.id, user: { geo_state_id: states[1].id }
+    @user.reload
+    assert @user.geo_state != states[1]
+  end
+
+  test "admin user can change another user's geo_state" do
+    log_in_as(@user)
+    states = GeoState.take 2
+    @other_user.geo_state = states[0]
+    assert @other_user.geo_state == states[0], "geo_state assigned to user"
+    patch :update, id: @other_user.id, user: { geo_state_id: states[1].id }
+    @other_user.reload
+    assert @other_user.geo_state == states[1], "geo_state changed by patch request"
+  end
 
 end
