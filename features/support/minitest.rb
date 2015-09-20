@@ -1,6 +1,8 @@
 require 'minitest'
 require "minitest/rails/capybara"
 require "minitest/spec"
+require 'capybara/cucumber'
+require "capybara_minitest_spec"
 
 module MiniTestAssertions
 
@@ -14,3 +16,7 @@ module MiniTestAssertions
 end
 
 World(MiniTestAssertions)
+
+#World(Capybara::DSL)
+#World(Capybara::Assertions)
+World(CapybaraMiniTestSpec)

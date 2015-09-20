@@ -15,22 +15,27 @@ assam:
 manipur:
   name: Manipur
   zone: north_east
+  languages: english
 
 meghalaya:
   name: Meghalaya
   zone: north_east
+  languages: english
 
 mizoram:
   name: Mizoram
   zone: north_east
+  languages: english
 
 nagaland:
   name: Nagaland
   zone: north_east
+  languages: english
 
 sikkim:
   name: Sikkim
   zone: north_east
+  languages: english
 
 tripura:
   name: Tripura
@@ -57,22 +62,27 @@ up:
 haryana:
   name: Haryana
   zone: hindi_zone
+  languages: english
 
 hp:
   name: Himachal Pradesh
   zone: north_west
+  languages: english
 
 jammu_kashmir:
   name: Jammu and Kashmir
   zone: north_west
+  languages: english
 
 punjab:
   name: Punjab
   zone: north_west
+  languages: english
 
 uttarakhand:
   name: Uttarakhand
   zone: north_west
+  languages: english
 
 rajasthan:
   name: Rajasthan
@@ -82,26 +92,32 @@ rajasthan:
 gujarat:
   name: Gujarat
   zone: west
+  languages: english
 
 andhra_pradesh:
   name: Andhra Pradesh
   zone: south
+  languages: english
 
 tamil-nadu:
   name: Tamil Nadu
   zone: south
+  languages: english
 
 karnataka:
   name: Karnataka
   zone: south
+  languages: english
 
 kerala:
   name: Kerala
   zone: south
+  languages: english
 
 telangana:
   name: Telangana
   zone: south
+  languages: english
 
 jharkhand:
   name: Jharkhand
@@ -121,6 +137,7 @@ odisha:
 swb:
   name: (southern) West Bengal
   zone: east
+  languages: english
 
 chhattisgarh:
   name: Chhattisgarh

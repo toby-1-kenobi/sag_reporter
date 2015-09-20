@@ -1,0 +1,15 @@
+<% if current_user.geo_states.length == 1
+  if defined? form %>
+    <%= form.hidden_field(:geo_state_id, value: current_user.geo_states.first.id) %>
+  <% else %>
+    <%= hidden_field_tag("#{object}[geo_state_id]", current_user.geo_states.first.id) %>
+  <% end
+else
+  if defined? form %>
+    <%= form.collection_select(:geo_state_id, current_user.geo_states, :id, :name) %>
+    <%= form.label(:geo_state_id, "State")
+  <% else %>
+    <%= collection_select(object, :geo_state_id, current_user.geo_states, :id, :name) %>
+    <%= label_tag(:geo_state_id, "State")
+  <% end %>
+<% end %>
