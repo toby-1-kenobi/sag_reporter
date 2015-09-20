@@ -1,10 +1,10 @@
-@javascript
+#@javascript
+@poltergeist
 Feature: Assigning multiple states to a user
 
   Background:
     Given seed data is loaded into the database
-    Given I am an admin
-    Given I login
+    Given I login as an admin
 
   Scenario:
     When I visit the new user page
