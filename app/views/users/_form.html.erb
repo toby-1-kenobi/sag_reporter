@@ -29,9 +29,16 @@
 
     <div class="row">
       <% if !current_user?(@user) %>
-        <div class="input-field col s12 m6">
-          <%= f.collection_select(:geo_state_id, @geo_states, :id, :name, prompt: "In all states") %>
-          <%= f.label :geo_state_id, "State" %>
+        <div class="input-field col s6">
+          <%= render partial: "shared/multiselect", locals: {
+            text: "State",
+            icon: "language",
+            object: "user",
+            attribute: "geo_states",
+            display: :name,
+            collection: @geo_states,
+            selected: @user.geo_states
+          } %>
         </div>
       <% end %>
       <div class="col s12 m6">

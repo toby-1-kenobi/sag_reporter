@@ -1,13 +1,30 @@
 require 'active_record/fixtures'
 
-Given(/^seed data is loaded into the database$/) do
-  ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/db/seed_fixtures", "languages")
-  _(Language.count).wont_equal 0
-  ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/db/seed_fixtures", "permissions")
-  _(Permission.find_by_name('create_event')).wont_be_nil
-  ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/db/seed_fixtures", "roles")
-  ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/db/seed_fixtures", "topics")
-  ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/db/seed_fixtures", "users")
+Given(/^(.*) data is loaded into the database$/) do |fixture_file|
+  case fixture_file
+  when "seed", "all", "all seed"
+    steps %{
+      Given zones data is loaded into the database
+      Given geo_states data is loaded into the database
+      Given languages data is loaded into the database
+      Given permissions data is loaded into the database
+      Given roles data is loaded into the database
+      Given topics data is loaded into the database
+      Given users data is loaded into the database
+      Given translatables data is loaded into the database
+      Given translations data is loaded into the database
+    }
+    _(Language.count).wont_equal 0
+  else
+    ActiveRecord::FixtureSet.create_fixtures("#{Rails.root}/db/seed_fixtures", fixture_file)
+  end
+end
+
+Given (/^I login as(?: an)? admin$/) do
+  steps %{
+    Given I am an admin
+    Given I login
+  }
 end
 
 Given(/^I am an admin$/) do
@@ -20,7 +37,6 @@ Given(/^I am an admin$/) do
   	  role: Role.find_by_name('admin')
   	)
   _(@me).wont_be_nil
-  _(@me.can_create_event?).must_equal true
 end
 
 Given(/^I login$/) do
