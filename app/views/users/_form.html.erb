@@ -29,8 +29,15 @@
 
     <div class="row">
       <div class="input-field col s6">
-        <%= f.collection_select(:geo_state_id, @geo_states, :id, :name, prompt: "In all states") %>
-        <%= f.label :geo_state_id, "State" %>
+        <%= render partial: "shared/multiselect", locals: {
+          text: "State",
+          icon: "language",
+          object: "user",
+          attribute: "geo_states",
+          display: :name,
+          collection: @geo_states,
+          selected: @user.geo_states
+        } %>
       </div>
       <div class="col s12 m6">
         <%= f.grouped_collection_select(:mother_tongue_id, @geo_states, :languages, :name, :id, :name, {}, {class: "browser-default"}) %>

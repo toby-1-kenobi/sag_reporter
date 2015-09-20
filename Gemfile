@@ -94,11 +94,17 @@ group :test do
   # For more readable test code using spec syntax
   gem 'minitest-spec-rails'
 
+  # Spec syntax with Capybara
+  gem 'capybara_minitest_spec'
+
   # Open browser on page that is being tested whe test fails.
   gem 'launchy'
 
   # Drives a web browser for testing
   gem 'selenium-webdriver'
+
+  # Drives a headless browser (phantom js)
+  gem 'poltergeist'
 
 end
 
