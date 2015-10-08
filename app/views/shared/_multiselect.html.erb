@@ -4,7 +4,13 @@
         <div id='<%= object %>-<%= attribute %>-dropdown' class='dropdown-content'>
           
           <% collection.each do |item| %>
-            <div class="<%= attribute %>-option" id="<%= object %>-<%= attribute %>-<%= item.id.to_s %>">
+            <div 
+                class="<%= attribute %>-option"
+                id="<%= object %>-<%= attribute %>-<%= item.id.to_s %>"
+                <% if local_assigns[:data].presence %>
+                  data="<%= item.send(data) %>"
+                <% end %>
+            >
               <%= check_box_tag("#{object}[#{attribute}][#{item.id.to_s}]", 1, selected.include?(item)) %>
               <%= label_tag("#{object}[#{attribute}][#{item.id.to_s}]", item.send(display)) %>
             </div>

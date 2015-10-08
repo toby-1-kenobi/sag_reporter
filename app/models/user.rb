@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :spoken_languages, class_name: 'Language'
   has_many :tally_updates
   belongs_to :geo_state
-  delegate :zone, to: :geo_state
+  delegate :zone, to: :geo_state, allow_nil: true
   has_many :output_counts
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources
@@ -71,7 +71,15 @@ class User < ActiveRecord::Base
   end
 
   def geo_states
-    [geo_state]
+    if geo_state
+      [geo_state]
+    else
+      []
+    end
+  end
+
+  def zones
+    geo_states.collect{ |gs| gs.zone }
   end
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
