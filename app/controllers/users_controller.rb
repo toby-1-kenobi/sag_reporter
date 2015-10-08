@@ -9,6 +9,8 @@ class UsersController < ApplicationController
   before_action :authorised_user_edit, only: [:edit, :update]
   before_action :authorised_user_show, only: [:show]
 
+  before_action :form_data, only: [:new, :edit]
+
   # Let only permitted users do some things
   before_action only: [:new, :create] do
     redirect_to root_path unless current_user.can_create_user?
@@ -28,6 +30,7 @@ class UsersController < ApplicationController
     @languages = Language.order(:name)
     @interface_languages = Language.where(interface: true)
     @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
+    @zones = Zone.order(:name)
   end
 
   def show
@@ -62,6 +65,7 @@ class UsersController < ApplicationController
     @languages = Language.order(:name)
     @interface_languages = Language.where(interface: true).order(:name)
     @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
+    @zones = Zone.order(:name)
   end
 
   def update
@@ -132,6 +136,9 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless 
           current_user?(@user) or current_user.can_view_all_users?
       #    or @user.supervisor?(current_user)
+    end
+
+    def form_data
     end
 
 end

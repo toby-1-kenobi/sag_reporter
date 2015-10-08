@@ -316,17 +316,6 @@ ActiveRecord::Schema.define(version: 20150825203648) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "string_translations", force: :cascade do |t|
-    t.integer  "translatable_id", null: false
-    t.integer  "language_id",     null: false
-    t.text     "content"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-  end
-
-  add_index "string_translations", ["language_id"], name: "index_string_translations_on_language_id", using: :btree
-  add_index "string_translations", ["translatable_id"], name: "index_string_translations_on_translatable_id", using: :btree
-
   create_table "tallies", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
@@ -385,8 +374,8 @@ ActiveRecord::Schema.define(version: 20150825203648) do
     t.string   "remember_digest"
     t.integer  "role_id"
     t.integer  "mother_tongue_id",      null: false
-    t.integer  "interface_language_id"
     t.integer  "geo_state_id"
+    t.integer  "interface_language_id"
   end
 
   add_index "users", ["geo_state_id"], name: "index_users_on_geo_state_id", using: :btree
@@ -438,8 +427,6 @@ ActiveRecord::Schema.define(version: 20150825203648) do
   add_foreign_key "progress_updates", "users"
   add_foreign_key "reports", "events"
   add_foreign_key "reports", "geo_states"
-  add_foreign_key "string_translations", "languages"
-  add_foreign_key "string_translations", "translatables"
   add_foreign_key "tallies", "topics"
   add_foreign_key "tally_updates", "languages_tallies"
   add_foreign_key "tally_updates", "users"

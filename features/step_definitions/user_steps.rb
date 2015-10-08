@@ -6,16 +6,14 @@ When(/^I visit the new user page$/) do
 end
 
 Then(/^the state selector has no states$/) do
-  page.wont_have_selector("#user-geo_states-dropdown .geo_states-option", :visible)
-  #refute_selector("#user-geo_states-dropdown .geo_states-option", :visible)
+  #page.wont_have_selector("#user-geo_states-dropdown .geo_states-option", :visible)
+  #assert page.all("#user-geo_states-dropdown .geo_states-option").count == page.all("#user-geo_states-dropdown .geo_states-option.hide").count
+  refute_selector("#user-geo_states-dropdown .geo_states-option:not(.hide)")
 end
 
-Then(/^there is a zone selector$/) do
-  pending # express the regexp above with the code you wish you had
-end
-
-When(/^I select the zone north_east$/) do
-  pending # express the regexp above with the code you wish you had
+When(/^I (select|unselect) the zone "(.*?)"$/) do |action, zone|
+  page.find('[data-activates="user-zone-dropdown"]').hover
+  page.check(zone)
 end
 
 Then(/^the state selector (has|does not have) the states (.*)$/) do
@@ -23,10 +21,6 @@ Then(/^the state selector (has|does not have) the states (.*)$/) do
 end
 
 When(/^I select the zone hindi_zone$/) do
-  pending # express the regexp above with the code you wish you had
-end
-
-When(/^I unselect the zone north_east$/) do
   pending # express the regexp above with the code you wish you had
 end
 

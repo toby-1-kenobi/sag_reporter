@@ -10,5 +10,9 @@ class GeoState < ActiveRecord::Base
   has_many :people
   has_many :output_counts
   has_many :progress_updates
+
+  def zone_id
+    zone.id
+  end
   
 end
