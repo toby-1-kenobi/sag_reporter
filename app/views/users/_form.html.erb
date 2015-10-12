@@ -1,3 +1,5 @@
+
+
 <%= form_for(@user, html: {class: "col s12"}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
 
@@ -70,6 +72,7 @@
           object: "user",
           attribute: "speaks",
           display: :name,
+          data: :geo_state_ids_str,
           collection: @languages,
           selected: @user.spoken_languages
         } %>

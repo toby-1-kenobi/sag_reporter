@@ -27,6 +27,10 @@ class Language < ActiveRecord::Base
     Language.find_by_name("English") || Language.take
   end
 
+  def geo_state_ids_str
+    geo_state_ids.join ','
+  end
+
   def table_data(geo_state, options = {})
     options[:from_date] ||= 6.months.ago
     options[:to_date] ||= Date.today
