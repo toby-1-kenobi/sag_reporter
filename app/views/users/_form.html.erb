@@ -58,14 +58,14 @@
           </div>
         </div>
       <% end %>
-      <div class="col s12 m6">
-        <%= f.grouped_collection_select(:mother_tongue_id, @geo_states, :languages, :name, :id, :name, {}, {class: "browser-default"}) %>
-        <%= f.label :mother_tongue_id, "Select mother tongue", class: "active" %>
+      <div class="input-field col s12 m6">
+        <%= f.collection_select(:mother_tongue_id, @languages, :id, :name, {}, {class: "mother-tongue-select"}) %>
+        <%= f.label :mother_tongue_id, "Select mother tongue" %>
       </div>
     </div>
 
     <div class="row">
-      <div class="input-field col s6">
+      <div class="input-field col s12, m6">
         <%= render partial: "shared/multiselect", locals: {
           text: "Able to speak…",
           icon: "language",
@@ -77,7 +77,7 @@
           selected: @user.spoken_languages
         } %>
       </div>
-      <div class="input-field col s6">
+      <div class="input-field col s12 m6">
         <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name) %>
         <%= f.label :interface_language_id, "Language for using Reporter" %>
       </div>
@@ -85,7 +85,7 @@
 
     <div class="row">
       <% if !current_user?(@user) %>
-        <div class="input-field col s6">
+        <div class="input-field col s12 m6">
           <%= f.select(:role_id, @roles.collect{|r| [r.name, r.id]}) %>
           <%= f.label :role_id, "Select role" %>
         </div>
