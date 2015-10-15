@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   before_action :authorised_user_edit, only: [:edit, :update]
   before_action :authorised_user_show, only: [:show]
 
-  before_action :form_data, only: [:new, :edit]
+  before_action :assign_for_user_form, only: [:new, :edit]
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
@@ -26,11 +26,6 @@ class UsersController < ApplicationController
 
   def new
   	@user = User.new
-    @roles = Role.all
-    @languages = Language.order(:name)
-    @interface_languages = Language.where(interface: true)
-    @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
-    @zones = Zone.order(:name)
   end
 
   def show
@@ -52,20 +47,13 @@ class UsersController < ApplicationController
       flash["success"] = "New User Created!"
       redirect_to @user
     else
-      @roles = Role.all
-      @languages = Language.all
-      @interface_languages = Language.where(interface: true)
+      assign_for_user_form
       render 'new'
     end
   end
 
   def edit
     @user = User.find(params[:id])
-    @roles = Role.all
-    @languages = Language.order(:name)
-    @interface_languages = Language.where(interface: true).order(:name)
-    @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
-    @zones = Zone.order(:name)
   end
 
   def update
@@ -80,9 +68,7 @@ class UsersController < ApplicationController
       flash["success"] = "Profile updated"
       redirect_to @user
     else
-      @roles = Role.all
-      @languages = Language.all
-      @interface_languages = Language.where(interface: true)
+      assign_for_user_form
       render 'edit'
     end
   end
@@ -116,10 +102,17 @@ class UsersController < ApplicationController
           :password_confirmation,
           :mother_tongue_id,
           :interface_language_id,
-          :geo_state_id,
           :role_id
         )
       end
+    end
+
+    def assign_for_user_form
+      @roles = Role.all
+      @languages = Language.order(:name)
+      @interface_languages = Language.where(interface: true).order(:name)
+      @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
+      @zones = Zone.order(:name)
     end
 
     # Confirms authorised user for edit.
@@ -136,9 +129,6 @@ class UsersController < ApplicationController
       redirect_to(root_url) unless 
           current_user?(@user) or current_user.can_view_all_users?
       #    or @user.supervisor?(current_user)
-    end
-
-    def form_data
     end
 
 end
