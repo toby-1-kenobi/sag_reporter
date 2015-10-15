@@ -13,16 +13,14 @@ class UserTest < ActiveSupport::TestCase
   end
 
   it "is in all geo_states only when not assigned to any" do
-    @user = User.new(
-      name: "Example User", 
-      phone: "5555555555", 
-      password: "foobar", 
-      password_confirmation: "foobar",
-      role: Role.take,
-      mother_tongue: Language.take)
     @user.must_be :in_all_geo_states?
-    @user.geo_state = GeoState.take
+    @user.geo_states << GeoState.take
     @user.wont_be :in_all_geo_states?
+  end
+  
+  it "can have multiple geo_states" do
+    @user.geo_states << GeoState.take(3)
+    value(@user.geo_states.length).must_equal 3
   end
 
   test "should be valid" do
