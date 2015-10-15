@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :spoken_languages, class_name: 'Language'
   has_many :tally_updates
-  belongs_to :geo_state
+  has_and_belongs_to_many :geo_states
   delegate :zone, to: :geo_state, allow_nil: true
   has_many :output_counts
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
@@ -57,7 +57,13 @@ class User < ActiveRecord::Base
 
   # True if this user belongs to all states instead of one
   def in_all_geo_states?
-    true unless self.geo_state
+    true unless self.geo_states.length > 0
+  end
+
+  # Transitional method
+  #TODO: make sure nothing uses this, then remove it
+  def geo_state
+    geo_states.take
   end
 
   # override speaks so that a user's mother tongue is included
@@ -67,14 +73,6 @@ class User < ActiveRecord::Base
       languages << self.mother_tongue unless languages.include?(self.mother_tongue)
     else
       languages
-    end
-  end
-
-  def geo_states
-    if geo_state
-      [geo_state]
-    else
-      []
     end
   end
 

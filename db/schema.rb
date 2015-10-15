@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150825203648) do
+ActiveRecord::Schema.define(version: 20151014053813) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,6 +101,14 @@ ActiveRecord::Schema.define(version: 20150825203648) do
   end
 
   add_index "geo_states_languages", ["geo_state_id", "language_id"], name: "index_geo_states_languages_on_geo_state_id_and_language_id", unique: true, using: :btree
+
+  create_table "geo_states_users", id: false, force: :cascade do |t|
+    t.integer "geo_state_id", null: false
+    t.integer "user_id",      null: false
+  end
+
+  add_index "geo_states_users", ["geo_state_id", "user_id"], name: "index_geo_states_users_on_geo_state_id_and_user_id", unique: true, using: :btree
+  add_index "geo_states_users", ["user_id", "geo_state_id"], name: "index_geo_states_users_on_user_id_and_geo_state_id", using: :btree
 
   create_table "impact_reports", force: :cascade do |t|
     t.text     "content",            null: false
@@ -374,11 +382,9 @@ ActiveRecord::Schema.define(version: 20150825203648) do
     t.string   "remember_digest"
     t.integer  "role_id"
     t.integer  "mother_tongue_id",      null: false
-    t.integer  "geo_state_id"
     t.integer  "interface_language_id"
   end
 
-  add_index "users", ["geo_state_id"], name: "index_users_on_geo_state_id", using: :btree
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
@@ -432,6 +438,5 @@ ActiveRecord::Schema.define(version: 20150825203648) do
   add_foreign_key "tally_updates", "users"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translatables"
-  add_foreign_key "users", "geo_states"
   add_foreign_key "users", "languages", column: "interface_language_id"
 end
