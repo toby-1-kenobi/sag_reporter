@@ -59,7 +59,7 @@
         </div>
       <% end %>
       <div class="input-field col s12 m6">
-        <%= f.collection_select(:mother_tongue_id, @languages, :id, :name, {}, {class: "mother-tongue-select"}) %>
+        <%= f.collection_select(:mother_tongue_id, @languages, :id, :name, {include_blank: true}, {class: "mother-tongue-select"}) %>
         <%= f.label :mother_tongue_id, "Select mother tongue" %>
       </div>
     </div>

@@ -10,6 +10,8 @@ class UsersController < ApplicationController
   before_action :authorised_user_show, only: [:show]
 
   before_action :assign_for_user_form, only: [:new, :edit]
+  before_action :get_param_user, only: [:edit, :update, :destroy]
+
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
@@ -37,44 +39,33 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
-    if @user.save
-      if params['user']['speaks']
-        params['user']['speaks'].keys.each do |lang_id|
-          @user.spoken_languages << Language.find_by_id(lang_id.to_i)
-        end
-      end
+    user_factory = User::Factory.new
+    if user_factory.create_user(user_params)
       flash["success"] = "New User Created!"
-      redirect_to @user
+      redirect_to user_factory.instance()
     else
       assign_for_user_form
+      @user = user_factory.instance()
       render 'new'
     end
   end
 
   def edit
-    @user = User.find(params[:id])
   end
 
   def update
-    @user = User.find(params[:id])
-    if @user.update_attributes(user_params)
-      @user.spoken_languages.clear
-      if params['user']['speaks']
-        params['user']['speaks'].keys.each do |lang_id|
-          @user.spoken_languages << Language.find_by_id(lang_id.to_i)
-        end
-      end
+    updater = User::Updater.new(@user)
+    if updater.update_user(user_params)
       flash["success"] = "Profile updated"
       redirect_to @user
     else
+      @user = updater.instance()
       assign_for_user_form
       render 'edit'
     end
   end
 
   def destroy
-  	@user = User.find(params[:id])
     @name = @user.name
     @user.destroy
     flash[:success] = "User #{@name} deleted"
@@ -84,7 +75,18 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      # current user cannot change own role
+      # make hash options into arrays
+      if params["user"]["geo_states"]
+        params["user"]["geo_states"] = params["user"]["geo_states"].keys
+      else
+        params["user"]["geo_states"] = []
+      end
+      if params["user"]["speaks"]
+        params["user"]["speaks"] = params["user"]["speaks"].keys
+      else
+        params["user"]["speaks"] = []
+      end
+      # current user cannot change own role or state
       if params[:id] and current_user?(User.find(params[:id]))
         params.require(:user).permit(
           :name,
@@ -92,7 +94,8 @@ class UsersController < ApplicationController
           :password,
           :password_confirmation,
           :mother_tongue_id,
-          :interface_language_id
+          :interface_language_id,
+          :speaks => []
         )
       else
         params.require(:user).permit(
@@ -102,7 +105,9 @@ class UsersController < ApplicationController
           :password_confirmation,
           :mother_tongue_id,
           :interface_language_id,
-          :role_id
+          :role_id,
+          :speaks => [],
+          :geo_states => []
         )
       end
     end
@@ -117,7 +122,7 @@ class UsersController < ApplicationController
 
     # Confirms authorised user for edit.
     def authorised_user_edit
-      @user = User.find(params[:id])
+      get_param_user
       redirect_to(root_url) unless 
           current_user?(@user) or current_user.can_edit_user?
       #    or @user.supervisor?(current_user)
@@ -125,10 +130,14 @@ class UsersController < ApplicationController
 
     # Confirms authorised user for show.
     def authorised_user_show
-      @user = User.find(params[:id])
+      get_param_user
       redirect_to(root_url) unless 
           current_user?(@user) or current_user.can_view_all_users?
       #    or @user.supervisor?(current_user)
+    end
+
+    def get_param_user
+      @user = User.find(params[:id])
     end
 
 end

@@ -11,6 +11,7 @@ class UsersControllerTest < ActionController::TestCase
     log_in_as(@user)
     get :new
     assert_response :success
+    assert assigns :user
   end
 
   test "should redirect new when not logged in" do
@@ -101,21 +102,23 @@ class UsersControllerTest < ActionController::TestCase
   test "wont allow user to change own geo_state" do
     log_in_as(@user)
     states = GeoState.take 2
-    @user.geo_state = states[0]
-    assert @user.geo_state == states[0]
-    patch :update, id: @user.id, user: { geo_state_id: states[1].id }
+    @user.geo_states << states[0]
+    _(@user.geo_states).must_include states[0]
+    patch :update, id: @user.id, user: { geo_states: [states[1].id] }
     @user.reload
-    assert @user.geo_state != states[1]
+    _(@user.geo_states).must_include states[0]
+    _(@user.geo_states).wont_include states[1]
   end
 
   test "admin user can change another user's geo_state" do
     log_in_as(@user)
     states = GeoState.take 2
-    @other_user.geo_state = states[0]
-    assert @other_user.geo_state == states[0], "geo_state assigned to user"
-    patch :update, id: @other_user.id, user: { geo_state_id: states[1].id }
+    @other_user.geo_states << states[0]
+    _(@other_user.geo_states).must_include states[0]
+    patch :update, id: @other_user.id, user: { geo_states: [states[1].id], name: "Updated name" }
     @other_user.reload
-    assert @other_user.geo_state == states[1], "geo_state changed by patch request"
+    _(@other_user.geo_states).must_include states[1]
+    _(@other_user.geo_states).wont_include states[0]
   end
 
 end
