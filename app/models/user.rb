@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
   validates :phone, presence: true, length: { is: 10 }, format: { with: /\A\d+\Z/ }, uniqueness: true
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
+  validates :mother_tongue_id, presence: true, allow_nil: false
+  validates :role_id, presence: true, allow_nil: false
 
   # Returns the hash digest of the given string.
   def User.digest(string)
@@ -64,16 +66,6 @@ class User < ActiveRecord::Base
   #TODO: make sure nothing uses this, then remove it
   def geo_state
     geo_states.take
-  end
-
-  # override speaks so that a user's mother tongue is included
-  def speaks
-    languages = super or Array.new
-    if self.mother_tongue
-      languages << self.mother_tongue unless languages.include?(self.mother_tongue)
-    else
-      languages
-    end
   end
 
   def zones
