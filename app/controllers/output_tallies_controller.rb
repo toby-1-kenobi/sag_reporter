@@ -4,7 +4,7 @@ class OutputTalliesController < ApplicationController
 
   def report_numbers
   	@output_tallies_by_topic = OutputTally.all.group_by{ |ot| ot.topic }
-  	@languages = Language.minorities(current_user.geo_state)
+  	@languages = Language.minorities(current_user.geo_states)
   end
 
   def update_numbers
@@ -31,7 +31,7 @@ class OutputTalliesController < ApplicationController
   end
 
   def table
-  	@languages = Language.minorities(current_user.geo_state)
+  	@languages = Language.minorities(current_user.geo_states)
   end
 
 end
