@@ -69,7 +69,7 @@ class User < ActiveRecord::Base
   end
 
   def zones
-    geo_states.collect{ |gs| gs.zone }
+    geo_states.collect{ |gs| gs.zone }.uniq
   end
 
   # allow method names such as is_a_ROLE1_or_ROLE2?

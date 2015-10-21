@@ -46,7 +46,7 @@ class User::Factory
           @instance.spoken_languages << Language.find(lang_id)
         end
       end
-      @instance.spoken_languages << @instance.mother_tongue
+      @instance.spoken_languages << @instance.mother_tongue unless @instance.spoken_languages.includes @instance.mother_tongue
       @instance.geo_states.clear
       if geo_states
         geo_states.each do |geo_state_id|
