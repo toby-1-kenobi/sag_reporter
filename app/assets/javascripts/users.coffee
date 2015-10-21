@@ -16,6 +16,8 @@ showStates = ->
   else
   	# Hide the state selector if no zones are selected
     $('[data-activates="user-geo_states-dropdown"]').slideUp()
+  # hidden states should not be selected
+  $("#user-geo_states-dropdown .geo_states-option.hide input:checked").prop('checked', false)
   return
 
 # Show only the languages that are in the selected geo_state(s)
