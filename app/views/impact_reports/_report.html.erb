@@ -40,7 +40,7 @@
     <% end %>
   <% end %>
   <% if current_user.can_edit_report? %>
-  	  <%= link_to edit_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
+  	  <%= link_to edit_impact_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
   	    <i class="material-icons">edit</i>
       <% end %>
   <% end %>
