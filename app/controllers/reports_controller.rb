@@ -28,7 +28,7 @@ class ReportsController < ApplicationController
 
   def new
   	@report = Report.new
-  	@minority_languages = Language.minorities(current_user.geo_state)
+  	@minority_languages = Language.minorities(current_user.geo_states)
   	@topics = Topic.all
   end
 
@@ -53,7 +53,7 @@ class ReportsController < ApplicationController
       flash["success"] = "New Report Submitted!"
       redirect_to @report
     else
-  	  @minority_languages = Language.minorities(current_user.geo_state)
+  	  @minority_languages = Language.minorities(current_user.geo_states)
   	  @topics = Topic.all
       render 'new'
     end
@@ -65,7 +65,7 @@ class ReportsController < ApplicationController
 
   def edit
   	@report = Report.find(params[:id])
-  	@minority_languages = Language.minorities(current_user.geo_state)
+  	@minority_languages = Language.minorities(current_user.geo_states)
   	@topics = Topic.all
   end
 

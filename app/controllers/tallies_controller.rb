@@ -28,12 +28,12 @@ class TalliesController < ApplicationController
 
   def new
     @tally = Tally.new
-    @minority_languages = Language.minorities(current_user.geo_state)
+    @minority_languages = Language.minorities(current_user.geo_states)
     @topics = Topic.all
   end
 
   def edit
-    @minority_languages = Language.minorities(current_user.geo_state)
+    @minority_languages = Language.minorities(current_user.geo_states)
     @topics = Topic.all
   end
 
@@ -54,7 +54,7 @@ class TalliesController < ApplicationController
         format.json { render :show, status: :created, location: @tally }
       else
         format.html do
-          @minority_languages = Language.minorities(current_user.geo_state)
+          @minority_languages = Language.minorities(current_user.geo_states)
           @topics = Topic.all
           render :new
         end
@@ -79,7 +79,7 @@ class TalliesController < ApplicationController
         format.json { render :show, status: :ok, location: @tally }
       else
         format.html do
-          @minority_languages = Language.minorities(current_user.geo_state)
+          @minority_languages = Language.minorities(current_user.geo_states)
           @topics = Topic.all
           render :edit
         end
@@ -104,7 +104,7 @@ class TalliesController < ApplicationController
     # of tally_updates associated with that language and the present tally
     def graph_data
       data = Hash.new
-      Language.minorities(current_user.geo_state).each do |language|
+      Language.minorities(current_user.geo_states).each do |language|
         data[language.name] = @tally.tally_updates.includes(:language).where("languages_tallies.language_id" => language.id)
       end
       return data
