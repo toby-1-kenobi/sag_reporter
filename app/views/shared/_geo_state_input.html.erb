@@ -1,7 +1,7 @@
 <% 
-geo_states = current_user.geo_states
-if defined? form and form.object.geo_states
-  geo_states << form.object.geo_states
+geo_states = current_user.geo_states.dup
+if defined? form and form.object.geo_state
+  geo_states << form.object.geo_state
   geo_states.uniq!
 end
 %>

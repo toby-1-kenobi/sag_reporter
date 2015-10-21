@@ -6,6 +6,28 @@ class ImpactReportsController < ApplicationController
   	@report = ImpactReport.find(params[:id])
   end
 
+  def edit
+    @report = ImpactReport.find(params[:id])
+    @minority_languages = Language.minorities(current_user.geo_states)
+    @topics = Topic.all
+  end
+
+  def update
+    @report = ImpactReport.find(params[:id])
+    if @report.update_attributes(impact_report_params)
+      if params['impact_report']['languages']
+        @report.languages.clear
+        params['impact_report']['languages'].each do |lang_id, value|
+          @report.languages << Language.find_by_id(lang_id.to_i)
+        end
+      end
+      flash["success"] = "Report updated"
+      redirect_to @report
+    else
+      render 'edit'
+    end
+  end
+
   def tag
   	@reports = ImpactReport.where(progress_marker: nil).select{ |ir| ir.geo_state == current_user.geo_state }
   	@outcome_areas = Topic.all
@@ -22,5 +44,11 @@ class ImpactReportsController < ApplicationController
   	  render text: "fail report: #{params[:id]} pm: #{params[:pm_id]}"
   	end
   end
+
+    private
+
+    def impact_report_params
+      params.require(:impact_report).permit(:content, :state, :geo_state_id)
+    end
 
 end

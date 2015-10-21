@@ -1,0 +1,45 @@
+<% provide(:title, 'Edit Impact Report') %>
+<h1>Edit Impact Report</h1>
+<div class="row">
+  <%= form_for(@report, html: {class: "col s12"}) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+    <div class="row">
+      <div class="col s12 m6 input-field">
+        <%= render partial: "shared/geo_state_input", locals: {form: f} %>
+      </div>
+      <div class="input-field col s12 m6">
+        <% if current_user.can_archive_report? %>
+          <% Report.states.each do |key, value| %>
+            <p>
+              <%= f.radio_button(:state, key, checked: @report.state == key) %>
+              <%= f.label "#{:state}_#{key}", key.capitalize %>
+            </p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.text_area :content, class: "materialize-textarea" %>
+        <%= f.label :content, "Type your report here." %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <%= render partial: "shared/multiselect", locals: {
+          text: "Relates to languages…",
+          icon: "language",
+          object: "impact_report",
+          attribute: "languages",
+          display: :name,
+          data: :geo_state_ids_str,
+          collection: @minority_languages,
+          selected: @report.languages
+        } %>
+      </div>
+    </div>
+    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      Submit Changes <i class="material-icons right">send</i>
+    <% end %>
+  <% end %>
+</div>
