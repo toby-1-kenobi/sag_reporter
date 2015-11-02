@@ -7,8 +7,12 @@
 </div>
 
 <div style="display: none" id="language-select">
-  <p>Now choose a language to assess by:</p>
+  <p>Now choose a state and language to assess by:</p>
+  <div>
+    <%= render partial: "shared/geo_state_input", locals: {object: "assess"} %>
+  </div>
   <div class="collection">
   	<%= render partial: 'topics/language', collection: @languages %>
   </div>
+
 </div>
