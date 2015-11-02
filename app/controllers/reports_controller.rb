@@ -129,9 +129,9 @@ class ReportsController < ApplicationController
 
     def report_params
       if current_user.can_archive_report?
-        permitted = params.require(:report).permit(:content, :mt_society, :mt_church, :needs_society, :needs_church, :state)
+        permitted = params.require(:report).permit(:content, :mt_society, :mt_church, :needs_society, :needs_church, :geo_state_id, :state)
       else
-    	  permitted = params.require(:report).permit(:content, :mt_society, :mt_church, :needs_society, :needs_church,)
+    	  permitted = params.require(:report).permit(:content, :mt_society, :mt_church, :needs_society, :needs_church, :geo_state_id)
       end
     end
   

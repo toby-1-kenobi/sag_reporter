@@ -49,7 +49,8 @@ class PeopleController < ApplicationController
   		:intern,
   		:facilitator,
   		:pastor,
-  		:mother_tongue_id
+  		:mother_tongue_id,
+      :geo_state_id
   	)
   end
 

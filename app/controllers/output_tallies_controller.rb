@@ -13,11 +13,14 @@ class OutputTalliesController < ApplicationController
   	year = Date.today.year
   	if month > Date.today.month then year = year - 1 end
 
+    geo_state = GeoState.find(params['outputs']['geo_state'])
+
   	params['amounts'].select{ |k,v| v and params[k] and not params[k].empty? }.each do |code, amount|
   	  language = Language.find(params[code])
   	  tally = OutputTally.find(code.split('__').first)
   	  OutputCount.create(
   	  	user: current_user,
+        geo_state: geo_state,
   	  	output_tally: tally,
   	  	language: language,
   	  	amount: amount,

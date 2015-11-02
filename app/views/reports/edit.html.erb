@@ -4,13 +4,10 @@
   <%= form_for(@report, html: {class: "col s12"}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
     <div class="row">
-      <div class="input-field col s6">
-        <%= f.select(:report_type) do %>
-            <%= options_for_select(report_type_text.invert, @report.report_type) %>
-        <% end %>
-        <%= f.label :report_type, "Report Type" %>
+      <div class="input-field col s12 m6">
+        <%= render partial: "shared/geo_state_input", locals: {object: "report"} %>
       </div>
-      <div class="input-field col s6">
+      <div class="input-field col s12 m6">
         <% if current_user.can_archive_report? %>
           <% Report.states.each do |key, value| %>
             <p>
