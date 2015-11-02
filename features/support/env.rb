@@ -62,3 +62,6 @@ Capybara.register_driver :selenium do |app|
   Capybara::Selenium::Driver.new(app, :browser => :firefox, profile: profile)
 end
 
+Before do
+  Thread.current[:current_spec] = self
+end
