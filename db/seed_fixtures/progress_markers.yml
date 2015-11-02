@@ -1,293 +1,455 @@
 existing_skills_valued:
-  name: "Exisitng skills valued"
-  description: "People are valuing their own existing skills"
+  name: "Participatory tools"
+  description: "CF community groups use participatory tools to plan social development"
   topic: social_development
   weight: 1
 
 symptoms_known:
   name: "Symptoms known"
-  description: "Know the symptoms of common diseases and how to treat them"
+  description: "CF community groups know the symptoms and symptomatic care of common diseases. They practice preventive measures for some diseases. They seek medical care when needed at the right time"
   topic: social_development
   weight: 1
 
 disease_prevented:
-  name: "Disease prevented"
-  description: "People are able to prevent some diseases"
+  name: "Healthy"
+  description: "CF community groups adopt a healthy and socially responsible lifestyle"
   topic: social_development
   weight: 1
 
 visiting_doctor:
-  name: "Visiting doctor"
-  description: "People in the community are going to the doctor if they have TB"
+  name: "Demonstrating God's love"
+  description: "CF community groups show to the wider community that God cares about them and about creation"
   topic: social_development
   weight: 1
 
 skills_for_income:
-  name: "Skills for income"
-  description: "People are learning skills they can use for income"
+  name: "Helping access fascilities"
+  description: "CF community groups help others to access government facilities and schemes"
   topic: social_development
   weight: 2
 
 skills_used:
-  name: "Skills used"
-  description: "People are using their existing skills for economic stability"
+  name: "Disease prevention"
+  description: "People outside the CF community groups are preventing some diseases (e.g. diarrhea, anemia, malnutrition) and go to hospital less"
   topic: social_development
   weight: 2
 
 demonstrated_care:
-  name: "Demostrated care"
-  description: "People are recognising that Christians care about them, demonstrating God's love through social action"
+  name: "Helping each other"
+  description: "Local members of the movement help each other in crisis, with words and deeds"
   topic: social_development
   weight: 2
 
 knowledge_spread:
-  name: "Knowledge spread"
-  description: "People are telling others about health and social awareness messages and helping others with their knowledge and skills"
+  name: "Financial stability"
+  description: "CF community groups have a plan for making a stable income. They have a bank account, save money and manage their spending"
   topic: social_development
   weight: 2
 
 businesses_started:
-  name: "Businesses started"
-  description: "People are starting their own businesses"
+  name: "Social and cultural events"
+  description: "Local members of the movement are organising social and cultural events"
   topic: social_development
-  weight: 3
+  weight: 2
 
 facilitators_self_dependent:
-  name: "Facilitators, self-dependent"
-  description: "People are self-dependent for their income"
+  name: "Unity in society"
+  description: "Local members of the movement are helping their society become more united"
   topic: social_development
-  weight: 3
+  weight: 2
 
 new_initiatives:
-  name: "New initiatives"
-  description: "Members of the movement are organising for community social and economic development, including setting up microfinance groups, community initiatives and health awareness programmes"
+  name: "Opportunities for women and children"
+  description: "Women and children are protected and respected. More girls pursue higher education and have more opportunities"
   topic: social_development
-  weight: 3
+  weight: 2
 
 businesses_skills_taught:
   name: "Businesses skills taught"
-  description: "Members of the movement are teaching others skills about business"
+  description: "Local members of the movement are running their own businesses and teaching business skills to others"
   topic: social_development
   weight: 3
 
 local_doctors_or_ngos_invloved:
-  name: "Local doctors or NGOs involved"
-  description: "Members of the movement are involving local doctors or NGOs in their social programmes"
+  name: "Education accessed"
+  description: "Local members of the movement are accessing new educational opportunities"
+  topic: social_development
+  weight: 3
+
+organised_for_development:
+  name: "Organised for development"
+  description: "Local members of the movement are organising together for environmental protection, social and economic development, including setting up microfinance groups, community initiatives and health awareness programmes"
   topic: social_development
   weight: 3
 
 pastors_taking_responsibility:
-  name: "Leaders taking responsibility"
-  description: "Leaders in the movement are taking responsibility for guiding their interns"
+  name: "Working together"
+  description: "CF community groups are working together, listening to each other, and making shared decisions"
   topic: movement_building
   weight: 1
 
 more_info_requested:
   name: "More info requested"
-  description: "People are asking for more information about mother tongue ministry and NBASE"
+  description: "People outside the CF groups are asking for more information about the movement"
   topic: movement_building
   weight: 1
 
 network_meetings_attended:
-  name: "Network meetings attended"
-  description: "Leaders are attending network meetings"
+  name: "Dependency on God"
+  description: "Members of CF community groups are praying for God’s direction and blessing to fulfil the LCI outcomes"
   topic: movement_building
-  weight: 2
+  weight: 1
 
 nbase_promoted:
-  name: "MT promoted"
-  description: "Members of the movement are telling others about the value of mother tongue based ministry"
+  name: "Contribution to production"
+  description: "Local members of the movement are contributing a proportion of production costs"
   topic: movement_building
-  weight: 2
+  weight: 1
 
 materials_shared:
-  name: "Materials shared"
-  description: "Leaders are sharing materials with other churches"
+  name: "Contribution to honorarium"
+  description: "Local members of the movement are contributing to the honorarium for CFs"
   topic: movement_building
   weight: 2
 
 interest_from_others:
-  name: "Interest from others"
-  description: "Other agencies (NGOs, government and others) are expressing interest in mother tongue based community transformation"
+  name: "Embraced by Christian leaders"
+  description: "Local Christian leaders who used to be sceptical have embraced the movement and want to involve their people in the movement activities"
   topic: movement_building
   weight: 2
 
 combined_mt_events:
-  name: "Combined MT events"
-  description: "Churches are conducting combined Gospel services and events in the mother tongue"
+  name: "Collaboration across groups"
+  description: "Different churches, NGOs and community groups have come together in a network meeting / joint event / language conference for a collaborative effort using the mother tongue. They have made some collective decisions"
+  topic: movement_building
+  weight: 2
+
+churches_partnering:
+  name: "Resource sharing"
+  description: "Different churches, NGOs and community groups are sharing human resources, materials and funds to help each other fulfil the LCI outcomes"
+  topic: movement_building
+  weight: 2
+
+united_dependency_on_god:
+  name: "United dependency on God"
+  description: "Local Christian leaders from different churches are praying in unity for God’s direction and blessing to fulfil the LCI outcomes"
+  topic: movement_building
+  weight: 2
+
+direction_from_local:
+  name: "Direction from local"
+  description: "Local church or community leaders outside of the lead agency are involved in and directly influencing the lead agency annual planning and budgeting process"
+  topic: movement_building
+  weight: 2
+
+interest_from_others:
+  name: "Intrest from others"
+  description: "Other agencies (Church, NGO or Government) are asking for more information regarding mother tongue based community transformation"
+  topic: movement_building
+  weight: 2
+
+christian_leaders_facilitating_lci:
+  name: "Christian leaders facilitating LCI"
+  description: "Local Christian leaders are facilitating network meetings without lead agency funds or prompting, which help to fulfil the LCI outcomes"
   topic: movement_building
   weight: 3
 
-churches_partnering:
-  name: "Churches partnering"
-  description: "Churches are partnering together for mother tongue ministry"
+resolve_disunity:
+  name: "Resolve disunity"
+  description: "When there is a disunity or a crisis of confidence within the movement, local members of the movement identify the issue and resolve it together"
   topic: movement_building
   weight: 3
 
 action_from_others:
   name: "Action from others"
-  description: "Other agencies (NGOs, government and others) are meetng together about mother tongue based community transformation"
+  description: "Other agencies (Church, NGO or Government) are planning and budgeting for mother tongue based community transformation"
   topic: movement_building
   weight: 3
 
+devotional:
+  name: "Devotional"
+  description: "Local church or community leaders take time to be with the Lord, in his word and in personal prayer. They stay connected to the Vine. Leaders read the word of God in order to get direction for their ministry/work"
+  topic: leadership_development
+  weight: 1
+
 merciful:
   name: "Showing mercy"
-  description: "Leaders are showing mercy and compassion to others"
+  description: "Local church or community leaders do good works. They help the poor. They show kindness, mercy, compassion"
   topic: leadership_development
   weight: 1
 
 showing kindness:
-  name: "showing kindness"
-  description: "Leaders are doing good works and showing kindness"
+  name: "listening"
+  description: "Local church or community leaders listen well to others"
   topic: leadership_development
   weight: 1
 
 treats_others_as_equal:
-  name: "Treats others as equal"
-  description: "Leaders are treating others as equal"
+  name: "Ministry vision"
+  description: "Local church or community leaders express to others the vision and goals for their ministry / field of work"
   topic: leadership_development
-  weight: 2
+  weight: 1
 
 bibilical_foundation:
-  name: "Biblical foundation"
-  description: "Leaders are basing their ministry on the Bible. They are teaching it and modelling their life on the teaching of the Bible"
+  name: "Humility"
+  description: "Local church or community leaders understand and live their role as “servant leader” with Jesus as their example. They show humility and treat others as equals"
   topic: leadership_development
   weight: 2
 
 prays_about_decisions:
-  name: "Prays about decisions"
-  description: "Leaders are praying about decisions. Prayer is the foundation of their ministry"
+  name: "Leading in prayer"
+  description: "Local church or community leaders lead others in prayer. Prayer is an integral part of their way of life"
+  topic: leadership_development
+  weight: 2
+
+resolves_division:
+  name: "Provide accountability"
+  description: "Local church or community leaders provide clear, loving and fruitful accountability for the people they lead. For example, they meet regularly with the people they lead, hear reports, provide direction and encouragement, and pray for them"
+  topic: leadership_development
+  weight: 2
+
+accept_accountability:
+  name: "Accept accountability"
+  description: "Local church or community leaders accept their own accountability towards others, and demonstrate a disciplined life. For example, they generally arrive in right time, and attend to their responsibilities without procrastinating"
+  topic: leadership_development
+  weight: 2
+
+training_leaders:
+  name: "Training leaders"
+  description: "Local church or community leaders identify, mentor and raise up a new generation of leaders. They put others forward to be trained. They delegate responsibility to their second line leaders"
+  topic: leadership_development
+  weight: 2
+
+balanced_lifestyle:
+  name: "Balanced lifestyle"
+  description: "Local church or community leaders balance their leadership responsibilities along with their family and other personal responsibilities. They keep time for their families"
+  topic: leadership_development
+  weight: 2
+
+working_with_others:
+  name: "Working with others"
+  description: "Local church or community leaders work together with leaders of other organisations / denominations"
+  topic: leadership_development
+  weight: 2
+
+communication:
+  name: "Communication"
+  description: "Local church or community leaders communicate the work of the team they lead, including through report writing"
   topic: leadership_development
   weight: 2
 
 resolves_division:
   name: "Resolves division"
-  description: "Leaders are able to address and resolve any divisions well"
+  description: "Local church or community leaders address and resolve any divisions using biblical principles"
   topic: leadership_development
   weight: 3
 
+integrity:
+  name: "Integrity"
+  description: "Local church or community leaders act with honesty and integrity, even when this involves confessing a mistake"
+  topic: leadership_development
+  weight: 3
+
+organisation_vision:
+  name: "Organisation vision"
+  description: "Local church or community leaders communicate clear vision and mission concepts for their organisation/network"
+  topic: leadership_development
+  weight: 3
+
+smart_goals:
+  name: "SMART goals"
+  description: "Local church or community leaders facilitate others in creating SMART goals for their ministry or field of work"
+  topic: leadership_development
+  weight: 3
+
+mt_materials:
+  name: "MT materials"
+  description: "CF community groups have written basic materials for themselves, in their mother tongue. They are keeping copies of these in the village library"
+  topic: language_development
+  weight: 1
+
+mt_reading:
+  name: "MT read and heard"
+  description: "CF community groups are reading and hearing mother-tongue tools (songs, other audio tools, books, etc.)"
+  topic: language_development
+  weight: 1
+
 mt_spoken:
   name: "MT spoken"
-  description: "People are speaking their mother-tongue in church and in the community"
+  description: "Local members of the movement are speaking their mother tongue in the community and in church"
+  topic: language_development
+  weight: 1
+
+libraries_accessed:
+  name: "Libraries accessed"
+  description: "People outside the CF community groups are hearing about the village library. They are accessing resources made by the community group, through the village library"
   topic: language_development
   weight: 1
 
 mt_worship:
   name: "MT worship"
-  description: "In churches, people are worshipping God and conducting services in mother-tongue"
-  topic: language_development
-  weight: 2
-
-mt_reading:
-  name: "MT reading"
-  description: "People are reading materials in their mother-tongue"
+  description: "Local Christian leaders are encouraging use of mother tongue for worship of God, preaching and other ministries"
   topic: language_development
   weight: 2
 
 mt_promoted:
   name: "MT promoted"
-  description: "People are telling others about the value of using mother-tongue"
+  description: "Local members of the movement are promoting the use of mother tongue in everyday life"
+  topic: language_development
+  weight: 2
+
+mt_literacy_expanded:
+  name: "MT literacy expanded"
+  description: "Local members of the movement are expanding mother tongue literacy education to primary schools, evening classes, and tutoring centres"
+  topic: language_development
+  weight: 2
+
+mt_books_sold:
+  name: "MT writing improvements"
+  description: "CF community groups have received feedback from others about their written materials and improved the quality"
+  topic: language_development
+  weight: 2
+
+dictionaries_and_primers:
+  name: "Dictionaries and primers"
+  description: "CF community groups are creating dictionaries and primers"
+  topic: language_development
+  weight: 2
+
+library_expansion:
+  name: "Library expansion"
+  description: "CF community groups are helping to expand the resources in the village library, and the use of the village library"
+  topic: language_development
+  weight: 2
+
+christian_leaders_encourage_mt_use:
+  name: "Christian leaders encourage MT use"
+  description: "Local Christian leaders are encouraging use of mother tongue for worship of God, preaching and other ministries"
   topic: language_development
   weight: 2
 
 mt_church_contribution:
   name: "MT church contribution"
-  description: "Members' churches are contributing 25% to mother-tongue resource production"
+  description: "Churches or other community groups are contributing financially to mother tongue resource production and the work of the CFs"
   topic: language_development
   weight: 2
 
-mt_materials:
-  name: "MT materials"
-  description: "People are writing materials in their mother-tongue. There is a mother tongue newspaper"
+mt_language_committees:
+  name: "MT language committees"
+  description: "There are language committees which discuss and plan language development work"
   topic: language_development
-  weight: 3
+  weight: 2
 
-mt_books_sold:
-  name: "MT books sold"
-  description: "Bookstores are selling mother-tongue books"
-  topic: language_development
-  weight: 3
-
-mt_committees:
-  name: "MT committees"
-  description: "Communities are setting up language committees for their mother-tongue"
+youth_mt_literacy:
+  name: "Youth MT literacy"
+  description: "The younger generation are able to speak, read and write their mother tongue"
   topic: language_development
   weight: 3
 
 mt_church_programmes:
-  name: "MT church programmes"
-  description: "Churches are putting on big programmes (cultural / Gospel) in the mother-tongue"
+  name: "Libraries multiplying"
+  description: "Local members of the movement are opening new village libraries in other villages"
   topic: language_development
   weight: 3
 
 mt_radio_programmes:
-  name: "MT radio programmes"
-  description: "Radio stations have a programmes in the mother-tongue"
+  name: "Churches resourcing MT use"
+  description: "Local church or community leaders are organising resources to support mother-tongue use in schools, community and church"
   topic: language_development
   weight: 3
 
+bible_reading:
+  name: "Accessing Scripture"
+  description: "Local members of the movement are accessing Scripture in their mother tongue, in print, audio and visual form"
+  topic: faith_development
+  weight: 1
+
 gospel_interest:
-  name: "Gospel interest"
-  description: "The community is startng to show interest in the Gospel, asking questions"
+  name: "MT worship"
+  description: "Local members of the movement are worshipping the Lord together, using the mother tongue"
   topic: faith_development
   weight: 1
 
 sharing_faith:
   name: "Sharing Faith"
-  description: "Believers are sharing their faith"
+  description: "Local members of the movement are sharing their faith. They are preaching the Word of God to others in their nearby area / their village"
   topic: faith_development
   weight: 1
 
 believers_attend_church:
-  name: "Believers attend church"
-  description: "Believers are attending church"
+  name: "Generosity"
+  description: "Local members of the movement are giving generously and caring for others"
   topic: faith_development
   weight: 1
 
 understanding_gospel:
-  name: "Understanding Gospel"
-  description: "Communities are understanding the Gospel"
+  name: "Recieving the gospel"
+  description: "People in the community are receiving the gospel in their own language"
+  topic: faith_development
+  weight: 2
+
+less_superstition:
+  name: "Less superstition"
+  description: "People in the community are less superstitious and are not trusting in quacks"
   topic: faith_development
   weight: 2
 
 attending_church:
-  name: "Attending church"
-  description: "More people are starting to attend church and church activities"
+  name: "Church growth"
+  description: "People in the community are joining the church. More people are attending from across the community"
   topic: faith_development
-  weight: 1
+  weight: 2
 
-bible_reading:
-  name: "Bible reading"
-  description: "Communities are reading or listening to the Bible and accessing Scripture resources"
+discussing_the_bible:
+  name: "Discussion the Bible"
+  description: "Local members of the movement discuss the teachings of the Bible with each other"
+  topic: faith_development
+  weight: 2
+
+gospel_spread:
+  name: "Gospel spread"
+  description: "Local members of the movement take the gospel to new villages and cities, using mother tongue"
+  topic: faith_development
+  weight: 2
+
+spiritual_maturity:
+  name: "Spiritual maturity"
+  description: "Local members of the movement demonstrate spiritual maturity by standing firm in faith despite temptation, persecution and suffering"
+  topic: faith_development
+  weight: 2
+
+integral_faith:
+  name: "Integral faith"
+  description: "Local members of the movement connect their faith to social issues of injustice and poverty. They relate to social issues from a faith perspective."
   topic: faith_development
   weight: 2
 
 prayer:
-  name: "Prayer"
-  description: "Church members are people of prayer"
+  name: "Bible understanding"
+  description: "Local Christian leaders help people to understand the meaning of the Scriptures, and how to apply in their context."
   topic: faith_development
-  weight: 3
+  weight: 2
 
 leading_to_christ:
-  name: "Leading to Christ"
-  description: "Church members are leading others to Christ"
+  name: "Kingdom growth"
+  description: "People in the community are coming to faith in Christ. The local church membership is growing and new churches are being planted"
   topic: faith_development
   weight: 3
 
 teaching_and_helping:
-  name: "Teaching and helping"
-  description: "Members of the movement are preaching and teaching and helping others"
+  name: "Respected by the community"
+  description: "Local members of the movement are respected by non-believers in the community. They are sought out for advice and counsel by non-believers in the community"
   topic: faith_development
   weight: 3
 
 reources_produced:
   name: "Resources produced"
-  description: "Church members are producing MT Gospel resources"
+  description: "Local members of the movement are themselves creating new songs, drama, stories, books and art based on the Bible (without funds or prompting from lead agency)"
   topic: faith_development
   weight: 3
 
 making_disciples:
-  name: "Making disciples"
-  description: "Church members are involved in ongoing discipleship of other Christians"
+  name: "Teaching in Bible college"
+  description: "Local members of the movement become teachers of God’s Word in Bible colleges"
   topic: faith_development
   weight: 3
