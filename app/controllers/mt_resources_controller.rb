@@ -46,7 +46,8 @@ class MtResourcesController < ApplicationController
       :cc_share_alike,
       :user_id,
       :language_id,
-      :category
+      :category,
+      :geo_state_id
     )
   end
 
