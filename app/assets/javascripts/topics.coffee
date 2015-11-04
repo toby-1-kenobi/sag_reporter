@@ -18,6 +18,7 @@ $(document).ready ->
   	  $('.chosen').css 'top', '0'
   	  $('#language-select').slideDown 'slow'
   	  return
+    $('.collapsible').collapsible()
   	return
 
   $('#outcome-area-select .card').hover (->

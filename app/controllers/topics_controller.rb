@@ -57,15 +57,15 @@ class TopicsController < ApplicationController
 
   def assess_progress_select
     @topics = Topic.all
-    @languages = Language.minorities(current_user.geo_states)
   end
 
   def assess_progress
     @outcome_area = Topic.find(params[:topic_id])
     @progress_markers_by_weight = ProgressMarker.where(topic: @outcome_area).group_by { |pm| pm.weight }
     @language = Language.find(params[:language_id])
-    @geo_state_id = params[:assess][:geo_state_id]
+    @geo_state_id = params[:geo_state_id]
     @reports_by_progress_marker = ImpactReport.where(geo_state_id: @geo_state_id).joins(:progress_marker, :languages).where("progress_markers.topic_id" => @outcome_area, "languages.id" => @language).select{ |ir| ir.report_date >= 1.year.ago }.group_by{ |ir| ir.progress_marker_id }
+    #TODO: check that the language belongs to the geo_state and return to assess_progress_select if its not
   end
 
   def update_progress
@@ -77,10 +77,9 @@ class TopicsController < ApplicationController
       progress_marker = ProgressMarker.find(marker)
       language_progress = LanguageProgress.find_or_create_by(language: language, progress_marker: progress_marker)
       ProgressUpdate.create(language_progress: language_progress, progress: level, user: current_user, geo_state_id: params[:geo_state_id])
-      flash.now['success'] = "Progress Markers updated for #{outcome_area.name}."
+      flash.now['success'] = "Progress Markers updated for #{language.name} #{outcome_area.name}."
     end
     @topics = Topic.all
-    @languages = Language.minorities(current_user.geo_states)
     render 'assess_progress_select'
   end
 

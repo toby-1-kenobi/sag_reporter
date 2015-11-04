@@ -14,5 +14,9 @@ class GeoState < ActiveRecord::Base
   def zone_id
     zone.id
   end
+
+  def minority_languages
+    languages.where(lwc: false)
+  end
   
 end
