@@ -1,5 +1,5 @@
 <% provide(:title, 'Report Numbers') %>
-<% if @failedCounts.any? %>
+<% if @failedCounts and @failedCounts.any? %>
   <% @failedCounts.each do |failedCount| %>
     <div id="error_explanation" class="card red">
       <div class="card-content">
