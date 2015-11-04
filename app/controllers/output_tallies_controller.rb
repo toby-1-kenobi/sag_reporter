@@ -36,7 +36,7 @@ class OutputTalliesController < ApplicationController
   	end
     if @failedCounts.length == 0
     	flash.now['success'] = "Numbers recorded"
-    	render 'static_pages/home'
+    	redirect_to root_path
     else
       flash.now['error'] = "Some numbers could not be recorded"
       @output_tallies_by_topic = OutputTally.all.group_by{ |ot| ot.topic }
