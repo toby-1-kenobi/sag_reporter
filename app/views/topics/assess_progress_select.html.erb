@@ -8,11 +8,15 @@
 
 <div style="display: none" id="language-select">
   <p>Now choose a state and language to assess by:</p>
-  <div>
-    <%= render partial: "shared/geo_state_input", locals: {object: "assess"} %>
-  </div>
-  <div class="collection">
-  	<%= render partial: 'topics/language', collection: @languages %>
-  </div>
+  <ul class="collapsible">
+    <% current_user.geo_states.each do |geo_state| %>
+      <li>
+        <div class="collapsible-header green lighten-2"><%= geo_state.name %></div>
+        <div class="collapsible-body collection">
+        	<%= render partial: 'topics/language', collection: geo_state.minority_languages.order(:name), locals: {geo_state_id: geo_state.id} %>
+        </div>
+      </li>
+    <% end %>
+  </ul>
 
 </div>
