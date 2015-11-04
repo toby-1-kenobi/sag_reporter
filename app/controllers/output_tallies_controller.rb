@@ -4,7 +4,7 @@ class OutputTalliesController < ApplicationController
 
   def report_numbers
   	@output_tallies_by_topic = OutputTally.all.group_by{ |ot| ot.topic }
-  	@languages = Language.minorities(current_user.geo_states)
+  	@languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
   end
 
   def update_numbers
@@ -40,14 +40,14 @@ class OutputTalliesController < ApplicationController
     else
       flash.now['error'] = "Some numbers could not be recorded"
       @output_tallies_by_topic = OutputTally.all.group_by{ |ot| ot.topic }
-      @languages = Language.minorities(current_user.geo_states)
+      @languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
       render 'report_numbers'
     end
 
   end
 
   def table
-  	@languages = Language.minorities(current_user.geo_states)
+  	@languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
   end
 
 end

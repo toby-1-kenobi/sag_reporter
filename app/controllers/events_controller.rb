@@ -6,7 +6,7 @@ class EventsController < ApplicationController
   
   def new
   	@event = Event.new()
-  	@minority_languages = Language.minorities(current_user.geo_states)
+  	@minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
   	@all_purposes = Purpose.all
   end
 
@@ -83,7 +83,7 @@ class EventsController < ApplicationController
       end
       redirect_to @event
     else
-  	  @minority_languages = Language.minorities(current_user.geo_states)
+  	  @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
   	  @all_purposes = Purpose.all
   	  render 'new'
   	end

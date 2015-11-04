@@ -8,7 +8,7 @@ class ImpactReportsController < ApplicationController
 
   def edit
     @report = ImpactReport.find(params[:id])
-    @minority_languages = Language.minorities(current_user.geo_states)
+    @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
     @topics = Topic.all
   end
 
@@ -24,6 +24,8 @@ class ImpactReportsController < ApplicationController
       flash["success"] = "Report updated"
       redirect_to @report
     else
+      @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+      @topics = Topic.all
       render 'edit'
     end
   end

@@ -28,12 +28,12 @@ class TalliesController < ApplicationController
 
   def new
     @tally = Tally.new
-    @minority_languages = Language.minorities(current_user.geo_states)
+    @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
     @topics = Topic.all
   end
 
   def edit
-    @minority_languages = Language.minorities(current_user.geo_states)
+    @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
     @topics = Topic.all
   end
 
@@ -54,7 +54,7 @@ class TalliesController < ApplicationController
         format.json { render :show, status: :created, location: @tally }
       else
         format.html do
-          @minority_languages = Language.minorities(current_user.geo_states)
+          @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
           @topics = Topic.all
           render :new
         end
@@ -79,7 +79,7 @@ class TalliesController < ApplicationController
         format.json { render :show, status: :ok, location: @tally }
       else
         format.html do
-          @minority_languages = Language.minorities(current_user.geo_states)
+          @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
           @topics = Topic.all
           render :edit
         end
