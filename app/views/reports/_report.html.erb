@@ -9,7 +9,7 @@
   	<% end %>
   	<p><%= report.content %></p>
     <% Report.categories.select{ |key, sentence| report.send(key) }.each do |key, category| %>
-      <p>Concerns the <%= category %>.</p>
+      <p>Concerns the <%= category.translation_for(current_user) %>.</p>
     <% end %>
   	<div class="reporter"><%= report.reporter.name %></div>
   	<% if languages %>

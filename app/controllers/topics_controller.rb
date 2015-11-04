@@ -84,7 +84,7 @@ class TopicsController < ApplicationController
   end
 
   def outcomes
-    @languages = Language.minorities(current_user.geo_states)
+    @languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
   end
 
   def get_chart

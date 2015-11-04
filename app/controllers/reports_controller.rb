@@ -28,7 +28,7 @@ class ReportsController < ApplicationController
 
   def new
   	@report = Report.new
-  	@minority_languages = Language.minorities(current_user.geo_states)
+  	@minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
   	@topics = Topic.all
   end
 
@@ -53,7 +53,7 @@ class ReportsController < ApplicationController
       flash["success"] = "New Report Submitted!"
       redirect_to @report
     else
-  	  @minority_languages = Language.minorities(current_user.geo_states)
+  	  @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
   	  @topics = Topic.all
       render 'new'
     end
@@ -98,7 +98,7 @@ class ReportsController < ApplicationController
   def by_language
   	@reports = Report.where(geo_state: current_user.geo_state).order(:created_at => :desc)
     @impact_reports = ImpactReport.where(geo_state: current_user.geo_state).order(:created_at => :desc)
-  	@languages = Language.all
+  	@languages = Language.all.order("LOWER(languages.name)")
   	recent_view
   end
 
