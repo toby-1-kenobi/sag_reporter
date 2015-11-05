@@ -60,7 +60,7 @@
             	attribute: "languages",
               display: :name,
             	collection: @minority_languages,
-            	selected: Hash.new
+            	selected: @event.languages
             } %>
           </div>
         </div>
@@ -75,7 +75,7 @@
               attribute: "purposes",
               display: :description,
               collection: @all_purposes,
-              selected: Hash.new
+              selected: @event.purposes
             } %>
           </div>
         </div>

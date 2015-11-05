@@ -13,25 +13,25 @@ class EventsController < ApplicationController
   def create
   	errors = Array.new
     @event = Event.new(event_params)
+    @event.record_creator = current_user
+    # link the languages to the event
+    if params['event']['languages']
+      params['event']['languages'].each do |lang_id, value|
+        if value then @event.languages << Language.find(lang_id) end
+      end
+    end
+    # link the purposes to the event
+    if params['event']['purposes']
+      params['event']['purposes'].each do |purp_id, value|
+        if value then @event.purposes << Purpose.find(purp_id) end
+      end
+    end
+    # link the people to the event
+    person_params = params.select{ |param| param[/^person__\d+$/] }
+    person_params.each do |key, person_name|
+      @event.people << Person.find_or_create_by(name: person_name) unless person_name.empty?
+    end
     if @event.save
-      @event.record_creator = current_user
-      # link the people to the event
-      person_params = params.select{ |param| param[/^person__\d+$/] }
-      person_params.each do |key, person_name|
-      	@event.people << Person.find_or_create_by(name: person_name) unless person_name.empty?
-      end
-      # link the languages to the event
-      if params['event']['languages']
-        params['event']['languages'].each do |lang_id, value|
-      	  if value then @event.languages << Language.find(lang_id) end
-        end
-      end
-      # link the purposes to the event
-      if params['event']['purposes']
-        params['event']['purposes'].each do |purp_id, value|
-      	  if value then @event.purposes << Purpose.find(purp_id) end
-      	end
-      end
       # create all the reports and link them to the event
       Event.yes_no_questions(current_user).each_key do |code|
       	if params[code] == 'yes'
@@ -42,7 +42,7 @@ class EventsController < ApplicationController
       	  content.each do |key, value|
       	  	unless value.empty?
       	  	  report_params = {
-      	  		content: value,
+      	  	    content: value,
       	  	  	reporter: current_user,
       	  	  	event: @event
       	  	  }
