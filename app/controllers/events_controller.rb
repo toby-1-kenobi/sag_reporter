@@ -48,10 +48,24 @@ class EventsController < ApplicationController
       	  	  }
       	  	  unless code == 'plan' || code == 'impact' then report_params[code] = true end
       	  	  if report_type[key] == "impact"
-      	  	    ImpactReport.create(report_params) or errors << "could not create impact report: " + value.slice(0..20)
+      	  	    report = ImpactReport.create(report_params) or errors << "could not create impact report: " + value.slice(0..20)
       	  	  else
-      	  	    Report.create(report_params) or errors << "could not create planning report: " + value.slice(0..20)
+      	  	    report = Report.create(report_params) or errors << "could not create planning report: " + value.slice(0..20)
       	  	  end
+              # link the languages to the report
+              if report_languages[key] and report_languages[key]['languages'] and report_languages[key]['languages'].length > 0
+                report_languages[key]['languages'].each do |lang_id, value|
+                  if value then report.languages << Language.find(lang_id) end
+                end
+              else
+                # if there are no languages specified for the report
+                # then add the languages of the event
+                if params['event']['languages']
+                  params['event']['languages'].each do |lang_id, value|
+                    if value then report.languages << Language.find(lang_id) end
+                  end
+                end
+              end
       	  	end
       	  end
       	end
