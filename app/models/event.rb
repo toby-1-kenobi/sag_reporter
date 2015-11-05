@@ -11,6 +11,9 @@ class Event < ActiveRecord::Base
   has_many :planning_reports, class_name: "Report"
   has_many :action_points
 
+  validates :event_date, presence: true
+  validates :event_label, presence: true
+
   def self.yes_no_questions(user)
     questions = Hash.new
     Report.categories.each do |key, value|
