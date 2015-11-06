@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151014053813) do
+ActiveRecord::Schema.define(version: 20151106032612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,23 +111,21 @@ ActiveRecord::Schema.define(version: 20151014053813) do
   add_index "geo_states_users", ["user_id", "geo_state_id"], name: "index_geo_states_users_on_user_id_and_geo_state_id", using: :btree
 
   create_table "impact_reports", force: :cascade do |t|
-    t.text     "content",            null: false
+    t.text     "content",       null: false
     t.integer  "reporter_id"
     t.integer  "event_id"
     t.boolean  "mt_society"
     t.boolean  "mt_church"
     t.boolean  "needs_society"
     t.boolean  "needs_church"
-    t.integer  "progress_marker_id"
     t.integer  "state"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.integer  "geo_state_id"
   end
 
   add_index "impact_reports", ["event_id"], name: "index_impact_reports_on_event_id", using: :btree
   add_index "impact_reports", ["geo_state_id"], name: "index_impact_reports_on_geo_state_id", using: :btree
-  add_index "impact_reports", ["progress_marker_id"], name: "index_impact_reports_on_progress_marker_id", using: :btree
   add_index "impact_reports", ["reporter_id"], name: "index_impact_reports_on_reporter_id", using: :btree
 
   create_table "impact_reports_languages", id: false, force: :cascade do |t|
@@ -136,6 +134,14 @@ ActiveRecord::Schema.define(version: 20151014053813) do
   end
 
   add_index "impact_reports_languages", ["impact_report_id", "language_id"], name: "index_impact_reports_languages", unique: true, using: :btree
+
+  create_table "impact_reports_progress_markers", id: false, force: :cascade do |t|
+    t.integer "impact_report_id",   null: false
+    t.integer "progress_marker_id", null: false
+  end
+
+  add_index "impact_reports_progress_markers", ["impact_report_id", "progress_marker_id"], name: "index_impact_reports_progress_markers_on_ir_and_pm", unique: true, using: :btree
+  add_index "impact_reports_progress_markers", ["progress_marker_id", "impact_report_id"], name: "index_impact_reports_progress_markers_on_pm_and_ir", using: :btree
 
   create_table "language_progresses", force: :cascade do |t|
     t.integer  "language_id",        null: false
@@ -410,7 +416,6 @@ ActiveRecord::Schema.define(version: 20151014053813) do
   add_foreign_key "geo_states", "zones"
   add_foreign_key "impact_reports", "events"
   add_foreign_key "impact_reports", "geo_states"
-  add_foreign_key "impact_reports", "progress_markers"
   add_foreign_key "impact_reports", "users", column: "reporter_id"
   add_foreign_key "language_progresses", "languages"
   add_foreign_key "language_progresses", "progress_markers"
