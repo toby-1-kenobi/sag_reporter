@@ -92,22 +92,33 @@ class UsersControllerTest < ActionController::TestCase
         password_confirmation: "PassWord.123",
         role_id: Role.take.id,
         mother_tongue_id: Language.take.id,
-        geo_state_id: GeoState.take.id,
         interface_language_id: languages(:english).id
       }
     end
     assert_response :redirect
   end
 
-  test "wont allow user to change own geo_state" do
+  test "wont allow non-admin user to change own geo_state" do
+    log_in_as(@other_user)
+    _(@other_user.is_an_admin?).must_equal false
+    states = GeoState.take 2
+    @other_user.geo_states << states[0]
+    _(@other_user.geo_states).must_include states[0]
+    patch :update, id: @other_user.id, user: { geo_states: { states[1].id => "1" } }
+    @other_user.reload
+    _(@other_user.geo_states).must_include states[0]
+    _(@other_user.geo_states).wont_include states[1]
+  end
+
+  test "admin user can change own geo_state" do
     log_in_as(@user)
     states = GeoState.take 2
     @user.geo_states << states[0]
     _(@user.geo_states).must_include states[0]
-    patch :update, id: @user.id, user: { geo_states: [states[1].id] }
+    patch :update, id: @user.id, user: { geo_states: { states[1].id => "1" } }
     @user.reload
-    _(@user.geo_states).must_include states[0]
-    _(@user.geo_states).wont_include states[1]
+    _(@user.geo_states).wont_include states[0]
+    _(@user.geo_states).must_include states[1]
   end
 
   test "admin user can change another user's geo_state" do
@@ -115,7 +126,7 @@ class UsersControllerTest < ActionController::TestCase
     states = GeoState.take 2
     @other_user.geo_states << states[0]
     _(@other_user.geo_states).must_include states[0]
-    patch :update, id: @other_user.id, user: { geo_states: [states[1].id], name: "Updated name" }
+    patch :update, id: @other_user.id, user: { geo_states: { states[1].id => "1" }, name: "Updated name" }
     @other_user.reload
     _(@other_user.geo_states).must_include states[1]
     _(@other_user.geo_states).wont_include states[0]

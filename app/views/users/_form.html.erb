@@ -30,7 +30,7 @@
     </div>
 
     <div class="row">
-      <% if !current_user?(@user) %>
+      <% if !current_user?(@user) or current_user.is_an_admin? %>
         <div class="input-field col s12 m6">
           <div>
             <%= render partial: "shared/multiselect", locals: {
