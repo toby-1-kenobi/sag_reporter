@@ -86,30 +86,24 @@ class UsersController < ApplicationController
       else
         params["user"]["speaks"] = []
       end
+      safe_params = [
+        :name,
+        :phone,
+        :password,
+        :password_confirmation,
+        :mother_tongue_id,
+        :interface_language_id,
+        :role_id,
+        {:speaks => []},
+        {:geo_states => []}
+      ]
       # current user cannot change own role or state
       if params[:id] and current_user?(User.find(params[:id]))
-        params.require(:user).permit(
-          :name,
-          :phone,
-          :password,
-          :password_confirmation,
-          :mother_tongue_id,
-          :interface_language_id,
-          :speaks => []
-        )
-      else
-        params.require(:user).permit(
-          :name,
-          :phone,
-          :password,
-          :password_confirmation,
-          :mother_tongue_id,
-          :interface_language_id,
-          :role_id,
-          :speaks => [],
-          :geo_states => []
-        )
+        safe_params.reject!{ |p| p == :role_id }
+        # but admin user can change his own state
+        safe_params.reject!{ |p| p = {:geo_states => []} } unless current_user.is_an_admin?
       end
+      params.require(:user).permit(safe_params)
     end
 
     def assign_for_user_form
