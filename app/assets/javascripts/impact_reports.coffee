@@ -21,5 +21,10 @@ $(document).ready ->
   	  	  $('#report-' + report_id).parents('.report-tagging').addClass('completed').fadeOut()
   	    return
   	return
+
+  $('.card.impact_report').click ->
+    $('.card.impact_report.selected').removeClass('z-depth-1 selected').addClass('z-depth-3')
+    $(this).removeClass('z-depth-3').addClass('z-depth-1 selected')
+    return
   
   return
