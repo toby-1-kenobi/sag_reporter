@@ -56,7 +56,8 @@ class ImpactReportsController < ApplicationController
       # Without a month parameter we use the current month
       @date = Time.now
     end
-  	@reports = ImpactReport.active.select{ |ir| current_user.geo_states.include? ir.geo_state }
+    @date = @date.at_beginning_of_month.to_date
+  	@reports = ImpactReport.active.select{ |ir| current_user.geo_states.include? ir.geo_state and ir.report_date.at_beginning_of_month.to_date == @date }
   	@outcome_areas = Topic.all
   	@progress_markers_by_oa = ProgressMarker.all.group_by{ |pm| pm.topic }
   end
