@@ -1,6 +1,29 @@
 <% provide(:title, 'Tag impact reports') %>
 
 <h1>Tag reports with progress markers</h1>
+<p class="instructions">
+  Choose a month<%= current_user.geo_states.count > 1 ? ", a state" : "" %> and languages to tag reports within.
+</p>
+
+<div class="row">
+  <div class="col s12 m4">
+    <a class='dropdown-button btn' href='#' data-activates='month_dropdown'><%= @date.strftime("%Y %B") %> </a>
+    <ul id='month_dropdown' class='dropdown-content'>
+      <% (6.months.ago.to_date..Date.today).select{ |d| d.day == 1 }.each do |date| %>
+        <li><a href="#!"><%= date.strftime("%Y %B") %></a></li>
+      <% end %>
+    </ul>
+  </div>
+  <% if current_user.geo_states.count > 1 %>
+    <div class="col s12 m4 input field">
+      <select id="geo_state_id" name="geo_state_id">
+        <%= options_from_collection_for_select(current_user.geo_states, 'id', 'name') %>
+      </select>
+      <%= label_tag("geo_state_id", "State") %>
+    </div>
+  <% end %>
+  <div class="col s12 m4"></div>
+</div>
 
 <div class="hide" id="progress-markers-data">
   <% @progress_markers_by_oa.each do |oa, markers| %>
@@ -18,13 +41,7 @@
   <div class="row">
     <% report_group.each do |report| %>
       <div class="col s12 m6 l4 report-tagging">
-        <%= render partial: "impact_reports/report", object: report, locals: {time: true, languages: true, topics: false, wrapper: false} %>
-        <div class="outcome-area-input">
-          <%= select_tag("#{report.id}_oa",  options_from_collection_for_select(@outcome_areas, :id, :name), prompt: "Select outcome area...") %>
-        </div>
-        <div class="progress-marker-input hide">
-          <%= select_tag("#{report.id}_pm",  "", prompt: "First select outcome area") %>
-        </div>
+        <%= render partial: "report_for_tagging", object: report %>
       </div>
     <% end %>
   </div>

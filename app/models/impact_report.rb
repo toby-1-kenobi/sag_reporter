@@ -18,4 +18,8 @@ class ImpactReport < ActiveRecord::Base
     "impact"
   end
 
+  def topic
+    return false
+  end
+
 end

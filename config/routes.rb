@@ -10,7 +10,11 @@ Rails.application.routes.draw do
   end
   resources :impact_reports do
     get 'tag', on: :collection
-    patch 'tag_update', on: :member
+    member do
+      patch 'tag_update'
+      patch 'archive'
+      patch 'unarchive'
+    end
   end
   resources :languages
   resources :people do
