@@ -1,0 +1,27 @@
+<div
+  class="card impact_report <%= report_for_tagging.progress_markers.count == 0 ? "green lighten-3" : "green lighten-1" %>"
+  id="ImpactReport-<%= report_for_tagging.id %>"
+  data-language="<%= report_for_tagging.languages.pluck(:id).join(' ') %>"
+  data-geo-state="<%= report_for_tagging.geo_state.id %>"
+  >
+  <div class="card-content">
+    <p><%= report_for_tagging.content %></p>
+    <% report_for_tagging.progress_markers.each do |pm| %>
+      <div class="progress_marker tooltipped <%= colour_class(pm.topic.colour) %>" data-position="bottom" data-delay="50" data-tooltip="<%= pm.description %>">
+        <%= pm.name %>
+      </div>
+    <% end %>
+  </div>
+  <div class="card-action">
+  <% if current_user.can_archive_report? %>
+    <%= link_to archive_impact_report_path(report_for_tagging), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Archive", method: :patch do %>
+      <i class="material-icons">archive</i>
+    <% end %>
+  <% end %>
+  <% if current_user.can_edit_report? %>
+    <%= link_to edit_impact_report_path(report_for_tagging), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
+      <i class="material-icons">edit</i>
+    <% end %>
+  <% end %>
+  </div>
+</div>

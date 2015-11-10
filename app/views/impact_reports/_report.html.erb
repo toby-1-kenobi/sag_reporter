@@ -30,11 +30,11 @@
   <div class="card-action">
   <% if current_user.can_archive_report? %>
     <% if report.archived? %>
-  	  <%= link_to unarchive_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Un-Archive", method: :patch do %>
+  	  <%= link_to unarchive_impact_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Un-Archive", method: :patch do %>
   	    <i class="material-icons">publish</i>
       <% end %>
     <% else %>
-  	  <%= link_to archive_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Archive", method: :patch do %>
+  	  <%= link_to archive_impact_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Archive", method: :patch do %>
   	    <i class="material-icons">archive</i>
       <% end %>
     <% end %>

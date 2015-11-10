@@ -32,5 +32,17 @@ module ReportsHelper
   		'impact' => 'Impact'
   	}
   end
+  
+  
+  # Redirects to recent view (or to the default).
+  def redirect_recent_or(default)
+    redirect_to(session[:report_recent_view] || default)
+    session.delete(:report_recent_view)
+  end
+
+  # Store which is the recent view in the session
+  def recent_view
+    session[:report_recent_view] = request.url if request.get?
+  end
 
 end

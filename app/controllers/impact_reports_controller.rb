@@ -30,8 +30,33 @@ class ImpactReportsController < ApplicationController
     end
   end
 
+  def archive
+    @report = ImpactReport.find(params[:id])
+    @report.archived!
+    redirect_back_or root_path
+  end
+
+  def unarchive
+    @report = ImpactReport.find(params[:id])
+    @report.active!
+    redirect_back_or root_path
+  end
+
   def tag
-  	@reports = ImpactReport.where(progress_marker: nil).select{ |ir| ir.geo_state == current_user.geo_state }
+    store_location
+    if params[:month]
+      # If the month is later than current month, it must be refering to last year
+      # Future dates dont make sense here
+      if params[:month].to_i > Time.now.month
+        @date = Time.new(Time.now.year - 1, params[:month])
+      else
+        @date = Time.new(Time.now.year, params[:month])
+      end
+    else
+      # Without a month parameter we use the current month
+      @date = Time.now
+    end
+  	@reports = ImpactReport.active.select{ |ir| current_user.geo_states.include? ir.geo_state }
   	@outcome_areas = Topic.all
   	@progress_markers_by_oa = ProgressMarker.all.group_by{ |pm| pm.topic }
   end
