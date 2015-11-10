@@ -10,7 +10,7 @@
     <a class='dropdown-button btn' href='#' data-activates='month_dropdown'><%= @date.strftime("%Y %B") %> </a>
     <ul id='month_dropdown' class='dropdown-content'>
       <% (6.months.ago.to_date..Date.today).select{ |d| d.day == 1 }.each do |date| %>
-        <li><a href="#!"><%= date.strftime("%Y %B") %></a></li>
+        <li><%= link_to date.strftime("%Y %B"), tag_month_impact_reports_path(date.month) %></li>
       <% end %>
     </ul>
   </div>

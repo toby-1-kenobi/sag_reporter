@@ -9,6 +9,10 @@ Rails.application.routes.draw do
     get :autocomplete_person_name, :on => :collection
   end
   resources :impact_reports do
+    collection do
+      get 'tag'
+      get 'tag/:month', to: 'impact_reports#tag', as: 'tag_month'
+    end
     get 'tag', on: :collection
     member do
       patch 'tag_update'
