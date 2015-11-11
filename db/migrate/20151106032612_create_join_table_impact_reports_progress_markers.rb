@@ -22,7 +22,7 @@ class CreateJoinTableImpactReportsProgressMarkers < ActiveRecord::Migration
         SELECT DISTINCT ON (impact_report_id) impact_report_id, impact_reports_progress_markers.progress_marker_id
         FROM impact_reports_progress_markers
       ) AS impact_reports_progress_markers_one_pm
-      WHERE impact_reports.id = impact_reports_progress_markers_one_pm.impact_reports_id
+      WHERE impact_reports.id = impact_reports_progress_markers_one_pm.impact_report_id
     SQL
     drop_table :impact_reports_progress_markers
   end
