@@ -30,7 +30,20 @@ class ImpactReportsController < ApplicationController
     end
   end
 
+  def archive
+    report = ImpactReport.find(params[:id])
+    report.archived!
+    redirect_back_or root_path
+  end
+
+  def unarchive
+    report = ImpactReport.find(params[:id])
+    report.active!
+    redirect_back_or report
+  end
+
   def tag
+    store_location
   	@reports = ImpactReport.where(progress_marker: nil).select{ |ir| ir.geo_state == current_user.geo_state }
   	@outcome_areas = Topic.all
   	@progress_markers_by_oa = ProgressMarker.all.group_by{ |pm| pm.topic }
