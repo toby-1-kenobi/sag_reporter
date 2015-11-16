@@ -44,7 +44,7 @@ class ImpactReportsController < ApplicationController
 
   def tag
     store_location
-  	@reports = ImpactReport.where(progress_marker: nil).select{ |ir| ir.geo_state == current_user.geo_state }
+  	@reports = ImpactReport.active.where(progress_marker: nil).select{ |ir| ir.geo_state == current_user.geo_state }
   	@outcome_areas = Topic.all
   	@progress_markers_by_oa = ProgressMarker.all.group_by{ |pm| pm.topic }
   end
