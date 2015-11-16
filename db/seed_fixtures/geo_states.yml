@@ -51,7 +51,7 @@ bihar:
   name: Bihar
   zone: hindi_zone
   languages: english, angika, bhojpuri, magahi, maithili, surjapuri, panchpargania, vajjika,
-    santali, kortha, degaru, domari, musaha, tharu_chitw, tharu_koch, sadri
+    santali, kortha, degaru, domari, musaha, tharu_chitw, tharu_koch, sadri, kurux
 
 up:
   name: Uttar Pradesh
