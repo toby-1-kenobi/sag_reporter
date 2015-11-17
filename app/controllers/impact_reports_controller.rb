@@ -8,7 +8,8 @@ class ImpactReportsController < ApplicationController
 
   def edit
     @report = ImpactReport.find(params[:id])
-    @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+    @geo_states = @report.available_geo_states(current_user)
+    @minority_languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
     @topics = Topic.all
   end
 

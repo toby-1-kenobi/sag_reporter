@@ -5,7 +5,7 @@
           
           <% collection.each do |item| %>
             <div 
-                class="<%= attribute %>-option"
+                class="<%= attribute %>-option <%= local_assigns[:element_class].presence ? element_class : '' %>"
                 id="<%= object %>-<%= attribute %>-<%= item.id.to_s %>"
                 <% if local_assigns[:data].presence %>
                   data="<%= item.send(data) %>"
