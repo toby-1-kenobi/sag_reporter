@@ -16,13 +16,25 @@
   </div>
   <% if current_user.geo_states.count > 1 %>
     <div class="col s12 m4 input field">
-      <select id="geo_state_id" name="geo_state_id">
+      <select id="geo_state_id" name="geo_state_id" class="filter_trigger">
         <%= options_from_collection_for_select(current_user.geo_states, 'id', 'name') %>
       </select>
       <%= label_tag("geo_state_id", "State") %>
     </div>
   <% end %>
-  <div class="col s12 m4"></div>
+  <div class="col s12 m4">
+    <%= render partial: "shared/multiselect", locals: {
+      text: "languages…",
+      icon: "language",
+      object: "language",
+      attribute: "selected",
+      display: :name,
+      data: :geo_state_ids_str,
+      element_class: "filterable_item",
+      collection: @languages,
+      selected: @languages
+    } %>
+  </div>
 </div>
 
 <div class="hide" id="progress-markers-data">

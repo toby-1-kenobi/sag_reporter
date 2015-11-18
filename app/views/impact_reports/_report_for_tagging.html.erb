@@ -5,7 +5,7 @@
   data-geo-state="<%= report_for_tagging.geo_state.id %>"
   >
   <div class="card-content">
-    <p><%= report_for_tagging.report_date.strftime("%Y %B") %></p>
+    <p><%= report_for_tagging.report_date.strftime("%Y %B") %> <%= report_for_tagging.geo_state.name %></p>
     <% report_for_tagging.progress_markers.each do |pm| %>
       <div class="progress_marker tooltipped <%= colour_class(pm.topic.colour) %>" data-position="bottom" data-delay="50" data-tooltip="<%= pm.description %>">
         <%= pm.name %>
