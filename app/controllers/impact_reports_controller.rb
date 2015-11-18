@@ -8,7 +8,8 @@ class ImpactReportsController < ApplicationController
 
   def edit
     @report = ImpactReport.find(params[:id])
-    @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+    @geo_states = @report.available_geo_states(current_user)
+    @minority_languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
     @topics = Topic.all
   end
 
@@ -31,15 +32,15 @@ class ImpactReportsController < ApplicationController
   end
 
   def archive
-    @report = ImpactReport.find(params[:id])
-    @report.archived!
+    report = ImpactReport.find(params[:id])
+    report.archived!
     redirect_back_or root_path
   end
 
   def unarchive
-    @report = ImpactReport.find(params[:id])
-    @report.active!
-    redirect_back_or root_path
+    report = ImpactReport.find(params[:id])
+    report.active!
+    redirect_back_or report
   end
 
   def tag

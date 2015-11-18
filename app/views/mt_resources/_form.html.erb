@@ -5,7 +5,7 @@
 
       <div class="row">
         <div class="col s12 m6 l4 offset-m6 offset-l8 input-field">
-          <%= render partial: "shared/geo_state_input", locals: {object: "mt_resource"} %>
+          <%= render partial: "shared/geo_state_input", locals: {object: "mt_resource", input_class: "filter_trigger"} %>
         </div>
       </div>
 
@@ -39,7 +39,7 @@
   </div>
 
   <div class="row">
-    <div class="col s12 m6 input-field">
+    <div class="col s12 m6 input-field" id="language-input">
       <%= f.collection_select(:language_id, @languages, :id, :name) %>
       <%= f.label(:language_id) %>
     </div>

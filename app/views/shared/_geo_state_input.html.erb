@@ -1,12 +1,21 @@
 <% 
-# Editing an object, we want to leave open the option of reassigning
-# The geo_state it already has, even if the user is not in that state.
-# So we add that state to the list of the states from the user
-# must convert them to an array to avoid putting the user into that geo_state
-geo_states = current_user.geo_states.to_a
-if defined? form and form.object.geo_state
-  geo_states << form.object.geo_state
-  geo_states.uniq!
+if @geo_states
+  geo_states = @geo_states
+else
+  # Editing an object, we want to leave open the option of reassigning
+  # The geo_state it already has, even if the user is not in that state.
+  # So we add that state to the list of the states from the user
+  # must convert them to an array to avoid putting the user into that geo_state
+  geo_states =  current_user.geo_states.to_a
+  if defined? form and form.object.geo_state
+    geo_states << form.object.geo_state
+    geo_states.uniq!
+  end
+end
+
+html_options = Hash.new
+if local_assigns[:input_class].presence
+  html_options[:class] = input_class
 end
 
 # If there's only one state it should be a hidden field, the user has no option.
@@ -18,10 +27,10 @@ if geo_states.length == 1
   <% end
 else
   if defined? form %>
-    <%= form.collection_select(:geo_state_id, geo_states, :id, :name) %>
+    <%= form.collection_select(:geo_state_id, geo_states, :id, :name, {}, html_options) %>
     <%= form.label(:geo_state_id, "State") %>
   <% else %>
-    <%= collection_select(object, :geo_state_id, geo_states, :id, :name) %>
+    <%= collection_select(object, :geo_state_id, geo_states, :id, :name, {}, html_options) %>
     <%= label_tag(:geo_state_id, "State") %>
   <% end %>
 <% end %>
