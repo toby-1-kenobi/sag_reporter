@@ -67,7 +67,8 @@ haryana:
 hp:
   name: Himachal Pradesh
   zone: north_west
-  languages: english
+  languages: english, kulluvi, mandeali, pahari_mahasui, chambeali, dogri, hariyanvi, garhwali,
+    kangri
 
 jammu_kashmir:
   name: Jammu and Kashmir
