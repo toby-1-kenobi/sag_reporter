@@ -6,7 +6,7 @@
 
     <div class="row">
       <div class="col s12 m6 l4 offset-m6 offset-l8 input-field">
-        <%= render partial: "shared/geo_state_input", locals: {object: "report"} %>
+        <%= render partial: "shared/geo_state_input", locals: {object: "report", input_class: 'filter_trigger'} %>
       </div>
     </div>
 
@@ -54,6 +54,8 @@
               object: "report",
               attribute: "languages",
               display: :name,
+              element_class: "filterable_item",
+              data: :geo_state_ids_str,
               collection: @minority_languages,
               selected: Hash.new
         } %>
