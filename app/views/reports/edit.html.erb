@@ -5,7 +5,7 @@
     <%= render 'shared/error_messages', object: f.object %>
     <div class="row">
       <div class="input-field col s12 m6">
-        <%= render partial: "shared/geo_state_input", locals: {object: "report"} %>
+        <%= render partial: "shared/geo_state_input", locals: {object: "report", input_class: 'filter_trigger'} %>
       </div>
       <div class="input-field col s12 m6">
         <% if current_user.can_archive_report? %>
@@ -26,15 +26,17 @@
     </div>
     <div class="row">
       <div class="input-field col s6">
-        <a class='dropdown-button btn-flat' href='#' data-activates='languages_dropdown' data-hover="true">Relates to languages...</a>
-        <ul id='languages_dropdown' class='dropdown-content'>
-          <% @minority_languages.each do |lang| %>
-            <li>
-              <%= check_box_tag('report[languages][' + lang.id.to_s + ']', 1, @report.languages.include?(lang)) %>
-              <%= label_tag('report[languages][' + lang.id.to_s + ']', lang.name) %>
-            </li>
-          <% end %>
-        </ul>
+        <%= render partial: "shared/multiselect", locals: {
+          text: "Relates to languages…",
+          icon: "language",
+          object: "report",
+          attribute: "languages",
+          display: :name,
+          element_class: "filterable_item",
+          data: :geo_state_ids_str,
+          collection: @minority_languages,
+          selected: @report.languages
+        } %>
       </div>
       <div class="input-field col s6">
         <a class='dropdown-button btn-flat' href='#' data-activates='topics_dropdown' data-hover="true">Relates to topics...</a>

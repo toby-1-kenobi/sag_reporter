@@ -6,7 +6,7 @@
 
     <div class="row">
       <div class="col s12 m6 l4 offset-m6 offset-l8 input-field">
-        <%= render partial: "shared/geo_state_input", locals: {form: f} %>
+        <%= render partial: "shared/geo_state_input", locals: {form: f, input_class: 'filter_trigger'} %>
       </div>
     </div>
 
@@ -59,6 +59,8 @@
             	object: "event",
             	attribute: "languages",
               display: :name,
+              element_class: "filterable_item",
+              data: :geo_state_ids_str,
             	collection: @minority_languages,
             	selected: @event.languages
             } %>
@@ -134,6 +136,8 @@
                   object: code + '-lang__0',
                   attribute: "languages",
                   display: :name,
+                  element_class: "filterable_item",
+                  data: :geo_state_ids_str,
                   collection: @minority_languages,
                   selected: Hash.new
                 } %>
