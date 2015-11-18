@@ -2,7 +2,17 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+state_select = ->
+  state_id = $('#geo_state_id').val()
+  $('.card.impact_report').addClass 'wrong-state'
+  $('.card.impact_report[data-geo-state="' + state_id + '"]').removeClass 'wrong-state'
+  $('.card.impact_report').removeClass 'hide'
+  $('.card.impact_report.wrong-state').addClass 'hide'
+  return
+
 $(document).ready ->
+
+  state_select()
   
   $('.outcome-area-input select').change ->
   	if $(this).val().length > 0
@@ -26,5 +36,7 @@ $(document).ready ->
     $('.card.impact_report.selected').removeClass('z-depth-1 selected').addClass('z-depth-3')
     $(this).removeClass('z-depth-3').addClass('z-depth-1 selected')
     return
+
+  $('#geo_state_id').on 'change', state_select
   
   return

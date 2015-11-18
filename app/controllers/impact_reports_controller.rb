@@ -61,6 +61,7 @@ class ImpactReportsController < ApplicationController
   	@reports = ImpactReport.active.select{ |ir| current_user.geo_states.include? ir.geo_state and ir.report_date.at_beginning_of_month.to_date == @date }
   	@outcome_areas = Topic.all
   	@progress_markers_by_oa = ProgressMarker.all.group_by{ |pm| pm.topic }
+    @languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
   end
 
   def tag_update
