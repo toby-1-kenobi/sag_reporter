@@ -11,6 +11,9 @@ class Report < ActiveRecord::Base
 
 	validates :content, presence: true, allow_nil: false
 	validates :reporter, presence: true, allow_nil: false
+  validates :state, presence: true, allow_nil: false
+
+  after_initialize :state_init
 
   def self.categories
     {
@@ -28,5 +31,11 @@ class Report < ActiveRecord::Base
   def report_type
     "planning"
   end
+
+  private
+
+    def state_init
+      self.state ||= :active
+    end
 
 end
