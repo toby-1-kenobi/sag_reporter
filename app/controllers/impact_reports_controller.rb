@@ -66,13 +66,27 @@ class ImpactReportsController < ApplicationController
 
   def tag_update
   	report = ImpactReport.find(params[:id])
-  	progress_marker = ProgressMarker.find(params[:pm_id])
-  	report.progress_marker = progress_marker
-  	if report.save
-  	  render text: "success report: #{params[:id]} pm: #{params[:pm_id]}"
-  	else
-  	  render text: "fail report: #{params[:id]} pm: #{params[:pm_id]}"
-  	end
+    report.progress_markers.clear
+    if params[:pm_ids] and params[:pm_ids].count > 0
+    	params[:pm_ids].each do |pm_id|
+        report.progress_markers << ProgressMarker.find(pm_id)
+      end
+    end
+    # send all the necessary data back to the client js
+    # so it can adjust the dom to reflect the changes
+    # (this is probably not the best way to do this)
+    return_data = Array.new
+  	report.progress_markers.each do |pm|
+      #return_data.push "#{pm.id}_#{pm.name}_#{pm.description}_#{pm.topic.colour}"
+      pm_hash = {
+        id: pm.id,
+        name: pm.name,
+        description: pm.description,
+        colour: pm.topic.colour
+      }
+      return_data.push pm_hash.to_json
+    end
+    render json: return_data
   end
 
     private
