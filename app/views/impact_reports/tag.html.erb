@@ -37,18 +37,6 @@
   </div>
 </div>
 
-<div class="hide" id="progress-markers-data">
-  <% @progress_markers_by_oa.each do |oa, markers| %>
-    <div id="<%= oa.id %>-data">
-      <option value="">Select progress marker...</option>
-      <% markers.each do |marker| %>
-        <!--option class="tooltipped" data-position="right" data-delay="50" data-tooltip="<%= marker.description %>" value="<%= marker.id %>"><%= marker.name %></option-->
-        <option value="<%= marker.id %>"><%= marker.description %></option>
-      <% end %>
-    </div>
-  <% end %>
-</div>
-
 <% @reports.in_groups_of(3, false) do |report_group| %>
   <div class="row">
     <% report_group.each do |report| %>
@@ -58,3 +46,31 @@
     <% end %>
   </div>
 <% end %>
+
+<div id="pm-modal" class="modal bottom-sheet">
+  <div class="container">
+    <p class="report-content"></p>
+    <ul class="collapsible" data-collapsible="accordion">
+      <% @progress_markers_by_oa.each do |oa, markers| %>
+        <li id="<%= oa.id %>-progress-markers">
+          <div class="collapsible-header <%= oa.colour %>"><%= oa.name %></div>
+          <div class="collapsible-body <%= oa.colour %>">
+            <div class="row">
+              <% ProgressMarker.weight_text.each do |weight, weight_text| %>
+                <div class="col s12 m4">
+                  <p><%= weight_text %></p>
+                  <% markers.select{ |m| m.weight == weight }.each do |marker| %>
+                    <div>
+                      <%= check_box_tag("pm-#{marker.id.to_s}", 1) %>
+                      <%= label_tag("pm-#{marker.id.to_s}", marker.description, class: "black-text") %>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
