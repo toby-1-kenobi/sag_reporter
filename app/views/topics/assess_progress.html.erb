@@ -28,7 +28,7 @@
           <% progress_marker_group.each do |progress_marker| %>
             <li class="progress-marker">
               <div class="collapsible-header tooltipped" data-tooltip="<%= progress_marker.description %>"><%= progress_marker.name %>
-              <span class="right report-count"><%= @reports_by_progress_marker[progress_marker.id] ? @reports_by_progress_marker[progress_marker.id].count : 0 %></span>
+              <span class="right report-count"><%= @reports.select{ |r| r.progress_markers.include?(progress_marker) }.count %></span>
               </div>
               <div class="collapsible-body">
 
@@ -53,8 +53,8 @@
                   </div>
                 </div>
                 
-                <% if @reports_by_progress_marker[progress_marker.id] %>
-                  <% @reports_by_progress_marker[progress_marker.id].in_groups_of(3, false) do |report_group| %>
+                <% if @reports.select{ |r| r.progress_markers.include?(progress_marker) }.count > 0 %>
+                  <% @reports.select{ |r| r.progress_markers.include?(progress_marker) }.in_groups_of(3, false) do |report_group| %>
           				  <div class="row">
           				    <% report_group.each do |report| %>
           				      <div class="col s12 m6 l4">
