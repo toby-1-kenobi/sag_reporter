@@ -12,8 +12,12 @@ div.impact_report {
         @include border-radius(4px);
         display: inline-block;
         padding: 5px;
-        margin: 5px;
+        margin: 3px;
       }
+    }
+    .progress_marker {
+      padding: 3px;
+      margin: 2px;
     }
   }
 }

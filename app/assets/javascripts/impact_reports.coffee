@@ -31,6 +31,11 @@ $(document).ready ->
     ready: ->
       content = $('.card.impact_report.for-tagging.selected .report-content').text()
       $('#pm-modal .report-content').text content
+      # check the progress markers that already belong to the selected report
+      $('#pm-modal input:checkbox').prop 'checked', false
+      jQuery.each $('.card.impact_report.for-tagging.selected').attr('data-pm').split(' '), (index, pm_id) ->
+        $('#pm-modal input:checkbox#pm-' + pm_id).prop 'checked', true
+        return
       return
   })
 
