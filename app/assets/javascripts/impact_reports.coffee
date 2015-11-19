@@ -2,17 +2,30 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-state_select = ->
+filter_impact_reports = ->
+
+  # mark the cards that aren't in the selected geo_state
   state_id = $('#geo_state_id').val()
   $('.card.impact_report').addClass 'wrong-state'
   $('.card.impact_report[data-geo-state="' + state_id + '"]').removeClass 'wrong-state'
+
+  # mark the cards that aren't in one of the selected languages.
+  $('.card.impact_report').addClass 'wrong-language'
+  $('#language-selected-dropdown input:checkbox:checked').each ->
+    lang_id = $(this).attr('id').split('_').pop()
+    $('.card.impact_report[data-language~="' + lang_id + '"]').removeClass 'wrong-language'
+    return
+
+  # Hide the marked cards
   $('.card.impact_report').removeClass 'hide'
   $('.card.impact_report.wrong-state').addClass 'hide'
+  $('.card.impact_report.wrong-language').addClass 'hide'
+
   return
 
 $(document).ready ->
 
-  state_select()
+  filter_impact_reports()
   
   $('.outcome-area-input select').change ->
   	if $(this).val().length > 0
@@ -37,6 +50,7 @@ $(document).ready ->
     $(this).removeClass('z-depth-3').addClass('z-depth-1 selected')
     return
 
-  $('#geo_state_id').on 'change', state_select
+  $('#geo_state_id').on 'change', filter_impact_reports
+  $('#language-selected-dropdown input').on 'change', filter_impact_reports
   
   return

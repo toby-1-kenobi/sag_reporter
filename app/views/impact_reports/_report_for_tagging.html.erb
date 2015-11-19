@@ -5,12 +5,17 @@
   data-geo-state="<%= report_for_tagging.geo_state.id %>"
   >
   <div class="card-content">
-    <p><%= report_for_tagging.report_date.strftime("%Y %B") %> <%= report_for_tagging.geo_state.name %></p>
+    <p><%= report_for_tagging.content %></p>
     <% report_for_tagging.progress_markers.each do |pm| %>
       <div class="progress_marker tooltipped <%= colour_class(pm.topic.colour) %>" data-position="bottom" data-delay="50" data-tooltip="<%= pm.description %>">
         <%= pm.name %>
       </div>
     <% end %>
+    <div class="report-languages">
+      <% report_for_tagging.languages.each do |language| %>
+        <div class="<%= colour_class(language.colour) %>"><%= language.name %></div>
+      <% end %>
+    </div>
   </div>
   <div class="card-action">
   <% if current_user.can_archive_report? %>
