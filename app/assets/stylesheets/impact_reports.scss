@@ -1,3 +1,19 @@
 // Place all the styles related to the ImpactReports controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import 'common';
+
+div.impact_report {
+  .card-content {
+    .report-languages {
+      div {
+        @include box_sizing;
+        @include border-radius(4px);
+        display: inline-block;
+        padding: 5px;
+        margin: 5px;
+      }
+    }
+  }
+}
