@@ -64,9 +64,9 @@ class TopicsController < ApplicationController
     @progress_markers_by_weight = ProgressMarker.where(topic: @outcome_area).group_by { |pm| pm.weight }
     @language = Language.find(params[:language_id])
     @geo_state_id = params[:geo_state_id]
-    @reports_by_progress_marker = ImpactReport.where(geo_state_id: @geo_state_id).joins(:progress_marker, :languages).where("progress_markers.topic_id" => @outcome_area, "languages.id" => @language).select{ |ir| ir.report_date >= 1.year.ago }.group_by{ |ir| ir.progress_marker_id }
+    @reports = ImpactReport.active.where(geo_state_id: @geo_state_id).joins(:progress_markers, :languages).where("progress_markers.topic_id" => @outcome_area, "languages.id" => @language).select{ |ir| ir.report_date >= 1.year.ago }.uniq
     #TODO: check that the language belongs to the geo_state and return to assess_progress_select if its not
-  end
+  end 
 
   def update_progress
     outcome_area = Topic.find(params[:topic_id])
