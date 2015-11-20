@@ -62,6 +62,7 @@ class ImpactReportsController < ApplicationController
   	@outcome_areas = Topic.all
   	@progress_markers_by_oa = ProgressMarker.all.group_by{ |pm| pm.topic }
     @languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+    @ajax_url = url_for controller: 'impact_reports', action: 'tag_update', id: 'report_id'
   end
 
   def tag_update

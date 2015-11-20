@@ -1,5 +1,7 @@
 <% provide(:title, 'Tag impact reports') %>
 
+<p class="hide" id="ajax-path"><%= @ajax_url %></p>
+
 <h1>Tag reports with progress markers</h1>
 <p class="instructions">
   Choose a month<%= current_user.geo_states.count > 1 ? ", a state" : "" %> and languages to tag reports within.
