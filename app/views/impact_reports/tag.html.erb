@@ -23,6 +23,8 @@
       </select>
       <%= label_tag("geo_state_id", "State") %>
     </div>
+  <% else %>
+    <%= hidden_field_tag("geo_state_id", current_user.geo_states.first.id, id: "geo_state_id") %>
   <% end %>
   <div class="col s12 m4">
     <%= render partial: "shared/multiselect", locals: {
