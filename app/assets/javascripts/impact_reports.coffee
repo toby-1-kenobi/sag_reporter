@@ -51,7 +51,8 @@ $(document).ready ->
 
       # update the actual report
       report_id = $('.card.impact_report.for-tagging.selected').attr('id').split('-').pop()
-      jQuery.post report_id + '/tag_update', { _method: "patch", pm_ids: pms }, (data) ->
+      ajax_url = $('#ajax-path').text().replace('report_id', report_id)
+      jQuery.post ajax_url, { _method: "patch", pm_ids: pms }, (data) ->
         # we receive back a collection of the reports new PMs
         new_pm_ids = []
         $('.card.impact_report.for-tagging.selected .progress_markers').empty()
