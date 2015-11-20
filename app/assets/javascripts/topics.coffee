@@ -33,9 +33,11 @@ $(document).ready ->
   $('.activity-level-select').on 'change', ->
     spreadText = $('#pm-data #spread-' + $(this).val()).attr('label')
     $(this).parents('.progress-marker').find('.spreadness-text').html(spreadText)
+    $(this).parents('.progress-marker').find('input:checkbox[name^="marker_complete"]').prop 'checked', true
     return
 
   $('.activity-level-select').trigger 'change'
+  $('input:checkbox[name^="marker_complete"]').prop 'checked', false
 
   $('.month-select select').on 'change', ->
     month = $(this).val()
