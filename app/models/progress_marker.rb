@@ -26,8 +26,8 @@ class ProgressMarker < ActiveRecord::Base
     language_progresses.select{ |lp| lp.language == language }.first or LanguageProgress.create(progress_marker: self, language: language)
   end
 
-  def current_progress(language)
-    language_progress(language).current_value
+  def current_progress(language, geo_state = nil)
+    language_progress(language).current_value(geo_state)
   end
 
 end

@@ -16,7 +16,7 @@ class LanguageProgress < ActiveRecord::Base
 
   def current_value(geo_state = nil)
     if geo_state
-      progress_updates.empty? ? 0 : progress_updates.where(geo_state: geo_state).order("created_at").last.progress
+      progress_updates.where(geo_state: geo_state).empty? ? 0 : progress_updates.where(geo_state: geo_state).order("created_at").last.progress
     else
       # This gives you the latest update across the whole language
       # I don't think it's very useful since all updates are by state
