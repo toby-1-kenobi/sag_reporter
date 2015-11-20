@@ -7,7 +7,7 @@
 </datalist>
 
 <%= form_tag({controller: "topics", action: "update_progress"}, method: "post") do %>
-<%= hidden_field_tag("geo_state_id", @geo_state_id) %>
+<%= hidden_field_tag("geo_state_id", @geo_state.id) %>
 <div class="row">
   <div class="col s12 m6 l5">
   	<%= render partial: 'topic', object: @outcome_area %>
@@ -41,7 +41,7 @@
                     <div class="row">
                       <div class="col s6 range-field">
                         <%= label_tag("progress_marker_#{progress_marker.id}", "Asses the level of activity this month for #{@language.name}") %>
-                      	<%= range_field('progress_marker', progress_marker.id, in: ProgressMarker.spread_text.keys, list: "pm-data", value: progress_marker.current_progress(@language), class: "activity-level-select") %>
+                      	<%= range_field('progress_marker', progress_marker.id, in: ProgressMarker.spread_text.keys, list: "pm-data", value: progress_marker.current_progress(@language, @geo_state), class: "activity-level-select") %>
                       </div>
                       <div class="input-field col s6">
                         <div class="spreadness-text"></div>
