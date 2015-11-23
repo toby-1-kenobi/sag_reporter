@@ -2,6 +2,14 @@ class ImpactReportsController < ApplicationController
 
   before_action :require_login
 
+  def index
+    store_location
+    @geo_states = current_user.geo_states
+    @zones = Zone.of_states(@geo_states)
+    @languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
+    @reports = ImpactReport.where(geo_state: @geo_states)
+  end
+
   def show
   	@report = ImpactReport.find(params[:id])
   end

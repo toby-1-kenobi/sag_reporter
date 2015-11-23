@@ -88,5 +88,4 @@ impact-report-santali-sd-<%= index %>:
   mt_church: <%= bools.sample %>
   needs_society: <%= bools.sample %>
   needs_church: <%= bools.sample %>
-  progress_marker: <%= sd_progress_markers.sample %>
 <% end %>
