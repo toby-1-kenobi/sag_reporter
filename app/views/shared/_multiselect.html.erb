@@ -1,19 +1,33 @@
-        <a class='dropdown-button btn-flat' href='#' data-activates='<%= object %>-<%= attribute %>-dropdown' data-hover="true">
-        <i class="material-icons left"><%= icon %></i>
-        <%= text %></a>
-        <div id='<%= object %>-<%= attribute %>-dropdown' class='dropdown-content'>
-          
-          <% collection.each do |item| %>
-            <div 
-                class="<%= attribute %>-option <%= local_assigns[:element_class].presence ? element_class : '' %>"
-                id="<%= object %>-<%= attribute %>-<%= item.id.to_s %>"
-                <% if local_assigns[:data].presence %>
-                  data="<%= item.send(data) %>"
-                <% end %>
-            >
-              <%= check_box_tag("#{object}[#{attribute}][#{item.id.to_s}]", 1, selected.include?(item)) %>
-              <%= label_tag("#{object}[#{attribute}][#{item.id.to_s}]", item.send(display)) %>
-            </div>
-          <% end %>
-          
-        </div>
+<%
+if !defined? element_options
+  element_options = {class: "#{attribute}-option"}
+else
+  element_options[:class] = [element_options[:class], "#{attribute}-option"].join ' '
+end
+if defined? element_class
+  element_options[:class] = [element_options[:class], element_class].join ' '
+end
+# if someone has put an id into the element options
+# we don't want to use it.
+element_options.delete :id
+element_options.delete "id"
+%>
+<a class='dropdown-button btn-flat' href='#' data-activates='<%= object %>-<%= attribute %>-dropdown' data-hover="true">
+<i class="material-icons left"><%= icon %></i>
+<%= text %></a>
+<div id='<%= object %>-<%= attribute %>-dropdown' class='dropdown-content'>
+  
+  <% collection.each do |item| %>
+    <div 
+        <%= element_options.map{ |key, value| "#{key.to_s}=\"#{value.to_s}\"" }.join(' ').html_safe %>
+        id="<%= object %>-<%= attribute %>-<%= item.id.to_s %>"
+        <% if local_assigns[:data].presence %>
+          data="<%= item.send(data) %>"
+        <% end %>
+    >
+      <%= check_box_tag("#{object}[#{attribute}][#{item.id.to_s}]", item.id.to_s, selected.include?(item), local_assigns[:check_box_options].presence ? check_box_options : {}) %>
+      <%= label_tag("#{object}[#{attribute}][#{item.id.to_s}]", item.send(display)) %>
+    </div>
+  <% end %>
+  
+</div>

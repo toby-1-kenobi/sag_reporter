@@ -1,0 +1,54 @@
+<% provide(:title, 'Impact Reports') %>
+<h1>Impact Reports</h1>
+<div class="row controls">
+  <% if @zones.count > 1 %>
+    <div class="col l4 m6 s12 input-field">
+      <%= render partial: "shared/multiselect", locals: {
+        text: "zones…",
+        icon: "language",
+        object: "controls",
+        attribute: "zone",
+        display: :name,
+        collection: @zones,
+        selected: @zones,
+        check_box_options: {class: "filter-trigger", "filter-trigger-label" => "zone"}
+      } %>
+    </div>
+  <% end %>
+  <% if @geo_states.count > 1 %>
+    <div class="col l4 m6 s12 input-field">
+      <%= render partial: "shared/multiselect", locals: {
+        text: "states…",
+        icon: "language",
+        object: "controls",
+        attribute: "geo_state",
+        display: :name,
+        data: 'zone_id',
+        element_options: {class: "filterable_item", "filter-label" => "zone"},
+        collection: @geo_states,
+        selected: @geo_states,
+        check_box_options: {class: "filter-trigger", "filter-trigger-label" => "state"}
+      } %>
+    </div>
+  <% end %>
+  <div class="col l4 m6 s12 input-field">
+    <%= render partial: "shared/multiselect", locals: {
+      text: "languages…",
+      icon: "language",
+      object: "controls",
+      attribute: "language",
+      display: :name,
+      data: :geo_state_ids_str,
+      element_options: {class: "filterable_item", "filter-label" => "state"},
+      collection: @languages,
+      selected: @languages
+    } %>
+  </div>
+  <div class="col l4 m6 s12 input-field">
+    <%= check_box_tag :show_archived %>
+    <%= label_tag :show_archived, "Show archived reports" %>
+  </div>
+</div>
+<div class="row">
+  <%= render partial: "report", collection: @reports, locals: {time: false, languages: true, topics: true, wrapper: "col s12 m6 l4"} %>
+</div>
