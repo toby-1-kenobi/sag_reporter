@@ -5,6 +5,14 @@
 # and a data attribute with a comma-seperate list of identifiers
 # that match potential filter values.
 
+checkRefilter = (refilter, element) ->
+  if element.hasClass 'filter-trigger'
+    label = element.attr 'data-filter-trigger-label'
+    if !label
+      label = "<global>"
+    refilter[label] = element
+  return
+
 applyFilter = (filterValues, filterLabel) ->
   if filterLabel
     filterableItems = $('.filterable-item[data-filter-label*=' + filterLabel + ']')
@@ -34,17 +42,42 @@ applyFilter = (filterValues, filterLabel) ->
   filterableItems.addClass 'hide'
   filterableItems.not('[class*="filter-out"]').removeClass 'hide'
 
+  # We're going to uncheck and check some checkboxes
+  # so we need to refilter after that
+  # store the checkbox to refilter by here
+  # use association because we only need to do it once for each label
+  refilter = {}
+
   # if we've hidden any checked checkboxes they should be unchecked
   $('input:checkbox:checked.filterable-item.hide').each ->
     $(this).prop 'checked', false
-    if $(this).hasClass('filter-trigger')
-      $(this).trigger 'change'
+    $(this).addClass 'was-checked'
+    checkRefilter refilter, $(this)
     return
   $('.filterable-item.hide input:checkbox:checked').each ->
     $(this).prop 'checked', false
-    if $(this).hasClass('filter-trigger')
-      $(this).trigger 'change'
+    $(this).addClass 'was-checked'
+    checkRefilter refilter, $(this)
     return
+
+  # checkboxes that have become visible and used to be checked,
+  # should be checked again.
+  $('input:checkbox.was-checked.filterable-item:not(.hide)').each ->
+    $(this).prop 'checked', true
+    $(this).removeClass 'was-checked'
+    checkRefilter refilter, $(this)
+    return
+  $('.filterable-item:not(.hide) input:checkbox.was-checked').each ->
+    $(this).prop 'checked', true
+    $(this).removeClass 'was-checked'
+    checkRefilter refilter, $(this)
+    return
+
+  for label of refilter
+    # use hasOwnProperty to filter out keys from the Object.prototype
+    if refilter.hasOwnProperty(label)
+      refilter[label].trigger 'change'
+
   return
 
 $(document).ready ->
