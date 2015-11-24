@@ -1,9 +1,11 @@
 <% if wrapper %>
-  <div class="report-wrapper <%= report.state %> <%= wrapper %>">
+  <div class="report-wrapper <%= report.state %> <%= wrapper %> filterable-item" data-filter-label="language geo_state" data-language="<%= report.languages.pluck(:id).join(',') %>" data-geo_state="<%= report.geo_state_id %>">
 <% end %>
-<div class="card report <%= report.state %> <%= "hide" if report.archived? %> green lighten-3" id="report-<%= report.id %>" data-date="<%= report.report_date %>">
+<div class="card report <%= report.state %> <%= "hide" if report.archived? %> green lighten-3 filterable-item" id="report-<%= report.id %>" data-date="<%= report.report_date %>" data-filter-label="language geo_state" data-language="<%= report.languages.pluck(:id).join(',') %>" data-geo_state="<%= report.geo_state_id %>">
   <div class="card-content">
-    <span class="card-title">Impact Report</span>
+    <% if !defined? title or title %>
+      <span class="card-title">Impact Report</span>
+    <% end %>
     <% if time %>
   	  <div><%= time_ago_in_words(report.created_at) %> ago</div>
   	<% end %>

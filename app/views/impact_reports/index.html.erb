@@ -11,7 +11,7 @@
         display: :name,
         collection: @zones,
         selected: @zones,
-        check_box_options: {class: "filter-trigger", "filter-trigger-label" => "zone"}
+        check_box_options: {class: "filter-trigger", "data-filter-trigger-label" => "zone"}
       } %>
     </div>
   <% end %>
@@ -24,10 +24,10 @@
         attribute: "geo_state",
         display: :name,
         data: 'zone_id',
-        element_options: {class: "filterable_item", "filter-label" => "zone"},
+        element_options: {class: "filterable-item", "data-filter-label" => "zone"},
         collection: @geo_states,
         selected: @geo_states,
-        check_box_options: {class: "filter-trigger", "filter-trigger-label" => "state"}
+        check_box_options: {class: "filter-trigger", "data-filter-trigger-label" => "geo_state"}
       } %>
     </div>
   <% end %>
@@ -39,9 +39,10 @@
       attribute: "language",
       display: :name,
       data: :geo_state_ids_str,
-      element_options: {class: "filterable_item", "filter-label" => "state"},
+      element_options: {class: "filterable-item", "data-filter-label" => "geo_state"},
       collection: @languages,
-      selected: @languages
+      selected: @languages,
+      check_box_options: {class: "filter-trigger", "data-filter-trigger-label" => "language"}
     } %>
   </div>
   <div class="col l4 m6 s12 input-field">
@@ -50,5 +51,5 @@
   </div>
 </div>
 <div class="row">
-  <%= render partial: "report", collection: @reports, locals: {time: false, languages: true, topics: true, wrapper: "col s12 m6 l4"} %>
+  <%= render partial: "report", collection: @reports, locals: {title: false, time: false, languages: true, topics: true, wrapper: "col s12 m6 l4"} %>
 </div>
