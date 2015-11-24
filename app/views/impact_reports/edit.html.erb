@@ -5,7 +5,7 @@
     <%= render 'shared/error_messages', object: f.object %>
     <div class="row">
       <div class="col s12 m6 input-field">
-        <%= render partial: "shared/geo_state_input", locals: {form: f, input_class: 'filter_trigger'} %>
+        <%= render partial: "shared/geo_state_input", locals: {form: f, input_class: 'filter-trigger'} %>
       </div>
       <div class="input-field col s12 m6">
         <% if current_user.can_archive_report? %>
@@ -32,7 +32,7 @@
           object: "impact_report",
           attribute: "languages",
           display: :name,
-          element_class: "filterable_item",
+          element_class: "filterable-item",
           data: :geo_state_ids_str,
           collection: @minority_languages,
           selected: @report.languages

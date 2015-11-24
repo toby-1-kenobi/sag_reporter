@@ -16,5 +16,5 @@ addField = ->
 
 $(document).ready ->
   $('.contributers input:last').on 'keypress', addField
-  #$('#language-input .select-dropdown li').addClass 'filterable_item'
+  #$('#language-input .select-dropdown li').addClass 'filterable-item'
   return
