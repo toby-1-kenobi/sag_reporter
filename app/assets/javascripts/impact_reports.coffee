@@ -99,5 +99,18 @@ $(document).ready ->
 
   $('#geo_state_id').on 'change', filter_impact_reports
   $('#language-selected-dropdown input').on 'change', filter_impact_reports
+
+  $('.date-filter').on 'change', ->
+    from = new Date(Date.parse($('#from_date').val()))
+    to = new Date(Date.parse($('#to_date').val()))
+    $('.filterable-item[data-date]').addClass('filter-out-date')
+    $('.filterable-item[data-date]').each ->
+      date = new Date(Date.parse($(this).attr('data-date')))
+      if date >= from and date <= to
+        $(this).removeClass 'filter-out-date'
+      return
+    $('.filterable-item[data-date]').addClass('hide')
+    $('.filterable-item[data-date]').not('[class*="filter-out"]').removeClass('hide')
+    return
   
   return
