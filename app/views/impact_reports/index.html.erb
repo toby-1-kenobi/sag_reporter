@@ -1,5 +1,6 @@
 <% provide(:title, 'Impact Reports') %>
 <h1>Impact Reports</h1>
+<%= form_tag spreadsheet_impact_reports_path(format: :csv) do %>
 <div class="row controls">
   <div class="col l4 m6 s12 input-field">
     <%= date_field_tag :from_date, 1.year.ago.strftime('%d %B, %Y'), class: "datepicker active date-filter" %>
@@ -59,7 +60,13 @@
     <!-- hidden checkbox always selected so that active reports are not filtered out-->
     <%= check_box_tag :show_active, "active", true, class: "filter-trigger hide", "data-filter-trigger-label" => "status", disable: true %>
   </div>
+  <div class="col l4 m6 s12">
+    <%= button_tag( :class => "btn waves-effect waves-light") do %>
+      Download Spreadsheet <i class="material-icons right">file_download</i>
+    <% end %>
+  </div>
 </div>
 <div class="row">
   <%= render partial: "report", collection: @reports, locals: {title: false, time: false, languages: true, topics: true, wrapper: "col s12 m6 l4"} %>
 </div>
+<% end %>

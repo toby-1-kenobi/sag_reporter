@@ -1,3 +1,5 @@
+require 'csv'
+
 class ImpactReportsController < ApplicationController
 
   before_action :require_login
@@ -7,7 +9,33 @@ class ImpactReportsController < ApplicationController
     @geo_states = current_user.geo_states
     @zones = Zone.of_states(@geo_states)
     @languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
-    @reports = ImpactReport.where(geo_state: @geo_states)
+    @reports = ImpactReport.where(geo_state: @geo_states).order(:created_at)
+  end
+
+  def spreadsheet
+    # The user can't see reports from geo_states they're not in
+    # so take the intersection of the list of geo_states in the params
+    # and the users geo_states
+    geo_states = params['controls']['geo_state'].values.map{ |id| id.to_i } & current_user.geo_states.pluck(:id)
+    languages = params['controls']['language'].values.map{ |id| id.to_i }
+    @reports = ImpactReport.includes(:languages).where(geo_state: geo_states, 'languages.id' => languages)
+    
+    if !params["show_archived"]
+      @reports = @reports.active
+    end
+
+    start_date = params['from_date'].to_date
+    end_date = params['to_date'].to_date
+    @reports = @reports.select do |report|
+      report.report_date >= start_date and report.report_date <= end_date
+    end
+
+    respond_to do |format|
+      format.csv do
+        headers['Content-Disposition'] = "attachment; filename=\"impact-reports.csv\""
+        headers['Content-Type'] ||= 'text/csv'
+      end
+    end
   end
 
   def show

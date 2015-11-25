@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     collection do
       get 'tag'
       get 'tag/:month', to: 'impact_reports#tag', as: 'tag_month'
+      post 'spreadsheet', to: 'impact_reports#spreadsheet', as: 'spreadsheet'
     end
     get 'tag', on: :collection
     member do
