@@ -41,13 +41,15 @@
       data: :geo_state_ids_str,
       element_options: {class: "filterable-item", "data-filter-label" => "geo_state"},
       collection: @languages,
-      selected: @languages,
+      selected: @languages, 
       check_box_options: {class: "filter-trigger", "data-filter-trigger-label" => "language"}
     } %>
   </div>
   <div class="col l4 m6 s12 input-field">
-    <%= check_box_tag :show_archived %>
+    <%= check_box_tag :show_archived, "archived", false, class: "filter-trigger", "data-filter-trigger-label" => "status" %>
     <%= label_tag :show_archived, "Show archived reports" %>
+    <!-- hidden checkbox always selected so that active reports are not filtered out-->
+    <%= check_box_tag :show_active, "active", true, class: "filter-trigger hide", "data-filter-trigger-label" => "status", disable: true %>
   </div>
 </div>
 <div class="row">
