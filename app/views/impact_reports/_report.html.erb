@@ -1,7 +1,11 @@
+<%
+class_contents = "#{report.state} filterable-item #{'hide' if report.archived?}".html_safe
+element_options = "data-filter-label=\"language geo_state status\" data-date=\"#{report.report_date}\" data-language=\"#{report.languages.pluck(:id).join(',')}\" data-geo_state=\"#{report.geo_state_id}\" data-status=\"#{report.state}\"".html_safe
+%>
 <% if wrapper %>
-  <div class="report-wrapper <%= report.state %> <%= wrapper %> filterable-item" data-filter-label="language geo_state status" data-language="<%= report.languages.pluck(:id).join(',') %>" data-geo_state="<%= report.geo_state_id %>" data-status="<%= report.state %>">
+  <div class="report-wrapper <%= wrapper %> <%= class_contents %>" <%= element_options %>>
 <% end %>
-<div class="card report <%= report.state %> <%= "hide" if report.archived? %> green lighten-3 filterable-item" id="report-<%= report.id %>" data-date="<%= report.report_date %>" data-filter-label="language geo_state status" data-language="<%= report.languages.pluck(:id).join(',') %>" data-geo_state="<%= report.geo_state_id %>" data-status="<%= report.state %>">
+<div class="card report green lighten-3 <%= class_contents %>" id="report-<%= report.id %>" <%= element_options %>>
   <div class="card-content">
     <% if !defined? title or title %>
       <span class="card-title">Impact Report</span>
