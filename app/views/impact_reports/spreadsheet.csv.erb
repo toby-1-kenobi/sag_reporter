@@ -1,0 +1,6 @@
+<%= CSV.generate_line(['Impact Reports', 'Exported from Last Command Reporter', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe %>
+<% headers = ['Report Date', 'Content', 'Languages', 'Progress markers', 'Reporter'] %>
+<%= CSV.generate_line(headers).html_safe %>
+<% @reports.each do |report| %>
+  <%= CSV.generate_line([report.report_date, report.content, report.languages.pluck(:name).join(', '), report.progress_markers.pluck(:name).join(', '), report.reporter.name]).html_safe %>
+<% end %>

@@ -27,11 +27,13 @@ element_options = "data-filter-label=\"language geo_state status\" data-date=\"#
   	  	<% end %>
   	  </div>
   	<% end %>
-  	<% if topics and report.topic %>
-  	  <div class="report-topics">
-  	  	<div class="<%= colour_class(report.topic.colour) %>"><%= report.topic.name %></div>
-  	  </div>
-  	<% end %>
+    <ul class="progress_markers">
+      <% report.progress_markers.each do |pm| %>
+        <li class="progress_marker tooltipped <%= colour_class(pm.topic.colour) %>" data-position="bottom" data-delay="50" data-tooltip="<%= pm.description %>">
+          <%= pm.name %>
+        </li>
+      <% end %>
+    </ul>
   </div>
   <div class="card-action">
   <% if current_user.can_archive_report? %>
