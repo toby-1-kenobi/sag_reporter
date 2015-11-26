@@ -11,6 +11,20 @@
 </head>
 <body>
 
+  <div class="modal" id="page-spinner">
+    <div class="modal-content">
+      <h4>Loading...</h4>
+      <div class="spinner medium">
+        <div class="spinner-wrapper">
+          <div class="rotator">
+            <div class="inner-spin"></div>
+            <div class="inner-spin"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <%= render 'layouts/header' %>
   <main>
     <div class="container">
@@ -27,7 +41,7 @@
       <%= yield %>
     </div>
     <%=
-    # debug(params) if Rails.env.development?
+      debug(params) if Rails.env.development?
     %>
   </main>
   <%= render 'layouts/footer' %>
