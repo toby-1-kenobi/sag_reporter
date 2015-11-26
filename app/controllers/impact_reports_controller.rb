@@ -41,7 +41,11 @@ class ImpactReportsController < ApplicationController
     # The user can't see reports from geo_states they're not in
     # so take the intersection of the list of geo_states in the params
     # and the users geo_states
-    geo_states = params['controls']['geo_state'].values.map{ |id| id.to_i } & current_user.geo_states.pluck(:id)
+    if params['controls']['geo_state']
+      geo_states = params['controls']['geo_state'].values.map{ |id| id.to_i } & current_user.geo_states.pluck(:id)
+    else
+      geo_states = current_user.geo_states
+    end
     languages = params['controls']['language'].values.map{ |id| id.to_i }
     @reports = ImpactReport.includes(:languages).where(geo_state: geo_states, 'languages.id' => languages)
     
