@@ -4,6 +4,31 @@ class ImpactReportsController < ApplicationController
 
   before_action :require_login
 
+  # Let only permitted users do some things
+  before_action only: [:new, :create] do
+    redirect_to root_path unless current_user.can_create_report?
+  end
+
+  before_action only: [:edit, :update] do
+    redirect_to root_path unless current_user.can_edit_report? or current_user?(Report.find(params[:id]).reporter)
+  end
+
+  before_action only: [:show] do
+    redirect_to root_path unless current_user?(Report.find(params[:id]).reporter) or current_user.can_view_all_reports?
+  end
+
+  before_action only: [:index, :spreadsheet] do
+    redirect_to root_path unless current_user.can_view_all_reports?
+  end
+
+  before_action only: [:archive, :unarchive] do
+    redirect_to root_path unless current_user.can_archive_report?
+  end
+
+  before_action only: [:tag, :tag_update] do
+    redirect_to root_path unless current_user.can_tag_report?
+  end
+
   def index
     store_location
     @geo_states = current_user.geo_states

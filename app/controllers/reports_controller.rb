@@ -15,7 +15,7 @@ class ReportsController < ApplicationController
 
   before_action only: [:show] do
   	# show shows single report only to reporter when report first created
-  	redirect_to root_path unless current_user?(Report.find(params[:id]).reporter)
+  	redirect_to root_path unless current_user?(Report.find(params[:id]).reporter) or current_user.can_view_all_reports?
   end
 
   before_action only: [:edit, :update] do
