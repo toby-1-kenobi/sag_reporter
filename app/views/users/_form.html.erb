@@ -41,7 +41,8 @@
               display: :name,
               data: :id,
               collection: @zones,
-              selected: @user.zones
+              selected: @user.zones,
+              check_box_options: {class: "filter-trigger", "data-filter-trigger-label" => "zone"}
             } %>
           </div>
           <div>
@@ -52,8 +53,10 @@
               attribute: "geo_states",
               display: :name,
               data: :zone_id,
+              element_options: {class: "filterable-item", "data-filter-label" => "zone"},
               collection: @geo_states,
-              selected: @user.geo_states
+              selected: @user.geo_states,
+              check_box_options: {class: "filter-trigger", "data-filter-trigger-label" => "geo_state"}
             } %>
           </div>
         </div>
@@ -73,6 +76,7 @@
           attribute: "speaks",
           display: :name,
           data: :geo_state_ids_str,
+          element_options: {class: "filterable-item", "data-filter-label" => "geo_state"},
           collection: @languages,
           selected: @user.spoken_languages
         } %>
