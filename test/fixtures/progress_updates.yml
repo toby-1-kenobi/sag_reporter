@@ -68,6 +68,8 @@ states_languages.keys.each do |state|
   user: toby
   progress: <%= rand(4) %>
   geo_state: <%= state %>
+  month: <%= month %>
+  year: 2015
 <%
         end
   	  end

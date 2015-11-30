@@ -4,7 +4,8 @@ module StateBased
 
   included do
     belongs_to :geo_state
-    before_validation :geo_state_init
+    after_initialize :geo_state_init
+    validates :geo_state, presence: true
   end
 
   # if a given user is editing the object, what geo_states are
