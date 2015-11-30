@@ -16,7 +16,7 @@ class LanguageProgress < ActiveRecord::Base
 
   def current_value(geo_state = nil)
     if geo_state
-      progress_updates.where(geo_state: geo_state).empty? ? 0 : progress_updates.where(geo_state: geo_state).order("created_at").last.progress
+      progress_updates.where(geo_state: geo_state).empty? ? 0 : progress_updates.where(geo_state: geo_state).order("year, month").last.progress
     else
       # This gives you the latest update across the whole language
       # I don't think it's very useful since all updates are by state
@@ -25,8 +25,9 @@ class LanguageProgress < ActiveRecord::Base
   end
 
   def month_score(geo_state, year = Date.today.year, month = Date.today.month)
-  	cutoff = Date.new(year, month, -1)
-  	progress_updates.where(geo_state: geo_state).where("created_at < ?", cutoff).empty? ? 0 : progress_updates.where("created_at < ?", cutoff).last.progress * progress_marker.weight
+  	cutoff = Date.new(year, month, -1).end_of_day
+    state_updates = progress_updates.where(geo_state: geo_state).select{ |pu| pu.progress_date <= cutoff }
+  	return state_updates.empty? ? 0 : state_updates.max_by(&:progress_date).progress * progress_marker.weight
   end
 
 end

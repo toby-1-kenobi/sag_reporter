@@ -71,12 +71,16 @@ class TopicsController < ApplicationController
   def update_progress
     outcome_area = Topic.find(params[:topic_id])
     language = Language.find(params[:language_id])
+    year = Date.current.year
+    if params[:date][:month].to_i > Date.current.month
+      year -= 1
+    end
     # We're only updating progress markers where the marker has been selected as done
     # so filter the hash before looping
     params[:progress_marker].select{ |pm, l| params[:marker_complete][pm] }.each do |marker, level|
       progress_marker = ProgressMarker.find(marker)
       language_progress = LanguageProgress.find_or_create_by(language: language, progress_marker: progress_marker)
-      ProgressUpdate.create(language_progress: language_progress, progress: level, user: current_user, geo_state_id: params[:geo_state_id])
+      ProgressUpdate.create(language_progress: language_progress, progress: level, user: current_user, geo_state_id: params[:geo_state_id], year: year, month: params[:date][:month])
       flash.now['success'] = "Progress Markers updated for #{language.name} #{outcome_area.name}."
     end
     @topics = Topic.all
