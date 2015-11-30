@@ -11,4 +11,8 @@ class ProgressUpdate < ActiveRecord::Base
   validates :user, presence: true
   validates :language_progress, presence: true
 
+  def progress_date
+    Date.new(self.year, self.month, -1).end_of_day
+  end
+
 end
