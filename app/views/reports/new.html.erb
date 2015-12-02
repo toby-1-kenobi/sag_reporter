@@ -19,13 +19,18 @@
     </div>
 
     <div class="row">
-      <div class="file-field input-field col s12">
+      <div class="file-field input-field col s12 m6">
         <input class="file-path validate" type="text"/>
         <div class="btn-flat">
           <i class="material-icons left">insert_photo</i>
           <span><%= Translation.get_string('put_photo', current_user) %></span>
           <input type="file" />
         </div>
+      </div>
+      <div class="input-field col s12 m6 active">
+        <i class="material-icons prefix">today</i>
+        <%= f.date_field :report_date, value: f.object.report_date.to_s, class: "datepicker active" %>
+        <%= f.label :report_date, "Report date" %>
       </div>
     </div>
 
