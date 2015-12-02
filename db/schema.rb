@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151127054056) do
+ActiveRecord::Schema.define(version: 20151202050355) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 20151127054056) do
   add_index "creations", ["person_id"], name: "index_creations_on_person_id", using: :btree
 
   create_table "events", force: :cascade do |t|
-    t.integer  "user_id"
+    t.integer  "user_id",            null: false
     t.string   "event_label",        null: false
     t.date     "event_date",         null: false
     t.integer  "participant_amount"
@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(version: 20151127054056) do
     t.string   "district"
     t.string   "sub_district"
     t.string   "village"
-    t.integer  "geo_state_id"
+    t.integer  "geo_state_id",       null: false
   end
 
   add_index "events", ["geo_state_id"], name: "index_events_on_geo_state_id", using: :btree
@@ -112,7 +112,7 @@ ActiveRecord::Schema.define(version: 20151127054056) do
 
   create_table "impact_reports", force: :cascade do |t|
     t.text     "content",       null: false
-    t.integer  "reporter_id"
+    t.integer  "reporter_id",   null: false
     t.integer  "event_id"
     t.boolean  "mt_society"
     t.boolean  "mt_church"
@@ -121,7 +121,8 @@ ActiveRecord::Schema.define(version: 20151127054056) do
     t.integer  "state"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
-    t.integer  "geo_state_id"
+    t.integer  "geo_state_id",  null: false
+    t.date     "report_date",   null: false
   end
 
   add_index "impact_reports", ["event_id"], name: "index_impact_reports_on_event_id", using: :btree
@@ -197,7 +198,7 @@ ActiveRecord::Schema.define(version: 20151127054056) do
     t.integer  "category",                       null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
-    t.integer  "geo_state_id"
+    t.integer  "geo_state_id",                   null: false
   end
 
   add_index "mt_resources", ["category"], name: "index_mt_resources_on_category", using: :btree
@@ -214,7 +215,7 @@ ActiveRecord::Schema.define(version: 20151127054056) do
     t.integer  "month",                       null: false
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
-    t.integer  "geo_state_id"
+    t.integer  "geo_state_id",                null: false
   end
 
   add_index "output_counts", ["geo_state_id"], name: "index_output_counts_on_geo_state_id", using: :btree
@@ -244,7 +245,7 @@ ActiveRecord::Schema.define(version: 20151127054056) do
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.integer  "user_id"
-    t.integer  "geo_state_id"
+    t.integer  "geo_state_id", null: false
   end
 
   add_index "people", ["geo_state_id"], name: "index_people_on_geo_state_id", using: :btree
@@ -311,7 +312,8 @@ ActiveRecord::Schema.define(version: 20151127054056) do
     t.boolean  "needs_society"
     t.boolean  "needs_church"
     t.integer  "event_id"
-    t.integer  "geo_state_id"
+    t.integer  "geo_state_id",              null: false
+    t.date     "report_date",               null: false
   end
 
   add_index "reports", ["event_id"], name: "index_reports_on_event_id", using: :btree

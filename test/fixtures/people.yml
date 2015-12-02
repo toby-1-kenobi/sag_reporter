@@ -4,6 +4,7 @@
 
 <% 35.times do |i| %>
 user-<%= i %>:
+  record_creator: andrew
   name: <%= Faker::Name.name %>
   description: <%= Faker::Lorem.paragraph %>
   phone: <%= Faker::Number.number(10) %>
