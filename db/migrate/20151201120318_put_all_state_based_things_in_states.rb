@@ -32,12 +32,14 @@ class PutAllStateBasedThingsInStates < ActiveRecord::Migration
     end
     change_column_null :mt_resources, :geo_state_id, false
 
-    change_column_null :events, :user_id, false
     Event.where(geo_state: nil).each do |event|
       if language = event.languages.take
         event.geo_state = language.geo_states.take
+      elsif creator = event.record_creator
+        event.geo_state = creator.geo_states.take
       else
-        event.geo_state = event.record_creator.geo_states.take
+        # if all else fails put the event in West Bengal
+        event.geo_state = GeoState.find_by_name "(northern) West Bengal"
       end
       event.save!
     end
@@ -69,6 +71,15 @@ class PutAllStateBasedThingsInStates < ActiveRecord::Migration
     change_column_null :output_counts, :geo_state_id, false
 
   end
-  # No down. If we rollback over this do nothing.
-  # It is an irreversible migration, but we don't want to throw an excpetion
+  
+  def down
+    change_column_null :output_counts, :geo_state_id, true
+    change_column_null :people, :geo_state_id, true
+    change_column_null :events, :geo_state_id, true
+    change_column_null :events, :user_id, true
+    change_column_null :mt_resources, :geo_state_id, true
+    change_column_null :impact_reports, :geo_state_id, true
+    change_column_null :impact_reports, :reporter_id, true
+    change_column_null :reports, :geo_state_id, true
+  end
 end
