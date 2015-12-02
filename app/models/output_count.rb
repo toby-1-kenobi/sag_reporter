@@ -6,7 +6,7 @@ class OutputCount < ActiveRecord::Base
   belongs_to :user
   belongs_to :language
 
-  before_validation :date_init
+  after_initialize :date_init
   validate :language_must_be_in_state
 
   private
