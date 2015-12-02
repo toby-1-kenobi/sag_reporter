@@ -30,7 +30,7 @@ class ImpactReport < ActiveRecord::Base
     end
 
     def date_init
-      self.report_date ||= self.event ? self.event.event_date : Date.current
+      #self.report_date ||= self.event ? self.event.event_date : Date.current
     end
 
 end
