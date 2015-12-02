@@ -131,11 +131,21 @@ class ReportsController < ApplicationController
     private
 
     def report_params
-      if current_user.can_archive_report?
-        permitted = params.require(:report).permit(:content, :mt_society, :mt_church, :needs_society, :needs_church, :geo_state_id, :state)
-      else
-        permitted = params.require(:report).permit(:content, :mt_society, :mt_church, :needs_society, :needs_church, :geo_state_id)
+      safe_params = [
+        :content,
+        :mt_society,
+        :mt_church,
+        :needs_society,
+        :needs_church,
+        :geo_state_id,
+        :report_date,
+        :state
+      ]
+      safe_params.reject! :state unless current_user.can_archive_report?
+      if params[:report][:report_date]
+        params[:report][:report_date] = DateParser.parse_to_db_str(params[:report][:report_date])
       end
+      permitted = params.require(:report).permit(safe_params)
     end
   
     # Redirects to recent view (or to the default).

@@ -11,7 +11,7 @@ element_options = "data-filter-label=\"language geo_state status\" data-date=\"#
       <span class="card-title">Impact Report</span>
     <% end %>
     <% if time %>
-  	  <div><%= time_ago_in_words(report.created_at) %> ago</div>
+  	  <div><%= time_ago_in_words(report.report_date) %> ago</div>
   	<% end %>
   	<p><%= report.content %></p>
     <% unless Report.categories.select{ |key, sentence| report.send(key) }.empty? %>

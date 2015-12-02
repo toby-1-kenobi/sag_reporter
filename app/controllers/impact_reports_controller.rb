@@ -14,7 +14,7 @@ class ImpactReportsController < ApplicationController
   end
 
   before_action only: [:show] do
-    redirect_to root_path unless current_user?(Report.find(params[:id]).reporter) or current_user.can_view_all_reports?
+    redirect_to root_path unless current_user?(ImpactReport.find(params[:id]).reporter) or current_user.can_view_all_reports?
   end
 
   before_action only: [:index, :spreadsheet] do
@@ -158,7 +158,17 @@ class ImpactReportsController < ApplicationController
     private
 
     def impact_report_params
-      params.require(:impact_report).permit(:content, :state, :geo_state_id)
+      safe_params = [
+        :content,
+        :geo_state_id,
+        :report_date,
+        :state
+      ]
+      safe_params.reject! :state unless current_user.can_archive_report?
+      if params[:impact_report][:report_date]
+        params[:impact_report][:report_date] = DateParser.parse_to_db_str(params[:impact_report][:report_date])
+      end
+      permitted = params.require(:impact_report).permit(safe_params)
     end
 
 end

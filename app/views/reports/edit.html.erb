@@ -4,10 +4,10 @@
   <%= form_for(@report, html: {class: "col s12"}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
     <div class="row">
-      <div class="input-field col s12 m6">
+      <div class="input-field col s12 m6 l4">
         <%= render partial: "shared/geo_state_input", locals: {object: "report", input_class: 'filter_trigger'} %>
       </div>
-      <div class="input-field col s12 m6">
+      <div class="input-field col s12 m6 l4">
         <% if current_user.can_archive_report? %>
           <% Report.states.each do |key, value| %>
             <p>
@@ -16,6 +16,11 @@
             </p>
           <% end %>
         <% end %>
+      </div>
+      <div class="input-field col s12 m6 l4 active">
+        <i class="material-icons prefix">today</i>
+        <%= f.date_field :report_date, value: f.object.report_date.to_s, class: "datepicker active" %>
+        <%= f.label :report_date, "Report date" %>
       </div>
     </div>
     <div class="row">
