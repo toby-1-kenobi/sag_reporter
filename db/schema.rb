@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 20151202050355) do
   add_index "creations", ["person_id"], name: "index_creations_on_person_id", using: :btree
 
   create_table "events", force: :cascade do |t|
-    t.integer  "user_id",            null: false
+    t.integer  "user_id"
     t.string   "event_label",        null: false
     t.date     "event_date",         null: false
     t.integer  "participant_amount"
