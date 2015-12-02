@@ -29,7 +29,13 @@ class EventsController < ApplicationController
     # link the people to the event
     person_params = params.select{ |param| param[/^person__\d+$/] }
     person_params.each do |key, person_name|
-      @event.people << Person.find_or_create_by(name: person_name) unless person_name.empty?
+      unless person_name.empty?
+        dude = Person.find_or_initialize_by(name: person_name)
+        dude.record_creator ||= current_user
+        dude.geo_state ||= GeoState.find(params['event']['geo_state_id'])
+        dude.save
+        @event.people << dude unless @event.people.include? dude
+      end
     end
     if @event.save
       # create all the reports and link them to the event
@@ -118,7 +124,8 @@ class EventsController < ApplicationController
       	:village,
       	:event_date,
       	:participant_amount,
-      	:content
+      	:content,
+        :geo_state_id
       	)
     end
 
