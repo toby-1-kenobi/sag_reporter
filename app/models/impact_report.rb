@@ -13,10 +13,7 @@ class ImpactReport < ActiveRecord::Base
   validates :state, presence: true
 
   after_initialize :state_init
-
-  def report_date
-  	event ? event.event_date : created_at
-  end
+  after_initialize :date_init
 
   def report_type
     "impact"
@@ -30,6 +27,10 @@ class ImpactReport < ActiveRecord::Base
 
     def state_init
       self.state ||= :active
+    end
+
+    def date_init
+      self.report_date ||= self.event ? self.event.event_date : Date.current
     end
 
 end
