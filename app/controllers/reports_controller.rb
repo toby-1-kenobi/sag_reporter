@@ -91,28 +91,32 @@ class ReportsController < ApplicationController
   end
 
   def index
-    @reports = Report.where(geo_state: current_user.geo_state).order(:created_at => :desc).paginate(page: params[:page])
-    @impact_reports = ImpactReport.where(geo_state: current_user.geo_state).order(:created_at => :desc).paginate(page: params[:page])
+    @geo_states = current_user.geo_states
+    @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc).paginate(page: params[:page])
+    @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc).paginate(page: params[:page])
     recent_view
   end
 
   def by_language
-    @reports = Report.where(geo_state: current_user.geo_state).order(:created_at => :desc)
-    @impact_reports = ImpactReport.where(geo_state: current_user.geo_state).order(:created_at => :desc)
+    @geo_states = current_user.geo_states
+    @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
+    @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
     @languages = Language.all.order("LOWER(languages.name)")
     recent_view
   end
 
   def by_topic
-    @reports = Report.where(geo_state: current_user.geo_state).all.order(:created_at => :desc)
-    @impact_reports = ImpactReport.where(geo_state: current_user.geo_state).order(:created_at => :desc)
+    @geo_states = current_user.geo_states
+    @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
+    @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
     @topics = Topic.all
     recent_view
   end
 
   def by_reporter
-    @reports = Report.where(geo_state: current_user.geo_state).all.order(:created_at => :desc)
-    @impact_reports = ImpactReport.where(geo_state: current_user.geo_state).order(:created_at => :desc)
+    @geo_states = current_user.geo_states
+    @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
+    @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
     recent_view
   end
 
