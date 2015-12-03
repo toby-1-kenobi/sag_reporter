@@ -34,7 +34,7 @@ class ImpactReportsController < ApplicationController
     @geo_states = current_user.geo_states
     @zones = Zone.of_states(@geo_states)
     @languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
-    @reports = ImpactReport.where(geo_state: @geo_states).order(:report_date)
+    @reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
   end
 
   def spreadsheet
