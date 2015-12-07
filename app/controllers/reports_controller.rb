@@ -146,8 +146,14 @@ class ReportsController < ApplicationController
         :state
       ]
       safe_params.reject! :state unless current_user.can_archive_report?
+      # if we have a date try to change it to db-friendly format
+      # otherwise set it to nil
       if params[:report][:report_date]
-        params[:report][:report_date] = DateParser.parse_to_db_str(params[:report][:report_date])
+        begin
+          params[:report][:report_date] = DateParser.parse_to_db_str(params[:report][:report_date]) unless params[:report][:report_date].empty?
+        rescue ArgumentError
+          params[:report][:report_date] = nil
+        end
       end
       permitted = params.require(:report).permit(safe_params)
     end

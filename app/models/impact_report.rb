@@ -11,6 +11,7 @@ class ImpactReport < ActiveRecord::Base
   has_and_belongs_to_many :languages, allow_nil: false
 
   validates :state, presence: true
+  validates :report_date, presence: true
 
   after_initialize :state_init
   after_initialize :date_init
@@ -30,7 +31,7 @@ class ImpactReport < ActiveRecord::Base
     end
 
     def date_init
-      #self.report_date ||= self.event ? self.event.event_date : Date.current
+      self.report_date ||= self.event ? self.event.event_date : Date.current
     end
 
 end
