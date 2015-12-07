@@ -1,4 +1,4 @@
-<% provide(:title, 'Report submitted') %>
+<% provide(:title, 'Report') %>
 <%= render partial: "report", object: @report, locals: {time: false, languages: true, topics: true, wrapper: false} %>
 <%= link_to new_report_path(@report), class: "waves-effect right btn" do %>
   <i class="material-icons left">create</i>
