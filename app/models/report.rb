@@ -12,6 +12,7 @@ class Report < ActiveRecord::Base
 	validates :content, presence: true, allow_nil: false
 	validates :reporter, presence: true, allow_nil: false
   validates :state, presence: true, allow_nil: false
+  validates :report_date, presence: true
 
   after_initialize :state_init
   after_initialize :date_init
@@ -36,7 +37,7 @@ class Report < ActiveRecord::Base
     end
 
     def date_init
-      #self.report_date ||= self.event ? self.event.event_date : Date.current
+      self.report_date ||= self.event ? self.event.event_date : Date.current
     end
 
 end
