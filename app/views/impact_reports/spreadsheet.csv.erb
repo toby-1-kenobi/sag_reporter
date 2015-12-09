@@ -1,3 +1,5 @@
+<%# Use a BOM to help apps that might read this file recognise it as UTF-8 %>
+<%= "\uFEFF" -%>
 <%= CSV.generate_line(['Impact Reports', 'Exported from Last Command Reporter', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe -%>
 <% headers = ['Report Date', 'Content', 'Languages', 'Progress markers', 'Reporter'] %>
 <%= CSV.generate_line(headers).html_safe -%>
