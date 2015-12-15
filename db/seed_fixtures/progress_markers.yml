@@ -112,7 +112,7 @@ materials_shared:
   topic: movement_building
   weight: 2
 
-interest_from_others:
+embraced_by_christian_leaders:
   name: "Embraced by Christian leaders"
   description: "Local Christian leaders who used to be sceptical have embraced the movement and want to involve their people in the movement activities"
   topic: movement_building
@@ -202,7 +202,7 @@ prays_about_decisions:
   topic: leadership_development
   weight: 2
 
-resolves_division:
+provide_accountability:
   name: "Provide accountability"
   description: "Local church or community leaders provide clear, loving and fruitful accountability for the people they lead. For example, they meet regularly with the people they lead, hear reports, provide direction and encouragement, and pray for them"
   topic: leadership_development
