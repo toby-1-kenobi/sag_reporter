@@ -45,7 +45,7 @@ tripura:
 nb:
   name: (northern) West Bengal
   zone: north_east
-  languages: english, nepali, bengali, toto, rajbanshi, bodo, sadri, santali, munda, rabha, kurux, surjapuri, garo
+  languages: english, nepali, bengali, toto, rajbanshi, bodo, sadri, santali, munda, mundari, rabha, kurux, surjapuri, garo
 
 bihar:
   name: Bihar
@@ -152,5 +152,5 @@ mp:
 
 maharashtra:
   name: Maharashtra
-  zone: north_west
+  zone: central
   languages: english, varahadi, ahirani, wadder, sikligar, gowlan, katakari, far_western_muria

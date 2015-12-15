@@ -21,7 +21,10 @@ end
 # the closer the strings are in comparison, the smaller the distance
 # look up Levenshtein Distance on Wikipedia to see how it works
 # this code was taken from rosettacode.org and would have been much more fun had I
-# written it myself
+# written it myself.
+# In this script it is called by a function that discards the result if it's above
+# a certain cutt off. It would speed things up if we could get this thing to
+# stop if it becomes sure the result would be above the cuttoff
 def levenshtein_distance(a, b)
   a, b = a.downcase, b.downcase
   costs = Array(0..b.length) # i == 0
@@ -162,7 +165,7 @@ def import_from_file(filename)
     if language = Language.find_by_name(language_data[key])
       languages[key] = language
     else
-      raise "Could not find language: #{language_sym.to_s}"
+      raise "Could not find language: #{language_data[key]}"
     end
     # check that the language is in the state
     if !languages[key].geo_states.include? geo_states[key]
@@ -197,12 +200,12 @@ def import_from_file(filename)
   end
 
   if unmatched_progress_markers.any?
-    puts "there are #{unmatched_progress_markers.count} unused markers:"
+    puts "there are #{unmatched_progress_markers.count} unused marker(s):"
     unmatched_progress_markers.each{ |pm| puts pm.description }
   end
 
   if unable_to_parse.any?
-    puts "unable to parse #{unable_to_parse.count} rows:"
+    puts "unable to parse #{unable_to_parse.count} row(s):"
     unable_to_parse.each{ |row| puts row[:progress_marker] }
   end
 
