@@ -11,6 +11,10 @@ if !$user
   $user = User.where(role: admin_role).take
 end
 
+# when we've matched up progress markers once, we don't want to have to do all
+# that work again for the next file
+$pm_cache = Hash.new
+
 file_list = Dir[Rails.root.join('db', 'baseline_data', '**', '*.csv')]
 
 CSV::Converters[:blank_to_nil] = lambda do |field|
@@ -45,8 +49,11 @@ def match_progress_marker(description, outcome_area, weight, unmatched_progress_
   if ! description or description.empty?
     raise "Missing progress marker"
   end
-  haystack_progress_markers = unmatched_progress_markers.select{ |pm| pm.topic == outcome_area and pm.weight = weight }
-  if progress_marker = ProgressMarker.find_by_description(description)
+  # first check the cache in case we've matched this before
+  if progress_marker = $pm_cache[description]
+    puts "#{outcome_area.name} #{weight} #{progress_marker.name}"
+    return progress_marker
+  elsif progress_marker = ProgressMarker.find_by_description(description)
     puts "#{outcome_area.name} #{weight} #{progress_marker.name}"
     return progress_marker
   elsif progress_marker = ProgressMarker.find_by_description(description.chomp '.')
@@ -55,6 +62,7 @@ def match_progress_marker(description, outcome_area, weight, unmatched_progress_
     return progress_marker
   else
     # go through every progress marker comparing the descriptions
+    haystack_progress_markers = unmatched_progress_markers.select{ |pm| pm.topic == outcome_area and pm.weight = weight }
     if haystack_progress_markers.count == 0
       raise "Run out of progress markers to match in #{outcome_area.name} weight #{weight}"
     end
@@ -124,6 +132,7 @@ def parse_row(row, geo_states, languages, unmatched_progress_markers, pm_distanc
     return false
   end
   unmatched_progress_markers.delete progress_marker
+  $pm_cache[row[:progress_marker]] = progress_marker
   puts "PMs remaining: #{unmatched_progress_markers.count}"
 
   # now we've found the progress marker we can parse the rest of the row
