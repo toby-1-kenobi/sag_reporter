@@ -82,7 +82,10 @@ class EventsController < ApplicationController
         action_person = Hash[params.select{ |param| param[/^person-responsible__\d+$/] }.map{ |k,v| [k.split('__').last,v] }]
         action_content.each do |key, value|
       	  unless value.empty?
-      	  	person = Person.find_or_create_by(name: action_person[key])
+      	  	person = Person.find_or_create_by(name: action_person[key]) do |dude|
+              dude.record_creator = current_user
+              dude.geo_state = GeoState.find(params['event']['geo_state_id'])
+            end
       	  	action_params = {
       	      content: value,
       	  	  responsible: person,
