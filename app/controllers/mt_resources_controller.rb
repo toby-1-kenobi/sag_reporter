@@ -26,7 +26,12 @@ class MtResourcesController < ApplicationController
       @resource.user = current_user
       person_params = params.select{ |param| param[/^person__\d+$/] }
       person_params.each do |key, person_name|
-        @resource.contributers << Person.find_or_create_by(name: person_name) unless person_name.empty?
+        if !person_name.blank?
+          @resource.contributers << Person.find_or_create_by(name: person_name) do |person|
+            person.record_creator = current_user
+            person.geo_state = @resource.geo_state
+          end
+        end
       end
       flash['success'] = "New resource entered"
       redirect_to action: "language_overview", language_id: @resource.language_id
