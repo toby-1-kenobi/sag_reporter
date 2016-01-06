@@ -31,6 +31,17 @@ class Language < ActiveRecord::Base
     geo_state_ids.join ','
   end
 
+  def impact_report_count(geo_state, from_date = nil, to_date = nil)
+    if from_date
+      to_date ||= Date.today
+      ImpactReport.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state, 'impact_reports.report_date' => from_date..to_date).count
+    elsif to_date
+      ImpactReport.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state).where('impact_reports.report_date <= ?', to_date).count
+    else
+      ImpactReport.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state).count
+    end
+  end
+
   def table_data(geo_state, options = {})
     options[:from_date] ||= 6.months.ago
     options[:to_date] ||= Date.today
