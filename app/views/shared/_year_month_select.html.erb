@@ -1,0 +1,16 @@
+<%
+# default to the last 12 months (including the current month)
+if !defined? start_from
+  start_from = 1.year.ago.to_date
+end
+if !defined? up_to
+  up_to = Date.today
+end
+
+month_options = Array.new
+(start_from..up_to).select{ |d| d.day == 1 }.each do |date|
+  month_options << [date.strftime("%Y %B"), date.strftime("%Y-%m")]
+end
+%>
+
+<%= select_tag(:year_month, options_for_select(month_options, Date.today.strftime("%Y-%m"))) %>

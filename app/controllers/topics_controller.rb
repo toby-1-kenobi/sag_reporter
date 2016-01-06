@@ -56,7 +56,9 @@ class TopicsController < ApplicationController
   end
 
   def assess_progress_select
-    @topics = Topic.all
+    @geo_states = current_user.geo_states
+    @from_date = 1.year.ago.to_date
+    @to_date = Date.today
   end
 
   def assess_progress
