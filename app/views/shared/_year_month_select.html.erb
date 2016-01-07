@@ -13,4 +13,4 @@ month_options = Array.new
 end
 %>
 
-<%= select_tag(:year_month, options_for_select(month_options, Date.today.strftime("%Y-%m"))) %>
+<%= select_tag(:year_month, options_for_select(month_options, Date.today.strftime("%Y-%m")), local_assigns[:options].presence ? options : {}) %>
