@@ -8,8 +8,13 @@ if !defined? up_to
 end
 
 month_options = Array.new
+
 (start_from..up_to).select{ |d| d.day == 1 }.each do |date|
   month_options << [date.strftime("%Y %B"), date.strftime("%Y-%m")]
+end
+
+if defined? add_select_options
+  month_options.concat add_select_options
 end
 %>
 
