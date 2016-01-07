@@ -3,7 +3,7 @@
 
 <div class="row">
   <div class="col s12 m6 l4">Choose a month for assessing:</div>
-  <div class="col s12 m6 l4"><%= render partial: 'shared/year_month_select', locals: {start_from: @from_date, up_to: @to_date} %></div>
+  <div class="col s12 m6 l4"><%= render partial: 'shared/year_month_select', locals: {start_from: @from_date, up_to: @to_date, options: {class: "filter-trigger", "data-filter-trigger-label" => "month"}} %></div>
 </div>
 
 <div class"row" id="language-select">
@@ -11,9 +11,18 @@
   <ul class="collapsible">
     <% current_user.geo_states.each do |geo_state| %>
       <li>
-        <div class="collapsible-header green lighten-2 <%= @geo_states.count == 1 ? "active" : "" %>"><%= geo_state.name %></div>
+        <div class="collapsible-header green lighten-2 <%= @geo_states.count == 1 ? "active" : "" %>"><%= geo_state.name %>
+          <div class="report-counts right">
+            <% (@from_date..@to_date).select{ |d| d.day == 1 }.each do |date|
+              report_count = geo_state.impact_report_count(date.beginning_of_month, date.end_of_month) %>
+              &nbsp; <span class="tooltipped" data-delay="50" data-tooltip="<%= date.strftime("%B %Y") %> has <%= pluralize report_count, "impact report" %> for <%= geo_state.name %>">
+                <%= report_count %>
+              </span>
+            <% end %>
+          </div>
+        </div>
         <div class="collapsible-body collection">
-        	<%= render partial: 'topics/language', collection: geo_state.minority_languages.order(:name), locals: {geo_state_id: geo_state.id} %>
+        	<%= render partial: 'topics/language', collection: geo_state.minority_languages.order(:name), locals: {geo_state: geo_state, start_from: @from_date, up_to: @to_date} %>
         </div>
       </li>
     <% end %>

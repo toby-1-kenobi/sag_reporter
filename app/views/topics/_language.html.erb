@@ -1,4 +1,8 @@
 
-    <%= link_to outcomes_path + "/__topic_id/#{geo_state_id}/#{language.id}", class: "collection-item #{colour_class(language.colour)} waves-effect" do %>
+    <%= link_to outcomes_path + "/#{geo_state.id}/#{language.id}", class: "collection-item #{colour_class(language.colour)} waves-effect" do %>
       <%= language.name %>
+      <% (start_from..up_to).select{ |d| d.day == 1 }.each do |date| %>
+        <% report_count = language.impact_report_count(geo_state, date.beginning_of_month, date.end_of_month) %>
+        <span class="badge filterable-item tooltipped" data-filter-label="month" data="<%= date.strftime("%Y-%m") %>" data-delay="50" data-tooltip="<%= date.strftime("%B %Y") %> has <%= pluralize report_count, "impact report" %> for <%= language.name %>"><%= report_count %></span>
+      <% end %>
     <% end %>

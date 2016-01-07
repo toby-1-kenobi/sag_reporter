@@ -18,5 +18,16 @@ class GeoState < ActiveRecord::Base
   def minority_languages
     languages.where(lwc: false)
   end
+
+  def impact_report_count(from_date = nil, to_date = nil)
+    if from_date
+      to_date ||= Date.today
+      ImpactReport.where(geo_state: self, report_date: from_date..to_date).count
+    elsif to_date
+      ImpactReport.where(geo_state: self).where('report_date <= ?', to_date).count
+    else
+      ImpactReport.where(geo_state: self).count
+    end
+  end
   
 end
