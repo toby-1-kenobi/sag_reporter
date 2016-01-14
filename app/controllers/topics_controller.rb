@@ -17,6 +17,14 @@ class TopicsController < ApplicationController
     redirect_to root_path unless current_user.can_edit_topic?
   end
 
+  before_action only: [:assess_progress_select, :assess_progress, :update_progress] do
+    redirect_to root_path unless current_user.can_evaluate_progress?
+  end
+
+  before_action only: [:assess_progress_select, :assess_progress] do
+    set_date_range
+  end
+
   def new
   	@topic = Topic.new
   	@colour_columns = 3
@@ -57,16 +65,16 @@ class TopicsController < ApplicationController
 
   def assess_progress_select
     @geo_states = current_user.geo_states
-    @from_date = 1.year.ago.to_date
-    @to_date = Date.today
   end
 
   def assess_progress
-    @outcome_area = Topic.find(params[:topic_id])
-    @progress_markers_by_weight = ProgressMarker.where(topic: @outcome_area).group_by { |pm| pm.weight }
+    @progress_markers_by_weight = Hash.new
+    Topic.all.each do |outcome_area|
+      @progress_markers_by_weight[outcome_area] = ProgressMarker.where(topic: outcome_area).group_by { |pm| pm.weight }
+    end
     @language = Language.find(params[:language_id])
     @geo_state = GeoState.find(params[:geo_state_id])
-    @reports = ImpactReport.active.where(geo_state: @geo_state).joins(:progress_markers, :languages).where("progress_markers.topic_id" => @outcome_area, "languages.id" => @language).select{ |ir| ir.report_date >= 1.year.ago }.uniq
+    @reports = ImpactReport.active.where(geo_state: @geo_state).joins(:languages).where("languages.id" => @language, 'impact_reports.report_date' => @from_date..@to_date).uniq
     #TODO: check that the language belongs to the geo_state and return to assess_progress_select if its not
   end 
 
@@ -104,6 +112,11 @@ class TopicsController < ApplicationController
 
     def topic_params
       params.require(:topic).permit(:name, :description, :colour, :colour_darkness)
+    end
+
+    def set_date_range
+      @from_date = 1.year.ago.to_date
+      @to_date = Date.today
     end
 
 end
