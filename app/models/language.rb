@@ -34,11 +34,11 @@ class Language < ActiveRecord::Base
   def impact_report_count(geo_state, from_date = nil, to_date = nil)
     if from_date
       to_date ||= Date.today
-      ImpactReport.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state, 'impact_reports.report_date' => from_date..to_date).count
+      ImpactReport.active.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state, 'impact_reports.report_date' => from_date..to_date).count
     elsif to_date
-      ImpactReport.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state).where('impact_reports.report_date <= ?', to_date).count
+      ImpactReport.active.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state).where('impact_reports.report_date <= ?', to_date).count
     else
-      ImpactReport.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state).count
+      ImpactReport.active.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state).count
     end
   end
 
