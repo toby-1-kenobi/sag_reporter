@@ -31,14 +31,14 @@ class Language < ActiveRecord::Base
     geo_state_ids.join ','
   end
 
-  def impact_report_count(geo_state, from_date = nil, to_date = nil)
+  def tagged_impact_report_count(geo_state, from_date = nil, to_date = nil)
     if from_date
       to_date ||= Date.today
-      ImpactReport.active.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state, 'impact_reports.report_date' => from_date..to_date).count
+      ImpactReport.active.joins(:languages, :progress_markers).where.not('progress_markers.id' => nil).where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state, 'impact_reports.report_date' => from_date..to_date).uniq.count
     elsif to_date
-      ImpactReport.active.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state).where('impact_reports.report_date <= ?', to_date).count
+      ImpactReport.active.joins(:languages, :progress_markers).where.not('progress_markers.id' => nil).where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state).where('impact_reports.report_date <= ?', to_date).uniq.count
     else
-      ImpactReport.active.includes('languages').where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state).count
+      ImpactReport.active.joins(:languages, :progress_markers).where.not('progress_markers.id' => nil).where('languages.id' => self.id, 'impact_reports.geo_state' => geo_state).uniq.count
     end
   end
 

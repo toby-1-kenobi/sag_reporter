@@ -19,14 +19,14 @@ class GeoState < ActiveRecord::Base
     languages.where(lwc: false)
   end
 
-  def impact_report_count(from_date = nil, to_date = nil)
+  def tagged_impact_report_count(from_date = nil, to_date = nil)
     if from_date
       to_date ||= Date.today
-      ImpactReport.active.where(geo_state: self, report_date: from_date..to_date).count
+      ImpactReport.active.joins(:progress_markers).where.not('progress_markers.id' => nil).where(geo_state: self, report_date: from_date..to_date).uniq.count
     elsif to_date
-      ImpactReport.active.where(geo_state: self).where('report_date <= ?', to_date).count
+      ImpactReport.active.joins(:progress_markers).where.not('progress_markers.id' => nil).where(geo_state: self).where('report_date <= ?', to_date).uniq.count
     else
-      ImpactReport.active.where(geo_state: self).count
+      ImpactReport.active.joins(:progress_markers).where.not('progress_markers.id' => nil).where(geo_state: self).uniq.count
     end
   end
   
