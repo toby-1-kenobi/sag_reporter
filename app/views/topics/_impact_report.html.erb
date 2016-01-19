@@ -1,0 +1,27 @@
+<div class="card report green lighten-3 filterable-item" id="report-<%= impact_report.id %>" data-filter-label="month" data-month="<%= month %>">
+  <div class="card-content">
+    <div><%= time_ago_in_words(impact_report.report_date) %> ago</div>
+    <p><%= impact_report.content %></p>
+    <% if impact_report.reporter %>
+      <div class="reporter"><%= impact_report.reporter.name %></div>
+    <% end %>
+  </div>
+  <div class="card-action">
+  <% if current_user.can_archive_report? %>
+    <% if impact_report.archived? %>
+      <%= link_to unarchive_impact_report_path(impact_report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Un-Archive", method: :patch do %>
+        <i class="material-icons">publish</i>
+      <% end %>
+    <% else %>
+      <%= link_to archive_impact_report_path(impact_report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Archive", method: :patch do %>
+        <i class="material-icons">archive</i>
+      <% end %>
+    <% end %>
+  <% end %>
+  <% if current_user.can_edit_report? %>
+      <%= link_to edit_impact_report_path(impact_report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
+        <i class="material-icons">edit</i>
+      <% end %>
+  <% end %>
+  </div>
+</div>
