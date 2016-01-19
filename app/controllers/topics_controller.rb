@@ -74,8 +74,17 @@ class TopicsController < ApplicationController
     end
     @language = Language.find(params[:language_id])
     @geo_state = GeoState.find(params[:geo_state_id])
-    @reports = ImpactReport.active.where(geo_state: @geo_state).joins(:languages).where("languages.id" => @language, 'impact_reports.report_date' => @from_date..@to_date).uniq
     #TODO: check that the language belongs to the geo_state and return to assess_progress_select if its not
+    @reports = ImpactReport.active.includes(:progress_markers, :reporter).where('impact_reports.geo_state' => @geo_state).joins(:languages).where("languages.id" => @language, 'impact_reports.report_date' => @from_date..@to_date).where.not('progress_markers.id' => nil ).order('progress_markers.id')
+    @reports_by_pm_by_month = Hash.new
+    @reports.each do |report|
+      report.progress_markers.each do |pm|
+        @reports_by_pm_by_month[pm] ||= Hash.new
+        @reports_by_pm_by_month[pm][report.report_date.strftime("%Y-%m")] ||= Set.new
+        @reports_by_pm_by_month[pm][report.report_date.strftime("%Y-%m")] << report
+      end
+    end
+    debugger
   end 
 
   def update_progress
@@ -117,6 +126,7 @@ class TopicsController < ApplicationController
     def set_date_range
       @from_date = 1.year.ago.to_date
       @to_date = Date.today
+      @month_range = (@from_date..@to_date).select{ |d| d.day == 1 }
     end
 
 end
