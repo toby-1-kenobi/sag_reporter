@@ -21,11 +21,16 @@
       <a class='dropdown-button btn' href='#' data-activates='month-dropdown'><%= "#{Date::MONTHNAMES[@month.to_i]} #{@year}" %></a>
       <ul id='month-dropdown' class='dropdown-content'>
         <% (@from_date..@to_date).select{ |d| d.day == 1 }.each do |date| %>
-          <% if date.strftime("%Y%m") == @year + @month %>
-            <li><a><%= date.strftime("%B %Y") %></a></li>
-          <% else %>
-            <li><%= link_to date.strftime("%B %Y"), assess_progress_path(geo_state_id: @geo_state.id, language_id: @language.id, month: date.strftime("%Y%m")) %></li>
-          <% end %>
+          <% count = @monthly_reports[date.strftime("%Y-%m")] ?
+          @monthly_reports[date.strftime("%Y-%m")].count :
+          0 %>
+          <li>
+            <% if date.strftime("%Y%m") == @year + @month %>
+              <a><%= "#{date.strftime("%B %Y")} (#{count})" %></a>
+            <% else %>
+              <%= link_to "#{date.strftime("%B %Y")} (#{count})", assess_progress_path(geo_state_id: @geo_state.id, language_id: @language.id, month: date.strftime("%Y%m")) %>
+            <% end %>
+          </li>
         <% end %>
       </ul>
     </div>

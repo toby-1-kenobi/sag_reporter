@@ -75,6 +75,7 @@ class TopicsController < ApplicationController
     @language = Language.find(params[:language_id])
     @geo_state = GeoState.find(params[:geo_state_id])
     #TODO: check that the language belongs to the geo_state and return to assess_progress_select if its not
+    @monthly_reports = @language.tagged_impact_reports_monthly(@geo_state, @from_date, @to_date)
     @month = params[:month]
     if @month == "000000" then @month = Date.today.strftime("%Y%m") end
     @year = @month.slice!(0,4)
