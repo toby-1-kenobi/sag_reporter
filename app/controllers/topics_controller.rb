@@ -82,10 +82,13 @@ class TopicsController < ApplicationController
     @month_date = Date.new(@year.to_i, @month.to_i)
     @reports = ImpactReport.active.includes(:progress_markers, :reporter).where('impact_reports.geo_state' => @geo_state).joins(:languages).where("languages.id" => @language, 'impact_reports.report_date' => @month_date..@month_date.end_of_month).where.not('progress_markers.id' => nil ).order('progress_markers.id')
     @reports_by_pm = Hash.new
+    @reports_by_oa = Hash.new
     @reports.each do |report|
       report.progress_markers.each do |pm|
         @reports_by_pm[pm] ||= Set.new
         @reports_by_pm[pm] << report
+        @reports_by_oa[pm.topic_id] ||= Set.new
+        @reports_by_oa[pm.topic_id] << report
       end
     end
   end 
