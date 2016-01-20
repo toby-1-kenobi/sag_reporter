@@ -12,6 +12,10 @@
   <div class="row">
     <div class="col s12 m6 l4">
       <%= render partial: 'languages/language_card', object: @language %>
+      <%= link_to select_to_assess_path, class: "btn waves-effect" do %>
+        <i class="material-icons left">arrow_back</i>
+        Change language
+      <% end %>
     </div>
     <div class="col s12 m6 l4 input-field year-month-select">
       <%= render partial: 'shared/year_month_select', locals: {start_from: @from_date, up_to: @to_date, options: {class: "filter-trigger", "data-filter-trigger-label" => "month"}} %>
