@@ -45,14 +45,10 @@
           <% progress_marker_group.each do |progress_marker| %>
             <li class="progress-marker">
               <div class="collapsible-header tooltipped" data-tooltip="<%= progress_marker.description %>"><%= progress_marker.name %>
-                <% if @reports_by_pm_by_month[progress_marker] %>
-                  <% @month_range.each do |date| %>
-                    <span class="right report-count filterable-item" data-filter-label="month" data-month="<%= date.strftime("%Y-%m") %>">
-                    <%= @reports_by_pm_by_month[progress_marker][date.strftime("%Y-%m")] ?
-                    @reports_by_pm_by_month[progress_marker][date.strftime("%Y-%m")].count :
-                    '0' %>
-                    </span>
-                  <% end %>
+                <% if @reports_by_pm[progress_marker] %>
+                  <span class="right report-count" %>
+                    <%= @reports_by_pm[progress_marker].count %>
+                  </span>
                 <% else %>
                   <span class="right report-count">0</span>
                 <% end %>
@@ -82,13 +78,11 @@
                   </div>
                 </div>
                 <div class="row">
-                  <% if @reports_by_pm_by_month[progress_marker] %>
-                    <% @reports_by_pm_by_month[progress_marker].each do |month, reports| %>
-                      <% @reports.each do |report| %>
-          				      <div class="col s12 m6 l4">
-          				        <%= render partial: "impact_report", object: report, locals: {month: month} %>
-          				      </div>
-                      <% end %>
+                  <% if @reports_by_pm[progress_marker] %>
+                    <% @reports_by_pm[progress_marker].each do |report| %>
+        				      <div class="col s12 m6 l4">
+        				        <%= render partial: "impact_report", object: report %>
+        				      </div>
                     <% end %>
                   <% else %>
                     <p>There are no impact reports to show.</p>
