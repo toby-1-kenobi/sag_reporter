@@ -66,7 +66,7 @@
                       <div class="col s6 range-field">
 
                         <%= label_tag("progress_marker_#{progress_marker.id}", "Asses the level of activity this month for #{@language.name}") %>
-                      	<%= range_field('progress_marker', progress_marker.id, in: ProgressMarker.spread_text.keys, list: "pm-data", value: progress_marker.current_progress(@language, @geo_state), class: "activity-level-select") %>
+                      	<%= range_field('progress_marker', progress_marker.id, in: ProgressMarker.spread_text.keys, list: "pm-data", value: progress_marker.progress_at(@language, @geo_state, @month_date.end_of_month), class: "activity-level-select") %>
                       </div>
                       <div class="input-field col s6">
                         <div class="spreadness-text"></div>
