@@ -25,6 +25,14 @@ $(document).ready ->
       return
     return
 
+  $('.year-month-select select').on 'change', ->
+    month = $(this).val()
+    month = month.replace('-', '')
+    $('a.language-link').each ->
+      this.href = this.href.replace(/\/\d{6}$/g, '/' + month )
+      return
+    return
+
   $('.month-select select').trigger 'change'
   $('.filter-trigger').trigger 'change'
 

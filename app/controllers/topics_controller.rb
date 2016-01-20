@@ -84,7 +84,6 @@ class TopicsController < ApplicationController
         @reports_by_pm_by_month[pm][report.report_date.strftime("%Y-%m")] << report
       end
     end
-    debugger
   end 
 
   def update_progress
