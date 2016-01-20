@@ -28,6 +28,8 @@ $(document).ready ->
   $('.year-month-select select').on 'change', ->
     month = $(this).val()
     month = month.replace('-', '')
+    if month == 'all'
+      month = '000000'
     $('a.language-link').each ->
       this.href = this.href.replace(/\/\d{6}$/g, '/' + month )
       return
