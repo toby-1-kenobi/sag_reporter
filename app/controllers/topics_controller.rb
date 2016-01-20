@@ -74,6 +74,8 @@ class TopicsController < ApplicationController
     end
     @language = Language.find(params[:language_id])
     @geo_state = GeoState.find(params[:geo_state_id])
+    @month = params[:month]
+    @year = @month.slice!(0,4)
     #TODO: check that the language belongs to the geo_state and return to assess_progress_select if its not
     @reports = ImpactReport.active.includes(:progress_markers, :reporter).where('impact_reports.geo_state' => @geo_state).joins(:languages).where("languages.id" => @language, 'impact_reports.report_date' => @from_date..@to_date).where.not('progress_markers.id' => nil ).order('progress_markers.id')
     @reports_by_pm_by_month = Hash.new
