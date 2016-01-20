@@ -1,10 +1,14 @@
 
-    <%= link_to outcomes_path + "/#{geo_state.id}/#{language.id}", class: "collection-item #{colour_class(language.colour)} waves-effect" do %>
+    <%= link_to outcomes_path + "/#{geo_state.id}/#{language.id}/000000", class: "collection-item #{colour_class(language.colour)} waves-effect language-link" do %>
       <%= language.name %>
       <div class="right">
-      <% (start_from..up_to).select{ |d| d.day == 1 }.each do |date| %>
-        <% report_count = language.tagged_impact_report_count(geo_state, date.beginning_of_month, date.end_of_month) %>
-        &nbsp; <span class="filterable-item tooltipped" data-filter-label="month" data="all,<%= date.strftime("%Y-%m") %>" data-delay="50" data-tooltip="<%= date.strftime("%B %Y") %> has <%= pluralize report_count, "impact report" %> for <%= language.name %>"><%= report_count %></span>
+      <%
+      monthly_reports = language.tagged_impact_reports_monthly(geo_state, start_from, up_to)
+      (start_from..up_to).select{ |d| d.day == 1 }.each do |date|
+        year_month = date.strftime("%Y-%m")
+        report_count = monthly_reports[year_month] ? monthly_reports[year_month].count : 0
+        %>
+        &nbsp; <span class="filterable-item tooltipped" data-filter-label="month" data="all,<%= year_month %>" data-delay="50" data-tooltip="<%= "#{date.strftime("%B %Y")} has #{pluralize report_count, 'impact report'} for #{language.name}" %>"><%= report_count %></span>
       <% end %>
       </div>
     <% end %>

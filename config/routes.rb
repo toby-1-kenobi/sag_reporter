@@ -56,7 +56,7 @@ Rails.application.routes.draw do
   get 'events/new'
 
   get 'outcomes/select' => 'topics#assess_progress_select', as: 'select_to_assess'
-  get 'outcomes/:geo_state_id/:language_id' => 'topics#assess_progress', as: 'assess_progress'
+  get 'outcomes/:geo_state_id/:language_id/:month' => 'topics#assess_progress', as: 'assess_progress'
   post 'outcomes/:geo_state_id/:language_id' => 'topics#update_progress'
   get 'outcomes' => 'topics#outcomes', as: 'outcomes'
   get 'outcomes/:id' => 'languages#outcomes_table'
