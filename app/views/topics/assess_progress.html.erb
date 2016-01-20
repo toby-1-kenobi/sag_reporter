@@ -38,7 +38,8 @@
 
   <ul class="tabs z-depth-1">
     <% @progress_markers_by_weight.keys.each do |outcome_area| %>
-      <li class="tab col s3"><a href="<%= "#oa-#{outcome_area.id}" %>"><%= outcome_area.name.split.first %></a></li>
+      <% report_count = @reports_by_oa[outcome_area.id] ? @reports_by_oa[outcome_area.id].count : 0 %>
+      <li class="tab col s3"><a href="<%= "#oa-#{outcome_area.id}" %>"><%= outcome_area.name.split.first %> (<%= report_count %>)</a></li>
     <% end %>
   </ul>
   <% @progress_markers_by_weight.keys.each do |outcome_area| %>
