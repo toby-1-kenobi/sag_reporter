@@ -1,6 +1,5 @@
-<div class="card report green lighten-3 filterable-item" id="report-<%= impact_report.id %>" data-filter-label="month" data-month="<%= month %>">
+<div class="card report green lighten-3" id="report-<%= impact_report.id %>">
   <div class="card-content">
-    <div><%= time_ago_in_words(impact_report.report_date) %> ago</div>
     <p><%= impact_report.content %></p>
     <% if impact_report.reporter %>
       <div class="reporter"><%= impact_report.reporter.name %></div>
