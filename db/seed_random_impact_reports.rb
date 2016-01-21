@@ -31,12 +31,12 @@ progress_markers = ProgressMarker.all
     report_date: Date.new(year, month_possibilities.sample)
     })
   begin
-    report.languages << languages.take(rand 3)
+    report.languages << languages.take((rand 3)+1)
   rescue ActiveRecord::RecordNotUnique
     print '^l'
   end
   begin
-    report.progress_markers << progress_markers.take(rand 4)
+    report.progress_markers << progress_markers.take((rand 4)+1)
   rescue ActiveRecord::RecordNotUnique
     print '^p'
   end
