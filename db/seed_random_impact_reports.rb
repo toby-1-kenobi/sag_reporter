@@ -1,3 +1,5 @@
+# Generate random impact reports linked to random languages and progress markers
+
 total_amount = 100
 
 puts "Adding #{total_amount} random impact reports to the database."
