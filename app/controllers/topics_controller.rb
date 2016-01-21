@@ -76,9 +76,10 @@ class TopicsController < ApplicationController
     @geo_state = GeoState.find(params[:geo_state_id])
     #TODO: check that the language belongs to the geo_state and return to assess_progress_select if its not
     @monthly_reports = @language.tagged_impact_reports_monthly(@geo_state, @from_date, @to_date)
-    @month = params[:month]
-    if @month == "000000" then @month = Date.today.strftime("%Y%m") end
-    @year = @month.slice!(0,4)
+    @yearmonth = params[:yearmonth]
+    if @yearmonth == "000000" then @yearmonth = Date.today.strftime("%Y%m") end
+    @year = @yearmonth.slice(0,4)
+    @month = @yearmonth.slice(4,2)
     @month_date = Date.new(@year.to_i, @month.to_i)
     @reports = ImpactReport.active.includes(:progress_markers, :reporter).where('impact_reports.geo_state' => @geo_state).joins(:languages).where("languages.id" => @language, 'impact_reports.report_date' => @month_date..@month_date.end_of_month).where.not('progress_markers.id' => nil ).order('progress_markers.id')
     @reports_by_pm = Hash.new
@@ -94,22 +95,35 @@ class TopicsController < ApplicationController
   end 
 
   def update_progress
-    outcome_area = Topic.find(params[:topic_id])
     language = Language.find(params[:language_id])
-    year = Date.current.year
-    if params[:date][:month].to_i > Date.current.month
-      year -= 1
-    end
+    month = params[:yearmonth]
+    year = month.slice!(0,4)
+    successful_updates = Array.new
+    failed_updates = Hash.new
     # We're only updating progress markers where the marker has been selected as done
     # so filter the hash before looping
-    params[:progress_marker].select{ |pm, l| params[:marker_complete][pm] }.each do |marker, level|
-      progress_marker = ProgressMarker.find(marker)
-      language_progress = LanguageProgress.find_or_create_by(language: language, progress_marker: progress_marker)
-      ProgressUpdate.create(language_progress: language_progress, progress: level, user: current_user, geo_state_id: params[:geo_state_id], year: year, month: params[:date][:month])
-      flash.now['success'] = "Progress Markers updated for #{language.name} #{outcome_area.name}."
+    if params[:marker_complete]
+      params[:progress_marker].select{ |pm, l| params[:marker_complete][pm] }.each do |marker, level|
+        progress_marker = ProgressMarker.find(marker)
+        language_progress = LanguageProgress.find_or_create_by(language: language, progress_marker: progress_marker)
+        update = ProgressUpdate.create(language_progress: language_progress, progress: level, user: current_user, geo_state_id: params[:geo_state_id], year: year, month: month)
+        if update.persisted?
+          successful_updates << update
+        else
+          failed_updates[progress_marker.name] = update
+        end
+      end
     end
-    @topics = Topic.all
-    render 'assess_progress_select'
+    if failed_updates.any?
+      fail_msg = "These progress marker levels were NOT updated for #{language.name}: "
+      fail_msg.concat failed_updates.keys.join(', ')
+      flash['error'] = fail_msg
+    elsif successful_updates.any?
+      flash['success'] = "#{successful_updates.count} progress marker levels updated for #{language.name}."
+    else
+      flash['warning'] = "No progress marker levels were updated."
+    end
+    redirect_to select_to_assess_path
   end
 
   def outcomes
