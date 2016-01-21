@@ -14,13 +14,18 @@ class LanguageProgress < ActiveRecord::Base
   	progress_updates.maximum('created_at')
   end
 
-  def current_value(geo_state = nil)
+  # get the value of this language progress at a particular date (month)
+  # if the language isn't in the geo_state provided then it returns 0
+  def value_at(geo_state = nil, date = nil)
+    date ||= Date.today
     if geo_state
-      progress_updates.where(geo_state: geo_state).empty? ? 0 : progress_updates.where(geo_state: geo_state).order("year, month, created_at").last.progress
+      valid_updates = progress_updates.where(geo_state: geo_state).select{ |u| Date.new(u.year, u.month) <= date }
+      valid_updates.empty? ? 0 : valid_updates.max_by{ |u| u.created_at.to_datetime.change(year: u.year, month: u.month) }.progress
     else
-      # This gives you the latest update across the whole language
+      # This gives you the value across the whole language
       # I don't think it's very useful since all updates are by state
-    	progress_updates.empty? ? 0 : progress_updates.order("year, month, created_at").last.progress
+      valid_updates = progress_updates.select{ |u| Date.new(u.year, u.month) <= date }
+    	valid_updates.empty? ? 0 : valid_updates.max_by{ |u| u.created_at.to_datetime.change(year: u.year, month: u.month) }.progress
     end
   end
 

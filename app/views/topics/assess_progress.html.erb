@@ -1,4 +1,4 @@
-<% provide(:title, "Assess #{@outcome_area.name} for #{@language.name}") %>
+<% provide(:title, "Assess Progress Markers for #{@language.name}") %>
 
 <datalist id="pm-data" class="hide">
   <% ProgressMarker.spread_text.each do |key, text| %>
@@ -7,29 +7,61 @@
 </datalist>
 
 <%= form_tag({controller: "topics", action: "update_progress"}, method: "post") do %>
-<%= hidden_field_tag("geo_state_id", @geo_state.id) %>
-<div class="row">
-  <div class="col s12 m6 l5">
-  	<%= render partial: 'topic', object: @outcome_area %>
-  </div>
-  <div class="col s12 m6 l5">
-  	<%= render partial: 'languages/language_card', object: @language %>
-  </div>
-  <div class="col s12 m6 l2 input-field month-select">
-    <%= select_month(Date.today) %>
-  </div>
-</div>
 
-<div class="row">
-    <% @progress_markers_by_weight.each do |weight, progress_marker_group| %>
-      <div class="row">
-        <h2><%= ProgressMarker.weight_text[weight] %></h2>
+  <div class="row">
+    <div class="col s12 m6 l4">
+      <%= render partial: 'languages/language_card', object: @language %>
+      <%= link_to select_to_assess_path, class: "btn waves-effect" do %>
+        <i class="material-icons left">arrow_back</i>
+        Change language
+      <% end %>
+    </div>
+    <div class="col s12 m6 l4 input-field year-month-select">
+      <a class='dropdown-button btn' href='#' data-activates='month-dropdown'><%= "#{Date::MONTHNAMES[@month.to_i]} #{@year}" %></a>
+      <ul id='month-dropdown' class='dropdown-content'>
+        <% (@from_date..@to_date).select{ |d| d.day == 1 }.each do |date| %>
+          <% count = @monthly_reports[date.strftime("%Y-%m")] ?
+          @monthly_reports[date.strftime("%Y-%m")].count :
+          0 %>
+          <li>
+            <% if date.strftime("%Y%m") == @year + @month %>
+              <a><%= "#{date.strftime("%B %Y")} (#{count})" %></a>
+            <% else %>
+              <%= link_to "#{date.strftime("%B %Y")} (#{count})", assess_progress_path(geo_state_id: @geo_state.id, language_id: @language.id, month: date.strftime("%Y%m")) %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <ul class="tabs z-depth-1">
+    <% @progress_markers_by_weight.keys.each do |outcome_area| %>
+      <% report_count = @reports_by_oa[outcome_area.id] ? @reports_by_oa[outcome_area.id].count : 0 %>
+      <li class="tab col s3"><a href="<%= "#oa-#{outcome_area.id}" %>"><%= outcome_area.name.split.first %> (<%= report_count %>)</a></li>
+    <% end %>
+  </ul>
+  <% @progress_markers_by_weight.keys.each do |outcome_area| %>
+    <div id="<%= "oa-#{outcome_area.id}" %>">
+      <%= render partial: 'topic', object: outcome_area %>
+      <% @progress_markers_by_weight[outcome_area].each do |weight, progress_marker_group| %>
+        <h3><%= ProgressMarker.weight_text[weight] %></h3>
         <ul class="collapsible" data-collapsible="accordion">
           <% progress_marker_group.each do |progress_marker| %>
             <li class="progress-marker">
               <div class="collapsible-header tooltipped" data-tooltip="<%= progress_marker.description %>"><%= progress_marker.name %>
-              <span class="right report-count"><%= @reports.select{ |r| r.progress_markers.include?(progress_marker) }.count %></span>
+                <% if @reports_by_pm[progress_marker] %>
+                  <span class="right report-count" %>
+                    <%= @reports_by_pm[progress_marker].count %>
+                  </span>
+                <% else %>
+                  <span class="right report-count">0</span>
+                <% end %>
+                <% if @existing_updates_this_month[progress_marker.id] %>
+                  <i class="small material-icons right green-text text-darken-1">check_circle</i>
+                <% end %>
               </div>
+
               <div class="collapsible-body">
 
                 <div class="row">
@@ -40,40 +72,43 @@
 
                     <div class="row">
                       <div class="col s6 range-field">
+
                         <%= label_tag("progress_marker_#{progress_marker.id}", "Asses the level of activity this month for #{@language.name}") %>
-                      	<%= range_field('progress_marker', progress_marker.id, in: ProgressMarker.spread_text.keys, list: "pm-data", value: progress_marker.current_progress(@language, @geo_state), class: "activity-level-select") %>
+                      	<%= range_field('progress_marker', progress_marker.id, in: ProgressMarker.spread_text.keys, list: "pm-data", value: progress_marker.progress_at(@language, @geo_state, @month_date.end_of_month), class: "activity-level-select") %>
                       </div>
                       <div class="input-field col s6">
                         <div class="spreadness-text"></div>
                         <%= check_box_tag("marker_complete[#{progress_marker.id}]") %>
                         <%= label_tag("marker_complete_#{progress_marker.id}", "Done") %>
                       </div>
+                      <% if @existing_updates_this_month[progress_marker.id] %>
+                        <div class="update-exists col s12">
+                          <i class="large material-icons right green-text text-darken-1">check_circle</i>
+                          <p>The level for this one has already been set for this month. You may change it.</p>
+                        </div>
+                      <% end %>
                     </div>
 
                   </div>
                 </div>
-                
-                <% if @reports.select{ |r| r.progress_markers.include?(progress_marker) }.count > 0 %>
-                  <% @reports.select{ |r| r.progress_markers.include?(progress_marker) }.in_groups_of(3, false) do |report_group| %>
-          				  <div class="row">
-          				    <% report_group.each do |report| %>
-          				      <div class="col s12 m6 l4">
-          				        <%= render partial: "impact_reports/report", object: report, locals: {time: true, languages: false, topics: false, wrapper: false} %>
-          				      </div>
-          				    <% end %>
-          				  </div>
+                <div class="row">
+                  <% if @reports_by_pm[progress_marker] %>
+                    <% @reports_by_pm[progress_marker].each do |report| %>
+        				      <div class="col s12 m6 l4">
+        				        <%= render partial: "impact_report", object: report %>
+        				      </div>
+                    <% end %>
+                  <% else %>
+                    <p>There are no impact reports to show.</p>
                   <% end %>
-                <% else %>
-                  <p>There are no impact reports for <%= @language.name %> with this progress marker.</p>
-                <% end %>
+                </div>
               </div>
             </li>
           <% end %>
         </ul>
-      </div>
-    <% end %>
-  </div>
-
+      <% end %>
+    </div>
+  <% end %>
   <div class="row">
       <%= button_tag( :class => "btn waves-effect waves-light right") do %>
         Submit Update <i class="material-icons right">send</i>

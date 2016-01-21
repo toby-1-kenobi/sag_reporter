@@ -1,19 +1,28 @@
 <% provide(:title, 'Assess outcome progress by language') %>
 <h1>Assess outcome progress by language</h1>
 
-<div id="outcome-area-select">
-  <p>First choose an outcome area to assess:</p>
-  <%= render @topics %>
+<div class="row">
+  <div class="col s12 m6 l4">Show report counts for...</div>
+  <div class="col s12 m6 l4 year-month-select"><%= render partial: 'shared/year_month_select', locals: {start_from: @from_date, up_to: @to_date, add_select_options: [['Last 12 months', 'all']], options: {class: "filter-trigger", "data-filter-trigger-label" => "month"}} %></div>
 </div>
 
-<div style="display: none" id="language-select">
-  <p>Now choose a state and language to assess by:</p>
+<div class"row" id="language-select">
+  <p>Choose a <%= @geo_states.count > 1 ? "state and" : "" %> language to assess by:</p>
   <ul class="collapsible">
     <% current_user.geo_states.each do |geo_state| %>
       <li>
-        <div class="collapsible-header green lighten-2"><%= geo_state.name %></div>
+        <div class="collapsible-header green lighten-2 <%= @geo_states.count == 1 ? "active" : "" %>"><%= geo_state.name %>
+          <div class="report-counts right">
+            <% @month_range.each do |date|
+              report_count = geo_state.tagged_impact_report_count(date.beginning_of_month, date.end_of_month) %>
+              &nbsp; <span class="filterable-item tooltipped" data-filter-label="month" data="all,<%= date.strftime("%Y-%m") %>" data-delay="50" data-tooltip="<%= date.strftime("%B %Y") %> has <%= pluralize report_count, "impact report" %> for <%= geo_state.name %>">
+                <%= report_count %>
+              </span>
+            <% end %>
+          </div>
+        </div>
         <div class="collapsible-body collection">
-        	<%= render partial: 'topics/language', collection: geo_state.minority_languages.order(:name), locals: {geo_state_id: geo_state.id} %>
+        	<%= render partial: 'topics/language', collection: geo_state.minority_languages.order(:name), locals: {geo_state: geo_state, start_from: @from_date, up_to: @to_date} %>
         </div>
       </li>
     <% end %>
