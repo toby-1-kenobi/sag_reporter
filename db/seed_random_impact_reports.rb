@@ -30,11 +30,13 @@ progress_markers = ProgressMarker.all
     geo_state: geo_state,
     report_date: Date.new(year, month_possibilities.sample)
     })
+  languages.shuffle!
   begin
     report.languages << languages.take((rand 3)+1)
   rescue ActiveRecord::RecordNotUnique
     print '^l'
   end
+  progress_markers.shuffle!
   begin
     report.progress_markers << progress_markers.take((rand 4)+1)
   rescue ActiveRecord::RecordNotUnique
