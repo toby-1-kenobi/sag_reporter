@@ -57,6 +57,9 @@
                 <% else %>
                   <span class="right report-count">0</span>
                 <% end %>
+                <% if @existing_updates_this_month[progress_marker.id] %>
+                  <i class="small material-icons right green-text text-darken-1">check_circle</i>
+                <% end %>
               </div>
 
               <div class="collapsible-body">
@@ -78,6 +81,12 @@
                         <%= check_box_tag("marker_complete[#{progress_marker.id}]") %>
                         <%= label_tag("marker_complete_#{progress_marker.id}", "Done") %>
                       </div>
+                      <% if @existing_updates_this_month[progress_marker.id] %>
+                        <div class="update-exists col s12">
+                          <i class="large material-icons right green-text text-darken-1">check_circle</i>
+                          <p>The level for this one has already been set for this month. You may change it.</p>
+                        </div>
+                      <% end %>
                     </div>
 
                   </div>
