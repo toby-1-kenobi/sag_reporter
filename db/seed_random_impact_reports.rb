@@ -18,9 +18,9 @@ unless geo_state
   fail "you need to have States in the db first!"
 end
 
-languages = geo_state.languages
+languages = geo_state.languages.to_a
 
-progress_markers = ProgressMarker.all
+progress_markers = ProgressMarker.all.to_a
 
 (0..total_amount).each do |index|
   report = ImpactReport.create({
@@ -30,11 +30,13 @@ progress_markers = ProgressMarker.all
     geo_state: geo_state,
     report_date: Date.new(year, month_possibilities.sample)
     })
+  languages.shuffle!
   begin
     report.languages << languages.take((rand 3)+1)
   rescue ActiveRecord::RecordNotUnique
     print '^l'
   end
+  progress_markers.shuffle!
   begin
     report.progress_markers << progress_markers.take((rand 4)+1)
   rescue ActiveRecord::RecordNotUnique
