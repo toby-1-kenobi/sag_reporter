@@ -65,6 +65,15 @@
     ]
   end
 
+  def months
+    [
+      9,
+      10,
+      11,
+      12
+    ]
+  end
+
 bools = ['false', 'false', 'false', 'true'] %>
 <% (1..15).each do |index| %>
 impact-report-unassigned-<%= index %>:
@@ -72,10 +81,12 @@ impact-report-unassigned-<%= index %>:
   content: <%= Faker::Lorem.paragraph %>
   state: <%= Report.states['active'] %>
   languages: <%= minority_languages.sample %>
+  geo_state: nb
   mt_society: <%= bools.sample %>
   mt_church: <%= bools.sample %>
   needs_society: <%= bools.sample %>
   needs_church: <%= bools.sample %>
+  report_date: <%= Date.new(2015, months.sample) %>
 <% end %>
 
 <% (1..50).each do |index| %>
@@ -84,8 +95,10 @@ impact-report-santali-sd-<%= index %>:
   content: <%= Faker::Lorem.paragraph %>
   state: <%= Report.states['active'] %>
   languages: santali
+  geo_state: nb
   mt_society: <%= bools.sample %>
   mt_church: <%= bools.sample %>
   needs_society: <%= bools.sample %>
   needs_church: <%= bools.sample %>
+  report_date: <%= Date.new(2015, months.sample) %>
 <% end %>
