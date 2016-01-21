@@ -24,10 +24,10 @@
           @monthly_reports[date.strftime("%Y-%m")].count :
           0 %>
           <li>
-            <% if date.strftime("%Y%m") == @year + @month %>
+            <% if date.strftime("%Y%m") == @yearmonth %>
               <a><%= "#{date.strftime("%B %Y")} (#{count})" %></a>
             <% else %>
-              <%= link_to "#{date.strftime("%B %Y")} (#{count})", assess_progress_path(geo_state_id: @geo_state.id, language_id: @language.id, month: date.strftime("%Y%m")) %>
+              <%= link_to "#{date.strftime("%B %Y")} (#{count})", assess_progress_path(geo_state_id: @geo_state.id, language_id: @language.id, yearmonth: date.strftime("%Y%m")) %>
             <% end %>
           </li>
         <% end %>
