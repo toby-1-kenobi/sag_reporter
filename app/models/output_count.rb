@@ -8,6 +8,7 @@ class OutputCount < ActiveRecord::Base
 
   after_initialize :date_init
   validate :language_must_be_in_state
+  validates :amount, :numericality => { :greater_than_or_equal_to => 0 }
 
   private
 

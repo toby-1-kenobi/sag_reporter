@@ -35,7 +35,7 @@ class OutputTalliesController < ApplicationController
       end
   	end
     if @failedCounts.length == 0
-    	flash.now['success'] = "Numbers recorded"
+    	flash['success'] = "Thank you. Your numbers have been recorded."
     	redirect_to root_path
     else
       flash.now['error'] = "Some numbers could not be recorded"

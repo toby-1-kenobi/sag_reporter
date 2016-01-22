@@ -13,11 +13,12 @@ class Event < ActiveRecord::Base
 
   validates :event_date, presence: true
   validates :event_label, presence: true
+  validates :participant_amount, :numericality => { :greater_than_or_equal_to => 0 }
 
   def self.yes_no_questions(user)
     questions = Hash.new
     Report.categories.each do |key, value|
-      questions[key] = "#{Translation.get_string('anything_said', user)} #{content_tag(:strong, value.translation_for(user))}?"
+      questions[key] = Translation.get_string('anything_said', user) + "<strong>".html_safe + value.translation_for(user) + "</strong>?".html_safe
     end
     questions['plan'] = Translation.get_string('hopes_challenges', user)
     questions['impact'] = Translation.get_string('other_impact', user)
