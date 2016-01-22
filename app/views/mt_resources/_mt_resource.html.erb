@@ -4,7 +4,7 @@
       <span class="card-title orange-text text-darken-2"><%= mt_resource.name %></span>
       <% unless mt_resource.contributers.empty? %>
         <p class="contributers">
-          <%= mt_resource.contributers.map{ |p| p.name }.join("<br />").html_safe %>
+          <%= mt_resource.contributers.map{ |p| p.name }.join("<br />".html_safe) %>
         </p>
       <% end %>
       <p><%= mt_resource.description %></p>

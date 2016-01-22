@@ -14,7 +14,7 @@
 <% end %>
 
 <% unless @event.languages.empty? %>
-  <p class="event-languages">Concerning <%= @event.languages.map{ |l| "<strong>#{l.name}</strong>" }.to_sentence.html_safe %> languages.</p>
+  <p class="event-languages">Concerning <%= @event.languages.map{ |l| content_tag(:strong, l.name) }.to_sentence %> languages.</p>
 <% end %>
 
 <!--h2>People Attending</h2-->

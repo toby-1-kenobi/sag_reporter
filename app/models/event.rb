@@ -17,7 +17,7 @@ class Event < ActiveRecord::Base
   def self.yes_no_questions(user)
     questions = Hash.new
     Report.categories.each do |key, value|
-      questions[key] = "#{Translation.get_string('anything_said', user)} <strong>#{value.translation_for(user)}</strong>?".html_safe
+      questions[key] = "#{Translation.get_string('anything_said', user)} #{content_tag(:strong, value.translation_for(user))}?"
     end
     questions['plan'] = Translation.get_string('hopes_challenges', user)
     questions['impact'] = Translation.get_string('other_impact', user)
