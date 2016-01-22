@@ -54,16 +54,6 @@ view_all_topics:
   description: View all topics
   category: <%= Permission.categories['topics'] %>
 
-create_topic:
-  name: create_topic
-  description: Add another topic
-  category: <%= Permission.categories['topics'] %>
-
-edit_topic:
-  name: edit_topic
-  description: Edit details about a topic
-  category: <%= Permission.categories['topics'] %>
-
 view_all_reports:
   name: view_all_reports
   description: View all reports
