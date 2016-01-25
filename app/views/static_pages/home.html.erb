@@ -10,6 +10,13 @@
     <% end %>
   <% end %>
 
+  <% if current_user.can_create_report? %>
+    <%= link_to 'https://docs.google.com/forms/d/1NQHDwomtgh2kVmx1BZRzDuv1lv__SaVzAHfBOH_JlXU/viewform?c=0&w=1', class: "collection-item waves-effect", id: "field-report-link" do %>
+      <i class="material-icons">create</i>
+      Report on a workshop
+    <% end %>
+  <% end %>
+
 
   <% if current_user.can_create_event? %>
     <%= link_to events_new_path, class: "collection-item waves-effect", id: "event-report-link" do %>
