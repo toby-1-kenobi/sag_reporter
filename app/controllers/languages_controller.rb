@@ -41,6 +41,7 @@ class LanguagesController < ApplicationController
       flash["success"] = "Language updated"
       redirect_to @language
     else
+      @colour_columns = 3
       render 'edit'
     end
   end

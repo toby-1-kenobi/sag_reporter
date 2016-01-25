@@ -5,31 +5,35 @@ hope:
   content: "The pastor wants to expand women's ministry"
   state: <%= Report.states['active'] %>
   languages: bodo
-  created_at: <%= 2.days.ago %>
+  geo_state: nb
+  report_date: <%= 2.days.ago %>
 
 event:
   reporter: emma
   content: "No one is coming to the library"
   state: <%= Report.states['active'] %>
   languages: toto
+  geo_state: nb
   topics: education
-  created_at: <%= 2.weeks.ago %>
+  report_date: <%= 2.weeks.ago %>
 
 impact:
   reporter: richard
   content: "We're going to make a CD of songs"
   state: <%= Report.states['active'] %>
   languages: toto
+  geo_state: nb
   topics: bible
-  created_at: <%= 2.months.ago %>
+  report_date: <%= 2.months.ago %>
 
 old:
   reporter: andrew
   content: old report
   state: <%= Report.states['active'] %>
   languages: toto
+  geo_state: nb
   topics: bible
-  created_at: <%= 2.years.ago %>
+  report_date: <%= 2.years.ago %>
 
 <%
 users = [:richard, :emma, :andrew]
@@ -43,7 +47,8 @@ report-<%= index %>:
   content: <%= Faker::Lorem.paragraph %>
   state: <%= Report.states[states.sample] %>
   languages: <%= languages.sample %>
+  geo_state: nb
   topics: <%= topics.sample %>
-  created_at: <%= rand(13.months).seconds.ago %>
+  report_date: <%= rand(13.months).seconds.ago %>
 <% end %>
 
