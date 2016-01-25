@@ -23,7 +23,7 @@ describe Language do
   it "totals all outcome area scores" do
     outcome_areas = [stub, stub, stub]
     Topic.expects(:all).returns outcome_areas
-    language.expects(:outcome_month_score).at_least_once.returns(5,7,3)
+    language.expects(:outcome_month_score).times(3).returns(5,7,3)
     language.total_month_score(assam, 2015, 11).must_equal 15
   end
   
