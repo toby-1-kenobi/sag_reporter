@@ -10,4 +10,5 @@ resource-<%= index %>:
   name: <%= Faker::Name.name %>
   description: <%= Faker::Lorem.paragraph %>
   created_at: <%= rand(8.months).seconds.ago %>
+  geo_state: nb
 <% end %>

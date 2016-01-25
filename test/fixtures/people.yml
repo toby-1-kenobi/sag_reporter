@@ -11,4 +11,5 @@ user-<%= i %>:
   intern: false
   facilitator: false
   pastor: false
+  geo_state: nb
 <% end %>
