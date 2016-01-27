@@ -9,26 +9,9 @@
       <li>
         <div class="collapsible-header <%= colour_class(language.colour) %>"><%= language.name %></div>
         <div class="collapsible-body">
-          <div class="row">
-          <% table_data = language.outcome_table_data(@outcome_areas, geo_state) %>
-          <table class="striped">
-            <thead>
-              <tr>
-            	  <% table_data.shift.each do |cell_content| %>
-            	    <th><%= cell_content %></th>
-            	  <% end %>
-            	</tr>
-            </thead>
-            <tbody>
-            	<% table_data.each do |row| %>
-            	  <tr>
-            	  	<% row.each do |cell| %>
-            	  	  <td><%= cell %></td>
-            	  	<% end %>
-            	  </tr>
-            	<% end %>
-            </tbody>
-          </table>
+
+          <div class="row" id="table-<%= geo_state.id %>-<%= language.id %>">
+            <%= link_to "Get table", outcomes_table_path(language_id: language.id, geo_state_id: geo_state.id), remote: true, method: 'GET', class: "btn right waves-effect get-table-button" %>
           </div>
 
           <div class="row" id="chart-<%= geo_state.id %>-<%= language.id %>">
