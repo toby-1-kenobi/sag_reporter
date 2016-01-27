@@ -128,7 +128,10 @@ class TopicsController < ApplicationController
   end
 
   def outcomes
-    @languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+    @languages_by_state = Hash.new
+    current_user.geo_states.each do |geo_state|
+      @languages_by_state[geo_state] = geo_state.minority_languages.order("LOWER(languages.name)")
+    end
   end
 
   def get_chart
