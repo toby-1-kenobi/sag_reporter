@@ -128,6 +128,7 @@ class TopicsController < ApplicationController
   end
 
   def outcomes
+    @outcome_areas = Topic.all
     @languages_by_state = Hash.new
     current_user.geo_states.each do |geo_state|
       @languages_by_state[geo_state] = geo_state.minority_languages.order("LOWER(languages.name)")
@@ -135,6 +136,7 @@ class TopicsController < ApplicationController
   end
 
   def get_chart
+    @outcome_areas = Topic.all
     @language = Language.find(params[:language_id])
     @geo_state = GeoState.find(params[:geo_state_id])
     respond_to do |format|

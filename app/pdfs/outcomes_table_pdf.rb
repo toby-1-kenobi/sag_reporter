@@ -13,7 +13,7 @@ class OutcomesTablePdf < Prawn::Document
   end
 
   def table_content
-  	table @language.outcome_table_data(@geo_state) do
+  	table @language.outcome_table_data(@outcome_areas, @geo_state) do
       row(0).font_style = :bold
       self.header = true
   	end

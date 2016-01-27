@@ -67,6 +67,7 @@ class LanguagesController < ApplicationController
   end
 
   def outcomes_table
+    @outcome_areas = Topic.all
     @language = Language.find(params[:id])
     respond_to do |format|
       format.pdf do
