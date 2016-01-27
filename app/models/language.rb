@@ -110,7 +110,7 @@ class Language < ActiveRecord::Base
       table.push(row)
     end
 
-    table.push(["Totals"] + dates_by_month.map{ |d| total_month_score(d.year, d.month) })
+    table.push(["Totals"] + dates_by_month.map{ |d| total_month_score(geo_state, d.year, d.month) })
 
     return table
   end
