@@ -83,15 +83,25 @@ class Language < ActiveRecord::Base
 
   end
 
-  def outcome_month_score(geo_state, outcome_area, year = Date.today.year, month = Date.today.month)
-    LanguageProgress.includes(:progress_marker).where(language: self, "progress_markers.topic_id" => outcome_area.id).inject(0){ |sum, lp| sum + lp.month_score(geo_state, year, month) }
+  # the outcome score for this language in a particular outcome area on a particular month
+  # the optional parameter all_lps is let it do the calculation without having to hit the
+  # database to retrieve the language_progresses. If using this parameter all_lps should
+  # include progress markers like this:
+  # all_lps = language_progresses.includes(:progress_marker)
+  def outcome_month_score(geo_state, outcome_area, year = Date.today.year, month = Date.today.month, all_lps = nil)
+    if all_lps
+      oa_language_progresses = all_lps.select{ |lp| lp.progress_marker.topic_id == outcome_area.id }
+    else
+      oa_language_progresses = language_progresses.includes(:progress_marker).where("progress_markers.topic_id" => outcome_area.id)
+    end
+    oa_language_progresses.inject(0){ |sum, lp| sum + lp.month_score(geo_state, year, month) }
   end
 
   def total_month_score(geo_state, year = Date.today.year, month = Date.today.month)
     Topic.all.inject(0){ |sum, oa| sum + outcome_month_score(geo_state, oa, year, month) }
   end
 
-  def outcome_table_data(geo_state, options = {})
+  def outcome_table_data(outcome_areas, geo_state, options = {})
     options[:from_date] ||= 6.months.ago
     options[:to_date] ||= Date.today
     dates_by_month = (options[:from_date].to_date..options[:to_date].to_date).select{ |d| d.day == 1}
@@ -102,10 +112,12 @@ class Language < ActiveRecord::Base
     dates_by_month.each{ |date| headers.push(date.strftime("%B %Y")) }
     table.push(headers)
 
-    Topic.all.each do |outcome_area|
+    all_lps = language_progresses.includes(:progress_marker)
+
+    outcome_areas.each do |outcome_area|
       row = [outcome_area.name]
       dates_by_month.each do |date|
-        row.push(outcome_month_score(geo_state, outcome_area, date.year, date.month))
+        row.push(outcome_month_score(geo_state, outcome_area, date.year, date.month, all_lps))
       end
       table.push(row)
     end
@@ -115,8 +127,8 @@ class Language < ActiveRecord::Base
     return table
   end
 
-  def outcome_chart_data(geo_state, options = {})
-    table_data = outcome_table_data(geo_state, options)
+  def outcome_chart_data(outcome_areas, geo_state, options = {})
+    table_data = outcome_table_data(outcome_areas, geo_state, options)
     headers = table_data.shift
     headers.shift
     chart_data = Array.new

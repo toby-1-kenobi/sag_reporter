@@ -6,12 +6,25 @@ class LanguageProgress < ActiveRecord::Base
   # The language may be accross multiple geo_states
   # the progress_updates each have a corresponding geo_state.
 
+  CACHE_TIMEOUT = 5.seconds
+
   belongs_to :language
   belongs_to :progress_marker
   has_many :progress_updates, dependent: :destroy
 
   def last_updated
   	progress_updates.maximum('created_at')
+  end
+
+  def progress_updates_geo_state(geo_state)
+    @progress_updates_by_state_cache ||= Hash.new
+    @progress_updates_by_state_cache_time ||= Hash.new
+    
+    if !@progress_updates_by_state_cache[geo_state] or @progress_updates_by_state_cache_time[geo_state] < CACHE_TIMEOUT.ago
+      @progress_updates_by_state_cache_time[geo_state] = Time.now
+      @progress_updates_by_state_cache[geo_state] = progress_updates.where(geo_state: geo_state)
+    end
+    return @progress_updates_by_state_cache[geo_state]
   end
 
   # get the value of this language progress at a particular date (month)
@@ -33,7 +46,7 @@ class LanguageProgress < ActiveRecord::Base
   # and use this to get the score for that month
   def month_score(geo_state, year = Date.today.year, month = Date.today.month)
   	cutoff = Date.new(year, month, -1).end_of_day
-    state_updates = progress_updates.where(geo_state: geo_state).select{ |pu| pu.progress_date <= cutoff }
+    state_updates = progress_updates_geo_state(geo_state).select{ |pu| pu.progress_date <= cutoff }
     # if more than one update shares the same progress_date then max_by will select the first of these
     # we want the one added most recently so we reverse sort by created_at
   	return state_updates.empty? ? 0 : state_updates.sort{ |a,b| b.created_at <=> a.created_at }.max_by(&:progress_date).progress * progress_marker.weight
