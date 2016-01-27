@@ -1,7 +1,7 @@
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
-	
+
 $(document).ready ->
 
   $('.activity-level-select').on 'change', ->
@@ -33,6 +33,17 @@ $(document).ready ->
     $('a.language-link').each ->
       this.href = this.href.replace(/\/\d{6}$/g, '/' + month )
       return
+    return
+
+  # when a language outcome table is opened
+  # give enough time for the accordian to open then fetch the 
+  # chart by programatically clicking the get-chart button
+  $('.collapsible-header').on 'click', ->
+    that = this
+    setTimeout (->
+      $(that).next('.collapsible-body').find('.get-chart-button').trigger 'click'
+      return
+    ), 500
     return
 
   $('.month-select select').trigger 'change'
