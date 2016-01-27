@@ -32,7 +32,7 @@
           </div>
 
           <div class="row" id="chart-<%= language.id %>">
-            <%= link_to "Get chart", outcomes_chart_path(language_id: language.id), remote: true, method: 'GET', class: "btn right waves-effect get-chart-button" %>
+            <%= link_to "Get chart", outcomes_chart_path(language_id: language.id, geo_state_id: geo_state.id), remote: true, method: 'GET', class: "btn right waves-effect get-chart-button" %>
           </div>
 
           <div class="row">
