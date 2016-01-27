@@ -136,6 +136,7 @@ class TopicsController < ApplicationController
 
   def get_chart
     @language = Language.find(params[:language_id])
+    @geo_state = GeoState.find(params[:geo_state_id])
     respond_to do |format|
       format.js
     end
