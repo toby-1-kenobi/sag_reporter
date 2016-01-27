@@ -31,12 +31,12 @@
           </table>
           </div>
 
-          <div class="row" id="chart-<%= language.id %>">
+          <div class="row" id="chart-<%= geo_state.id %>-<%= language.id %>">
             <%= link_to "Get chart", outcomes_chart_path(language_id: language.id, geo_state_id: geo_state.id), remote: true, method: 'GET', class: "btn right waves-effect get-chart-button" %>
           </div>
 
           <div class="row">
-            <%= link_to "outcomes/#{language.id}.pdf", class: "btn waves-effect waves-light right" do %>
+            <%= link_to "outcomes/#{geo_state.id}/#{language.id}.pdf", class: "btn waves-effect waves-light right" do %>
               <i class="material-icons">file_download</i>
               Get PDF
             <% end %>

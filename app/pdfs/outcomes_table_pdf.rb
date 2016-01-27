@@ -1,7 +1,8 @@
 class OutcomesTablePdf < Prawn::Document
 
-  def initialize(language, geo_state)
+  def initialize(outcome_areas, language, geo_state)
     super(page_layout: :landscape)
+    @outcome_areas = outcome_areas
     @language = language
     @geo_state = geo_state
     header
