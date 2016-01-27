@@ -35,15 +35,17 @@ $(document).ready ->
       return
     return
 
-  # when a language outcome table is opened
+  # when a language outcome is opened fetch the table and the chart
+  # by programatically clicking the get-chart button
   # give enough time for the accordian to open then fetch the 
-  # chart by programatically clicking the get-chart button
+  # chart because it doesn't display properly if rendered while hidden
   $('.collapsible-header').on 'click', ->
     that = this
     setTimeout (->
       $(that).next('.collapsible-body').find('.get-chart-button').trigger 'click'
       return
     ), 500
+    $(that).next('.collapsible-body').find('.get-table-button').trigger 'click'
     return
 
   $('.month-select select').trigger 'change'

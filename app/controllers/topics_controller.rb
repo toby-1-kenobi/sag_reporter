@@ -144,6 +144,34 @@ class TopicsController < ApplicationController
     end
   end
 
+  def get_table
+    @language = Language.find(params[:language_id])
+    @geo_state = GeoState.find(params[:geo_state_id])
+
+    table_data = @language.outcome_table_data(Topic.all, @geo_state)
+
+    table_head = "<thead><tr>"
+    table_data.shift.each do |cell|
+      table_head += "<th>#{cell}</th>"
+    end
+    table_head += "</tr></thead>"
+
+    table_body = "<tbody>"
+    table_data.each do |row|
+      table_body += "<tr>"
+      row.each do |cell|
+        table_body += "<td>#{cell}</td>"
+      end
+      table_body += "</tr>"
+    end
+    table_body += "</tbody>"
+
+    @table_content = "<table>#{table_head} #{table_body}</table>"
+    respond_to do |format|
+      format.js
+    end
+  end
+
     private
 
     def topic_params
