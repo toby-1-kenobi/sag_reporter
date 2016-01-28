@@ -24,7 +24,7 @@ def parse_district_row(row, geo_state_lookup, districts)
   end
   district = District.new(name: row[:districtname], geo_state: geo_state_lookup[row[:statename]])
   if district.valid?
-    districts[row[:districtname]] = district
+    districts[row[:districtid]] = district
     return true
   else
     puts "not adding district #{row[:districtname]} because it fails validity checks."
@@ -39,13 +39,13 @@ puts "importing sub-district data from #{sub_district_file}"
 sub_district_data = CSV.table(sub_district_file, converters: :blank_to_nil)
 
 def parse_sub_district_row(row, districts, sub_districts)
-  if !districts[row[:districtname]]
+  if !districts[row[:districtid]]
     puts "Can't find district #{row[:districtname]} so not adding sub-district #{row[:subdistrictname]}"
     return false
   end
-  sub_district = SubDistrict.new(name: row[:subdistrictname], district: districts[row[:districtname]])
+  sub_district = SubDistrict.new(name: row[:subdistrictname], district: districts[row[:districtid]])
   if sub_district.valid?
-    sub_districts[row[:subdistrictname]] = sub_district
+    sub_districts[row[:subdistrictid]] = sub_district
   else
     puts "not adding sub-district #{row[:subdistrictname]} because it fails validity checks."
   end
@@ -65,7 +65,7 @@ response = gets.chars.first
 if response == 'Y' || response == 'y'
   puts "please be patient while the database is updated. It may take a few minutes."
   if destroy_existing_data
-    puts "destroying exisitng districs and sub-districts."
+    puts "destroying existing #{District.count} districts and #{SubDistrict.count} sub-districts."
     District.destroy_all
   end
   puts "Saving new districts"
