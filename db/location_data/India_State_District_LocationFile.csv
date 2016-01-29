@@ -651,22 +651,23 @@ DistrictId,DistrictName,StateId,StateName
 650,Tehri Garhwal,35,Uttarakhand
 651,Udham Singh Nagar,35,Uttarakhand
 652,Uttarkashi,35,Uttarakhand
-653,Bankura,36,West Bengal
-654,Birbhum,36,West Bengal
-655,Burdwan (Bardhaman),36,West Bengal
-656,Cooch Behar,36,West Bengal
-657,Dakshin Dinajpur (South Dinajpur),36,West Bengal
-658,Darjeeling,36,West Bengal
-659,Hooghly,36,West Bengal
-660,Howrah,36,West Bengal
-661,Jalpaiguri,36,West Bengal
-662,Kolkata,36,West Bengal
-663,Malda,36,West Bengal
-664,Murshidabad,36,West Bengal
-665,Nadia,36,West Bengal
-666,North 24 Parganas,36,West Bengal
-667,Paschim Medinipur (West Medinipur),36,West Bengal
-668,Purba Medinipur (East Medinipur),36,West Bengal
-669,Purulia,36,West Bengal
-670,South 24 Parganas,36,West Bengal
-671,Uttar Dinajpur (North Dinajpur),36,West Bengal
+653,Bankura,36a,(southern) West Bengal
+654,Birbhum,36a,(southern) West Bengal
+655,Burdwan (Bardhaman),36a,(southern) West Bengal
+656,Cooch Behar,36b,(northern) West Bengal
+657,Dakshin Dinajpur (South Dinajpur),36b,(northern) West Bengal
+658,Darjeeling,36a,(southern) West Bengal
+659,Hooghly,36a,(southern) West Bengal
+660,Howrah,36a,(southern) West Bengal
+661,Jalpaiguri,36b,(northern) West Bengal
+662,Kolkata,36a,(southern) West Bengal
+663,Malda,36,(northern) West Bengal
+664,Murshidabad,36a,(southern) West Bengal
+665,Nadia,36a,(southern) West Bengal
+666,North 24 Parganas,36a,(southern) West Bengal
+667,Paschim Medinipur (West Medinipur),36a,(southern) West Bengal
+668,Purba Medinipur (East Medinipur),36a,(southern) West Bengal
+669,Purulia,36a,(southern) West Bengal
+670,South 24 Parganas,36a,(southern) West Bengal
+671,Uttar Dinajpur (North Dinajpur),36b,(northern) West Bengal
+672,Alipurduar,36b,(northern) West Bengal
