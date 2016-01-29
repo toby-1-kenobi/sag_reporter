@@ -23,13 +23,8 @@ def parse_district_row(row, geo_state_lookup, districts)
     return false
   end
   district = District.new(name: row[:districtname], geo_state: geo_state_lookup[row[:statename]])
-  if district.valid?
-    districts[row[:districtid]] = district
-    return true
-  else
-    puts "not adding district #{row[:districtname]} because it fails validity checks."
-    return false
-  end
+  districts[row[:districtid]] = district
+  return true
 end
 
 district_data.each{ |row| parse_district_row(row, geo_state_lookup, districts) }
@@ -44,11 +39,8 @@ def parse_sub_district_row(row, districts, sub_districts)
     return false
   end
   sub_district = SubDistrict.new(name: row[:subdistrictname], district: districts[row[:districtid]])
-  if sub_district.valid?
-    sub_districts[row[:subdistrictid]] = sub_district
-  else
-    puts "not adding sub-district #{row[:subdistrictname]} because it fails validity checks."
-  end
+  sub_districts[row[:subdistrictid]] = sub_district
+  return true
 end
 
 sub_district_data.each{ |row| parse_sub_district_row(row, districts, sub_districts) }
@@ -57,21 +49,31 @@ puts ""
 puts "#{districts.count} valid districts and #{sub_districts.count} valid sub-districts have been made."
 puts "Do you want to add them to the database?"
 if destroy_existing_data
-  puts "answering yes will destroy the current district and sub-district data!"
+  puts "answering yes will destroy the current #{District.count} districts and #{SubDistrict.count} sub-districts already in the database"
 end
-print "Y/n: "
+print "[Y/n] "
 response = gets.chars.first
 
 if response == 'Y' || response == 'y'
   puts "please be patient while the database is updated. It may take a few minutes."
   if destroy_existing_data
-    puts "destroying existing #{District.count} districts and #{SubDistrict.count} sub-districts."
+    puts "destroying existing districts and sub-districts."
     District.destroy_all
   end
   puts "Saving new districts"
-  districts.values.each{ |d| d.save }
+  districts.values.each do |d|
+    if !d.save
+      puts "could not save district #{d.name}"
+      d.errors.each{ |error| puts error }
+    end
+  end
   puts "Saving new sub-districts"
-  sub_districts.values.each{ |sd| sd.save }
+  sub_districts.values.each do |sd|
+    if !sd.save
+      puts "could not save sub-district #{sd.name}"
+      sd.errors.each{ |error| puts error }
+    end
+  end
   puts "Done!"
   puts "There are now #{District.count} districts and #{SubDistrict.count} sub-districts in the database."
 else
