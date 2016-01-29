@@ -10,12 +10,30 @@ describe District do
 
   it "wont be valid without a name" do
     district.name = ""
-    value(district).wont_be :valid?
+    district.valid?
+    value(district.errors[:name]).must_be :any?
   end
 
   it "wont be valid without a state" do
     district.geo_state = nil
-    value(district).wont_be :valid?
+    district.valid?
+    value(district.errors[:geo_state]).must_be :any?
+  end
+
+  it "must have a unique name within it's geo_state" do
+    district.geo_state = GeoState.take
+    d2 = district.dup
+    district.save
+    d2.valid?
+    value(d2.errors[:name]).must_be :any?
+  end
+
+  it "may have non-unique name if in different geo_states" do
+    d2 = district.dup
+    district.geo_state = GeoState.take
+    d2.geo_state = geo_state
+    district.save
+    value(d2).must_be :valid?
   end
 
 end
