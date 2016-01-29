@@ -113,3 +113,11 @@ mp:
 maharashtra:
   name: Maharashtra
   zone: central
+
+delhi:
+  name: Delhi
+  zone: north_west
+
+goa:
+  name: Goa
+  zone: west
