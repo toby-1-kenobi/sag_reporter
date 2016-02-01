@@ -4,6 +4,7 @@ class ProgressUpdate < ActiveRecord::Base
 	
   belongs_to :user
   belongs_to :language_progress
+  delegate :language, to: :language_progress
 
   validates :progress, presence: true, inclusion: ProgressMarker.spread_text.keys
   validates :month, presence: true, inclusion: 1..12
