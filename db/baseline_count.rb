@@ -15,7 +15,7 @@ zones.each do |zone|
     state.languages.select{ |l| !l.lwc }.each do |lang|
       update_count = 0
       lps.select{ |lp| lp.language_id == lang.id }.each do |lp|
-        update_count += lp.progress_updates.select{ |pu| pu.geo_state_id = state.id }.count
+        update_count += lp.progress_updates.select{ |pu| pu.geo_state_id == state.id }.count
       end
       puts "    #{lang.name} #{update_count}"
     end
