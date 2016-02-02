@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  
-  
 
   resources :mt_resources
   root 'static_pages#home'
@@ -8,7 +6,7 @@ Rails.application.routes.draw do
   resources :events do
     get :autocomplete_person_name, :on => :collection
   end
-  resources :impact_reports do
+  resources :impact_reports, except: [:new, :create] do
     collection do
       get 'tag'
       get 'tag/:month', to: 'impact_reports#tag', as: 'tag_month'
@@ -72,6 +70,7 @@ Rails.application.routes.draw do
 
   get 'overview' => 'state_languages#overview', as: 'overview'
   get 'overview/show_outcomes_progress/:id' => 'state_languages#show_outcomes_progress', as: 'show_outcomes_progress'
+  get 'states/autocomplete_district_name/:geo_state_id' => 'geo_states#autocomplete_district_name', as: 'autocomplete_district_name_geo_state'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

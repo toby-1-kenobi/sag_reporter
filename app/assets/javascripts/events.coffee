@@ -42,11 +42,19 @@ addNewDecision = ->
   $(this).parents('.decision-response-input').after newDecision
   return
 
+updateDistrictData = ->
+  geo_state_id = $('#event_geo_state_id').val()
+  url = $('input#district').attr('data-autocomplete').replace(/\d+/, geo_state_id)
+  $('input#district').attr('data-autocomplete', url)
+  return
+
 $(document).ready ->
 
   $('.datepicker').pickadate ->
     selectMonths: true, 
     selectYears: 3
+
+  $('#event_geo_state_id').on 'change', updateDistrictData
 
   $('.people-increase input:last').on 'keypress', addField
   $('.response-input textarea').on 'keypress', addInputRow

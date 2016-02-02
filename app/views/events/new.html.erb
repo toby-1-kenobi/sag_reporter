@@ -26,7 +26,8 @@
             <i class="material-icons prefix">location_on</i>
             <%= label_tag Translation.get_string('location', current_user) %>
             <div class="input-field">
-              <%= f.text_field :district %>
+              <%= autocomplete_field_tag "district", '', autocomplete_district_name_geo_state_path(0) %>
+              <%# 0 is a placeholder. It gets replaced by js with geo_state_id %>
               <%= f.label :district, Translation.get_string('district', current_user) %>
             </div>
             <div class="input-field">
