@@ -43,9 +43,12 @@ addNewDecision = ->
   return
 
 updateDistrictData = ->
+  $('#sub-district-autocomplete').hide()
+  $('#village-input').hide()
   geo_state_id = $('#event_geo_state_id').val()
-  url = $('input#district').attr('data-autocomplete').replace(/\d+/, geo_state_id)
-  $('input#district').attr('data-autocomplete', url)
+  url = $('#district-autocomplete input').attr('data-autocomplete').replace(/\d+/, geo_state_id)
+  $('#district-autocomplete input').attr('data-autocomplete', url)
+  $('#district-autocomplete input').val('')
   return
 
 $(document).ready ->
@@ -55,6 +58,20 @@ $(document).ready ->
     selectYears: 3
 
   $('#event_geo_state_id').on 'change', updateDistrictData
+  $('#district-autocomplete input').on 'railsAutocomplete.select', (event, data) ->
+    $('#village-input').hide()
+    url = $('#sub-district-autocomplete input').attr('data-autocomplete').replace(/\d+/, data.item.id)
+    $('#sub-district-autocomplete input').attr('data-autocomplete', url)
+    $('#sub-district-autocomplete input').val('')
+    $('#sub-district-autocomplete').slideDown 400, ->
+      $('#sub-district-autocomplete input').focus()
+      return
+    return
+  $('#sub-district-autocomplete input').on 'railsAutocomplete.select', (event, data) ->
+    $('#village-input').slideDown 400, ->
+      $('#village-input input').focus()
+      return
+    return
 
   $('.people-increase input:last').on 'keypress', addField
   $('.response-input textarea').on 'keypress', addInputRow

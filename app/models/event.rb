@@ -15,6 +15,8 @@ class Event < ActiveRecord::Base
   validates :event_label, presence: true
   validates :participant_amount, :numericality => { :greater_than_or_equal_to => 0 }
 
+  after_initialize :location_init
+
   def self.yes_no_questions(user)
     questions = Hash.new
     Report.categories.each do |key, value|
@@ -23,6 +25,17 @@ class Event < ActiveRecord::Base
     questions['plan'] = Translation.get_string('hopes_challenges', user)
     questions['impact'] = Translation.get_string('other_impact', user)
     return questions
+  end
+
+  private
+
+  def location_init
+    if self.district_name.present? and self.sub_district_name.present? and self.geo_state
+      district = geo_state.districts.find_by_name self.district_name
+      if district
+        self.sub_district = district.sub_districts.find_by_name self.sub_district_name
+      end
+    end
   end
 
 end

@@ -122,13 +122,13 @@ class EventsController < ApplicationController
     def event_params
       params.require('event').permit(
       	:event_label,
-      	:district,
-      	:sub_district,
+        :geo_state_id,
+        :district_name,
+        :sub_district_name,
       	:village,
       	:event_date,
       	:participant_amount,
-      	:content,
-        :geo_state_id
+      	:content
       	)
     end
 
