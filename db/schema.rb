@@ -12,7 +12,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20160217071432) do
-
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -73,11 +72,18 @@ ActiveRecord::Schema.define(version: 20160217071432) do
     t.datetime "updated_at",         null: false
     t.string   "village"
     t.integer  "geo_state_id",       null: false
+<<<<<<< ccc9a3636882108141535974c0561ba60197126e
     t.string   "sub_district"
     t.string   "district"
+=======
+    t.string   "sub_district_dep"
+    t.string   "district_dep"
+    t.integer  "sub_district_id"
+>>>>>>> Change the migration on events to only add the reference to sub_district and (rename depricated columns) at this stage because of complications in migrating existing data to references. Add the relevant code to the Event model.
   end
 
   add_index "events", ["geo_state_id"], name: "index_events_on_geo_state_id", using: :btree
+  add_index "events", ["sub_district_id"], name: "index_events_on_sub_district_id", using: :btree
   add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
 
   create_table "events_languages", id: false, force: :cascade do |t|
