@@ -5111,90 +5111,90 @@ SubDistrictId,SubDistrictName,DistrictId,DistrictName
 5110,Ranibundh,653,Bankura
 5111,Raipur,653,Bankura
 5112,Sarenga,653,Bankura
-5113,Salanpur,654,Birbhum
-5114,Barabani,654,Birbhum
-5115,Jamuria,654,Birbhum
-5116,Raniganj,654,Birbhum
-5117,Ondal,654,Birbhum
-5118,Pandabeswar,654,Birbhum
-5119,Faridpur Durgapur,654,Birbhum
-5120,Kanksa,654,Birbhum
-5121,Ausgram - II,654,Birbhum
-5122,Ausgram - I,654,Birbhum
-5123,Mangolkote,654,Birbhum
-5124,Ketugram - I,654,Birbhum
-5125,Ketugram - II,654,Birbhum
-5126,Katwa - I,654,Birbhum
-5127,Katwa - II,654,Birbhum
-5128,Purbasthali - I,654,Birbhum
-5129,Purbasthali - II,654,Birbhum
-5130,Manteswar,654,Birbhum
-5131,Bhatar,654,Birbhum
-5132,Galsi - I,654,Birbhum
-5133,Galsi - II,654,Birbhum
-5134,Burdwan - I,654,Birbhum
-5135,Burdwan - II,654,Birbhum
-5136,Memari - I,654,Birbhum
-5137,Memari - II,654,Birbhum
-5138,Kalna - I,654,Birbhum
-5139,Kalna - II,654,Birbhum
-5140,Jamalpur,654,Birbhum
-5141,Raina - I,654,Birbhum
-5142,Khandaghosh,654,Birbhum
-5143,Raina - II,654,Birbhum
-5144,Murarai - I,655,Burdwan (Bardhaman)
-5145,Murarai - II,655,Burdwan (Bardhaman)
-5146,Nalhati - I,655,Burdwan (Bardhaman)
-5147,Nalhati - II,655,Burdwan (Bardhaman)
-5148,Rampurhat - I,655,Burdwan (Bardhaman)
-5149,Rampurhat - II,655,Burdwan (Bardhaman)
-5150,Mayureswar - I,655,Burdwan (Bardhaman)
-5151,Mayureswar - II,655,Burdwan (Bardhaman)
-5152,Mohammad Bazar,655,Burdwan (Bardhaman)
-5153,Rajnagar,655,Burdwan (Bardhaman)
-5154,Suri - I,655,Burdwan (Bardhaman)
-5155,Suri - II,655,Burdwan (Bardhaman)
-5156,Sainthia,655,Burdwan (Bardhaman)
-5157,Labpur,655,Burdwan (Bardhaman)
-5158,Nanoor,655,Burdwan (Bardhaman)
-5159,Bolpur Sriniketan,655,Burdwan (Bardhaman)
-5160,Illambazar,655,Burdwan (Bardhaman)
-5161,Dubrajpur,655,Burdwan (Bardhaman)
-5162,Khoyrasol,655,Burdwan (Bardhaman)
-5163,Kushmundi,656,Cooch Behar
-5164,Gangarampur,656,Cooch Behar
-5165,Kumarganj,656,Cooch Behar
-5166,Hilli,656,Cooch Behar
-5167,Balurghat,656,Cooch Behar
-5168,Tapan,656,Cooch Behar
-5169,Bansihari,656,Cooch Behar
-5170,Harirampur,656,Cooch Behar
-5171,Darjeeling Pulbazar,657,Dakshin Dinajpur (South Dinajpur)
-5172,Rangli Rangliot,657,Dakshin Dinajpur (South Dinajpur)
-5173,Kalimpong -I,657,Dakshin Dinajpur (South Dinajpur)
-5174,Kalimpong - II,657,Dakshin Dinajpur (South Dinajpur)
-5175,Gorubathan,657,Dakshin Dinajpur (South Dinajpur)
-5176,Jorebunglow Sukiapokhri,657,Dakshin Dinajpur (South Dinajpur)
-5177,Mirik,657,Dakshin Dinajpur (South Dinajpur)
-5178,Kurseong,657,Dakshin Dinajpur (South Dinajpur)
-5179,Matigara,657,Dakshin Dinajpur (South Dinajpur)
-5180,Naxalbari,657,Dakshin Dinajpur (South Dinajpur)
-5181,Phansidewa,657,Dakshin Dinajpur (South Dinajpur)
-5182,Kharibari,657,Dakshin Dinajpur (South Dinajpur)
-5183,Udaynarayanpur,658,Darjeeling
-5184,Amta - II,658,Darjeeling
-5185,Amta - I,658,Darjeeling
-5186,Jagatballavpur,658,Darjeeling
-5187,Domjur,658,Darjeeling
-5188,Bally Jagachha,658,Darjeeling
-5189,Sankrail,658,Darjeeling
-5190,Panchla,658,Darjeeling
-5191,Uluberia - II,658,Darjeeling
-5192,Uluberia - I,658,Darjeeling
-5193,Bagnan - I,658,Darjeeling
-5194,Bagnan - II,658,Darjeeling
-5195,Shyampur - I,658,Darjeeling
-5196,Shyampur - II,658,Darjeeling
+5113,Salanpur,655,Burdwan (Bardhaman)
+5114,Barabani,655,Burdwan (Bardhaman)
+5115,Jamuria,655,Burdwan (Bardhaman)
+5116,Raniganj,655,Burdwan (Bardhaman)
+5117,Ondal,655,Burdwan (Bardhaman)
+5118,Pandabeswar,655,Burdwan (Bardhaman)
+5119,Faridpur Durgapur,655,Burdwan (Bardhaman)
+5120,Kanksa,655,Burdwan (Bardhaman)
+5121,Ausgram - II,655,Burdwan (Bardhaman)
+5122,Ausgram - I,655,Burdwan (Bardhaman)
+5123,Mangolkote,655,Burdwan (Bardhaman)
+5124,Ketugram - I,655,Burdwan (Bardhaman)
+5125,Ketugram - II,655,Burdwan (Bardhaman)
+5126,Katwa - I,655,Burdwan (Bardhaman)
+5127,Katwa - II,655,Burdwan (Bardhaman)
+5128,Purbasthali - I,655,Burdwan (Bardhaman)
+5129,Purbasthali - II,655,Burdwan (Bardhaman)
+5130,Manteswar,655,Burdwan (Bardhaman)
+5131,Bhatar,655,Burdwan (Bardhaman)
+5132,Galsi - I,655,Burdwan (Bardhaman)
+5133,Galsi - II,655,Burdwan (Bardhaman)
+5134,Burdwan - I,655,Burdwan (Bardhaman)
+5135,Burdwan - II,655,Burdwan (Bardhaman)
+5136,Memari - I,655,Burdwan (Bardhaman)
+5137,Memari - II,655,Burdwan (Bardhaman)
+5138,Kalna - I,655,Burdwan (Bardhaman)
+5139,Kalna - II,655,Burdwan (Bardhaman)
+5140,Jamalpur,655,Burdwan (Bardhaman)
+5141,Raina - I,655,Burdwan (Bardhaman)
+5142,Khandaghosh,655,Burdwan (Bardhaman)
+5143,Raina - II,655,Burdwan (Bardhaman)
+5144,Murarai - I,654,Birbhum
+5145,Murarai - II,654,Birbhum
+5146,Nalhati - I,654,Birbhum
+5147,Nalhati - II,654,Birbhum
+5148,Rampurhat - I,654,Birbhum
+5149,Rampurhat - II,654,Birbhum
+5150,Mayureswar - I,654,Birbhum
+5151,Mayureswar - II,654,Birbhum
+5152,Mohammad Bazar,654,Birbhum
+5153,Rajnagar,654,Birbhum
+5154,Suri - I,654,Birbhum
+5155,Suri - II,654,Birbhum
+5156,Sainthia,654,Birbhum
+5157,Labpur,654,Birbhum
+5158,Nanoor,654,Birbhum
+5159,Bolpur Sriniketan,654,Birbhum
+5160,Illambazar,654,Birbhum
+5161,Dubrajpur,654,Birbhum
+5162,Khoyrasol,654,Birbhum
+5163,Kushmundi,657,Dakshin Dinajpur (South Dinajpur)
+5164,Gangarampur,657,Dakshin Dinajpur (South Dinajpur)
+5165,Kumarganj,657,Dakshin Dinajpur (South Dinajpur)
+5166,Hilli,657,Dakshin Dinajpur (South Dinajpur)
+5167,Balurghat,657,Dakshin Dinajpur (South Dinajpur)
+5168,Tapan,657,Dakshin Dinajpur (South Dinajpur)
+5169,Bansihari,657,Dakshin Dinajpur (South Dinajpur)
+5170,Harirampur,657,Dakshin Dinajpur (South Dinajpur)
+5171,Darjeeling Pulbazar,658,Darjeeling
+5172,Rangli Rangliot,658,Darjeeling
+5173,Kalimpong -I,658,Darjeeling
+5174,Kalimpong - II,658,Darjeeling
+5175,Gorubathan,658,Darjeeling
+5176,Jorebunglow Sukiapokhri,658,Darjeeling
+5177,Mirik,658,Darjeeling
+5178,Kurseong,658,Darjeeling
+5179,Matigara,658,Darjeeling
+5180,Naxalbari,658,Darjeeling
+5181,Phansidewa,658,Darjeeling
+5182,Kharibari,658,Darjeeling
+5183,Udaynarayanpur,660,Howrah
+5184,Amta - II,660,Howrah
+5185,Amta - I,660,Howrah
+5186,Jagatballavpur,660,Howrah
+5187,Domjur,660,Howrah
+5188,Bally Jagachha,660,Howrah
+5189,Sankrail,660,Howrah
+5190,Panchla,660,Howrah
+5191,Uluberia - II,660,Howrah
+5192,Uluberia - I,660,Howrah
+5193,Bagnan - I,660,Howrah
+5194,Bagnan - II,660,Howrah
+5195,Shyampur - I,660,Howrah
+5196,Shyampur - II,660,Howrah
 5197,Goghat - I,659,Hooghly
 5198,Goghat - II,659,Hooghly
 5199,Arambag,659,Hooghly
@@ -5213,31 +5213,31 @@ SubDistrictId,SubDistrictName,DistrictId,DistrictName
 5212,Jangipara,659,Hooghly
 5213,Khanakul - I,659,Hooghly
 5214,Khanakul - II,659,Hooghly
-5215,Rajganj,660,Howrah
-5216,Mal,660,Howrah
-5217,Matiali,660,Howrah
-5218,Nagrakata,660,Howrah
-5219,Madarihat - Birpara,672,Alipurduar
+5215,Rajganj,661,Jalpaiguri
+5216,Mal,661,Jalpaiguri
+5217,Matiali,661,Jalpaiguri
+5218,Nagrakata,661,Jalpaiguri
+5219,Madarihat – Birpara,672,Alipurduar
 5220,Kalchini,672,Alipurduar
 5221,Kumargram,672,Alipurduar
 5222,Alipurduar - I,672,Alipurduar
 5223,Alipurduar - II,672,Alipurduar
 5224,Falakata,672,Alipurduar
-5225,Dhupguri,660,Howrah
-5226,Maynaguri,660,Howrah
-5227,Jalpaiguri,660,Howrah
-5228,Haldibari,661,Jalpaiguri
-5229,Mekliganj,661,Jalpaiguri
-5230,Mathabhanga - I,661,Jalpaiguri
-5231,Mathabhanga - II,661,Jalpaiguri
-5232,Cooch Behar - I,661,Jalpaiguri
-5233,Cooch Behar - II,661,Jalpaiguri
-5234,Tufanganj - I,661,Jalpaiguri
-5235,Tufanganj - II,661,Jalpaiguri
-5236,Dinhata - I,661,Jalpaiguri
-5237,Dinhata - II,661,Jalpaiguri
-5238,Sitai,661,Jalpaiguri
-5239,Sitalkuchi,661,Jalpaiguri
+5225,Dhupguri,661,Jalpaiguri
+5226,Maynaguri,661,Jalpaiguri
+5227,Jalpaiguri,661,Jalpaiguri
+5228,Haldibari,656,Cooch Behar
+5229,Mekliganj,656,Cooch Behar
+5230,Mathabhanga - I,656,Cooch Behar
+5231,Mathabhanga - II,656,Cooch Behar
+5232,Cooch Behar - I,656,Cooch Behar
+5233,Cooch Behar - II,656,Cooch Behar
+5234,Tufanganj - I,656,Cooch Behar
+5235,Tufanganj - II,656,Cooch Behar
+5236,Dinhata - I,656,Cooch Behar
+5237,Dinhata - II,656,Cooch Behar
+5238,Sitai,656,Cooch Behar
+5239,Sitalkuchi,656,Cooch Behar
 5240,Harischandrapur - I,663,Malda
 5241,Harischandrapur - II,663,Malda
 5242,Chanchal - I,663,Malda
