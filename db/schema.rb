@@ -72,14 +72,9 @@ ActiveRecord::Schema.define(version: 20160217071432) do
     t.datetime "updated_at",         null: false
     t.string   "village"
     t.integer  "geo_state_id",       null: false
-<<<<<<< ccc9a3636882108141535974c0561ba60197126e
-    t.string   "sub_district"
-    t.string   "district"
-=======
-    t.string   "sub_district_dep"
-    t.string   "district_dep"
+    t.string   "sub_district_name"
+    t.string   "district_name"
     t.integer  "sub_district_id"
->>>>>>> Change the migration on events to only add the reference to sub_district and (rename depricated columns) at this stage because of complications in migrating existing data to references. Add the relevant code to the Event model.
   end
 
   add_index "events", ["geo_state_id"], name: "index_events_on_geo_state_id", using: :btree
@@ -342,7 +337,6 @@ ActiveRecord::Schema.define(version: 20160217071432) do
     t.datetime "updated_at", null: false
   end
 
-<<<<<<< 54a0320d01297d8d91f2a092db1a88fea05505c3
   create_table "state_languages", force: :cascade do |t|
     t.integer  "geo_state_id"
     t.integer  "language_id"
@@ -353,7 +347,7 @@ ActiveRecord::Schema.define(version: 20160217071432) do
 
   add_index "state_languages", ["geo_state_id"], name: "index_state_languages_on_geo_state_id", using: :btree
   add_index "state_languages", ["language_id"], name: "index_state_languages_on_language_id", using: :btree
-=======
+
   create_table "sub_districts", force: :cascade do |t|
     t.string   "name",        null: false
     t.integer  "district_id"
@@ -363,7 +357,6 @@ ActiveRecord::Schema.define(version: 20160217071432) do
 
   add_index "sub_districts", ["district_id"], name: "index_sub_districts_on_district_id", using: :btree
   add_index "sub_districts", ["name"], name: "index_sub_districts_on_name", using: :btree
->>>>>>> Generate the Sub-District model.
 
   create_table "tallies", force: :cascade do |t|
     t.string   "name"
@@ -474,12 +467,9 @@ ActiveRecord::Schema.define(version: 20160217071432) do
   add_foreign_key "progress_updates", "users"
   add_foreign_key "reports", "events"
   add_foreign_key "reports", "geo_states"
-<<<<<<< 54a0320d01297d8d91f2a092db1a88fea05505c3
   add_foreign_key "state_languages", "geo_states"
   add_foreign_key "state_languages", "languages"
-=======
   add_foreign_key "sub_districts", "districts"
->>>>>>> Generate the Sub-District model.
   add_foreign_key "tallies", "topics"
   add_foreign_key "tally_updates", "languages_tallies"
   add_foreign_key "tally_updates", "users"
