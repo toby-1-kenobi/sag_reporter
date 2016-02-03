@@ -5,12 +5,6 @@
     <%= render 'shared/error_messages', object: f.object %>
 
     <div class="row">
-      <div class="col s12 m6 l4 offset-m6 offset-l8 input-field">
-        <%= render partial: "shared/geo_state_input", locals: {form: f, input_class: 'filter-trigger'} %>
-      </div>
-    </div>
-
-    <div class="row">
       <div class="col s12 m8">
 
         <div class="row">
@@ -26,15 +20,19 @@
             <i class="material-icons prefix">location_on</i>
             <%= label_tag Translation.get_string('location', current_user) %>
             <div class="input-field">
-              <%= autocomplete_field_tag "district", '', autocomplete_district_name_geo_state_path(0) %>
+              <%= render partial: "shared/geo_state_input", locals: {form: f, input_class: 'filter-trigger'} %>
+            </div>
+            <div class="input-field" id="district-autocomplete">
+              <%= f.autocomplete_field :district_name, autocomplete_district_name_geo_state_path(0) %>
               <%# 0 is a placeholder. It gets replaced by js with geo_state_id %>
-              <%= f.label :district, Translation.get_string('district', current_user) %>
+              <%= f.label :district_name, Translation.get_string('district', current_user) %>
             </div>
-            <div class="input-field">
-              <%= f.text_field :sub_district %>
-              <%= f.label :sub_district, Translation.get_string('sub_dist', current_user) %>
+            <div class="input-field" id="sub-district-autocomplete">
+              <%= f.autocomplete_field :sub_district_name, autocomplete_sub_district_name_district_path(0), :"data-autocomplete-label" => "No sub-district match."  %>
+              <%# 0 is a placeholder. It gets replaced by js with district_id %>
+              <%= f.label :sub_district_name, Translation.get_string('sub_dist', current_user) %>
             </div>
-            <div class="input-field">
+            <div class="input-field" id="village-input">
               <%= f.text_field :village %>
               <%= f.label :village, Translation.get_string('village', current_user) %>
             </div>
