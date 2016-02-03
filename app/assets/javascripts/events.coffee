@@ -43,12 +43,15 @@ addNewDecision = ->
   return
 
 updateDistrictData = ->
-  $('#sub-district-autocomplete').hide()
-  $('#village-input').hide()
   geo_state_id = $('#event_geo_state_id').val()
-  url = $('#district-autocomplete input').attr('data-autocomplete').replace(/\d+/, geo_state_id)
-  $('#district-autocomplete input').attr('data-autocomplete', url)
-  $('#district-autocomplete input').val('')
+  old_url = $('#district-autocomplete input').attr('data-autocomplete') 
+  url = old_url.replace(/\d+/, geo_state_id)
+  if old_url != url
+    $('#sub-district-autocomplete').hide()
+    $('#sub-district-autocomplete input').val('')
+    $('#village-input').hide()
+    $('#district-autocomplete input').attr('data-autocomplete', url)
+    $('#district-autocomplete input').val('')
   return
 
 $(document).ready ->
@@ -59,14 +62,16 @@ $(document).ready ->
 
   $('#event_geo_state_id').on 'change', updateDistrictData
   $('#district-autocomplete input').on 'railsAutocomplete.select', (event, data) ->
-    $('#village-input').hide()
-    url = $('#sub-district-autocomplete input').attr('data-autocomplete').replace(/\d+/, data.item.id)
-    $('#sub-district-autocomplete input').attr('data-autocomplete', url)
-    $('#sub-district-autocomplete input').val('')
-    $('#sub-district-autocomplete').slideDown 400, ->
-      $('#sub-district-autocomplete input').focus()
-      return
-    return
+    old_url = $('#sub-district-autocomplete input').attr('data-autocomplete')
+    url = old_url.replace(/\d+/, data.item.id)
+    if old_url != url
+      $('#village-input').hide()
+      $('#sub-district-autocomplete input').attr('data-autocomplete', url)
+      $('#sub-district-autocomplete input').val('')
+      $('#sub-district-autocomplete').slideDown 400, ->
+        $('#sub-district-autocomplete input').focus()
+        return
+    return 
   $('#sub-district-autocomplete input').on 'railsAutocomplete.select', (event, data) ->
     $('#village-input').slideDown 400, ->
       $('#village-input input').focus()
