@@ -7,7 +7,7 @@
     <% if time %>
   	  <div><%= time_ago_in_words(report.report_date) %> ago</div>
   	<% end %>
-  	<p><%= report.content %></p>
+  	<%= simple_format report.content %>
     <% Report.categories.select{ |key, sentence| report.send(key) }.each do |key, category| %>
       <p>Concerns the <%= category.translation_for(current_user) %>.</p>
     <% end %>
