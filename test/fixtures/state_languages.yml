@@ -1,0 +1,12 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  geo_state: 
+  language: 
+  project: false
+
+two:
+  geo_state: 
+  language: 
+  project: false
