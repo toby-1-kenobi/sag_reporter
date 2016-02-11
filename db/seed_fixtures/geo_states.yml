@@ -1,16 +1,10 @@
 arunachal_pradesh:
   name: Arunachal Pradesh
   zone: north_east
-  languages: english, galo, libo, ramo, memba, tagin,
-    nyshi, adi, hillsmiri, apatani, wancho, tangso,
-    puriok, mompa, miji, aka, sherdukpen, idu, digaru_mishimi,
-    singpo, sartang, bugun, bokar, nah, mimba
 
 assam:
   name: Assam
   zone: north_east
-  languages: english, assamese, bengali, nepali, oriya, karbi, garo,
-    sadri, rabha, shyam, deori, bodo, tiwa, mising
 
 manipur:
   name: Manipur
@@ -40,24 +34,18 @@ sikkim:
 tripura:
   name: Tripura
   zone: north_east
-  languages: english, mizo, darlong, kaipeng, ranglong, molsom, hrangkhul, chorei, mog, urang, chakma
 
 nb:
   name: (northern) West Bengal
   zone: north_east
-  languages: english, nepali, bengali, toto, rajbanshi, bodo, sadri, santali, munda, mundari, rabha, kurux, surjapuri, garo
 
 bihar:
   name: Bihar
   zone: hindi_zone
-  languages: english, angika, bhojpuri, magahi, maithili, surjapuri, panchpargania, vajjika,
-    santali, kortha, degaru, domari, musaha, tharu_chitw, tharu_koch, sadri, kurux
 
 up:
   name: Uttar Pradesh
   zone: hindi_zone
-  languages: english, awadhi, bagheli, bhojpuri, braj_bhasha, bundeli, kanauji, kanjari_gihari,
-    sapera, tharu_dangaura, tharu_kathoriya, tharu_rana
 
 haryana:
   name: Haryana
@@ -67,8 +55,6 @@ haryana:
 hp:
   name: Himachal Pradesh
   zone: north_west
-  languages: english, kulluvi, mandeali, pahari_mahasui, chambeali, dogri, hariyanvi, garhwali,
-    kangri
 
 jammu_kashmir:
   name: Jammu and Kashmir
@@ -88,7 +74,6 @@ uttarakhand:
 rajasthan:
   name: Rajasthan
   zone: west
-  languages: english, mewari, dhundari, shekhawati, bagri, hadoti, mewati, wagri, od_rajput, braj_bhasha
 
 gujarat:
   name: Gujarat
@@ -123,17 +108,10 @@ telangana:
 jharkhand:
   name: Jharkhand
   zone: east
-  languages: english, panchpargania, kudhmali, asuri, bijori, birhor, degaru, ho, kharia,
-    khirwar, khorta, kumarbhag_paharia, mahali, majhi, mal_paharia, mundari, sadri,
-    santali, sauria_paharia, turi
 
 odisha:
   name: Odisha
   zone: east
-  languages: english, didei, adivasi_odiya, bhunjia, bodo_parja, bondo, desiya, dabik_kui,
-    dom, gadaba_bodo, gadaba_ollar_pottangi, gadaba_gutuba, gata, ho, juang, juray,
-    kisan, kui, kutia, kuvi, lodha, manda, mirgan, munda, parenga, pengo, sambalpuri,
-    santali, sora
 
 swb:
   name: (southern) West Bengal
@@ -143,14 +121,11 @@ swb:
 chhattisgarh:
   name: Chhattisgarh
   zone: central
-  languages: english, bhatri, muriya, dhurua, kamar, sabariya, abujhmadia, korwa, kodaku, sarguja
 
 mp:
   name: Madhya Pradesh
   zone: central
-  languages: english, poweri, rathwi, malvi, baiga, bagheli, bharia
 
 maharashtra:
   name: Maharashtra
   zone: central
-  languages: english, varahadi, ahirani, wadder, sikligar, gowlan, katakari, far_western_muria

@@ -1,0 +1,810 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+arunachal_pradesh-english:
+  geo_state: arunachal_pradesh
+  language: english
+
+arunachal_pradesh-galo:
+  geo_state: arunachal_pradesh
+  language: galo
+
+arunachal_pradesh-libo:
+  geo_state: arunachal_pradesh
+  language: libo
+
+arunachal_pradesh-ramo:
+  geo_state: arunachal_pradesh
+  language: ramo
+
+arunachal_pradesh-memba:
+  geo_state: arunachal_pradesh
+  language: memba
+
+arunachal_pradesh-tagin:
+  geo_state: arunachal_pradesh
+  language: tagin
+
+arunachal_pradesh-nyshi:
+  geo_state: arunachal_pradesh
+  language: nyshi
+
+arunachal_pradesh-adi:
+  geo_state: arunachal_pradesh
+  language: adi
+
+arunachal_pradesh-hillsmiri:
+  geo_state: arunachal_pradesh
+  language: hillsmiri
+
+arunachal_pradesh-apatani:
+  geo_state: arunachal_pradesh
+  language: apatani
+
+arunachal_pradesh-wancho:
+  geo_state: arunachal_pradesh
+  language: wancho
+
+arunachal_pradesh-tangso:
+  geo_state: arunachal_pradesh
+  language: tangso
+
+arunachal_pradesh-puriok:
+  geo_state: arunachal_pradesh
+  language: puriok
+
+arunachal_pradesh-mompa:
+  geo_state: arunachal_pradesh
+  language: mompa
+
+arunachal_pradesh-miji:
+  geo_state: arunachal_pradesh
+  language: miji
+
+arunachal_pradesh-aka:
+  geo_state: arunachal_pradesh
+  language: aka
+
+arunachal_pradesh-sherdukpen:
+  geo_state: arunachal_pradesh
+  language: sherdukpen
+
+arunachal_pradesh-idu:
+  geo_state: arunachal_pradesh
+  language: idu
+
+arunachal_pradesh-digaru_mishimi:
+  geo_state: arunachal_pradesh
+  language: digaru_mishimi
+
+arunachal_pradesh-singpo:
+  geo_state: arunachal_pradesh
+  language: singpo
+
+arunachal_pradesh-sartang:
+  geo_state: arunachal_pradesh
+  language: sartang
+
+arunachal_pradesh-bugun:
+  geo_state: arunachal_pradesh
+  language: bugun
+
+arunachal_pradesh-bokar:
+  geo_state: arunachal_pradesh
+  language: bokar
+
+arunachal_pradesh-nah:
+  geo_state: arunachal_pradesh
+  language: nah
+
+arunachal_pradesh-mimba:
+  geo_state: arunachal_pradesh
+  language: mimba
+
+assam-english:
+  geo_state: assam
+  language: english
+
+assam-assamese:
+  geo_state: assam
+  language: assamese
+
+assam-bengali:
+  geo_state: assam
+  language: bengali
+
+assam-nepali:
+  geo_state: assam
+  language: nepali
+
+assam-oriya:
+  geo_state: assam
+  language: oriya
+
+assam-karbi:
+  geo_state: assam
+  language: karbi
+
+assam-garo:
+  geo_state: assam
+  language: garo
+
+assam-sadri:
+  geo_state: assam
+  language: sadri
+
+assam-rabha:
+  geo_state: assam
+  language: rabha
+
+assam-shyam:
+  geo_state: assam
+  language: shyam
+
+assam-deori:
+  geo_state: assam
+  language: deori
+
+assam-bodo:
+  geo_state: assam
+  language: bodo
+
+assam-tiwa:
+  geo_state: assam
+  language: tiwa
+
+assam-mising:
+  geo_state: assam
+  language: mising
+
+manipur-english:
+  geo_state: manipur
+  language: english
+
+meghalaya-english:
+  geo_state: meghalaya
+  language: english
+
+mizoram-english:
+  geo_state: mizoram
+  language: english
+
+nagaland-english:
+  geo_state: nagaland
+  language: english
+
+sikkim-english:
+  geo_state: sikkim
+  language: english
+
+tripura-english:
+  geo_state: tripura
+  language: english
+
+tripura-mizo:
+  geo_state: tripura
+  language: mizo
+
+tripura-darlong:
+  geo_state: tripura
+  language: darlong
+
+tripura-kaipeng:
+  geo_state: tripura
+  language: kaipeng
+
+tripura-ranglong:
+  geo_state: tripura
+  language: ranglong
+
+tripura-molsom:
+  geo_state: tripura
+  language: molsom
+
+tripura-hrangkhul:
+  geo_state: tripura
+  language: hrangkhul
+
+tripura-chorei:
+  geo_state: tripura
+  language: chorei
+
+tripura-mog:
+  geo_state: tripura
+  language: mog
+
+tripura-urang:
+  geo_state: tripura
+  language: urang
+
+tripura-chakma:
+  geo_state: tripura
+  language: chakma
+
+nb-english:
+  geo_state: nb
+  language: english
+
+nb-nepali:
+  geo_state: nb
+  language: nepali
+
+nb-bengali:
+  geo_state: nb
+  language: bengali
+
+nb-toto:
+  geo_state: nb
+  language: toto
+
+nb-rajbanshi:
+  geo_state: nb
+  language: rajbanshi
+
+nb-bodo:
+  geo_state: nb
+  language: bodo
+
+nb-sadri:
+  geo_state: nb
+  language: sadri
+
+nb-santali:
+  geo_state: nb
+  language: santali
+
+nb-munda:
+  geo_state: nb
+  language: munda
+
+nb-mundari:
+  geo_state: nb
+  language: mundari
+
+nb-rabha:
+  geo_state: nb
+  language: rabha
+
+nb-kurux:
+  geo_state: nb
+  language: kurux
+
+nb-surjapuri:
+  geo_state: nb
+  language: surjapuri
+
+nb-garo:
+  geo_state: nb
+  language: garo
+
+bihar-english:
+  geo_state: bihar
+  language: english
+
+bihar-angika:
+  geo_state: bihar
+  language: angika
+
+bihar-bhojpuri:
+  geo_state: bihar
+  language: bhojpuri
+
+bihar-magahi:
+  geo_state: bihar
+  language: magahi
+
+bihar-maithili:
+  geo_state: bihar
+  language: maithili
+
+bihar-surjapuri:
+  geo_state: bihar
+  language: surjapuri
+
+bihar-panchpargania:
+  geo_state: bihar
+  language: panchpargania
+
+bihar-vajjika:
+  geo_state: bihar
+  language: vajjika
+
+bihar-santali:
+  geo_state: bihar
+  language: santali
+
+bihar-kortha:
+  geo_state: bihar
+  language: kortha
+
+bihar-degaru:
+  geo_state: bihar
+  language: degaru
+
+bihar-domari:
+  geo_state: bihar
+  language: domari
+
+bihar-musaha:
+  geo_state: bihar
+  language: musaha
+
+bihar-tharu_chitw:
+  geo_state: bihar
+  language: tharu_chitw
+
+bihar-tharu_koch:
+  geo_state: bihar
+  language: tharu_koch
+
+bihar-sadri:
+  geo_state: bihar
+  language: sadri
+
+bihar-kurux:
+  geo_state: bihar
+  language: kurux
+
+up-english:
+  geo_state: up
+  language: english
+
+up-awadhi:
+  geo_state: up
+  language: awadhi
+
+up-bagheli:
+  geo_state: up
+  language: bagheli
+
+up-bhojpuri:
+  geo_state: up
+  language: bhojpuri
+
+up-braj_bhasha:
+  geo_state: up
+  language: braj_bhasha
+
+up-bundeli:
+  geo_state: up
+  language: bundeli
+
+up-kanauji:
+  geo_state: up
+  language: kanauji
+
+up-kanjari_gihari:
+  geo_state: up
+  language: kanjari_gihari
+
+up-sapera:
+  geo_state: up
+  language: sapera
+
+up-tharu_dangaura:
+  geo_state: up
+  language: tharu_dangaura
+
+up-tharu_kathoriya:
+  geo_state: up
+  language: tharu_kathoriya
+
+up-tharu_rana:
+  geo_state: up
+  language: tharu_rana
+
+haryana-english:
+  geo_state: haryana
+  language: english
+
+hp-english:
+  geo_state: hp
+  language: english
+
+hp-kulluvi:
+  geo_state: hp
+  language: kulluvi
+
+hp-mandeali:
+  geo_state: hp
+  language: mandeali
+
+hp-pahari_mahasui:
+  geo_state: hp
+  language: pahari_mahasui
+
+hp-chambeali:
+  geo_state: hp
+  language: chambeali
+
+hp-dogri:
+  geo_state: hp
+  language: dogri
+
+hp-hariyanvi:
+  geo_state: hp
+  language: hariyanvi
+
+hp-garhwali:
+  geo_state: hp
+  language: garhwali
+
+hp-kangri:
+  geo_state: hp
+  language: kangri
+
+jammu_kashmir-english:
+  geo_state: jammu_kashmir
+  language: english
+
+punjab-english:
+  geo_state: punjab
+  language: english
+
+uttarakhand-english:
+  geo_state: uttarakhand
+  language: english
+
+rajasthan-english:
+  geo_state: rajasthan
+  language: english
+
+rajasthan-mewari:
+  geo_state: rajasthan
+  language: mewari
+
+rajasthan-dhundari:
+  geo_state: rajasthan
+  language: dhundari
+
+rajasthan-shekhawati:
+  geo_state: rajasthan
+  language: shekhawati
+
+rajasthan-bagri:
+  geo_state: rajasthan
+  language: bagri
+
+rajasthan-hadoti:
+  geo_state: rajasthan
+  language: hadoti
+
+rajasthan-mewati:
+  geo_state: rajasthan
+  language: mewati
+
+rajasthan-wagri:
+  geo_state: rajasthan
+  language: wagri
+
+rajasthan-od_rajput:
+  geo_state: rajasthan
+  language: od_rajput
+
+rajasthan-braj_bhasha:
+  geo_state: rajasthan
+  language: braj_bhasha
+
+gujarat-english:
+  geo_state: gujarat
+  language: english
+
+andhra_pradesh-english:
+  geo_state: andhra_pradesh
+  language: english
+
+tamil-nadu-english:
+  geo_state: tamil-nadu
+  language: english
+
+karnataka-english:
+  geo_state: karnataka
+  language: english
+
+kerala-english:
+  geo_state: kerala
+  language: english
+
+telangana-english:
+  geo_state: telangana
+  language: english
+
+jharkhand-english:
+  geo_state: jharkhand
+  language: english
+
+jharkhand-panchpargania:
+  geo_state: jharkhand
+  language: panchpargania
+
+jharkhand-kudhmali:
+  geo_state: jharkhand
+  language: kudhmali
+
+jharkhand-asuri:
+  geo_state: jharkhand
+  language: asuri
+
+jharkhand-bijori:
+  geo_state: jharkhand
+  language: bijori
+
+jharkhand-birhor:
+  geo_state: jharkhand
+  language: birhor
+
+jharkhand-degaru:
+  geo_state: jharkhand
+  language: degaru
+
+jharkhand-ho:
+  geo_state: jharkhand
+  language: ho
+
+jharkhand-kharia:
+  geo_state: jharkhand
+  language: kharia
+
+jharkhand-khirwar:
+  geo_state: jharkhand
+  language: khirwar
+
+jharkhand-khorta:
+  geo_state: jharkhand
+  language: khorta
+
+jharkhand-kumarbhag_paharia:
+  geo_state: jharkhand
+  language: kumarbhag_paharia
+
+jharkhand-mahali:
+  geo_state: jharkhand
+  language: mahali
+
+jharkhand-majhi:
+  geo_state: jharkhand
+  language: majhi
+
+jharkhand-mal_paharia:
+  geo_state: jharkhand
+  language: mal_paharia
+
+jharkhand-mundari:
+  geo_state: jharkhand
+  language: mundari
+
+jharkhand-sadri:
+  geo_state: jharkhand
+  language: sadri
+
+jharkhand-santali:
+  geo_state: jharkhand
+  language: santali
+
+jharkhand-sauria_paharia:
+  geo_state: jharkhand
+  language: sauria_paharia
+
+jharkhand-turi:
+  geo_state: jharkhand
+  language: turi
+
+odisha-english:
+  geo_state: odisha
+  language: english
+
+odisha-didei:
+  geo_state: odisha
+  language: didei
+
+odisha-adivasi_odiya:
+  geo_state: odisha
+  language: adivasi_odiya
+
+odisha-bhunjia:
+  geo_state: odisha
+  language: bhunjia
+
+odisha-bodo_parja:
+  geo_state: odisha
+  language: bodo_parja
+
+odisha-bondo:
+  geo_state: odisha
+  language: bondo
+
+odisha-desiya:
+  geo_state: odisha
+  language: desiya
+
+odisha-dabik_kui:
+  geo_state: odisha
+  language: dabik_kui
+
+odisha-dom:
+  geo_state: odisha
+  language: dom
+
+odisha-gadaba_bodo:
+  geo_state: odisha
+  language: gadaba_bodo
+
+odisha-gadaba_ollar_pottangi:
+  geo_state: odisha
+  language: gadaba_ollar_pottangi
+
+odisha-gadaba_gutuba:
+  geo_state: odisha
+  language: gadaba_gutuba
+
+odisha-gata:
+  geo_state: odisha
+  language: gata
+
+odisha-ho:
+  geo_state: odisha
+  language: ho
+
+odisha-juang:
+  geo_state: odisha
+  language: juang
+
+odisha-juray:
+  geo_state: odisha
+  language: juray
+
+odisha-kisan:
+  geo_state: odisha
+  language: kisan
+
+odisha-kui:
+  geo_state: odisha
+  language: kui
+
+odisha-kutia:
+  geo_state: odisha
+  language: kutia
+
+odisha-kuvi:
+  geo_state: odisha
+  language: kuvi
+
+odisha-lodha:
+  geo_state: odisha
+  language: lodha
+
+odisha-manda:
+  geo_state: odisha
+  language: manda
+
+odisha-mirgan:
+  geo_state: odisha
+  language: mirgan
+
+odisha-munda:
+  geo_state: odisha
+  language: munda
+
+odisha-parenga:
+  geo_state: odisha
+  language: parenga
+
+odisha-pengo:
+  geo_state: odisha
+  language: pengo
+
+odisha-sambalpuri:
+  geo_state: odisha
+  language: sambalpuri
+
+odisha-santali:
+  geo_state: odisha
+  language: santali
+
+odisha-sora:
+  geo_state: odisha
+  language: sora
+
+swb-english:
+  geo_state: swb
+  language: english
+
+chhattisgarh-english:
+  geo_state: chhattisgarh
+  language: english
+
+chhattisgarh-bhatri:
+  geo_state: chhattisgarh
+  language: bhatri
+
+chhattisgarh-muriya:
+  geo_state: chhattisgarh
+  language: muriya
+
+chhattisgarh-dhurua:
+  geo_state: chhattisgarh
+  language: dhurua
+
+chhattisgarh-kamar:
+  geo_state: chhattisgarh
+  language: kamar
+
+chhattisgarh-sabariya:
+  geo_state: chhattisgarh
+  language: sabariya
+
+chhattisgarh-abujhmadia:
+  geo_state: chhattisgarh
+  language: abujhmadia
+
+chhattisgarh-korwa:
+  geo_state: chhattisgarh
+  language: korwa
+
+chhattisgarh-kodaku:
+  geo_state: chhattisgarh
+  language: kodaku
+
+chhattisgarh-sarguja:
+  geo_state: chhattisgarh
+  language: sarguja
+
+mp-english:
+  geo_state: mp
+  language: english
+
+mp-poweri:
+  geo_state: mp
+  language: poweri
+
+mp-rathwi:
+  geo_state: mp
+  language: rathwi
+
+mp-malvi:
+  geo_state: mp
+  language: malvi
+
+mp-baiga:
+  geo_state: mp
+  language: baiga
+
+mp-bagheli:
+  geo_state: mp
+  language: bagheli
+
+mp-bharia:
+  geo_state: mp
+  language: bharia
+
+maharashtra-english:
+  geo_state: maharashtra
+  language: english
+
+maharashtra-varahadi:
+  geo_state: maharashtra
+  language: varahadi
+
+maharashtra-ahirani:
+  geo_state: maharashtra
+  language: ahirani
+
+maharashtra-wadder:
+  geo_state: maharashtra
+  language: wadder
+
+maharashtra-sikligar:
+  geo_state: maharashtra
+  language: sikligar
+
+maharashtra-gowlan:
+  geo_state: maharashtra
+  language: gowlan
+
+maharashtra-katakari:
+  geo_state: maharashtra
+  language: katakari
+
+maharashtra-far_western_muria:
+  geo_state: maharashtra
+  language: far_western_muria
