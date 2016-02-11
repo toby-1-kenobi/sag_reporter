@@ -17,7 +17,7 @@ class User::Updater
       end
     end
     if @instance.mother_tongue
-      @instance.spoken_languages << @instance.mother_tongue unless @instance.spoken_languages.includes @instance.mother_tongue
+      @instance.spoken_languages << @instance.mother_tongue unless @instance.spoken_languages.include? @instance.mother_tongue
     end
     if geo_states
       @instance.geo_states.clear
