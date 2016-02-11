@@ -7,8 +7,13 @@ class OutputCount < ActiveRecord::Base
   belongs_to :language
 
   after_initialize :date_init
+  validates :language, presence: true
   validate :language_must_be_in_state
-  validates :amount, :numericality => { :greater_than_or_equal_to => 0 }
+  validates :amount, presence: true, :numericality => { :greater_than_or_equal_to => 0 }
+  validates :output_tally, presence: true
+  validates :user, presence: true
+  validates :year, presence: true
+  validates :month, presence: true
 
   private
 
