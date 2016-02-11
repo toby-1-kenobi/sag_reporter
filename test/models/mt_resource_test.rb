@@ -1,7 +1,7 @@
 require "test_helper"
 
 describe MtResource do
-  let(:mt_resource) { MtResource.new }
+  let(:mt_resource) { MtResource.new geo_state: geo_states(:nb) }
 
   it "must be valid" do
     value(mt_resource).must_be :valid?

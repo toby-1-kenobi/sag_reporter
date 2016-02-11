@@ -2,9 +2,9 @@ require "test_helper"
 
 describe Attendance do
 
-  let (:john) { Person.new name: "John" }
-  let (:my_event) { Event.new event_label: "label", event_date: Date.today }
-  let(:attendance) { Attendance.new person: john, event: my_event}
+  let (:john) { Person.new name: "John", geo_state: geo_states(:nb) }
+  let (:my_event) { Event.new event_label: "label", event_date: Date.today, geo_state: geo_states(:nb), participant_amount: 15 }
+  let (:attendance) { Attendance.new person: john, event: my_event}
 
   it "must be valid" do
     value(attendance).must_be :valid?
@@ -12,12 +12,14 @@ describe Attendance do
 
   it "wont be valid without a person" do
     attendance.person = nil
-    value(attendance).wont_be :valid?
+    attendance.valid?
+    value(attendance.errors[:person]).must_be :any?
   end
 
   it "wont be valid without an event" do
     attendance.event = nil
-    value(attendance).wont_be :valid?
+    attendance.valid?
+    value(attendance.errors[:event]).must_be :any?
   end
 
   it "must be unique" do

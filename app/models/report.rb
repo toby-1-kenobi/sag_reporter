@@ -13,7 +13,6 @@ class Report < ActiveRecord::Base
 	validates :reporter, presence: true, allow_nil: false
   validates :state, presence: true, allow_nil: false
   validates :report_date, presence: true
-  validates :content, presence: true
 
   after_initialize :state_init
   after_initialize :date_init
