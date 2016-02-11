@@ -2,7 +2,13 @@ require 'test_helper'
 
 describe Report do
 
-  let(:report) { Report.new(content: "report content", reporter: User.take) }
+  let(:report) { Report.new(
+    content: "report content",
+    reporter: users(:andrew),
+    geo_state: geo_states(:nb),
+    state: :active,
+    report_date: Date.today
+  ) }
 
   it "is valid with content and reporter" do
   	_(report).must_be :valid?

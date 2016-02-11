@@ -21,7 +21,8 @@ describe User::Factory do
       password: "foobar", 
       password_confirmation: "foobar",
       role_id: 3,
-      mother_tongue_id: 5
+      mother_tongue_id: 5,
+      geo_states: [geo_states(:nb).id]
     }
     _(factory.build_user(user_params)).must_equal true
     _(factory.instance()).must_be :valid?
@@ -30,7 +31,7 @@ describe User::Factory do
   it "makes valid users with db relationships" do
     user_params = {
       name: "Test User", 
-      phone: "9876543210", 
+      phone: "9876543210",  
       password: "foobar", 
       password_confirmation: "foobar",
       role: role,
@@ -66,6 +67,7 @@ describe User::Factory do
   end
 
   it "makes sure the mother-tongue is included in spoken languages" do
+    puts __method__
     user_params = {
       name: "Test User", 
       phone: "9876543210", 
@@ -74,7 +76,7 @@ describe User::Factory do
       role: role,
       mother_tongue: language
     }
-    factory.build_user(user_params)
+    _(factory.build_user(user_params)).must_equal true
     _(factory.instance().spoken_languages).must_include language
   end
 

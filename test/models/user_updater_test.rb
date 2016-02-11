@@ -10,9 +10,10 @@ describe User::Updater do
       phone: "9876543210", 
       password_digest: User.digest('password'),
       role_id: 3,
-      mother_tongue_id: 5) }
+      mother_tongue_id: 5,
+      geo_states: [geo_states(:nb)]) }
 
-  it "update users" do
+  it "updates users" do
     user_params = {
       name: "Test User Updated", 
       phone: "9876543220", 

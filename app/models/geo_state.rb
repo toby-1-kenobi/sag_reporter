@@ -16,7 +16,7 @@ class GeoState < ActiveRecord::Base
   end
 
   def minority_languages
-    languages.where(lwc: false)
+    self.languages.where(lwc: false)
   end
 
   def tagged_impact_report_count(from_date = nil, to_date = nil)
