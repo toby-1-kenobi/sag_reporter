@@ -8,10 +8,12 @@ arunachal_pradesh-english:
 arunachal_pradesh-galo:
   geo_state: arunachal_pradesh
   language: galo
+  project: true
 
 arunachal_pradesh-libo:
   geo_state: arunachal_pradesh
   language: libo
+  project: true
 
 arunachal_pradesh-ramo:
   geo_state: arunachal_pradesh
@@ -28,10 +30,12 @@ arunachal_pradesh-tagin:
 arunachal_pradesh-nyshi:
   geo_state: arunachal_pradesh
   language: nyshi
+  project: true
 
 arunachal_pradesh-adi:
   geo_state: arunachal_pradesh
   language: adi
+  project: true
 
 arunachal_pradesh-hillsmiri:
   geo_state: arunachal_pradesh
@@ -40,6 +44,7 @@ arunachal_pradesh-hillsmiri:
 arunachal_pradesh-apatani:
   geo_state: arunachal_pradesh
   language: apatani
+  project: true
 
 arunachal_pradesh-wancho:
   geo_state: arunachal_pradesh
@@ -48,10 +53,12 @@ arunachal_pradesh-wancho:
 arunachal_pradesh-tangso:
   geo_state: arunachal_pradesh
   language: tangso
+  project: true
 
 arunachal_pradesh-puriok:
   geo_state: arunachal_pradesh
   language: puriok
+  project: true
 
 arunachal_pradesh-mompa:
   geo_state: arunachal_pradesh
@@ -72,6 +79,7 @@ arunachal_pradesh-sherdukpen:
 arunachal_pradesh-idu:
   geo_state: arunachal_pradesh
   language: idu
+  project: true
 
 arunachal_pradesh-digaru_mishimi:
   geo_state: arunachal_pradesh
@@ -92,6 +100,7 @@ arunachal_pradesh-bugun:
 arunachal_pradesh-bokar:
   geo_state: arunachal_pradesh
   language: bokar
+  project: true
 
 arunachal_pradesh-nah:
   geo_state: arunachal_pradesh
@@ -108,6 +117,12 @@ assam-english:
 assam-assamese:
   geo_state: assam
   language: assamese
+  project: true
+
+assam-assamese-musulmani:
+  geo_state: assam
+  language: assamese-musulmani
+  project: true
 
 assam-bengali:
   geo_state: assam
@@ -124,6 +139,12 @@ assam-oriya:
 assam-karbi:
   geo_state: assam
   language: karbi
+  project: true
+
+assam-amri-karbi:
+  geo_state: assam
+  language: amri-karbi
+  project: true
 
 assam-garo:
   geo_state: assam
@@ -132,10 +153,12 @@ assam-garo:
 assam-sadri:
   geo_state: assam
   language: sadri
+  project: true
 
 assam-rabha:
   geo_state: assam
   language: rabha
+  project: true
 
 assam-shyam:
   geo_state: assam
@@ -144,10 +167,12 @@ assam-shyam:
 assam-deori:
   geo_state: assam
   language: deori
+  project: true
 
 assam-bodo:
   geo_state: assam
   language: bodo
+  project: true
 
 assam-tiwa:
   geo_state: assam
@@ -156,10 +181,16 @@ assam-tiwa:
 assam-mising:
   geo_state: assam
   language: mising
+  project: true
 
 manipur-english:
   geo_state: manipur
   language: english
+
+manipur-lamkaang:
+  geo_state: manipur
+  language: lamkaang
+  project: true
 
 meghalaya-english:
   geo_state: meghalaya
@@ -192,14 +223,17 @@ tripura-darlong:
 tripura-kaipeng:
   geo_state: tripura
   language: kaipeng
+  project: true
 
 tripura-ranglong:
   geo_state: tripura
   language: ranglong
+  project: true
 
 tripura-molsom:
   geo_state: tripura
   language: molsom
+  project: true
 
 tripura-hrangkhul:
   geo_state: tripura
@@ -208,6 +242,17 @@ tripura-hrangkhul:
 tripura-chorei:
   geo_state: tripura
   language: chorei
+  project: true
+
+tripura-kolai:
+  geo_state: tripura
+  language: kolai
+  project: true
+
+tripura-chilomilo:
+  geo_state: tripura
+  language: chilomilo
+  project: true
 
 tripura-mog:
   geo_state: tripura
@@ -220,6 +265,7 @@ tripura-urang:
 tripura-chakma:
   geo_state: tripura
   language: chakma
+  project: true
 
 nb-english:
   geo_state: nb
@@ -236,46 +282,67 @@ nb-bengali:
 nb-toto:
   geo_state: nb
   language: toto
+  project: true
 
 nb-rajbanshi:
   geo_state: nb
   language: rajbanshi
+  project: true
 
 nb-bodo:
   geo_state: nb
   language: bodo
+  project: true
 
 nb-sadri:
   geo_state: nb
   language: sadri
+  project: true
 
 nb-santali:
   geo_state: nb
   language: santali
+  project: true
 
 nb-munda:
   geo_state: nb
   language: munda
+  project: true
 
 nb-mundari:
   geo_state: nb
   language: mundari
+  project: true
 
 nb-rabha:
   geo_state: nb
   language: rabha
+  project: true
 
 nb-kurux:
   geo_state: nb
   language: kurux
+  project: true
 
 nb-surjapuri:
   geo_state: nb
   language: surjapuri
+  project: true
 
 nb-garo:
   geo_state: nb
   language: garo
+  project: true
+
+nb-bhutia:
+  geo_state: nb
+  language: bhutia
+  project: true
+
+nb-tamang:
+  geo_state: nb
+  language: tamang
+  project: true
 
 bihar-english:
   geo_state: bihar
@@ -284,34 +351,42 @@ bihar-english:
 bihar-angika:
   geo_state: bihar
   language: angika
+  project: true
 
 bihar-bhojpuri:
   geo_state: bihar
   language: bhojpuri
+  project: true
 
 bihar-magahi:
   geo_state: bihar
   language: magahi
+  project: true
 
 bihar-maithili:
   geo_state: bihar
   language: maithili
+  project: true
 
 bihar-surjapuri:
   geo_state: bihar
   language: surjapuri
+  project: true
 
 bihar-panchpargania:
   geo_state: bihar
   language: panchpargania
+  project: true
 
 bihar-vajjika:
   geo_state: bihar
   language: vajjika
+  project: true
 
 bihar-santali:
   geo_state: bihar
   language: santali
+  project: true
 
 bihar-kortha:
   geo_state: bihar
@@ -328,6 +403,7 @@ bihar-domari:
 bihar-musaha:
   geo_state: bihar
   language: musaha
+  project: true
 
 bihar-tharu_chitw:
   geo_state: bihar
@@ -352,6 +428,7 @@ up-english:
 up-awadhi:
   geo_state: up
   language: awadhi
+  project: true
 
 up-bagheli:
   geo_state: up
@@ -368,18 +445,22 @@ up-braj_bhasha:
 up-bundeli:
   geo_state: up
   language: bundeli
+  project: true
 
 up-kanauji:
   geo_state: up
   language: kanauji
+  project: true
 
 up-kanjari_gihari:
   geo_state: up
   language: kanjari_gihari
+  project: true
 
 up-sapera:
   geo_state: up
   language: sapera
+  project: true
 
 up-tharu_dangaura:
   geo_state: up
@@ -397,6 +478,11 @@ haryana-english:
   geo_state: haryana
   language: english
 
+haryana-hariyanvi:
+  geo_state: haryana
+  language: hariyanvi
+  project: true
+
 hp-english:
   geo_state: hp
   language: english
@@ -404,18 +490,22 @@ hp-english:
 hp-kulluvi:
   geo_state: hp
   language: kulluvi
+  project: true
 
 hp-mandeali:
   geo_state: hp
   language: mandeali
+  project: true
 
 hp-pahari_mahasui:
   geo_state: hp
   language: pahari_mahasui
+  project: true
 
 hp-chambeali:
   geo_state: hp
   language: chambeali
+  project: true
 
 hp-dogri:
   geo_state: hp
@@ -432,10 +522,16 @@ hp-garhwali:
 hp-kangri:
   geo_state: hp
   language: kangri
+  project: true
 
 jammu_kashmir-english:
   geo_state: jammu_kashmir
   language: english
+
+jammu_kashmir-dogri:
+  geo_state: jammu_kashmir
+  language: dogri
+  project: true
 
 punjab-english:
   geo_state: punjab
@@ -445,45 +541,64 @@ uttarakhand-english:
   geo_state: uttarakhand
   language: english
 
+uttarakhand-garhwali:
+  geo_state: uttarakhand
+  language: garhwali
+  project: true
+
 rajasthan-english:
   geo_state: rajasthan
   language: english
 
+rajasthan-marwari:
+  geo_state: rajasthan
+  language: marwari
+  project: true
+
 rajasthan-mewari:
   geo_state: rajasthan
   language: mewari
+  project: true
 
 rajasthan-dhundari:
   geo_state: rajasthan
   language: dhundari
+  project: true
 
 rajasthan-shekhawati:
   geo_state: rajasthan
   language: shekhawati
+  project: true
 
 rajasthan-bagri:
   geo_state: rajasthan
   language: bagri
+  project: true
 
 rajasthan-hadoti:
   geo_state: rajasthan
   language: hadoti
+  project: true
 
 rajasthan-mewati:
   geo_state: rajasthan
   language: mewati
+  project: true
 
 rajasthan-wagri:
   geo_state: rajasthan
   language: wagri
+  project: true
 
 rajasthan-od_rajput:
   geo_state: rajasthan
   language: od_rajput
+  project: true
 
 rajasthan-braj_bhasha:
   geo_state: rajasthan
   language: braj_bhasha
+  project: true
 
 gujarat-english:
   geo_state: gujarat
@@ -516,10 +631,12 @@ jharkhand-english:
 jharkhand-panchpargania:
   geo_state: jharkhand
   language: panchpargania
+  project: true
 
 jharkhand-kudhmali:
   geo_state: jharkhand
   language: kudhmali
+  project: true
 
 jharkhand-asuri:
   geo_state: jharkhand
@@ -552,6 +669,7 @@ jharkhand-khirwar:
 jharkhand-khorta:
   geo_state: jharkhand
   language: khorta
+  project: true
 
 jharkhand-kumarbhag_paharia:
   geo_state: jharkhand
@@ -560,6 +678,7 @@ jharkhand-kumarbhag_paharia:
 jharkhand-mahali:
   geo_state: jharkhand
   language: mahali
+  project: true
 
 jharkhand-majhi:
   geo_state: jharkhand
@@ -588,6 +707,7 @@ jharkhand-sauria_paharia:
 jharkhand-turi:
   geo_state: jharkhand
   language: turi
+  project: true
 
 odisha-english:
   geo_state: odisha
@@ -596,6 +716,7 @@ odisha-english:
 odisha-didei:
   geo_state: odisha
   language: didei
+  project: true
 
 odisha-adivasi_odiya:
   geo_state: odisha
@@ -620,10 +741,12 @@ odisha-desiya:
 odisha-dabik_kui:
   geo_state: odisha
   language: dabik_kui
+  project: true
 
 odisha-dom:
   geo_state: odisha
   language: dom
+  project: true
 
 odisha-gadaba_bodo:
   geo_state: odisha
@@ -644,6 +767,7 @@ odisha-gata:
 odisha-ho:
   geo_state: odisha
   language: ho
+  project: true
 
 odisha-juang:
   geo_state: odisha
@@ -652,6 +776,7 @@ odisha-juang:
 odisha-juray:
   geo_state: odisha
   language: juray
+  project: true
 
 odisha-kisan:
   geo_state: odisha
@@ -664,10 +789,12 @@ odisha-kui:
 odisha-kutia:
   geo_state: odisha
   language: kutia
+  project: true
 
 odisha-kuvi:
   geo_state: odisha
   language: kuvi
+  project: true
 
 odisha-lodha:
   geo_state: odisha
@@ -692,6 +819,7 @@ odisha-parenga:
 odisha-pengo:
   geo_state: odisha
   language: pengo
+  project: true
 
 odisha-sambalpuri:
   geo_state: odisha
@@ -700,6 +828,7 @@ odisha-sambalpuri:
 odisha-santali:
   geo_state: odisha
   language: santali
+  project: true
 
 odisha-sora:
   geo_state: odisha
@@ -728,6 +857,7 @@ chhattisgarh-dhurua:
 chhattisgarh-kamar:
   geo_state: chhattisgarh
   language: kamar
+  project: true
 
 chhattisgarh-sabariya:
   geo_state: chhattisgarh
@@ -740,14 +870,17 @@ chhattisgarh-abujhmadia:
 chhattisgarh-korwa:
   geo_state: chhattisgarh
   language: korwa
+  project: true
 
 chhattisgarh-kodaku:
   geo_state: chhattisgarh
   language: kodaku
+  project: true
 
 chhattisgarh-sarguja:
   geo_state: chhattisgarh
   language: sarguja
+  project: true
 
 mp-english:
   geo_state: mp
@@ -772,10 +905,12 @@ mp-baiga:
 mp-bagheli:
   geo_state: mp
   language: bagheli
+  project: true
 
 mp-bharia:
   geo_state: mp
   language: bharia
+  project: true
 
 maharashtra-english:
   geo_state: maharashtra
@@ -808,3 +943,4 @@ maharashtra-katakari:
 maharashtra-far_western_muria:
   geo_state: maharashtra
   language: far_western_muria
+  project: true

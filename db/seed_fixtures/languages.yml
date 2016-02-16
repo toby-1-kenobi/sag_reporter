@@ -125,6 +125,11 @@ assamese:
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
+assamese-musulmani:
+  name: Assamese Musulmani 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
 oriya:
   name: Oriya
   lwc: false
@@ -132,6 +137,11 @@ oriya:
 
 karbi:
   name: Karbi 
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+amri-karbi:
+  name: Amri Karbi 
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
@@ -846,11 +856,41 @@ chambeali:
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
 hariyanvi:
-  name: Hariyanvi
+  name: "Hariyanvi"
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
 garhwali:
-  name: Garhwali
+  name: "Garhwali"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+lamkaang:
+  name: "Lamkaang"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+chilomilo:
+  name: "Chilomilo"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+kolai:
+  name: "Kolai"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+bhutia:
+  name: "Bhutia"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+tamang:
+  name: "Tamang"
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
+marwari:
+  name: "Marwari"
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
