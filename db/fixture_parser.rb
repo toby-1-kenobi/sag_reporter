@@ -29,15 +29,19 @@ module FixtureParser
 
   	# for each fixture file
   	fixtures.each do |filename, fixtures_hash|
+      puts "processing #{filename}"
   	  model_class = files_options_hash[filename][:model_name].classify.constantize
-  	  key_field = files_options_hash[filename][:key_field]
+  	  key_fields = files_options_hash[filename][:key_fields]
 
   	  #for each fixture within the file
   	  fixtures_hash.each do |fixture, values_hash|
   	  	if files_options_hash[filename][:update?]
+          puts fixture
   	  	  # if we doing updates get or initialise it and apply the values then save
-          if key_field
-  	  	    model_instance = model_class.find_or_initialize_by(key_field => values_hash[key_field])
+          if key_fields
+            key_hash = values_hash.dup.keep_if{ |k, v| key_fields.include? k }
+            key_hash.update(key_hash){ |k, v| all_objects[v] || v }
+  	  	    model_instance = model_class.find_or_initialize_by(key_hash)
           else
             model_instance = model_class.new
           end
@@ -45,8 +49,10 @@ module FixtureParser
   	  	  to_update[fixture] = values_hash
   	  	else
   	  	  # if we're not updating check if it's there and add it if it's not
-          if key_field
-  	  	    model_instance = model_class.find_by(key_field => values_hash[key_field])
+          if key_fields
+            key_hash = values_hash.dup.keep_if{ |k, v| key_fields.include? k }
+            key_hash.update(key_hash){ |k, v| all_objects[v] || v }
+  	  	    model_instance = model_class.find_by(key_hash)
           end
   	  	  if !model_instance
   	  	  	model_instance = model_class.new
@@ -105,6 +111,7 @@ module FixtureParser
     	  model_instance.save!
       else
         puts "*** not valid: #{model_instance}"
+        puts model_instance.errors
       end
 
     rescue PG::UniqueViolation
