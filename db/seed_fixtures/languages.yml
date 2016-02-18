@@ -125,7 +125,7 @@ assamese:
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
-assamese-musulmani:
+assamese_musulmani:
   name: Assamese Musulmani 
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
@@ -140,7 +140,7 @@ karbi:
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
-amri-karbi:
+amri_karbi:
   name: Amri Karbi 
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'

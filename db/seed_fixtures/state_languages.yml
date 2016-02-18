@@ -1,946 +1,943 @@
-# Read about fixtures at
-# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
-
-arunachal_pradesh-english:
+arunachal_pradesh_english:
   geo_state: arunachal_pradesh
   language: english
 
-arunachal_pradesh-galo:
+arunachal_pradesh_galo:
   geo_state: arunachal_pradesh
   language: galo
   project: true
 
-arunachal_pradesh-libo:
+arunachal_pradesh_libo:
   geo_state: arunachal_pradesh
   language: libo
   project: true
 
-arunachal_pradesh-ramo:
+arunachal_pradesh_ramo:
   geo_state: arunachal_pradesh
   language: ramo
 
-arunachal_pradesh-memba:
+arunachal_pradesh_memba:
   geo_state: arunachal_pradesh
   language: memba
 
-arunachal_pradesh-tagin:
+arunachal_pradesh_tagin:
   geo_state: arunachal_pradesh
   language: tagin
 
-arunachal_pradesh-nyshi:
+arunachal_pradesh_nyshi:
   geo_state: arunachal_pradesh
   language: nyshi
   project: true
 
-arunachal_pradesh-adi:
+arunachal_pradesh_adi:
   geo_state: arunachal_pradesh
   language: adi
   project: true
 
-arunachal_pradesh-hillsmiri:
+arunachal_pradesh_hillsmiri:
   geo_state: arunachal_pradesh
   language: hillsmiri
 
-arunachal_pradesh-apatani:
+arunachal_pradesh_apatani:
   geo_state: arunachal_pradesh
   language: apatani
   project: true
 
-arunachal_pradesh-wancho:
+arunachal_pradesh_wancho:
   geo_state: arunachal_pradesh
   language: wancho
 
-arunachal_pradesh-tangso:
+arunachal_pradesh_tangso:
   geo_state: arunachal_pradesh
   language: tangso
   project: true
 
-arunachal_pradesh-puriok:
+arunachal_pradesh_puriok:
   geo_state: arunachal_pradesh
   language: puriok
   project: true
 
-arunachal_pradesh-mompa:
+arunachal_pradesh_mompa:
   geo_state: arunachal_pradesh
   language: mompa
 
-arunachal_pradesh-miji:
+arunachal_pradesh_miji:
   geo_state: arunachal_pradesh
   language: miji
 
-arunachal_pradesh-aka:
+arunachal_pradesh_aka:
   geo_state: arunachal_pradesh
   language: aka
 
-arunachal_pradesh-sherdukpen:
+arunachal_pradesh_sherdukpen:
   geo_state: arunachal_pradesh
   language: sherdukpen
 
-arunachal_pradesh-idu:
+arunachal_pradesh_idu:
   geo_state: arunachal_pradesh
   language: idu
   project: true
 
-arunachal_pradesh-digaru_mishimi:
+arunachal_pradesh_digaru_mishimi:
   geo_state: arunachal_pradesh
   language: digaru_mishimi
 
-arunachal_pradesh-singpo:
+arunachal_pradesh_singpo:
   geo_state: arunachal_pradesh
   language: singpo
 
-arunachal_pradesh-sartang:
+arunachal_pradesh_sartang:
   geo_state: arunachal_pradesh
   language: sartang
 
-arunachal_pradesh-bugun:
+arunachal_pradesh_bugun:
   geo_state: arunachal_pradesh
   language: bugun
 
-arunachal_pradesh-bokar:
+arunachal_pradesh_bokar:
   geo_state: arunachal_pradesh
   language: bokar
   project: true
 
-arunachal_pradesh-nah:
+arunachal_pradesh_nah:
   geo_state: arunachal_pradesh
   language: nah
 
-arunachal_pradesh-mimba:
+arunachal_pradesh_mimba:
   geo_state: arunachal_pradesh
   language: mimba
 
-assam-english:
+assam_english:
   geo_state: assam
   language: english
 
-assam-assamese:
+assam_assamese:
   geo_state: assam
   language: assamese
   project: true
 
-assam-assamese-musulmani:
+assam_assamese_musulmani:
   geo_state: assam
-  language: assamese-musulmani
+  language: assamese_musulmani
   project: true
 
-assam-bengali:
+assam_bengali:
   geo_state: assam
   language: bengali
 
-assam-nepali:
+assam_nepali:
   geo_state: assam
   language: nepali
 
-assam-oriya:
+assam_oriya:
   geo_state: assam
   language: oriya
 
-assam-karbi:
+assam_karbi:
   geo_state: assam
   language: karbi
   project: true
 
-assam-amri-karbi:
+assam_amri_karbi:
   geo_state: assam
-  language: amri-karbi
+  language: amri_karbi
   project: true
 
-assam-garo:
+assam_garo:
   geo_state: assam
   language: garo
 
-assam-sadri:
+assam_sadri:
   geo_state: assam
   language: sadri
   project: true
 
-assam-rabha:
+assam_rabha:
   geo_state: assam
   language: rabha
   project: true
 
-assam-shyam:
+assam_shyam:
   geo_state: assam
   language: shyam
 
-assam-deori:
+assam_deori:
   geo_state: assam
   language: deori
   project: true
 
-assam-bodo:
+assam_bodo:
   geo_state: assam
   language: bodo
   project: true
 
-assam-tiwa:
+assam_tiwa:
   geo_state: assam
   language: tiwa
 
-assam-mising:
+assam_mising:
   geo_state: assam
   language: mising
   project: true
 
-manipur-english:
+manipur_english:
   geo_state: manipur
   language: english
 
-manipur-lamkaang:
+manipur_lamkaang:
   geo_state: manipur
   language: lamkaang
   project: true
 
-meghalaya-english:
+meghalaya_english:
   geo_state: meghalaya
   language: english
 
-mizoram-english:
+mizoram_english:
   geo_state: mizoram
   language: english
 
-nagaland-english:
+nagaland_english:
   geo_state: nagaland
   language: english
 
-sikkim-english:
+sikkim_english:
   geo_state: sikkim
   language: english
 
-tripura-english:
+tripura_english:
   geo_state: tripura
   language: english
 
-tripura-mizo:
+tripura_mizo:
   geo_state: tripura
   language: mizo
 
-tripura-darlong:
+tripura_darlong:
   geo_state: tripura
   language: darlong
 
-tripura-kaipeng:
+tripura_kaipeng:
   geo_state: tripura
   language: kaipeng
   project: true
 
-tripura-ranglong:
+tripura_ranglong:
   geo_state: tripura
   language: ranglong
   project: true
 
-tripura-molsom:
+tripura_molsom:
   geo_state: tripura
   language: molsom
   project: true
 
-tripura-hrangkhul:
+tripura_hrangkhul:
   geo_state: tripura
   language: hrangkhul
 
-tripura-chorei:
+tripura_chorei:
   geo_state: tripura
   language: chorei
   project: true
 
-tripura-kolai:
+tripura_kolai:
   geo_state: tripura
   language: kolai
   project: true
 
-tripura-chilomilo:
+tripura_chilomilo:
   geo_state: tripura
   language: chilomilo
   project: true
 
-tripura-mog:
+tripura_mog:
   geo_state: tripura
   language: mog
 
-tripura-urang:
+tripura_urang:
   geo_state: tripura
   language: urang
 
-tripura-chakma:
+tripura_chakma:
   geo_state: tripura
   language: chakma
   project: true
 
-nb-english:
+nb_english:
   geo_state: nb
   language: english
 
-nb-nepali:
+nb_nepali:
   geo_state: nb
   language: nepali
 
-nb-bengali:
+nb_bengali:
   geo_state: nb
   language: bengali
 
-nb-toto:
+nb_toto:
   geo_state: nb
   language: toto
   project: true
 
-nb-rajbanshi:
+nb_rajbanshi:
   geo_state: nb
   language: rajbanshi
   project: true
 
-nb-bodo:
+nb_bodo:
   geo_state: nb
   language: bodo
   project: true
 
-nb-sadri:
+nb_sadri:
   geo_state: nb
   language: sadri
   project: true
 
-nb-santali:
+nb_santali:
   geo_state: nb
   language: santali
   project: true
 
-nb-munda:
+nb_munda:
   geo_state: nb
   language: munda
   project: true
 
-nb-mundari:
+nb_mundari:
   geo_state: nb
   language: mundari
   project: true
 
-nb-rabha:
+nb_rabha:
   geo_state: nb
   language: rabha
   project: true
 
-nb-kurux:
+nb_kurux:
   geo_state: nb
   language: kurux
   project: true
 
-nb-surjapuri:
+nb_surjapuri:
   geo_state: nb
   language: surjapuri
   project: true
 
-nb-garo:
+nb_garo:
   geo_state: nb
   language: garo
   project: true
 
-nb-bhutia:
+nb_bhutia:
   geo_state: nb
   language: bhutia
   project: true
 
-nb-tamang:
+nb_tamang:
   geo_state: nb
   language: tamang
   project: true
 
-bihar-english:
+bihar_english:
   geo_state: bihar
   language: english
 
-bihar-angika:
+bihar_angika:
   geo_state: bihar
   language: angika
   project: true
 
-bihar-bhojpuri:
+bihar_bhojpuri:
   geo_state: bihar
   language: bhojpuri
   project: true
 
-bihar-magahi:
+bihar_magahi:
   geo_state: bihar
   language: magahi
   project: true
 
-bihar-maithili:
+bihar_maithili:
   geo_state: bihar
   language: maithili
   project: true
 
-bihar-surjapuri:
+bihar_surjapuri:
   geo_state: bihar
   language: surjapuri
   project: true
 
-bihar-panchpargania:
+bihar_panchpargania:
   geo_state: bihar
   language: panchpargania
   project: true
 
-bihar-vajjika:
+bihar_vajjika:
   geo_state: bihar
   language: vajjika
   project: true
 
-bihar-santali:
+bihar_santali:
   geo_state: bihar
   language: santali
   project: true
 
-bihar-kortha:
+bihar_kortha:
   geo_state: bihar
   language: kortha
 
-bihar-degaru:
+bihar_degaru:
   geo_state: bihar
   language: degaru
 
-bihar-domari:
+bihar_domari:
   geo_state: bihar
   language: domari
 
-bihar-musaha:
+bihar_musaha:
   geo_state: bihar
   language: musaha
   project: true
 
-bihar-tharu_chitw:
+bihar_tharu_chitw:
   geo_state: bihar
   language: tharu_chitw
 
-bihar-tharu_koch:
+bihar_tharu_koch:
   geo_state: bihar
   language: tharu_koch
 
-bihar-sadri:
+bihar_sadri:
   geo_state: bihar
   language: sadri
 
-bihar-kurux:
+bihar_kurux:
   geo_state: bihar
   language: kurux
 
-up-english:
+up_english:
   geo_state: up
   language: english
 
-up-awadhi:
+up_awadhi:
   geo_state: up
   language: awadhi
   project: true
 
-up-bagheli:
+up_bagheli:
   geo_state: up
   language: bagheli
 
-up-bhojpuri:
+up_bhojpuri:
   geo_state: up
   language: bhojpuri
 
-up-braj_bhasha:
+up_braj_bhasha:
   geo_state: up
   language: braj_bhasha
 
-up-bundeli:
+up_bundeli:
   geo_state: up
   language: bundeli
   project: true
 
-up-kanauji:
+up_kanauji:
   geo_state: up
   language: kanauji
   project: true
 
-up-kanjari_gihari:
+up_kanjari_gihari:
   geo_state: up
   language: kanjari_gihari
   project: true
 
-up-sapera:
+up_sapera:
   geo_state: up
   language: sapera
   project: true
 
-up-tharu_dangaura:
+up_tharu_dangaura:
   geo_state: up
   language: tharu_dangaura
 
-up-tharu_kathoriya:
+up_tharu_kathoriya:
   geo_state: up
   language: tharu_kathoriya
 
-up-tharu_rana:
+up_tharu_rana:
   geo_state: up
   language: tharu_rana
 
-haryana-english:
+haryana_english:
   geo_state: haryana
   language: english
 
-haryana-hariyanvi:
+haryana_hariyanvi:
   geo_state: haryana
   language: hariyanvi
   project: true
 
-hp-english:
+hp_english:
   geo_state: hp
   language: english
 
-hp-kulluvi:
+hp_kulluvi:
   geo_state: hp
   language: kulluvi
   project: true
 
-hp-mandeali:
+hp_mandeali:
   geo_state: hp
   language: mandeali
   project: true
 
-hp-pahari_mahasui:
+hp_pahari_mahasui:
   geo_state: hp
   language: pahari_mahasui
   project: true
 
-hp-chambeali:
+hp_chambeali:
   geo_state: hp
   language: chambeali
   project: true
 
-hp-dogri:
+hp_dogri:
   geo_state: hp
   language: dogri
 
-hp-hariyanvi:
+hp_hariyanvi:
   geo_state: hp
   language: hariyanvi
 
-hp-garhwali:
+hp_garhwali:
   geo_state: hp
   language: garhwali
 
-hp-kangri:
+hp_kangri:
   geo_state: hp
   language: kangri
   project: true
 
-jammu_kashmir-english:
+jammu_kashmir_english:
   geo_state: jammu_kashmir
   language: english
 
-jammu_kashmir-dogri:
+jammu_kashmir_dogri:
   geo_state: jammu_kashmir
   language: dogri
   project: true
 
-punjab-english:
+punjab_english:
   geo_state: punjab
   language: english
 
-uttarakhand-english:
+uttarakhand_english:
   geo_state: uttarakhand
   language: english
 
-uttarakhand-garhwali:
+uttarakhand_garhwali:
   geo_state: uttarakhand
   language: garhwali
   project: true
 
-rajasthan-english:
+rajasthan_english:
   geo_state: rajasthan
   language: english
 
-rajasthan-marwari:
+rajasthan_marwari:
   geo_state: rajasthan
   language: marwari
   project: true
 
-rajasthan-mewari:
+rajasthan_mewari:
   geo_state: rajasthan
   language: mewari
   project: true
 
-rajasthan-dhundari:
+rajasthan_dhundari:
   geo_state: rajasthan
   language: dhundari
   project: true
 
-rajasthan-shekhawati:
+rajasthan_shekhawati:
   geo_state: rajasthan
   language: shekhawati
   project: true
 
-rajasthan-bagri:
+rajasthan_bagri:
   geo_state: rajasthan
   language: bagri
   project: true
 
-rajasthan-hadoti:
+rajasthan_hadoti:
   geo_state: rajasthan
   language: hadoti
   project: true
 
-rajasthan-mewati:
+rajasthan_mewati:
   geo_state: rajasthan
   language: mewati
   project: true
 
-rajasthan-wagri:
+rajasthan_wagri:
   geo_state: rajasthan
   language: wagri
   project: true
 
-rajasthan-od_rajput:
+rajasthan_od_rajput:
   geo_state: rajasthan
   language: od_rajput
   project: true
 
-rajasthan-braj_bhasha:
+rajasthan_braj_bhasha:
   geo_state: rajasthan
   language: braj_bhasha
   project: true
 
-gujarat-english:
+gujarat_english:
   geo_state: gujarat
   language: english
 
-andhra_pradesh-english:
+andhra_pradesh_english:
   geo_state: andhra_pradesh
   language: english
 
-tamil-nadu-english:
-  geo_state: tamil-nadu
+tamil_nadu_english:
+  geo_state: tamil_nadu
   language: english
 
-karnataka-english:
+karnataka_english:
   geo_state: karnataka
   language: english
 
-kerala-english:
+kerala_english:
   geo_state: kerala
   language: english
 
-telangana-english:
+telangana_english:
   geo_state: telangana
   language: english
 
-jharkhand-english:
+jharkhand_english:
   geo_state: jharkhand
   language: english
 
-jharkhand-panchpargania:
+jharkhand_panchpargania:
   geo_state: jharkhand
   language: panchpargania
   project: true
 
-jharkhand-kudhmali:
+jharkhand_kudhmali:
   geo_state: jharkhand
   language: kudhmali
   project: true
 
-jharkhand-asuri:
+jharkhand_asuri:
   geo_state: jharkhand
   language: asuri
 
-jharkhand-bijori:
+jharkhand_bijori:
   geo_state: jharkhand
   language: bijori
 
-jharkhand-birhor:
+jharkhand_birhor:
   geo_state: jharkhand
   language: birhor
 
-jharkhand-degaru:
+jharkhand_degaru:
   geo_state: jharkhand
   language: degaru
 
-jharkhand-ho:
+jharkhand_ho:
   geo_state: jharkhand
   language: ho
 
-jharkhand-kharia:
+jharkhand_kharia:
   geo_state: jharkhand
   language: kharia
 
-jharkhand-khirwar:
+jharkhand_khirwar:
   geo_state: jharkhand
   language: khirwar
 
-jharkhand-khorta:
+jharkhand_khorta:
   geo_state: jharkhand
   language: khorta
   project: true
 
-jharkhand-kumarbhag_paharia:
+jharkhand_kumarbhag_paharia:
   geo_state: jharkhand
   language: kumarbhag_paharia
 
-jharkhand-mahali:
+jharkhand_mahali:
   geo_state: jharkhand
   language: mahali
   project: true
 
-jharkhand-majhi:
+jharkhand_majhi:
   geo_state: jharkhand
   language: majhi
 
-jharkhand-mal_paharia:
+jharkhand_mal_paharia:
   geo_state: jharkhand
   language: mal_paharia
 
-jharkhand-mundari:
+jharkhand_mundari:
   geo_state: jharkhand
   language: mundari
 
-jharkhand-sadri:
+jharkhand_sadri:
   geo_state: jharkhand
   language: sadri
 
-jharkhand-santali:
+jharkhand_santali:
   geo_state: jharkhand
   language: santali
 
-jharkhand-sauria_paharia:
+jharkhand_sauria_paharia:
   geo_state: jharkhand
   language: sauria_paharia
 
-jharkhand-turi:
+jharkhand_turi:
   geo_state: jharkhand
   language: turi
   project: true
 
-odisha-english:
+odisha_english:
   geo_state: odisha
   language: english
 
-odisha-didei:
+odisha_didei:
   geo_state: odisha
   language: didei
   project: true
 
-odisha-adivasi_odiya:
+odisha_adivasi_odiya:
   geo_state: odisha
   language: adivasi_odiya
 
-odisha-bhunjia:
+odisha_bhunjia:
   geo_state: odisha
   language: bhunjia
 
-odisha-bodo_parja:
+odisha_bodo_parja:
   geo_state: odisha
   language: bodo_parja
 
-odisha-bondo:
+odisha_bondo:
   geo_state: odisha
   language: bondo
 
-odisha-desiya:
+odisha_desiya:
   geo_state: odisha
   language: desiya
 
-odisha-dabik_kui:
+odisha_dabik_kui:
   geo_state: odisha
   language: dabik_kui
   project: true
 
-odisha-dom:
+odisha_dom:
   geo_state: odisha
   language: dom
   project: true
 
-odisha-gadaba_bodo:
+odisha_gadaba_bodo:
   geo_state: odisha
   language: gadaba_bodo
 
-odisha-gadaba_ollar_pottangi:
+odisha_gadaba_ollar_pottangi:
   geo_state: odisha
   language: gadaba_ollar_pottangi
 
-odisha-gadaba_gutuba:
+odisha_gadaba_gutuba:
   geo_state: odisha
   language: gadaba_gutuba
 
-odisha-gata:
+odisha_gata:
   geo_state: odisha
   language: gata
 
-odisha-ho:
+odisha_ho:
   geo_state: odisha
   language: ho
   project: true
 
-odisha-juang:
+odisha_juang:
   geo_state: odisha
   language: juang
 
-odisha-juray:
+odisha_juray:
   geo_state: odisha
   language: juray
   project: true
 
-odisha-kisan:
+odisha_kisan:
   geo_state: odisha
   language: kisan
 
-odisha-kui:
+odisha_kui:
   geo_state: odisha
   language: kui
 
-odisha-kutia:
+odisha_kutia:
   geo_state: odisha
   language: kutia
   project: true
 
-odisha-kuvi:
+odisha_kuvi:
   geo_state: odisha
   language: kuvi
   project: true
 
-odisha-lodha:
+odisha_lodha:
   geo_state: odisha
   language: lodha
 
-odisha-manda:
+odisha_manda:
   geo_state: odisha
   language: manda
 
-odisha-mirgan:
+odisha_mirgan:
   geo_state: odisha
   language: mirgan
 
-odisha-munda:
+odisha_munda:
   geo_state: odisha
   language: munda
 
-odisha-parenga:
+odisha_parenga:
   geo_state: odisha
   language: parenga
 
-odisha-pengo:
+odisha_pengo:
   geo_state: odisha
   language: pengo
   project: true
 
-odisha-sambalpuri:
+odisha_sambalpuri:
   geo_state: odisha
   language: sambalpuri
 
-odisha-santali:
+odisha_santali:
   geo_state: odisha
   language: santali
   project: true
 
-odisha-sora:
+odisha_sora:
   geo_state: odisha
   language: sora
 
-swb-english:
+swb_english:
   geo_state: swb
   language: english
 
-chhattisgarh-english:
+chhattisgarh_english:
   geo_state: chhattisgarh
   language: english
 
-chhattisgarh-bhatri:
+chhattisgarh_bhatri:
   geo_state: chhattisgarh
   language: bhatri
 
-chhattisgarh-muriya:
+chhattisgarh_muriya:
   geo_state: chhattisgarh
   language: muriya
 
-chhattisgarh-dhurua:
+chhattisgarh_dhurua:
   geo_state: chhattisgarh
   language: dhurua
 
-chhattisgarh-kamar:
+chhattisgarh_kamar:
   geo_state: chhattisgarh
   language: kamar
   project: true
 
-chhattisgarh-sabariya:
+chhattisgarh_sabariya:
   geo_state: chhattisgarh
   language: sabariya
 
-chhattisgarh-abujhmadia:
+chhattisgarh_abujhmadia:
   geo_state: chhattisgarh
   language: abujhmadia
 
-chhattisgarh-korwa:
+chhattisgarh_korwa:
   geo_state: chhattisgarh
   language: korwa
   project: true
 
-chhattisgarh-kodaku:
+chhattisgarh_kodaku:
   geo_state: chhattisgarh
   language: kodaku
   project: true
 
-chhattisgarh-sarguja:
+chhattisgarh_sarguja:
   geo_state: chhattisgarh
   language: sarguja
   project: true
 
-mp-english:
+mp_english:
   geo_state: mp
   language: english
 
-mp-poweri:
+mp_poweri:
   geo_state: mp
   language: poweri
 
-mp-rathwi:
+mp_rathwi:
   geo_state: mp
   language: rathwi
 
-mp-malvi:
+mp_malvi:
   geo_state: mp
   language: malvi
 
-mp-baiga:
+mp_baiga:
   geo_state: mp
   language: baiga
 
-mp-bagheli:
+mp_bagheli:
   geo_state: mp
   language: bagheli
   project: true
 
-mp-bharia:
+mp_bharia:
   geo_state: mp
   language: bharia
   project: true
 
-maharashtra-english:
+maharashtra_english:
   geo_state: maharashtra
   language: english
 
-maharashtra-varahadi:
+maharashtra_varahadi:
   geo_state: maharashtra
   language: varahadi
 
-maharashtra-ahirani:
+maharashtra_ahirani:
   geo_state: maharashtra
   language: ahirani
 
-maharashtra-wadder:
+maharashtra_wadder:
   geo_state: maharashtra
   language: wadder
 
-maharashtra-sikligar:
+maharashtra_sikligar:
   geo_state: maharashtra
   language: sikligar
 
-maharashtra-gowlan:
+maharashtra_gowlan:
   geo_state: maharashtra
   language: gowlan
 
-maharashtra-katakari:
+maharashtra_katakari:
   geo_state: maharashtra
   language: katakari
 
-maharashtra-far_western_muria:
+maharashtra_far_western_muria:
   geo_state: maharashtra
   language: far_western_muria
   project: true
