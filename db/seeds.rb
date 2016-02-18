@@ -49,10 +49,17 @@ parse_fixtures options_hash
 
 # if there's no admin user, then put a dummy one in
 if User.where(role_id: Role.find_by_name('admin')).count == 0
-  User.create!(name:  "admin",
+  puts "creating admin user"
+  admin_user = User.new(name:  "admin",
              phone: "1234567890",
              password:              "password",
              password_confirmation: "password",
              role: Role.find_by_name('admin'),
              mother_tongue: Language.find_by_name('English'))
+  admin_user.geo_states << GeoState.take
+  if admin_user.save
+    puts "phone: #{admin_user.phone} password: password"
+  else
+    puts "Could not create admin user"
+  end
 end
