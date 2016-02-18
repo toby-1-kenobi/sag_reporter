@@ -9,7 +9,7 @@ describe ProgressUpdate do
       language_progress: language_progress
     }
     
-  let(:language_progress) {LanguageProgress.new language: languages(:toto),
+  let(:language_progress) {LanguageProgress.new state_language: state_languages(:nb_toto),
       progress_marker: progress_markers(:disease_prevented)
     }
 
