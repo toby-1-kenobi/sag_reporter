@@ -1,16 +1,17 @@
 class LanguageProgress < ActiveRecord::Base
 
   # This model corresponds to the outcome progress
-  # on a particular progress marker for a particular language.
-  # WARNING: it doesn't correspond to a particular geo_state.
-  # The language may be accross multiple geo_states
-  # the progress_updates each have a corresponding geo_state.
+  # on a particular progress marker for a particular language in a state.
 
   CACHE_TIMEOUT = 5.seconds
 
   belongs_to :language
+  belongs_to :state_language
   belongs_to :progress_marker
   has_many :progress_updates, dependent: :destroy
+
+  validates :progress_marker, presence: true, uniqueness: { scope: :state_language }
+  validates :state_language, presence: true
 
   def last_updated
   	progress_updates.maximum('created_at')

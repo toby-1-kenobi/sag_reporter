@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160211040243) do
+ActiveRecord::Schema.define(version: 20160217071432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -150,15 +150,14 @@ ActiveRecord::Schema.define(version: 20160211040243) do
   add_index "impact_reports_progress_markers", ["progress_marker_id", "impact_report_id"], name: "index_impact_reports_progress_markers_on_pm_and_ir", using: :btree
 
   create_table "language_progresses", force: :cascade do |t|
-    t.integer  "language_id",        null: false
     t.integer  "progress_marker_id", null: false
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.integer  "state_language_id"
   end
 
-  add_index "language_progresses", ["language_id"], name: "index_language_progresses_on_language_id", using: :btree
-  add_index "language_progresses", ["progress_marker_id", "language_id"], name: "index_language_progresses_on_progress_marker_id_and_language_id", unique: true, using: :btree
   add_index "language_progresses", ["progress_marker_id"], name: "index_language_progresses_on_progress_marker_id", using: :btree
+  add_index "language_progresses", ["state_language_id"], name: "index_language_progresses_on_state_language_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
     t.string   "name"
@@ -448,8 +447,8 @@ ActiveRecord::Schema.define(version: 20160211040243) do
   add_foreign_key "impact_reports", "events"
   add_foreign_key "impact_reports", "geo_states"
   add_foreign_key "impact_reports", "users", column: "reporter_id"
-  add_foreign_key "language_progresses", "languages"
   add_foreign_key "language_progresses", "progress_markers"
+  add_foreign_key "language_progresses", "state_languages"
   add_foreign_key "languages_tallies", "languages"
   add_foreign_key "languages_tallies", "tallies"
   add_foreign_key "mt_resources", "geo_states"
