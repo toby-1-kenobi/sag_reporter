@@ -58,7 +58,7 @@ states_languages.keys.each do |state|
 %>
 
 <%= language %>_<%= marker %>:
-  language: <%= language %>
+  state_language: <%= state %>_<%= language %>
   progress_marker: <%= marker %>
 
 <%

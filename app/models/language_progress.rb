@@ -5,7 +5,6 @@ class LanguageProgress < ActiveRecord::Base
 
   CACHE_TIMEOUT = 5.seconds
 
-  belongs_to :language
   belongs_to :state_language
   belongs_to :progress_marker
   has_many :progress_updates, dependent: :destroy
