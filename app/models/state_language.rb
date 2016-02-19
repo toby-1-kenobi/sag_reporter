@@ -8,6 +8,12 @@ class StateLanguage < ActiveRecord::Base
   validates :geo_state, presence: true
   validates :language, presence: true
 
+  scope :in_project, -> { where project: true }
+
+  def <=>(sl)
+    language.name.downcase <=> sl.language.name.downcase
+  end
+
   def outcome_table_data(options = {})
     options[:from_date] ||= 6.months.ago
     options[:to_date] ||= Date.today
