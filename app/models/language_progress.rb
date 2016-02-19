@@ -52,5 +52,23 @@ class LanguageProgress < ActiveRecord::Base
   	return state_updates.empty? ? 0 : state_updates.sort{ |a,b| b.created_at <=> a.created_at }.max_by(&:progress_date).progress * progress_marker.weight
   end
 
+  def outcome_scores(start_date, end_date)
+    dates_by_month = (start_date.to_date..end_date.to_date).select{ |d| d.day == 1 }
+    pu_iterator = progress_updates.to_a.sort!.each
+    scores = Hash.new
+    current_value = 0
+    dates_by_month.each do |date|
+      begin
+        while pu_iterator.peek.progress_date <= date.end_of_month.end_of_day
+          current_value = pu_iterator.next.progress * progress_marker.weight
+        end
+      rescue StopIteration
+      ensure
+        scores[date.strftime("%B %Y")] = current_value
+      end
+    end
+    return scores
+  end
+
 end
 

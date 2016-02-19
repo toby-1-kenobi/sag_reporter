@@ -34,4 +34,22 @@ describe LanguageProgress do
     _(language_progress2).must_be :valid?
   end
 
+  it "gives monthly outcome scores accross a date range" do
+    pu1 = ProgressUpdate.new progress: 2, year:2015, month: 8
+    pu2 = ProgressUpdate.new progress: 3, year:2015, month: 10
+    pu3 = ProgressUpdate.new progress: 1, year:2015, month: 11
+    language_progress.progress_updates << [pu1, pu2, pu3]
+    language_progress.progress_marker.weight = 1
+    scores = language_progress.outcome_scores(Date.new(2015,7,1), Date.new(2015,12,1))
+    value(scores.count).must_equal 6
+    value(scores["July 2015"]).must_equal 0
+    value(scores["August 2015"]).must_equal 2
+    value(scores["September 2015"]).must_equal 2
+    value(scores["October 2015"]).must_equal 3
+    value(scores["November 2015"]).must_equal 1
+    language_progress.progress_marker.weight = 2
+    scores = language_progress.outcome_scores(Date.new(2015,6,1), Date.new(2015,12,1))
+    value(scores["August 2015"]).must_equal 4
+  end
+
 end

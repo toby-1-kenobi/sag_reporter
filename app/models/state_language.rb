@@ -11,7 +11,6 @@ class StateLanguage < ActiveRecord::Base
   def outcome_table_data(options = {})
     options[:from_date] ||= 6.months.ago
     options[:to_date] ||= Date.today
-    dates_by_month = (options[:from_date].to_date..options[:to_date].to_date).select{ |d| d.day == 1}
 
     table = Hash.new
     table["Totals"] = Hash.new
@@ -20,12 +19,11 @@ class StateLanguage < ActiveRecord::Base
     all_lps.each do |lp|
       oa_name = lp.progress_marker.topic.name
       table[oa_name] ||= Hash.new
-      dates_by_month.each do |date|
-        score = lp.month_score(date.year, date.month)
-        table[oa_name][date.strftime("%B %Y")] ||= 0
-        table[oa_name][date.strftime("%B %Y")] += score
-        table["Totals"][date.strftime("%B %Y")] ||= 0
-        table["Totals"][date.strftime("%B %Y")] += score
+      lp.outcome_scores(options[:from_date], options[:to_date]).each do |date, score|
+        table[oa_name][date] ||= 0
+        table[oa_name][date] += score
+        table["Totals"][date] ||= 0
+        table["Totals"][date] += score
       end
     end
 
