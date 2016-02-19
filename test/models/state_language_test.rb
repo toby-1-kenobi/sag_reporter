@@ -32,10 +32,16 @@ describe StateLanguage do
     state_language.language_progresses.stubs(:includes).returns state_language.language_progresses
     table = state_language.outcome_table_data(from_date: start_date, to_date: end_date)
 
-    value(table[social_oa.name]["October 2015"]).must_equal 3
-    value(table[leader_oa.name]["October 2015"]).must_equal 4
-    value(table[social_oa.name]["November 2015"]).must_equal 8
+    value(table["content"][social_oa.name]["October 2015"]).must_equal 3
+    value(table["content"][leader_oa.name]["October 2015"]).must_equal 4
+    value(table["content"][social_oa.name]["November 2015"]).must_equal 8
     value(table["Totals"]["October 2015"]).must_equal 7
+  end
+
+  it "returns nil when asked for a table where there is no progress updates" do
+    start_date = Date.new(2015,7,1)
+    end_date = Date.new(2015,12,1)
+    _(state_language.outcome_table_data(from_date: start_date, to_date: end_date)).must_be_nil
   end
 
 end
