@@ -128,45 +128,51 @@ class TopicsController < ApplicationController
   end
 
   def outcomes
-    @outcome_areas = Topic.all
     @languages_by_state = Hash.new
     current_user.geo_states.each do |geo_state|
-      @languages_by_state[geo_state] = geo_state.minority_languages.order("LOWER(languages.name)")
+      @languages_by_state[geo_state] = geo_state.state_languages.includes(:language).in_project.to_a.sort!
     end
   end
 
   def get_chart
     @outcome_areas = Topic.all
-    @language = Language.find(params[:language_id])
-    @geo_state = GeoState.find(params[:geo_state_id])
+    @language = StateLanguage.find(params[:state_language_id])
     respond_to do |format|
       format.js
     end
   end
 
   def get_table
-    @language = Language.find(params[:language_id])
-    @geo_state = GeoState.find(params[:geo_state_id])
+    @language = StateLanguage.find(params[:state_language_id])
 
-    table_data = @language.outcome_table_data(Topic.all, @geo_state)
+    table_data = @language.outcome_table_data()
 
-    table_head = "<thead><tr>"
-    table_data.shift.each do |cell|
-      table_head += "<th>#{cell}</th>"
-    end
-    table_head += "</tr></thead>"
+    if table_data
+      table_head = "<thead><tr><th></th>"
+      table_data["content"].values.first.keys.each do |cell|
+        table_head += "<th>#{cell}</th>"
+      end
+      table_head += "</tr></thead>"
 
-    table_body = "<tbody>"
-    table_data.each do |row|
-      table_body += "<tr>"
-      row.each do |cell|
+      table_body = "<tbody>"
+      table_data["content"].each do |row_title, row|
+        table_body += "<tr><th>#{row_title}</th>"
+        row.values.each do |cell|
+          table_body += "<td>#{cell}</td>"
+        end
+        table_body += "</tr>"
+      end
+      table_body += "<tr><th>Totals</th>"
+      table_data["Totals"].values.each do |cell|
         table_body += "<td>#{cell}</td>"
       end
-      table_body += "</tr>"
-    end
-    table_body += "</tbody>"
+      table_body += "</tr></tbody>"
 
-    @table_content = "<table>#{table_head} #{table_body}</table>"
+      @table_content = "<table>#{table_head} #{table_body}</table>"
+    else
+      @table_content = nil
+    end
+        
     respond_to do |format|
       format.js
     end
