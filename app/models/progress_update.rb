@@ -16,4 +16,8 @@ class ProgressUpdate < ActiveRecord::Base
     Date.new(self.year, self.month, -1).end_of_day
   end
 
+  def <=>(pu)
+    progress_date == pu.progress_date ? created_at <=> pu.created_at : progress_date <=> pu.progress_date
+  end
+
 end
