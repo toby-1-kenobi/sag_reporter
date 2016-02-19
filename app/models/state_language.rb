@@ -6,6 +6,7 @@ class StateLanguage < ActiveRecord::Base
   has_many :progress_updates, through: :language_progresses
 
   delegate :name, to: :language, prefix: true
+  delegate :name, to: :geo_state, prefix: 'state'
   delegate :colour, to: :language, prefix: true
 
   validates :geo_state, presence: true

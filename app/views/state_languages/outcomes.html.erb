@@ -11,15 +11,15 @@
         <div class="collapsible-body">
 
           <div class="row" id="table-<%= language.id %>">
-            <%= link_to "Get table", outcomes_table_path(state_language_id: language.id), remote: true, method: 'GET', class: "btn right waves-effect get-table-button" %>
+            <%= link_to "Get table", outcomes_table_path(id: language.id), remote: true, method: 'GET', class: "btn right waves-effect get-table-button" %>
           </div>
 
           <div class="row" id="chart-<%= language.id %>">
-            <%= link_to "Get chart", outcomes_chart_path(state_language_id: language.id), remote: true, method: 'GET', class: "btn right waves-effect get-chart-button" %>
+            <%= link_to "Get chart", outcomes_chart_path(id: language.id), remote: true, method: 'GET', class: "btn right waves-effect get-chart-button" %>
           </div>
 
           <div class="row" id="pdf-download-<%= language.id %>">
-            <%= link_to "outcomes/#{geo_state.id}/#{language.id}.pdf", class: "btn waves-effect waves-light right" do %>
+            <%= link_to "outcomes/#{language.id}.pdf", class: "btn waves-effect waves-light right" do %>
               <i class="material-icons">file_download</i>
               Get PDF
             <% end %>
