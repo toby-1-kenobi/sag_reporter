@@ -7,6 +7,11 @@ describe StateLanguage do
     value(state_language).must_be :valid?
   end
 
+  it "is sortable by language name" do
+    sl_santali = StateLanguage.new language: languages(:santali)
+    _([state_language, sl_santali].sort!).must_equal [sl_santali, state_language]
+  end
+
   it "makes a table of outcome scores" do
     start_date = Date.new(2015,7,1)
     end_date = Date.new(2015,12,1)
