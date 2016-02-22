@@ -70,6 +70,8 @@ Rails.application.routes.draw do
 
   get 'language/resources/:language_id' => 'mt_resources#language_overview'
 
+  get 'overview' => 'state_languages#overview', as: 'overview'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
