@@ -2,6 +2,10 @@ class StateLanguagesController < ApplicationController
 
   before_action :require_login
 
+  before_action only: [:outcomes, :get_chart, :get_table, :outcomes_data] do
+    redirect_to root_path unless current_user.can_view_outcome_totals?
+  end
+
   def outcomes
     @languages_by_state = Hash.new
     current_user.geo_states.each do |geo_state|
@@ -61,6 +65,10 @@ class StateLanguagesController < ApplicationController
         send_data pdf.render, filename: "#{@state_language.language_name}_outcomes.pdf", type: 'application/pdf'
       end
     end
+  end
+
+  def overview
+    @zones = Zone.includes(:geo_states)
   end
 
 end
