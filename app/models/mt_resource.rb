@@ -2,7 +2,7 @@ class MtResource < ActiveRecord::Base
 
   include StateBased
 
-  enum category: [ :song, :drama, :big_book, :flashcard, :tract, :story, :primer ]
+  enum category: [ :song, :drama, :big_book, :flashcard, :tract, :story, :primer, :dictionary ]
 
   belongs_to :user
   belongs_to :language
