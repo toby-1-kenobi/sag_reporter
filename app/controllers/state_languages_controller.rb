@@ -68,7 +68,9 @@ class StateLanguagesController < ApplicationController
   end
 
   def overview
-    @zones = Zone.includes(:geo_states)
+    @zones = Zone.includes(:geo_states => {:state_languages => :language}).where('state_languages.project' => true)
+    @progress_marker_usage = LanguageProgress.with_updates.group(:state_language_id).count
+    @progress_marker_count = ProgressMarker.count
   end
 
 end

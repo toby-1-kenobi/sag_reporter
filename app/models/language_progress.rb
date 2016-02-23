@@ -12,6 +12,8 @@ class LanguageProgress < ActiveRecord::Base
   validates :progress_marker, presence: true, uniqueness: { scope: :state_language }
   validates :state_language, presence: true
 
+  scope :with_updates, -> { joins :progress_updates }
+
   def last_updated
   	progress_updates.maximum('created_at')
   end
