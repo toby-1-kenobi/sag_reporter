@@ -52,4 +52,13 @@ describe LanguageProgress do
     value(scores["August 2015"]).must_equal 4
   end
 
+  it "has a scope for having progress_updates" do
+    lp_count = LanguageProgress.count
+    lp_up_count = LanguageProgress.with_updates.count
+    language_progress.progress_updates.clear
+    language_progress.save!
+    value(LanguageProgress.count).must_equal lp_count + 1
+    value(LanguageProgress.with_updates.count).must_equal lp_up_count
+  end
+
 end

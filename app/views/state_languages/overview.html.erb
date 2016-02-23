@@ -1,3 +1,22 @@
 <% provide(:title, 'Overview') %>
 
 <h1>Overview</h1>
+<% @zones.each do |zone| %>
+  <h2><%= zone.name %></h2>
+  <ul class="collapsible" data-collapsible="accordion">
+  <% zone.geo_states.each do |geo_state| %>
+    <li>
+      <div class="collapsible-header"><%= geo_state.name %></div>
+      <div class="collapsible-body">
+        <div class="row">
+        <% geo_state.state_languages.each do |sl| %>
+          <div class="col s12 m6 l4">
+            <%= render partial: "language", object: sl.language, locals: { pm_usage: @progress_marker_usage[sl.id] || 0} %>
+          </div>
+        <% end %>
+        </div>
+      </div>
+    </li>
+  <% end %>
+  </ul>
+<% end %>
