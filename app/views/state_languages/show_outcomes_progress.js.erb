@@ -7,6 +7,8 @@ slCard.fadeOut("fast", function() {
     slCard.prependTo(newRow);
     currentRow.before(newRow);
     slCard.find('.outcomes-progress.btn').hide();
+    <% progress_levels = @state_language.language_progresses.includes(:progress_updates) %>
+    <% if progress_levels.count == 0 %>
     <% if chart_data = @state_language.outcome_chart_data() %>
       chart = $("<%= escape_javascript(line_chart chart_data, id: "chartkick-#{@state_language.id}") %>");
       slCard.find('.card-content').append(chart);

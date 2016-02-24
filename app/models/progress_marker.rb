@@ -22,12 +22,12 @@ class ProgressMarker < ActiveRecord::Base
   	}
   end
 
-  def language_progress(language)
-    LanguageProgress.where(progress_marker: self, language: language).first or LanguageProgress.create(progress_marker: self, language: language)
+  def language_progress(state_language)
+    LanguageProgress.where(progress_marker: self, state_language: state_language).first or LanguageProgress.create(progress_marker: self, state_language: state_language)
   end
 
-  def progress_at(language, geo_state = nil, date = nil)
-    language_progress(language).value_at(geo_state, date)
+  def progress_at(state_language, date = nil)
+    language_progress(state_language).value_at(date)
   end
 
 end
