@@ -1,0 +1,18 @@
+slCard = $('#state-language-<%= @state_language.id %>');
+currentRow = slCard.closest('.languages.row')
+slCard.fadeOut("fast", function() {
+  if (currentRow.hasClass('unpromoted')) {
+    slCard.detach();
+    newRow = $('<div class="row languages promoted"></div>');
+    slCard.prependTo(newRow);
+    currentRow.before(newRow);
+    slCard.find('.outcomes-progress.btn').hide();
+    <% if chart_data = @state_language.outcome_chart_data() %>
+      chart = $("<%= escape_javascript(line_chart chart_data, id: "chartkick-#{@state_language.id}") %>");
+      slCard.find('.card-content').append(chart);
+    <% end %>
+  }
+  slCard.slideDown("fast", function() {
+    $('body').animate({scrollTop:slCard.offset().top},500);
+  });
+});
