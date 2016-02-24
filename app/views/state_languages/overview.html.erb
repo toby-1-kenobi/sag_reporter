@@ -6,12 +6,19 @@
   <ul class="collapsible" data-collapsible="accordion">
   <% zone.geo_states.each do |geo_state| %>
     <li>
-      <div class="collapsible-header"><%= geo_state.name %></div>
+      <div class="collapsible-header">
+        <%= geo_state.name %>
+        <div class="right pm-status-count">
+          <span class="red-text tooltipped" data-position="left" data-tooltip="<%= @pm_status_by_state[geo_state][:none] %> languages with no progress levels set"><%= @pm_status_by_state[geo_state][:none] %></span>
+          / <span class="orange-text tooltipped" data-position="top" data-tooltip="<%= @pm_status_by_state[geo_state][:part] %> languages with some progress levels set"><%= @pm_status_by_state[geo_state][:part] %></span>
+          / <span class="green-text tooltipped" data-position="right" data-tooltip="<%= @pm_status_by_state[geo_state][:full] %> languages with all progress levels set"><%= @pm_status_by_state[geo_state][:full] %></span>
+        </div>
+      </div>
       <div class="collapsible-body">
-        <div class="row">
+        <div class="row languages unpromoted">
         <% geo_state.state_languages.each do |sl| %>
           <div class="col s12 m6 l4">
-            <%= render partial: "language", object: sl.language, locals: { pm_usage: @progress_marker_usage[sl.id] || 0} %>
+            <%= render partial: "state_language", object: sl %>
           </div>
         <% end %>
         </div>
