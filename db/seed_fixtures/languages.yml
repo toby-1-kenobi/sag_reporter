@@ -396,7 +396,7 @@ bagheli:
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
 haryanvi:
-  name: Haryanvi
+  name: Hariyanvi
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
@@ -841,7 +841,7 @@ kulluvi:
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
 mandeali:
-  name: Mandeali
+  name: Mandiyli
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
@@ -851,7 +851,7 @@ pahari_mahasui:
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
 chambeali:
-  name: "Chambeali"
+  name: "Chambyali"
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
