@@ -30,4 +30,13 @@ class ProgressMarker < ActiveRecord::Base
     language_progress(state_language).value_at(date)
   end
 
+  def self.by_outcome_area_and_weight
+    progress_markers_by_oa_and_weight = Hash.new
+    includes(:topic).find_each do |pm|
+      progress_markers_by_oa_and_weight[pm.topic] ||= weight_text.values.map{ |v| [v, Array.new] }.to_h
+      progress_markers_by_oa_and_weight[pm.topic][weight_text[pm.weight]].push pm
+    end
+    return progress_markers_by_oa_and_weight
+  end
+
 end
