@@ -1,11 +1,14 @@
+<% pm_usage = @progress_marker_usage[state_language.id] || 0 %>
 <div class="card <%= state_language.language_colour %>" id="state-language-<%= state_language.id %>">
   <div class="card-content">
     <span class="card-title <%= colour_class_text(state_language.language_colour) %>"><%= state_language.language_name %></span>
-    <p><strong><%= @progress_marker_usage[state_language.id] || 0 %></strong> progress marker levels set of <%= @progress_marker_count %></p>
+    <p><strong><%= pm_usage %></strong> progress marker levels set of <%= @progress_marker_count %></p>
   </div>
   <div class="card-action">
-    <%= link_to show_outcomes_progress_path(state_language), remote: true, method: 'GET', class: "outcomes-progress waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Show progress marker levels" do %>
-      <i class="material-icons">show_chart</i>
+    <% if pm_usage > 0 %>
+      <%= link_to show_outcomes_progress_path(state_language), remote: true, method: 'GET', class: "outcomes-progress waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Show progress marker levels" do %>
+        <i class="material-icons">show_chart</i>
+      <% end %>
     <% end %>
   </div>
 </div>
