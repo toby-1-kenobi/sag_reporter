@@ -26,7 +26,7 @@ class StateLanguage < ActiveRecord::Base
     table["content"] = Hash.new
     table["Totals"] = Hash.new
 
-    all_lps = language_progresses.includes(:progress_marker => :topic)
+    all_lps = language_progresses.includes({:progress_marker => :topic}, :progress_updates)
     all_lps.each do |lp|
       oa_name = lp.progress_marker.topic.name
       table["content"][oa_name] ||= Hash.new
