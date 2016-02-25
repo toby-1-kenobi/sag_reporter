@@ -1,0 +1,16 @@
+<% @progress_markers_by_oa_and_weight.each do |topic, weights| %>
+<div><strong><%= topic.name %></strong></div>
+<div class="row">
+  <% weights.each do |weight_text, pms| %>
+    <div class="col s12 m6 l4">
+      <%= weight_text %>
+      <% pms.each do |pm| %>
+        <div class="row">
+          <div class="col s8"><%= pm.name %></div>
+          <div class="col s4"></div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+<% end %>

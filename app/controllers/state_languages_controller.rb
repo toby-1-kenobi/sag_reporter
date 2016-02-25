@@ -59,6 +59,7 @@ class StateLanguagesController < ApplicationController
 
   def show_outcomes_progress
     @state_language = StateLanguage.find(params[:id])
+    @progress_markers_by_oa_and_weight = ProgressMarker.by_outcome_area_and_weight
     respond_to do |format|
       format.js
     end
