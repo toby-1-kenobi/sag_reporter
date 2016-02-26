@@ -52,16 +52,6 @@ ActiveRecord::Schema.define(version: 20160217071432) do
   add_index "creations", ["person_id", "mt_resource_id"], name: "index_people_mt_resources", unique: true, using: :btree
   add_index "creations", ["person_id"], name: "index_creations_on_person_id", using: :btree
 
-  create_table "districts", force: :cascade do |t|
-    t.string   "name",         null: false
-    t.integer  "geo_state_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-  end
-
-  add_index "districts", ["geo_state_id"], name: "index_districts_on_geo_state_id", using: :btree
-  add_index "districts", ["name"], name: "index_districts_on_name", using: :btree
-
   create_table "events", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "event_label",        null: false
@@ -73,13 +63,11 @@ ActiveRecord::Schema.define(version: 20160217071432) do
     t.datetime "updated_at",         null: false
     t.string   "village"
     t.integer  "geo_state_id",       null: false
-    t.string   "sub_district_name"
-    t.string   "district_name"
-    t.integer  "sub_district_id"
+    t.string   "sub_district"
+    t.string   "district"
   end
 
   add_index "events", ["geo_state_id"], name: "index_events_on_geo_state_id", using: :btree
-  add_index "events", ["sub_district_id"], name: "index_events_on_sub_district_id", using: :btree
   add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
 
   create_table "events_languages", id: false, force: :cascade do |t|
@@ -349,16 +337,6 @@ ActiveRecord::Schema.define(version: 20160217071432) do
   add_index "state_languages", ["geo_state_id"], name: "index_state_languages_on_geo_state_id", using: :btree
   add_index "state_languages", ["language_id"], name: "index_state_languages_on_language_id", using: :btree
 
-  create_table "sub_districts", force: :cascade do |t|
-    t.string   "name",        null: false
-    t.integer  "district_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  add_index "sub_districts", ["district_id"], name: "index_sub_districts_on_district_id", using: :btree
-  add_index "sub_districts", ["name"], name: "index_sub_districts_on_name", using: :btree
-
   create_table "tallies", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
@@ -438,7 +416,6 @@ ActiveRecord::Schema.define(version: 20160217071432) do
   add_foreign_key "attendances", "people"
   add_foreign_key "creations", "mt_resources"
   add_foreign_key "creations", "people"
-  add_foreign_key "districts", "geo_states"
   add_foreign_key "events", "geo_states"
   add_foreign_key "events", "users"
   add_foreign_key "events_purposes", "events"
@@ -470,7 +447,6 @@ ActiveRecord::Schema.define(version: 20160217071432) do
   add_foreign_key "reports", "geo_states"
   add_foreign_key "state_languages", "geo_states"
   add_foreign_key "state_languages", "languages"
-  add_foreign_key "sub_districts", "districts"
   add_foreign_key "tallies", "topics"
   add_foreign_key "tally_updates", "languages_tallies"
   add_foreign_key "tally_updates", "users"
