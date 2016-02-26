@@ -1,0 +1,47 @@
+//
+// Icon Font: lcr
+//
+
+@font-face {
+  font-family: "lcr";
+  src: font-url("lcr.eot");
+  src: font-url("lcr.eot?#iefix") format("embedded-opentype"),
+       font-url("lcr.woff") format("woff"),
+       font-url("lcr.ttf") format("truetype"),
+       font-url("lcr.svg#lcr") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "lcr";
+    src: font-url("lcr.svg#lcr") format("svg");
+  }
+}
+
+[data-icon]:before { content: attr(data-icon); }
+
+[data-icon]:before,
+.lcr-icon-level-0:before,
+.lcr-icon-level-1:before,
+.lcr-icon-level-2:before,
+.lcr-icon-level-3:before {
+  display: inline-block;
+  font-family: "lcr";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+.lcr-icon-level-0:before { content: "\f100"; }
+.lcr-icon-level-1:before { content: "\f101"; }
+.lcr-icon-level-2:before { content: "\f102"; }
+.lcr-icon-level-3:before { content: "\f103"; }
