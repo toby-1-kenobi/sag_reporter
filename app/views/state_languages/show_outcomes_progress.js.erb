@@ -15,6 +15,7 @@ slCard.fadeOut("fast", function() {
       <% if chart_data = @state_language.outcome_chart_data() %>
         chart = $("<%= escape_javascript(line_chart chart_data, id: "chartkick-#{@state_language.id}") %>");
       <% end %>
+      $('.tooltipped').tooltip({delay: 50});
     <% end %>
   }
   slCard.slideDown("fast", function() {

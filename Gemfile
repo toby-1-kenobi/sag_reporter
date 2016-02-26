@@ -56,6 +56,9 @@ gem 'pg'
 gem 'prawn'
 gem 'prawn-table'
 
+# Custom icon fonts
+gem 'fontcustom'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 

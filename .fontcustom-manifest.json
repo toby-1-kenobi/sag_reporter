@@ -1,0 +1,62 @@
+{
+  "checksum": {
+    "previous": "6a06058cb27138f17be25a1ea0a0d143b4171e74f2487bb4c1f1e6c4c0de32c6",
+    "current": "6a06058cb27138f17be25a1ea0a0d143b4171e74f2487bb4c1f1e6c4c0de32c6"
+  },
+  "fonts": [
+    "app/assets/fonts/lcr.ttf",
+    "app/assets/fonts/lcr.svg",
+    "app/assets/fonts/lcr.woff",
+    "app/assets/fonts/lcr.eot"
+  ],
+  "glyphs": {
+    "level-0": {
+      "codepoint": 61696,
+      "source": "lib/fontcustom/vectors/level-0.svg"
+    },
+    "level-1": {
+      "codepoint": 61697,
+      "source": "lib/fontcustom/vectors/level-1.svg"
+    },
+    "level-2": {
+      "codepoint": 61698,
+      "source": "lib/fontcustom/vectors/level-2.svg"
+    },
+    "level-3": {
+      "codepoint": 61699,
+      "source": "lib/fontcustom/vectors/level-3.svg"
+    }
+  },
+  "options": {
+    "autowidth": true,
+    "config": "fontcustom.yml",
+    "css_selector": ".lcr-icon-{{glyph}}",
+    "debug": false,
+    "font_ascent": 448,
+    "font_descent": 64,
+    "font_design_size": 16,
+    "font_em": 512,
+    "font_name": "lcr",
+    "force": false,
+    "input": {
+      "templates": "lib/fontcustom/vectors",
+      "vectors": "lib/fontcustom/vectors"
+    },
+    "no_hash": true,
+    "output": {
+      "css": "app/assets/stylesheets",
+      "fonts": "app/assets/fonts",
+      "preview": "app/views/styleguide"
+    },
+    "preprocessor_path": "",
+    "quiet": false,
+    "templates": [
+      "scss-rails",
+      "preview"
+    ]
+  },
+  "templates": [
+    "app/assets/stylesheets/_lcr-rails.scss",
+    "app/views/styleguide/lcr-preview.html"
+  ]
+}

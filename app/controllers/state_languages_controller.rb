@@ -59,7 +59,11 @@ class StateLanguagesController < ApplicationController
 
   def show_outcomes_progress
     @state_language = StateLanguage.find(params[:id])
-    @progress_markers_by_oa_and_weight = ProgressMarker.by_outcome_area_and_weight
+    @language_progresses_by_pm_id = Hash.new
+    @state_language.language_progresses.includes(:progress_updates).find_each do |lp|
+      @language_progresses_by_pm_id[lp.progress_marker_id] = lp
+    end
+    @progress_markers_by_oa_and_weight = ProgressMarker.by_outcome_area_and_weight  
     respond_to do |format|
       format.js
     end
@@ -77,7 +81,7 @@ class StateLanguagesController < ApplicationController
 
   def overview
     @zones = Zone.includes(:geo_states => {:state_languages => :language}).where('state_languages.project' => true)
-    @progress_marker_usage = LanguageProgress.with_updates.group(:state_language_id).count
+    @progress_marker_usage = LanguageProgress.with_updates.group(:state_language_id).uniq.count
     @progress_marker_count = ProgressMarker.count
     @pm_status_by_state = Hash.new
     @zones.each do |zone|
