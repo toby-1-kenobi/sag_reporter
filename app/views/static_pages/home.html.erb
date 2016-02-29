@@ -129,5 +129,11 @@
     <% end %>
   <% end %>
 
+  <% if current_user.is_an_admin? %>
+    <%= link_to overview_path, class: "collection-item waves-effect", id: "overview-link" do %>
+      <i class="material-icons">pageview</i>
+      Overview
+    <% end %>
+  <% end %>
 
 </div>
