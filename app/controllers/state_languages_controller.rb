@@ -58,7 +58,7 @@ class StateLanguagesController < ApplicationController
   end
 
   def show_outcomes_progress
-    # @state_language = StateLanguage.find(params[:id])
+     @state_language = StateLanguage.find(params[:id])
     # @language_progresses_by_pm_id = Hash.new
     # @state_language.language_progresses.includes(:progress_updates).find_each do |lp|
     #   @language_progresses_by_pm_id[lp.progress_marker_id] = lp
