@@ -63,7 +63,7 @@ class StateLanguagesController < ApplicationController
     @state_language.language_progresses.includes(:progress_updates).find_each do |lp|
       @language_progresses_by_pm_id[lp.progress_marker_id] = lp
     end
-    # @progress_markers_by_oa_and_weight = ProgressMarker.by_outcome_area_and_weight  
+    @progress_markers_by_oa_and_weight = ProgressMarker.by_outcome_area_and_weight  
     respond_to do |format|
       format.js
     end
