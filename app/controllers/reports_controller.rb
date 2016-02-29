@@ -28,8 +28,8 @@ class ReportsController < ApplicationController
 
   def new
   	@report = Report.new
-  	@minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
-  	@topics = Topic.all
+  	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
+    @topics = Topic.all
   end
 
   def create
