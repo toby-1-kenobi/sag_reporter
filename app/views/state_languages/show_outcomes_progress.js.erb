@@ -13,13 +13,13 @@ slCard.fadeOut("fast", function() {
     <% else %>
       slCard.find('.card-content').append("<%= j render(:partial => 'progress_markers_grid') %>");
       <% if chart_data = @state_language.outcome_chart_data() %>
-        chart = $("<%= escape_javascript(line_chart chart_data, id: "chartkick-#{@state_language.id}") %>");
+        //chart = $("<%= escape_javascript(line_chart chart_data, id: "chartkick-#{@state_language.id}") %>");
       <% end %>
       $('.tooltipped').tooltip({delay: 50});
     <% end %>
   }
   slCard.slideDown("fast", function() {
-    slCard.find('.card-content').append(chart);
+    //slCard.find('.card-content').append(chart);
     $('body').animate({scrollTop:slCard.offset().top},500);
   });
 });
