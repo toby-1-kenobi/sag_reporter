@@ -1,25 +1,2 @@
-slCard = $('#state-language-<%= @state_language.id %>');
-currentRow = slCard.closest('.languages.row');
-slCard.fadeOut("fast", function() {
-  if (currentRow.hasClass('unpromoted')) {
-    slCard.detach();
-    newRow = $('<div class="row languages promoted"></div>');
-    slCard.prependTo(newRow);
-    currentRow.before(newRow);
-    slCard.find('.outcomes-progress.btn').hide();
-    <% progress_levels = @state_language.language_progresses.includes(:progress_updates) %>
-    <% if progress_levels.count == 0 %>
-      slCard.find('.card-content').append("<p>No progress marker levels have been set for this language.</p>");
-    <% else %>
-      //slCard.find('.card-content').append("<%= j render(:partial => 'progress_markers_grid') %>");
-      <% if chart_data = @state_language.outcome_chart_data() %>
-        //chart = $("<%= escape_javascript(line_chart chart_data, id: "chartkick-#{@state_language.id}") %>");
-      <% end %>
-      $('.tooltipped').tooltip({delay: 50});
-    <% end %>
-  }
-  slCard.slideDown("fast", function() {
-    //slCard.find('.card-content').append(chart);
-    $('body').animate({scrollTop:slCard.offset().top},500);
-  });
-});
+
+alert("<%= @state_language.id %>");
