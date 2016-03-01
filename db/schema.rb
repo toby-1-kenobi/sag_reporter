@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160301015508) do
+ActiveRecord::Schema.define(version: 20160301022705) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -325,10 +325,12 @@ ActiveRecord::Schema.define(version: 20160301015508) do
     t.integer  "geo_state_id",                   null: false
     t.date     "report_date",                    null: false
     t.integer  "planning_report_id"
+    t.integer  "impact_report_id"
   end
 
   add_index "reports", ["event_id"], name: "index_reports_on_event_id", using: :btree
   add_index "reports", ["geo_state_id"], name: "index_reports_on_geo_state_id", using: :btree
+  add_index "reports", ["impact_report_id"], name: "index_reports_on_impact_report_id", using: :btree
   add_index "reports", ["planning_report_id"], name: "index_reports_on_planning_report_id", using: :btree
   add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id", using: :btree
   add_index "reports", ["state"], name: "index_reports_on_state", using: :btree
@@ -478,6 +480,7 @@ ActiveRecord::Schema.define(version: 20160301015508) do
   add_foreign_key "reports", "geo_states"
   add_foreign_key "state_languages", "geo_states"
   add_foreign_key "state_languages", "languages"
+  add_foreign_key "reports", "impact_reports"
   add_foreign_key "reports", "planning_reports"
   add_foreign_key "sub_districts", "districts"
   add_foreign_key "tallies", "topics"
