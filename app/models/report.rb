@@ -8,6 +8,7 @@ class Report < ActiveRecord::Base
 	belongs_to :event
   belongs_to :planning_report, inverse_of: :report
   belongs_to :impact_report, inverse_of: :report
+  belongs_to :challenge_report, inverse_of: :report
 	has_and_belongs_to_many :languages
 	has_and_belongs_to_many :topics
 
@@ -32,6 +33,7 @@ class Report < ActiveRecord::Base
     types = Array.new
     types << planning_report.report_type if planning_report
     types << impact_report.report_type if impact_report
+    types << challenge_report.report_type if challenge_report
     types.join ', '
   end
 
@@ -42,7 +44,7 @@ class Report < ActiveRecord::Base
     end
 
     def at_least_one_subtype
-      unless planning_report or impact_report
+      unless planning_report or impact_report or challenge_report
         errors.add(:base, "Must have at least one report type.")
       end
     end
