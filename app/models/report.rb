@@ -15,8 +15,7 @@ class Report < ActiveRecord::Base
   validates :state, presence: true, allow_nil: false
   validates :report_date, presence: true
 
-  after_initialize :state_init
-  after_initialize :date_init
+  before_validation :date_init
 
   def self.categories
     {
@@ -38,10 +37,6 @@ class Report < ActiveRecord::Base
   end
 
   private
-
-    def state_init
-      self.state ||= :active
-    end
 
     def date_init
       self.report_date ||= self.event ? self.event.event_date : Date.current
