@@ -7,6 +7,7 @@ class Report < ActiveRecord::Base
 	belongs_to :reporter, class_name: 'User'
 	belongs_to :event
   belongs_to :planning_report, inverse_of: :report
+  belongs_to :impact_report, inverse_of: :report
 	has_and_belongs_to_many :languages
 	has_and_belongs_to_many :topics
 
@@ -29,11 +30,8 @@ class Report < ActiveRecord::Base
   def report_type
     types = Array.new
     types << planning_report.report_type if planning_report
+    types << impact_report.report_type if impact_report
     types.join ', '
-  end
-
-  def status
-    planning_report ? planning_report.status : "archived"
   end
 
   private

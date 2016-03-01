@@ -6,6 +6,7 @@ class ImpactReport < ActiveRecord::Base
 
   belongs_to :reporter, class_name: 'User'
   belongs_to :event
+  has_one :report, inverse_of: :impact_report
   has_many :topics, through: :progress_markers
   has_and_belongs_to_many :progress_markers
   has_and_belongs_to_many :languages, allow_nil: false
