@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160301032632) do
+ActiveRecord::Schema.define(version: 20160301042250) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,12 @@ ActiveRecord::Schema.define(version: 20160301032632) do
   add_index "attendances", ["event_id", "person_id"], name: "index_attendances_on_event_id_and_person_id", unique: true, using: :btree
   add_index "attendances", ["event_id"], name: "index_attendances_on_event_id", using: :btree
   add_index "attendances", ["person_id"], name: "index_attendances_on_person_id", using: :btree
+
+  create_table "challenge_reports", force: :cascade do |t|
+    t.integer  "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "creations", force: :cascade do |t|
     t.integer  "person_id"
@@ -299,22 +305,24 @@ ActiveRecord::Schema.define(version: 20160301032632) do
   end
 
   create_table "reports", force: :cascade do |t|
-    t.integer  "reporter_id",                    null: false
-    t.text     "content",                        null: false
-    t.integer  "state",              default: 1, null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.integer  "reporter_id",                     null: false
+    t.text     "content",                         null: false
+    t.integer  "state",               default: 1, null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.boolean  "mt_society"
     t.boolean  "mt_church"
     t.boolean  "needs_society"
     t.boolean  "needs_church"
     t.integer  "event_id"
-    t.integer  "geo_state_id",                   null: false
-    t.date     "report_date",                    null: false
+    t.integer  "geo_state_id",                    null: false
+    t.date     "report_date",                     null: false
     t.integer  "planning_report_id"
     t.integer  "impact_report_id"
+    t.integer  "challenge_report_id"
   end
 
+  add_index "reports", ["challenge_report_id"], name: "index_reports_on_challenge_report_id", using: :btree
   add_index "reports", ["event_id"], name: "index_reports_on_event_id", using: :btree
   add_index "reports", ["geo_state_id"], name: "index_reports_on_geo_state_id", using: :btree
   add_index "reports", ["impact_report_id"], name: "index_reports_on_impact_report_id", using: :btree
@@ -460,6 +468,7 @@ ActiveRecord::Schema.define(version: 20160301032632) do
   add_foreign_key "progress_updates", "geo_states"
   add_foreign_key "progress_updates", "language_progresses"
   add_foreign_key "progress_updates", "users"
+  add_foreign_key "reports", "challenge_reports"
   add_foreign_key "reports", "events"
   add_foreign_key "reports", "geo_states"
   add_foreign_key "state_languages", "geo_states"
