@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160301011344) do
+ActiveRecord::Schema.define(version: 20160301015508) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -312,22 +312,24 @@ ActiveRecord::Schema.define(version: 20160301011344) do
   end
 
   create_table "reports", force: :cascade do |t|
-    t.integer  "reporter_id",               null: false
-    t.text     "content",                   null: false
-    t.integer  "state",         default: 1, null: false
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.integer  "reporter_id",                    null: false
+    t.text     "content",                        null: false
+    t.integer  "state",              default: 1, null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.boolean  "mt_society"
     t.boolean  "mt_church"
     t.boolean  "needs_society"
     t.boolean  "needs_church"
     t.integer  "event_id"
-    t.integer  "geo_state_id",              null: false
-    t.date     "report_date",               null: false
+    t.integer  "geo_state_id",                   null: false
+    t.date     "report_date",                    null: false
+    t.integer  "planning_report_id"
   end
 
   add_index "reports", ["event_id"], name: "index_reports_on_event_id", using: :btree
   add_index "reports", ["geo_state_id"], name: "index_reports_on_geo_state_id", using: :btree
+  add_index "reports", ["planning_report_id"], name: "index_reports_on_planning_report_id", using: :btree
   add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id", using: :btree
   add_index "reports", ["state"], name: "index_reports_on_state", using: :btree
 
@@ -476,6 +478,7 @@ ActiveRecord::Schema.define(version: 20160301011344) do
   add_foreign_key "reports", "geo_states"
   add_foreign_key "state_languages", "geo_states"
   add_foreign_key "state_languages", "languages"
+  add_foreign_key "reports", "planning_reports"
   add_foreign_key "sub_districts", "districts"
   add_foreign_key "tallies", "topics"
   add_foreign_key "tally_updates", "languages_tallies"
