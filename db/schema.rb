@@ -154,7 +154,7 @@ ActiveRecord::Schema.define(version: 20160217071432) do
     t.datetime "updated_at",         null: false
     t.integer  "state_language_id"
   end
-
+  
   add_index "language_progresses", ["progress_marker_id"], name: "index_language_progresses_on_progress_marker_id", using: :btree
   add_index "language_progresses", ["state_language_id"], name: "index_language_progresses_on_state_language_id", using: :btree
 
