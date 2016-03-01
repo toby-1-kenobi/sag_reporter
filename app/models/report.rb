@@ -15,6 +15,7 @@ class Report < ActiveRecord::Base
 	validates :reporter, presence: true, allow_nil: false
   validates :state, presence: true, allow_nil: false
   validates :report_date, presence: true
+  validate :at_least_one_subtype
 
   before_validation :date_init
 
@@ -38,6 +39,12 @@ class Report < ActiveRecord::Base
 
     def date_init
       self.report_date ||= self.event ? self.event.event_date : Date.current
+    end
+
+    def at_least_one_subtype
+      unless planning_report or impact_report
+        errors.add(:base, "Must have at least one report type.")
+      end
     end
 
 end

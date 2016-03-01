@@ -14,6 +14,7 @@ class ImpactReport < ActiveRecord::Base
   validates :state, presence: true
   validates :report_date, presence: true
   validates :content, presence: true
+  validates :report, presence: true
 
   after_initialize :state_init
   after_initialize :date_init
