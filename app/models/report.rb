@@ -34,7 +34,7 @@ class Report < ActiveRecord::Base
   end
 
   def status
-    planning_report ? planning_report.status : :archived
+    planning_report ? planning_report.status : "archived"
   end
 
   private
