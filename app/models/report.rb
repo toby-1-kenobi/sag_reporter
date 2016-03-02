@@ -2,7 +2,7 @@ class Report < ActiveRecord::Base
 
   include StateBased
 
-	enum state: [ :archived, :active ]
+	enum status: [ :active, :archived ]
 
 	belongs_to :reporter, class_name: 'User'
 	belongs_to :event
@@ -14,7 +14,7 @@ class Report < ActiveRecord::Base
 
 	validates :content, presence: true, allow_nil: false
 	validates :reporter, presence: true, allow_nil: false
-  validates :state, presence: true, allow_nil: false
+  validates :status, presence: true, allow_nil: false
   validates :report_date, presence: true
   validate :at_least_one_subtype
 
