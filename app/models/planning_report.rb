@@ -1,16 +1,8 @@
 class PlanningReport < ActiveRecord::Base
 
-  enum status: [ :archived, :active ]
+  include ReportType
 
   has_one :report, inverse_of: :planning_report
-  delegate :content, to: :report
-  delegate :reporter, to: :report
-  delegate :event, to: :report
-  delegate :report_date, to: :report
-  delegate :geo_state, to: :report
-  delegate :languages, to: :report
-
-  validates :report, presence: true
 
   def report_type
     "planning"

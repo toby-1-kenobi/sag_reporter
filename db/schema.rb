@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160301045323) do
+ActiveRecord::Schema.define(version: 20160302003637) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,6 @@ ActiveRecord::Schema.define(version: 20160301045323) do
   create_table "challenge_reports", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "status"
   end
 
   create_table "creations", force: :cascade do |t|
@@ -124,7 +123,6 @@ ActiveRecord::Schema.define(version: 20160301045323) do
   create_table "impact_reports", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "state"
   end
 
   create_table "impact_reports_languages", id: false, force: :cascade do |t|
@@ -267,7 +265,6 @@ ActiveRecord::Schema.define(version: 20160301045323) do
   create_table "planning_reports", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "status"
   end
 
   create_table "progress_markers", force: :cascade do |t|
@@ -307,7 +304,6 @@ ActiveRecord::Schema.define(version: 20160301045323) do
   create_table "reports", force: :cascade do |t|
     t.integer  "reporter_id",                     null: false
     t.text     "content",                         null: false
-    t.integer  "state",               default: 1, null: false
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
     t.boolean  "mt_society"
@@ -320,6 +316,7 @@ ActiveRecord::Schema.define(version: 20160301045323) do
     t.integer  "planning_report_id"
     t.integer  "impact_report_id"
     t.integer  "challenge_report_id"
+    t.integer  "status",              default: 0, null: false
   end
 
   add_index "reports", ["challenge_report_id"], name: "index_reports_on_challenge_report_id", using: :btree
@@ -328,7 +325,6 @@ ActiveRecord::Schema.define(version: 20160301045323) do
   add_index "reports", ["impact_report_id"], name: "index_reports_on_impact_report_id", using: :btree
   add_index "reports", ["planning_report_id"], name: "index_reports_on_planning_report_id", using: :btree
   add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id", using: :btree
-  add_index "reports", ["state"], name: "index_reports_on_state", using: :btree
 
   create_table "reports_topics", id: false, force: :cascade do |t|
     t.integer "report_id"
