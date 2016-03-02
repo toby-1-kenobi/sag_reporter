@@ -8,7 +8,7 @@ module ReportType
     delegate :event, to: :report
     delegate :report_date, to: :report
     delegate :geo_state, to: :report
-    #delegate :languages, to: :report
+    delegate :languages, to: :report
     delegate :status, to: :report
     delegate :active?, to: :report
     delegate :archived?, to: :report
