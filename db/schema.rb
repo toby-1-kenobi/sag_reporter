@@ -42,9 +42,9 @@ ActiveRecord::Schema.define(version: 20160301045323) do
   add_index "attendances", ["person_id"], name: "index_attendances_on_person_id", using: :btree
 
   create_table "challenge_reports", force: :cascade do |t|
-    t.integer  "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "status"
   end
 
   create_table "creations", force: :cascade do |t|
@@ -122,9 +122,9 @@ ActiveRecord::Schema.define(version: 20160301045323) do
   add_index "geo_states_users", ["user_id", "geo_state_id"], name: "index_geo_states_users_on_user_id_and_geo_state_id", using: :btree
 
   create_table "impact_reports", force: :cascade do |t|
-    t.integer  "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "state"
   end
 
   create_table "impact_reports_languages", id: false, force: :cascade do |t|
@@ -265,9 +265,9 @@ ActiveRecord::Schema.define(version: 20160301045323) do
   end
 
   create_table "planning_reports", force: :cascade do |t|
-    t.integer  "status",     default: 1, null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "status"
   end
 
   create_table "progress_markers", force: :cascade do |t|
