@@ -146,7 +146,7 @@ ActiveRecord::Schema.define(version: 20160302003637) do
     t.datetime "updated_at",         null: false
     t.integer  "state_language_id"
   end
-  
+
   add_index "language_progresses", ["progress_marker_id"], name: "index_language_progresses_on_progress_marker_id", using: :btree
   add_index "language_progresses", ["state_language_id"], name: "index_language_progresses_on_state_language_id", using: :btree
 
@@ -467,10 +467,10 @@ ActiveRecord::Schema.define(version: 20160302003637) do
   add_foreign_key "reports", "challenge_reports"
   add_foreign_key "reports", "events"
   add_foreign_key "reports", "geo_states"
-  add_foreign_key "state_languages", "geo_states"
-  add_foreign_key "state_languages", "languages"
   add_foreign_key "reports", "impact_reports"
   add_foreign_key "reports", "planning_reports"
+  add_foreign_key "state_languages", "geo_states"
+  add_foreign_key "state_languages", "languages"
   add_foreign_key "sub_districts", "districts"
   add_foreign_key "tallies", "topics"
   add_foreign_key "tally_updates", "languages_tallies"
