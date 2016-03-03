@@ -1,8 +1,6 @@
 # Read about fixtures at
 # http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-one:
-  status: 1
+one: {}
 
-two:
-  status: 1
+two: {}
