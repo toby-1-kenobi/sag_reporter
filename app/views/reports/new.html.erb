@@ -65,7 +65,7 @@
               element_class: "filterable-item",
               data: :geo_state_id,
               collection: @project_languages,
-              selected: @report.languages
+              selected: @report.languages.to_a.collect{ |lang| lang.id }
         } %>
       </div>
       <div class="input-field col s12 m6">
