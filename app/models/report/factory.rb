@@ -11,8 +11,8 @@ class Report::Factory
     challenge = params.delete 'challenge_report'
     begin
       @instance = Report.new(params)
-      add_languages(language_ids.values) if language_ids
-      add_topics(topic_ids.values) if topic_ids
+      add_languages(language_ids) if language_ids
+      add_topics(topic_ids) if topic_ids
       @instance.impact_report = ImpactReport.new if impact.to_i == 1
       @instance.planning_report = PlanningReport.new if planning.to_i == 1
       @instance.challenge_report = ChallengeReport.new if challenge.to_i == 1

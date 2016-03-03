@@ -122,6 +122,17 @@ class ReportsController < ApplicationController
     private
 
     def report_params
+      # make hash options into arrays
+      if params["report"]["languages"]
+        params["report"]["languages"] = params["report"]["languages"].keys
+      else
+        params["report"]["languages"] = []
+      end
+      if params["report"]["topics"]
+        params["report"]["topics"] = params["report"]["topics"].keys
+      else
+        params["report"]["topics"] = []
+      end
       safe_params = [
         :content,
         :mt_society,
@@ -133,6 +144,8 @@ class ReportsController < ApplicationController
         :planning_report,
         :impact_report,
         :challenge_report,
+        {:languages => []},
+        {:topics => []},
         :status
       ]
       safe_params.delete :status unless current_user.can_archive_report?

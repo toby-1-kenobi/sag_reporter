@@ -61,10 +61,11 @@
               object: "report",
               attribute: "languages",
               display: :language_name,
+              id: :language_id,
               element_class: "filterable-item",
               data: :geo_state_id,
               collection: @project_languages,
-              selected: Hash.new
+              selected: @report.languages
         } %>
       </div>
       <div class="input-field col s12 m6">
@@ -75,7 +76,7 @@
               attribute: "topics",
               display: :name,
               collection: @topics,
-              selected: Hash.new
+              selected: @report.topics
         } %>
       </div>
     </div>
