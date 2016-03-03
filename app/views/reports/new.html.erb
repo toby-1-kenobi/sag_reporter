@@ -36,10 +36,12 @@
 
     <div class="row">
       <div class="col s12 m6">
-        <%= radio_button_tag("report-type", "impact") %>
-        <%= label_tag("report-type_impact", Translation.get_string('this_impact', current_user)) %>
-        <%= radio_button_tag("report-type", "planning") %>
-        <%= label_tag("report-type_planning", Translation.get_string('this_planning', current_user)) %>
+        <%= f.check_box("impact_report?") %>
+        <%= f.label("impact_report?", Translation.get_string('this_impact', current_user)) %>
+        <%= f.check_box("planning_report?") %>
+        <%= f.label("planning_report?", "This is a hope, or future planning report") %>
+        <%= f.check_box("challenge_report?") %>
+        <%= f.label("challenge_report?", "This is a challenge report") %>
       </div>
       <div class="col s12 m6 hide">
         <% Report.categories.each do |key, category| %>

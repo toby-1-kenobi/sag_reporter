@@ -37,16 +37,28 @@ class Report < ActiveRecord::Base
     types.join ', '
   end
 
+  def planning_report?
+    planning_report.present?
+  end
+
+  def impact_report?
+    impact_report.present?
+  end
+
+  def challenge_report?
+    challenge_report.present?
+  end
+
   private
 
-    def date_init
-      self.report_date ||= self.event ? self.event.event_date : Date.current
-    end
+  def date_init
+    self.report_date ||= self.event ? self.event.event_date : Date.current
+  end
 
-    def at_least_one_subtype
-      unless planning_report or impact_report or challenge_report
-        errors.add(:base, "Must have at least one report type.")
-      end
+  def at_least_one_subtype
+    unless planning_report? or impact_report? or challenge_report?
+      errors.add(:base, "Must have at least one report type.")
     end
+  end
 
 end

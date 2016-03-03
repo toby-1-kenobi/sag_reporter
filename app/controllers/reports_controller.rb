@@ -33,28 +33,15 @@ class ReportsController < ApplicationController
   end
 
   def create
-  	full_params = report_params.merge({reporter: current_user})
-    if params["report-type"] == "planning" 
-  	  @report = Report.new(full_params)
+    full_params = report_params.merge({reporter: current_user})
+    report_factory = Report::Factory.new
+    if report_factory.create_report(full_params)
+      flash["success"] = "Report Submitted!"
+      redirect_to report_factory.instance()
     else
-      @report = ImpactReport.new(full_params)
-    end
-    if @report.save
-      if params['report']['languages']
-        params['report']['languages'].each do |lang_id, value|
-          @report.languages << Language.find_by_id(lang_id.to_i)
-        end
-      end
-      if params['report']['topics'] and params["report-type"] == "planning"
-        params['report']['topics'].each do |top_id, value|
-          @report.topics << Topic.find_by_id(top_id.to_i)
-        end
-      end
-      flash["success"] = "New Report Submitted!"
-      redirect_to @report
-    else
-      @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
-  	  @topics = Topic.all
+      @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
+      @topics = Topic.all
+      @report = report_factory.instance()
       render 'new'
     end
   end
@@ -143,9 +130,12 @@ class ReportsController < ApplicationController
         :needs_church,
         :geo_state_id,
         :report_date,
-        :state
+        :planning_report,
+        :impact_report,
+        :challenge_report,
+        :status
       ]
-      safe_params.delete :state unless current_user.can_archive_report?
+      safe_params.delete :status unless current_user.can_archive_report?
       # if we have a date try to change it to db-friendly format
       # otherwise set it to nil
       if params[:report][:report_date]
