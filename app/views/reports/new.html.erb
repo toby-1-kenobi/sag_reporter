@@ -1,5 +1,5 @@
-<% provide(:title, Translation.get_string('make_report', current_user)) %>
-<h1><i class="material-icons large">create</i> <%= Translation.get_string('make_report', current_user) %></h1>
+<% provide(:title, @translations['make_report']) %>
+<h1><i class="material-icons large">create</i> <%= @translations['make_report'] %></h1>
 <div class="row">
   <%= form_for(@report, html: {class: "col s12"}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
@@ -14,18 +14,18 @@
       <div class="input-field col s12">
         <i class="material-icons prefix">create</i>
         <%= f.text_area :content, class: "materialize-textarea" %>
-        <%= f.label :content, Translation.get_string('type_report', current_user) %>
+        <%= f.label :content, @translations['type_report'] %>
       </div>
     </div>
 
     <div class="row">
-      <div class="file-field input-field col s12 m6">
-        <input class="file-path validate" type="text"/>
-        <div class="btn-flat">
-          <i class="material-icons left">insert_photo</i>
-          <span><%= Translation.get_string('put_photo', current_user) %></span>
-          <input type="file" />
-        </div>
+      <div class="col s12 m6">
+        <%= f.check_box("impact_report?") %>
+        <%= f.label("impact_report?", @translations['this_impact']) %>
+        <%= f.check_box("planning_report?") %>
+        <%= f.label("planning_report?", "This is a hope, or future planning report") %>
+        <%= f.check_box("challenge_report?") %>
+        <%= f.label("challenge_report?", "This is a challenge report") %>
       </div>
       <div class="input-field col s12 m6 active">
         <i class="material-icons prefix">today</i>
@@ -34,29 +34,21 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col s12 m6">
-        <%= f.check_box("impact_report?") %>
-        <%= f.label("impact_report?", Translation.get_string('this_impact', current_user)) %>
-        <%= f.check_box("planning_report?") %>
-        <%= f.label("planning_report?", "This is a hope, or future planning report") %>
-        <%= f.check_box("challenge_report?") %>
-        <%= f.label("challenge_report?", "This is a challenge report") %>
-      </div>
-      <div class="col s12 m6 hide">
-        <% Report.categories.each do |key, category| %>
-          <div>
-            <%= f.check_box(key) %>
-            <%= f.label(key, "#{Translation.get_string('report_about', current_user)} #{category.translation_for(current_user)}.") %>
-          </div>
-        <% end %>
+    <div class="row hide">
+      <div class="file-field input-field col s12 m6">
+        <input class="file-path validate" type="text"/>
+        <div class="btn-flat">
+          <i class="material-icons left">insert_photo</i>
+          <span><%= @translations['put_photo'] %></span>
+          <input type="file" />
+        </div>
       </div>
     </div>
 
     <div class="row">
       <div class="input-field col s12 m6">
         <%= render partial: "shared/multiselect", locals: {
-              text: Translation.get_string('relates_languages', current_user),
+              text: @translations['relates_languages'],
               icon: "language",
               object: "report",
               attribute: "languages",
@@ -70,7 +62,7 @@
       </div>
       <div class="input-field col s12 m6">
         <%= render partial: "shared/multiselect", locals: {
-              text: Translation.get_string('relates_oa', current_user),
+              text: @translations['relates_oa'],
               icon: "local_offer",
               object: "report",
               attribute: "topics",
@@ -84,7 +76,7 @@
     <div class="row">
       <div class="row s12">
         <%= button_tag( :class => "btn waves-effect waves-light right") do %>
-          <%= Translation.get_string('submit', current_user) %> <i class="material-icons right">send</i>
+          <%= @translations['submit'] %> <i class="material-icons right">send</i>
         <% end %>
       </div>
     </div>
