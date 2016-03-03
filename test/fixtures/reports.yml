@@ -3,7 +3,7 @@
 hope:
   reporter: andrew
   content: "The pastor wants to expand women's ministry"
-  state: <%= Report.states['active'] %>
+  status: <%= Report.statuses['active'] %>
   languages: bodo
   geo_state: nb
   report_date: <%= 2.days.ago %>
@@ -11,41 +11,38 @@ hope:
 event:
   reporter: emma
   content: "No one is coming to the library"
-  state: <%= Report.states['active'] %>
+  status: <%= Report.statuses['active'] %>
   languages: toto
   geo_state: nb
-  topics: education
   report_date: <%= 2.weeks.ago %>
 
 impact:
   reporter: richard
   content: "We're going to make a CD of songs"
-  state: <%= Report.states['active'] %>
+  status: <%= Report.statuses['active'] %>
   languages: toto
   geo_state: nb
-  topics: bible
   report_date: <%= 2.months.ago %>
 
 old:
   reporter: andrew
   content: old report
-  state: <%= Report.states['active'] %>
+  status: <%= Report.statuses['active'] %>
   languages: toto
   geo_state: nb
-  topics: bible
   report_date: <%= 2.years.ago %>
 
 <%
 users = [:richard, :emma, :andrew]
 states = ["active", "active", "active", "active", "active", "active", "active", "archived"]
 languages = [:toto, :rajbanshi, :bodo, :sadri, :santali]
-topics = [:education, :literacy, :bible, :health, :engagement, :planting, :leadership]
+topics = [:movement_building, :language_development, :social_development, :leadership_development, :faith_development]
 %>
 <% (1..80).each do |index| %>
 report-<%= index %>:
   reporter: <%= users.sample %>
   content: <%= Faker::Lorem.paragraph %>
-  state: <%= Report.states[states.sample] %>
+  status: <%= Report.statuses[states.sample] %>
   languages: <%= languages.sample %>
   geo_state: nb
   topics: <%= topics.sample %>

@@ -6,7 +6,7 @@ describe Report do
     content: "report content",
     reporter: users(:andrew),
     geo_state: geo_states(:nb),
-    state: :active,
+    status: :active,
     report_date: Date.today
   ) }
 
