@@ -26,6 +26,8 @@ class ReportsController < ApplicationController
     redirect_to root_path unless current_user.can_archive_report?
   end
 
+  before_action :get_translations, only: [:new]
+
   def new
   	@report = Report.new
   	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
@@ -121,55 +123,65 @@ class ReportsController < ApplicationController
 
     private
 
-    def report_params
-      # make hash options into arrays
-      if params["report"]["languages"]
-        params["report"]["languages"] = params["report"]["languages"].keys
-      else
-        params["report"]["languages"] = []
-      end
-      if params["report"]["topics"]
-        params["report"]["topics"] = params["report"]["topics"].keys
-      else
-        params["report"]["topics"] = []
-      end
-      safe_params = [
-        :content,
-        :mt_society,
-        :mt_church,
-        :needs_society,
-        :needs_church,
-        :geo_state_id,
-        :report_date,
-        :planning_report,
-        :impact_report,
-        :challenge_report,
-        {:languages => []},
-        {:topics => []},
-        :status
-      ]
-      safe_params.delete :status unless current_user.can_archive_report?
-      # if we have a date try to change it to db-friendly format
-      # otherwise set it to nil
-      if params[:report][:report_date]
-        begin
-          params[:report][:report_date] = DateParser.parse_to_db_str(params[:report][:report_date]) unless params[:report][:report_date].empty?
-        rescue ArgumentError
-          params[:report][:report_date] = nil
-        end
-      end
-      permitted = params.require(:report).permit(safe_params)
+  def report_params
+    # make hash options into arrays
+    if params["report"]["languages"]
+      params["report"]["languages"] = params["report"]["languages"].keys
+    else
+      params["report"]["languages"] = []
     end
-  
-    # Redirects to recent view (or to the default).
-    def redirect_recent_or(default)
-      redirect_to(session[:report_recent_view] || default)
-      session.delete(:report_recent_view)
+    if params["report"]["topics"]
+      params["report"]["topics"] = params["report"]["topics"].keys
+    else
+      params["report"]["topics"] = []
     end
+    safe_params = [
+      :content,
+      :mt_society,
+      :mt_church,
+      :needs_society,
+      :needs_church,
+      :geo_state_id,
+      :report_date,
+      :planning_report,
+      :impact_report,
+      :challenge_report,
+      {:languages => []},
+      {:topics => []},
+      :status
+    ]
+    safe_params.delete :status unless current_user.can_archive_report?
+    # if we have a date try to change it to db-friendly format
+    # otherwise set it to nil
+    if params[:report][:report_date]
+      begin
+        params[:report][:report_date] = DateParser.parse_to_db_str(params[:report][:report_date]) unless params[:report][:report_date].empty?
+      rescue ArgumentError
+        params[:report][:report_date] = nil
+      end
+    end
+    permitted = params.require(:report).permit(safe_params)
+  end
 
-    # Store which is the recent view in the session
-    def recent_view
-      session[:report_recent_view] = request.url if request.get?
+  # Redirects to recent view (or to the default).
+  def redirect_recent_or(default)
+    redirect_to(session[:report_recent_view] || default)
+    session.delete(:report_recent_view)
+  end
+
+  # Store which is the recent view in the session
+  def recent_view
+    session[:report_recent_view] = request.url if request.get?
+  end
+
+  def get_translations
+    @translations = Hash.new
+    lang_id = current_user.interface_language.id
+    Translatable.includes(:translations).find_each do |translatable|
+      translation = translatable.translations.select{ |t| t.language_id == lang_id }.first
+      content = (translation and translation.content) ? translation.content : translatable.content
+      @translations[translatable.identifier] = content
     end
+  end
 
 end
