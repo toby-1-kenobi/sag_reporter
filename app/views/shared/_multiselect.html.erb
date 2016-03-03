@@ -10,9 +10,10 @@ end
 # if we're not told how to get the id use the :id method
 id ||= :id
 # if someone has put an id into the element options
-# we don't want to use it.
+# we don't want to use it - we set our own element id here.
 element_options.delete :id
 element_options.delete "id"
+debugger
 %>
 <a class='dropdown-button btn-flat' href='#' data-activates='<%= object %>-<%= attribute %>-dropdown' data-hover="true">
 <i class="material-icons left"><%= icon %></i>
@@ -27,7 +28,7 @@ element_options.delete "id"
           data="<%= item.send(data) %>"
         <% end %>
     >
-      <%= check_box_tag("#{object}[#{attribute}][#{item.send(id).to_s}]", item.send(id).to_s, selected.include?(item), local_assigns[:check_box_options].presence ? check_box_options : {}) %>
+      <%= check_box_tag("#{object}[#{attribute}][#{item.send(id).to_s}]", item.send(id).to_s, selected.include?(item) || selected.include?(item.send(id)), local_assigns[:check_box_options].presence ? check_box_options : {}) %>
       <%= label_tag("#{object}[#{attribute}][#{item.send(id).to_s}]", item.send(display)) %>
     </div>
   <% end %>
