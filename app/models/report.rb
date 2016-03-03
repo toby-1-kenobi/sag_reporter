@@ -34,7 +34,7 @@ class Report < ActiveRecord::Base
     types << planning_report.report_type if planning_report
     types << impact_report.report_type if impact_report
     types << challenge_report.report_type if challenge_report
-    types.join ', '
+    types.to_sentence.humanize
   end
 
   def planning_report?

@@ -1,16 +1,13 @@
 <% if wrapper %>
-  <div class="report-wrapper <%= report.state %> <%= wrapper %>">
+  <div class="report-wrapper <%= report.status %> <%= wrapper %>">
 <% end %>
-<div class="card report <%= report.state %> <%= "hide" if report.archived? %> light-blue lighten-3" id="report-<%= report.id %>" data-date="<%= report.report_date %>">
+<div class="card report <%= report.status %> <%= "hide" if report.archived? %> light-blue lighten-3" id="report-<%= report.id %>" data-date="<%= report.report_date %>">
   <div class="card-content">
-    <span class="card-title">Planning Report</span>
+    <span class="card-title"><%= report.report_type %> Report</span>
     <% if time %>
   	  <div><%= time_ago_in_words(report.report_date) %> ago</div>
   	<% end %>
   	<%= simple_format report.content %>
-    <% Report.categories.select{ |key, sentence| report.send(key) }.each do |key, category| %>
-      <p>Concerns the <%= category.translation_for(current_user) %>.</p>
-    <% end %>
   	<div class="reporter"><%= report.reporter.name %></div>
   	<% if languages %>
   	  <div class="report-languages">
@@ -39,7 +36,7 @@
       <% end %>
     <% end %>
   <% end %>
-  <% if current_user.can_edit_report? %>
+  <% if current_user.can_edit_report? or current_user = report.reporter %>
   	  <%= link_to edit_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
   	    <i class="material-icons">edit</i>
       <% end %>
