@@ -16,7 +16,7 @@ describe Report::Factory do
       "needs_society"=>"0",
       "needs_church"=>"0",
       "languages"=>["#{languages(:toto).id}", "#{languages(:santali).id}"],
-      "topics"=>["#{topics(:movement_building)}", "#{topics(:social_development)}"],
+      "topics"=>["#{topics(:movement_building).id}", "#{topics(:social_development).id}"],
       reporter: users(:andrew)
     }
     _(factory.build_report(report_params)).must_equal true
