@@ -26,7 +26,7 @@ class ReportsController < ApplicationController
     redirect_to root_path unless current_user.can_archive_report?
   end
 
-  before_action :get_translations, only: [:new]
+  before_action :get_translations, only: [:new, :edit]
 
   def new
   	@report = Report.new
@@ -55,27 +55,25 @@ class ReportsController < ApplicationController
   def edit
     @report = Report.find(params[:id])
     @geo_states = @report.available_geo_states(current_user)
-    @minority_languages = Language.minorities(@geo_states)
+    @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
     @topics = Topic.all
   end
 
   def update
   	@report = Report.find(params[:id])
-  	if @report.update_attributes(report_params)
-      if params['report']['languages']
-        @report.languages.clear
-        params['report']['languages'].each do |lang_id, value|
-          @report.languages << Language.find_by_id(lang_id.to_i)
-        end
-      end
-      if params['report']['topics']
-        @report.topics.clear
-        params['report']['topics'].each do |top_id, value|
-          @report.topics << Topic.find_by_id(top_id.to_i)
-        end
-      end
+    updater = Report::Updater.new(@report)
+  	if updater.update_report(report_params)
       flash["success"] = "Report Updated!"
-      redirect_recent_or @report
+      redirect_to @report
+    else
+      if updater.error
+        flash['error'] = "Report update failed: #{updater.error.message}"
+      end
+      @geo_states = @report.available_geo_states(current_user)
+      @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
+      @topics = Topic.all
+      get_translations
+      render 'edit'
     end
   end
 
@@ -121,7 +119,7 @@ class ReportsController < ApplicationController
     redirect_recent_or report
   end
 
-    private
+  private
 
   def report_params
     # make hash options into arrays
