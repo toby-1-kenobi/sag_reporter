@@ -137,7 +137,6 @@ class ImpactReportsController < ApplicationController
         'reports.geo_state_id' => geo_state_ids,
         'reports.report_date' => date_range
       )
-    debugger
   	@outcome_areas = Topic.all
   	@progress_markers_by_oa = ProgressMarker.includes(:topic).all.group_by{ |pm| pm.topic }
     #Todo: Switch to project languages instead of minority languages.

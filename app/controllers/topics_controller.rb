@@ -89,8 +89,23 @@ class TopicsController < ApplicationController
         @year = @yearmonth.slice(0,4)
         @month = @yearmonth.slice(4,2)
         @month_date = Date.new(@year.to_i, @month.to_i)
-        @existing_updates_this_month = ProgressUpdate.joins(:language_progress).where(year: @year, month: @month, 'language_progresses.state_language_id' => @state_language).group('language_progresses.progress_marker_id').count
-        @reports = ImpactReport.active.includes(:progress_markers, :reporter).where('impact_reports.geo_state' => @geo_state).joins(:languages).where("languages.id" => @language, 'impact_reports.report_date' => @month_date..@month_date.end_of_month).where.not('progress_markers.id' => nil ).order('progress_markers.id')
+        @existing_updates_this_month = ProgressUpdate.
+          joins(:language_progress).
+          where(
+            year: @year,
+            month: @month,
+            :language_progresses => {state_language_id: @state_language}
+          ).group('language_progresses.progress_marker_id').count
+        @reports = ImpactReport.
+          includes(:progress_markers, :report => [ :reporter, :languages ]).
+          where(
+            :reports => {
+              status: "active",
+              geo_state_id: @geo_state,
+              report_date: @month_date..@month_date.end_of_month
+            },
+            :languages => {id: @language}
+          ).order('progress_markers.id')
         @reports_by_pm = Hash.new
         @reports_by_oa = Hash.new
         @reports.each do |report|
