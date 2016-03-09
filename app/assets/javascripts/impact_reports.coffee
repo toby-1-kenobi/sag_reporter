@@ -27,7 +27,7 @@ $(document).ready ->
 
   filter_impact_reports()
 
-  $('.card.impact_report.for-tagging').leanModal
+  $('.card.impact_report.for-tagging .card-content').leanModal
 
     ready: ->
       content = $('.card.impact_report.for-tagging.selected .report-content').text()
@@ -92,9 +92,9 @@ $(document).ready ->
   	    return
   	return
 
-  $('.card.impact_report.for-tagging').click ->
+  $('.card.impact_report.for-tagging .card-content').click ->
     $('.card.impact_report.for-tagging.selected').removeClass('z-depth-1 selected').addClass('z-depth-3')
-    $(this).removeClass('z-depth-3').addClass('z-depth-1 selected')
+    $(this).parent('.card').removeClass('z-depth-3').addClass('z-depth-1 selected')
     return
 
   $('#geo_state_id').on 'change', filter_impact_reports
