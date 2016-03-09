@@ -4,9 +4,8 @@
   data-language="<%= report_for_tagging.languages.pluck(:id).join(' ') %>"
   data-geo-state="<%= report_for_tagging.geo_state.id %>"
   data-pm="<%= report_for_tagging.progress_markers.pluck(:id).join(' ') %>"
-  href="#pm-modal"
   >
-  <div class="card-content">
+  <div class="card-content" href="#pm-modal">
     <div class="report-content"><%= simple_format report_for_tagging.content %></div>
     <ul class="progress_markers">
       <% report_for_tagging.progress_markers.each do |pm| %>
@@ -28,7 +27,7 @@
     <% end %>
   <% end %>
   <% if current_user.can_edit_report? %>
-    <%= link_to edit_impact_report_path(report_for_tagging), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
+    <%= link_to edit_report_path(report_for_tagging.report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
       <i class="material-icons">edit</i>
     <% end %>
   <% end %>
