@@ -80,7 +80,7 @@ class ReportsController < ApplicationController
   def index
     @geo_states = current_user.geo_states
     @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc).paginate(page: params[:page])
-    @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc).paginate(page: params[:page])
+    @impact_reports = ImpactReport.includes(:report).where(reports: {geo_state_id: @geo_states}).order(:created_at => :desc).paginate(page: params[:page])
     recent_view
   end
 
