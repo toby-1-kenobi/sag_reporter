@@ -169,6 +169,12 @@ class ImpactReportsController < ApplicationController
     render json: return_data
   end
 
+  def not_impact
+    report = ImpactReport.find(params[:id])
+    report.make_not_impact
+    render nothing: true
+  end
+
     private
 
     def impact_report_params

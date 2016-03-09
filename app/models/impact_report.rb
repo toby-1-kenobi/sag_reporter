@@ -10,4 +10,8 @@ class ImpactReport < ActiveRecord::Base
     "impact"
   end
 
+  def make_not_impact
+    report.make_not_impact
+  end
+
 end

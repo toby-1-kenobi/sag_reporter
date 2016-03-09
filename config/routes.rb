@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       patch 'tag_update'
       patch 'archive'
       patch 'unarchive'
+      patch 'not_impact'
     end
   end
   resources :languages

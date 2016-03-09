@@ -43,44 +43,53 @@ $(document).ready ->
       # collapse the collapsible inside the modal
       $('#pm-modal .collapsible-header.active').trigger('click')
 
-      # collect the selected PMs
-      pms = []
-      $('#pm-modal input:checkbox:checked').each ->
-        pms.push $(this).attr('id').split('-').pop()
-        return
+      # find the card and report id
+      report_card = $('.card.impact_report.for-tagging.selected')
+      report_id = report_card.attr('id').split('-').pop()
 
-      # update the actual report
-      report_id = $('.card.impact_report.for-tagging.selected').attr('id').split('-').pop()
-      ajax_url = $('#ajax-path').text().replace('report_id', report_id)
-      jQuery.post ajax_url, { _method: "patch", pm_ids: pms }, (data) ->
-        # we receive back a collection of the reports new PMs
-        new_pm_ids = []
-        $('.card.impact_report.for-tagging.selected .progress_markers').empty()
-        jQuery.each data, (index, pmData) ->
-          pmObj = jQuery.parseJSON(pmData)
-          new_pm_ids.push pmObj.id
-          new_pm_element = $('<li/>',
-              'text': pmObj.name
-              'class': 'progress_marker tooltipped ' + pmObj.colour
-              'data-postion': 'bottom'
-              'data-delay': '50'
-              'data-tooltip': pmObj.description
-            )
-          $('.card.impact_report.for-tagging.selected .progress_markers').append(new_pm_element)
+      if($('#pm-modal .not-impact-checkbox input:checkbox').is(':checked'))
+        not_impact_url = '/impact_reports/' + report_id + '/not_impact'
+        report_card.remove()
+        jQuery.post not_impact_url, { _method: "patch" }
+
+      else
+        # collect the selected PMs
+        pms = []
+        $('#pm-modal .pm-checkbox input:checkbox:checked').each ->
+          pms.push $(this).attr('id').split('-').pop()
           return
-        $('.tooltipped').tooltip()
-        $('.card.impact_report.for-tagging.selected').attr 'data-pm', new_pm_ids.join ' '
 
-        # cards with no PMs are lighter coloured
-        if new_pm_ids.length > 0
-          $('.card.impact_report.for-tagging.selected').removeClass 'lighten-3'
-          $('.card.impact_report.for-tagging.selected').addClass 'lighten-1'
-        else
-          $('.card.impact_report.for-tagging.selected').removeClass 'lighten-1'
-          $('.card.impact_report.for-tagging.selected').addClass 'lighten-3'
+        # update the actual report
+        ajax_url = $('#ajax-path').text().replace('report_id', report_id)
+        jQuery.post ajax_url, { _method: "patch", pm_ids: pms }, (data) ->
+          # we receive back a collection of the reports new PMs
+          new_pm_ids = []
+          $('.card.impact_report.for-tagging.selected .progress_markers').empty()
+          jQuery.each data, (index, pmData) ->
+            pmObj = jQuery.parseJSON(pmData)
+            new_pm_ids.push pmObj.id
+            new_pm_element = $('<li/>',
+                'text': pmObj.name
+                'class': 'progress_marker tooltipped ' + pmObj.colour
+                'data-postion': 'bottom'
+                'data-delay': '50'
+                'data-tooltip': pmObj.description
+              )
+            $('.card.impact_report.for-tagging.selected .progress_markers').append(new_pm_element)
+            return
+          $('.tooltipped').tooltip()
+          report_card.attr 'data-pm', new_pm_ids.join ' '
+
+          # cards with no PMs are lighter coloured
+          if new_pm_ids.length > 0
+            report_card.removeClass 'lighten-3'
+            report_card.addClass 'lighten-1'
+          else
+            report_card.removeClass 'lighten-1'
+            report_card.addClass 'lighten-3'
+          return
+
         return
-
-      return
 
   $('.progress-marker-input select').change ->
   	marker_id = $(this).val()
