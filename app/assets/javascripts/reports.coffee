@@ -2,7 +2,10 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-$(document).ready ->
+$(document).on "page:change", ->
+
+  if $('.report-type input:checkbox:checked').length == 0
+    $('#report_impact_report').prop('checked', true)
 
   $('#show_archived_reports').change ->
     if @checked

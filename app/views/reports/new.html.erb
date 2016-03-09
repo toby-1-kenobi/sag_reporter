@@ -2,5 +2,6 @@
 <h1><i class="material-icons large">create</i> <%= @translations['make_report'] %></h1>
 <div class="row">
   <% provide(:button_text, @translations['submit']) %>
+  <% provide(:report_type_class, 'hide') %>
   <%= render partial: 'form' %>
 </div>
