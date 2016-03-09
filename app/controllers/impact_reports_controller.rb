@@ -34,7 +34,7 @@ class ImpactReportsController < ApplicationController
     @geo_states = current_user.geo_states
     @zones = Zone.of_states(@geo_states)
     @languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
-    @reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
+    @reports = ImpactReport.includes(:report).where(reports: {geo_state_id: @geo_states}).order(:created_at => :desc)
   end
 
   def spreadsheet
@@ -47,10 +47,10 @@ class ImpactReportsController < ApplicationController
       geo_states = current_user.geo_states
     end
     languages = params['controls']['language'].values.map{ |id| id.to_i }
-    @reports = ImpactReport.includes(:languages).where(geo_state: geo_states, 'languages.id' => languages)
+    @reports = ImpactReport.includes(report: :languages).where('reports.geo_state_id' => geo_states, 'languages.id' => languages)
     
     if !params["show_archived"]
-      @reports = @reports.active
+      @reports = @reports.where(reports: {status: "active"})
     end
 
     start_date = params['from_date'].to_date

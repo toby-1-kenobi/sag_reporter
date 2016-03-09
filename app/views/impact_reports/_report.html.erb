@@ -1,6 +1,6 @@
 <%
-class_contents = "#{report.state} filterable-item #{'hide' if report.archived?}".html_safe
-element_options = "data-filter-label=\"language geo_state status\" data-date=\"#{report.report_date}\" data-language=\"#{report.languages.pluck(:id).join(',')}\" data-geo_state=\"#{report.geo_state_id}\" data-status=\"#{report.state}\"".html_safe
+class_contents = "#{report.status} filterable-item #{'hide' if report.archived?}".html_safe
+element_options = "data-filter-label=\"language geo_state status\" data-date=\"#{report.report_date}\" data-language=\"#{report.languages.pluck(:id).join(',')}\" data-geo_state=\"#{report.report.geo_state_id}\" data-status=\"#{report.status}\"".html_safe
 %>
 <% if wrapper %>
   <div class="report-wrapper <%= wrapper %> <%= class_contents %>" <%= element_options %>>
@@ -14,9 +14,6 @@ element_options = "data-filter-label=\"language geo_state status\" data-date=\"#
   	  <div><%= time_ago_in_words(report.report_date) %> ago</div>
   	<% end %>
   	<%= simple_format report.content %>
-    <% unless Report.categories.select{ |key, sentence| report.send(key) }.empty? %>
-      <p class="concerning hide">Concerns <%= Report.categories.select{ |key, sentence| report.send(key) }.values.map { |v| "the #{v}" }.to_sentence() %>.</p>
-    <% end %>
     <% if report.reporter %>
   	  <div class="reporter"><%= report.reporter.name %></div>
     <% end %>
