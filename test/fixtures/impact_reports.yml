@@ -1,3 +1,4 @@
 # Read about fixtures at
 # http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
+test_impact_report: {}

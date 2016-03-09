@@ -58,6 +58,10 @@
 <div id="pm-modal" class="modal bottom-sheet">
   <div class="container">
     <p class="report-content"></p>
+    <div class="not-impact-checkbox">
+      <%= check_box_tag("not-impact", 1) %>
+      <%= label_tag("not-impact", "This report does not show progress, it is a need or challenge", class: "black-text modal-close") %>
+    </div>
     <ul class="collapsible" data-collapsible="accordion">
       <% @progress_markers_by_oa.each do |oa, markers| %>
         <li id="<%= oa.id %>-progress-markers">
@@ -68,7 +72,7 @@
                 <div class="col s12 m4">
                   <p><%= weight_text %></p>
                   <% markers.select{ |m| m.weight == weight }.each do |marker| %>
-                    <div>
+                    <div class="pm-checkbox">
                       <%= check_box_tag("pm-#{marker.id.to_s}", 1) %>
                       <%= label_tag("pm-#{marker.id.to_s}", marker.description, class: "black-text") %>
                     </div>

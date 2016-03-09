@@ -38,15 +38,23 @@ class Report < ActiveRecord::Base
   end
 
   def planning_report?
-    planning_report.present?
+    self.planning_report.present?
   end
 
   def impact_report?
-    impact_report.present?
+    self.impact_report.present?
   end
 
   def challenge_report?
-    challenge_report.present?
+    self.challenge_report.present?
+  end
+
+  def make_not_impact
+    self.impact_report.destroy if self.impact_report? and self.impact_report.persisted?
+    if !self.planning_report? && !self.challenge_report?
+      self.planning_report = PlanningReport.new
+      self.save
+    end
   end
 
   private
@@ -56,8 +64,8 @@ class Report < ActiveRecord::Base
   end
 
   def at_least_one_subtype
-    unless planning_report? or impact_report? or challenge_report?
-      errors.add(:base, "Must have at least one report type.")
+    unless self.planning_report? or self.impact_report? or self.challenge_report?
+      self.errors.add(:base, "Must have at least one report type.")
     end
   end
 

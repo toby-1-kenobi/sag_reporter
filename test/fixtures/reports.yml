@@ -49,3 +49,11 @@ report-<%= index %>:
   report_date: <%= rand(13.months).seconds.ago %>
 <% end %>
 
+test_report:
+    content: "report content"
+    reporter: andrew
+    geo_state: nb
+    status: "active"
+    report_date: <%= Date.today %>
+    impact_report: test_impact_report
+
