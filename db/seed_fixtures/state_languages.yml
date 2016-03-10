@@ -417,6 +417,7 @@ bihar_sadri:
 bihar_kurux:
   geo_state: bihar
   language: kurux
+  project: true
 
 up_english:
   geo_state: up
