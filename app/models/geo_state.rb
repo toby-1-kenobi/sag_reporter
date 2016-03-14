@@ -64,5 +64,23 @@ class GeoState < ActiveRecord::Base
     end
     return chart_data
   end
+
+  def outcome_area_chart_data(outcome_area)
+    outcomes_data = Hash.new
+    state_languages.in_project.includes(:language_progresses => [{:progress_marker => :topic}, :progress_updates]).each do |state_language|
+      outcomes_data[state_language] = state_language.outcome_table_data
+    end
+    chart_data = Array.new
+    outcomes_data.each do |state_language, data|
+      if data
+        chart_row = {
+          name: state_language.language_name,
+          data: data["content"][outcome_area.name]
+        }
+        chart_data.push(chart_row)
+      end
+    end
+    return chart_data
+  end
   
 end

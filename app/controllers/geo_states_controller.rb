@@ -15,4 +15,12 @@ class GeoStatesController < ApplicationController
     end
   end
 
+  def get_outcome_area_chart
+    @geo_state = GeoState.find(params[:id])
+    @outcome_area = Topic.find(params[:topic_id])
+    respond_to do |format|
+      format.js
+    end
+  end
+
 end
