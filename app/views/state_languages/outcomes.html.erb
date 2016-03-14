@@ -5,26 +5,46 @@
 <ul class="collapsible" data-collapsible="accordion">
   <% @languages_by_state.each do |geo_state, languages| %>
     <h2><%= geo_state.name %></h2>
+    <li>
+      <div class="collapsible-header teal lighten-2">State Overview</div>
+      <div class="collapsible-body">
+        <p class="nothing-set-list hide">No progress markers set for </p>
+        <div class="row">
+          <% languages.each do |language| %>
+            <%= link_to "#{language.language_name} chart", outcomes_chart_path(id: language.id), remote: true, method: 'GET', class: "btn left waves-effect get-chart-button chart-#{language.id}-button" %>
+          <% end %>
+        </div>
+        <div class="row">
+          <% @outcome_areas.each do |oa| %>
+          <%= link_to "#{oa.name} chart", outcome_area_chart_path(id: geo_state.id, topic_id: oa.id), remote: true, method: 'GET', class: "btn waves-effect get-chart-button outcome-area-chart-button-#{oa.id}" %>
+          <% end %>
+          <%= link_to "Totals chart", outcomes_totals_chart_path(id: geo_state.id), remote: true, method: 'GET', class: "btn waves-effect get-chart-button outcome-totals-chart-button" %>
+        </div>
+        <div class="charts"></div>
+      </div>
+    </li>
     <% languages.each do |language| %>
       <li>
-        <div class="collapsible-header <%= colour_class(language.language_colour) %>"><%= language.language_name %></div>
+        <div class="collapsible-header auto-fetch <%= colour_class(language.language_colour) %>"><%= language.language_name %></div>
         <div class="collapsible-body">
+          <div class="row">
 
-          <div class="row" id="table-<%= language.id %>">
-            <%= link_to "Get table", outcomes_table_path(id: language.id), remote: true, method: 'GET', class: "btn right waves-effect get-table-button" %>
+            <div id="table-<%= language.id %>">
+              <%= link_to "Get table", outcomes_table_path(id: language.id), remote: true, method: 'GET', class: "btn waves-effect get-table-button" %>
+            </div>
+
+            <div class="chart-<%= language.id %>">
+              <%= link_to "Get chart", outcomes_chart_path(id: language.id), remote: true, method: 'GET', class: "btn waves-effect get-chart-button" %>
+            </div>
+
+            <div id="pdf-download-<%= language.id %>">
+              <%= link_to "outcomes/#{language.id}.pdf", class: "btn waves-effect waves-light right" do %>
+                <i class="material-icons">file_download</i>
+                Get PDF
+              <% end %>
+            </div>
+
           </div>
-
-          <div class="row" id="chart-<%= language.id %>">
-            <%= link_to "Get chart", outcomes_chart_path(id: language.id), remote: true, method: 'GET', class: "btn right waves-effect get-chart-button" %>
-          </div>
-
-          <div class="row" id="pdf-download-<%= language.id %>">
-            <%= link_to "outcomes/#{language.id}.pdf", class: "btn waves-effect waves-light right" do %>
-              <i class="material-icons">file_download</i>
-              Get PDF
-            <% end %>
-          </div>
-
         </div>
       </li>
     <% end %>
