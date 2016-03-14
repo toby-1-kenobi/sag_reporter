@@ -39,7 +39,7 @@ $(document).ready ->
   # by programatically clicking the get-chart button
   # give enough time for the accordian to open then fetch the 
   # chart because it doesn't display properly if rendered while hidden
-  $('.collapsible-header').on 'click', ->
+  $('.collapsible-header.auto-fetch').on 'click', ->
     that = this
     setTimeout (->
       $(that).next('.collapsible-body').find('.get-chart-button').trigger 'click'

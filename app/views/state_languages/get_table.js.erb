@@ -2,6 +2,6 @@
 $('#table-<%= @language.id %>').html("<%= @table_content.html_safe %>");
 <% else %>
 $('#table-<%= @language.id %>').html("<p>No progress levels set</p>");
-$('#chart-<%= @language.id %>').hide();
+$('.chart-<%= @language.id %>').hide();
 $('#pdf-download-<%= @language.id %>').hide();
 <% end %>
