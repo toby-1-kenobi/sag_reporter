@@ -14,10 +14,7 @@
             <%= link_to "Get #{language.language_name} chart", outcomes_chart_path(id: language.id), remote: true, method: 'GET', class: "btn left waves-effect get-chart-button chart-#{language.id}-button" %>
           <% end %>
         </div>
-        <% languages.each do |language| %>
-          <div class="chart-<%= language.id %>">
-          </div>
-        <% end %>
+        <div class="charts"></div>
       </div>
     </li>
     <% languages.each do |language| %>
