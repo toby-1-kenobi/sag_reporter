@@ -6,13 +6,16 @@
   <% @languages_by_state.each do |geo_state, languages| %>
     <h2><%= geo_state.name %></h2>
     <li>
-      <div class="collapsible-header">State Overview</div>
+      <div class="collapsible-header teal lighten-2">State Overview</div>
       <div class="collapsible-body">
         <p class="nothing-set-list hide">No progress markers set for </p>
         <div class="row">
           <% languages.each do |language| %>
-            <%= link_to "Get #{language.language_name} chart", outcomes_chart_path(id: language.id), remote: true, method: 'GET', class: "btn left waves-effect get-chart-button chart-#{language.id}-button" %>
+            <%= link_to "#{language.language_name} chart", outcomes_chart_path(id: language.id), remote: true, method: 'GET', class: "btn left waves-effect get-chart-button chart-#{language.id}-button" %>
           <% end %>
+        </div>
+        <div class="row">
+          <%= link_to "Totals chart", outcomes_totals_chart_path(id: geo_state.id), remote: true, method: 'GET', class: "btn waves-effect get-chart-button outcome-totals-chart-button" %>
         </div>
         <div class="charts"></div>
       </div>
