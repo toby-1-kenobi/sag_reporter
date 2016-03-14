@@ -7,6 +7,7 @@ class StateLanguagesController < ApplicationController
   end
 
   def outcomes
+    @outcome_areas = Topic.all
     @languages_by_state = Hash.new
     current_user.geo_states.each do |geo_state|
       @languages_by_state[geo_state] = geo_state.state_languages.includes(:language).in_project.to_a.sort!

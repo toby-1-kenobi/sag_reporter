@@ -1,0 +1,8 @@
+<% require 'securerandom' %>
+<% chart_data = @geo_state.outcome_area_chart_data(@outcome_area) %>
+  if( $('li.active .outcome-area-chart-<%= @geo_state.id %>-<%= @outcome_area.id %>').length == 0 ) {
+    $('li.active .charts').append('<div><span><%= @outcome_area.name %> scores</span><div class="outcome-area-chart-<%= @geo_state.id %>-<%= @outcome_area.id %>"></div></div>');
+  }
+$('li.active .outcome-area-chart-<%= @geo_state.id %>-<%= @outcome_area.id %>').html("<%= escape_javascript(line_chart chart_data, id: SecureRandom.uuid) %>");
+
+$('li.active .outcome-area-chart-button-<%= @outcome_area.id %>').addClass('hide');

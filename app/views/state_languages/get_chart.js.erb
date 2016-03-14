@@ -1,3 +1,12 @@
+<% require 'securerandom' %>
 <% if chart_data = @language.outcome_chart_data() %>
-$('#chart-<%= @language.id %>').html("<%= escape_javascript(line_chart chart_data, id: "chartkick-#{@language.id}") %>");
+  if( $('li.active .chart-<%= @language.id %>').length == 0 ) {
+    $('li.active .charts').append('<div><span><%= @language.language_name %></span><div class="chart-<%= @language.id %>"></div></div>');
+  }
+  $('li.active .chart-<%= @language.id %>').html("<%= escape_javascript(line_chart chart_data, id: SecureRandom.uuid) %>");
+<% else %>
+$('li.active .nothing-set-list').append("<%= @language.language_name %>, ");
+$('li.active .nothing-set-list').removeClass('hide');
+$('li.active .chart-<%= @language.id %>').remove();
 <% end %>
+$('li.active .chart-<%= @language.id %>-button').addClass('hide');

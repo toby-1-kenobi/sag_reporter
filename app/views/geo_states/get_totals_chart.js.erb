@@ -1,0 +1,8 @@
+<% require 'securerandom' %>
+<% chart_data = @geo_state.outcome_totals_chart_data() %>
+  if( $('li.active .outcome-totals-chart-<%= @geo_state.id %>').length == 0 ) {
+    $('li.active .charts').append('<div><span>Total outcome scores</span><div class="outcome-totals-chart-<%= @geo_state.id %>"></div></div>');
+  }
+$('li.active .outcome-totals-chart-<%= @geo_state.id %>').html("<%= escape_javascript(line_chart chart_data, id: SecureRandom.uuid) %>");
+
+$('li.active .outcome-totals-chart-button').addClass('hide');
