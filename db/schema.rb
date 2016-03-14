@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160302003637) do
+ActiveRecord::Schema.define(version: 20160314034844) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -409,6 +409,15 @@ ActiveRecord::Schema.define(version: 20160302003637) do
   add_index "translations", ["language_id"], name: "index_translations_on_language_id", using: :btree
   add_index "translations", ["translatable_id"], name: "index_translations_on_translatable_id", using: :btree
 
+  create_table "uploaded_files", force: :cascade do |t|
+    t.integer  "report_id",  null: false
+    t.string   "ref",        null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "uploaded_files", ["report_id"], name: "index_uploaded_files_on_report_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "phone"
@@ -477,5 +486,6 @@ ActiveRecord::Schema.define(version: 20160302003637) do
   add_foreign_key "tally_updates", "users"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translatables"
+  add_foreign_key "uploaded_files", "reports"
   add_foreign_key "users", "languages", column: "interface_language_id"
 end

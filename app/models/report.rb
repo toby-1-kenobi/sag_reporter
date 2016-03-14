@@ -11,6 +11,7 @@ class Report < ActiveRecord::Base
   belongs_to :challenge_report, inverse_of: :report
 	has_and_belongs_to_many :languages
 	has_and_belongs_to_many :topics
+  has_many :pictures, class_name: 'UploadedFile'
 
 	validates :content, presence: true, allow_nil: false
 	validates :reporter, presence: true, allow_nil: false
