@@ -59,6 +59,12 @@ gem 'prawn-table'
 # Custom icon fonts
 gem 'fontcustom'
 
+# File upload
+gem 'carrierwave'
+
+# image manipulation
+gem 'mini_magick'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
@@ -118,5 +124,10 @@ group :production do
 
   # Puma is a production server
   gem 'puma'
+
+  # link to cloud storage
+  gem 'fog-google'
+  gem 'google-api-client', '< 0.9', '>= 0.6.2'
+
 end
 
