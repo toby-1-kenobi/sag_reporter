@@ -44,6 +44,7 @@ class ReportsController < ApplicationController
       @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
       @topics = Topic.all
       @report = report_factory.instance()
+      get_translations
       render 'new'
     end
   end
