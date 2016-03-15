@@ -32,21 +32,31 @@
       <div class="col s12 m6">
         <%= f.fields_for :pictures do |ff| %>
           <% if ff.object.persisted? %>
-            <p><%= ff.object.ref %></p>
-            <%= ff.check_box :_destroy %>
-            <%= ff.label :_destroy, "Remove" %>
+            <div class="row">
+              <div class="col s6">
+                <%= image_tag ff.object.ref.thumb.url if ff.object.ref? %>
+              </div>
+              <div class="col s6">
+                <%= ff.check_box :_destroy %>
+                <%= ff.label :_destroy do %>
+                <i class="material-icons">delete</i>
+                Delete
+                <% end %>
+              </div>
+            </div>
+          <% else %>
+            <div class="picture-input">
+              <%= ff.file_field :ref, accept: 'image/jpeg,image/gif,image/png', class: "hide" %>
+              <%= ff.label :ref, class: "btn white-text" do %>
+                  <i class="material-icons">insert_photo</i>
+                  <%= @translations['put_photo'] %>
+              <% end %>
+            </div>
           <% end %>
-          <ul id="file-list" class="collection">
-            
-          </ul>
-          <div class="picture-input">
-            <%= ff.file_field :ref, accept: 'image/jpeg,image/gif,image/png', class: "hide" %>
-            <%= ff.label :ref, class: "btn white-text" do %>
-                <i class="material-icons">insert_photo</i>
-                <%= @translations['put_photo'] %>
-            <% end %>
-          </div>
         <% end %>
+        <ul id="file-list" class="collection">
+          
+        </ul>
       </div>
     </div>
 

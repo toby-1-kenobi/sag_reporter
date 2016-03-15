@@ -61,6 +61,7 @@ class ReportsController < ApplicationController
 
   def edit
     @report = Report.find(params[:id])
+    @report.pictures.build
     @geo_states = @report.available_geo_states(current_user)
     @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
     @topics = Topic.all
@@ -153,7 +154,7 @@ class ReportsController < ApplicationController
       :challenge_report,
       {:languages => []},
       {:topics => []},
-      {:pictures_attributes => [:ref]},
+      {:pictures_attributes => [:ref, :_destroy, :id]},
       :status
     ]
     safe_params.delete :status unless current_user.can_archive_report?
