@@ -65,6 +65,10 @@ gem 'carrierwave'
 # image manipulation
 gem 'mini_magick'
 
+# link to cloud storage
+gem 'fog-google'
+gem 'google-api-client', '< 0.9', '>= 0.6.2'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
@@ -124,10 +128,6 @@ group :production do
 
   # Puma is a production server
   gem 'puma'
-
-  # link to cloud storage
-  gem 'fog-google'
-  gem 'google-api-client', '< 0.9', '>= 0.6.2'
 
 end
 
