@@ -35,21 +35,17 @@
             <p><%= ff.object.ref %></p>
             <%= ff.check_box :_destroy %>
             <%= ff.label :_destroy, "Remove" %>
-          <% else %>
-              <%= ff.file_field :ref, class: "real-file-field" %>
-            <div class="file-field input-field">
-              <!--
-              <div class="btn-flat">
-                <i class="material-icons">insert_photo</i>
-                <span><%= @translations['put_photo'] %></span>
-                <input type="file" multiple />
-              </div>
-              <div class="file-path-wrapper">
-                <input class="file-path validate" type="text">
-              </div>
-              -->
-            </div>
           <% end %>
+          <ul id="file-list" class="collection">
+            
+          </ul>
+          <div class="picture-input">
+            <%= ff.file_field :ref, accept: 'image/jpeg,image/gif,image/png', class: "hide" %>
+            <%= ff.label :ref, class: "btn white-text" do %>
+                <i class="material-icons">insert_photo</i>
+                <%= @translations['put_photo'] %>
+            <% end %>
+          </div>
         <% end %>
       </div>
     </div>
