@@ -2,6 +2,40 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+addImageInput = ->
+  $(this).off 'change', addImageInput
+  imageListUpdate()
+  $(this).on 'change', imageListUpdate
+  new_input = $(this).clone()
+  new_name = new_input.attr('name').replace(/\[\d*\]/g, (x) ->
+    '[' + (parseInt(x.slice(1, -1)) + 1) + ']'
+  )
+  new_input.attr('name', new_name)
+  new_id = new_input.attr('id').replace(/_\d*_/g, (x) ->
+    '_' + (parseInt(x.slice(1, -1)) + 1) + '_'
+  )
+  new_input.attr('id', new_id)
+  new_input.on 'change', addImageInput
+  new_input.insertAfter($(this))
+  $(this).siblings('label').attr('for', new_id)
+  return
+
+imageListUpdate = ->
+  list = ""
+  $('.picture-input input').each ->
+    if typeof this.files[0] != 'undefined'
+      size_in_megabytes = this.files[0].size/1024/1024;
+      if size_in_megabytes > 5
+        alert 'Maximum file size is 5MB. Please choose a smaller file.'
+    filename = $(this).val().split('\\').pop()
+    if filename.length > 0
+      list += '<li class="collection-item">' +
+        '<label for="' + $(this).attr('id') + '" class="black-text">' +
+        $(this).val().split('\\').pop() +
+        '</label></li>'
+    return
+  $('#file-list').html(list)
+
 $(document).on "page:change", ->
 
   if $('.report-type input:checkbox:checked').length == 0
@@ -40,6 +74,8 @@ $(document).on "page:change", ->
       $('.report.archived').addClass 'hide'
     return
 
+  $('.picture-input input').on 'change', addImageInput
+    
   $('select').material_select
 
   $('.dropdown-button').dropdown

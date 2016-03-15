@@ -30,6 +30,7 @@ class ReportsController < ApplicationController
 
   def new
   	@report = Report.new
+    @report.pictures.build
   	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
     @topics = Topic.all
   end
@@ -41,9 +42,14 @@ class ReportsController < ApplicationController
       flash["success"] = "Report Submitted!"
       redirect_to report_factory.instance()
     else
+      @report = report_factory.instance()
+      if report_factory.error
+        @report.errors.add(:base, report_factory.error.message)
+      else
+        flash["error"] = "Unable to submit report!"
+      end
       @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
       @topics = Topic.all
-      @report = report_factory.instance()
       get_translations
       render 'new'
     end
@@ -55,6 +61,7 @@ class ReportsController < ApplicationController
 
   def edit
     @report = Report.find(params[:id])
+    @report.pictures.build
     @geo_states = @report.available_geo_states(current_user)
     @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
     @topics = Topic.all
@@ -147,6 +154,7 @@ class ReportsController < ApplicationController
       :challenge_report,
       {:languages => []},
       {:topics => []},
+      {:pictures_attributes => [:ref, :_destroy, :id]},
       :status
     ]
     safe_params.delete :status unless current_user.can_archive_report?
