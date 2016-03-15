@@ -126,7 +126,8 @@ group :production do
   gem 'puma'
 
   # link to cloud storage
-  gem 'fog-google'
+  gem 'fog'
+  gem 'google-api-client', '< 0.9', '>= 0.6.2'
 
 end
 
