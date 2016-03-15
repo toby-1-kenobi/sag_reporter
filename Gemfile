@@ -127,7 +127,6 @@ group :production do
 
   # link to cloud storage
   gem 'fog-google'
-  gem 'google-api-client', '< 0.9', '>= 0.6.2'
 
 end
 
