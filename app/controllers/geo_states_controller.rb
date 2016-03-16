@@ -23,4 +23,11 @@ class GeoStatesController < ApplicationController
     end
   end
 
+  def get_combined_languages_chart
+    @geo_state = GeoState.find(params[:id])
+    respond_to do |format|
+      format.js
+    end
+  end
+
 end

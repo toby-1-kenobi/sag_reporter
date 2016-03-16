@@ -1,0 +1,8 @@
+<% require 'securerandom' %>
+<% chart_data = @geo_state.languages_total_chart_data %>
+  if( $('li.active .languages-total-chart-<%= @geo_state.id %>').length == 0 ) {
+    $('li.active .charts').append('<div><span>All Languages scores</span><div class="languages-total-chart-<%= @geo_state.id %>"></div></div>');
+  }
+$('li.active .languages-total-chart-<%= @geo_state.id %>').html("<%= escape_javascript(line_chart chart_data, id: SecureRandom.uuid) %>");
+
+$('li.active .languages-total-chart-button').addClass('hide');
