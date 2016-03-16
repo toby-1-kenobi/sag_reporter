@@ -18,7 +18,7 @@
           <% @outcome_areas.each do |oa| %>
           <%= link_to "#{oa.name} chart", outcome_area_chart_path(id: geo_state.id, topic_id: oa.id), remote: true, method: 'GET', class: "btn waves-effect get-chart-button outcome-area-chart-button-#{oa.id}" %>
           <% end %>
-          <%= link_to "Totals chart", outcomes_totals_chart_path(id: geo_state.id), remote: true, method: 'GET', class: "btn waves-effect get-chart-button outcome-totals-chart-button" %>
+          <%# link_to "Totals chart", outcomes_totals_chart_path(id: geo_state.id), remote: true, method: 'GET', class: "btn waves-effect get-chart-button outcome-totals-chart-button" %>
         </div>
         <div class="charts"></div>
       </div>
