@@ -175,6 +175,20 @@ class ImpactReportsController < ApplicationController
     render nothing: true
   end
 
+  def shareable
+    report = ImpactReport.find(params[:id])
+    report.shareable = true
+    report.save
+    render nothing: true
+  end
+
+  def not_shareable
+    report = ImpactReport.find(params[:id])
+    report.shareable = false
+    report.save
+    render nothing: true
+  end
+
     private
 
     def impact_report_params

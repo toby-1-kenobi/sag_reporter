@@ -18,6 +18,8 @@ Rails.application.routes.draw do
       patch 'archive'
       patch 'unarchive'
       patch 'not_impact'
+      patch 'shareable'
+      patch 'not_shareable'
     end
   end
   resources :languages
