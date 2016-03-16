@@ -57,10 +57,15 @@
 
 <div id="pm-modal" class="modal bottom-sheet">
   <div class="container">
+    <div class="btn right modal-close">Done</div>
     <p class="report-content"></p>
     <div class="not-impact-checkbox">
       <%= check_box_tag("not-impact", 1) %>
       <%= label_tag("not-impact", "This report does not show progress, it is a need or challenge", class: "black-text modal-close") %>
+    </div>
+    <div class="shareable-checkbox">
+      <%= check_box_tag("shareable", 1) %>
+      <%= label_tag("shareable", "This report is suitable for sharing with funders", class: "black-text") %>
     </div>
     <ul class="collapsible" data-collapsible="accordion">
       <% @progress_markers_by_oa.each do |oa, markers| %>

@@ -6,6 +6,8 @@ class ImpactReport < ActiveRecord::Base
   has_and_belongs_to_many :progress_markers
   has_many :topics, through: :progress_markers
 
+  validates :shareable, :inclusion => {:in => [true, false]}
+
   def report_type
     "impact"
   end

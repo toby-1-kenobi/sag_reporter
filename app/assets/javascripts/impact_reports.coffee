@@ -23,9 +23,11 @@ filter_impact_reports = ->
 
   return
 
-$(document).ready ->
+$(document).on "page:change", ->
 
   filter_impact_reports()
+
+  $('.card.impact_report.for-tagging.shareable .card-content').append('<div class="chip share">Can be shared with funders</div>')
 
   $('.card.impact_report.for-tagging .card-content').leanModal
 
@@ -37,7 +39,13 @@ $(document).ready ->
       jQuery.each $('.card.impact_report.for-tagging.selected').attr('data-pm').split(' '), (index, pm_id) ->
         $('#pm-modal input:checkbox#pm-' + pm_id).prop 'checked', true
         return
+      # set the shareable checkbox
+      if $('.card.impact_report.for-tagging.selected.shareable').length > 0
+        $('input:checkbox#shareable').prop 'checked', true
+      else
+        $('input:checkbox#shareable').prop 'checked', false
       return
+
 
     complete: ->
       # collapse the collapsible inside the modal
@@ -47,6 +55,8 @@ $(document).ready ->
       report_card = $('.card.impact_report.for-tagging.selected')
       report_id = report_card.attr('id').split('-').pop()
 
+      # if it's not an impact report send ajax to change it
+      # and remove it from the DOM
       if($('#pm-modal .not-impact-checkbox input:checkbox').is(':checked'))
         not_impact_url = '/impact_reports/' + report_id + '/not_impact'
         report_card.remove()
@@ -88,6 +98,21 @@ $(document).ready ->
             report_card.removeClass 'lighten-1'
             report_card.addClass 'lighten-3'
           return
+
+        # if the shareable checkbox is toggled change the attribute with ajax
+        if $('.card.impact_report.for-tagging.selected.shareable').length > 0
+          if $('input:checkbox#shareable').is(':not(:checked)')
+            not_shareable_url = '/impact_reports/' + report_id + '/not_shareable'
+            $('.card.impact_report.for-tagging.selected').removeClass('shareable')
+            $('.card.impact_report.for-tagging.selected .chip.share').remove()
+            jQuery.post not_shareable_url, { _method: "patch" }
+
+        if $('.card.impact_report.for-tagging.selected.shareable').length == 0
+          if $('input:checkbox#shareable').is(':checked')
+            shareable_url = '/impact_reports/' + report_id + '/shareable'
+            $('.card.impact_report.for-tagging.selected').addClass('shareable')
+            $('.card.impact_report.for-tagging.selected .card-content').append('<div class="chip share">Can be shared with funders</div>')
+            jQuery.post shareable_url, { _method: "patch" }
 
         return
 

@@ -1,5 +1,5 @@
 <div
-  class="card impact_report for-tagging <%= report_for_tagging.progress_markers.count == 0 ? "green lighten-3" : "green lighten-1" %> z-depth-3"
+  class="card impact_report for-tagging <%= report_for_tagging.progress_markers.count == 0 ? "green lighten-3" : "green lighten-1" %> z-depth-3 <%= report_for_tagging.shareable? ? "shareable" : "" %>"
   id="ImpactReport-<%= report_for_tagging.id %>"
   data-language="<%= report_for_tagging.languages.pluck(:id).join(' ') %>"
   data-geo-state="<%= report_for_tagging.geo_state.id %>"
