@@ -10,6 +10,9 @@
       <div class="collapsible-body">
         <p class="nothing-set-list hide">No progress markers set for </p>
         <div class="row">
+          <%= link_to "All languages chart", combined_languages_chart_path(id: geo_state.id), remote: true, method: 'GET', class: "btn waves-effect get-chart-button languages-total-chart-button" %>
+        </div>
+        <div class="row">
           <% languages.each do |language| %>
             <%= link_to "#{language.language_name} chart", outcomes_chart_path(id: language.id), remote: true, method: 'GET', class: "btn left waves-effect get-chart-button chart-#{language.id}-button" %>
           <% end %>

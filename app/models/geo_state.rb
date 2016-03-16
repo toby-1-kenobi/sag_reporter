@@ -47,11 +47,33 @@ class GeoState < ActiveRecord::Base
       ).distinct
   end
 
-  def outcome_totals_chart_data
-    outcomes_data = Hash.new
-    state_languages.in_project.includes(:language_progresses => [{:progress_marker => :topic}, :progress_updates]).each do |state_language|
-      outcomes_data[state_language] = state_language.outcome_table_data
+  def languages_total_chart_data
+    combined_data = Hash.new
+    outcomes_data.values.each do |language_data|
+      if language_data
+        language_data["content"].each do |oa_name, oa_data|
+          oa_data.each do |date, value|
+            combined_data[oa_name] ||= Hash.new
+            combined_data[oa_name][date] ||= 0
+            combined_data[oa_name][date] += value
+          end
+        end
+      end
     end
+    chart_data = Array.new
+    combined_data.each do |oa_name, oa_data|
+      if oa_data.any?
+        chart_row = {
+          name: oa_name,
+          data: oa_data
+        }
+        chart_data.push(chart_row)
+      end
+    end
+    return chart_data
+  end
+
+  def outcome_totals_chart_data
     chart_data = Array.new
     outcomes_data.each do |state_language, data|
       if data
@@ -66,10 +88,6 @@ class GeoState < ActiveRecord::Base
   end
 
   def outcome_area_chart_data(outcome_area)
-    outcomes_data = Hash.new
-    state_languages.in_project.includes(:language_progresses => [{:progress_marker => :topic}, :progress_updates]).each do |state_language|
-      outcomes_data[state_language] = state_language.outcome_table_data
-    end
     chart_data = Array.new
     outcomes_data.each do |state_language, data|
       if data
@@ -81,6 +99,16 @@ class GeoState < ActiveRecord::Base
       end
     end
     return chart_data
+  end
+
+  private
+
+  def outcomes_data
+    data = Hash.new
+    state_languages.in_project.includes(:language_progresses => [{:progress_marker => :topic}, :progress_updates]).each do |state_language|
+      data[state_language] = state_language.outcome_table_data
+    end
+    return data
   end
   
 end
