@@ -5,4 +5,9 @@ class StaticPagesController < ApplicationController
   def home
   end
 
+  def whatsapp_link
+    @supress_header = true
+    @supress_footer = true
+  end
+
 end
