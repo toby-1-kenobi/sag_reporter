@@ -6,7 +6,8 @@ describe Event do
     geo_state: geo_states(:nb),
     participant_amount: 15,
     event_label: "label",
-    event_date: Date.today
+    event_date: Date.today,
+    sub_district: sub_districts(:falakata)
   }
 
   it "must be valid" do
