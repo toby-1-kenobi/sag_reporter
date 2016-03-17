@@ -1,14 +1,25 @@
 <footer class="page-footer">
   <div class="container">
+
     <div class="row">
       <div class="col s6 m6 l4">
-        <p><a class="feedback-link grey-text text-lighten-3" href="https://docs.google.com/forms/d/1Sb_2LImQQjOPC4XbQmRFnJpFtCws51xFcbDdg8Y_rkY/viewform?usp=send_form">Feedback</a></p>
-        <p>
-        <a class="whatsapp-link grey-text text-lighten-3" href="whatsapp://send?text=LCR%20Report%0D%0AYour%20name%3A%0D%0AReport%20state%3A%0D%0AReport%20date%3A%0D%0ARelating%20to%20language%28s%29%3A%0D%0AEnter%20your%20impact%2C%20need%20or%20challenge%20report%3A">Report through WhatsApp</a></p>
+        <a class="feedback-link grey-text text-lighten-3" href="https://docs.google.com/forms/d/1Sb_2LImQQjOPC4XbQmRFnJpFtCws51xFcbDdg8Y_rkY/viewform?usp=send_form">Feedback</a>
       </div>
-      <div class="col s6 m6 l4 offset-l4 grey-text text-lighten-3">
-        <p>Version <%= SagReporter::Application::VERSION %><br />Last Command Initiative</p>
+      <% if logged_in? %>
+        <div class="col s6 m6 l4 offset-l4 grey-text text-lighten-3">
+          Last Command Initiative
+        </div>
+      <% end %>
+    </div>
+
+    <div class="row">
+      <div class="col s6">
+        <a class="whatsapp-link grey-text text-lighten-3" href="whatsapp://send?text=LCR%20Report%0D%0AYour%20name%3A%0D%0AReport%20state%3A%0D%0AReport%20date%3A%0D%0ARelating%20to%20language%28s%29%3A%0D%0AEnter%20your%20impact%2C%20need%20or%20challenge%20report%3A">Report through WhatsApp</a>
+      </div>
+      <div class="col s6 m6 l4 offset-l2  grey-text text-lighten-3">
+        Version <%= SagReporter::Application::VERSION %>
       </div>
     </div>
+
   </div>
 </footer>
