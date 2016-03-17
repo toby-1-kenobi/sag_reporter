@@ -9,6 +9,11 @@ describe Report do
     status: :active,
     report_date: Date.today
   ) }
+  let(:impact_report) { ImpactReport.new }
+
+  before do
+    report.impact_report = impact_report
+  end
 
   it "is valid with content and reporter" do
   	_(report).must_be :valid?
@@ -16,12 +21,14 @@ describe Report do
 
   it "is not valid without content" do
   	report.content = ""
-  	_(report).wont_be :valid?
+  	report.valid?
+    value(report.errors[:content]).must_be :any?
   end
 
   it "is not valid without reporter" do
   	report.reporter = nil
-  	_(report).wont_be :valid?
+    report.valid?
+    value(report.errors[:reporter]).must_be :any?
   end
 
   it "may have many languages" do
