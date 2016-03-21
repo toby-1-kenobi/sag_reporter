@@ -183,11 +183,17 @@ class ReportsController < ApplicationController
 
   def get_translations
     @translations = Hash.new
-    lang_id = current_user.interface_language.id
-    Translatable.includes(:translations).find_each do |translatable|
-      translation = translatable.translations.select{ |t| t.language_id == lang_id }.first
-      content = (translation and translation.content) ? translation.content : translatable.content
-      @translations[translatable.identifier] = content
+    if current_user.interface_language
+      lang_id = current_user.interface_language.id
+      Translatable.includes(:translations).find_each do |translatable|
+        translation = translatable.translations.select{ |t| t.language_id == lang_id }.first
+        content = (translation and translation.content) ? translation.content : translatable.content
+        @translations[translatable.identifier] = content
+      end
+    else
+      Translatable.find_each do |translatable|
+        @translations[translatable.identifier] = translatable.content
+      end
     end
   end
 
