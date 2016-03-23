@@ -55,9 +55,8 @@
   </div>
 <% end %>
 
-<div id="pm-modal" class="modal bottom-sheet">
-  <div class="container">
-    <div class="btn right modal-close">Done</div>
+<div id="pm-modal" class="modal modal-fixed-footer">
+  <div class="modal-content">
     <p class="report-content"></p>
     <div class="not-impact-checkbox">
       <%= check_box_tag("not-impact", 1) %>
@@ -89,5 +88,8 @@
         </li>
       <% end %>
     </ul>
+  </div>
+  <div class="modal-footer">
+    <div class="btn-flat right modal-close waves-effect waves-green">Done</div>
   </div>
 </div>
