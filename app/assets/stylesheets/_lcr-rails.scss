@@ -23,10 +23,15 @@
 [data-icon]:before { content: attr(data-icon); }
 
 [data-icon]:before,
+.lcr-icon-build:before,
 .lcr-icon-level-0:before,
 .lcr-icon-level-1:before,
 .lcr-icon-level-2:before,
-.lcr-icon-level-3:before {
+.lcr-icon-level-3:before,
+.lcr-icon-phone-chat:before,
+.lcr-icon-tag:before,
+.lcr-icon-workshop:before,
+.lcr-icon-write-report:before {
   display: inline-block;
   font-family: "lcr";
   font-style: normal;
@@ -41,7 +46,12 @@
   font-smoothing: antialiased;
 }
 
+.lcr-icon-build:before { content: "\f108"; }
 .lcr-icon-level-0:before { content: "\f100"; }
 .lcr-icon-level-1:before { content: "\f101"; }
 .lcr-icon-level-2:before { content: "\f102"; }
 .lcr-icon-level-3:before { content: "\f103"; }
+.lcr-icon-phone-chat:before { content: "\f104"; }
+.lcr-icon-tag:before { content: "\f105"; }
+.lcr-icon-workshop:before { content: "\f106"; }
+.lcr-icon-write-report:before { content: "\f107"; }

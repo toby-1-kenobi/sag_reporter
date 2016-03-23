@@ -160,10 +160,15 @@
       [data-icon]:before { content: attr(data-icon); }
 
       [data-icon]:before,
-      .lcr-icon-level-0:before,
+      .lcr-icon-build:before,
+.lcr-icon-level-0:before,
 .lcr-icon-level-1:before,
 .lcr-icon-level-2:before,
-.lcr-icon-level-3:before {
+.lcr-icon-level-3:before,
+.lcr-icon-phone-chat:before,
+.lcr-icon-tag:before,
+.lcr-icon-workshop:before,
+.lcr-icon-write-report:before {
         display: inline-block;
   font-family: "lcr";
   font-style: normal;
@@ -178,10 +183,15 @@
   font-smoothing: antialiased;
       }
 
-      .lcr-icon-level-0:before { content: "\f100"; }
+      .lcr-icon-build:before { content: "\f108"; }
+.lcr-icon-level-0:before { content: "\f100"; }
 .lcr-icon-level-1:before { content: "\f101"; }
 .lcr-icon-level-2:before { content: "\f102"; }
 .lcr-icon-level-3:before { content: "\f103"; }
+.lcr-icon-phone-chat:before { content: "\f104"; }
+.lcr-icon-tag:before { content: "\f105"; }
+.lcr-icon-workshop:before { content: "\f106"; }
+.lcr-icon-write-report:before { content: "\f107"; }
     </style>
 
     <!--[if lte IE 8]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -197,10 +207,23 @@
   <body class="characters-off">
     <div id="page" class="container">
       <header>
-        <h1>lcr contains 4 glyphs:</h1>
+        <h1>lcr contains 9 glyphs:</h1>
         <a onclick="toggleCharacters(); return false;" href="#">Toggle Preview Characters</a>
       </header>
 
+      
+      <div class="glyph">
+        <div class="preview-glyphs">
+          <span class="step size-12"><span class="letters">Pp</span><i id="lcr-icon-build" class="lcr-icon-build"></i></span><span class="step size-14"><span class="letters">Pp</span><i id="lcr-icon-build" class="lcr-icon-build"></i></span><span class="step size-16"><span class="letters">Pp</span><i id="lcr-icon-build" class="lcr-icon-build"></i></span><span class="step size-18"><span class="letters">Pp</span><i id="lcr-icon-build" class="lcr-icon-build"></i></span><span class="step size-21"><span class="letters">Pp</span><i id="lcr-icon-build" class="lcr-icon-build"></i></span><span class="step size-24"><span class="letters">Pp</span><i id="lcr-icon-build" class="lcr-icon-build"></i></span><span class="step size-36"><span class="letters">Pp</span><i id="lcr-icon-build" class="lcr-icon-build"></i></span><span class="step size-48"><span class="letters">Pp</span><i id="lcr-icon-build" class="lcr-icon-build"></i></span><span class="step size-60"><span class="letters">Pp</span><i id="lcr-icon-build" class="lcr-icon-build"></i></span><span class="step size-72"><span class="letters">Pp</span><i id="lcr-icon-build" class="lcr-icon-build"></i></span>
+        </div>
+        <div class="preview-scale">
+          <span class="step">12</span><span class="step">14</span><span class="step">16</span><span class="step">18</span><span class="step">21</span><span class="step">24</span><span class="step">36</span><span class="step">48</span><span class="step">60</span><span class="step">72</span>
+        </div>
+        <div class="usage">
+          <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".lcr-icon-build" />
+          <input class="point" type="text" readonly="readonly" onClick="this.select();" value="&amp;#xf108;" />
+        </div>
+      </div>
       
       <div class="glyph">
         <div class="preview-glyphs">
@@ -251,6 +274,58 @@
         <div class="usage">
           <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".lcr-icon-level-3" />
           <input class="point" type="text" readonly="readonly" onClick="this.select();" value="&amp;#xf103;" />
+        </div>
+      </div>
+      
+      <div class="glyph">
+        <div class="preview-glyphs">
+          <span class="step size-12"><span class="letters">Pp</span><i id="lcr-icon-phone-chat" class="lcr-icon-phone-chat"></i></span><span class="step size-14"><span class="letters">Pp</span><i id="lcr-icon-phone-chat" class="lcr-icon-phone-chat"></i></span><span class="step size-16"><span class="letters">Pp</span><i id="lcr-icon-phone-chat" class="lcr-icon-phone-chat"></i></span><span class="step size-18"><span class="letters">Pp</span><i id="lcr-icon-phone-chat" class="lcr-icon-phone-chat"></i></span><span class="step size-21"><span class="letters">Pp</span><i id="lcr-icon-phone-chat" class="lcr-icon-phone-chat"></i></span><span class="step size-24"><span class="letters">Pp</span><i id="lcr-icon-phone-chat" class="lcr-icon-phone-chat"></i></span><span class="step size-36"><span class="letters">Pp</span><i id="lcr-icon-phone-chat" class="lcr-icon-phone-chat"></i></span><span class="step size-48"><span class="letters">Pp</span><i id="lcr-icon-phone-chat" class="lcr-icon-phone-chat"></i></span><span class="step size-60"><span class="letters">Pp</span><i id="lcr-icon-phone-chat" class="lcr-icon-phone-chat"></i></span><span class="step size-72"><span class="letters">Pp</span><i id="lcr-icon-phone-chat" class="lcr-icon-phone-chat"></i></span>
+        </div>
+        <div class="preview-scale">
+          <span class="step">12</span><span class="step">14</span><span class="step">16</span><span class="step">18</span><span class="step">21</span><span class="step">24</span><span class="step">36</span><span class="step">48</span><span class="step">60</span><span class="step">72</span>
+        </div>
+        <div class="usage">
+          <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".lcr-icon-phone-chat" />
+          <input class="point" type="text" readonly="readonly" onClick="this.select();" value="&amp;#xf104;" />
+        </div>
+      </div>
+      
+      <div class="glyph">
+        <div class="preview-glyphs">
+          <span class="step size-12"><span class="letters">Pp</span><i id="lcr-icon-tag" class="lcr-icon-tag"></i></span><span class="step size-14"><span class="letters">Pp</span><i id="lcr-icon-tag" class="lcr-icon-tag"></i></span><span class="step size-16"><span class="letters">Pp</span><i id="lcr-icon-tag" class="lcr-icon-tag"></i></span><span class="step size-18"><span class="letters">Pp</span><i id="lcr-icon-tag" class="lcr-icon-tag"></i></span><span class="step size-21"><span class="letters">Pp</span><i id="lcr-icon-tag" class="lcr-icon-tag"></i></span><span class="step size-24"><span class="letters">Pp</span><i id="lcr-icon-tag" class="lcr-icon-tag"></i></span><span class="step size-36"><span class="letters">Pp</span><i id="lcr-icon-tag" class="lcr-icon-tag"></i></span><span class="step size-48"><span class="letters">Pp</span><i id="lcr-icon-tag" class="lcr-icon-tag"></i></span><span class="step size-60"><span class="letters">Pp</span><i id="lcr-icon-tag" class="lcr-icon-tag"></i></span><span class="step size-72"><span class="letters">Pp</span><i id="lcr-icon-tag" class="lcr-icon-tag"></i></span>
+        </div>
+        <div class="preview-scale">
+          <span class="step">12</span><span class="step">14</span><span class="step">16</span><span class="step">18</span><span class="step">21</span><span class="step">24</span><span class="step">36</span><span class="step">48</span><span class="step">60</span><span class="step">72</span>
+        </div>
+        <div class="usage">
+          <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".lcr-icon-tag" />
+          <input class="point" type="text" readonly="readonly" onClick="this.select();" value="&amp;#xf105;" />
+        </div>
+      </div>
+      
+      <div class="glyph">
+        <div class="preview-glyphs">
+          <span class="step size-12"><span class="letters">Pp</span><i id="lcr-icon-workshop" class="lcr-icon-workshop"></i></span><span class="step size-14"><span class="letters">Pp</span><i id="lcr-icon-workshop" class="lcr-icon-workshop"></i></span><span class="step size-16"><span class="letters">Pp</span><i id="lcr-icon-workshop" class="lcr-icon-workshop"></i></span><span class="step size-18"><span class="letters">Pp</span><i id="lcr-icon-workshop" class="lcr-icon-workshop"></i></span><span class="step size-21"><span class="letters">Pp</span><i id="lcr-icon-workshop" class="lcr-icon-workshop"></i></span><span class="step size-24"><span class="letters">Pp</span><i id="lcr-icon-workshop" class="lcr-icon-workshop"></i></span><span class="step size-36"><span class="letters">Pp</span><i id="lcr-icon-workshop" class="lcr-icon-workshop"></i></span><span class="step size-48"><span class="letters">Pp</span><i id="lcr-icon-workshop" class="lcr-icon-workshop"></i></span><span class="step size-60"><span class="letters">Pp</span><i id="lcr-icon-workshop" class="lcr-icon-workshop"></i></span><span class="step size-72"><span class="letters">Pp</span><i id="lcr-icon-workshop" class="lcr-icon-workshop"></i></span>
+        </div>
+        <div class="preview-scale">
+          <span class="step">12</span><span class="step">14</span><span class="step">16</span><span class="step">18</span><span class="step">21</span><span class="step">24</span><span class="step">36</span><span class="step">48</span><span class="step">60</span><span class="step">72</span>
+        </div>
+        <div class="usage">
+          <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".lcr-icon-workshop" />
+          <input class="point" type="text" readonly="readonly" onClick="this.select();" value="&amp;#xf106;" />
+        </div>
+      </div>
+      
+      <div class="glyph">
+        <div class="preview-glyphs">
+          <span class="step size-12"><span class="letters">Pp</span><i id="lcr-icon-write-report" class="lcr-icon-write-report"></i></span><span class="step size-14"><span class="letters">Pp</span><i id="lcr-icon-write-report" class="lcr-icon-write-report"></i></span><span class="step size-16"><span class="letters">Pp</span><i id="lcr-icon-write-report" class="lcr-icon-write-report"></i></span><span class="step size-18"><span class="letters">Pp</span><i id="lcr-icon-write-report" class="lcr-icon-write-report"></i></span><span class="step size-21"><span class="letters">Pp</span><i id="lcr-icon-write-report" class="lcr-icon-write-report"></i></span><span class="step size-24"><span class="letters">Pp</span><i id="lcr-icon-write-report" class="lcr-icon-write-report"></i></span><span class="step size-36"><span class="letters">Pp</span><i id="lcr-icon-write-report" class="lcr-icon-write-report"></i></span><span class="step size-48"><span class="letters">Pp</span><i id="lcr-icon-write-report" class="lcr-icon-write-report"></i></span><span class="step size-60"><span class="letters">Pp</span><i id="lcr-icon-write-report" class="lcr-icon-write-report"></i></span><span class="step size-72"><span class="letters">Pp</span><i id="lcr-icon-write-report" class="lcr-icon-write-report"></i></span>
+        </div>
+        <div class="preview-scale">
+          <span class="step">12</span><span class="step">14</span><span class="step">16</span><span class="step">18</span><span class="step">21</span><span class="step">24</span><span class="step">36</span><span class="step">48</span><span class="step">60</span><span class="step">72</span>
+        </div>
+        <div class="usage">
+          <input class="class" type="text" readonly="readonly" onClick="this.select();" value=".lcr-icon-write-report" />
+          <input class="point" type="text" readonly="readonly" onClick="this.select();" value="&amp;#xf107;" />
         </div>
       </div>
       
