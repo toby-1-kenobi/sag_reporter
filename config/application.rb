@@ -28,6 +28,6 @@ module SagReporter
     # Use Minitest (spec) for generating new tests
     config.generators do |generator|
         generator.test_framework :minitest, spec: true
-end
+    end
   end
 end

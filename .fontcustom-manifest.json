@@ -1,7 +1,7 @@
 {
   "checksum": {
-    "previous": "6a06058cb27138f17be25a1ea0a0d143b4171e74f2487bb4c1f1e6c4c0de32c6",
-    "current": "6a06058cb27138f17be25a1ea0a0d143b4171e74f2487bb4c1f1e6c4c0de32c6"
+    "previous": "2d8cc651e00a1c55e2ef77afaddc35ada22d1f3bf8fb434368200fd54066a76d",
+    "current": "2d8cc651e00a1c55e2ef77afaddc35ada22d1f3bf8fb434368200fd54066a76d"
   },
   "fonts": [
     "app/assets/fonts/lcr.ttf",
@@ -10,6 +10,10 @@
     "app/assets/fonts/lcr.eot"
   ],
   "glyphs": {
+    "build": {
+      "codepoint": 61704,
+      "source": "lib/fontcustom/vectors/build.svg"
+    },
     "level-0": {
       "codepoint": 61696,
       "source": "lib/fontcustom/vectors/level-0.svg"
@@ -25,6 +29,22 @@
     "level-3": {
       "codepoint": 61699,
       "source": "lib/fontcustom/vectors/level-3.svg"
+    },
+    "phone-chat": {
+      "codepoint": 61700,
+      "source": "lib/fontcustom/vectors/phone-chat.svg"
+    },
+    "tag": {
+      "codepoint": 61701,
+      "source": "lib/fontcustom/vectors/tag.svg"
+    },
+    "workshop": {
+      "codepoint": 61702,
+      "source": "lib/fontcustom/vectors/workshop.svg"
+    },
+    "write-report": {
+      "codepoint": 61703,
+      "source": "lib/fontcustom/vectors/write-report.svg"
     }
   },
   "options": {
