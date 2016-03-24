@@ -3,7 +3,9 @@ class OutputTalliesController < ApplicationController
   before_action :require_login
 
   def report_numbers
-  	@output_tallies_by_topic = OutputTally.all.group_by{ |ot| ot.topic }
+    # leave out some tallies that are currently (March 2016) being covered by external forms
+    exclude = ["Community meetings", "Volunteers", "Literacy classes", "Discipleship meetings"]
+  	@output_tallies_by_topic = OutputTally.where.not(name: exclude).group_by{ |ot| ot.topic }
   	@languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
   end
 
