@@ -75,17 +75,6 @@
               selected: @report.languages.to_a.collect{ |lang| lang.id }
         } %>
       </div>
-      <div class="input-field col s12 m6">
-        <%= render partial: "shared/multiselect", locals: {
-              text: @translations['relates_oa'],
-              icon: "local_offer",
-              object: "report",
-              attribute: "topics",
-              display: :name,
-              collection: @topics,
-              selected: @report.topics
-        } %>
-      </div>
     </div>
 
     <div class="row">
