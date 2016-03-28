@@ -30,7 +30,7 @@ class Event < ActiveRecord::Base
   private
 
   def location_init
-    if self.district_name.present? and self.sub_district_name.present? and self.geo_state
+    if self.district_name.present? and self.sub_district_name.present? and self.geo_state and self.sub_district.blank?
       district = geo_state.districts.find_by_name self.district_name
       if district
         self.sub_district = district.sub_districts.find_by_name self.sub_district_name

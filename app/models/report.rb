@@ -1,6 +1,6 @@
 class Report < ActiveRecord::Base
 
-  include StateBased
+  include LocationBased
 
 	enum status: [ :active, :archived ]
 
@@ -21,6 +21,7 @@ class Report < ActiveRecord::Base
   validates :status, presence: true, allow_nil: false
   validates :report_date, presence: true
   validate :at_least_one_subtype
+  validate :location_present_for_new_record
 
   before_validation :date_init
 
