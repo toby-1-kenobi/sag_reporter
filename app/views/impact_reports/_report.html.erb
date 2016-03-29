@@ -33,7 +33,7 @@ element_options = "data-filter-label=\"language geo_state status\" data-date=\"#
     </ul>
   </div>
   <div class="card-action">
-  <% if current_user.can_archive_report? %>
+  <% if @current_user_can_archive_report %>
     <% if report.archived? %>
   	  <%= link_to unarchive_impact_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Un-Archive", method: :patch do %>
   	    <i class="material-icons">publish</i>
@@ -44,7 +44,7 @@ element_options = "data-filter-label=\"language geo_state status\" data-date=\"#
       <% end %>
     <% end %>
   <% end %>
-  <% if current_user.can_edit_report? %>
+  <% if @current_user_can_edit_report %>
   	  <%= link_to edit_report_path(report.report.id), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
   	    <i class="material-icons">edit</i>
       <% end %>
