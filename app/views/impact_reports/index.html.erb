@@ -4,11 +4,11 @@
 <div class="row controls">
   <div class="col l4 m6 s12 input-field">
     <%= date_field_tag :from_date, 1.year.ago.strftime('%d %B, %Y'), class: "datepicker active date-filter" %>
-    <%= label_tag :from_date, "From" %>
+    <%= label_tag :from_date, "From", class: "active" %>
   </div>
   <div class="col l4 m6 s12 input-field">
     <%= date_field_tag :to_date, Date.today.strftime('%d %B, %Y'), class: "datepicker active date-filter" %>
-    <%= label_tag :to_date, "To" %>
+    <%= label_tag :to_date, "To", class: "active" %>
   </div>
   <% if @zones.count > 1 %>
     <div class="col l4 m6 s12 input-field">

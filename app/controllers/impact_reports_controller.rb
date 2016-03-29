@@ -31,10 +31,12 @@ class ImpactReportsController < ApplicationController
 
   def index
     store_location
+    @current_user_can_archive_report = current_user.can_archive_report?
+    @current_user_can_edit_report = current_user.can_edit_report?
     @geo_states = current_user.geo_states
     @zones = Zone.of_states(@geo_states)
     @languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
-    @reports = ImpactReport.includes(:report).where(reports: {geo_state_id: @geo_states}).order(:created_at => :desc)
+    @reports = ImpactReport.includes(:progress_markers => :topic, :report => [:languages, :reporter]).where(reports: {geo_state_id: @geo_states}).order(:created_at => :desc)
   end
 
   def spreadsheet
