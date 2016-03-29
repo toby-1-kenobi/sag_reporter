@@ -52,7 +52,7 @@ setLanguageOptions = ->
     $('.mother-tongue-select').parent().slideUp()
   return
 
-$(document).ready ->
+$(document).on "page:change", ->
   $('select').material_select()
 
   showStates()

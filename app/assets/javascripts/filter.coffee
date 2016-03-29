@@ -80,7 +80,7 @@ applyFilter = (filterValues, filterLabel) ->
 
   return
 
-$(document).ready ->
+$(document).on "page:change", ->
 
   $('.filter-trigger').on 'change', ->
     label = $(this).attr 'data-filter-trigger-label'
@@ -92,5 +92,7 @@ $(document).ready ->
       return $(this).val()
     applyFilter valueArray, label
     return
+
+  $('.filter-trigger').trigger 'change'
 
   return
