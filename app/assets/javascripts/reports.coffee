@@ -66,6 +66,7 @@ $(document).on "page:change", ->
     $('#location-input').slideDown 400, ->
       $('#location-input input').focus()
       return
+    $('#report_sub_district_id').val(data.item.id)
     return
 
   if $('.report-type input:checkbox:checked').length == 0

@@ -25,7 +25,7 @@ module LocationBased
 
   def location_present_for_new_record
     if new_record? and sub_district.blank?
-      errors.add(:sub_district, "should not be blank.")
+      errors.add(:sub_district, "must be valid.")
     end
   end
 
