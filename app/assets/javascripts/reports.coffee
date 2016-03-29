@@ -42,7 +42,7 @@ updateDistrictData = ->
   url = old_url.replace(/\d+/, geo_state_id)
   if old_url != url
     $('#sub-district-autocomplete').hide()
-    $('#sub-district-autocomplete input').val('')
+    $('#sub_district_name').val('')
     $('#location-input').hide()
     $('#district-autocomplete input').attr('data-autocomplete', url)
     $('#district-autocomplete input').val('')
@@ -67,6 +67,11 @@ $(document).on "page:change", ->
       $('#location-input input').focus()
       return
     $('#report_sub_district_id').val(data.item.id)
+    return
+
+  $('#edit-location-button').on 'click', ->
+    $('#show-location-data').addClass 'hide'
+    $('#edit-location-data').removeClass 'hide'
     return
 
   if $('.report-type input:checkbox:checked').length == 0
