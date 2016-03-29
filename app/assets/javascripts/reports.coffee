@@ -36,7 +36,37 @@ imageListUpdate = ->
     return
   $('#file-list').html(list)
 
+updateDistrictData = ->
+  geo_state_id = $('#report_geo_state_id').val()
+  old_url = $('#district-autocomplete input').attr('data-autocomplete') 
+  url = old_url.replace(/\d+/, geo_state_id)
+  if old_url != url
+    $('#sub-district-autocomplete').hide()
+    $('#sub-district-autocomplete input').val('')
+    $('#location-input').hide()
+    $('#district-autocomplete input').attr('data-autocomplete', url)
+    $('#district-autocomplete input').val('')
+  return
+
 $(document).on "page:change", ->
+
+  $('#report_geo_state_id').on 'change', updateDistrictData
+  $('#district-autocomplete input').on 'railsAutocomplete.select', (event, data) ->
+    old_url = $('#sub-district-autocomplete input').attr('data-autocomplete')
+    url = old_url.replace(/\d+/, data.item.id)
+    if old_url != url
+      $('#location-input').hide()
+      $('#sub-district-autocomplete input').attr('data-autocomplete', url)
+      $('#sub-district-autocomplete input').val('')
+      $('#sub-district-autocomplete').slideDown 400, ->
+        $('#sub-district-autocomplete input').focus()
+        return
+    return 
+  $('#sub-district-autocomplete input').on 'railsAutocomplete.select', (event, data) ->
+    $('#location-input').slideDown 400, ->
+      $('#location-input input').focus()
+      return
+    return
 
   if $('.report-type input:checkbox:checked').length == 0
     $('#report_impact_report').prop('checked', true)

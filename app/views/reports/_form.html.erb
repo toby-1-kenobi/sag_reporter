@@ -3,8 +3,36 @@
 
     <div class="row">
       <div class="col s12 m6 l4 input-field">
-        <%= render partial: "shared/geo_state_input", locals: {object: "report", input_class: 'filter-trigger'} %>
+        <i class="material-icons prefix">location_on</i>
+        <%= label_tag @translations['location'] %>
+        <div class="input-field">
+          <%= render partial: "shared/geo_state_input", locals: {form: f, input_class: 'filter-trigger'} %>
+        </div>
+        <%
+        if @report.sub_district.present?
+          sub_district_name = @report.sub_district_name
+          district_name = @report.district_name
+        else
+          sub_district_name = ''
+          district_name = ''
+        end
+        %>
+        <div class="input-field" id="district-autocomplete">
+          <%= autocomplete_field_tag "district_name", district_name, autocomplete_district_name_geo_state_path(0) %>
+          <%# 0 is a placeholder. It gets replaced by js with geo_state_id %>
+          <%= label_tag "district_name", @translations['district'] %>
+        </div>
+        <div class="input-field" id="sub-district-autocomplete">
+          <%= autocomplete_field_tag "sub_district_name", sub_district_name, autocomplete_sub_district_name_district_path(0), :"data-autocomplete-label" => "No sub-district match."  %>
+          <%# 0 is a placeholder. It gets replaced by js with district_id %>
+          <%= label_tag "sub_district_name", @translations['sub_dist'] %>
+        </div>
+        <div class="input-field" id="location-input">
+          <%= f.text_field :location %>
+          <%= f.label :location, @translations['village'] %>
+        </div>
       </div>
+
       <div class="input-field col s12 m6 l4 offset-l4 active">
         <i class="material-icons prefix">today</i>
         <%= f.date_field :report_date, value: f.object.report_date.to_s, class: "datepicker active" %>
