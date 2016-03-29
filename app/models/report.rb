@@ -16,6 +16,9 @@ class Report < ActiveRecord::Base
     allow_destroy: true,
     reject_if: :all_blank
 
+  delegate :name, to: :sub_district, prefix: true
+  delegate :name, to: :district, prefix: true
+
 	validates :content, presence: true, allow_nil: false
 	validates :reporter, presence: true, allow_nil: false
   validates :status, presence: true, allow_nil: false
