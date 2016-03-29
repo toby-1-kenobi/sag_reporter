@@ -14,7 +14,7 @@ addField = ->
   newField.slideDown()
   return
 
-$(document).ready ->
+$(document).on "page:change", ->
   $('.contributers input:last').on 'keypress', addField
   #$('#language-input .select-dropdown li').addClass 'filterable-item'
   return

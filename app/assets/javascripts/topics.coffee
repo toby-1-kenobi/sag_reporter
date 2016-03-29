@@ -2,8 +2,8 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-$(document).ready ->
-
+$(document).on "page:change", ->
+  
   $('.activity-level-select').on 'change', ->
     spreadText = $('#pm-data #spread-' + $(this).val()).attr('label')
     $(this).parents('.progress-marker').find('.spreadness-text').html(spreadText)
