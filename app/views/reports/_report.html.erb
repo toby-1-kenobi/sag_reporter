@@ -7,6 +7,7 @@
     <% if time %>
   	  <div><%= time_ago_in_words(report.report_date) %> ago</div>
   	<% end %>
+    <div class="location-info grey-text"><%= report.full_location %></div>
   	<%= simple_format report.content %>
     <% report.pictures.each do |picture| %>
       <%= image_tag picture.ref_url if picture.ref? %>
