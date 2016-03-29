@@ -26,6 +26,7 @@
           <%= autocomplete_field_tag "sub_district_name", sub_district_name, autocomplete_sub_district_name_district_path(0), :"data-autocomplete-label" => "No sub-district match."  %>
           <%# 0 is a placeholder. It gets replaced by js with district_id %>
           <%= label_tag "sub_district_name", @translations['sub_dist'] %>
+          <%= f.hidden_field :sub_district_id %>
         </div>
         <div class="input-field" id="location-input">
           <%= f.text_field :location %>

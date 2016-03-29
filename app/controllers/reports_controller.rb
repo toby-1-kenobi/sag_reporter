@@ -156,7 +156,9 @@ class ReportsController < ApplicationController
       {:languages => []},
       {:topics => []},
       {:pictures_attributes => [:ref, :_destroy, :id]},
-      :status
+      :status,
+      :location,
+      :sub_district_id
     ]
     safe_params.delete :status unless current_user.can_archive_report?
     # if we have a date try to change it to db-friendly format
