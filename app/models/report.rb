@@ -46,16 +46,20 @@ class Report < ActiveRecord::Base
   end
 
   def full_location
-    location_data = Array.new
-    location_data << geo_state.name
-    if sub_district.present?
-      location_data << district_name
-      location_data << sub_district_name
+    if geo_state.present?
+      location_data = Array.new
+      location_data << geo_state.name
+      if sub_district.present?
+        location_data << district_name
+        location_data << sub_district_name
+      end
+      if location.present?
+        location_data << location
+      end
+      location_data.join ', '
+    else
+      nil
     end
-    if location.present?
-      location_data << location
-    end
-    location_data.join ', '
   end
 
   def planning_report?
