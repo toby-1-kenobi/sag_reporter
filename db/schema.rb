@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160328232236) do
+ActiveRecord::Schema.define(version: 20160330012445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -201,6 +201,17 @@ ActiveRecord::Schema.define(version: 20160328232236) do
   add_index "mt_resources", ["geo_state_id"], name: "index_mt_resources_on_geo_state_id", using: :btree
   add_index "mt_resources", ["language_id"], name: "index_mt_resources_on_language_id", using: :btree
   add_index "mt_resources", ["user_id"], name: "index_mt_resources_on_user_id", using: :btree
+
+  create_table "observations", force: :cascade do |t|
+    t.integer  "report_id",  null: false
+    t.integer  "person_id",  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "observations", ["person_id"], name: "index_observations_on_person_id", using: :btree
+  add_index "observations", ["report_id", "person_id"], name: "index_reports_people", unique: true, using: :btree
+  add_index "observations", ["report_id"], name: "index_observations_on_report_id", using: :btree
 
   create_table "output_counts", force: :cascade do |t|
     t.integer  "output_tally_id",             null: false
@@ -465,6 +476,8 @@ ActiveRecord::Schema.define(version: 20160328232236) do
   add_foreign_key "mt_resources", "geo_states"
   add_foreign_key "mt_resources", "languages"
   add_foreign_key "mt_resources", "users"
+  add_foreign_key "observations", "people"
+  add_foreign_key "observations", "reports"
   add_foreign_key "output_counts", "geo_states"
   add_foreign_key "output_counts", "languages"
   add_foreign_key "output_counts", "output_tallies"
