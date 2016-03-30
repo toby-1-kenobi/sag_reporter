@@ -21,3 +21,6 @@
 
 # Ignore file uploads
 /public/uploads
+
+# Ignore rubymine project files
+/.idea
