@@ -12,11 +12,13 @@ class Report < ActiveRecord::Base
 	has_and_belongs_to_many :languages
 	has_and_belongs_to_many :topics
   has_many :pictures, class_name: 'UploadedFile'
-  has_many :observations
+  has_many :observations, inverse_of: :report, dependent: :destroy
   has_many :observers, through: :observations, source: 'person'
   accepts_nested_attributes_for :pictures,
-    allow_destroy: true,
-    reject_if: :all_blank
+                                allow_destroy: true,
+                                reject_if: :all_blank
+  accepts_nested_attributes_for :observers,
+                                reject_if: :all_blank
 
   delegate :name, to: :sub_district, prefix: true
   delegate :name, to: :district, prefix: true

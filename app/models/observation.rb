@@ -1,6 +1,6 @@
 class Observation < ActiveRecord::Base
-  belongs_to :report
-  belongs_to :person
+  belongs_to :report, inverse_of: :observations
+  belongs_to :person, inverse_of: :observations
   validates :report, presence: true, uniqueness: { scope: :person }
   validates :person, presence: true
 end

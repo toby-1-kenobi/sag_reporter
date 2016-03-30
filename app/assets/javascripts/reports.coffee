@@ -69,6 +69,13 @@ $(document).on "page:change", ->
     $('#report_sub_district_id').val(data.item.id)
     return
 
+  $('#add-source-person').on 'click', ->
+    fields = $('#observers_fields_template').clone()
+    new_id = new Date().getTime();
+    regexp = new RegExp('new_observers', 'g')
+    $('#add-source-person').before(fields.html().replace(regexp, new_id))
+    return
+
   $('#edit-location-button').on 'click', ->
     $('#show-location-data').addClass 'hide'
     $('#edit-location-data').removeClass 'hide'
