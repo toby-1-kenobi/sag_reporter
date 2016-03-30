@@ -10,6 +10,8 @@ class Person < ActiveRecord::Base
   has_many :action_points, foreign_key: 'responsible_id', inverse_of: :responsible
   has_many :creations, dependent: :destroy
   has_many :mt_resources, through: :creations
+  has_many :observations
+  has_many :reports, through: :observations
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :phone, length: { is: 10 }, allow_nil: true, numericality: true

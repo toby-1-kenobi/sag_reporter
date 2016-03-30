@@ -12,6 +12,8 @@ class Report < ActiveRecord::Base
 	has_and_belongs_to_many :languages
 	has_and_belongs_to_many :topics
   has_many :pictures, class_name: 'UploadedFile'
+  has_many :observations
+  has_many :observers, through: :observations, source: 'person'
   accepts_nested_attributes_for :pictures,
     allow_destroy: true,
     reject_if: :all_blank
@@ -90,7 +92,7 @@ class Report < ActiveRecord::Base
 
   def at_least_one_subtype
     unless self.planning_report? or self.impact_report? or self.challenge_report?
-      self.errors.add(:base, "Must have at least one report type.")
+      self.errors.add(:base, 'Must have at least one report type.')
     end
   end
 
