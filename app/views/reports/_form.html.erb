@@ -1,4 +1,4 @@
-<%= form_for(@report, html: {multipart: true, class: "col s12"}) do |f| %>
+<%= form_for(@report, html: {multipart: true, class: 'col s12'}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
 
     <div class="row">
@@ -18,52 +18,66 @@
         </div>
       </div>
 
-      <div class="col s12 m6 l6 input-field <%= yield :edit_location_class %>" id="edit-location-data">
-        <i class="material-icons prefix">location_on</i>
+      <div class="col s12 m6 l6 <%= yield :edit_location_class %>" id="edit-location-data">
         <%= label_tag @translations['location'] %>
         <div class="input-field">
-          <%= render partial: "shared/geo_state_input", locals: {form: f, input_class: 'filter-trigger'} %>
+          <%= render partial: 'shared/geo_state_input', locals: {form: f, input_class: 'filter-trigger'} %>
         </div>
         <div class="input-field" id="district-autocomplete">
-          <%= autocomplete_field_tag "district_name", '', autocomplete_district_name_geo_state_path(0) %>
+          <%= autocomplete_field_tag 'district_name', '', autocomplete_district_name_geo_state_path(0) %>
           <%# 0 is a placeholder. It gets replaced by js with geo_state_id %>
-          <%= label_tag "district_name", @translations['district'] %>
+          <%= label_tag 'district_name', @translations['district'] %>
         </div>
         <div class="input-field" id="sub-district-autocomplete">
-          <%= autocomplete_field_tag "sub_district_name", '', autocomplete_sub_district_name_district_path(0), :"data-autocomplete-label" => "No sub-district match."  %>
+          <%= autocomplete_field_tag 'sub_district_name', '', autocomplete_sub_district_name_district_path(0), :'data-autocomplete-label' => 'No sub-district match.' %>
           <%# 0 is a placeholder. It gets replaced by js with district_id %>
-          <%= label_tag "sub_district_name", @translations['sub_dist'] %>
+          <%= label_tag 'sub_district_name', @translations['sub_dist'] %>
           <%= f.hidden_field :sub_district_id %>
         </div>
         <div class="input-field" id="location-input">
+          <i class="material-icons prefix">location_on</i>
           <%= f.text_field :location %>
           <%= f.label :location, @translations['village'] %>
         </div>
       </div>
 
       <div class="input-field col s12 m6 l4 offset-l2 active">
-        <i class="material-icons prefix">today</i>
-        <%= f.date_field :report_date, value: f.object.report_date.to_s, class: "datepicker" %>
-        <%= f.label :report_date, "Report date", class: @report.report_date.present? ? 'active' : '' %>
+
+        <div>
+          <i class="material-icons prefix">today</i>
+          <%= f.date_field :report_date, value: f.object.report_date.to_s, class: 'datepicker' %>
+          <%= f.label :report_date, 'Report date', class: @report.report_date.present? ? 'active' : '' %>
+        </div>
+
+        <div>
+          <%= f.fields_for :observers do |ff| %>
+            <%= render 'observer_fields', locals: { f: ff } %>
+          <% end %>
+          <%= new_child_fields_template f, :observers %>
+          <a class="btn waves-effect" id="add-source-person">
+            <i class="material-icons left">person</i>
+            Add Source Person
+          </a>
+        </div>
       </div>
     </div>
 
     <div class="row">
       <div class="input-field col s12">
         <i class="material-icons prefix">create</i>
-        <%= f.text_area :content, class: "materialize-textarea" %>
+        <%= f.text_area :content, class: 'materialize-textarea' %>
         <%= f.label :content, @translations['type_report'] %>
       </div>
     </div>
 
     <div class="row">
       <div class="col s12 m6 report-type <%= yield :report_type_class %>">
-        <%= f.check_box("impact_report?") %>
-        <%= f.label("impact_report?", @translations['this_impact']) %>
-        <%= f.check_box("planning_report?") %>
-        <%= f.label("planning_report?", "This is a hope, or future planning report") %>
-        <%= f.check_box("challenge_report?") %>
-        <%= f.label("challenge_report?", "This is a challenge report") %>
+        <%= f.check_box('impact_report?') %>
+        <%= f.label('impact_report?', @translations['this_impact']) %>
+        <%= f.check_box('planning_report?') %>
+        <%= f.label('planning_report?', 'This is a hope, or future planning report') %>
+        <%= f.check_box('challenge_report?') %>
+        <%= f.label('challenge_report?', 'This is a challenge report') %>
       </div>
       <div class="col s12 m6">
         <%= f.fields_for :pictures do |ff| %>
@@ -82,8 +96,8 @@
             </div>
           <% else %>
             <div class="picture-input">
-              <%= ff.file_field :ref, accept: 'image/jpeg,image/gif,image/png', class: "hide" %>
-              <%= ff.label :ref, class: "btn white-text" do %>
+              <%= ff.file_field :ref, accept: 'image/jpeg,image/gif,image/png', class: 'hide' %>
+              <%= ff.label :ref, class: 'btn white-text' do %>
                   <i class="material-icons">insert_photo</i>
                   <%= @translations['put_photo'] %>
               <% end %>
@@ -98,14 +112,14 @@
 
     <div class="row">
       <div class="input-field col s12 m6">
-        <%= render partial: "shared/multiselect", locals: {
+        <%= render partial: 'shared/multiselect', locals: {
               text: @translations['relates_languages'],
-              icon: "language",
-              object: "report",
-              attribute: "languages",
+              icon: 'language',
+              object: 'report',
+              attribute: 'languages',
               display: :language_name,
               id: :language_id,
-              element_class: "filterable-item",
+              element_class: 'filterable-item',
               data: :geo_state_id,
               collection: @project_languages,
               selected: @report.languages.to_a.collect{ |lang| lang.id }
@@ -115,7 +129,7 @@
 
     <div class="row">
       <div class="row s12">
-        <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+        <%= button_tag( :class => 'btn waves-effect waves-light right') do %>
           <%= yield :button_text %> <i class="material-icons right">send</i>
         <% end %>
       </div>
