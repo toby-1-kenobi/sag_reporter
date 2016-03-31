@@ -2,8 +2,8 @@ module Report::FactoryFloor
 
   private
 
-  def add_languages(language_ids)
-    @instance.languages << Language.where(id: language_ids)
+  def add_languages(state_language_ids, geo_state_id)
+    @instance.languages << Language.joins(:state_languages).where(:state_languages => { geo_state_id: geo_state_id, id: state_language_ids })
   end
 
   def add_topics(topic_ids)

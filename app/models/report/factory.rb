@@ -8,8 +8,7 @@ class Report::Factory
   attr_reader :error
 
   def build_report(params)
-    debugger
-    language_ids = params.delete 'languages'
+    state_language_ids = params.delete 'languages'
     topic_ids = params.delete 'topics'
     observers = params.delete 'observers_attributes'
     impact = params.delete 'impact_report'
@@ -17,7 +16,7 @@ class Report::Factory
     challenge = params.delete 'challenge_report'
     begin
       @instance = Report.new(params)
-      add_languages(language_ids) if language_ids
+      add_languages(state_language_ids, params['geo_state_id']) if state_language_ids
       add_topics(topic_ids) if topic_ids
       add_observers(observers, params['geo_state_id'], params[:reporter]) if observers
       @instance.impact_report = ImpactReport.new if impact.to_i == 1
