@@ -52,11 +52,11 @@
 
         <div>
           <%= f.fields_for :observers do |ff| %>
-            <%= render partial: 'observer_fields', locals: { f: ff } %>
+              <%= render partial: 'observer_fields', locals: { f: ff } %>
           <% end %>
           <%= new_child_fields_template f, :observers %>
           <a class="btn waves-effect" id="add-source-person">
-            <i class="material-icons left">person</i>
+            <i class="material-icons left">person_add</i>
             Add Source Person
           </a>
         </div>
@@ -73,10 +73,7 @@
 
     <div class="row">
       <div class="col s12 m6 report-type <%= yield :report_type_class %>">
-        <%= f.check_box('impact_report?') %>
-        <%= f.label('impact_report?', @translations['this_impact']) %>
-        <%= f.check_box('planning_report?') %>
-        <%= f.label('planning_report?', 'This is a hope, challenge, or future planning report') %>
+        <%= render partial: 'report_type_fields', locals: {f: f} %>
       </div>
       <div class="col s12 m6">
         <%= f.fields_for :pictures do |ff| %>

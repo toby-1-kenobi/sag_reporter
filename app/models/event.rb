@@ -2,14 +2,20 @@ class Event < ActiveRecord::Base
 
   include LocationBased
 	
-  belongs_to :record_creator, class_name: "User", foreign_key: "user_id"
+  belongs_to :record_creator, class_name: 'User', foreign_key: 'user_id'
   has_and_belongs_to_many :purposes
   has_and_belongs_to_many :languages
   has_many :attendances, dependent: :destroy
   has_many :people, through: :attendances
-  has_many :impact_reports
-  has_many :planning_reports, class_name: "Report"
+  has_many :reports
   has_many :action_points
+
+  accepts_nested_attributes_for :action_points,
+                                allow_destroy: true,
+                                reject_if: :all_blank
+
+  accepts_nested_attributes_for :reports,
+                                reject_if: :all_blank
 
   validates :event_date, presence: true
   validates :event_label, presence: true
