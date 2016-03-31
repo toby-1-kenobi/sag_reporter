@@ -14,6 +14,7 @@ class Report::Updater
   def update_report(params)
     language_ids = params.delete 'languages'
     topic_ids = params.delete 'topics'
+    observers = params.delete 'observers_attributes'
     impact = params.delete 'impact_report'
     planning = params.delete 'planning_report'
     challenge = params.delete 'challenge_report'
@@ -23,6 +24,8 @@ class Report::Updater
       add_languages(language_ids) if language_ids
       @instance.topics.clear
       add_topics(topic_ids) if topic_ids
+      @instance.observers.clear
+      add_observers(observers, @instance.geo_state_id, @instance.reporter) if observers
       @instance.planning_report = nil if planning.to_i == 0
       @instance.impact_report = nil if impact.to_i == 0
       @instance.challenge_report = nil if challenge.to_i == 0

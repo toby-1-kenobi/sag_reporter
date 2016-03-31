@@ -27,6 +27,7 @@ class ReportsController < ApplicationController
   end
 
   before_action :get_translations, only: [:new, :edit]
+  before_action :find_report, only: [:edit, :update, :show, :archive, :unarchive]
 
   def new
   	@report = Report.new
@@ -52,11 +53,9 @@ class ReportsController < ApplicationController
   end
 
   def show
-    @report = Report.find(params[:id])
   end
 
   def edit
-    @report = Report.find(params[:id])
     @report.pictures.build
     @geo_states = @report.available_geo_states(current_user)
     @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
@@ -64,7 +63,6 @@ class ReportsController < ApplicationController
   end
 
   def update
-  	@report = Report.find(params[:id])
     updater = Report::Updater.new(@report)
   	if updater.update_report(report_params)
       flash['success'] = 'Report Updated!'
@@ -112,14 +110,12 @@ class ReportsController < ApplicationController
   end
 
   def archive
-    report = Report.find(params[:id])
-    report.archived!
+    @report.archived!
     redirect_recent_or root_path
   end
 
   def unarchive
-    report = Report.find(params[:id])
-    report.active!
+    @report.active!
     redirect_recent_or report
   end
 
@@ -167,6 +163,10 @@ class ReportsController < ApplicationController
       end
     end
     permitted = params.require(:report).permit(safe_params)
+  end
+
+  def find_report
+    @report = Report.find params[:id]
   end
 
   # Redirects to recent view (or to the default).
