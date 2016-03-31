@@ -2,7 +2,7 @@ class GeoStatesController < ApplicationController
 
   before_action :require_login
 
-  autocomplete :district, :name
+  autocomplete :district, :name, full: true
 
   def get_autocomplete_items(parameters)
     super(parameters).where(:geo_state_id => params[:geo_state_id])
