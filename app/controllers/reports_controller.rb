@@ -39,16 +39,11 @@ class ReportsController < ApplicationController
     full_params = report_params.merge({reporter: current_user})
     report_factory = Report::Factory.new
     if report_factory.create_report(full_params)
-      flash["success"] = "Report Submitted!"
+      flash['success'] = 'Report Submitted!'
       redirect_to report_factory.instance()
     else
       @report = report_factory.instance()
-      if report_factory.error
-        @report.errors.add(:base, report_factory.error.message)
-      end
-      if @report.errors.empty?
-        flash["error"] = "Unable to submit report!"
-      end
+      flash['error'] = report_factory.error ? report_factory.error.message : 'Unable to submit report!'
       @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
       @topics = Topic.all
       get_translations
@@ -72,7 +67,7 @@ class ReportsController < ApplicationController
   	@report = Report.find(params[:id])
     updater = Report::Updater.new(@report)
   	if updater.update_report(report_params)
-      flash["success"] = "Report Updated!"
+      flash['success'] = 'Report Updated!'
       redirect_to @report
     else
       if updater.error
@@ -97,7 +92,7 @@ class ReportsController < ApplicationController
     @geo_states = current_user.geo_states
     @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
     @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
-    @languages = Language.all.order("LOWER(languages.name)")
+    @languages = Language.all.order('LOWER(languages.name)')
     recent_view
   end
 
@@ -132,15 +127,15 @@ class ReportsController < ApplicationController
 
   def report_params
     # make hash options into arrays
-    if params["report"]["languages"]
-      params["report"]["languages"] = params["report"]["languages"].keys
+    if params['report']['languages']
+      params['report']['languages'] = params['report']['languages'].keys
     else
-      params["report"]["languages"] = []
+      params['report']['languages'] = []
     end
-    if params["report"]["topics"]
-      params["report"]["topics"] = params["report"]["topics"].keys
+    if params['report']['topics']
+      params['report']['topics'] = params['report']['topics'].keys
     else
-      params["report"]["topics"] = []
+      params['report']['topics'] = []
     end
     safe_params = [
       :content,
@@ -156,6 +151,7 @@ class ReportsController < ApplicationController
       {:languages => []},
       {:topics => []},
       {:pictures_attributes => [:ref, :_destroy, :id]},
+      {:observers_attributes => [:id, :name]},
       :status,
       :location,
       :sub_district_id
