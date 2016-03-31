@@ -78,6 +78,20 @@ $(document).on "page:change", ->
       return
     return
 
+  $('#add-action-point').on 'click', ->
+    fields = $('#action_points_fields_template').clone()
+    new_id = new Date().getTime();
+    regexp = new RegExp('00000', 'g')
+    $('#add-action-point').before(fields.html().replace(regexp, new_id))
+    return
+
+  $('#add-event-report').on 'click', ->
+    fields = $('#reports_fields_template').clone()
+    new_id = new Date().getTime();
+    regexp = new RegExp('00000', 'g')
+    $('#add-event-report').before(fields.html().replace(regexp, new_id))
+    return
+
   $('.people-increase input:last').on 'keypress', addField
   $('.response-input textarea').on 'keypress', addInputRow
   $('.decision-response-input textarea').on 'keypress', addNewDecision
