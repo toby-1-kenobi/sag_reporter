@@ -32,7 +32,7 @@ class ReportsController < ApplicationController
   def new
   	@report = Report.new
     @report.pictures.build
-  	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
+  	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states).order('languages.name')
     @topics = Topic.all
   end
 

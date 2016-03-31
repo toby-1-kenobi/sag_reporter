@@ -12,7 +12,7 @@ class Report::Updater
   end
 
   def update_report(params)
-    language_ids = params.delete 'languages'
+    state_language_ids = params.delete 'languages'
     topic_ids = params.delete 'topics'
     observers = params.delete 'observers_attributes'
     impact = params.delete 'impact_report'
@@ -21,7 +21,7 @@ class Report::Updater
     begin
       result = @instance.update_attributes(params)
       @instance.languages.clear
-      add_languages(language_ids) if language_ids
+      add_languages(state_language_ids, @instance.geo_state_id) if state_language_ids
       @instance.topics.clear
       add_topics(topic_ids) if topic_ids
       @instance.observers.clear
