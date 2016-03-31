@@ -143,7 +143,6 @@ class ReportsController < ApplicationController
       :report_date,
       :planning_report,
       :impact_report,
-      :challenge_report,
       {:languages => []},
       {:topics => []},
       {:pictures_attributes => [:ref, :_destroy, :id]},

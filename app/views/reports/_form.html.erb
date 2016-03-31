@@ -75,9 +75,7 @@
         <%= f.check_box('impact_report?') %>
         <%= f.label('impact_report?', @translations['this_impact']) %>
         <%= f.check_box('planning_report?') %>
-        <%= f.label('planning_report?', 'This is a hope, or future planning report') %>
-        <%= f.check_box('challenge_report?') %>
-        <%= f.label('challenge_report?', 'This is a challenge report') %>
+        <%= f.label('planning_report?', 'This is a hope, challenge, or future planning report') %>
       </div>
       <div class="col s12 m6">
         <%= f.fields_for :pictures do |ff| %>
