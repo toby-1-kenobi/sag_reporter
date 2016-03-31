@@ -8,7 +8,8 @@
           <div class="col s8 m9 l10 input-field">
             <i class="material-icons prefix">location_on</i>
             <%= label_tag @translations['location'] %>
-            <%= text_field_tag 'full_location', @report.full_location, disabled: 'disabled' %>
+            <% location_text = @report.full_location ? @report.full_location.gsub(/, /, ",\n") : '' %>
+            <%= text_area_tag 'full_location', location_text, disabled: 'disabled', class: 'materialize-textarea' %>
           </div>
           <div class="col s4 m3 l2">
             <a class="btn right tooltipped" id="edit-location-button" data-tooltip="edit location">
