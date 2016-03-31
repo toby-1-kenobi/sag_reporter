@@ -10,10 +10,20 @@ module Report::FactoryFloor
     @instance.topics << Topic.where(id: topic_ids)
   end
 
-  def add_pictures(pictures)
-    pictures.values.each do |picture_attributes|
-      debugger
-      @instance.pictures.build(picture_attributes)
+  def add_observers(observers, geo_state_id, reporter)
+    observers.values.each do |person_attributes|
+      if person_attributes[:id].present?
+        person = Person.find person_attributes[:id]
+      end
+      if !person and person_attributes['name'].present?
+        person = Person.find_or_initialize_by person_attributes do |person|
+          person.geo_state_id = geo_state_id
+          person.record_creator = reporter
+        end
+      end
+      if person and not @instance.observers.include? person
+        @instance.observers << person
+      end
     end
   end
 

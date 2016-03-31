@@ -72,7 +72,7 @@ $(document).on "page:change", ->
   $('#add-source-person').on 'click', ->
     fields = $('#observers_fields_template').clone()
     new_id = new Date().getTime();
-    regexp = new RegExp('new_observers', 'g')
+    regexp = new RegExp('00000', 'g')
     $('#add-source-person').before(fields.html().replace(regexp, new_id))
     return
 

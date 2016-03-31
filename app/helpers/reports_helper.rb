@@ -51,7 +51,7 @@ module ReportsHelper
 		options[:form_builder_local] ||= :f
 
 		content_tag(:div, :id => "#{association}_fields_template", :style => "display: none") do
-			form_builder.fields_for(association, options[:object], :child_index => "new_#{association}") do |f|
+			form_builder.fields_for(association, options[:object], :child_index => '00000') do |f|
 				render(:partial => options[:partial], :locals => {options[:form_builder_local] => f})
 			end
 		end

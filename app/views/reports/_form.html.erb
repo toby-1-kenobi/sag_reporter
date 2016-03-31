@@ -51,7 +51,7 @@
 
         <div>
           <%= f.fields_for :observers do |ff| %>
-            <%= render 'observer_fields', locals: { f: ff } %>
+            <%= render partial: 'observer_fields', locals: { f: ff } %>
           <% end %>
           <%= new_child_fields_template f, :observers %>
           <a class="btn waves-effect" id="add-source-person">
