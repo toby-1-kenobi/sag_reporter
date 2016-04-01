@@ -8,7 +8,10 @@ decisionCount = 0
 
 addField = ->
   personCount += 1
-  newField = $('<input type="text" name="person__' + personCount + '" value="" data-autocomplete="/events/autocomplete_person_name" />')
+  field = $('#people_fields_template').clone()
+  new_id = new Date().getTime()
+  regexp = new RegExp('00000', 'g')
+  newField = $(field.html().replace(regexp, new_id))
   $(this).off 'keypress', addField
   newField.on 'keypress', addField
   $(this).after newField
@@ -76,6 +79,7 @@ $(document).on "page:change", ->
     $('#village-input').slideDown 400, ->
       $('#village-input input').focus()
       return
+    $('#event_sub_district_id').val(data.item.id)
     return
 
   $('#add-action-point').on 'click', ->

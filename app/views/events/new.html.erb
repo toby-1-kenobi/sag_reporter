@@ -32,6 +32,7 @@
               <%# 0 is a placeholder. It gets replaced by js with district_id %>
               <%= f.label :sub_district_name, Translation.get_string('sub_dist', current_user) %>
             </div>
+            <%= f.hidden_field :sub_district_id %>
             <div class="input-field" id="village-input">
               <%= f.text_field :village %>
               <%= f.label :village, Translation.get_string('village', current_user) %>
@@ -81,11 +82,20 @@
         </div>
 
       </div>
-      <div class="input-field people-increase col s12 m4">
+
+      <div class="people-increase input-field col s12 m4">
         <i class="material-icons prefix">people</i>
-        <%= autocomplete_field_tag 'person__0', '', autocomplete_person_name_events_path %>
-        <%= label_tag :person__0, Translation.get_string('people_involved', current_user), {class: 'tooltipped', 'data-position' => 'top', 'data-delay' => '50', 'data-tooltip' => Translation.get_string('one_name_row', current_user)} %>
+        <%= f.label :name,
+                    Translation.get_string('people_involved', current_user),
+                    {class: 'tooltipped',
+                     'data-position' => 'top',
+                     'data-delay' => '50',
+                     'data-tooltip' => Translation.get_string('one_name_row', current_user)} %>
+        <%= f.fields_for :people do |ff| %>
+            <%= render partial: 'person_fields', locals: { f: ff } %>
+        <% end %>
       </div>
+      <%= new_child_fields_template f, :people %>
     </div>
 
     <div class="row">
