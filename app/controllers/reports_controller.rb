@@ -123,16 +123,7 @@ class ReportsController < ApplicationController
 
   def report_params
     # make hash options into arrays
-    if params['report']['languages']
-      params['report']['languages'] = params['report']['languages'].keys
-    else
-      params['report']['languages'] = []
-    end
-    if params['report']['topics']
-      params['report']['topics'] = params['report']['topics'].keys
-    else
-      params['report']['topics'] = []
-    end
+    param_reduce(params['event'], ['topics', 'languages'])
     safe_params = [
       :content,
       :mt_society,
