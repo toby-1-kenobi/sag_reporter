@@ -13,5 +13,18 @@
   </div>
   <div class="col s12 m6">
     <div><%= render partial: 'reports/report_type_fields', locals: { f: f } %></div>
+    <div>
+      <%= render partial: 'shared/multiselect', locals: {
+          text: Translation.get_string('relates_languages', current_user),
+          icon: 'language',
+          object: '00000-report',
+          attribute: 'state_languages',
+          display: :language_name,
+          element_class: 'filterable-item',
+          data: :geo_state_id,
+          collection: @project_languages,
+          selected: Array.new
+      } %>
+    </div>
   </div>
 </div>

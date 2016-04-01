@@ -1,7 +1,7 @@
 <div class="row">
   <div class="input-field col s12 m6">
     <%= f.text_area :content, class: 'materialize-textarea' %>
-    <%= label_tag('decision-response__0', Translation.get_string('what_action', current_user)) %>
+    <%= f.label(:content, Translation.get_string('what_action', current_user)) %>
   </div>
   <div class="input-field col s12 m6">
     <i class="material-icons prefix">person</i>
