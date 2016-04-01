@@ -118,7 +118,7 @@
               element_class: 'filterable-item',
               data: :geo_state_id,
               collection: @project_languages,
-              selected: @report.languages.to_a.collect{ |lang| lang.id }
+              selected: @report.languages.includes(:state_languages).where(state_languages: {geo_state: @report.geo_state}).to_a.collect{ |lang| lang.state_languages.first.id }
         } %>
       </div>
     </div>
