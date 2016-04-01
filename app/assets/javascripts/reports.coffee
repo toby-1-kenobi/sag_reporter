@@ -56,13 +56,13 @@ $(document).on "page:change", ->
     url = old_url.replace(/\d+/, data.item.id)
     if old_url != url
       $('#location-input').hide()
-      $('#sub-district-autocomplete input').attr('data-autocomplete', url)
-      $('#sub-district-autocomplete input').val('')
+      $('#sub_district_name').attr('data-autocomplete', url)
+      $('#sub_district_name').val('')
       $('#sub-district-autocomplete').slideDown 400, ->
-        $('#sub-district-autocomplete input').focus()
+        $('#sub_district_name').focus()
         return
     return 
-  $('#sub-district-autocomplete input').on 'railsAutocomplete.select', (event, data) ->
+  $('#sub_district_name').on 'railsAutocomplete.select', (event, data) ->
     $('#location-input').slideDown 400, ->
       $('#location-input input').focus()
       return
