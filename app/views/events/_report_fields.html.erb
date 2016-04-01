@@ -17,8 +17,10 @@
       <%= render partial: 'shared/multiselect', locals: {
           text: Translation.get_string('relates_languages', current_user),
           icon: 'language',
-          object: '00000-report',
-          attribute: 'state_languages',
+          object: 'event',
+          # When the report records get inserted into the event form
+          # '00000' is replaced with an index for this report
+          attribute: ['reports_attributes', '00000', 'languages'],
           display: :language_name,
           element_class: 'filterable-item',
           data: :geo_state_id,
