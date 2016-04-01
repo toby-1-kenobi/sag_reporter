@@ -8,6 +8,7 @@ class Report::Factory
   attr_reader :error
 
   def build_report(params)
+    @error = nil
     state_language_ids = params.delete 'languages'
     topic_ids = params.delete 'topics'
     observers = params.delete 'observers_attributes'

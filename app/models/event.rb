@@ -17,11 +17,14 @@ class Event < ActiveRecord::Base
   accepts_nested_attributes_for :reports,
                                 reject_if: :all_blank
 
+  accepts_nested_attributes_for :people,
+                                reject_if: :all_blank
+
   validates :event_date, presence: true
   validates :event_label, presence: true
   validates :participant_amount, :numericality => { :greater_than_or_equal_to => 0 }
 
-  after_initialize :location_init
+  before_validation :location_init
 
   def self.yes_no_questions(user)
     questions = Hash.new
