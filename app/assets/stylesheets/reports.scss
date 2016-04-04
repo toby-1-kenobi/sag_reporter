@@ -5,26 +5,26 @@
 @import 'common';
 
 div.report {
-	.card-content {
-		.reporter {
-			text-align: right;
-		}
-		.report_type {
-			float: right;
-		}
-		.report-languages, .report-topics {
-			div {
-				@include box_sizing;
-				@include border-radius(4px);
-				display: inline-block;
-				padding: 5px;
-				margin: 5px;
-			}
-		}
-		.report-topics {
-			text-align: right;
-		}
-	}
+  .card-content {
+    .reporter, .observers {
+      text-align: right;
+    }
+    .report_type {
+      float: right;
+    }
+    .report-languages, .report-topics {
+      div {
+        @include box_sizing;
+        @include border-radius(4px);
+        display: inline-block;
+        padding: 5px;
+        margin: 5px;
+      }
+    }
+    .report-topics {
+      text-align: right;
+    }
+  }
 }
 
 li.report {
