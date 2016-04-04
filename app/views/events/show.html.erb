@@ -13,15 +13,15 @@
   <p class="event-purpose">To enable <%= purpose.description %>.</p>
 <% end %>
 
-<% unless @event.languages.empty? %>
-  <p class="event-languages">Concerning <%= @event.languages.map{ |l| content_tag(:strong, l.name) }.to_sentence %> languages.</p>
+<% if @event.languages.any? %>
+  <p class="event-languages">Concerning <%= @event.languages.map{ |l| content_tag(:strong, l.name) }.to_sentence.html_safe %> languages.</p>
 <% end %>
 
 <!--h2>People Attending</h2-->
 <% if @event.participant_amount %>
   <p>A total of <%= @event.participant_amount %> people attended the event.</p>
 <% end %>
-<% unless @event.people.empty? %>
+<% if @event.people.any? %>
   <ul class="collection event-attendees">
   	<% @event.people.each do |person| %>
   	  <li class="collection-item">
@@ -31,30 +31,17 @@
   </ul>
 <% end %>
 
-<!--h2>Impact Reports</h2-->
-<% @event.impact_reports.in_groups_of(3, false) do |report_group| %>
-  <div class="row">
-    <%= render partial: "impact_reports/report", collection: report_group, locals: {time: false, languages: true, topics: true, wrapper: "col s12 m6 l4"} %>
-  </div>
-<% end %>
-
-
-<!--h2>Planning Reports</h2-->
-<% @event.planning_reports.in_groups_of(3, false) do |report_group| %>
-  <div class="row">
-    <%= render partial: "reports/report", collection: report_group, locals: {time: false, languages: true, topics: true, wrapper: "col s12 m6 l4"} %>
-  </div>
-<% end %>
+<!--h2>Event reports</h2-->
+<div class="row">
+    <%= render partial: "reports/report", collection: @event.reports, locals: {time: false, topics: false, languages: true, wrapper: "col s12 m6 l4"} %>
+</div>
 
 <!--h2>Action Points</h2-->
-<% @event.action_points.in_groups_of(3, false) do |action_point_group| %>
-  <div class="row">
-    <%= render partial: "action_points/action_point", collection: action_point_group, locals: {time: false,  wrapper: "col s12 m6 l4"} %>
-  </div>
-<% end %>
+<div class="row">
+  <%= render partial: "action_points/action_point", collection: @event.action_points, locals: {time: false,  wrapper: "col s12 m6 l4"} %>
+</div>
 
-
-<% unless @event.content.empty? %>
+<% if @event.content.present? %>
   <!--h2>Other event content</h2-->
   <p><%= @event.content %></p>
 <% end %>
