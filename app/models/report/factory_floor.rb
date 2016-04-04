@@ -12,10 +12,8 @@ module Report::FactoryFloor
 
   def add_observers(observers, geo_state_id, reporter)
     observers.values.each do |person_attributes|
-      if person_attributes[:id].present?
-        person = Person.find person_attributes[:id]
-      end
-      if !person and person_attributes['name'].present?
+      if person_attributes['name'].present?
+        person_attributes.delete('id')
         person = Person.find_or_initialize_by person_attributes do |person|
           person.geo_state_id = geo_state_id
           person.record_creator = reporter
