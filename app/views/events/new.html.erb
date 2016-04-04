@@ -62,7 +62,7 @@
               element_class: 'filterable-item',
               data: :geo_state_id,
             	collection: @project_languages,
-            	selected: Array.new
+            	selected: StateLanguage.where(language_id: @event.languages)
             } %>
           </div>
         </div>
@@ -87,7 +87,7 @@
         <i class="material-icons prefix">people</i>
         <%= f.label :name,
                     Translation.get_string('people_involved', current_user),
-                    {class: 'tooltipped',
+                    {class: @event.people.any? ? 'tooltipped' : 'tooltipped active',
                      'data-position' => 'top',
                      'data-delay' => '50',
                      'data-tooltip' => Translation.get_string('one_name_row', current_user)} %>

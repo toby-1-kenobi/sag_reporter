@@ -22,7 +22,7 @@ class EventsController < ApplicationController
       @event = event_factory.instance
       @event ||= Event.new
       @event.people.build
-      flash['error'] = event_factory.errors.any? ? event_factory.errors.first.message : 'Unable to submit event report!'
+      flash.now['error'] = event_factory.errors.any? ? event_factory.errors.first.message : 'Unable to submit event report!'
       @project_languages = StateLanguage.in_project.joins(:language).where(geo_state: current_user.geo_states).order('LOWER(languages.name)')
       @all_purposes = Purpose.all
       render 'new'
