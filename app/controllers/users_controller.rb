@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
 
+  include ParamsHelper
+
   before_action :require_login
   
   # A user's profile can only be edited or seen by
@@ -35,13 +37,13 @@ class UsersController < ApplicationController
   end
 
   def index
-  	@users = User.order("LOWER(name)").paginate(page: params[:page])
+  	@users = User.order('LOWER(name)').paginate(page: params[:page])
   end
 
   def create
     user_factory = User::Factory.new
     if user_factory.create_user(user_params)
-      flash["success"] = "New User Created!"
+      flash['success'] = 'New User Created!'
       redirect_to user_factory.instance()
     else
       assign_for_user_form
@@ -56,7 +58,7 @@ class UsersController < ApplicationController
   def update
     updater = User::Updater.new(@user)
     if updater.update_user(user_params)
-      flash["success"] = "Profile updated"
+      flash['success'] = 'Profile updated'
       redirect_to @user
     else
       @user = updater.instance()
@@ -76,16 +78,7 @@ class UsersController < ApplicationController
 
     def user_params
       # make hash options into arrays
-      if params["user"]["geo_states"]
-        params["user"]["geo_states"] = params["user"]["geo_states"].keys
-      else
-        params["user"]["geo_states"] = []
-      end
-      if params["user"]["speaks"]
-        params["user"]["speaks"] = params["user"]["speaks"].keys
-      else
-        params["user"]["speaks"] = []
-      end
+      param_reduce(params['user'], ['geo_states', 'speaks'])
       safe_params = [
         :name,
         :phone,

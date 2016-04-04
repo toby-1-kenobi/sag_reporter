@@ -20,10 +20,11 @@ end
 
 # If there's only one state it should be a hidden field, the user has no option.
 if geo_states.length == 1
-  if defined? form %>
-    <%= form.hidden_field(:geo_state_id, value: geo_states.first.id) %>
+  if defined? form
+    html_options[:value] = geo_states.first.id %>
+    <%= form.hidden_field(:geo_state_id, html_options) %>
   <% else %>
-    <%= hidden_field_tag("#{object}[geo_state_id]", geo_states.first.id) %>
+    <%= hidden_field_tag("#{object}[geo_state_id]", geo_states.first.id, html_options) %>
   <% end
 else
   if defined? form %>
