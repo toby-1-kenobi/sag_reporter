@@ -1,6 +1,7 @@
 class ReportsController < ApplicationController
 
   helper ColoursHelper
+  include ParamsHelper
 
   before_action :require_login
 
@@ -123,7 +124,7 @@ class ReportsController < ApplicationController
 
   def report_params
     # make hash options into arrays
-    param_reduce(params['event'], ['topics', 'languages'])
+    param_reduce(params['report'], ['topics', 'languages'])
     safe_params = [
       :content,
       :mt_society,
