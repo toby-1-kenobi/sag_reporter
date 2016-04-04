@@ -1,8 +1,13 @@
 <%
+  # optionally accept an array for attribute for deep nested attributes
+  # make it into a string with square brackets and one with underscores
+  attribute_array_string = '[' + [*attribute].join('][') + ']'
+  attribute_string = [*attribute].join('_')
+
   if !defined? element_options
-    element_options = {class: "#{attribute}-option"}
+    element_options = {class: "#{attribute_string}-option"}
   else
-    element_options[:class] = [element_options[:class], "#{attribute}-option"].join ' '
+    element_options[:class] = [element_options[:class], "#{attribute_string}-option"].join ' '
   end
   if defined? element_class
     element_options[:class] = [element_options[:class], element_class].join ' '
@@ -13,12 +18,6 @@
   # we don't want to use it - we set our own element id here.
   element_options.delete :id
   element_options.delete "id"
-
-  # optionally accept an array for attribute for deep nested attributes
-  # make it into a string with square brackets and one with underscores
-  attribute_array_string = '[' + [*attribute].join('][') + ']'
-  attribute_string = [*attribute].join('_')
-
 %>
 <a class='dropdown-button btn-flat' href='#' data-activates='<%= object %>-<%= attribute_string %>-dropdown' data-hover="true">
 <i class="material-icons left"><%= icon %></i>
