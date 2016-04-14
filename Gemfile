@@ -65,6 +65,9 @@ gem 'carrierwave'
 # image manipulation
 gem 'mini_magick'
 
+# token based authentication with JWT
+gem 'knock'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
