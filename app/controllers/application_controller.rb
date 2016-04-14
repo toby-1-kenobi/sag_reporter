@@ -5,6 +5,9 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
+  # Allow controllers to require token authentication
+  include Knock::Authenticable
+
   # Access sessions helper and roles helper from application controllers.
   include SessionsHelper
   include RolesHelper

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount Knock::Engine => '/knock'
 
   resources :mt_resources
   root 'static_pages#home'
