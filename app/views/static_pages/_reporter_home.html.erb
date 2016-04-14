@@ -5,7 +5,7 @@
     <div class="row">
 
 
-      <% if current_user.can_create_report? %>
+      <% if logged_in_user.can_create_report? %>
         <div class="col s6 m4 l3">
           <%= link_to new_report_path do %>
             <div class="card-panel home-link blue z-depth-2 center-align">
@@ -16,7 +16,7 @@
         </div>
       <% end %>
 
-      <% if current_user.can_create_report? %>
+      <% if logged_in_user.can_create_report? %>
         <div class="col s6 m4 l3">
           <%= link_to 'https://www.surveymonkey.com/r/R989HM9' do %>
             <div class="card-panel home-link yellow z-depth-2 center-align">
@@ -27,7 +27,7 @@
         </div> 
       <% end %>
 
-      <% if current_user.can_tag_report? %>
+      <% if logged_in_user.can_tag_report? %>
         <div class="col s6 m4 l3">
           <%= link_to "impact_reports/tag" do %>
             <div class="card-panel home-link red z-depth-2 center-align">
@@ -46,7 +46,7 @@
   <div class="collapsible-body">
     <div class="row">
 
-      <% if current_user.can_report_numbers? %>
+      <% if logged_in_user.can_report_numbers? %>
         <div class="col s6 m4 l3">
           <%= link_to report_numbers_path do %>
             <div class="card-panel home-link green z-depth-2 center-align">
@@ -66,7 +66,7 @@
         </div>
       <% end %>
 
-    <% if current_user.can_evaluate_progress? %>
+    <% if logged_in_user.can_evaluate_progress? %>
       <div class="col s6 m4 l3">
         <%= link_to select_to_assess_path do %>
           <div class="card-panel home-link purple z-depth-2 center-align">
@@ -85,7 +85,7 @@
   <div class="collapsible-body">
     <div class="row">
 
-    <% if current_user.can_create_report? %>
+    <% if logged_in_user.can_create_report? %>
       <div class="col s6 m4 l3">
         <%= link_to 'https://docs.google.com/forms/d/1NQHDwomtgh2kVmx1BZRzDuv1lv__SaVzAHfBOH_JlXU/viewform?c=0&w=1' do %>
           <div class="card-panel home-link teal z-depth-2 center-align">
@@ -96,13 +96,13 @@
       </div>
     <% end %>
 
-    <% if current_user.can_create_event? %>
+    <% if logged_in_user.can_create_event? %>
       <div class="col s6 m4 l3">
       <%= link_to events_new_path do %>
           <div class="card-panel home-link cyan z-depth-2 center-align">
             <i class="material-icons large black-text">event</i>
           </div>
-          <div class="center-align black-text"><%= Translation.get_string('report_event', current_user) %></div>
+          <div class="center-align black-text"><%= Translation.get_string('report_event', logged_in_user) %></div>
         <% end %>
       </div>
     <% end %>

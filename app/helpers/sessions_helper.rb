@@ -13,7 +13,7 @@ module SessionsHelper
   end
 
   # Returns the current logged-in user (if any).
-  def current_user
+  def logged_in_user
     if (user_id = session[:user_id])
       @current_user ||= User.find_by(id: user_id)
     elsif (user_id = cookies.signed[:user_id])
@@ -26,13 +26,13 @@ module SessionsHelper
   end
 
   # Returns true if the given user is the current user.
-  def current_user?(user)
-    user == current_user
+  def logged_in_user?(user)
+    user == logged_in_user
   end
 
   # Returns true if the user is logged in, false otherwise.
   def logged_in?
-    !current_user.nil?
+    !logged_in_user.nil?
   end
 
   # Confirms a logged-in user.
@@ -53,7 +53,7 @@ module SessionsHelper
 
   # Logs out the current user.
   def log_out
-  	forget(current_user)
+  	forget(logged_in_user)
     session.delete(:user_id)
     @current_user = nil
   end

@@ -1,26 +1,26 @@
 <% provide(:title, "Home") %>
 <h1><i class="material-icons large">home</i> home</h1>
 
-<% if current_user.is_a_reporter? or current_user.is_an_evaluator? %>
+<% if logged_in_user.is_a_reporter? or logged_in_user.is_an_evaluator? %>
   <%= render partial: 'reporter_home' %>
 <% else %>
   <div class="collection" id="home-menu">
 
-    <% if current_user.can_create_report? %>
+    <% if logged_in_user.can_create_report? %>
       <%= link_to new_report_path, class: "collection-item waves-effect", id: "field-report-link" do %>
         <i class="material-icons">create</i>
-        <%= Translation.get_string('make_report', current_user) %>
+        <%= Translation.get_string('make_report', logged_in_user) %>
       <% end %>
     <% end %>
 
-    <% if current_user.can_create_report? %>
+    <% if logged_in_user.can_create_report? %>
       <%= link_to 'https://docs.google.com/forms/d/1NQHDwomtgh2kVmx1BZRzDuv1lv__SaVzAHfBOH_JlXU/viewform?c=0&w=1', class: "collection-item waves-effect", id: "workshop-report-link" do %>
         <i class="material-icons">create</i>
         Report on a workshop
       <% end %>
     <% end %>
 
-    <% if current_user.can_create_report? %>
+    <% if logged_in_user.can_create_report? %>
       <%= link_to 'https://www.surveymonkey.com/r/R989HM9', class: "collection-item waves-effect", id: "movement-building-report-link" do %>
         <i class="material-icons">create</i>
         Report on movement building
@@ -28,10 +28,10 @@
     <% end %>
 
 
-    <% if current_user.can_create_event? %>
+    <% if logged_in_user.can_create_event? %>
       <%= link_to events_new_path, class: "collection-item waves-effect", id: "event-report-link" do %>
         <i class="material-icons">event</i>
-        <%= Translation.get_string('report_event', current_user) %>
+        <%= Translation.get_string('report_event', logged_in_user) %>
       <% end %>
     <% end %>
 
@@ -41,7 +41,7 @@
       <% end %>
 
 
-    <% if current_user.can_report_numbers? %>
+    <% if logged_in_user.can_report_numbers? %>
       <%= link_to report_numbers_path, class: "collection-item waves-effect", id: "numbers-link" do %>
         <i class="material-icons">assessment</i>
         Report numbers for the month
@@ -54,28 +54,28 @@
     <a href="#" class="collection-item waves-effect"><i class="material-icons">extension</i>View targets and progress</a>
   --> 
 
-    <% if current_user.can_tag_report? %>
+    <% if logged_in_user.can_tag_report? %>
       <%= link_to "impact_reports/tag", class: "collection-item waves-effect", id: "tag-link" do %>
         <i class="material-icons">label</i>
         Tag impact reports
       <% end %>
     <% end %>
 
-    <% if current_user.can_evaluate_progress? %>
+    <% if logged_in_user.can_evaluate_progress? %>
       <%= link_to select_to_assess_path, class: "collection-item waves-effect", id: "evaluate-link" do %>
         <i class="material-icons">check_circle</i>
         Evaluate progress marker levels
       <% end %>
     <% end %>
 
-    <% if current_user.can_view_output_totals? %>
+    <% if logged_in_user.can_view_output_totals? %>
       <%= link_to outputs_path, class: "collection-item waves-effect", id: "output-totals-link" do %>
         <i class="material-icons">tab</i>
         View output totals
       <% end %>
     <% end %>
 
-    <% if current_user.can_view_outcome_totals? %>
+    <% if logged_in_user.can_view_outcome_totals? %>
       <%= link_to outcomes_path, class: "collection-item waves-effect", id: "outcome-totals-link" do %>
         <i class="material-icons">tab</i>
         View outcome progress
@@ -93,7 +93,7 @@
     <a href="#" class="collection-item waves-effect"><i class="material-icons">message</i> View my messages</a>
   -->
 
-    <% if current_user.can_view_all_reports? %>
+    <% if logged_in_user.can_view_all_reports? %>
 
       <%= link_to reports_path, class: "collection-item waves-effect", id: "view-reports-link" do %>
         <i class="material-icons">dashboard</i>
@@ -108,7 +108,7 @@
     <% end %>
 
 
-    <% if current_user.can_view_all_users? %>
+    <% if logged_in_user.can_view_all_users? %>
       <%= link_to users_path, class: "collection-item waves-effect", id: "view-users-link" do %>
         <i class="material-icons">people</i>
         View all users
@@ -116,7 +116,7 @@
     <% end %>
 
 
-    <% if current_user.can_view_roles? %>
+    <% if logged_in_user.can_view_roles? %>
       <%= link_to roles_path, class: "collection-item waves-effect", id: "view-roles-link" do %>
         <i class="material-icons">people_outline</i>
         View roles and permissions
@@ -124,7 +124,7 @@
     <% end %>
 
 
-    <% if current_user.can_view_all_languages? %>
+    <% if logged_in_user.can_view_all_languages? %>
       <%= link_to languages_path, class: "collection-item waves-effect", id: "view-languages-link" do %>
         <i class="material-icons">language</i>
         View all languages
@@ -132,14 +132,14 @@
     <% end %>
 
 
-    <% if current_user.can_view_all_topics? %>
+    <% if logged_in_user.can_view_all_topics? %>
       <%= link_to topics_path, class: "collection-item waves-effect", id: "view-topics-link" do %>
         <i class="material-icons">local_offer</i>
         View all outcome areas
       <% end %>
     <% end %>
 
-    <% if current_user.is_an_admin? %>
+    <% if logged_in_user.is_an_admin? %>
       <%= link_to overview_path, class: "collection-item waves-effect", id: "overview-link" do %>
         <i class="material-icons">pageview</i>
         Overview

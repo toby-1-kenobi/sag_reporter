@@ -3,13 +3,13 @@ class StateLanguagesController < ApplicationController
   before_action :require_login
 
   before_action only: [:outcomes, :get_chart, :get_table, :outcomes_data] do
-    redirect_to root_path unless current_user.can_view_outcome_totals?
+    redirect_to root_path unless logged_in_user.can_view_outcome_totals?
   end
 
   def outcomes
     @outcome_areas = Topic.all
     @languages_by_state = Hash.new
-    current_user.geo_states.each do |geo_state|
+    logged_in_user.geo_states.each do |geo_state|
       @languages_by_state[geo_state] = geo_state.state_languages.includes(:language).in_project.to_a.sort!
     end
   end
