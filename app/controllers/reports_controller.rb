@@ -7,24 +7,24 @@ class ReportsController < ApplicationController
 
     # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless current_user.can_create_report?
+    redirect_to root_path unless logged_in_user.can_create_report?
   end
 
   before_action only: [:index, :by_language, :by_topic, :by_reporter] do
-    redirect_to root_path unless current_user.can_view_all_reports?
+    redirect_to root_path unless logged_in_user.can_view_all_reports?
   end
 
   before_action only: [:show] do
   	# show shows single report only to reporter when report first created
-  	redirect_to root_path unless current_user?(Report.find(params[:id]).reporter) or current_user.can_view_all_reports?
+  	redirect_to root_path unless logged_in_user?(Report.find(params[:id]).reporter) or logged_in_user.can_view_all_reports?
   end
 
   before_action only: [:edit, :update] do
-    redirect_to root_path unless current_user.can_edit_report? or current_user?(Report.find(params[:id]).reporter)
+    redirect_to root_path unless logged_in_user.can_edit_report? or logged_in_user?(Report.find(params[:id]).reporter)
   end
 
   before_action only: [:archive, :unarchive] do
-    redirect_to root_path unless current_user.can_archive_report?
+    redirect_to root_path unless logged_in_user.can_archive_report?
   end
 
   before_action :get_translations, only: [:new, :edit]
@@ -33,12 +33,12 @@ class ReportsController < ApplicationController
   def new
   	@report = Report.new
     @report.pictures.build
-  	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states).order('languages.name')
+  	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
     @topics = Topic.all
   end
 
   def create
-    full_params = report_params.merge({reporter: current_user})
+    full_params = report_params.merge({reporter: logged_in_user})
     report_factory = Report::Factory.new
     if report_factory.create_report(full_params)
       flash['success'] = 'Report Submitted!'
@@ -46,7 +46,7 @@ class ReportsController < ApplicationController
     else
       @report = report_factory.instance()
       flash['error'] = report_factory.error ? report_factory.error.message : 'Unable to submit report!'
-      @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states).order('languages.name')
+      @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
       @topics = Topic.all
       get_translations
       render 'new'
@@ -58,8 +58,8 @@ class ReportsController < ApplicationController
 
   def edit
     @report.pictures.build
-    @geo_states = @report.available_geo_states(current_user)
-    @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states).order('languages.name')
+    @geo_states = @report.available_geo_states(logged_in_user)
+    @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
     @topics = Topic.all
   end
 
@@ -72,8 +72,8 @@ class ReportsController < ApplicationController
       if updater.error
         flash['error'] = "Report update failed: #{updater.error.message}"
       end
-      @geo_states = @report.available_geo_states(current_user)
-      @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: current_user.geo_states)
+      @geo_states = @report.available_geo_states(logged_in_user)
+      @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states)
       @topics = Topic.all
       get_translations
       render 'edit'
@@ -81,14 +81,14 @@ class ReportsController < ApplicationController
   end
 
   def index
-    @geo_states = current_user.geo_states
+    @geo_states = logged_in_user.geo_states
     @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc).paginate(page: params[:page])
     @impact_reports = ImpactReport.includes(:report).where(reports: {geo_state_id: @geo_states}).order(:created_at => :desc).paginate(page: params[:page])
     recent_view
   end
 
   def by_language
-    @geo_states = current_user.geo_states
+    @geo_states = logged_in_user.geo_states
     @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
     @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
     @languages = Language.all.order('LOWER(languages.name)')
@@ -96,7 +96,7 @@ class ReportsController < ApplicationController
   end
 
   def by_topic
-    @geo_states = current_user.geo_states
+    @geo_states = logged_in_user.geo_states
     @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
     @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
     @topics = Topic.all
@@ -104,7 +104,7 @@ class ReportsController < ApplicationController
   end
 
   def by_reporter
-    @geo_states = current_user.geo_states
+    @geo_states = logged_in_user.geo_states
     @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
     @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
     recent_view
@@ -143,7 +143,7 @@ class ReportsController < ApplicationController
       :location,
       :sub_district_id
     ]
-    safe_params.delete :status unless current_user.can_archive_report?
+    safe_params.delete :status unless logged_in_user.can_archive_report?
     # if we have a date try to change it to db-friendly format
     # otherwise set it to nil
     if params[:report][:report_date]
@@ -173,8 +173,8 @@ class ReportsController < ApplicationController
 
   def get_translations
     @translations = Hash.new
-    if current_user.interface_language
-      lang_id = current_user.interface_language.id
+    if logged_in_user.interface_language
+      lang_id = logged_in_user.interface_language.id
       Translatable.includes(:translations).find_each do |translatable|
         translation = translatable.translations.select{ |t| t.language_id == lang_id }.first
         content = (translation and translation.content) ? translation.content : translatable.content

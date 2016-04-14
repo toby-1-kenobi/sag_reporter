@@ -6,7 +6,7 @@
     <% end %>
   </div>
   <div class="card-action">
-  <% if current_user.can_archive_report? %>
+  <% if logged_in_user.can_archive_report? %>
     <% if impact_report.archived? %>
       <%= link_to unarchive_impact_report_path(impact_report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Un-Archive", method: :patch do %>
         <i class="material-icons">publish</i>
@@ -17,7 +17,7 @@
       <% end %>
     <% end %>
   <% end %>
-  <% if current_user.can_edit_report? %>
+  <% if logged_in_user.can_edit_report? %>
       <%= link_to edit_impact_report_path(impact_report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
         <i class="material-icons">edit</i>
       <% end %>

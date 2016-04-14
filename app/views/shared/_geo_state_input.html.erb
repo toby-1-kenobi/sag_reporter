@@ -6,7 +6,7 @@ else
   # The geo_state it already has, even if the user is not in that state.
   # So we add that state to the list of the states from the user
   # must convert them to an array to avoid putting the user into that geo_state
-  geo_states =  current_user.geo_states.to_a
+  geo_states =  logged_in_user.geo_states.to_a
   if defined? form and form.object.geo_state
     geo_states << form.object.geo_state
     geo_states.uniq!

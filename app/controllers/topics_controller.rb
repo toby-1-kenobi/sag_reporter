@@ -6,19 +6,19 @@ class TopicsController < ApplicationController
 
     # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless current_user.can_create_topic?
+    redirect_to root_path unless logged_in_user.can_create_topic?
   end
 
   before_action only: [:index] do
-    redirect_to root_path unless current_user.can_view_all_topics?
+    redirect_to root_path unless logged_in_user.can_view_all_topics?
   end
 
   before_action only: [:edit, :update] do
-    redirect_to root_path unless current_user.can_edit_topic?
+    redirect_to root_path unless logged_in_user.can_edit_topic?
   end
 
   before_action only: [:assess_progress_select, :assess_progress, :update_progress] do
-    redirect_to root_path unless current_user.can_evaluate_progress?
+    redirect_to root_path unless logged_in_user.can_evaluate_progress?
   end
 
   before_action only: [:assess_progress_select, :assess_progress] do
@@ -64,7 +64,7 @@ class TopicsController < ApplicationController
   end
 
   def assess_progress_select
-    @geo_states = current_user.geo_states
+    @geo_states = logged_in_user.geo_states
   end
 
   def assess_progress
@@ -136,7 +136,7 @@ class TopicsController < ApplicationController
           params[:progress_marker].select{ |pm, l| params[:marker_complete][pm] }.each do |marker, level|
             progress_marker = ProgressMarker.find(marker)
             language_progress = LanguageProgress.find_or_create_by(state_language: state_language, progress_marker: progress_marker)
-            update = ProgressUpdate.create(language_progress: language_progress, progress: level, user: current_user, year: year, month: month)
+            update = ProgressUpdate.create(language_progress: language_progress, progress: level, user: logged_in_user, year: year, month: month)
             if update.persisted?
               successful_updates << update
             else

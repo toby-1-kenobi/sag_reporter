@@ -8,7 +8,7 @@
         <%= render partial: "shared/geo_state_input", locals: {form: f, input_class: 'filter-trigger'} %>
       </div>
       <div class="input-field col s12 m6 l4">
-        <% if current_user.can_archive_report? %>
+        <% if logged_in_user.can_archive_report? %>
           <% Report.states.each do |key, value| %>
             <p>
               <%= f.radio_button(:state, key, checked: @report.state == key) %>

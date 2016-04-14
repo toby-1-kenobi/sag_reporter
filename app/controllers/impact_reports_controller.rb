@@ -6,34 +6,34 @@ class ImpactReportsController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless current_user.can_create_report?
+    redirect_to root_path unless logged_in_user.can_create_report?
   end
 
   before_action only: [:edit, :update] do
-    redirect_to root_path unless current_user.can_edit_report? or current_user?(Report.find(params[:id]).reporter)
+    redirect_to root_path unless logged_in_user.can_edit_report? or logged_in_user?(Report.find(params[:id]).reporter)
   end
 
   before_action only: [:show] do
-    redirect_to root_path unless current_user?(ImpactReport.find(params[:id]).reporter) or current_user.can_view_all_reports?
+    redirect_to root_path unless logged_in_user?(ImpactReport.find(params[:id]).reporter) or logged_in_user.can_view_all_reports?
   end
 
   before_action only: [:index, :spreadsheet] do
-    redirect_to root_path unless current_user.can_view_all_reports?
+    redirect_to root_path unless logged_in_user.can_view_all_reports?
   end
 
   before_action only: [:archive, :unarchive] do
-    redirect_to root_path unless current_user.can_archive_report?
+    redirect_to root_path unless logged_in_user.can_archive_report?
   end
 
   before_action only: [:tag, :tag_update] do
-    redirect_to root_path unless current_user.can_tag_report?
+    redirect_to root_path unless logged_in_user.can_tag_report?
   end
 
   def index
     store_location
-    @current_user_can_archive_report = current_user.can_archive_report?
-    @current_user_can_edit_report = current_user.can_edit_report?
-    @geo_states = current_user.geo_states
+    @current_user_can_archive_report = logged_in_user.can_archive_report?
+    @current_user_can_edit_report = logged_in_user.can_edit_report?
+    @geo_states = logged_in_user.geo_states
     @zones = Zone.of_states(@geo_states)
     @languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
     @reports = ImpactReport.includes(:progress_markers => :topic, :report => [:languages, :reporter]).where(reports: {geo_state_id: @geo_states}).order(:created_at => :desc)
@@ -44,9 +44,9 @@ class ImpactReportsController < ApplicationController
     # so take the intersection of the list of geo_states in the params
     # and the users geo_states
     if params['controls']['geo_state']
-      geo_states = params['controls']['geo_state'].values.map{ |id| id.to_i } & current_user.geo_states.pluck(:id)
+      geo_states = params['controls']['geo_state'].values.map{ |id| id.to_i } & logged_in_user.geo_states.pluck(:id)
     else
-      geo_states = current_user.geo_states
+      geo_states = logged_in_user.geo_states
     end
     languages = params['controls']['language'].values.map{ |id| id.to_i }
     @reports = ImpactReport.includes(report: :languages).where('reports.geo_state_id' => geo_states, 'languages.id' => languages)
@@ -75,7 +75,7 @@ class ImpactReportsController < ApplicationController
 
   def edit
     @report = ImpactReport.find(params[:id])
-    @geo_states = @report.available_geo_states(current_user)
+    @geo_states = @report.available_geo_states(logged_in_user)
     @minority_languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
     @topics = Topic.all
   end
@@ -92,7 +92,7 @@ class ImpactReportsController < ApplicationController
       flash["success"] = "Report updated"
       redirect_to @report
     else
-      @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+      @minority_languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
       @topics = Topic.all
       render 'edit'
     end
@@ -126,7 +126,7 @@ class ImpactReportsController < ApplicationController
     end
     @date = @date.at_beginning_of_month.to_date
     date_range = @date..@date.at_end_of_month.to_date
-    geo_state_ids = current_user.geo_states.pluck :id
+    geo_state_ids = logged_in_user.geo_states.pluck :id
   	@reports = ImpactReport.
       includes(
         :progress_markers,
@@ -142,7 +142,7 @@ class ImpactReportsController < ApplicationController
   	@outcome_areas = Topic.all
   	@progress_markers_by_oa = ProgressMarker.includes(:topic).all.group_by{ |pm| pm.topic }
     #Todo: Switch to project languages instead of minority languages.
-    @languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+    @languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
     @ajax_url = url_for controller: 'impact_reports', action: 'tag_update', id: 'report_id'
   end
 
@@ -200,7 +200,7 @@ class ImpactReportsController < ApplicationController
         :report_date,
         :state
       ]
-      safe_params.reject! :state unless current_user.can_archive_report?
+      safe_params.reject! :state unless logged_in_user.can_archive_report?
       if params[:impact_report][:report_date]
         params[:impact_report][:report_date] = DateParser.parse_to_db_str(params[:impact_report][:report_date])
       end

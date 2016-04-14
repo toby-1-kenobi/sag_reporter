@@ -4,15 +4,15 @@ class TalliesController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless current_user.can_create_tally?
+    redirect_to root_path unless logged_in_user.can_create_tally?
   end
   
   before_action only: [:index, :show] do
-    redirect_to root_path unless current_user.can_view_all_tallies?
+    redirect_to root_path unless logged_in_user.can_view_all_tallies?
   end
   
   before_action only: [:edit, :update] do
-    redirect_to root_path unless current_user.can_edit_tally?
+    redirect_to root_path unless logged_in_user.can_edit_tally?
   end
 
   before_action :set_tally, only: [:show, :edit, :update]
@@ -28,12 +28,12 @@ class TalliesController < ApplicationController
 
   def new
     @tally = Tally.new
-    @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+    @minority_languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
     @topics = Topic.all
   end
 
   def edit
-    @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+    @minority_languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
     @topics = Topic.all
   end
 
@@ -54,7 +54,7 @@ class TalliesController < ApplicationController
         format.json { render :show, status: :created, location: @tally }
       else
         format.html do
-          @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+          @minority_languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
           @topics = Topic.all
           render :new
         end
@@ -79,7 +79,7 @@ class TalliesController < ApplicationController
         format.json { render :show, status: :ok, location: @tally }
       else
         format.html do
-          @minority_languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+          @minority_languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
           @topics = Topic.all
           render :edit
         end
@@ -104,7 +104,7 @@ class TalliesController < ApplicationController
     # of tally_updates associated with that language and the present tally
     def graph_data
       data = Hash.new
-      Language.minorities(current_user.geo_states).each do |language|
+      Language.minorities(logged_in_user.geo_states).each do |language|
         data[language.name] = @tally.tally_updates.includes(:language).where("languages_tallies.language_id" => language.id)
       end
       return data

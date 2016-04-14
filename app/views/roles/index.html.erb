@@ -1,6 +1,6 @@
 <% provide(:title, 'User Roles') %>
 <h1>User Roles</h1>
-<% if current_user.can_create_role? %>
+<% if logged_in_user.can_create_role? %>
   <!-- New Role Modal Trigger -->
   <button class="btn waves-effect waves-light modal-trigger" data-target="new_role_modal"><i class="material-icons right">add</i>New Role</button>
 <% end %>
@@ -27,7 +27,7 @@
             	  	<td><%= perm.description %></td>
             	  	<% @roles.each do |role| %>
             		  <td>
-            		    <%= check_box_tag('roles[' + role.name + '][' + perm.name + ']', 1, role.permissions.include?(perm), disabled: !current_user.can_edit_role?) %>
+            		    <%= check_box_tag('roles[' + role.name + '][' + perm.name + ']', 1, role.permissions.include?(perm), disabled: !logged_in_user.can_edit_role?) %>
             		    <%= label_tag('roles[' + role.name + '][' + perm.name + ']', "") %>
             		  </td>
             		<% end %>
@@ -38,7 +38,7 @@
           </div>
           <div class="row">
             <div class="col s3 offset-s8">
-              <% if current_user.can_edit_role? %>
+              <% if logged_in_user.can_edit_role? %>
                 <%= button_tag( :class => "btn waves-effect waves-light right") do %>
                   Update <i class="material-icons right">create</i>
                 <% end %>

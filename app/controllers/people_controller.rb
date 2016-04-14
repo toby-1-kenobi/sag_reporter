@@ -4,7 +4,7 @@ class PeopleController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:index] do
-    redirect_to root_path unless current_user.can_view_all_people?
+    redirect_to root_path unless logged_in_user.can_view_all_people?
   end
 
   def index
@@ -13,7 +13,7 @@ class PeopleController < ApplicationController
   end
 
   def contacts
-  	@people = Person.where(record_creator: current_user).order("LOWER(name)").paginate(page: params[:page])
+  	@people = Person.where(record_creator: logged_in_user).order("LOWER(name)").paginate(page: params[:page])
   	@showing_all = false
   	render 'index'
   end
@@ -24,7 +24,7 @@ class PeopleController < ApplicationController
 
   def create
   	full_person_params = person_params
-  	full_person_params[:record_creator] = current_user
+  	full_person_params[:record_creator] = logged_in_user
   	@person = Person.new(full_person_params)
   	if @person.save
   	  flash['success'] = "New contact created"
