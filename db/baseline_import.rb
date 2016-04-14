@@ -5,15 +5,18 @@ $baseline_month = 11
 
 # The data needs to be inserted under an existing user
 # use the user called "Toby Anderson" and if he doesn't exist take the first admin user
-$user = User.find_by_name "Toby Anderson"
+$user = User.find_by_name 'Toby Anderson'
 if !$user
-  admin_role = Role.find_by_name "admin"
+  admin_role = Role.find_by_name 'admin'
   $user = User.where(role: admin_role).take
 end
 
 # when we've matched up progress markers once, we don't want to have to do all
 # that work again for the next file
 $pm_cache = Hash.new
+
+# count the updates we actually make
+$update_count = 0
 
 file_list = Dir[Rails.root.join('db', 'baseline_data', '**', '*.csv')]
 
@@ -27,8 +30,8 @@ end
 # this code was taken from rosettacode.org and would have been much more fun had I
 # written it myself.
 # In this script it is called by a function that discards the result if it's above
-# a certain cutt off. It would speed things up if we could get this thing to
-# stop if it becomes sure the result would be above the cuttoff
+# a certain cutoff. It would speed things up if we could get this thing to
+# stop if it becomes sure the result would be above the cutoff
 def levenshtein_distance(a, b)
   a, b = a.downcase, b.downcase
   costs = Array(0..b.length) # i == 0
@@ -42,23 +45,23 @@ def levenshtein_distance(a, b)
 end
 
 # Try to find a match for a progress marker based on description.
-# If we can't find an exact match find the closest based on the Lavenshtein distance.
+# If we can't find an exact match find the closest based on the Levenshtein distance.
 # Use a given outcome area and weighting to narrow down the search.
 # If the closest distance is greater than the given cutoff return nil.
 def match_progress_marker(description, outcome_area, weight, unmatched_progress_markers, cutoff)
   if ! description or description.empty?
-    raise "Missing progress marker"
+    raise 'Missing progress marker'
   end
   # first check the cache in case we've matched this before
   if progress_marker = $pm_cache[description]
-    puts "#{outcome_area.name} #{weight} #{progress_marker.name}"
+    puts "#{outcome_area.name} (#{weight}) - #{progress_marker.name}"
     return progress_marker
   elsif progress_marker = ProgressMarker.find_by_description(description)
-    puts "#{outcome_area.name} #{weight} #{progress_marker.name}"
+    puts "#{outcome_area.name} (#{weight}) - #{progress_marker.name}"
     return progress_marker
   elsif progress_marker = ProgressMarker.find_by_description(description.chomp '.')
     # in case there is a trailing '.' that isn't in the db descriptions
-    puts "#{outcome_area.name} #{weight} #{progress_marker.name}"
+    puts "#{outcome_area.name} (#{weight}) - #{progress_marker.name}"
     return progress_marker
   else
     # go through every progress marker comparing the descriptions
@@ -76,12 +79,11 @@ def match_progress_marker(description, outcome_area, weight, unmatched_progress_
       end
     end
     if closest_distance <= cutoff
-      puts "#{outcome_area.name} #{weight} #{closest.name}"
+      puts "#{outcome_area.name} (#{weight}) - #{closest.name}"
       if closest_distance >= 50
-        puts "uncertain match (distance: #{closest_distance})"
-        puts description
-        puts closest.description
-        puts ""
+        puts "* uncertain match (distance: #{closest_distance})"
+        puts "* file - #{description}"
+        puts "* db   - #{closest.description}"
       end
       return closest
     else
@@ -91,7 +93,8 @@ def match_progress_marker(description, outcome_area, weight, unmatched_progress_
 end
 
 def set_level(progress_marker, geo_state, language, level)
-  language_progress = LanguageProgress.find_or_create_by(progress_marker: progress_marker, language: language)
+  state_language  = StateLanguage.includes(:language).find_by(geo_state: geo_state, language: language)
+  language_progress = LanguageProgress.find_or_create_by(progress_marker: progress_marker, state_language: state_language)
   if !language_progress.persisted?
     puts "Unable to find or create a language process object for #{progress_marker.name} : #{language.name}"
     if language_progress.errors.any?
@@ -113,9 +116,17 @@ def set_level(progress_marker, geo_state, language, level)
       year: $baseline_year,
       month: $baseline_month,
       progress: level)
+    if progress_update
+      puts "#{state_language.language_name}: progress level set to #{level}"
+      $update_count += 1
+    else
+      puts "#{state_language.language_name}: unable to set progress level!"
+    end
     return progress_update
   else
-    return existing_updates.max_by(&:created_at)
+    pm = existing_updates.max_by(&:created_at)
+    puts "#{state_language.language_name}: skipping - progress level was already set at #{pm.progress} (baseline file has #{level})"
+    return pm
   end
 end
 
@@ -133,14 +144,13 @@ def parse_row(row, geo_states, languages, unmatched_progress_markers, pm_distanc
   end
   unmatched_progress_markers.delete progress_marker
   $pm_cache[row[:progress_marker]] = progress_marker
-  puts "PMs remaining: #{unmatched_progress_markers.count}"
 
   # now we've found the progress marker we can parse the rest of the row
   row.to_hash.slice!(:progress_marker, :outcome_area, :weight).each do |key, level|
     if level and level[/\d+/] # level contains digits
       update = set_level(progress_marker, geo_states[key], languages[key], level[/\d+/].to_i)
       if !update.persisted?
-        puts "unable to save progress update"
+        puts 'unable to save progress update'
         puts "#{progress_marker.name} : #{language.name}"
         update.errors.full_messages.each do |error_msg|
           puts error_msg
@@ -148,6 +158,8 @@ def parse_row(row, geo_states, languages, unmatched_progress_markers, pm_distanc
       end
     end
   end
+  puts '-'
+  puts "PMs remaining: #{unmatched_progress_markers.count}"
   return true
 end
 
@@ -223,3 +235,5 @@ end
 file_list.each do |file|
   import_from_file(file)
 end
+
+puts "Total number of updates: #{$update_count}"

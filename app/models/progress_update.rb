@@ -1,5 +1,6 @@
 class ProgressUpdate < ActiveRecord::Base
 
+  #TODO: Make this not state based. Delegate geo_state through language_progress to state_language
   include StateBased
 	
   belongs_to :user
