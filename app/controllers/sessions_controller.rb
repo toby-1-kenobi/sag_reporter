@@ -7,9 +7,16 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       log_in user
       remember user
-      redirect_back_or root_path
+      if params[:session][:password] == 'password'
+        flash['info'] = 'Welcome to Last Command Reporter.' +
+            ' Please make a new password. It should be something another person could not guess.' +
+            ' Type it here two times and click \'update\'.'
+        redirect_to edit_user_path(user)
+      else
+        redirect_back_or root_path
+      end
     else
-      flash.now["error"] = 'Phone number or password not correct'
+      flash.now['error'] = 'Phone number or password not correct'
       render 'new'
     end
   end
