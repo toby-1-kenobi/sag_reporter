@@ -47,7 +47,7 @@
       <% end %>
     <% end %>
   <% end %>
-  <% if logged_in_user.can_edit_report? or current_user = report.reporter %>
+  <% if logged_in_user.can_edit_report? or logged_in_user = report.reporter %>
   	  <%= link_to edit_report_path(report), class: "waves-effect btn white-text tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => "Edit" do %>
   	    <i class="material-icons">edit</i>
       <% end %>
