@@ -107,7 +107,7 @@
       </div>
     <% end %>
       
-    <% if current_user.can_view_all_reports? %>
+    <% if logged_in_user.can_view_all_reports? %>
           <div class="col s6 m4 l3">
             <%= link_to reports_path do %>
                 <div class="card-panel home-link amber z-depth-2 center-align">
