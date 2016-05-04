@@ -11,7 +11,7 @@ class Report < ActiveRecord::Base
   belongs_to :challenge_report, inverse_of: :report
 	has_and_belongs_to_many :languages
 	has_and_belongs_to_many :topics
-  has_many :pictures, class_name: 'UploadedFile'
+  has_many :pictures, class_name: 'UploadedFile', dependent: :nullify
   has_many :observations, inverse_of: :report, dependent: :destroy
   has_many :observers, through: :observations, source: 'person'
   accepts_nested_attributes_for :pictures,
