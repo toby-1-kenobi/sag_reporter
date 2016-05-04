@@ -29,6 +29,16 @@
   <%= render 'layouts/header' unless @supress_header %>
   <main>
     <div class="container">
+      <% if logged_in_user.authenticate('password') %>
+        <div class="card orange" >
+          <div class="card-content">
+            You have an insecure password, please change it.
+          </div>
+          <div class="card-action">
+            <%= link_to 'change password', edit_user_path(logged_in_user), class: 'grey-text text-lighten-3' %>
+          </div>
+        </div>
+      <% end %>
       <% flash.each do |message_type, message| %>
         <% if flash_values[message_type] %>
           <div class="card-panel <%= flash_values[message_type][:colour] %>">
