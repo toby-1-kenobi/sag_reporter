@@ -29,7 +29,7 @@
   <%= render 'layouts/header' unless @supress_header %>
   <main>
     <div class="container">
-      <% if logged_in_user.authenticate('password') %>
+      <% if logged_in_user and logged_in_user.authenticate('password') %>
         <div class="card orange" >
           <div class="card-content">
             You have an insecure password, please change it.
