@@ -23,7 +23,14 @@ class User < ActiveRecord::Base
   validates :name, presence: true, length: { maximum: 50 }
   validates :phone, presence: true, length: { is: 10 }, format: { with: /\A\d+\Z/ }, uniqueness: true
   has_secure_password
-  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
+  validates :password,
+            presence: true,
+            length: { minimum: 6 },
+            format: {
+                with: /\A[\d\w]+\Z/im,
+                message: 'must use only letters and numbers'
+            },
+            allow_nil: true
   validates :mother_tongue_id, presence: true, allow_nil: false
   validates :role_id, presence: true, allow_nil: false
   validates :geo_states, presence: true
