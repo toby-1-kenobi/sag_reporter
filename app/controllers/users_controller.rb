@@ -101,7 +101,7 @@ class UsersController < ApplicationController
       if params[:id] and logged_in_user?(User.find(params[:id]))
         safe_params.reject!{ |p| p == :role_id }
         # but admin user can change his own state
-        safe_params.reject!{ |p| p = {:geo_states => []} } unless logged_in_user.is_an_admin?
+        safe_params.reject!{ |p| p == {:geo_states => []} } unless logged_in_user.is_an_admin?
       end
       params.require(:user).permit(safe_params)
     end
