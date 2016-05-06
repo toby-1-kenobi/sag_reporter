@@ -27,8 +27,8 @@ class User < ActiveRecord::Base
             presence: true,
             length: { minimum: 6 },
             format: {
-                with: /\A[\d\w]+\Z/im,
-                message: 'must use only letters and numbers'
+                with: /\A[\d\w ]+\Z/im,
+                message: 'must use only letters, numbers and spaces'
             },
             allow_nil: true
   validates :mother_tongue_id, presence: true, allow_nil: false
