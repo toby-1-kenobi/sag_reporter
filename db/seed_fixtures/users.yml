@@ -3,6 +3,7 @@ rachel:
   phone: 7602330833
   password_digest: <%= User.digest('password') %>
   mother_tongue: english
+  geo_states: assam, nb
   role: admin
 
 toby:
@@ -10,4 +11,5 @@ toby:
   phone: 8972247235
   password_digest: <%= User.digest('password') %>
   mother_tongue: english
+  geo_states: nb
   role: admin

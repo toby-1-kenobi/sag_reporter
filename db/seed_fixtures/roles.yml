@@ -4,9 +4,8 @@ admin:
   permissions: create_user, edit_user, view_all_users,
     delete_user, view_roles, edit_role, create_role,
     view_all_languages, create_language, edit_language,
-    view_all_topics, create_topic, edit_topic,
+    view_all_topics,
     view_all_reports, create_report, edit_report, archive_report, tag_report,
-    view_all_tallies, create_tally, edit_tally, archive_tally, increase_tally,
     create_event, view_all_people, report_numbers, view_output_totals,
     evaluate_progress, view_outcome_totals, add_resource, edit_resource, view_all_resources
 

@@ -91,7 +91,11 @@ def match_progress_marker(description, outcome_area, weight, unmatched_progress_
 end
 
 def set_level(progress_marker, geo_state, language, level)
-  language_progress = LanguageProgress.find_or_create_by(progress_marker: progress_marker, language: language)
+  state_language = StateLanguage.find_by(geo_state: geo_state, language: language)
+  if !state_language
+    raise "Could not find state language for #{geo_state.name} - #{language.name}."
+  end
+  language_progress = LanguageProgress.find_or_create_by(progress_marker: progress_marker, state_language: state_language)
   if !language_progress.persisted?
     puts "Unable to find or create a language process object for #{progress_marker.name} : #{language.name}"
     if language_progress.errors.any?
