@@ -127,7 +127,7 @@ module FixtureParser
   	  fixtures_array.each_with_index do |fixture_name, index|
   	  	if obj = all_fixture_instances[fixture_name]
   	  	  fixtures_array[index] = obj
-  	  	else
+				else
   	  	  # could not find one fixture
   	  	  # it must just be a string after all
   	  	  return [value]
