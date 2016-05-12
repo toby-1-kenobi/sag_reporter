@@ -5,6 +5,8 @@ class ImpactReport < ActiveRecord::Base
   has_one :report, inverse_of: :impact_report, dependent: :nullify
   has_and_belongs_to_many :progress_markers
   has_many :topics, through: :progress_markers
+  delegate :id, to: :report, prefix: true
+  delegate :pictures, to: :report
 
   validates :shareable, :inclusion => {:in => [true, false]}
 

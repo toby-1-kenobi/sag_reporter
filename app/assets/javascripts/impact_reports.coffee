@@ -39,6 +39,17 @@ $(document).on "page:change", ->
       jQuery.each $('.card.impact_report.for-tagging.selected').attr('data-pm').split(' '), (index, pm_id) ->
         $('#pm-modal input:checkbox#pm-' + pm_id).prop 'checked', true
         return
+      # reset the pictures
+      reportID = $('.card.impact_report.for-tagging.selected').attr('data-report-id')
+      $('#pm-modal .pictures').addClass('hide').empty().attr('data-report-id', reportID)
+      if parseInt($('.card.impact_report.for-tagging.selected').attr('data-pictures')) > 0
+        $('#pm-modal .get-pictures-trigger').attr('data-report-id', reportID).removeClass('hide')
+        href = $('#pm-modal .get-pictures-trigger a').attr('href').replace(/\/\d+\//, '/' + reportID + '/')
+        $('#pm-modal .get-pictures-trigger a').attr('href', href)
+      else
+        $('#pm-modal .get-pictures-trigger').
+          attr('data-report-id', 'x').
+          addClass('hide')
       # set the shareable checkbox
       if $('.card.impact_report.for-tagging.selected.shareable').length > 0
         $('input:checkbox#shareable').prop 'checked', true
