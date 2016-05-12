@@ -9,12 +9,12 @@ class EventsController < ApplicationController
   def new
   	@event = Event.new
     @event.people.build
-  	@project_languages = StateLanguage.in_project.joins(:language).where(geo_state: current_user.geo_states).order('LOWER(languages.name)')
+  	@project_languages = StateLanguage.in_project.joins(:language).where(geo_state: logged_in_user.geo_states).order('LOWER(languages.name)')
   	@all_purposes = Purpose.all
   end
 
   def create
-    full_params = event_params.merge({record_creator: current_user})
+    full_params = event_params.merge({record_creator: logged_in_user})
     event_factory = Event::Factory.new
     if event_factory.create_event(full_params)
       redirect_to event_factory.instance
@@ -22,8 +22,8 @@ class EventsController < ApplicationController
       @event = event_factory.instance
       @event ||= Event.new
       @event.people.build
-      flash['error'] = event_factory.errors.any? ? event_factory.errors.first.message : 'Unable to submit event report!'
-      @project_languages = StateLanguage.in_project.joins(:language).where(geo_state: current_user.geo_states).order('LOWER(languages.name)')
+      flash.now['error'] = event_factory.errors.any? ? event_factory.errors.first.message : 'Unable to submit event report!'
+      @project_languages = StateLanguage.in_project.joins(:language).where(geo_state: logged_in_user.geo_states).order('LOWER(languages.name)')
       @all_purposes = Purpose.all
       render 'new'
     end

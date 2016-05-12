@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount Knock::Engine => '/knock'
 
   resources :mt_resources
   root 'static_pages#home'
@@ -40,7 +41,9 @@ Rails.application.routes.draw do
   end
   resources :tallies
   resources :topics
-  resources :users
+  resources :users do
+    get :me, on: :collection
+  end
 
   get    'adduser' => 'users#new'
 

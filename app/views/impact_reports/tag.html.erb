@@ -4,7 +4,7 @@
 
 <h1>Tag reports with progress markers</h1>
 <p class="instructions">
-  Choose a month<%= current_user.geo_states.count > 1 ? ", a state" : "" %> and languages to tag reports within.
+  Choose a month<%= logged_in_user.geo_states.count > 1 ? ", a state" : "" %> and languages to tag reports within.
 </p>
 
 <div class="row">
@@ -16,15 +16,15 @@
       <% end %>
     </ul>
   </div>
-  <% if current_user.geo_states.count > 1 %>
+  <% if logged_in_user.geo_states.count > 1 %>
     <div class="col s12 m4 input field">
       <select id="geo_state_id" name="geo_state_id" class="filter_trigger">
-        <%= options_from_collection_for_select(current_user.geo_states, 'id', 'name') %>
+        <%= options_from_collection_for_select(logged_in_user.geo_states, 'id', 'name') %>
       </select>
       <%= label_tag("geo_state_id", "State") %>
     </div>
   <% else %>
-    <%= hidden_field_tag("geo_state_id", current_user.geo_states.first.id, id: "geo_state_id") %>
+    <%= hidden_field_tag("geo_state_id", logged_in_user.geo_states.first.id, id: "geo_state_id") %>
   <% end %>
   <div class="col s12 m4">
     <%= render partial: "shared/multiselect", locals: {

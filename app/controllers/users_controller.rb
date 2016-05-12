@@ -2,7 +2,8 @@ class UsersController < ApplicationController
 
   include ParamsHelper
 
-  before_action :require_login
+  before_action :require_login, except: [:me]
+  before_action :authenticate, only: [:me]
   
   # A user's profile can only be edited or seen by
   #    themselves or
@@ -17,15 +18,21 @@ class UsersController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless current_user.can_create_user?
+    redirect_to root_path unless logged_in_user.can_create_user?
   end
 
   before_action only: [:destroy] do
-    redirect_to root_path unless current_user.can_delete_user?
+    redirect_to root_path unless logged_in_user.can_delete_user?
   end
 
   before_action only: [:index] do
-    redirect_to root_path unless current_user.can_view_all_users?
+    redirect_to root_path unless logged_in_user.can_view_all_users?
+  end
+
+  def me
+    user_data = Hash.new
+    user_data[:name] = current_user.name
+    render json: user_data
   end
 
   def new
@@ -91,10 +98,10 @@ class UsersController < ApplicationController
         {:geo_states => []}
       ]
       # current user cannot change own role or state
-      if params[:id] and current_user?(User.find(params[:id]))
+      if params[:id] and logged_in_user?(User.find(params[:id]))
         safe_params.reject!{ |p| p == :role_id }
         # but admin user can change his own state
-        safe_params.reject!{ |p| p = {:geo_states => []} } unless current_user.is_an_admin?
+        safe_params.reject!{ |p| p == {:geo_states => []} } unless logged_in_user.is_an_admin?
       end
       params.require(:user).permit(safe_params)
     end
@@ -111,16 +118,16 @@ class UsersController < ApplicationController
     def authorised_user_edit
       get_param_user
       redirect_to(root_url) unless 
-          current_user?(@user) or current_user.can_edit_user?
-      #    or @user.supervisor?(current_user)
+          logged_in_user?(@user) or logged_in_user.can_edit_user?
+      #    or @user.supervisor?(logged_in_user)
     end
 
     # Confirms authorised user for show.
     def authorised_user_show
       get_param_user
       redirect_to(root_url) unless 
-          current_user?(@user) or current_user.can_view_all_users?
-      #    or @user.supervisor?(current_user)
+          logged_in_user?(@user) or logged_in_user.can_view_all_users?
+      #    or @user.supervisor?(logged_in_user)
     end
 
     def get_param_user

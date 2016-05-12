@@ -1,7 +1,7 @@
     <li class="collection-item" id="user-<%= user.id %>">
       <i class="material-icons">person</i>
       <%= link_to user.name, user %>
-      <% if current_user.can_delete_user? && !current_user?(user) %>
+      <% if logged_in_user.can_delete_user? && !logged_in_user?(user) %>
         <%= link_to user, method: :delete, class: "waves-effect waves-red btn-flat", data: { confirm: "Delete #{user.name}?" } do %>
         <i class="material-icons">delete</i>
         <% end %>

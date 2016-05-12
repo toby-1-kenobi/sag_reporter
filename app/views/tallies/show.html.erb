@@ -31,7 +31,7 @@
 </table>
 <%= line_chart cumulative_data(@graph_data) %>
 	
-<% if current_user.can_increase_tally? %>
+<% if logged_in_user.can_increase_tally? %>
   <%= form_tag("/tally_updates", method: "post") do %>
     <%= hidden_field_tag("tally_update[tally_id]", @tally.id) %>
     <div class="row">
