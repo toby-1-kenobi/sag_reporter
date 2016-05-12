@@ -1,0 +1,10 @@
+var picturesHTML = "";
+<% @report.pictures.each do |picture| %>
+  picturesHTML += "<%= escape_javascript(image_tag picture.ref_url) if picture.ref? %>";
+<% end %>
+
+$(".pictures[data-report-id='<%= @report.id %>']").html(picturesHTML);
+
+$(".get-pictures-trigger[data-report-id='<%= @report.id %>']").addClass('hide');
+$(".pictures[data-report-id='<%= @report.id %>']").removeClass('hide');
+

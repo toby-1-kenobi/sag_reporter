@@ -35,6 +35,7 @@ Rails.application.routes.draw do
     member do
       patch 'archive'
       patch 'unarchive'
+      get 'pictures'
     end
   end
   resources :tallies

@@ -28,7 +28,7 @@ class ReportsController < ApplicationController
   end
 
   before_action :get_translations, only: [:new, :edit]
-  before_action :find_report, only: [:edit, :update, :show, :archive, :unarchive]
+  before_action :find_report, only: [:edit, :update, :show, :archive, :unarchive, :pictures]
 
   def new
   	@report = Report.new
@@ -118,6 +118,12 @@ class ReportsController < ApplicationController
   def unarchive
     @report.active!
     redirect_recent_or report
+  end
+
+  def pictures
+    respond_to do |format|
+      format.js
+    end
   end
 
   private
