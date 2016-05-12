@@ -910,6 +910,11 @@ mp_bharia:
   language: bharia
   project: true
 
+mp_kanjari_gihari:
+  geo_state: mp
+  language: kanjari_gihari
+  project: true
+
 maharashtra_english:
   geo_state: maharashtra
   language: english

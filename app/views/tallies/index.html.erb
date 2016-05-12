@@ -12,7 +12,7 @@
 
 <br />
 
-<% if current_user.can_create_tally? %>
+<% if logged_in_user.can_create_tally? %>
   <%= link_to new_tally_path, class: 'btn right waves-effect waves-light' do %>
   <i class="material-icons right">add</i>
   New Tally

@@ -6,7 +6,7 @@ class OutputTalliesController < ApplicationController
     # leave out some tallies that are currently (March 2016) being covered by external forms
     exclude = ["Community meetings", "Volunteers", "Literacy classes", "Discipleship meetings"]
   	@output_tallies_by_topic = OutputTally.where.not(name: exclude).group_by{ |ot| ot.topic }
-  	@languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+  	@languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
   end
 
   def update_numbers
@@ -23,7 +23,7 @@ class OutputTalliesController < ApplicationController
   	  language = Language.find(params[code])
   	  tally = OutputTally.find(code.split('__').first)
       outputCountParams = {
-        user: current_user,
+        user: logged_in_user,
         geo_state: geo_state,
         output_tally: tally,
         language: language,
@@ -42,14 +42,14 @@ class OutputTalliesController < ApplicationController
     else
       flash.now['error'] = "Some numbers could not be recorded"
       @output_tallies_by_topic = OutputTally.all.group_by{ |ot| ot.topic }
-      @languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+      @languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
       render 'report_numbers'
     end
 
   end
 
   def table
-  	@languages = Language.minorities(current_user.geo_states).order("LOWER(languages.name)")
+  	@languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
   end
 
 end

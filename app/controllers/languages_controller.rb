@@ -6,15 +6,15 @@ class LanguagesController < ApplicationController
 
     # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless current_user.can_create_language?
+    redirect_to root_path unless logged_in_user.can_create_language?
   end
 
   before_action only: [:index] do
-    redirect_to root_path unless current_user.can_view_all_languages?
+    redirect_to root_path unless logged_in_user.can_view_all_languages?
   end
 
   before_action only: [:edit, :update] do
-    redirect_to root_path unless current_user.can_edit_language?
+    redirect_to root_path unless logged_in_user.can_edit_language?
   end
 
   def index
@@ -60,7 +60,7 @@ class LanguagesController < ApplicationController
     @language = Language.find(params[:id])
     respond_to do |format|
       format.pdf do
-        pdf = OutputsTablePdf.new(@language, current_user.geo_state)
+        pdf = OutputsTablePdf.new(@language, logged_in_user.geo_state)
         send_data pdf.render, filename: "#{@language.name}_outputs.pdf", type: 'application/pdf'
       end
     end

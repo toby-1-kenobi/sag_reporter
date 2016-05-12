@@ -1,5 +1,5 @@
-<% provide(:title, Translation.get_string('report_event', current_user)) %>
-<h1><i class="material-icons large">event</i> <%= Translation.get_string('report_event', current_user) %></h1>
+<% provide(:title, Translation.get_string('report_event', logged_in_user)) %>
+<h1><i class="material-icons large">event</i> <%= Translation.get_string('report_event', logged_in_user) %></h1>
 <div class="row">
   <%= form_for(@event, html: {class: 'col s12'}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
@@ -11,42 +11,42 @@
           <div class="input-field col s12">
             <i class="material-icons prefix">label</i>
             <%= f.text_field :event_label %>
-            <%= f.label :event_label, Translation.get_string('event_name', current_user) %>
+            <%= f.label :event_label, Translation.get_string('event_name', logged_in_user) %>
           </div>
         </div>
 
         <div class="row">
           <div class="col s12 m8">
             <i class="material-icons prefix">location_on</i>
-            <%= label_tag Translation.get_string('location', current_user) %>
+            <%= label_tag Translation.get_string('location', logged_in_user) %>
             <div class="input-field">
               <%= render partial: 'shared/geo_state_input', locals: {form: f, input_class: 'filter-trigger'} %>
             </div>
             <div class="input-field" id="district-autocomplete">
               <%= f.autocomplete_field :district_name, autocomplete_district_name_geo_state_path(0) %>
               <%# 0 is a placeholder. It gets replaced by js with geo_state_id %>
-              <%= f.label :district_name, Translation.get_string('district', current_user) %>
+              <%= f.label :district_name, Translation.get_string('district', logged_in_user) %>
             </div>
             <div class="input-field" id="sub-district-autocomplete">
               <%= f.autocomplete_field :sub_district_name, autocomplete_sub_district_name_district_path(0), :'data-autocomplete-label' => 'No sub-district match.' %>
               <%# 0 is a placeholder. It gets replaced by js with district_id %>
-              <%= f.label :sub_district_name, Translation.get_string('sub_dist', current_user) %>
+              <%= f.label :sub_district_name, Translation.get_string('sub_dist', logged_in_user) %>
             </div>
             <%= f.hidden_field :sub_district_id %>
             <div class="input-field" id="village-input">
               <%= f.text_field :village %>
-              <%= f.label :village, Translation.get_string('village', current_user) %>
+              <%= f.label :village, Translation.get_string('village', logged_in_user) %>
             </div>
           </div>
           <div class="col s12 m4">
             <div class="input-field">
               <i class="material-icons prefix">today</i>
               <%= f.date_field :event_date, class: 'datepicker active' %>
-              <%= f.label :event_date, Translation.get_string('date', current_user) %>
+              <%= f.label :event_date, Translation.get_string('date', logged_in_user) %>
             </div>
             <div class="input-field">
               <%= f.number_field :participant_amount %>
-              <%= f.label :participant_amount, Translation.get_string('number_participants', current_user) %>
+              <%= f.label :participant_amount, Translation.get_string('number_participants', logged_in_user) %>
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@
         <div class="row">
           <div class="input-field col s12">
             <%= render partial: 'shared/multiselect', locals: {
-            	text: Translation.get_string('relates_languages', current_user),
+            	text: Translation.get_string('relates_languages', logged_in_user),
             	icon: 'language',
             	object: 'event',
             	attribute: 'languages',
@@ -62,7 +62,7 @@
               element_class: 'filterable-item',
               data: :geo_state_id,
             	collection: @project_languages,
-            	selected: Array.new
+            	selected: StateLanguage.where(language_id: @event.languages)
             } %>
           </div>
         </div>
@@ -70,7 +70,7 @@
         <div class="row">
           <div class="input-field col s12">
             <%= render partial: 'shared/multiselect', locals: {
-              text: Translation.get_string('purpose', current_user) + Translation.get_string('enable', current_user),
+              text: Translation.get_string('purpose', logged_in_user) + Translation.get_string('enable', logged_in_user),
               icon: 'directions_walk',
               object: 'event',
               attribute: 'purposes',
@@ -86,11 +86,11 @@
       <div class="people-increase input-field col s12 m4">
         <i class="material-icons prefix">people</i>
         <%= f.label :name,
-                    Translation.get_string('people_involved', current_user),
-                    {class: 'tooltipped',
+                    Translation.get_string('people_involved', logged_in_user),
+                    {class: @event.people.any? ? 'tooltipped' : 'tooltipped active',
                      'data-position' => 'top',
                      'data-delay' => '50',
-                     'data-tooltip' => Translation.get_string('one_name_row', current_user)} %>
+                     'data-tooltip' => Translation.get_string('one_name_row', logged_in_user)} %>
         <%= f.fields_for :people do |ff| %>
             <%= render partial: 'person_fields', locals: { f: ff } %>
         <% end %>
@@ -135,14 +135,14 @@
       <div class="input-field col s12 m9">
         <i class="material-icons prefix">event_available</i>
         <%= f.text_area :content, class: 'materialize-textarea' %>
-        <%= f.label :content, Translation.get_string('anything_else', current_user) %>
+        <%= f.label :content, Translation.get_string('anything_else', logged_in_user) %>
       </div>
     </div>
 
     <div class="row">
       <div>
         <%= button_tag( :class => 'btn waves-effect waves-light right') do %>
-          <%=Translation.get_string('submit', current_user) %> <i class="material-icons right">send</i>
+          <%=Translation.get_string('submit', logged_in_user) %> <i class="material-icons right">send</i>
         <% end %>
       </div>
     </div>

@@ -11,7 +11,7 @@
 
 <%= will_paginate %>
 
-<% if !@showing_all and current_user.can_view_all_people? %>
+<% if !@showing_all and logged_in_user.can_view_all_people? %>
   <%= link_to "Show all people", people_path, class: "btn waves-effect" %>
 <% end %>
 

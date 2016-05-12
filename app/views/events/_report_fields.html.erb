@@ -15,7 +15,7 @@
     <div><%= render partial: 'reports/report_type_fields', locals: { f: f } %></div>
     <div>
       <%= render partial: 'shared/multiselect', locals: {
-          text: Translation.get_string('relates_languages', current_user),
+          text: Translation.get_string('relates_languages', logged_in_user),
           icon: 'language',
           object: 'event',
           # When the report records get inserted into the event form

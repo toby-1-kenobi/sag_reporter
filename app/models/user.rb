@@ -5,6 +5,9 @@ class User < ActiveRecord::Base
   belongs_to :role
   has_many :permissions, through: :role
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter
+  has_many :events, inverse_of: :record_creator
+  has_many :people, inverse_of: :record_creator
+  has_many :progress_updates
   has_many :impact_reports, foreign_key: 'reporter_id', inverse_of: :reporter
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :spoken_languages, class_name: 'Language'
@@ -20,7 +23,14 @@ class User < ActiveRecord::Base
   validates :name, presence: true, length: { maximum: 50 }
   validates :phone, presence: true, length: { is: 10 }, format: { with: /\A\d+\Z/ }, uniqueness: true
   has_secure_password
-  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
+  validates :password,
+            presence: true,
+            length: { minimum: 6 },
+            format: {
+                with: /\A[\d\w ]+\Z/im,
+                message: 'must use only letters, numbers and spaces'
+            },
+            allow_nil: true
   validates :mother_tongue_id, presence: true, allow_nil: false
   validates :role_id, presence: true, allow_nil: false
   validates :geo_states, presence: true

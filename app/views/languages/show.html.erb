@@ -2,13 +2,13 @@
 <h1 class="coloured <%= colour_class(@language.colour) %>"><%= @language.name %></h1>
 <p class="lwc"><%= @language.lwc? ? "language of wider communication" : "minority language" %></p>
 <p><%= @language.description %></p>
-<% if current_user.can_edit_language? %>
+<% if logged_in_user.can_edit_language? %>
   <%= link_to edit_language_path(@language), class: "waves-effect right btn" do %>
     <i class="material-icons left">create</i>
     Edit
   <% end %>
 <% end %>
-<% if current_user.can_view_all_languages? %>
+<% if logged_in_user.can_view_all_languages? %>
   <%= link_to languages_path, class: "waves-effect btn" do %>
     All languages
   <% end %>
