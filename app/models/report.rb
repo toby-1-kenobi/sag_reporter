@@ -41,12 +41,16 @@ class Report < ActiveRecord::Base
     }
   end
 
-  def report_type
+  def report_type_a
     types = Array.new
     types << planning_report.report_type if planning_report
     types << impact_report.report_type if impact_report
     types << challenge_report.report_type if challenge_report
-    types.to_sentence.humanize
+    return types
+  end
+
+  def report_type
+    report_type_a.to_sentence.humanize
   end
 
   def full_location

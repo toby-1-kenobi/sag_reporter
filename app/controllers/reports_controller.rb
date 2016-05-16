@@ -138,14 +138,23 @@ class ReportsController < ApplicationController
     languages = params['controls']['language'].values.map{ |id| id.to_i }
     @reports = Report.includes(:languages).where('reports.geo_state_id' => geo_states, 'languages.id' => languages)
 
-    if !params["show_archived"]
+    if !params['show_archived']
       @reports = @reports.active
     end
+
+    report_types = Array.new
+    report_types << params['show_impact'] if params['show_impact']
+    report_types << params['show_planning'] if params['show_planning']
 
     start_date = params['from_date'].to_date
     end_date = params['to_date'].to_date
     @reports = @reports.select do |report|
-      report.report_date >= start_date and report.report_date <= end_date
+      # reports after the start date,
+      report.report_date >= start_date and
+          # before the end date
+          report.report_date <= end_date and
+          # and have at least one of the selected report types
+          (report_types & report.report_type_a).any?
     end
 
     respond_to do |format|
