@@ -8,7 +8,7 @@
   	  <div class=time-ago"><%= time_ago_in_words(report.report_date) %> ago</div>
   	<% end %>
     <div class="row">
-      <div class="col s6 location-info grey-text"><%= report.full_location %></div>
+      <div class="col s12 location-info grey-text"><%= report.full_location %></div>
       <% if report.observers.any? %>
         <div class="col s6 observers">
           Sourced from <%= report.observers.pluck(:name).to_a.to_sentence %>

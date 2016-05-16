@@ -82,9 +82,9 @@ class ReportsController < ApplicationController
 
   def index
     @geo_states = logged_in_user.geo_states
-    @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc).paginate(page: params[:page])
-    @impact_reports = ImpactReport.includes(:report).where(reports: {geo_state_id: @geo_states}).order(:created_at => :desc).paginate(page: params[:page])
-    recent_view
+    @zones = Zone.of_states(@geo_states)
+    @languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
+    @reports = Report.includes(:languages, :reporter, :impact_report => [:progress_markers => :topic]).where(geo_state: @geo_states).order(:report_date => :desc).paginate(page: params[:page])
   end
 
   def by_language
@@ -123,6 +123,36 @@ class ReportsController < ApplicationController
   def pictures
     respond_to do |format|
       format.js
+    end
+  end
+
+  def spreadsheet
+    # The user can't see reports from geo_states they're not in
+    # so take the intersection of the list of geo_states in the params
+    # and the users geo_states
+    if params['controls']['geo_state']
+      geo_states = params['controls']['geo_state'].values.map{ |id| id.to_i } & logged_in_user.geo_states.pluck(:id)
+    else
+      geo_states = logged_in_user.geo_states
+    end
+    languages = params['controls']['language'].values.map{ |id| id.to_i }
+    @reports = Report.includes(:languages).where('reports.geo_state_id' => geo_states, 'languages.id' => languages)
+
+    if !params["show_archived"]
+      @reports = @reports.active
+    end
+
+    start_date = params['from_date'].to_date
+    end_date = params['to_date'].to_date
+    @reports = @reports.select do |report|
+      report.report_date >= start_date and report.report_date <= end_date
+    end
+
+    respond_to do |format|
+      format.csv do
+        headers['Content-Disposition'] = "attachment; filename=\"impact-reports.csv\""
+        headers['Content-Type'] ||= 'text/csv; charset=utf-8'
+      end
     end
   end
 

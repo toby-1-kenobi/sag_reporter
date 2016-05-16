@@ -7,11 +7,10 @@ Rails.application.routes.draw do
   resources :events do
     get :autocomplete_person_name, :on => :collection
   end
-  resources :impact_reports, except: [:new, :create] do
+  resources :impact_reports, except: [:new, :create, :index] do
     collection do
       get 'tag'
       get 'tag/:month', to: 'impact_reports#tag', as: 'tag_month'
-      post 'spreadsheet', to: 'impact_reports#spreadsheet', as: 'spreadsheet'
     end
     get 'tag', on: :collection
     member do
@@ -32,6 +31,7 @@ Rails.application.routes.draw do
       get 'by_language'
       get 'by_topic'
       get 'by_reporter'
+      post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
     end
     member do
       patch 'archive'
