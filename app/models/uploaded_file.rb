@@ -9,8 +9,8 @@ class UploadedFile < ActiveRecord::Base
 
   # Validates the size of an uploaded file.
   def file_size
-    if ref.size > 5.megabytes
-      errors.add(:ref, "should be less than 5MB")
+    if ref.size > 20.megabytes
+      errors.add(:ref, 'should be less than 20MB')
     end
   end
 
