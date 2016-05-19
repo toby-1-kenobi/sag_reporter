@@ -136,7 +136,7 @@ class ReportsController < ApplicationController
       geo_states = logged_in_user.geo_states
     end
     languages = params['controls']['language'].values.map{ |id| id.to_i }
-    @reports = Report.includes(:languages).where(geo_states: geo_states, languages: languages)
+    @reports = Report.includes(:languages).where(geo_state: geo_states, 'languages.id' => languages)
 
     if !params['show_archived']
       @reports = @reports.active
