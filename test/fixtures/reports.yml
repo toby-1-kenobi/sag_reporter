@@ -1,42 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-hope:
-  reporter: andrew
-  content: "The pastor wants to expand women's ministry"
-  status: <%= Report.statuses['active'] %>
-  languages: bodo
-  geo_state: nb
-  report_date: <%= 2.days.ago %>
-
-event:
-  reporter: emma
-  content: "No one is coming to the library"
-  status: <%= Report.statuses['active'] %>
-  languages: toto
-  geo_state: nb
-  report_date: <%= 2.weeks.ago %>
-
-impact:
-  reporter: richard
-  content: "We're going to make a CD of songs"
-  status: <%= Report.statuses['active'] %>
-  languages: toto
-  geo_state: nb
-  report_date: <%= 2.months.ago %>
-
-old:
-  reporter: andrew
-  content: old report
-  status: <%= Report.statuses['active'] %>
-  languages: toto
-  geo_state: nb
-  report_date: <%= 2.years.ago %>
-
 <%
 users = [:richard, :emma, :andrew]
 states = ["active", "active", "active", "active", "active", "active", "active", "archived"]
 languages = [:toto, :rajbanshi, :bodo, :sadri, :santali]
-topics = [:movement_building, :language_development, :social_development, :leadership_development, :faith_development]
 %>
 <% (1..80).each do |index| %>
 report-<%= index %>:
@@ -45,15 +12,8 @@ report-<%= index %>:
   status: <%= Report.statuses[states.sample] %>
   languages: <%= languages.sample %>
   geo_state: nb
-  topics: <%= topics.sample %>
-  report_date: <%= rand(13.months).seconds.ago %>
+  report_date: <%= rand(13).months.ago %>
+  impact_report: impact-report-<%= index %>
 <% end %>
 
-test_report:
-    content: "report content"
-    reporter: andrew
-    geo_state: nb
-    status: "active"
-    report_date: <%= Date.today %>
-    impact_report: test_impact_report
 

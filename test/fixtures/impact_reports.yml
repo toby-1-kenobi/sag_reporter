@@ -1,4 +1,6 @@
 # Read about fixtures at
 # http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-test_impact_report: {}
+<% (1..100).each do |index| %>
+  impact-report-<%= index %>: {}
+<% end %>
