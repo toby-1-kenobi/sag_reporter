@@ -83,8 +83,8 @@ class ReportsController < ApplicationController
   def index
     @geo_states = logged_in_user.geo_states
     @zones = Zone.of_states(@geo_states)
-    @languages = Language.minorities(@geo_states).order("LOWER(languages.name)")
-    @reports = Report.includes(:languages, :reporter, :impact_report => [:progress_markers => :topic]).where(geo_state: @geo_states).order(:report_date => :desc).paginate(page: params[:page])
+    @languages = Language.minorities(@geo_states).order('LOWER(languages.name)')
+    @reports = Report.includes(:languages, :reporter, :impact_report => [:progress_markers => :topic]).where(geo_state: @geo_states).order(:report_date => :desc)
   end
 
   def by_language
@@ -136,7 +136,7 @@ class ReportsController < ApplicationController
       geo_states = logged_in_user.geo_states
     end
     languages = params['controls']['language'].values.map{ |id| id.to_i }
-    @reports = Report.includes(:languages).where('reports.geo_state_id' => geo_states, 'languages.id' => languages)
+    @reports = Report.includes(:languages).where(geo_states: geo_states, languages: languages)
 
     if !params['show_archived']
       @reports = @reports.active
