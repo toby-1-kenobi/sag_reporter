@@ -7,6 +7,31 @@
   outcome_areas = @outcome_scores[dates[0]].values.first['content'].keys
 %>
 
+<div class="row transformation-dates">
+  <div class="col s12 m6 l4">
+    Baseline date:
+    <%= select_year dates[0].year, start_year: @start_year, end_year: Date.today.year, field_name: 'year_a' %>
+    <%= select_month dates[0].month, field_name: 'month_a' %>
+  </div>
+  <div class="col s12 m6 l4">
+    Final date:
+    <%= select_year dates[1].year, start_year: @start_year, end_year: Date.today.year, field_name: 'year_b' %>
+    <%= select_month dates[1].month, field_name: 'month_b' %>
+  </div>
+  <div class="col s12 m6 l4 offset-m6">
+    <%=
+      link_to 'Update Data',
+              transformation_path(
+                  year_a: dates[0].year,
+                  month_a: dates[0].month,
+                  year_b: dates[1].year,
+                  month_b: dates[1].month
+              ),
+              class: 'btn update-transformation-data'
+    %>
+  </div>
+</div>
+
 <table>
   <thead>
     <tr>
