@@ -108,10 +108,10 @@ class StateLanguagesController < ApplicationController
     # Use dates from parameters or last month and this month
     params[:year_a] ||= Date.today.prev_month.year
     params[:month_a] ||= Date.today.prev_month.month
-    date_a = Date.new params[:year_a], params[:month_a]
+    date_a = Date.new params[:year_a].to_i, params[:month_a].to_i
     params[:year_b] ||= Date.today.year
     params[:month_b] ||= Date.today.month
-    date_b = Date.new params[:year_b], params[:month_b]
+    date_b = Date.new params[:year_b].to_i, params[:month_b].to_i
     # for each project language get the aggregated data
     @outcome_scores = { date_a => Hash.new, date_b => Hash.new }
     StateLanguage.in_project.find_each do |state_language|
