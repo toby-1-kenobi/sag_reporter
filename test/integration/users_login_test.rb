@@ -43,9 +43,14 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
   end
 
   test 'get authentication token' do
-    post '/knock/auth_token', {'auth': {'phone': @user.phone, password: 'password'}}
+    post '/knock/auth_token', {auth: {phone: @user.phone, password: 'password'}}
     response = ActiveSupport::JSON.decode @response.body
     assert_match /.*\..*\..*/, response['jwt']
+  end
+
+  test 'no authentication on bad credentials' do
+    post '/knock/auth_token', {auth: {phone: @user.phone, password: 'invalid'}}
+    assert_response :missing
   end
 
 end
