@@ -6,7 +6,6 @@ class Language < ActiveRecord::Base
   has_many :language_tallies, class_name: 'LanguagesTally', dependent: :destroy
   has_many :tallies, through: :language_tallies
   has_and_belongs_to_many :events
-  has_many :language_progresses, dependent: :destroy
   has_many :progress_markers, through: :language_progresses
   has_many :output_counts
   has_many :mt_resources

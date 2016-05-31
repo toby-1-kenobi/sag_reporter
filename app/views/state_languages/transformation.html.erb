@@ -1,0 +1,42 @@
+<% provide(:title, 'Outcome area transformation') %>
+
+<h1>Transformation by language and outcome area</h1>
+
+<%
+  outcome_areas = @outcome_scores.values.first.values.first['content'].keys
+  dates = @outcome_scores.keys
+%>
+
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">Zone</th><th rowspan="2">State</th><th rowspan="2">Language</th>
+      <% outcome_areas.each do |outcome_area| %>
+        <th colspan="2"><%= outcome_area %></th>
+      <% end %>
+    </tr>
+    <tr>
+      <% outcome_areas.each do |outcome_area| %>
+          <th><%= dates[0].strftime('%b %Y') %></th>
+          <th><%= dates[1].strftime('%b %Y') %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @outcome_scores.values.first.keys.each do |language| %>
+      <tr>
+        <td><%= language.zone.name %></td>
+        <td><%= language.state_name %></td>
+        <td><%= language.language_name %></td>
+        <% outcome_areas.each do |outcome_area| %>
+            <% language_data0 = @outcome_scores[dates[0]][language] %>
+            <% data0 = language_data0 ? language_data0['content'][outcome_area] : nil %>
+            <td><%= data0 ? data0.values.first : 0 %></td>
+            <% language_data1 = @outcome_scores[dates[1]][language] %>
+            <% data1 = language_data1 ? language_data1['content'][outcome_area] : nil %>
+            <td><%= data1 ? data1.values.first : 0%></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

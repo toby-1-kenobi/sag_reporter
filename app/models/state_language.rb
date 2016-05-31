@@ -2,12 +2,13 @@ class StateLanguage < ActiveRecord::Base
 
   belongs_to :geo_state
   belongs_to :language
-  has_many :language_progresses
+  has_many :language_progresses, dependent: :destroy
   has_many :progress_updates, through: :language_progresses
 
   delegate :name, to: :language, prefix: true
   delegate :name, to: :geo_state, prefix: 'state'
   delegate :colour, to: :language, prefix: true
+  delegate :zone, to: :geo_state
 
   validates :geo_state, presence: true
   validates :language, presence: true

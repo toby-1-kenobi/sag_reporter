@@ -25,28 +25,28 @@ class StateLanguagesController < ApplicationController
   def get_table
     @language = StateLanguage.find(params[:id])
 
-    table_data = @language.outcome_table_data()
+    table_data = @language.outcome_table_data
 
     if table_data
-      table_head = "<thead><tr><th></th>"
-      table_data["content"].values.first.keys.each do |cell|
+      table_head = '<thead><tr><th></th>'
+      table_data['content'].values.first.keys.each do |cell|
         table_head += "<th>#{cell}</th>"
       end
-      table_head += "</tr></thead>"
+      table_head += '</tr></thead>'
 
-      table_body = "<tbody>"
-      table_data["content"].each do |row_title, row|
+      table_body = '<tbody>'
+      table_data['content'].each do |row_title, row|
         table_body += "<tr><th>#{row_title}</th>"
         row.values.each do |cell|
           table_body += "<td>#{cell}</td>"
         end
-        table_body += "</tr>"
+        table_body += '</tr>'
       end
-      table_body += "<tr><th>Totals</th>"
-      table_data["Totals"].values.each do |cell|
+      table_body += '<tr><th>Totals</th>'
+      table_data['Totals'].values.each do |cell|
         table_body += "<td>#{cell}</td>"
       end
-      table_body += "</tr></tbody>"
+      table_body += '</tr></tbody>'
 
       @table_content = "<table>#{table_head} #{table_body}</table>"
     else
@@ -99,6 +99,24 @@ class StateLanguagesController < ApplicationController
           end
         end
       end
+    end
+  end
+
+  def transformation
+    # Get the earliest in which outcome scores have ben entered
+    @start_year = ProgressUpdate.order(:year).first.year
+    # Use dates from parameters or last month and this month
+    params[:year_a] ||= Date.today.prev_month.year
+    params[:month_a] ||= Date.today.prev_month.month
+    date_a = Date.new params[:year_a], params[:month_a]
+    params[:year_b] ||= Date.today.year
+    params[:month_b] ||= Date.today.month
+    date_b = Date.new params[:year_b], params[:month_b]
+    # for each project language get the aggregated data
+    @outcome_scores = { date_a => Hash.new, date_b => Hash.new }
+    StateLanguage.in_project.find_each do |state_language|
+      @outcome_scores[date_a][state_language] = state_language.outcome_table_data(from_date: date_a, to_date: date_a)
+      @outcome_scores[date_b][state_language] = state_language.outcome_table_data(from_date: date_b, to_date: date_b)
     end
   end
 

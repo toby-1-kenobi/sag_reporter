@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   get 'language/resources/:language_id' => 'mt_resources#language_overview'
 
   get 'overview' => 'state_languages#overview', as: 'overview'
+  get 'transformation' => 'state_languages#transformation', as: 'transformation'
   get 'overview/show_outcomes_progress/:id' => 'state_languages#show_outcomes_progress', as: 'show_outcomes_progress'
   get 'states/autocomplete_district_name/:geo_state_id' => 'geo_states#autocomplete_district_name', as: 'autocomplete_district_name_geo_state'
   get 'states/autocomplete_sub_district_name/:district_id' => 'districts#autocomplete_sub_district_name', as: 'autocomplete_sub_district_name_district'
