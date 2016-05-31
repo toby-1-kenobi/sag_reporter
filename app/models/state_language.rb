@@ -24,21 +24,19 @@ class StateLanguage < ActiveRecord::Base
     options[:to_date] ||= Date.today
 
     table = Hash.new
-    table["content"] = Hash.new
-    table["Totals"] = Hash.new
+    table['content'] = Hash.new
+    table['Totals'] = Hash.new {0}
 
     all_lps = language_progresses.includes({:progress_marker => :topic}, :progress_updates)
     all_lps.each do |lp|
       oa_name = lp.progress_marker.topic.name
-      table["content"][oa_name] ||= Hash.new
+      table['content'][oa_name] ||= Hash.new {0}
       lp.outcome_scores(options[:from_date], options[:to_date]).each do |date, score|
-        table["content"][oa_name][date] ||= 0
-        table["content"][oa_name][date] += score
-        table["Totals"][date] ||= 0
-        table["Totals"][date] += score
+        table['content'][oa_name][date] += score
+        table['Totals'][date] += score
       end
     end
-    if table["content"].any?
+    if table['content'].any?
       return table
     else
       return nil
@@ -50,7 +48,7 @@ class StateLanguage < ActiveRecord::Base
     table_data = outcome_table_data(options)
     if table_data
       chart_data = Array.new
-      table_data["content"].each do |row_name, table_row|
+      table_data['content'].each do |row_name, table_row|
         chart_row = {name: row_name, data: table_row}
         chart_data.push(chart_row)
       end

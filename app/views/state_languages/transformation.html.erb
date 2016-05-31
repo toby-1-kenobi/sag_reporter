@@ -3,8 +3,8 @@
 <h1>Transformation by language and outcome area</h1>
 
 <%
-  outcome_areas = @outcome_scores.values.first.values.first['content'].keys
   dates = @outcome_scores.keys
+  outcome_areas = @outcome_scores[dates[0]].values.first['content'].keys
 %>
 
 <table>
