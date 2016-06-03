@@ -103,6 +103,8 @@ class StateLanguagesController < ApplicationController
   end
 
   def transformation
+    @outcome_area_colours = Hash.new
+    Topic.find_each{ |oa| @outcome_area_colours[oa.name] = oa.colour }
     # Get the earliest in which outcome scores have ben entered
     @start_year = ProgressUpdate.order(:year).first.year
     # Use dates from parameters or last month and this month
