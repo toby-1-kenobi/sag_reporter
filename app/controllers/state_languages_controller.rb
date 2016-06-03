@@ -106,8 +106,8 @@ class StateLanguagesController < ApplicationController
     # Get the earliest in which outcome scores have ben entered
     @start_year = ProgressUpdate.order(:year).first.year
     # Use dates from parameters or last month and this month
-    params[:year_a] ||= Date.today.prev_month.year
-    params[:month_a] ||= Date.today.prev_month.month
+    params[:year_a] ||= 6.months.ago.year
+    params[:month_a] ||= 6.months.ago.month
     date_a = Date.new params[:year_a].to_i, params[:month_a].to_i
     params[:year_b] ||= Date.today.year
     params[:month_b] ||= Date.today.month
