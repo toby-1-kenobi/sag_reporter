@@ -4,38 +4,21 @@
   <div class="collapsible-body">
     <div class="row">
 
-
-      <% if logged_in_user.can_create_report? %>
-        <div class="col s6 m4 l3">
-          <%= link_to new_report_path do %>
-            <div class="card-panel home-link blue z-depth-2 center-align">
-              <i class="lcr-icon lcr-icon-write-report large black-text"></i>
-            </div>
-            <div class="center-align black-text">Report impact stories</div>
-          <% end %>
-        </div>
-      <% end %>
-
-      <% if logged_in_user.can_create_report? %>
-        <div class="col s6 m4 l3">
-          <%= link_to 'https://www.surveymonkey.com/r/R989HM9' do %>
-            <div class="card-panel home-link yellow z-depth-2 center-align">
-              <i class="lcr-icon lcr-icon-build large black-text"></i>
-            </div>
-            <div class="center-align black-text">Report on movement building</div>
-          <% end %>
-        </div> 
-      <% end %>
-
-      <% if logged_in_user.can_tag_report? %>
-        <div class="col s6 m4 l3">
-          <%= link_to "impact_reports/tag" do %>
-            <div class="card-panel home-link red z-depth-2 center-align">
-              <i class="lcr-icon lcr-icon-tag large black-text"></i>
-            </div>
-            <div class="center-align black-text">Tag impact reports</div>
-          <% end %>
-        </div>
+      <% @links.select{ |ld| ld[:category] == 'weekly' }.each do |link_data| %>
+        <% if logged_in_user.permissions.find_by_name link_data[:permission] %>
+          <div class="col s6 m4 l3">
+            <%= link_to link_data[:path] do %>
+              <div class="card-panel home-link <%= link_data[:colour] %> z-depth-2 center-align">
+                <% if link_data[:lcr_icon] %>
+                  <i class="lcr-icon <%= link_data[:lcr_icon] %> large black-text"></i>
+                <% else %>
+                  <i class="material-icons large black-text"><%= link_data[:icon] %></i>
+                <% end %>
+              </div>
+              <div class="center-align black-text"><%= link_data[:text] %></div>
+            <% end %>
+          </div>
+        <% end %>
       <% end %>
 
     </div>
@@ -46,36 +29,22 @@
   <div class="collapsible-body">
     <div class="row">
 
-      <% if logged_in_user.can_report_numbers? %>
-        <div class="col s6 m4 l3">
-          <%= link_to report_numbers_path do %>
-            <div class="card-panel home-link green z-depth-2 center-align">
-              <i class="material-icons large black-text">assessment</i>
-            </div>
-            <div class="center-align black-text">Report numbers for the month</div>
+      <% @links.select{ |ld| ld[:category] == 'monthly' }.each do |link_data| %>
+          <% if logged_in_user.permissions.find_by_name link_data[:permission] %>
+              <div class="col s6 m4 l3">
+                <%= link_to link_data[:path] do %>
+                    <div class="card-panel home-link <%= link_data[:colour] %> z-depth-2 center-align">
+                      <% if link_data[:lcr_icon] %>
+                          <i class="lcr-icon <%= link_data[:lcr_icon] %> large black-text"></i>
+                      <% else %>
+                          <i class="material-icons large black-text"><%= link_data[:icon] %></i>
+                      <% end %>
+                    </div>
+                    <div class="center-align black-text"><%= link_data[:text] %></div>
+                <% end %>
+              </div>
           <% end %>
-        </div>
-
-        <div class="col s6 m4 l3">
-          <%= link_to new_mt_resource_path do %>
-            <div class="card-panel home-link brown z-depth-2 center-align">
-              <i class="material-icons large black-text">build</i>
-            </div>
-            <div class="center-align black-text">Report on a completed resource</div>
-          <% end %>
-        </div>
       <% end %>
-
-    <% if logged_in_user.can_evaluate_progress? %>
-      <div class="col s6 m4 l3">
-        <%= link_to select_to_assess_path do %>
-          <div class="card-panel home-link purple z-depth-2 center-align">
-              <i class="material-icons large black-text">check_circle</i>
-          </div>
-          <div class="center-align black-text">Assess progress marker levels</div>
-        <% end %>
-      </div>
-    <% end %>
 
     </div>
   </div>
@@ -85,38 +54,22 @@
   <div class="collapsible-body">
     <div class="row">
 
-    <% if logged_in_user.can_create_report? %>
-      <div class="col s6 m4 l3">
-        <%= link_to 'https://docs.google.com/forms/d/1NQHDwomtgh2kVmx1BZRzDuv1lv__SaVzAHfBOH_JlXU/viewform?c=0&w=1' do %>
-          <div class="card-panel home-link teal z-depth-2 center-align">
-            <i class="lcr-icon lcr-icon-workshop large black-text"></i>
-          </div>
-          <div class="center-align black-text">Report on a workshop</div>
-        <% end %>
-      </div>
-    <% end %>
-
-    <% if logged_in_user.can_create_event? %>
-      <div class="col s6 m4 l3">
-      <%= link_to events_new_path do %>
-          <div class="card-panel home-link cyan z-depth-2 center-align">
-            <i class="material-icons large black-text">event</i>
-          </div>
-          <div class="center-align black-text"><%= Translation.get_string('report_event', logged_in_user) %></div>
-        <% end %>
-      </div>
-    <% end %>
-      
-    <% if logged_in_user.can_view_all_reports? %>
-          <div class="col s6 m4 l3">
-            <%= link_to reports_path do %>
-                <div class="card-panel home-link amber z-depth-2 center-align">
-                  <i class="material-icons large black-text">dashboard</i>
-                </div>
-                <div class="center-align black-text">View all reports</div>
-            <% end %>
-          </div>
-    <% end %>
+      <% @links.select{ |ld| ld[:category] == 'other' }.each do |link_data| %>
+          <% if logged_in_user.permissions.find_by_name link_data[:permission] %>
+              <div class="col s6 m4 l3">
+                <%= link_to link_data[:path] do %>
+                    <div class="card-panel home-link <%= link_data[:colour] %> z-depth-2 center-align">
+                      <% if link_data[:lcr_icon] %>
+                          <i class="lcr-icon <%= link_data[:lcr_icon] %> large black-text"></i>
+                      <% else %>
+                          <i class="material-icons large black-text"><%= link_data[:icon] %></i>
+                      <% end %>
+                    </div>
+                    <div class="center-align black-text"><%= link_data[:text] %></div>
+                <% end %>
+              </div>
+          <% end %>
+      <% end %>
 
     </div>
   </div>
