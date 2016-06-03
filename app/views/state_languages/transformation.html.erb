@@ -32,6 +32,8 @@
   </div>
 </div>
 
+<% zone_aggregate = [Hash.new(0), Hash.new(0)] %>
+
 <table>
   <thead>
     <tr>
@@ -53,15 +55,47 @@
         <td><%= language.zone.name %></td>
         <td><%= language.state_name %></td>
         <td><%= language.language_name %></td>
-        <% outcome_areas.each do |outcome_area| %>
-            <% language_data0 = @outcome_scores[dates[0]][language] %>
-            <% data0 = language_data0 ? language_data0['content'][outcome_area] : nil %>
-            <td><%= data0 ? data0.values.first : 0 %></td>
-            <% language_data1 = @outcome_scores[dates[1]][language] %>
-            <% data1 = language_data1 ? language_data1['content'][outcome_area] : nil %>
-            <td><%= data1 ? data1.values.first : 0%></td>
+        <% outcome_areas.each do |outcome_area|
+          language_data0 = @outcome_scores[dates[0]][language]
+          data0 = language_data0 ? language_data0['content'][outcome_area] : nil
+          value0 = data0 ? data0.values.first : 0
+          zone_aggregate[0][language.zone.name] += value0
+          language_data1 = @outcome_scores[dates[1]][language]
+          data1 = language_data1 ? language_data1['content'][outcome_area] : nil
+          value1 = data1 ? data1.values.first : 0
+          zone_aggregate[1][language.zone.name] += value1
+          %>
+            <td><%= value0 %></td>
+            <td><%= value1 %></td>
         <% end %>
       </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>Zone</th>
+      <th>#LCs participating</th>
+      <th>languages</th>
+      <th>Transformation Index <%= dates[0].strftime('%b %Y') %></th>
+      <th>Transformation Index <%= dates[1].strftime('%b %Y') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% Zone.find_each do |zone| %>
+    <tr>
+      <th><%= zone.name %></th>
+      <td><%= zone.state_languages.in_project.count %></td>
+      <td>
+        <% zone.state_languages.in_project.each do |sl| %>
+          <%= "#{sl.state_name}: #{sl.language_name}" %><br />
+        <% end %>
+      </td>
+      <td><%= zone_aggregate[0][zone.name] %></td>
+      <td><%= zone_aggregate[0][zone.name] %></td>
+    </tr>
     <% end %>
   </tbody>
 </table>
