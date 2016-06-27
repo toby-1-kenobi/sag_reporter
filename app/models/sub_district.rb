@@ -4,6 +4,7 @@ class SubDistrict < ActiveRecord::Base
   has_many :events, dependent: :nullify
 
   delegate :geo_state, to: :district
+  delegate :name, to: :district, prefix: true
 
   validates :name, presence: true, allow_nil: false, uniqueness: { scope: :district }
   validates :district, presence: true, allow_nil: false
