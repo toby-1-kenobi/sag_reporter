@@ -57,15 +57,15 @@ if response == 'Y' || response == 'y' || response == ''
   puts "Saving districts"
   districts.values.each do |d|
     if !d.save
-      puts "could not save district #{d.name}"
-      d.errors.each{ |error| puts error }
+      puts "could not save district #{d.name} (#{d.geo_state.name})"
+      d.errors.each{ |attr, msg| puts "#{attr}: #{msg}" }
     end
   end
   puts "Saving sub-districts"
   sub_districts.values.each do |sd|
     if !sd.save
-      puts "could not save sub-district #{sd.name}"
-      sd.errors.each{ |error| puts error }
+      puts "could not save sub-district #{sd.name} (#{sd.district_name}, #{sd.geo_state.name})"
+      sd.errors.each{ |attr, msg| puts "#{attr}: #{msg}" }
     end
   end
   puts "Done!"
