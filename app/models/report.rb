@@ -28,7 +28,7 @@ class Report < ActiveRecord::Base
   validates :status, presence: true, allow_nil: false
   validates :report_date, presence: true
   validate :at_least_one_subtype
-  validate :location_present_for_new_record
+  #validate :location_present_for_new_record
 
   before_validation :date_init
 
