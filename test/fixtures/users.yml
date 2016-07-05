@@ -8,6 +8,7 @@ andrew:
   password_digest: <%= User.digest('password') %>
   mother_tongue: english
   role: admin
+  geo_states: nb, assam
 
 emma:
   name: Emma Evaluator

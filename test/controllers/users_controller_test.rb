@@ -3,7 +3,7 @@ require 'test_helper'
 class UsersControllerTest < ActionController::TestCase
 
   def authenticate
-    token = Knock::AuthToken.new(payload: { sub: users(:andrew).id }).token
+    token = Knock::AuthToken.new(payload: { sub: @user.id }).token
     request.env['HTTP_AUTHORIZATION'] = "Bearer #{token}"
   end
 
@@ -141,7 +141,9 @@ class UsersControllerTest < ActionController::TestCase
     authenticate
     get :me
     response = ActiveSupport::JSON.decode @response.body
-    assert_equal 'Andrew Admin', response['name']
+    assert_equal @user.name, response['name']
+    assert_equal @user.phone, response['phone']
+    assert_equal @user.geo_states.count, response['geo_states'].count
   end
 
 end
