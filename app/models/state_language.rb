@@ -37,6 +37,20 @@ class StateLanguage < ActiveRecord::Base
       end
     end
     if table['content'].any?
+      # now express all scores as a percentage of the maximum attainable
+      total_divisor = 0
+      Topic.find_each do |oa|
+        divisor = oa.max_outcome_score
+        total_divisor += divisor
+        if table['content'][oa.name]
+          table['content'][oa.name].each do |date, score|
+            table['content'][oa.name][date] = (score * 100).fdiv(divisor)
+          end
+        end
+      end
+      table['Totals'].each do |date, score|
+        table['Totals'][date] = (score * 100).fdiv(total_divisor)
+      end
       return table
     else
       return nil
@@ -52,6 +66,8 @@ class StateLanguage < ActiveRecord::Base
         chart_row = {name: row_name, data: table_row}
         chart_data.push(chart_row)
       end
+      overall_row = {name: 'Overall score', data: table_data['Totals']}
+      chart_data.push(overall_row)
       return chart_data
     else
       return nil
