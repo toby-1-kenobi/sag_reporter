@@ -5,5 +5,13 @@ class Topic < ActiveRecord::Base
   has_many :impact_reports, through: :progress_markers
 	has_many :tallies
 	has_many :output_tallies, dependent: :destroy
+
+	def max_outcome_score
+		score = 0
+		progress_markers.each do |pm|
+			score += pm.weight * ProgressMarker.spread_text.keys.max
+		end
+		return score
+	end
 	
 end

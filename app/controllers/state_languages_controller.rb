@@ -38,13 +38,13 @@ class StateLanguagesController < ApplicationController
       table_data['content'].each do |row_title, row|
         table_body += "<tr><th>#{row_title}</th>"
         row.values.each do |cell|
-          table_body += "<td>#{cell}</td>"
+          table_body += "<td>#{cell.round}</td>"
         end
         table_body += '</tr>'
       end
-      table_body += '<tr><th>Totals</th>'
+      table_body += '<tr><th>Overall score</th>'
       table_data['Totals'].values.each do |cell|
-        table_body += "<td>#{cell}</td>"
+        table_body += "<td>#{cell.round}</td>"
       end
       table_body += '</tr></tbody>'
 

@@ -23,15 +23,22 @@ class OutcomesTablePdf < Prawn::Document
 
   # Take table data made as hashes and
   # convert to an array that prawn likes
+  # values are rounded to integers along the way
   def table_to_array(table_data)
     array_data = Array.new
-    headers = table_data["content"].values.first.keys
-    headers.unshift("Outcome Area")
+    headers = table_data['content'].values.first.keys
+    headers.unshift('Outcome Area')
     array_data.push(headers)
-    table_data["content"].each do |row_name, row|
+    table_data['content'].each do |row_name, row|
+      row.each do |date, score|
+        row[date] = score.round
+      end
       array_data.push(row.values.unshift(row_name))
     end
-    array_data.push(table_data["Totals"].values.unshift("Totals"))
+    table_data['Totals'].each do |date, score|
+      table_data['Totals'][date] = score.round
+    end
+    array_data.push(table_data['Totals'].values.unshift('Overall Score'))
     return array_data
   end
 

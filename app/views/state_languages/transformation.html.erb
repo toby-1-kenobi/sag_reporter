@@ -70,9 +70,9 @@
           if change > 0 then change_colour = 'green' end
           if change < 0 then change_colour = 'red' end
           %>
-            <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value0 %></td>
-            <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value1 %></td>
-            <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3 <%= change_colour %>-text text-darken-2">(<%= change %>)</td>
+            <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value0.round %></td>
+            <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value1.round %></td>
+            <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3 <%= change_colour %>-text text-darken-2">(<%= change.round %>)</td>
         <% end %>
       </tr>
     <% end %>
@@ -93,8 +93,8 @@
     <tr>
       <th><%= zone.name %></th>
       <td><%= zone.state_languages.in_project.count %></td>
-      <td><%= zone_aggregate[0][zone.name] %></td>
-      <td><%= zone_aggregate[1][zone.name] %></td>
+      <td><%= zone_aggregate[0][zone.name].round %></td>
+      <td><%= zone_aggregate[1][zone.name].round %></td>
     </tr>
     <% end %>
   </tbody>
