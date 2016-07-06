@@ -31,11 +31,12 @@ class UsersController < ApplicationController
 
   def me
     user_data = Hash.new
-    user_data[:name] = current_user.name
-    user_data[:phone] = current_user.phone
-    user_data[:geo_states] = Hash.new
+    user_data['id'] = current_user.id
+    user_data['name'] = current_user.name
+    user_data['phone'] = current_user.phone
+    user_data['geo_states'] = Array.new
     current_user.geo_states.each do |gs|
-      user_data[:geo_states][gs.id] = gs.name
+      user_data['geo_states'] << { 'id' => gs.id, 'name' => gs.name }
     end
     render json: user_data
   end
