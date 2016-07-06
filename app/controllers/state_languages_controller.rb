@@ -107,6 +107,23 @@ class StateLanguagesController < ApplicationController
     Topic.find_each{ |oa| @outcome_area_colours[oa.name] = oa.colour }
     # Get the earliest in which outcome scores have ben entered
     @start_year = ProgressUpdate.order(:year).first.year
+    collect_transformation_data
+  end
+
+  def transformation_spreadsheet
+    @outcome_areas = Topic.all.pluck :name
+    collect_transformation_data
+    respond_to do |format|
+      format.csv do
+        headers['Content-Disposition'] = "attachment; filename=\"transformation.csv\""
+        headers['Content-Type'] ||= 'text/csv; charset=utf-8'
+      end
+    end
+  end
+
+  private
+
+  def collect_transformation_data
     # Use dates from parameters or last month and this month
     params[:year_a] ||= 6.months.ago.year
     params[:month_a] ||= 6.months.ago.month
@@ -116,7 +133,7 @@ class StateLanguagesController < ApplicationController
     date_b = Date.new params[:year_b].to_i, params[:month_b].to_i
     # for each project language get the aggregated data
     @outcome_scores = { date_a => Hash.new, date_b => Hash.new }
-    StateLanguage.in_project.find_each do |state_language|
+    StateLanguage.in_project.includes(:language_progresses =>[{:progress_marker => :topic}, :progress_updates]).find_each do |state_language|
       @outcome_scores[date_a][state_language] = state_language.outcome_table_data(from_date: date_a, to_date: date_a)
       @outcome_scores[date_b][state_language] = state_language.outcome_table_data(from_date: date_b, to_date: date_b)
     end

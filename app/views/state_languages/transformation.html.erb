@@ -19,16 +19,30 @@
     <%= select_month dates[1].month, field_name: 'month_b' %>
   </div>
   <div class="col s12 m6 l4 offset-m6">
-    <%=
-      link_to 'Update Data',
-              transformation_path(
-                  year_a: dates[0].year,
-                  month_a: dates[0].month,
-                  year_b: dates[1].year,
-                  month_b: dates[1].month
-              ),
-              class: 'btn update-transformation-data'
-    %>
+    <div class="row">
+    <%= link_to transformation_path(
+                    year_a: dates[0].year,
+                    month_a: dates[0].month,
+                    year_b: dates[1].year,
+                    month_b: dates[1].month
+                ), class: 'btn update-transformation-data' do %>
+      <i class="material-icons">refresh</i>
+      Refresh
+    <% end %>
+    </div>
+    <div class="row">
+      <%=
+        link_to transformation_spreadsheet_path(
+                    format: :csv,
+                    year_a: dates[0].year,
+                    month_a: dates[0].month,
+                    year_b: dates[1].year,
+                    month_b: dates[1].month
+                ), class: 'btn download-transformation-spreadsheet' do %>
+        <i class="material-icons">file_download</i>
+      Get Spreadsheet
+      <% end %>
+    </div>
   </div>
 </div>
 
@@ -51,7 +65,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @outcome_scores.values.first.keys.each do |language| %>
+    <% @outcome_scores.values.first.each_key do |language| %>
       <tr>
         <td><%= language.zone.name %></td>
         <td><%= language.state_name %></td>
@@ -103,7 +117,8 @@
     <% Zone.find_each do |zone|
     lc_amount = zone.state_languages.in_project.count
     zone_aggregate[0][zone.name] ||= Hash.new(0)
-    zone_aggregate[1][zone.name] ||= Hash.new(0) %>
+    zone_aggregate[1][zone.name] ||= Hash.new(0)
+    %>
     <tr>
       <th><%= zone.name %></th>
       <td><%= lc_amount %></td>

@@ -1,0 +1,60 @@
+<% require 'csv' %>
+<%= CSV.generate_line(['Transformation', 'Exported from Last Command Reporter', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe %>
+<%
+  dates = @outcome_scores.keys
+  headers1 = ['Zone', 'State', 'Language']
+  @outcome_areas.each do |oa|
+    headers1.concat [oa, '']
+  end
+  headers2 = ['', '', '']
+  @outcome_areas.each do |oa|
+    headers2.concat [dates[0].strftime('%b %Y'), dates[1].strftime('%b %Y')]
+  end
+%>
+<%= CSV.generate_line(headers1).html_safe -%>
+<%= CSV.generate_line(headers2).html_safe -%>
+<% zone_aggregate = [Hash.new(), Hash.new()] %>
+<% @outcome_scores.values.first.each_key do |language|
+    row = [language.zone.name, language.state_name, language.language_name]
+    @outcome_areas.each do |outcome_area|
+      language_data0 = @outcome_scores[dates[0]][language]
+      data0 = language_data0 ? language_data0['content'][outcome_area] : nil
+      value0 = data0 ? data0.values.first : 0
+      zone_aggregate[0][language.zone.name] ||= Hash.new(0)
+      zone_aggregate[0][language.zone.name][outcome_area] += value0
+      language_data1 = @outcome_scores[dates[1]][language]
+      data1 = language_data1 ? language_data1['content'][outcome_area] : nil
+      value1 = data1 ? data1.values.first : 0
+      zone_aggregate[1][language.zone.name] ||= Hash.new(0)
+      zone_aggregate[1][language.zone.name][outcome_area] += value1
+      row.concat [value0.round, value1.round]
+    end %>
+    <%= CSV.generate_line(row).html_safe -%>
+<% end %>
+<%= CSV.generate_line([]).html_safe -%>
+<%= CSV.generate_line(['Average of Language Communities by Zone']).html_safe %>
+<%
+  headers1 = ['Zone', '# LCs participating']
+  @outcome_areas.each do |oa|
+    headers1.concat [oa, '']
+  end
+  headers2 = ['', '']
+  @outcome_areas.each do |oa|
+    headers2.concat [dates[0].strftime('%b %Y'), dates[1].strftime('%b %Y')]
+  end
+%>
+<%= CSV.generate_line(headers1).html_safe -%>
+<%= CSV.generate_line(headers2).html_safe -%>
+<% Zone.find_each do |zone|
+  lc_amount = zone.state_languages.in_project.count
+  zone_aggregate[0][zone.name] ||= Hash.new(0)
+  zone_aggregate[1][zone.name] ||= Hash.new(0)
+  row = [zone.name, lc_amount]
+  @outcome_areas.each do |outcome_area|
+    value0 = lc_amount > 0 ? (zone_aggregate[0][zone.name][outcome_area] / lc_amount) : 0
+    value1 = lc_amount > 0 ? (zone_aggregate[1][zone.name][outcome_area] / lc_amount) : 0
+    row.concat [value0.round, value1.round]
+  end
+%>
+    <%= CSV.generate_line(row).html_safe -%>
+<% end %>
