@@ -133,8 +133,16 @@ class StaticPagesController < ApplicationController
             path: overview_path,
             text: 'Overview',
             icon: 'pageview',
-            colour: 'light-green',
-            category: 'grey'
+            colour: 'grey',
+            category: 'other'
+        },
+        {
+            permission: 'view_all_languages',
+            path: transformation_path,
+            text: 'Transformation',
+            icon: 'change_history',
+            colour: 'light-blue',
+            category: 'other'
         }
     ]
   end
