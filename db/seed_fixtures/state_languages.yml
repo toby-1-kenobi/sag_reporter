@@ -757,6 +757,7 @@ odisha_gadaba_ollar_pottangi:
 odisha_gadaba_gutuba:
   geo_state: odisha
   language: gadaba_gutuba
+  project: true
 
 odisha_gata:
   geo_state: odisha
