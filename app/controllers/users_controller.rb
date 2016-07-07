@@ -35,8 +35,19 @@ class UsersController < ApplicationController
     user_data['name'] = current_user.name
     user_data['phone'] = current_user.phone
     user_data['geo_states'] = Array.new
-    current_user.geo_states.each do |gs|
-      user_data['geo_states'] << { 'id' => gs.id, 'name' => gs.name }
+    current_user.geo_states.includes(:state_languages).each do |gs|
+      languages = Array.new
+      gs.state_languages.in_project.each do |sl|
+        languages << {
+            'id' => sl.id,
+            'language_name' => sl.language_name
+        }
+      end
+      user_data['geo_states'] << {
+          'id' => gs.id,
+          'name' => gs.name,
+          'languages' => languages
+      }
     end
     render json: user_data
   end
