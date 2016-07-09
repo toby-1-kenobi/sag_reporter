@@ -90,9 +90,7 @@ class ImpactReportsController < ApplicationController
   	@reports = ImpactReport.
       includes(
         :progress_markers,
-        :report => :geo_state,
-        :report => :languages,
-        :report => :topics
+        :report => [:geo_state, :languages, :topics]
       ).
       where(
         'reports.status' => "active",

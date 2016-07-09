@@ -20,7 +20,7 @@ class LanguageProgress < ActiveRecord::Base
   def value_at(date = nil)
     date ||= Date.today
     valid_updates = progress_updates.select{ |u| Date.new(u.year, u.month) <= date }
-    valid_updates.empty? ? 0 : valid_updates.max_by{ |u| u.created_at.to_datetime.change(year: u.year, month: u.month) }.progress
+    valid_updates.empty? ? 0 : valid_updates.sort{ |a,b| b.created_at <=> a.created_at }.max_by(&:progress_date).progress
   end
 
   # find the latest progress update in or before a given month
