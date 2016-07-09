@@ -57,6 +57,11 @@ arunachal_pradesh_puriok:
   language: puriok
   project: true
 
+arunachal_pradesh_puriok_2:
+  geo_state: arunachal_pradesh
+  language: puriok_2
+  project: true
+
 arunachal_pradesh_mompa:
   geo_state: arunachal_pradesh
   language: mompa

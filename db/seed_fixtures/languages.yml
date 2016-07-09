@@ -230,6 +230,11 @@ puriok:
   lwc: false
   colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
 
+puriok_2:
+  name: Puriok (2)
+  lwc: false
+  colour: '<%= "#{colours.sample} #{darkness.sample}" %>'
+
 mompa:
   name: Mompa 
   lwc: false
