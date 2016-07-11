@@ -211,7 +211,9 @@ class ReportsController < ApplicationController
       {:observers_attributes => [:id, :name]},
       :status,
       :location,
-      :sub_district_id
+      :sub_district_id,
+      :client,
+      :version
     ]
     safe_params.delete :status unless logged_in_user.can_archive_report?
     # if we have a date try to change it to db-friendly format
