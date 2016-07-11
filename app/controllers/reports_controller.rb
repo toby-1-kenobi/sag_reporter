@@ -41,7 +41,6 @@ class ReportsController < ApplicationController
 
   # new report submitted by an external client
   def create_external
-    logged_in_user = current_user
     full_params = report_params.merge({reporter: current_user})
     report_factory = Report::Factory.new
     response = Hash.new
@@ -190,6 +189,7 @@ class ReportsController < ApplicationController
   private
 
   def report_params
+    logged_in_user ||= current_user
     # make hash options into arrays
     param_reduce(params['report'], %w(topics languages))
     safe_params = [
