@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       get 'by_topic'
       get 'by_reporter'
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
+      post 'create_external'
     end
     member do
       patch 'archive'
