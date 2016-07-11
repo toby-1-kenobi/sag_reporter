@@ -40,7 +40,7 @@ class StateLanguage < ActiveRecord::Base
       # now express all scores as a percentage of the maximum attainable
       total_divisor = 0
       Topic.find_each do |oa|
-        divisor = oa.max_outcome_score
+        divisor = max_outcome_score(oa)
         total_divisor += divisor
         if table['content'][oa.name]
           table['content'][oa.name].each do |date, score|
@@ -72,6 +72,20 @@ class StateLanguage < ActiveRecord::Base
     else
       return nil
     end
+  end
+
+  # The maximum outcome score for a given outcome area
+  # discounting all the progress markers where this
+  # state_language has not set levels.
+  def max_outcome_score(outcome_area)
+    score = 0
+    language_progresses.
+        includes(:progress_marker).
+        where('progress_markers.topic_id' => outcome_area.id).
+        find_each do |progress|
+      score += progress.progress_marker.weight  * ProgressMarker.spread_text.keys.max
+    end
+    return score
   end
 
 end
