@@ -3,7 +3,8 @@ class ReportsController < ApplicationController
   helper ColoursHelper
   include ParamsHelper
 
-  before_action :require_login
+  before_action :require_login, except: [:create_external]
+  before_action :authenticate, only: [:create_external]
 
     # Let only permitted users do some things
   before_action only: [:new, :create] do
@@ -37,14 +38,32 @@ class ReportsController < ApplicationController
     @topics = Topic.all
   end
 
+  # new report submitted by an external client
+  def create_external
+    full_params = report_params.merge({reporter: current_user})
+    report_factory = Report::Factory.new
+    response = Hash.new
+    if report_factory.create_report(full_params)
+      response['success'] = true
+      response['report_id'] = report_factory.instance.id
+    else
+      response['success'] = false
+      response['errors'] = report_factory.instance.errors.full_messages
+      if report_factory.error
+        response['errors'] << report_factory.error.message
+      end
+    end
+    render json: response
+  end
+
   def create
     full_params = report_params.merge({reporter: logged_in_user})
     report_factory = Report::Factory.new
     if report_factory.create_report(full_params)
       flash['success'] = 'Report Submitted!'
-      redirect_to report_factory.instance()
+      redirect_to report_factory.instance
     else
-      @report = report_factory.instance()
+      @report = report_factory.instance
       flash['error'] = report_factory.error ? report_factory.error.message : 'Unable to submit report!'
       @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
       @topics = Topic.all
@@ -169,7 +188,7 @@ class ReportsController < ApplicationController
 
   def report_params
     # make hash options into arrays
-    param_reduce(params['report'], ['topics', 'languages'])
+    param_reduce(params['report'], %w(topics languages))
     safe_params = [
       :content,
       :mt_society,
