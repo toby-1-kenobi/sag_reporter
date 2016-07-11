@@ -27,6 +27,7 @@ class Report < ActiveRecord::Base
 	validates :reporter, presence: true, allow_nil: false
   validates :status, presence: true, allow_nil: false
   validates :report_date, presence: true
+  validates :client, presence: true
   validate :at_least_one_subtype
   #validate :location_present_for_new_record
 
