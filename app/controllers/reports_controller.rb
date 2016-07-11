@@ -49,7 +49,10 @@ class ReportsController < ApplicationController
       response['report_id'] = report_factory.instance.id
     else
       response['success'] = false
-      response['errors'] = report_factory.instance.errors.full_messages
+      response['errors'] = Array.new
+      if report_factory.instance
+        response['errors'].concat report_factory.instance.errors.full_messages
+      end
       if report_factory.error
         response['errors'] << report_factory.error.message
       end
