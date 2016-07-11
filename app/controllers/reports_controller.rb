@@ -3,6 +3,7 @@ class ReportsController < ApplicationController
   helper ColoursHelper
   include ParamsHelper
 
+  skip_before_action :verify_authenticity_token, only: [:create_external]
   before_action :require_login, except: [:create_external]
   before_action :authenticate, only: [:create_external]
 
@@ -53,6 +54,7 @@ class ReportsController < ApplicationController
         response['errors'] << report_factory.error.message
       end
     end
+    puts response.to_json
     render json: response
   end
 
