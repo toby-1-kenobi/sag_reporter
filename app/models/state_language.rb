@@ -41,6 +41,9 @@ class StateLanguage < ActiveRecord::Base
       total_divisor = 0
       Topic.find_each do |oa|
         divisor = max_outcome_score(oa)
+        if !(divisor > 0)
+          divisor = 1
+        end
         total_divisor += divisor
         if table['content'][oa.name]
           table['content'][oa.name].each do |date, score|
@@ -79,7 +82,7 @@ class StateLanguage < ActiveRecord::Base
   # state_language has not set levels.
   def max_outcome_score(outcome_area)
     score = 0
-    language_progresses.
+    language_progresses.with_updates.
         includes(:progress_marker).
         where('progress_markers.topic_id' => outcome_area.id).
         find_each do |progress|
