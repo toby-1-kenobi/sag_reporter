@@ -15,6 +15,10 @@ class Report::Factory
     impact = params.delete 'impact_report'
     planning = params.delete 'planning_report'
     challenge = params.delete 'challenge_report'
+    if (!params['client'])
+      params['client'] = SagReporter::Application::APP_SHORT_NAME
+      params['version'] ||= SagReporter::Application::VERSION
+    end
     begin
       @instance = Report.new(params)
       add_languages(state_language_ids, params['geo_state_id']) if state_language_ids

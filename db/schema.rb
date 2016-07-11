@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160518002844) do
+ActiveRecord::Schema.define(version: 20160711023533) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -314,23 +314,25 @@ ActiveRecord::Schema.define(version: 20160518002844) do
   end
 
   create_table "reports", force: :cascade do |t|
-    t.integer  "reporter_id",                     null: false
-    t.text     "content",                         null: false
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.integer  "reporter_id",                             null: false
+    t.text     "content",                                 null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
     t.boolean  "mt_society"
     t.boolean  "mt_church"
     t.boolean  "needs_society"
     t.boolean  "needs_church"
     t.integer  "event_id"
-    t.integer  "geo_state_id",                    null: false
-    t.date     "report_date",                     null: false
+    t.integer  "geo_state_id",                            null: false
+    t.date     "report_date",                             null: false
     t.integer  "planning_report_id"
     t.integer  "impact_report_id"
     t.integer  "challenge_report_id"
-    t.integer  "status",              default: 0, null: false
+    t.integer  "status",              default: 0,         null: false
     t.integer  "sub_district_id"
     t.string   "location"
+    t.string   "client",              default: "LCR",     null: false
+    t.string   "version",             default: "unknown", null: false
   end
 
   add_index "reports", ["challenge_report_id"], name: "index_reports_on_challenge_report_id", using: :btree
