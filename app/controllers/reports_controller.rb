@@ -69,6 +69,7 @@ class ReportsController < ApplicationController
       redirect_to report_factory.instance
     else
       @report = report_factory.instance
+      @report ||= Report.new
       flash['error'] = report_factory.error ? report_factory.error.message : 'Unable to submit report!'
       @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
       @topics = Topic.all
