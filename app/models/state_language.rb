@@ -100,7 +100,7 @@ class StateLanguage < ActiveRecord::Base
   def max_outcome_scores()
     scores = Hash.new(0)
     language_progresses.with_updates.
-        includes(:progress_marker).each do |progress|
+        includes(:progress_marker).find_each do |progress|
       scores[progress.progress_marker.topic_id] += progress.progress_marker.weight  * ProgressMarker.spread_text.keys.max
     end
     return scores
