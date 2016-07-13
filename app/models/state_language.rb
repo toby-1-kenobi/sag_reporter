@@ -98,8 +98,8 @@ class StateLanguage < ActiveRecord::Base
 
   # like max_outcome_score, except it returns a hash for each outcome area
   def max_outcome_scores()
-    logger.info '*** Running max_outcome_score ***'
     scores = Hash.new(0)
+    logger.info '*** Running max_outcome_score ***'
     language_progresses.with_updates.
         includes(:progress_marker).find_each do |progress|
       scores[progress.progress_marker.topic_id] += progress.progress_marker.weight  * ProgressMarker.spread_text.keys.max
