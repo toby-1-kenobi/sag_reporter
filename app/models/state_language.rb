@@ -23,6 +23,9 @@ class StateLanguage < ActiveRecord::Base
     options[:from_date] ||= 6.months.ago
     options[:to_date] ||= Date.today
 
+    # this hash for one less db query
+    outcome_area_ids = Hash.new
+
     table = Hash.new
     table['content'] = Hash.new
     table['Totals'] = Hash.new {0}
@@ -30,6 +33,7 @@ class StateLanguage < ActiveRecord::Base
     all_lps = language_progresses.includes({:progress_marker => :topic}, :progress_updates)
     all_lps.each do |lp|
       oa_name = lp.progress_marker.topic.name
+      outcome_area_ids[oa_name] ||= lp.progress_marker.topic_id
       table['content'][oa_name] ||= Hash.new {0}
       lp.outcome_scores(options[:from_date], options[:to_date]).each do |date, score|
         table['content'][oa_name][date] += score
@@ -39,15 +43,16 @@ class StateLanguage < ActiveRecord::Base
     if table['content'].any?
       # now express all scores as a percentage of the maximum attainable
       total_divisor = 0
-      Topic.find_each do |oa|
-        divisor = max_outcome_score(oa)
+      max_scores = max_outcome_scores
+      table['content'].each_key do |oa_name|
+        divisor = max_scores[outcome_area_ids[oa_name]]
         if !(divisor > 0)
           divisor = 1
         end
         total_divisor += divisor
-        if table['content'][oa.name]
-          table['content'][oa.name].each do |date, score|
-            table['content'][oa.name][date] = (score * 100).fdiv(divisor)
+        if table['content'][oa_name]
+          table['content'][oa_name].each do |date, score|
+            table['content'][oa_name][date] = (score * 100).fdiv(divisor)
           end
         end
       end
@@ -89,6 +94,16 @@ class StateLanguage < ActiveRecord::Base
       score += progress.progress_marker.weight  * ProgressMarker.spread_text.keys.max
     end
     return score
+  end
+
+  # like max_outcome_score, except it returns a hash for each outcome area
+  def max_outcome_scores()
+    scores = Hash.new(0)
+    language_progresses.with_updates.
+        includes(:progress_marker).each do |progress|
+      scores[progress.progress_marker.topic_id] += progress.progress_marker.weight  * ProgressMarker.spread_text.keys.max
+    end
+    return scores
   end
 
 end
