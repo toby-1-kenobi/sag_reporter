@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
       log_in user
       remember user
       if params[:session][:password] == 'password'
-        flash['info'] = 'Welcome to Last Command Reporter.' +
+        flash['info'] = 'Welcome to Last Command Initiative Reporter.' +
             ' Please make a new password. It should be something another person could not guess.' +
             ' Type it here two times and click \'update\'.'
         redirect_to edit_user_path(user)
