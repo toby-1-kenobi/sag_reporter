@@ -1,5 +1,5 @@
 <% require 'csv' %>
-<%= CSV.generate_line(['Transformation', 'Exported from Last Command Reporter', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe %>
+<%= CSV.generate_line(['Transformation', 'Exported from LCI Reporter', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe %>
 <%
   dates = @outcome_scores.keys
   headers1 = ['Zone', 'State', 'Language']
