@@ -1,0 +1,20 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+st:
+  name: Sino-Tibetan
+
+tb:
+  name: Tibeto-Burman
+
+h:
+  name: Himalayish
+
+tk:
+  name: Tibeto-Kanauri
+
+w:
+  name: Western
+
+k:
+  name: Kanauri

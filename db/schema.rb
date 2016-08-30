@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160711023533) do
+ActiveRecord::Schema.define(version: 20160830050849) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,14 @@ ActiveRecord::Schema.define(version: 20160711023533) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "clusters", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "clusters", ["name"], name: "index_clusters_on_name", unique: true, using: :btree
+
   create_table "creations", force: :cascade do |t|
     t.integer  "person_id"
     t.integer  "mt_resource_id"
@@ -56,6 +64,14 @@ ActiveRecord::Schema.define(version: 20160711023533) do
   add_index "creations", ["mt_resource_id"], name: "index_creations_on_mt_resource_id", using: :btree
   add_index "creations", ["person_id", "mt_resource_id"], name: "index_people_mt_resources", unique: true, using: :btree
   add_index "creations", ["person_id"], name: "index_creations_on_person_id", using: :btree
+
+  create_table "data_sources", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "data_sources", ["name"], name: "index_data_sources_on_name", unique: true, using: :btree
 
   create_table "districts", force: :cascade do |t|
     t.string   "name",         null: false
@@ -140,6 +156,14 @@ ActiveRecord::Schema.define(version: 20160711023533) do
 
   add_index "impact_reports_progress_markers", ["impact_report_id", "progress_marker_id"], name: "index_impact_reports_progress_markers_on_ir_and_pm", unique: true, using: :btree
   add_index "impact_reports_progress_markers", ["progress_marker_id", "impact_report_id"], name: "index_impact_reports_progress_markers_on_pm_and_ir", using: :btree
+
+  create_table "language_families", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "language_families", ["name"], name: "index_language_families_on_name", unique: true, using: :btree
 
   create_table "language_progresses", force: :cascade do |t|
     t.integer  "progress_marker_id", null: false
