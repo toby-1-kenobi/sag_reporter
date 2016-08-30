@@ -34,6 +34,7 @@ options_hash = {
   "#{fixtures_dir}/zones.yml" => { model_name: 'Zone', key_fields: ['name'], update?: false },
   "#{fixtures_dir}/geo_states.yml" => { model_name: 'GeoState', key_fields: ['name'], update?: false },
  #"#{fixtures_dir}/purposes.yml" =>  { model_name: 'Purpose', key_fields: ['name'], update?: false },
+  "#{fixtures_dir}/language_families.yml" => { model_name: 'Language', key_fields: ['name'], update?: false },
   "#{fixtures_dir}/languages.yml" => { model_name: 'Language', key_fields: ['name'], update?: false },
   "#{fixtures_dir}/state_languages.yml" => { model_name: 'StateLanguage', key_fields: ['language', 'geo_state'], update?: false }
  #"#{fixtures_dir}/translatables.yml" => { model_name: 'Translatable', key_fields: ['identifier'], update?: false },
