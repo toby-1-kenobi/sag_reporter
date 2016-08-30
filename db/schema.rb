@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160830050849) do
+ActiveRecord::Schema.define(version: 20160830062118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -176,14 +176,27 @@ ActiveRecord::Schema.define(version: 20160830050849) do
   add_index "language_progresses", ["state_language_id"], name: "index_language_progresses_on_state_language_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",                                               null: false
     t.text     "description"
     t.boolean  "lwc"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
-    t.string   "colour",      default: "white", null: false
-    t.boolean  "interface",   default: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.string   "colour",                           default: "white", null: false
+    t.boolean  "interface",                        default: false
+    t.string   "iso",                    limit: 3
+    t.integer  "family_id"
+    t.integer  "population",             limit: 8
+    t.integer  "pop_source_id"
+    t.text     "location"
+    t.integer  "number_of_translations"
+    t.integer  "cluster_id"
+    t.text     "info"
   end
+
+  add_index "languages", ["cluster_id"], name: "index_languages_on_cluster_id", using: :btree
+  add_index "languages", ["family_id"], name: "index_languages_on_family_id", using: :btree
+  add_index "languages", ["iso"], name: "index_languages_on_iso", unique: true, using: :btree
+  add_index "languages", ["pop_source_id"], name: "index_languages_on_pop_source_id", using: :btree
 
   create_table "languages_reports", id: false, force: :cascade do |t|
     t.integer "report_id"
@@ -497,6 +510,9 @@ ActiveRecord::Schema.define(version: 20160830050849) do
   add_foreign_key "geo_states", "zones"
   add_foreign_key "language_progresses", "progress_markers"
   add_foreign_key "language_progresses", "state_languages"
+  add_foreign_key "languages", "clusters"
+  add_foreign_key "languages", "data_sources", column: "pop_source_id"
+  add_foreign_key "languages", "language_families", column: "family_id"
   add_foreign_key "languages_tallies", "languages"
   add_foreign_key "languages_tallies", "tallies"
   add_foreign_key "mt_resources", "geo_states"
