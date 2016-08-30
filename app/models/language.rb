@@ -11,6 +11,9 @@ class Language < ActiveRecord::Base
   has_many :mt_resources
   has_many :state_languages
   has_many :geo_states, through: :state_languages
+  belongs_to :family, class_name: 'LanguageFamily'
+  belongs_to :pop_source, class_name: 'DataSource'
+  belongs_to :cluster
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
 
