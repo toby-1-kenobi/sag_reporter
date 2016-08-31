@@ -121,3 +121,15 @@ delhi:
 goa:
   name: Goa
   zone: west
+
+a_n_islands:
+  name: Andaman and Nicobar Islands
+  zone: south
+
+chandigarh:
+  name: Chandigarh
+  zone: central
+
+d_and_d:
+  name: Daman and Diu
+  zone: west

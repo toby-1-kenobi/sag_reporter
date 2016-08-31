@@ -1,20 +1,38 @@
 # Read about fixtures at
 # http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-st:
-  name: Sino-Tibetan
+is:
+  name: Isolate
 
 tb:
   name: Tibeto-Burman
 
-h:
-  name: Himalayish
+ia:
+  name: Indo-Aryan
+
+dr:
+  name: Dravidian
+
+aa:
+  name: Austro-Asiatic
+
+ga:
+  name: Great Andamanese
+
+and:
+  name: Andamanese
 
 tk:
-  name: Tibeto-Kanauri
+  name: Tai-Kadai
 
-w:
-  name: Western
+cr:
+  name: Creole
 
-k:
-  name: Kanauri
+sl:
+  name: Sign Language
+
+tu:
+  name: Turkic
+
+pi:
+  name: Pidgin
