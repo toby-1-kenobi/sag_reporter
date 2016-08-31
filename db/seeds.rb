@@ -34,9 +34,9 @@ options_hash = {
   "#{fixtures_dir}/zones.yml" => { model_name: 'Zone', key_fields: ['name'], update?: false },
   "#{fixtures_dir}/geo_states.yml" => { model_name: 'GeoState', key_fields: ['name'], update?: false },
  #"#{fixtures_dir}/purposes.yml" =>  { model_name: 'Purpose', key_fields: ['name'], update?: false },
-  "#{fixtures_dir}/language_families.yml" => { model_name: 'Language', key_fields: ['name'], update?: false },
-  "#{fixtures_dir}/languages.yml" => { model_name: 'Language', key_fields: ['name'], update?: false },
-  "#{fixtures_dir}/state_languages.yml" => { model_name: 'StateLanguage', key_fields: ['language', 'geo_state'], update?: false }
+  "#{fixtures_dir}/language_families.yml" => { model_name: 'Language', key_fields: ['name'], update?: false }
+  #"#{fixtures_dir}/languages.yml" => { model_name: 'Language', key_fields: ['name'], update?: false },
+  #"#{fixtures_dir}/state_languages.yml" => { model_name: 'StateLanguage', key_fields: ['language', 'geo_state'], update?: false },
  #"#{fixtures_dir}/translatables.yml" => { model_name: 'Translatable', key_fields: ['identifier'], update?: false },
  #"#{fixtures_dir}/translations.yml" => { model_name: 'Translation', key_fields: ['id'], update?: false },
 	#"#{fixtures_dir}/topics.yml" => { model_name: 'Topic', key_fields: ['name'], update?: false },
@@ -50,17 +50,17 @@ parse_fixtures options_hash
 
 # if there's no admin user, then put a dummy one in
 if User.where(role_id: Role.find_by_name('admin')).count == 0
-  puts "creating admin user"
-  admin_user = User.new(name:  "admin",
-             phone: "1234567890",
-             password:              "password",
-             password_confirmation: "password",
+  puts 'creating admin user'
+  admin_user = User.new(name: 'admin',
+             phone: '1234567890',
+             password: 'password',
+             password_confirmation: 'password',
              role: Role.find_by_name('admin'),
              mother_tongue: Language.find_by_name('English'))
   admin_user.geo_states << GeoState.take
   if admin_user.save
     puts "phone: #{admin_user.phone} password: password"
   else
-    puts "Could not create admin user"
+    puts 'Could not create admin user'
   end
 end

@@ -19,14 +19,14 @@ class Language < ActiveRecord::Base
 
   def self.minorities(geo_states = nil)
     if geo_states
-      includes(:geo_states).where(lwc: false, "geo_states.id" => geo_states.map{ |s| s.id })
+      includes(:geo_states).where(lwc: false, 'geo_states.id' => geo_states.map{ |s| s.id })
     else
       where(lwc: false)
     end
   end
 
   def self.interface_fallback
-    Language.find_by_name("English") || Language.take
+    Language.find_by_name('English') || Language.take
   end
 
   def geo_state_ids_str
@@ -38,7 +38,7 @@ class Language < ActiveRecord::Base
   end
 
   def tagged_impact_reports_monthly(geo_state, from_date = nil, to_date = nil)
-    tagged_impact_reports_in_date_range(geo_state, from_date, to_date).group_by{ |r| r.report_date.strftime("%Y-%m") }
+    tagged_impact_reports_in_date_range(geo_state, from_date, to_date).group_by{ |r| r.report_date.strftime('%Y-%m') }
   end
 
   def table_data(geo_state, options = {})
@@ -48,8 +48,8 @@ class Language < ActiveRecord::Base
 
     table = Array.new
 
-    headers = ["Outputs"]
-    dates_by_month.each{ |date| headers.push(date.strftime("%B %Y")) }
+    headers = ['Outputs']
+    dates_by_month.each{ |date| headers.push(date.strftime('%B %Y')) }
     table.push(headers)
 
     OutputTally.all.order(:topic_id).each do |tally|
@@ -76,7 +76,7 @@ class Language < ActiveRecord::Base
     ImpactReport.
       joins(:report, :progress_markers, report: :languages).
       where(
-        :reports => {status: "active", geo_state_id: geo_state.id},
+        :reports => {status: 'active', geo_state_id: geo_state.id},
         :languages => {id: self.id},
       ).distinct
   end
