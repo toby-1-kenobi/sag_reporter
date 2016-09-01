@@ -9,7 +9,7 @@ class Language < ActiveRecord::Base
   has_many :progress_markers, through: :language_progresses
   has_many :output_counts
   has_many :mt_resources
-  has_many :state_languages
+  has_many :state_languages, dependent: :destroy
   has_many :geo_states, through: :state_languages
   belongs_to :family, class_name: 'LanguageFamily'
   belongs_to :pop_source, class_name: 'DataSource'
