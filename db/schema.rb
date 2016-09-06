@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160830062118) do
+ActiveRecord::Schema.define(version: 20160906015629) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,6 +232,10 @@ ActiveRecord::Schema.define(version: 20160830062118) do
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
     t.integer  "geo_state_id",                   null: false
+    t.integer  "status",         default: 0,     null: false
+    t.integer  "publish_year"
+    t.string   "url"
+    t.text     "how_to_access"
   end
 
   add_index "mt_resources", ["category"], name: "index_mt_resources_on_category", using: :btree
