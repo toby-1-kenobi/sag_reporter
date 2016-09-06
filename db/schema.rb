@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160906015629) do
+ActiveRecord::Schema.define(version: 20160906065518) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -253,6 +253,17 @@ ActiveRecord::Schema.define(version: 20160906015629) do
   add_index "observations", ["person_id"], name: "index_observations_on_person_id", using: :btree
   add_index "observations", ["report_id", "person_id"], name: "index_reports_people", unique: true, using: :btree
   add_index "observations", ["report_id"], name: "index_observations_on_report_id", using: :btree
+
+  create_table "organisations", force: :cascade do |t|
+    t.string   "name",         null: false
+    t.string   "abbreviation"
+    t.integer  "parent_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "organisations", ["abbreviation"], name: "index_organisations_on_abbreviation", unique: true, using: :btree
+  add_index "organisations", ["name"], name: "index_organisations_on_name", unique: true, using: :btree
 
   create_table "output_counts", force: :cascade do |t|
     t.integer  "output_tally_id",             null: false
@@ -524,6 +535,7 @@ ActiveRecord::Schema.define(version: 20160906015629) do
   add_foreign_key "mt_resources", "users"
   add_foreign_key "observations", "people"
   add_foreign_key "observations", "reports"
+  add_foreign_key "organisations", "organisations", column: "parent_id"
   add_foreign_key "output_counts", "geo_states"
   add_foreign_key "output_counts", "languages"
   add_foreign_key "output_counts", "output_tallies"
