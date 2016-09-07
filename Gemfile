@@ -65,6 +65,10 @@ gem 'carrierwave'
 # image manipulation
 gem 'mini_magick'
 
+# Web components
+gem 'polymer-rails'
+gem 'polymer-elements-rails'
+
 # token based authentication with JWT
 gem 'knock'
 
