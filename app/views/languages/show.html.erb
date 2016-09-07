@@ -1,7 +1,7 @@
 <% provide(:title, 'Show Language: ' + @language.name) %>
 <h1 class="coloured <%= colour_class(@language.colour) %>"><%= @language.name %></h1>
-<p class="lwc"><%= @language.lwc? ? "language of wider communication" : "minority language" %></p>
 <p><%= @language.description %></p>
+<div><paper-checkbox>Testing</paper-checkbox></div>
 <% if logged_in_user.can_edit_language? %>
   <%= link_to edit_language_path(@language), class: "waves-effect right btn" do %>
     <i class="material-icons left">create</i>
