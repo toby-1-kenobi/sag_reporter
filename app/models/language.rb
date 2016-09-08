@@ -15,6 +15,9 @@ class Language < ActiveRecord::Base
   belongs_to :pop_source, class_name: 'DataSource'
   belongs_to :cluster
 
+  delegate :name, to: :family, prefix: true
+  delegate :name, to: :cluster, prefix: true
+
   validates :name, presence: true, allow_nil: false, uniqueness: true
 
   def self.minorities(geo_states = nil)
