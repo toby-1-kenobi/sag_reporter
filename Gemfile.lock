@@ -1,3 +1,20 @@
+GIT
+  remote: git://github.com/alchapone/polymer-elements-rails.git
+  revision: 75321e75f315d9ad2f1cbe32884afdf742b90a8d
+  specs:
+    polymer-elements-rails (1.1.1)
+      polymer-rails (~> 1.0, >= 1.0.3)
+
+GIT
+  remote: git://github.com/alchapone/polymer-rails.git
+  revision: c1493a5eb9181a411116df3346504c16f2dfe68c
+  specs:
+    polymer-rails (1.2.4.1)
+      nokogiri (~> 1.6)
+      nokogumbo (= 1.4.2)
+      rails (>= 3.1.0)
+      sprockets (~> 3.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -291,13 +308,6 @@ GEM
       cliver (~> 0.3.1)
       multi_json (~> 1.0)
       websocket-driver (>= 0.2.0)
-    polymer-elements-rails (1.0.1)
-      polymer-rails (~> 1.0, >= 1.0.3)
-    polymer-rails (1.2.4.1)
-      nokogiri (~> 1.6)
-      nokogumbo (= 1.4.2)
-      rails (>= 3.1.0)
-      sprockets (~> 3.0)
     prawn (2.0.2)
       pdf-core (~> 0.6.0)
       ttfunk (~> 1.4.0)
@@ -430,8 +440,8 @@ DEPENDENCIES
   mocha
   pg
   poltergeist
-  polymer-elements-rails
-  polymer-rails
+  polymer-elements-rails!
+  polymer-rails!
   prawn
   prawn-table
   puma
