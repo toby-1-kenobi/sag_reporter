@@ -1,7 +1,39 @@
 <% provide(:title, 'Show Language: ' + @language.name) %>
 <h1 class="coloured <%= colour_class(@language.colour) %>"><%= @language.name %></h1>
-<p><%= @language.description %></p>
-<div><paper-checkbox>Testing</paper-checkbox></div>
+<% if @language.iso %>
+    <p class="iso" id="iso_<%= @language.iso %>">(<%= @language.iso %>)</p>
+    <paper-tooltip position="right" for="iso_<%= @language.iso %>">ISO 693-2 code</paper-tooltip>
+<% end %>
+
+<% if @language.population %>
+    <p>
+      <span id="pop_<%= @language.iso %>">
+        Population: <strong><%= number_with_delimiter(@language.population, :delimiter => ',') %></strong>
+      </span>
+      <% if @language.pop_source %>
+        <paper-tooltip position="top" for="pop_<%= @language.iso %>">source: <%= @language.pop_source.name %></paper-tooltip>
+      <% end %>
+    </p>
+<% end %>
+<% if @language.family %>
+    <p>Family: <strong><%= @language.family_name %></strong></p>
+<% end %>
+<% if @language.description %>
+    <p><%= @language.description %></p>
+<% end %>
+<% if @language.cluster %>
+    <p>Cluster: <strong><%= @language.cluster_name %></strong></p>
+<% end %>
+<% if @language.info %>
+    <p><%= @language.info %></p>
+<% end %>
+
+<h2>Translation status</h2>
+<% if @language.number_of_translations && @language.number_of_translations > 0 %>
+    <p>Already existing: <strong><%= @language.number_of_translations %></strong> Bible <%= 'version'.pluralize(@language.number_of_translations) %></p>
+<% end %>
+
+
 <% if logged_in_user.can_edit_language? %>
   <%= link_to edit_language_path(@language), class: "waves-effect right btn" do %>
     <i class="material-icons left">create</i>

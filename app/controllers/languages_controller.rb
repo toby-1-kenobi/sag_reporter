@@ -32,7 +32,7 @@ class LanguagesController < ApplicationController
   end
 
   def show
-  	@language = Language.find(params[:id])
+  	@language = Language.includes(:pop_source, :family).find(params[:id])
   end
 
   def update
