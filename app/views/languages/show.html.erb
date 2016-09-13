@@ -28,10 +28,37 @@
     <p><%= @language.info %></p>
 <% end %>
 
-<h2>Translation status</h2>
-<% if @language.number_of_translations && @language.number_of_translations > 0 %>
-    <p>Already existing: <strong><%= @language.number_of_translations %></strong> Bible <%= 'version'.pluralize(@language.number_of_translations) %></p>
-<% end %>
+<style>
+  paper-tabs {
+    background-color: mediumslateblue;
+    colour: white;
+  }
+</style>
+
+<paper-tabs selected="0">
+  <paper-tab>TRANSLATION STATUS</paper-tab>
+  <paper-tab>RESOURCES AVAILABLE</paper-tab>
+  <paper-tab>JOSHUA PROJECT DATA</paper-tab>
+</paper-tabs>
+
+<iron-pages selected="0">
+  <div>
+    <% if @language.number_of_translations && @language.number_of_translations > 0 %>
+        <p>Already existing: <strong><%= @language.number_of_translations %></strong> Bible <%= 'version'.pluralize(@language.number_of_translations) %></p>
+    <% end %>
+  </div>
+  <div>Page 2</div>
+  <div>Page 3</div>
+</iron-pages>
+<script>
+  var pages = document.querySelector('iron-pages');
+  var tabs = document.querySelector('paper-tabs');
+
+  tabs.addEventListener('iron-select', function() {
+    pages.selected = tabs.selected;
+  });
+</script>
+
 
 
 <% if logged_in_user.can_edit_language? %>
