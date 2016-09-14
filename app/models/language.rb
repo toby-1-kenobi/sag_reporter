@@ -11,6 +11,8 @@ class Language < ActiveRecord::Base
   has_many :mt_resources
   has_many :state_languages, dependent: :destroy
   has_many :geo_states, through: :state_languages
+  has_many :organisation_engagements
+  has_many :engaged_organisations, through: :organisation_engagements
   belongs_to :family, class_name: 'LanguageFamily'
   belongs_to :pop_source, class_name: 'DataSource'
   belongs_to :cluster
