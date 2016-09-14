@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160914064831) do
+ActiveRecord::Schema.define(version: 20160914070246) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -264,6 +264,17 @@ ActiveRecord::Schema.define(version: 20160914064831) do
   add_index "organisation_engagements", ["language_id", "organisation_id"], name: "index_orgs_languages", unique: true, using: :btree
   add_index "organisation_engagements", ["language_id"], name: "index_organisation_engagements_on_language_id", using: :btree
   add_index "organisation_engagements", ["organisation_id"], name: "index_organisation_engagements_on_organisation_id", using: :btree
+
+  create_table "organisation_translations", force: :cascade do |t|
+    t.integer  "language_id",     null: false
+    t.integer  "organisation_id", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "organisation_translations", ["language_id", "organisation_id"], name: "index_orgs_languages_trans", unique: true, using: :btree
+  add_index "organisation_translations", ["language_id"], name: "index_organisation_translations_on_language_id", using: :btree
+  add_index "organisation_translations", ["organisation_id"], name: "index_organisation_translations_on_organisation_id", using: :btree
 
   create_table "organisations", force: :cascade do |t|
     t.string   "name",         null: false
@@ -548,6 +559,8 @@ ActiveRecord::Schema.define(version: 20160914064831) do
   add_foreign_key "observations", "reports"
   add_foreign_key "organisation_engagements", "languages"
   add_foreign_key "organisation_engagements", "organisations"
+  add_foreign_key "organisation_translations", "languages"
+  add_foreign_key "organisation_translations", "organisations"
   add_foreign_key "organisations", "organisations", column: "parent_id"
   add_foreign_key "output_counts", "geo_states"
   add_foreign_key "output_counts", "languages"
