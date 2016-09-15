@@ -24,6 +24,44 @@ def collect_states_from_location(lang, all_states, location_text)
   end
 end
 
+def addOrgs(lang, orgs_str)
+  lang.engaged_organisations.clear
+  orgs_str.split(',').each do |org_str|
+    org_str.strip!
+    org = Organisation.find_by_name org_str
+    org ||= Organisation.find_by_abbreviation org_str
+    if org.nil?
+      puts "*** couldn't find org: #{org_str} ***"
+    else
+      lang.engaged_organisations << org
+    end
+  end
+end
+
+def addTransOrgs(lang, orgs_str)
+  lang.translating_organisations.clear
+  orgs_str.split('/').each do |org_str|
+    org_str.strip!
+    note = nil
+    note_index = org_str.index /\(.*\)/
+    if note_index
+      note = org_str.slice!(note_index + 1..org_str.index(')') - 1).strip
+      org_str.delete!('()').strip!
+    end
+    org = Organisation.find_by_name org_str
+    org ||= Organisation.find_by_abbreviation org_str
+    if org.nil?
+      puts "*** couldn't find org: #{org_str} ***"
+    else
+      org_trans = OrganisationTranslation.new(language: lang, organisation: org, note: note)
+      if (!org_trans.save)
+        puts "*** couldn't save organisation_translation ***"
+        org_trans.errors.each{ |e| puts "** #{e.message} **"}
+      end
+    end
+  end
+end
+
 language_data.each do |row|
   lang = Language.find_or_initialize_by name: row[:language_name]
   if lang.new_record? and row[:state]
@@ -53,6 +91,12 @@ language_data.each do |row|
     lang.cluster ||= Cluster.find_or_create_by name: row[:cluster]
   end
   lang.info ||= row[:other_information]
+  if row[:orgs_involved]
+    addOrgs(lang, row[:orgs_involved])
+  end
+  if row[:tr_org]
+    addTransOrgs(lang, row[:tr_org])
+  end
   if lang.save
     puts lang.name
   else
