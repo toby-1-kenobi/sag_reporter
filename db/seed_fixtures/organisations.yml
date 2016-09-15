@@ -57,6 +57,10 @@ bfb:
   name: BFB
   abbreviation: BFB
 
+bsn:
+  name: BSN
+  abbreviation: BSN
+
 biblica:
   name: Biblica Inc.
   abbreviation: BIBLICA
@@ -107,14 +111,14 @@ bm:
 bm1:
   name: Bible Mission
 
-b1:
-  name: Brethren
+bc1:
+  name: Brethren Church
 
 jlc:
   name: Jepore Lutheren Church
   abbreviation: JLC
 
-b2:
+b1:
   name: Buela
 
 cc:
@@ -455,7 +459,7 @@ mi:
   name: Missions India
 
 mm1:
-  name: Mukthi Mission.
+  name: Mukthi Mission
 
 n:
   name: N
@@ -552,7 +556,7 @@ orbit:
   abbreviation: ORBIT
 
 ocoga:
-  name: Orissa church of God Association
+  name: Orissa Church of God Association
 
 pacf:
   name: PACF
