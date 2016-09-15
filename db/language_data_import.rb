@@ -91,6 +91,7 @@ language_data.each do |row|
     lang.cluster ||= Cluster.find_or_create_by name: row[:cluster]
   end
   lang.info ||= row[:other_information]
+  lang.translation_info ||= row[:decision_criteria]
   if row[:orgs_involved]
     addOrgs(lang, row[:orgs_involved])
   end
