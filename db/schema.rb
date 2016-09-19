@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160915020036) do
+ActiveRecord::Schema.define(version: 20160916010150) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -192,12 +192,16 @@ ActiveRecord::Schema.define(version: 20160915020036) do
     t.integer  "cluster_id"
     t.text     "info"
     t.text     "translation_info"
+    t.integer  "translation_need",                 default: 0,       null: false
+    t.integer  "translation_progress",             default: 0,       null: false
   end
 
   add_index "languages", ["cluster_id"], name: "index_languages_on_cluster_id", using: :btree
   add_index "languages", ["family_id"], name: "index_languages_on_family_id", using: :btree
   add_index "languages", ["iso"], name: "index_languages_on_iso", unique: true, using: :btree
   add_index "languages", ["pop_source_id"], name: "index_languages_on_pop_source_id", using: :btree
+  add_index "languages", ["translation_need"], name: "index_languages_on_translation_need", using: :btree
+  add_index "languages", ["translation_progress"], name: "index_languages_on_translation_progress", using: :btree
 
   create_table "languages_reports", id: false, force: :cascade do |t|
     t.integer "report_id"
