@@ -1,5 +1,8 @@
 class Language < ActiveRecord::Base
 
+  enum translation_need: { survey_required: 0, no_need: 1, limited_need: 2, need: 3 }
+  enum translation_progress: { not_started: 0, in_progress: 1, done: 2 }
+
   has_many :user_mt_speakers, class_name: 'User', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :user_speakers, class_name: 'User'
   has_and_belongs_to_many :reports

@@ -6,6 +6,8 @@ CSV::Converters[:blank_to_nil] = lambda do |field|
   field && field.empty? ? nil : field
 end
 
+errors = Hash.new
+
 language_data = CSV.table(data_file, converters: :blank_to_nil)
 
 p language_data.headers
@@ -24,21 +26,22 @@ def collect_states_from_location(lang, all_states, location_text)
   end
 end
 
-def addOrgs(lang, orgs_str)
+def addOrgs(lang, orgs_str, errors)
   lang.engaged_organisations.clear
   orgs_str.split(',').each do |org_str|
     org_str.strip!
     org = Organisation.find_by_name org_str
     org ||= Organisation.find_by_abbreviation org_str
     if org.nil?
-      puts "*** couldn't find org: #{org_str} ***"
+      errors[lang.name] = Array.new if errors[lang.name].nil?
+      errors[lang.name] << "couldn't find org: #{org_str}"
     else
       lang.engaged_organisations << org
     end
   end
 end
 
-def addTransOrgs(lang, orgs_str)
+def addTransOrgs(lang, orgs_str, errors)
   lang.translating_organisations.clear
   orgs_str.split('/').each do |org_str|
     org_str.strip!
@@ -51,14 +54,42 @@ def addTransOrgs(lang, orgs_str)
     org = Organisation.find_by_name org_str
     org ||= Organisation.find_by_abbreviation org_str
     if org.nil?
-      puts "*** couldn't find org: #{org_str} ***"
+      errors[lang.name] = Array.new if errors[lang.name].nil?
+      errors[lang.name] << "couldn't find org: #{org_str}"
     else
       org_trans = OrganisationTranslation.new(language: lang, organisation: org, note: note)
       if (!org_trans.save)
-        puts "*** couldn't save organisation_translation ***"
-        org_trans.errors.each{ |e| puts "** #{e.message} **"}
+        errors[lang.name] = Array.new if errors[lang.name].nil?
+        errors[lang.name] << 'couldn\'t save organisation_translation'
+        org_trans.errors.each_full{ |error| errors[lang.name] << error }
       end
     end
+  end
+end
+
+def setTranslationStatus(lang, status, errors)
+  case status.downcase
+    when 'no need', 'no need in india'
+      lang.translation_need = :no_need
+      lang.translation_progress = :not_started
+    when 'research need'
+      lang.translation_need = :survey_required
+      lang.translation_progress = :not_started
+    when 'whole bible available', 'nt available'
+      lang.translation_need = :need
+      lang.translation_progress = :done
+    when 'translation in progress'
+      lang.translation_need = :need
+      lang.translation_progress = :in_progress
+    when 'limited need'
+      lang.translation_need = :limited_need
+      lang.translation_progress = :not_started
+    when 'full tr need', 'translation planned 2016'
+      lang.translation_need = :need
+      lang.translation_progress = :not_started
+    else
+      errors[lang.name] = Array.new if errors[lang.name].nil?
+      errors[lang.name] << "unknown translation status: #{status}"
   end
 end
 
@@ -69,7 +100,8 @@ language_data.each do |row|
     if state
       lang.geo_states << state
     else
-      puts "*** Can't find state #{row[:state]}***"
+      errors[lang.name] = Array.new if errors[lang.name].nil?
+      errors[lang.name] << "Can't find state #{row[:state]}"
     end
     if row[:location]
       collect_states_from_location(lang, state_names, row[:location])
@@ -93,14 +125,25 @@ language_data.each do |row|
   lang.info ||= row[:other_information]
   lang.translation_info ||= row[:decision_criteria]
   if row[:orgs_involved]
-    addOrgs(lang, row[:orgs_involved])
+    addOrgs(lang, row[:orgs_involved], errors)
   end
   if row[:tr_org]
-    addTransOrgs(lang, row[:tr_org])
+    addTransOrgs(lang, row[:tr_org], errors)
+  end
+  if row[:translation_statusneed]
+    setTranslationStatus(lang, row[:translation_statusneed], errors)
   end
   if lang.save
     puts lang.name
   else
-    puts "\n***could not save #{lang.name}***\n"
+    errors[lang.name] = Array.new if errors[lang.name].nil?
+    errors[lang.name] << 'could not save language'
+  end
+end
+
+if errors.any?
+  puts '*** Errors ***'
+  errors.each do |lang, errors_array|
+    errors_array.each { |error| puts "#{lang}: #{error}"}
   end
 end
