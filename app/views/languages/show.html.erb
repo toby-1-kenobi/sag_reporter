@@ -28,45 +28,45 @@
     <p><%= @language.info %></p>
 <% end %>
 
-<style>
-  paper-tabs {
-    background-color: mediumslateblue;
-    colour: white;
+<style is="custom-style">
+  <% backgound_colour = materialize_colours_hex[@language.colour] %>
+  <% foregound_colour = get_contrast(backgound_colour) %>
+  easy-paper-tabs {
+    --tabs-background-colour: <%= backgound_colour %>;
+    --tabs-colour: <%= foregound_colour %>;
+  }
+  paper-fab {
+    --paper-fab-background: <%= backgound_colour %>;
+    color: <%= foregound_colour %>;
   }
 </style>
 
-<paper-tabs selected="0">
+<easy-paper-tabs selected="0">
   <paper-tab>TRANSLATION STATUS</paper-tab>
   <paper-tab>RESOURCES AVAILABLE</paper-tab>
   <paper-tab>JOSHUA PROJECT DATA</paper-tab>
-</paper-tabs>
-
-<iron-pages selected="0">
-  <div>
+  <div class="page">
     <% if @language.number_of_translations && @language.number_of_translations > 0 %>
         <p>Already existing: <strong><%= @language.number_of_translations %></strong> Bible <%= 'version'.pluralize(@language.number_of_translations) %></p>
     <% end %>
+    <p>Translation need: <strong><%= @language.translation_need.humanize %></strong></p>
+    <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
+    <% if @language.translation_info %>
+      <p><%= @language.translation_info %></p>
+    <% end %>
   </div>
-  <div>Page 2</div>
-  <div>Page 3</div>
-</iron-pages>
-<script>
-  var pages = document.querySelector('iron-pages');
-  var tabs = document.querySelector('paper-tabs');
-
-  tabs.addEventListener('iron-select', function() {
-    pages.selected = tabs.selected;
-  });
-</script>
+  <div class="page">Page 2</div>
+  <div class="page">Page 3</div>
+</easy-paper-tabs>
 
 
 
 <% if logged_in_user.can_edit_language? %>
-  <%= link_to edit_language_path(@language), class: "waves-effect right btn" do %>
-    <i class="material-icons left">create</i>
-    Edit
-  <% end %>
+    <%= link_to edit_language_path(@language), class: 'right' do %>
+      <paper-fab icon="create" title="Edit"></paper-fab>
+    <% end %>
 <% end %>
+
 <% if logged_in_user.can_view_all_languages? %>
   <%= link_to languages_path, class: "waves-effect btn" do %>
     All languages
