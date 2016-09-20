@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160916010150) do
+ActiveRecord::Schema.define(version: 20160920021943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(version: 20160916010150) do
     t.integer  "sub_district_id"
   end
 
+  add_index "events", ["event_date"], name: "index_events_on_event_date", using: :btree
   add_index "events", ["geo_state_id"], name: "index_events_on_geo_state_id", using: :btree
   add_index "events", ["sub_district_id"], name: "index_events_on_sub_district_id", using: :btree
   add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
@@ -126,6 +127,7 @@ ActiveRecord::Schema.define(version: 20160916010150) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "geo_states", ["name"], name: "index_geo_states_on_name", using: :btree
   add_index "geo_states", ["zone_id"], name: "index_geo_states_on_zone_id", using: :btree
 
   create_table "geo_states_users", id: false, force: :cascade do |t|
@@ -199,6 +201,7 @@ ActiveRecord::Schema.define(version: 20160916010150) do
   add_index "languages", ["cluster_id"], name: "index_languages_on_cluster_id", using: :btree
   add_index "languages", ["family_id"], name: "index_languages_on_family_id", using: :btree
   add_index "languages", ["iso"], name: "index_languages_on_iso", unique: true, using: :btree
+  add_index "languages", ["name"], name: "index_languages_on_name", using: :btree
   add_index "languages", ["pop_source_id"], name: "index_languages_on_pop_source_id", using: :btree
   add_index "languages", ["translation_need"], name: "index_languages_on_translation_need", using: :btree
   add_index "languages", ["translation_progress"], name: "index_languages_on_translation_progress", using: :btree
@@ -244,8 +247,10 @@ ActiveRecord::Schema.define(version: 20160916010150) do
   end
 
   add_index "mt_resources", ["category"], name: "index_mt_resources_on_category", using: :btree
+  add_index "mt_resources", ["created_at"], name: "index_mt_resources_on_created_at", using: :btree
   add_index "mt_resources", ["geo_state_id"], name: "index_mt_resources_on_geo_state_id", using: :btree
   add_index "mt_resources", ["language_id"], name: "index_mt_resources_on_language_id", using: :btree
+  add_index "mt_resources", ["publish_year"], name: "index_mt_resources_on_publish_year", using: :btree
   add_index "mt_resources", ["user_id"], name: "index_mt_resources_on_user_id", using: :btree
 
   create_table "observations", force: :cascade do |t|
@@ -337,6 +342,7 @@ ActiveRecord::Schema.define(version: 20160916010150) do
 
   add_index "people", ["geo_state_id"], name: "index_people_on_geo_state_id", using: :btree
   add_index "people", ["language_id"], name: "index_people_on_language_id", using: :btree
+  add_index "people", ["name"], name: "index_people_on_name", using: :btree
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
   create_table "permissions", force: :cascade do |t|
@@ -369,6 +375,7 @@ ActiveRecord::Schema.define(version: 20160916010150) do
   end
 
   add_index "progress_markers", ["topic_id"], name: "index_progress_markers_on_topic_id", using: :btree
+  add_index "progress_markers", ["weight"], name: "index_progress_markers_on_weight", using: :btree
 
   create_table "progress_updates", force: :cascade do |t|
     t.integer  "user_id",              null: false
@@ -384,7 +391,9 @@ ActiveRecord::Schema.define(version: 20160916010150) do
   add_index "progress_updates", ["created_at"], name: "index_progress_updates_on_created_at", using: :btree
   add_index "progress_updates", ["geo_state_id"], name: "index_progress_updates_on_geo_state_id", using: :btree
   add_index "progress_updates", ["language_progress_id"], name: "index_progress_updates_on_language_progress_id", using: :btree
+  add_index "progress_updates", ["month"], name: "index_progress_updates_on_month", using: :btree
   add_index "progress_updates", ["user_id"], name: "index_progress_updates_on_user_id", using: :btree
+  add_index "progress_updates", ["year"], name: "index_progress_updates_on_year", using: :btree
 
   create_table "purposes", force: :cascade do |t|
     t.string   "name",        null: false
@@ -420,7 +429,9 @@ ActiveRecord::Schema.define(version: 20160916010150) do
   add_index "reports", ["geo_state_id"], name: "index_reports_on_geo_state_id", using: :btree
   add_index "reports", ["impact_report_id"], name: "index_reports_on_impact_report_id", using: :btree
   add_index "reports", ["planning_report_id"], name: "index_reports_on_planning_report_id", using: :btree
+  add_index "reports", ["report_date"], name: "index_reports_on_report_date", using: :btree
   add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id", using: :btree
+  add_index "reports", ["status"], name: "index_reports_on_status", using: :btree
   add_index "reports", ["sub_district_id"], name: "index_reports_on_sub_district_id", using: :btree
 
   create_table "reports_topics", id: false, force: :cascade do |t|
@@ -446,6 +457,7 @@ ActiveRecord::Schema.define(version: 20160916010150) do
 
   add_index "state_languages", ["geo_state_id"], name: "index_state_languages_on_geo_state_id", using: :btree
   add_index "state_languages", ["language_id"], name: "index_state_languages_on_language_id", using: :btree
+  add_index "state_languages", ["project"], name: "index_state_languages_on_project", using: :btree
 
   create_table "sub_districts", force: :cascade do |t|
     t.string   "name",        null: false
@@ -495,6 +507,8 @@ ActiveRecord::Schema.define(version: 20160916010150) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "translatables", ["identifier"], name: "index_translatables_on_identifier", using: :btree
+
   create_table "translations", force: :cascade do |t|
     t.integer  "translatable_id"
     t.integer  "language_id"
@@ -513,6 +527,7 @@ ActiveRecord::Schema.define(version: 20160916010150) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "uploaded_files", ["ref"], name: "index_uploaded_files_on_ref", using: :btree
   add_index "uploaded_files", ["report_id"], name: "index_uploaded_files_on_report_id", using: :btree
 
   create_table "users", force: :cascade do |t|
@@ -529,6 +544,7 @@ ActiveRecord::Schema.define(version: 20160916010150) do
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
+  add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
@@ -537,6 +553,8 @@ ActiveRecord::Schema.define(version: 20160916010150) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "zones", ["name"], name: "index_zones_on_name", using: :btree
 
   add_foreign_key "action_points", "events"
   add_foreign_key "action_points", "people", column: "responsible_id"
