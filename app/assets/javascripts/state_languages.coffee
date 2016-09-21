@@ -11,6 +11,6 @@ updateTransformationUpdateLink = ->
   $('.update-transformation-data').prop('href', ref)
   return
 
-$(document).on "page:change", ->
+$(document).ready ->
   $('.transformation-dates select').on 'change', updateTransformationUpdateLink
   return
