@@ -296,6 +296,8 @@ module ColoursHelper
 	end
 
 	def get_contrast(colour_hex)
+		# assume nil means white
+		colour_hex ||= 'ffffff'
 		# get RGB components
 		red = colour_hex[-6..-5].to_i(16)
 		green = colour_hex[-4..-3].to_i(16)
