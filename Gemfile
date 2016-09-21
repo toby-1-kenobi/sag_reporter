@@ -72,6 +72,9 @@ gem 'polymer-elements-rails', github: 'alchapone/polymer-elements-rails'
 # token based authentication with JWT
 gem 'knock'
 
+# simplify http requests
+gem 'httparty'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
@@ -95,6 +98,9 @@ group :development, :test do
   # For high level specification of integration tests
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
+
+  # for managing environment variable
+  gem 'dotenv-rails'
 end
 
 group :test do

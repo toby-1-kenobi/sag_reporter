@@ -1,3 +1,17 @@
+
+<style is="custom-style">
+  <% background_colour = materialize_colours_hex[@language.colour] %>
+  <% foreground_colour = get_contrast(background_colour) %>
+  easy-paper-tabs {
+    --tabs-background-colour: <%= background_colour %>;
+    --tabs-colour: <%= foreground_colour %>;
+  }
+  paper-fab {
+    --paper-fab-background: <%= background_colour %>;
+    color: <%= foreground_colour %>;
+  }
+</style>
+
 <% provide(:title, 'Show Language: ' + @language.name) %>
 <h1 class="coloured <%= colour_class(@language.colour) %>"><%= @language.name %></h1>
 <% if @language.iso %>
@@ -27,24 +41,18 @@
 <% if @language.info %>
     <p><%= @language.info %></p>
 <% end %>
-
-<style is="custom-style">
-  <% backgound_colour = materialize_colours_hex[@language.colour] %>
-  <% foregound_colour = get_contrast(backgound_colour) %>
-  easy-paper-tabs {
-    --tabs-background-colour: <%= backgound_colour %>;
-    --tabs-colour: <%= foregound_colour %>;
-  }
-  paper-fab {
-    --paper-fab-background: <%= backgound_colour %>;
-    color: <%= foregound_colour %>;
-  }
-</style>
+<% if @language.engaged_organisations.any? %>
+    <% copula = @language.engaged_organisations.count == 1 ? 'is' : 'are' %>
+    <%= pluralize(@language.engaged_organisations.count, 'organisation') + " #{copula}" %> are engaged with this language:
+    <div role="listbox">
+    <% @language.engaged_organisations.each do |org| %>
+      <paper-item><%= org.name %></paper-item>
+    <% end %>
+    </div>
+<% end %>
 
 <easy-paper-tabs selected="0">
   <paper-tab>TRANSLATION STATUS</paper-tab>
-  <paper-tab>RESOURCES AVAILABLE</paper-tab>
-  <paper-tab>JOSHUA PROJECT DATA</paper-tab>
   <div class="page">
     <% if @language.number_of_translations && @language.number_of_translations > 0 %>
         <p>Already existing: <strong><%= @language.number_of_translations %></strong> Bible <%= 'version'.pluralize(@language.number_of_translations) %></p>
@@ -52,11 +60,114 @@
     <p>Translation need: <strong><%= @language.translation_need.humanize %></strong></p>
     <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
     <% if @language.translation_info %>
-      <p><%= @language.translation_info %></p>
+        <p><%= @language.translation_info %></p>
+    <% end %>
+    <% if @language.translating_organisations.any? %>
+        <% copula = @language.engaged_organisations.count == 1 ? 'is' : 'are' %>
+        <%= pluralize(@language.translating_organisations.count, 'organisation') + " #{copula}" %> involved with translation:
+        <div role="listbox">
+          <% @language.translating_organisations.each do |org| %>
+              <paper-item><%= org.name %></paper-item>
+          <% end %>
+        </div>
     <% end %>
   </div>
-  <div class="page">Page 2</div>
-  <div class="page">Page 3</div>
+
+  <% if @language.iso or @language.mt_resources.any? %>
+    <paper-tab>RESOURCES AVAILABLE</paper-tab>
+    <div class="page">
+      <div role="listbox">
+        <% if @language.mt_resources.any? %>
+          <% @language.mt_resources.each do |resource| %>
+            <% if resource.url %>
+              <a href="<%= resource.url %>" tabindex="-1">
+            <% end %>
+            <paper-item>
+              <paper-item-body two-line>
+                <div><%= resource.name %></div>
+                <div secondary><%= resource.description %></div>
+              </paper-item-body>
+            </paper-item>
+            <% if resource.url %>
+              </a>
+            <% end %>
+          <% end %>
+        <% end %>
+        <% if @joshua_project %>
+          <% jp_data = @joshua_project['data'][0] %>
+          <% if jp_data['JF_URL'].present? %>
+            <a href="<%= jp_data['JF_URL'] %>" tabindex="-1">
+              <paper-item>Jesus Film</paper-item>
+            </a>
+          <% end %>
+            <% if jp_data['GRN_URL'].present? %>
+                <a href="<%= jp_data['GRN_URL'] %>" tabindex="-1">
+                  <paper-item>GRN Audio recordings</paper-item>
+                </a>
+            <% end %>
+            <% if jp_data['4Laws_URL'].present? %>
+                <a href="<%= jp_data['4Laws_URL'] %>" tabindex="-1">
+                  <paper-item>Four Spiritual Laws</paper-item>
+                </a>
+            <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @joshua_project %>
+    <% jp_data = @joshua_project['data'][0] %>
+    <paper-tab>JOSHUA PROJECT DATA</paper-tab>
+    <div class="page">
+      <%
+        info = ''
+        info += " #{jp_data['JPPopulation']} people speak this as their primary language." if jp_data['JPPopulation'].present?
+        info += " This is the primary language for #{pluralize jp_data['NbrPGICs'], 'people group'}." if jp_data['NbrPGICs'].present?
+        info += " They live in #{pluralize jp_data['NbrCountries'], 'country'}." if jp_data['NbrCountries'].present?
+        info += " Their primary religion is #{jp_data['PrimaryReligion']}." if jp_data['PrimaryReligion'].present?
+        info += " #{jp_data['PercentAdherents']}% of these people identify as Christian." if jp_data['PercentAdherents'].present?
+        info += " #{jp_data['PercentEvangelical']}% of these people are evangelical Christian." if jp_data['PercentEvangelical'].present?
+        scale = case jp_data['JPScale']
+          when 1
+            'unreached'
+          when 2
+            'formerly or falsely reached'
+          when 3
+            'minimally reached'
+          when 4
+            'partially reached'
+          when 5
+            'significantly reached'
+          else
+            nil
+        end
+        info += " They are #{scale}." if scale.present?
+        info += ' They are considered Least-reached.' if jp_data['LeastReached'] and jp_data['LeastReached'] == 'Y'
+          bible_status = ''
+        case jp_data['BibleStatus']
+          when 0
+            bible_status += 'Bible translation need is questionable'
+          when 1
+            bible_status += 'There is no Bible translation, but a definite need'
+          when 2
+            bible_status += 'Portions of scripture have been published'
+            bible_status += " in #{jp_data['PortionsYear']}" if jp_data['PortionsYear']
+          when 3
+            bible_status += 'The New Testament has been published'
+            bible_status += " in #{jp_data['NTYear']}" if jp_data['NTYear']
+          when 4
+            bible_status += 'The whole Bible has been published'
+            bible_status += " in #{jp_data['BibleYear']}" if jp_data['BibleYear']
+        end
+      %>
+      <paper-card heading="<%= jp_data['Language'] %>">
+        <div class="card-content">
+          <% if info.present? %><p><%= info %></p><% end %>
+          <% if bible_status.present? %><p><%= bible_status %>.</p><% end %>
+        </div>
+      </paper-card>
+    </div>
+  <% end %>
 </easy-paper-tabs>
 
 

@@ -41,7 +41,7 @@ end
 
 english:
   name: English
-  description: "Desireable international language"
+  description: "Desirable international language"
   lwc: true
   colour: 'indigo lighten-3'
   interface: true
@@ -73,7 +73,6 @@ toto:
 
 rajbanshi:
   name: Rajbanshi
-  description: "Translation of gospels and acts newrly ready in August 2015."
   lwc: false
   colour: 'green lighten-1'
 
