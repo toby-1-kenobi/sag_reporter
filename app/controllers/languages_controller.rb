@@ -32,7 +32,20 @@ class LanguagesController < ApplicationController
   end
 
   def show
-  	@language = Language.includes(:pop_source, :family).find(params[:id])
+  	@language = Language.
+        includes(
+            :pop_source,
+            :family,
+            :cluster,
+            :engaged_organisations,
+            :translating_organisations,
+            :mt_resources
+        ).
+        find(params[:id])
+    if @language.iso
+      jp_data = JoshuaProject.language @language.iso
+      @joshua_project = jp_data if JoshuaProject.success? jp_data
+    end
   end
 
   def update
