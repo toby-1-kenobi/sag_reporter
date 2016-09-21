@@ -48,7 +48,7 @@ updateDistrictData = ->
     $('#district-autocomplete input').val('')
   return
 
-$(document).on "page:change", ->
+$(document).ready ->
 
   $('#report_geo_state_id').on 'change', updateDistrictData
   $('#district-autocomplete input').on 'railsAutocomplete.select', (event, data) ->
