@@ -425,7 +425,7 @@ miec:
 
 mm:
   name: MM
-  abbreviation: MM
+  abbreviation: Mukthi Mission
 
 mnbca:
   name: MNBCA
@@ -457,9 +457,6 @@ meec:
 
 mi:
   name: Missions India
-
-mm1:
-  name: Mukthi Mission
 
 n:
   name: N
@@ -512,10 +509,6 @@ nsm:
 nzb:
   name: NZB
   abbreviation: NZB
-
-nelc1:
-  name: NeLC
-  abbreviation: NeLC
 
 nicog:
   name: New India Church of God
