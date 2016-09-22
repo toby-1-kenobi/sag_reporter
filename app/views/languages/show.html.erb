@@ -11,6 +11,13 @@
     --paper-fab-background: <%= background_colour %>;
     color: <%= foreground_colour %>;
   }
+  paper-spinner {
+    margin: 2em;
+  }
+  .center {
+    @apply(--layout-horizontal);
+    @apply(--layout-center-justified);
+  }
 </style>
 
 <% provide(:title, 'Show Language: ' + @language.name) %>
@@ -97,7 +104,7 @@
           <% end %>
         <% end %>
         <% if @language.iso %>
-            <paper-spinner class="jp-fetch" active></paper-spinner>
+            <div class="center"><paper-spinner class="jp-fetch" active></paper-spinner></div>
         <% end %>
       </div>
     </div>
@@ -106,7 +113,7 @@
   <% if @language.iso %>
     <paper-tab>JOSHUA PROJECT DATA</paper-tab>
     <div class="page jp-data">
-      <paper-spinner class="jp-fetch" active></paper-spinner>
+      <div class="center"><paper-spinner class="jp-fetch" active></paper-spinner></div>
       <%= link_to 'Fetch JP Data', fetch_jp_data_path(@language.iso), remote: true, class: 'hide', id: 'jp-fetch-trigger' %>
     </div>
   <% end %>
