@@ -1,0 +1,68 @@
+<%
+
+jp_full_data = JoshuaProject.language @iso
+if JoshuaProject.success? jp_full_data
+  jp_data = jp_full_data['data'][0]
+  if jp_data['JF_URL'].present? %>
+    $('.resources-list').append("<%= escape_javascript(render 'resource_item', url:  jp_data['JF_URL'], name: 'Jesus Film')%>");
+  <% end %>
+  <% if jp_data['GRN_URL'].present? %>
+    $('.resources-list').append("<%= escape_javascript(render 'resource_item', url:  jp_data['GRN_URL'], name: 'GRN audio recordings')%>");
+  <% end %>
+  <% if jp_data['4Laws_URL'].present? %>
+    $('.resources-list').append("<%= escape_javascript(render 'resource_item', url:  jp_data['4Laws_URL'], name: 'Four Spiritual Laws')%>");
+  <% end
+
+        info = ''
+        info += " #{jp_data['JPPopulation']} people speak this as their primary language." if jp_data['JPPopulation'].present?
+        info += " This is the primary language for #{pluralize jp_data['NbrPGICs'], 'people group'}." if jp_data['NbrPGICs'].present?
+        info += " They live in #{pluralize jp_data['NbrCountries'], 'country'}." if jp_data['NbrCountries'].present?
+        info += " Their primary religion is #{jp_data['PrimaryReligion']}." if jp_data['PrimaryReligion'].present?
+        info += " #{jp_data['PercentAdherents']}% of these people identify as Christian." if jp_data['PercentAdherents'].present?
+        info += " #{jp_data['PercentEvangelical']}% of these people are evangelical Christian." if jp_data['PercentEvangelical'].present?
+        scale = case jp_data['JPScale']
+          when 1
+            'unreached'
+          when 2
+            'formerly or falsely reached'
+          when 3
+            'minimally reached'
+          when 4
+            'partially reached'
+          when 5
+            'significantly reached'
+          else
+            nil
+        end
+        info += " They are #{scale}." if scale.present?
+        info += ' They are considered Least-reached.' if jp_data['LeastReached'] and jp_data['LeastReached'] == 'Y'
+          bible_status = ''
+        case jp_data['BibleStatus']
+          when 0
+            bible_status += 'Bible translation need is questionable'
+          when 1
+            bible_status += 'There is no Bible translation, but a definite need'
+          when 2
+            bible_status += 'Portions of scripture have been published'
+            bible_status += " in #{jp_data['PortionsYear']}" if jp_data['PortionsYear']
+          when 3
+            bible_status += 'The New Testament has been published'
+            bible_status += " in #{jp_data['NTYear']}" if jp_data['NTYear']
+          when 4
+            bible_status += 'The whole Bible has been published'
+            bible_status += " in #{jp_data['BibleYear']}" if jp_data['BibleYear']
+        end
+        %>
+  var card = $('<paper-card>').attr('heading', '<%= jp_data['Language'] %>');
+  var cardContent = $('<div>').addClass('card-content');
+  <% if info.present? %>
+    cardContent.append("<p><%= info %></p>");
+  <% end %>
+  <% if bible_status.present? %>
+    cardContent.append("<p><%= bible_status %>.</p>");
+  <% end %>
+  card.append(cardContent).appendTo($('.jp-data'));
+<%
+end
+%>
+$('paper-spinner.jp-fetch').removeAttr('active');
