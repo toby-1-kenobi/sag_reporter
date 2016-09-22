@@ -146,4 +146,6 @@ if errors.any?
   errors.each do |lang, errors_array|
     errors_array.each { |error| puts "#{lang}: #{error}"}
   end
+else
+  puts 'no errors 🙂'
 end
