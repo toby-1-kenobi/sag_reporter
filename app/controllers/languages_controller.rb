@@ -42,10 +42,10 @@ class LanguagesController < ApplicationController
             :mt_resources
         ).
         find(params[:id])
-    if @language.iso
-      jp_data = JoshuaProject.language @language.iso
-      @joshua_project = jp_data if JoshuaProject.success? jp_data
-    end
+  end
+
+  def fetch_jp_data
+    @iso = params[:iso]
   end
 
   def update

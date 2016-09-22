@@ -61,6 +61,8 @@ Rails.application.routes.draw do
 
   get 'events/new'
 
+  get 'languages/fetch_jp_data/:iso' => 'languages#fetch_jp_data', as: 'fetch_jp_data'
+
   get 'outcomes/select' => 'topics#assess_progress_select', as: 'select_to_assess'
   get 'outcomes/get_chart/:id' => 'state_languages#get_chart', as: 'outcomes_chart'
   get 'outcomes/get_totals_chart/:id' => 'geo_states#get_totals_chart', as: 'outcomes_totals_chart'
