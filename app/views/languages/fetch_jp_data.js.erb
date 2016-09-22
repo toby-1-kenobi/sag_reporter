@@ -14,7 +14,7 @@ if JoshuaProject.success? jp_full_data
   <% end
 
         info = ''
-        info += " #{jp_data['JPPopulation']} people speak this as their primary language." if jp_data['JPPopulation'].present?
+        info += " #{number_with_delimiter(jp_data['JPPopulation'], delimiter: ',')} people speak this as their primary language." if jp_data['JPPopulation'].present?
         info += " This is the primary language for #{pluralize jp_data['NbrPGICs'], 'people group'}." if jp_data['NbrPGICs'].present?
         info += " They live in #{pluralize jp_data['NbrCountries'], 'country'}." if jp_data['NbrCountries'].present?
         info += " Their primary religion is #{jp_data['PrimaryReligion']}." if jp_data['PrimaryReligion'].present?
