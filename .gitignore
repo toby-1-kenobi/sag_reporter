@@ -27,3 +27,8 @@
 
 # Ignore rubymine project files
 /.idea
+
+# Ignore files and folders containing private data
+/db/baseline_data/
+/db/seed_fixtures/
+/db/language_data.csv
