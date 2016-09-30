@@ -29,5 +29,10 @@ module SagReporter
     config.generators do |generator|
         generator.test_framework :minitest, spec: true
     end
+
+    # Use a custom form builder
+    config.after_initialize do
+      ActionView::Base.default_form_builder = PaperFormBuilder
+    end
   end
 end

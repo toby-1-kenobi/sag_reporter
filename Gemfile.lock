@@ -1,12 +1,12 @@
 GIT
-  remote: git://github.com/alchapone/polymer-elements-rails.git
+  remote: git://github.com/alchaplinsky/polymer-elements-rails.git
   revision: 75321e75f315d9ad2f1cbe32884afdf742b90a8d
   specs:
     polymer-elements-rails (1.1.1)
       polymer-rails (~> 1.0, >= 1.0.3)
 
 GIT
-  remote: git://github.com/alchapone/polymer-rails.git
+  remote: git://github.com/alchaplinsky/polymer-rails.git
   revision: c1493a5eb9181a411116df3346504c16f2dfe68c
   specs:
     polymer-rails (1.2.4.1)
