@@ -1,0 +1,52 @@
+<style is="custom-style" include="iron-flex">
+  .input-field.flex, paper-input {
+    margin-right: 1em;
+  }
+</style>
+<%= form_for(@language, html: {class: "col s12"}) do |f| %>
+    <%= render 'shared/error_messages', object: f.object %>
+    <div class="layout horizontal">
+      <div class="flex-3">
+        <%= f.paper_text_field :name %>
+        <%= f.label :name %>
+      </div>
+      <div class="flex">
+        <%= f.paper_text_field :iso, maxlength: 3 %>
+        <%= f.label :iso %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s12">
+        <%= f.text_area :description, class: "materialize-textarea" %>
+        <%= f.label :description %>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s4">
+        <%= f.check_box :lwc %>
+        <%= f.label :lwc, "Language of Wider Communication" %>
+      </div>
+      <div class="col s8">
+        <a class='dropdown-button btn-flat' href='#' data-activates='colour_picker' data-hover="true" data-constrainwidth="false">Colour...</a>
+        <div id='colour_picker' class='dropdown-content'>
+          <table>
+            <tbody>
+            <% materialize_colours.each_with_index do |colour, index| %>
+                <%= '<tr>'.html_safe if index % @colour_columns == 0 %>
+                <td class="<%= colour %>"><%= f.radio_button :colour, colour, checked: @language.colour.starts_with?(colour) %>
+                  <%= f.label "colour_#{colour}", colour.capitalize, class: colour == "black" ? "white-text" : "black-text" %></td>
+                <%= '</tr>'.html_safe if (index + 1) % @colour_columns == 0 %>
+            <% end %>
+            </tbody>
+          </table>
+          <p class="range-field">
+            <label for="language[colour_darkness]">Colour Darkness</label>
+            <input type="range" name="language[colour_darkness]" id="language[colour_darkness]" min="-5" max="4" class="colour-darkness-range" />
+          </p>
+        </div>
+      </div>
+    </div>
+    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+        Update Language <i class="material-icons right">create</i>
+    <% end %>
+<% end %>

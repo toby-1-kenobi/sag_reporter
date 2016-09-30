@@ -18,7 +18,7 @@ class LanguagesController < ApplicationController
   end
 
   def index
-  	@languages = Language.order("LOWER(name)")
+  	@languages = Language.order('LOWER(name)')
   end
 
   def new
@@ -51,7 +51,7 @@ class LanguagesController < ApplicationController
   def update
     @language = Language.find(params[:id])
     if @language.update_attributes(combine_colour(lang_params))
-      flash["success"] = "Language updated"
+      flash['success'] = 'Language updated'
       redirect_to @language
     else
       @colour_columns = 3
@@ -62,7 +62,7 @@ class LanguagesController < ApplicationController
   def create
     @language = Language.new(combine_colour(lang_params))
     if @language.save
-      flash["success"] = "New language added!"
+      flash['success'] = 'New language added!'
       redirect_to @language
     else
       render 'new'
@@ -93,7 +93,24 @@ class LanguagesController < ApplicationController
     private
 
     def lang_params
-      params.require(:language).permit(:name, :description, :lwc, :colour, :colour_darkness)
+      params.require(:language).permit(
+          :name,
+          :description,
+          :lwc, :colour,
+          :colour_darkness,
+          :interface,
+          :iso,
+          :family_id,
+          :population,
+          :pop_source_id,
+          :location,
+          :number_of_translations,
+          :cluster_id,
+          :info,
+          :translation_info,
+          :translation_need,
+          :translation_progress
+      )
     end
   
 end
