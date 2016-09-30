@@ -66,8 +66,8 @@ gem 'carrierwave'
 gem 'mini_magick'
 
 # Web components
-gem 'polymer-rails', github: 'alchapone/polymer-rails'
-gem 'polymer-elements-rails', github: 'alchapone/polymer-elements-rails'
+gem 'polymer-rails', github: 'alchaplinsky/polymer-rails'
+gem 'polymer-elements-rails', github: 'alchaplinsky/polymer-elements-rails'
 
 # token based authentication with JWT
 gem 'knock'
