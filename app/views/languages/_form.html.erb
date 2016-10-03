@@ -8,17 +8,22 @@
     <div class="layout horizontal">
       <div class="flex-3">
         <%= f.paper_text_field :name %>
-        <%= f.label :name %>
       </div>
       <div class="flex">
-        <%= f.paper_text_field :iso, maxlength: 3 %>
-        <%= f.label :iso %>
+        <%= f.paper_text_field :iso, maxlength: 3, 'allowed-pattern' => '[a-zA-Z]' %>
       </div>
     </div>
-    <div class="row">
-      <div class="input-field col s12">
-        <%= f.text_area :description, class: "materialize-textarea" %>
-        <%= f.label :description %>
+    <div class="layout horizontal">
+      <div class="flex">
+        <%= f.paper_text_field :population, 'allowed-pattern' => '[0-9]' %>
+      </div>
+      <div class="flex">
+        <%= f.paper_autocomplete :pop_source %>
+      </div>
+    </div>
+    <div class="layout horizontal">
+      <div class="flex">
+        <%= f.paper_textarea :description, label: 'Description of language' %>
       </div>
     </div>
     <div class="row">
