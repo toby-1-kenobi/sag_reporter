@@ -1,24 +1,34 @@
 <style is="custom-style" include="iron-flex">
-  .input-field.flex, paper-input {
+  .flex {
     margin-right: 1em;
   }
 </style>
 <%= form_for(@language, html: {class: "col s12"}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
-    <div class="layout horizontal">
-      <div class="flex-3">
+    <div class="layout horizontal wrap justified center">
+      <div>
         <%= f.paper_text_field :name %>
       </div>
-      <div class="flex">
+      <div>
         <%= f.paper_text_field :iso, maxlength: 3, 'allowed-pattern' => '[a-zA-Z]' %>
       </div>
-    </div>
-    <div class="layout horizontal">
-      <div class="flex">
+      <div>
         <%= f.paper_text_field :population, 'allowed-pattern' => '[0-9]' %>
       </div>
-      <div class="flex">
+      <div>
         <%= f.paper_autocomplete :pop_source %>
+      </div>
+      <%= f.paper_autocomplete_js :pop_source %>
+      <div>
+        <%= f.paper_autocomplete :family %>
+      </div>
+      <%= f.paper_autocomplete_js :family %>
+      <div>
+        <%= f.paper_autocomplete :cluster %>
+      </div>
+      <%= f.paper_autocomplete_js :cluster %>
+      <div>
+        <%= f.paper_checkbox :lwc, label: 'Language of Wider Communication' %>
       </div>
     </div>
     <div class="layout horizontal">
@@ -27,10 +37,6 @@
       </div>
     </div>
     <div class="row">
-      <div class="input-field col s4">
-        <%= f.check_box :lwc %>
-        <%= f.label :lwc, "Language of Wider Communication" %>
-      </div>
       <div class="col s8">
         <a class='dropdown-button btn-flat' href='#' data-activates='colour_picker' data-hover="true" data-constrainwidth="false">Colour...</a>
         <div id='colour_picker' class='dropdown-content'>
