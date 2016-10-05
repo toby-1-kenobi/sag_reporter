@@ -39,7 +39,8 @@ class LanguagesController < ApplicationController
             :cluster,
             :engaged_organisations,
             :translating_organisations,
-            :mt_resources
+            :mt_resources,
+            {:state_languages => :geo_state}
         ).
         find(params[:id])
   end

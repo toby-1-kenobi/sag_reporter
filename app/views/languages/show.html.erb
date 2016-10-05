@@ -29,6 +29,20 @@
 <% end %>
 </h1>
 
+  <div role="listbox" class="state-list">
+    Spoken in
+      <% @language.state_languages.in_project.each do |state_language| %>
+          <paper-item>
+            <paper-item-body two-line>
+              <div><%= state_language.state_name %></div>
+              <div secondary>LCI project</div>
+            </paper-item-body>
+          </paper-item>
+      <% end %>
+      <% @language.state_languages.where(project: false).each do |state_language| %>
+          <paper-item><%= state_language.state_name %></paper-item>
+      <% end %>
+  </div>
 <% if @language.population %>
     <p>
       <span id="pop_<%= @language.iso %>">
