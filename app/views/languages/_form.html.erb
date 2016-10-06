@@ -1,9 +1,12 @@
 <style is="custom-style" include="iron-flex">
-  .flex {
-    margin-right: 1em;
+  paper-radio-group {
+    padding: 12px;
+  }
+  paper-radio-button {
+    padding: 0;
   }
 </style>
-<%= form_for(@language, html: {class: "col s12"}) do |f| %>
+<%= form_for(@language, html: {class: 'col s12', is: 'iron-form'}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
     <div class="layout horizontal wrap justified center">
       <div>
@@ -30,14 +33,7 @@
       <div>
         <%= f.paper_checkbox :lwc, label: 'Language of Wider Communication' %>
       </div>
-    </div>
-    <div class="layout horizontal">
-      <div class="flex">
-        <%= f.paper_textarea :description, label: 'Description of language' %>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col s8">
+      <div>
         <a class='dropdown-button btn-flat' href='#' data-activates='colour_picker' data-hover="true" data-constrainwidth="false">Colour...</a>
         <div id='colour_picker' class='dropdown-content'>
           <table>
@@ -55,6 +51,19 @@
             <input type="range" name="language[colour_darkness]" id="language[colour_darkness]" min="-5" max="4" class="colour-darkness-range" />
           </p>
         </div>
+      </div>
+    </div>
+    <div class="layout horizontal">
+      <div class="flex">
+        <%= f.paper_textarea :description, label: 'Description of language' %>
+      </div>
+    </div>
+    <div class="layout horizontal wrap">
+      <div>
+        <%= f.paper_radio_group :translation_need %>
+      </div>
+      <div>
+        <%= f.paper_radio_group :translation_progress %>
       </div>
     </div>
     <%= button_tag( :class => "btn waves-effect waves-light right") do %>
