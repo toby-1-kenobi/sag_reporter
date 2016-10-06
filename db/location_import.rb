@@ -45,31 +45,33 @@ end
 
 sub_district_data.each{ |row| parse_sub_district_row(row, districts, sub_districts) }
 
-puts ""
+puts ''
 puts "There are currently #{District.count} districts and #{SubDistrict.count} sub-districts in the database"
 puts "From the location files #{districts.count} districts and #{sub_districts.count} sub-districts have been found or made."
-puts "Do you want to add the new ones to the database? (exisiting districts and sub-districts will not be affected)"
-print "[Y/n] "
+puts 'Do you want to add the new ones to the database? (existing districts and sub-districts will not be affected)'
+print '[Y/n] '
 response = gets.chars.first
 
 if response == 'Y' || response == 'y' || response == ''
-  puts "please be patient while the database is updated. It may take a few minutes."
-  puts "Saving districts"
+  puts 'please be patient while the database is updated. It may take a few minutes.'
+  puts 'Saving districts'
+  ActiveRecord::Base.logger.level = 1
   districts.values.each do |d|
     if !d.save
       puts "could not save district #{d.name} (#{d.geo_state.name})"
       d.errors.each{ |attr, msg| puts "#{attr}: #{msg}" }
     end
   end
-  puts "Saving sub-districts"
+  puts 'Saving sub-districts'
   sub_districts.values.each do |sd|
     if !sd.save
       puts "could not save sub-district #{sd.name} (#{sd.district_name}, #{sd.geo_state.name})"
       sd.errors.each{ |attr, msg| puts "#{attr}: #{msg}" }
     end
   end
-  puts "Done!"
+  ActiveRecord::Base.logger.level = 0
+  puts 'Done!'
   puts "There are now #{District.count} districts and #{SubDistrict.count} sub-districts in the database."
 else
-  puts "import canceled"
+  puts 'import canceled'
 end
