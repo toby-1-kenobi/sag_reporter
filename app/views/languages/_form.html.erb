@@ -6,7 +6,7 @@
     padding: 0;
   }
 </style>
-<%= form_for(@language, html: {class: 'col s12', is: 'iron-form'}) do |f| %>
+<%= form_for(@language, html: {class: 'col s12', is: 'iron-form', 'on-iron-form-response': 'responseHandler'}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
     <div class="layout horizontal wrap justified center">
       <div>
@@ -21,15 +21,12 @@
       <div>
         <%= f.paper_autocomplete :pop_source %>
       </div>
-      <%= f.paper_autocomplete_js :pop_source %>
       <div>
         <%= f.paper_autocomplete :family %>
       </div>
-      <%= f.paper_autocomplete_js :family %>
       <div>
         <%= f.paper_autocomplete :cluster %>
       </div>
-      <%= f.paper_autocomplete_js :cluster %>
       <div>
         <%= f.paper_checkbox :lwc, label: 'Language of Wider Communication' %>
       </div>
@@ -70,3 +67,22 @@
         Update Language <i class="material-icons right">create</i>
     <% end %>
 <% end %>
+
+<script>
+  // response after form is submitted
+  // controller should return JSON
+  function responseHandler(e)
+  {
+    let response = e.detail.parseResponse();
+    if (typeof response.errors != 'undefined') {
+      //TODO: make it a red card that appears at the top of the form
+      alert(response.errors);
+    }
+    if (typeof response.redirect != 'undefined') {
+      window.location = response.redirect;
+    }
+  }
+  window.addEventListener('WebComponentsReady', function() {
+    document.getElementsByTagName('form')[0].addEventListener('iron-form-response', responseHandler)
+  });
+</script>

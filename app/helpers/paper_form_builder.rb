@@ -9,9 +9,6 @@ class PaperFormBuilder < ActionView::Helpers::FormBuilder
   def paper_autocomplete(method, options = {})
     autocomplete = PaperAutocomplete.new(@object_name, method, @template, options).render
   end
-  def paper_autocomplete_js(method, options = {})
-    autocomplete = PaperAutocomplete.new(@object_name, method, @template, options).renderjs
-  end
 
   def paper_textarea(method, options = {})
     PaperTextArea.new(@object_name, method, @template, options).render
@@ -134,28 +131,20 @@ class PaperFormBuilder < ActionView::Helpers::FormBuilder
     end
 
     def render
+
       options = @options.stringify_keys
-      options['maxlength'] = options['size'] unless options.key?('maxlength')
       options['value'] = options.fetch('value') { value_before_type_cast(object) }.name
       options['label'] ||= @method_name.humanize
       add_default_name_and_id(options)
-      tag('paper-autocomplete', options)
-    end
+      options['list'] ||= options['id'] + '-list'
+      options['autocomplete'] = 'on'
 
-    def renderjs()
-      options = @options.stringify_keys
-      options['value'] = options.fetch('value') { value_before_type_cast(object) }.name
-      add_default_name_and_id(options)
-      list = value(retrieve_object(false)).class.all.to_a.map{ |item| {text: item.name, value: item.id} }
-      selected = list.select{ |item| item[:text] == options['value'] }.first
-      js = "window.addEventListener('WebComponentsReady', function(){" +
-          "\n  var items = #{list.to_json};" +
-          "\n  var autocomplete_field = document.querySelector('##{options['id']}');" +
-          "\n  autocomplete_field.source = items;" +
-          "\n  autocomplete_field.setOption(#{selected.to_json});" +
-          "\n  autocomplete_field.enable();" +
-          "\n});"
-      @template_object.javascript_tag(js)
+      list_content = value(retrieve_object(false)).class.all.to_a.map do |item|
+        tag('option', value: item.name)
+      end.join("\n")
+
+      content_tag('datalist', list_content.html_safe, id: options['list']) + "\n".html_safe + tag('paper-input', options)
+
     end
 
   end
