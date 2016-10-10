@@ -75,8 +75,7 @@
   {
     let response = e.detail.parseResponse();
     if (typeof response.errors != 'undefined') {
-      //TODO: make it a red card that appears at the top of the form
-      alert(response.errors);
+      parseErrors(response.errors);
     }
     if (typeof response.redirect != 'undefined') {
       window.location = response.redirect;

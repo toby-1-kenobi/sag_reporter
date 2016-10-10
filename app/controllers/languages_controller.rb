@@ -52,11 +52,23 @@ class LanguagesController < ApplicationController
   def update
     @language = Language.find(params[:id])
     if @language.update_attributes(combine_colour(lang_params))
+      logger.debug 'language update success'
+      logger.debug (request.format)
       flash['success'] = 'Language updated'
-      redirect_to @language
+      respond_to do |format|
+        format.json {
+          flash.keep('success')
+          render json: {redirect: language_path(@language)}.to_json
+        }
+      end
     else
+      logger.debug 'language update failed'
       @colour_columns = 3
-      render 'edit'
+      respond_to do |format|
+        format.json {
+          render json: {errors: @language.errors.full_messages}.to_json
+        }
+      end
     end
   end
 
