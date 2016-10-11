@@ -12,10 +12,7 @@ class GeoState < ActiveRecord::Base
   has_many :output_counts
   has_many :progress_updates
   has_many :districts, dependent: :destroy
-
-  def zone_id
-    zone.id
-  end
+  delegate :name, to: :zone, prefix: true
 
   def minority_languages
     self.languages.where(lwc: false)

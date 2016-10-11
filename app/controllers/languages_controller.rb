@@ -40,7 +40,7 @@ class LanguagesController < ApplicationController
             :engaged_organisations,
             :translating_organisations,
             :mt_resources,
-            {:state_languages => :geo_state}
+            {:state_languages => {:geo_state => :zone}}
         ).
         find(params[:id])
   end
