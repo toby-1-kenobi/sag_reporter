@@ -25,7 +25,7 @@
 <div id='<%= object %>-<%= attribute_string %>-dropdown' class='dropdown-content'>
   
   <% collection.each do |item| %>
-    <div 
+    <div
         <%= element_options.map{ |key, value| "#{key.to_s}=\"#{value.to_s}\"" }.join(' ').html_safe %>
         id="<%= object %>-<%= attribute_string %>-<%= item.send(id).to_s %>"
         <% if local_assigns[:data].presence %>

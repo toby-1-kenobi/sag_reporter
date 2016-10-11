@@ -35,7 +35,7 @@
           <paper-item>
             <paper-item-body two-line>
               <div><%= state_language.state_name %></div>
-              <div secondary>LCI project</div>
+              <div secondary>LCI project for <%= state_language.geo_state.zone_name %> zone</div>
             </paper-item-body>
           </paper-item>
       <% end %>
@@ -59,9 +59,6 @@
 <% if @language.description %>
     <p><%= @language.description %></p>
 <% end %>
-<% if @language.cluster %>
-    <p>Cluster: <strong><%= @language.cluster_name %></strong></p>
-<% end %>
 <% if @language.info %>
     <p><%= @language.info %></p>
 <% end %>
@@ -81,7 +78,9 @@
     <% if @language.number_of_translations && @language.number_of_translations > 0 %>
         <p>Already existing: <strong><%= @language.number_of_translations %></strong> Bible <%= 'version'.pluralize(@language.number_of_translations) %></p>
     <% end %>
-    <p>Translation need: <strong><%= @language.translation_need.humanize %></strong></p>
+    <% unless @language.translation_progress == 'done' or (@language.number_of_translations && @language.number_of_translations > 0) %>
+      <p>Translation need: <strong><%= @language.translation_need.humanize %></strong></p>
+    <% end %>
     <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
     <% if @language.translation_info %>
         <p><%= @language.translation_info %></p>
