@@ -4,5 +4,5 @@ class District < ActiveRecord::Base
 
   validates :name, presence: true, allow_nil: false, uniqueness: { scope: :geo_state }
   validates :geo_state, presence: true, allow_nil: false
-  #validates :sub_districts, :length => { :minimum => 1 }
+  validates :sub_districts, :length => { :minimum => 1 }
 end
