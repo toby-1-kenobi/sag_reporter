@@ -16,7 +16,7 @@ end
 # find users with default password
 default_password = 'password'
 changes = Hash.new
-User.take(3).each do |user|
+User.find_each do |user|
   if user.authenticate default_password
     user_details = "#{user.name} ph: #{user.phone}"
     puts user_details
@@ -31,6 +31,7 @@ end
 
 errors = Hash.new
 
+ActiveRecord::Base.logger.level = 1
 changes.each do |user, pass_phrase|
   if user.update_attributes({password: pass_phrase, password_confirmation: pass_phrase})
     puts "#{user.name} ph: #{user.phone}: #{pass_phrase}"
@@ -38,6 +39,7 @@ changes.each do |user, pass_phrase|
     errors[user.id] = user.errors.full_messages.join(', ')
   end
 end
+ActiveRecord::Base.logger.level = 0
 
 puts "#{errors.count} errors"
 if (errors.any?)
