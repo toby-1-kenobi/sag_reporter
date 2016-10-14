@@ -120,6 +120,11 @@
             <div class="center"><paper-spinner class="jp-fetch" active></paper-spinner></div>
         <% end %>
       </div>
+      <% if logged_in_user.can_add_resource? %>
+          <%= link_to new_mt_resource_path language: @language do %>
+              <paper-fab icon="add" title="Add resource"></paper-fab>
+          <% end %>
+      <% end %>
     </div>
   <% end %>
 
@@ -131,9 +136,6 @@
     </div>
   <% end %>
 </easy-paper-tabs>
-
-
-
 
 
 <% if logged_in_user.can_edit_language? %>

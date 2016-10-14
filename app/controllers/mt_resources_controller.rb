@@ -12,6 +12,9 @@ class MtResourcesController < ApplicationController
 
   def new
   	@resource = MtResource.new
+    if params[:language]
+      @resource.language = Language.find params[:language]
+    end
     @languages = Language.minorities(logged_in_user.geo_states).order('LOWER(languages.name)')
   end
 
