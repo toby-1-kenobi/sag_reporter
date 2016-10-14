@@ -12,7 +12,7 @@ class MtResourcesController < ApplicationController
 
   def new
   	@resource = MtResource.new
-    @languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
+    @languages = Language.minorities(logged_in_user.geo_states).order('LOWER(languages.name)')
   end
 
   def language_overview
@@ -22,8 +22,8 @@ class MtResourcesController < ApplicationController
 
   def create
     @resource = MtResource.new(resource_params)
+    @resource.user = logged_in_user
     if @resource.save
-      @resource.user = logged_in_user
       person_params = params.select{ |param| param[/^person__\d+$/] }
       person_params.each do |key, person_name|
         if !person_name.blank?
@@ -33,10 +33,10 @@ class MtResourcesController < ApplicationController
           end
         end
       end
-      flash['success'] = "New resource entered"
-      redirect_to action: "language_overview", language_id: @resource.language_id
+      flash['success'] = 'New resource entered'
+      redirect_to language_path(@resource.language)
     else
-      @languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
+      @languages = Language.minorities(logged_in_user.geo_states).order('LOWER(languages.name)')
       render new
     end
 
@@ -52,7 +52,11 @@ class MtResourcesController < ApplicationController
       :user_id,
       :language_id,
       :category,
-      :geo_state_id
+      :geo_state_id,
+      :url,
+      :how_to_access,
+      :status,
+      :publish_year
     )
   end
 
