@@ -49,10 +49,32 @@
     </div>
   </div>
 
+    <div class="row">
+      <div class="col s12 m6 input-field">
+        <%= f.select :status, MtResource.statuses.to_a.map { |t| [t[0].humanize, t[0]] } %>
+        <%= f.label(:status) %>
+      </div>
+      <div class="col s12 m6 input-field">
+        <%= f.number_field :publish_year, min: 1000, max: 3000 %>
+        <%= f.label(:publish_year, 'Year published') %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col s12 m6 input-field">
+        <%= f.text_field(:url) %>
+        <%= f.label(:url) %>
+      </div>
+      <div class="col s12 m6 input-field">
+        <%= f.text_area(:how_to_access, class: "materialize-textarea") %>
+        <%= f.label(:how_to_access, 'Describe how this resource may be accessed') %>
+      </div>
+    </div>
+
   <div class="row">
     <div class="col s12">
       <%= button_tag( :class => "btn waves-effect waves-light right") do %>
-      <%= form_action == "new" ? "Add resource" : "Update" %> <i class="material-icons right">add</i>
+      <%= form_action == "new" ? "Add this resource" : "Update" %> <i class="material-icons right">done</i>
     <% end %>
     </div>
   </div>
