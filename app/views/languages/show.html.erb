@@ -62,15 +62,74 @@
 <% if @language.info %>
     <p><%= @language.info %></p>
 <% end %>
+
+<paper-fab icon="add" title="Add engaged organisation" onclick="organisationDialog.open()" class="right"></paper-fab>
 <% if @language.engaged_organisations.any? %>
     <% copula = @language.engaged_organisations.count == 1 ? 'is' : 'are' %>
     <%= pluralize(@language.engaged_organisations.count, 'organisation') + " #{copula}" %> engaged with this language:
-    <div role="listbox">
+    <div role="listbox" id="engaged-organisations-list">
     <% @language.engaged_organisations.each do |org| %>
-      <paper-item><%= org.name %></paper-item>
+      <paper-item data-org-id="<%= org.id %>"><%= org.name %></paper-item>
     <% end %>
     </div>
+<% else %>
+    <p>No organisations engaged.</p>
 <% end %>
+
+<script>
+  // when user selects or deselects organisations from the engaged organisations dialog
+  // then the relationship is immediately updated in the DB using ajax
+  let add_url = "<%= add_engaged_org_to_language_path(@language, 'replace_with_org_id') %>";
+  let remove_url = "<%= remove_engaged_org_from_language_path(@language, 'replace_with_org_id') %>";
+
+  function changeEngagedOrgs(checkbox){
+    let orgId = checkbox.getAttribute('data-org-id');
+    if (checkbox.checked) {
+      // case for adding an organisation to the relationship
+      let ajax_url = add_url.replace("replace_with_org_id", orgId);
+      jQuery.ajax({
+        url: ajax_url,
+        type: 'PATCH',
+        contentType: 'application/json',
+        success: function(data) {
+          if (data.success) {
+            $('#engaged-organisations-list').append(
+            '<paper-item data-org-id="' + data.orgId + '">' + data.orgName + '</paper-item>'
+            );
+          }
+        }
+      });
+    } else {
+      // case for removing an organisation from the relationship
+      ajax_url = remove_url.replace("replace_with_org_id", orgId);
+      jQuery.ajax({
+        url: ajax_url,
+        type: 'PATCH',
+        contentType: 'application/json',
+        success: function(data) {
+          $('#engaged-organisations-list paper-item[data-org-id="' + orgId + '"]').remove();
+        }
+      });
+    }
+  }
+</script>
+
+<paper-dialog id="organisationDialog" exit-animation="fade-out-animation" with-backdrop>
+  <h2>Engaged Organisations</h2>
+  <paper-dialog-scrollable>
+    <div role="listbox">
+      <% @all_orgs.each do |org| %>
+          <% checked = @language.engaged_organisations.include?(org) ? ' checked' : '' %>
+        <paper-item>
+          <paper-checkbox data-org-id="<%= org.id %>" onchange="changeEngagedOrgs(this)"<%= checked %>><%= org.name %></paper-checkbox>
+        </paper-item>
+      <% end %>
+    </div>
+  </paper-dialog-scrollable>
+  <div class="buttons">
+    <paper-button dialog-dismiss>Close</paper-button>
+  </div>
+</paper-dialog>
 
 <easy-paper-tabs selected="0">
   <paper-tab>TRANSLATION STATUS</paper-tab>

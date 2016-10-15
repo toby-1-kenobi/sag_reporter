@@ -22,7 +22,12 @@ Rails.application.routes.draw do
       patch 'not_shareable'
     end
   end
-  resources :languages
+  resources :languages do
+    member do
+      patch 'add_engaged_org/:org', to: 'languages#add_engaged_org', as: 'add_engaged_org_to'
+      patch 'remove_engaged_org/:org', to: 'languages#remove_engaged_org', as: 'remove_engaged_org_from'
+    end
+  end
   resources :people do
     get :contacts, on: :collection
   end
