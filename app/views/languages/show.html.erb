@@ -161,15 +161,21 @@
     <% if @language.translation_info %>
         <p><%= @language.translation_info %></p>
     <% end %>
+    <strong>Organisations involved with translation:</strong>
+    <div role="listbox" id="translating-organisations-list">
     <% if @language.translating_organisations.any? %>
-        <% copula = @language.translating_organisations.count == 1 ? 'is' : 'are' %>
-        <%= pluralize(@language.translating_organisations.count, 'organisation') + " #{copula}" %> involved with translation:
-        <div role="listbox">
           <% @language.translating_organisations.each do |org| %>
-              <paper-item><%= org.name %></paper-item>
+              <paper-item data-org-id="<%= org.id %>"><%= org.name %></paper-item>
           <% end %>
-        </div>
     <% end %>
+      <paper-item>
+        <paper-button raised class="icon-only" title="Change translating organisations" onclick="translatingOrganisationDialog.open()">
+          <iron-icon icon="create"></iron-icon>
+        </paper-button>
+      </paper-item>
+    </div>
+
+
   </div>
 
   <% if @language.iso or @language.mt_resources.any? %>
@@ -192,14 +198,18 @@
             <% end %>
           <% end %>
         <% end %>
-        <% if @language.iso %>
-            <div class="center"><paper-spinner class="jp-fetch" active></paper-spinner></div>
+        <% if logged_in_user.can_add_resource? %>
+          <%= link_to new_mt_resource_path language: @language do %>
+                <paper-item>
+                  <paper-button raised class="icon-only" title="Add resource">
+                    <iron-icon icon="add"></iron-icon>
+                  </paper-button>
+                </paper-item>
+          <% end %>
         <% end %>
       </div>
-      <% if logged_in_user.can_add_resource? %>
-          <%= link_to new_mt_resource_path language: @language do %>
-              <paper-fab icon="add" title="Add resource"></paper-fab>
-          <% end %>
+      <% if @language.iso %>
+          <div class="center"><paper-spinner class="jp-fetch" active></paper-spinner></div>
       <% end %>
     </div>
   <% end %>
@@ -213,6 +223,66 @@
   <% end %>
 </easy-paper-tabs>
 
+<script>
+  // when user selects or deselects organisations from the engaged organisations dialog
+  // then the relationship is immediately updated in the DB using ajax
+  let addTranslatingOrgUrl = "<%= add_translating_org_to_language_path(@language, 'replace_with_org_id') %>";
+  let removeTranslatingOrgUrl = "<%= remove_translating_org_from_language_path(@language, 'replace_with_org_id') %>";
+
+  function changeTranslatingOrgs(checkbox){
+    let orgId = checkbox.getAttribute('data-org-id');
+    if (checkbox.checked) {
+      // case for adding an organisation to the relationship
+      let ajax_url = addTranslatingOrgUrl.replace("replace_with_org_id", orgId);
+      jQuery.ajax({
+        url: ajax_url,
+        type: 'PATCH',
+        contentType: 'application/json',
+        success: function(data) {
+          if (data.success) {
+            $('#translating-organisations-list').prepend(
+                '<paper-item data-org-id="' + data.orgId + '">' + data.orgName + '</paper-item>'
+            );
+          }
+        },
+        error: function() {
+          checkbox.checked = false
+        }
+      });
+    } else {
+      // case for removing an organisation from the relationship
+      ajax_url = removeTranslatingOrgUrl.replace("replace_with_org_id", orgId);
+      jQuery.ajax({
+        url: ajax_url,
+        type: 'PATCH',
+        contentType: 'application/json',
+        success: function(data) {
+          $('#translating-organisations-list paper-item[data-org-id="' + orgId + '"]').remove();
+        },
+        error: function() {
+          checkbox.checked = true
+        }
+      });
+    }
+  }
+</script>
+
+<paper-dialog id="translatingOrganisationDialog" exit-animation="fade-out-animation" with-backdrop>
+  <h2>Translating Organisations</h2>
+  <paper-dialog-scrollable>
+    <div role="listbox">
+      <% @all_orgs.each do |org| %>
+          <% checked = @language.translating_organisations.include?(org) ? ' checked' : '' %>
+          <paper-item>
+            <paper-checkbox data-org-id="<%= org.id %>" onchange="changeTranslatingOrgs(this)"<%= checked %>><%= org.name %></paper-checkbox>
+          </paper-item>
+      <% end %>
+    </div>
+  </paper-dialog-scrollable>
+  <div class="buttons">
+    <paper-button dialog-dismiss>Close</paper-button>
+  </div>
+</paper-dialog>
 
 <% if logged_in_user.can_edit_language? %>
     <%= link_to edit_language_path(@language), class: 'right' do %>

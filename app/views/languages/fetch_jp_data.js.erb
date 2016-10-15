@@ -4,13 +4,13 @@ jp_full_data = JoshuaProject.language @iso
 if JoshuaProject.success? jp_full_data
   jp_data = jp_full_data['data'][0]
   if jp_data['JF_URL'].present? %>
-    $('.resources-list').append("<%= escape_javascript(render 'resource_item', url:  jp_data['JF_URL'], name: 'Jesus Film')%>");
+    $('.resources-list').prepend("<%= escape_javascript(render 'resource_item', url:  jp_data['JF_URL'], name: 'Jesus Film')%>");
   <% end %>
   <% if jp_data['GRN_URL'].present? %>
-    $('.resources-list').append("<%= escape_javascript(render 'resource_item', url:  jp_data['GRN_URL'], name: 'GRN audio recordings')%>");
+    $('.resources-list').prepend("<%= escape_javascript(render 'resource_item', url:  jp_data['GRN_URL'], name: 'GRN audio recordings')%>");
   <% end %>
   <% if jp_data['4Laws_URL'].present? %>
-    $('.resources-list').append("<%= escape_javascript(render 'resource_item', url:  jp_data['4Laws_URL'], name: 'Four Spiritual Laws')%>");
+    $('.resources-list').prepend("<%= escape_javascript(render 'resource_item', url:  jp_data['4Laws_URL'], name: 'Four Spiritual Laws')%>");
   <% end
 
         info = ''

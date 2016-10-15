@@ -134,6 +134,36 @@ class LanguagesController < ApplicationController
     end
   end
 
+  def add_translating_org
+    success = false
+    org = Organisation.find(params[:org])
+    if org
+      language = Language.find(params[:id])
+      language.translating_organisations << org
+      success = language.translating_organisations.include? org
+    end
+    respond_to do |format|
+      format.json {
+        render json: {success: success, orgId: org.id, orgName: org.name}.to_json
+      }
+    end
+  end
+
+  def remove_translating_org
+    success = false
+    language = Language.find(params[:id])
+    org = language.translating_organisations.find(params[:org])
+    if org
+      language.translating_organisations.delete org
+      success = !language.translating_organisations.include?(org)
+    end
+    respond_to do |format|
+      format.json {
+        render json: {success: success}.to_json
+      }
+    end
+  end
+
     private
 
     def lang_params
