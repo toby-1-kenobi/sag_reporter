@@ -43,6 +43,7 @@ class LanguagesController < ApplicationController
             {:state_languages => {:geo_state => :zone}}
         ).
         find(params[:id])
+    @all_orgs = Organisation.all.order(:name)
   end
 
   def fetch_jp_data
@@ -100,6 +101,36 @@ class LanguagesController < ApplicationController
         pdf = OutcomesTablePdf.new(Topic.all, @language, @geo_state)
         send_data pdf.render, filename: "#{@language.name}_outcomes.pdf", type: 'application/pdf'
       end
+    end
+  end
+
+  def add_engaged_org
+    success = false
+    org = Organisation.find(params[:org])
+    if org
+      language = Language.find(params[:id])
+      language.engaged_organisations << org
+      success = language.engaged_organisations.include? org
+    end
+    respond_to do |format|
+      format.json {
+        render json: {success: success, orgId: org.id, orgName: org.name}.to_json
+      }
+    end
+  end
+
+  def remove_engaged_org
+    success = false
+    language = Language.find(params[:id])
+    org = language.engaged_organisations.find(params[:org])
+    if org
+      language.engaged_organisations.delete org
+      success = !language.engaged_organisations.include?(org)
+    end
+    respond_to do |format|
+      format.json {
+        render json: {success: success}.to_json
+      }
     end
   end
 
