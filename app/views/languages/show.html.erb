@@ -72,9 +72,11 @@
 <strong> Organisations engaged with this language:</strong>
 <div role="listbox" id="engaged-organisations-list">
     <% if @language.engaged_organisations.any? %>
-          <% @language.engaged_organisations.each do |org| %>
-              <paper-item data-org-id="<%= org.id %>"><%= org.name %></paper-item>
-          <% end %>
+      <% @language.engaged_organisations.each do |org| %>
+        <%= link_to org do %>
+          <paper-item data-org-id="<%= org.id %>"><%= org.name %></paper-item>
+        <% end %>
+      <% end %>
     <% else %>
         <paper-item><em>No engaged organisations</em></paper-item>
     <% end %>
@@ -105,7 +107,7 @@
         success: function(data) {
           if (data.success) {
             $('#engaged-organisations-list').prepend(
-            '<paper-item data-org-id="' + data.orgId + '">' + data.orgName + '</paper-item>'
+            '<a href="/organisations/' + data.orgId + '"><paper-item data-org-id="' + data.orgId + '">' + data.orgName + '</paper-item></a>'
             );
           }
         },
@@ -165,7 +167,9 @@
     <div role="listbox" id="translating-organisations-list">
     <% if @language.translating_organisations.any? %>
           <% @language.translating_organisations.each do |org| %>
-              <paper-item data-org-id="<%= org.id %>"><%= org.name %></paper-item>
+              <%= link_to org do %>
+                <paper-item data-org-id="<%= org.id %>"><%= org.name_with_abbr %></paper-item>
+              <% end %>
           <% end %>
     <% end %>
       <paper-item>
@@ -241,7 +245,7 @@
         success: function(data) {
           if (data.success) {
             $('#translating-organisations-list').prepend(
-                '<paper-item data-org-id="' + data.orgId + '">' + data.orgName + '</paper-item>'
+                '<a href="/organisations/' + data.orgId + '"><paper-item data-org-id="' + data.orgId + '">' + data.orgName + '</paper-item></a>'
             );
           }
         },

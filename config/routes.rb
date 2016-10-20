@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   mount Knock::Engine => '/knock'
 
-  resources :mt_resources
   root 'static_pages#home'
 
   resources :events do
@@ -30,6 +29,8 @@ Rails.application.routes.draw do
       patch 'remove_translating_org/:org', to: 'languages#remove_translating_org', as: 'remove_translating_org_from'
     end
   end
+  resources :mt_resources
+  resources :organisations
   resources :people do
     get :contacts, on: :collection
   end
