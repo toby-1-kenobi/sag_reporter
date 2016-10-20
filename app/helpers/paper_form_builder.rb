@@ -133,13 +133,17 @@ class PaperFormBuilder < ActionView::Helpers::FormBuilder
     def render
 
       options = @options.stringify_keys
-      options['value'] = options.fetch('value') { value_before_type_cast(object) }.name
+      if value_before_type_cast(object)
+        options['value'] = options.fetch('value') { value_before_type_cast(object) }.name
+      else
+        options['value'] = options.fetch('value') { '' }
+      end
       options['label'] ||= @method_name.humanize
       add_default_name_and_id(options)
       options['list'] ||= options['id'] + '-list'
       options['autocomplete'] = 'on'
 
-      list_content = value(retrieve_object(false)).class.all.to_a.map do |item|
+      list_content = retrieve_object(false).class.reflect_on_association(@method_name).klass.all.to_a.map do |item|
         tag('option', value: item.name)
       end.join("\n")
 
