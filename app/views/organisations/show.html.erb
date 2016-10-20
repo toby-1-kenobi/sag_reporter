@@ -1,0 +1,16 @@
+<% provide(:title, "Organisation: #{@organisation.name}") %>
+<h1><%= @organisation.name_with_abbr %></h1>
+
+<% if @organisation.engaged_languages.any? %>
+  <p>Engaged with these language communities</p>
+  <div class="languages collection">
+    <%= render partial: 'languages/language', collection: @organisation.engaged_languages  %>
+  </div>
+<% end %>
+
+<% if @organisation.translating_languages.any? %>
+  <p>Translating Scriptures with these language communities</p>
+  <div class="languages collection">
+    <%= render partial: 'languages/language', collection: @organisation.translating_languages %>
+  </div>
+<% end %>

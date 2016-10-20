@@ -7,4 +7,12 @@ class Organisation < ActiveRecord::Base
   has_many :translating_languages, through: :language_translations, source: :language
   validates :name, presence: true, allow_blank: false, allow_nil: false, uniqueness: true
   validates :abbreviation, uniqueness: true, allow_nil: true
+
+  def name_with_abbr
+    if abbreviation.present? and abbreviation != name
+      "#{name} (#{abbreviation})"
+    else
+      name
+    end
+  end
 end
