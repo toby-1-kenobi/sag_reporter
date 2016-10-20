@@ -53,8 +53,6 @@ class LanguagesController < ApplicationController
   def update
     @language = Language.find(params[:id])
     if @language.update_attributes(combine_colour(lang_params))
-      logger.debug 'language update success'
-      logger.debug (request.format)
       flash['success'] = 'Language updated'
       respond_to do |format|
         format.json {
@@ -63,7 +61,6 @@ class LanguagesController < ApplicationController
         }
       end
     else
-      logger.debug 'language update failed'
       @colour_columns = 3
       respond_to do |format|
         format.json {
@@ -164,27 +161,30 @@ class LanguagesController < ApplicationController
     end
   end
 
-    private
+  private
 
-    def lang_params
-      params.require(:language).permit(
-          :name,
-          :description,
-          :lwc, :colour,
-          :colour_darkness,
-          :interface,
-          :iso,
-          :family_id,
-          :population,
-          :pop_source_id,
-          :location,
-          :number_of_translations,
-          :cluster_id,
-          :info,
-          :translation_info,
-          :translation_need,
-          :translation_progress
-      )
-    end
-  
+  def lang_params
+    pop_source = DataSource.find_by_name params[:language][:pop_source]
+    params[:language][:pop_source_id] = pop_source.id if pop_source
+    family = LanguageFamily.find_by_name params[:language][:family]
+    params[:language][:family_id] = family.id if family
+    params.require(:language).permit(
+        :name,
+        :description,
+        :lwc, :colour,
+        :colour_darkness,
+        :interface,
+        :iso,
+        :family_id,
+        :population,
+        :pop_source_id,
+        :location,
+        :number_of_translations,
+        :info,
+        :translation_info,
+        :translation_need,
+        :translation_progress
+    )
+  end
+
 end
