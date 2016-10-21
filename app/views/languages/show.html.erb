@@ -74,7 +74,7 @@
     <% if @language.engaged_organisations.any? %>
       <% @language.engaged_organisations.each do |org| %>
         <%= link_to org do %>
-          <paper-item data-org-id="<%= org.id %>"><%= org.name %></paper-item>
+          <paper-item data-org-id="<%= org.id %>"><%= org.name_with_abbr %></paper-item>
         <% end %>
       <% end %>
     <% else %>
@@ -140,7 +140,7 @@
       <% @all_orgs.each do |org| %>
           <% checked = @language.engaged_organisations.include?(org) ? ' checked' : '' %>
         <paper-item>
-          <paper-checkbox data-org-id="<%= org.id %>" onchange="changeEngagedOrgs(this)"<%= checked %>><%= org.name %></paper-checkbox>
+          <paper-checkbox data-org-id="<%= org.id %>" onchange="changeEngagedOrgs(this)"<%= checked %>><%= org.name_with_abbr %></paper-checkbox>
         </paper-item>
       <% end %>
     </div>
@@ -156,7 +156,7 @@
     <% if @language.number_of_translations && @language.number_of_translations > 0 %>
         <p>Already existing: <strong><%= @language.number_of_translations %></strong> Bible <%= 'version'.pluralize(@language.number_of_translations) %></p>
     <% end %>
-    <% unless @language.translation_progress == 'done' or (@language.number_of_translations && @language.number_of_translations > 0) %>
+    <% if @language.translation_progress == 'not_started' %>
       <p>Translation need: <strong><%= @language.translation_need.humanize %></strong></p>
     <% end %>
     <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
@@ -278,7 +278,7 @@
       <% @all_orgs.each do |org| %>
           <% checked = @language.translating_organisations.include?(org) ? ' checked' : '' %>
           <paper-item>
-            <paper-checkbox data-org-id="<%= org.id %>" onchange="changeTranslatingOrgs(this)"<%= checked %>><%= org.name %></paper-checkbox>
+            <paper-checkbox data-org-id="<%= org.id %>" onchange="changeTranslatingOrgs(this)"<%= checked %>><%= org.name_with_abbr %></paper-checkbox>
           </paper-item>
       <% end %>
     </div>

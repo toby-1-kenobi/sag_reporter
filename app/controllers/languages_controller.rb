@@ -111,7 +111,7 @@ class LanguagesController < ApplicationController
     end
     respond_to do |format|
       format.json {
-        render json: {success: success, orgId: org.id, orgName: org.name}.to_json
+        render json: {success: success, orgId: org.id, orgName: org.name_with_abbr}.to_json
       }
     end
   end
@@ -141,7 +141,7 @@ class LanguagesController < ApplicationController
     end
     respond_to do |format|
       format.json {
-        render json: {success: success, orgId: org.id, orgName: org.name}.to_json
+        render json: {success: success, orgId: org.id, orgName: org.name_with_abbr}.to_json
       }
     end
   end
