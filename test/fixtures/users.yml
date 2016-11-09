@@ -1,6 +1,5 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/users.yml")).result %>
 
 andrew:
   name: Andrew Admin
@@ -17,6 +16,7 @@ emma:
   mother_tongue: hindi
   role: evaluator
   interface_language: hindi
+  geo_states: nb, assam
 
 richard:
   name: Richard Reporter
@@ -24,20 +24,7 @@ richard:
   password_digest: <%= User.digest('password') %>
   mother_tongue: toto
   role: reporter
-
-peter:
-  name: Peter Pleb
-  phone: 0987654324
-  password_digest: <%= User.digest('password') %>
-  mother_tongue: bengali
-  role: pleb
-
-vera:
-  name: Vera View
-  phone: 0987654325
-  password_digest: <%= User.digest('password') %>
-  mother_tongue: english
-  role: view
+  geo_states: nb, assam
 
 <% 35.times do |i| %>
 user-<%= i %>:
@@ -45,5 +32,6 @@ user-<%= i %>:
   phone: <%= Faker::Number.number(10) %>
   password_digest: <%= User.digest('password') %>
   mother_tongue: english
-  role: pleb
+  role: reporter
+  geo_states: nb, assam
 <% end %>

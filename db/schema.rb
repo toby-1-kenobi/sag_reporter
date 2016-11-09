@@ -84,7 +84,7 @@ ActiveRecord::Schema.define(version: 20160920021943) do
   add_index "districts", ["name"], name: "index_districts_on_name", using: :btree
 
   create_table "events", force: :cascade do |t|
-    t.integer  "user_id"
+    t.integer  "user_id",            null: false
     t.string   "event_label",        null: false
     t.date     "event_date",         null: false
     t.integer  "participant_amount"
@@ -92,10 +92,10 @@ ActiveRecord::Schema.define(version: 20160920021943) do
     t.text     "content"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.string   "district_name"
+    t.string   "sub_district_name"
     t.string   "village"
     t.integer  "geo_state_id",       null: false
-    t.string   "sub_district_name"
-    t.string   "district_name"
     t.integer  "sub_district_id"
   end
 
