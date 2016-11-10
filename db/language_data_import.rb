@@ -70,23 +70,26 @@ end
 def setTranslationStatus(lang, status, errors)
   case status.downcase
     when 'no need', 'no need in india'
-      lang.translation_need = :no_need
-      lang.translation_progress = :not_started
+      lang.translation_need = :no_translation_need
+      lang.translation_progress = :not_in_progress
     when 'research need'
       lang.translation_need = :survey_required
-      lang.translation_progress = :not_started
-    when 'whole bible available', 'nt available'
-      lang.translation_need = :need
-      lang.translation_progress = :done
+      lang.translation_progress = :not_in_progress
+    when 'nt available'
+      lang.translation_need = :new_testament_published
+      lang.translation_progress = :not_in_progress
+    when 'whole bible available'
+      lang.translation_need = :whole_bible_published
+      lang.translation_progress = :not_in_progress
     when 'translation in progress'
-      lang.translation_need = :need
-      lang.translation_progress = :in_progress
+      lang.translation_need = :full_translation_need
+      lang.translation_progress = :currently_in_progress
     when 'limited need'
-      lang.translation_need = :limited_need
-      lang.translation_progress = :not_started
+      lang.translation_need = :limited_translation_need
+      lang.translation_progress = :not_in_progress
     when 'full tr need', 'translation planned 2016'
-      lang.translation_need = :need
-      lang.translation_progress = :not_started
+      lang.translation_need = :full_translation_need
+      lang.translation_progress = :not_in_progress
     else
       errors[lang.name] = Array.new if errors[lang.name].nil?
       errors[lang.name] << "unknown translation status: #{status}"
