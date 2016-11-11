@@ -110,6 +110,8 @@ class UsersController < ApplicationController
         :password,
         :password_confirmation,
         :email,
+        :email_confirmed,
+        :confirm_token,
         :mother_tongue_id,
         :interface_language_id,
         :role_id,
