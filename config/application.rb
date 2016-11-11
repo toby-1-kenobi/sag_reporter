@@ -34,5 +34,10 @@ module SagReporter
     config.after_initialize do
       ActionView::Base.default_form_builder = PaperFormBuilder
     end
+
+    config.action_mailer.delivery_method = :sendgrid_actionmailer
+    config.action_mailer.sendgrid_actionmailer_settings = {
+      api_key: ENV['SENDGRID_API_KEY']
+    }
   end
 end
