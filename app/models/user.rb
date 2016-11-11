@@ -2,7 +2,6 @@ class User < ActiveRecord::Base
 
   include ContactDetails
 
-  
   belongs_to :role
   has_many :permissions, through: :role
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter
@@ -117,5 +116,11 @@ class User < ActiveRecord::Base
 
       def matches_dynamic_perm_check?(method_id)
         /^can_([a-zA-Z]\w*)\?$/.match(method_id.to_s)
+      end
+
+      def confirmation_token
+        if self.confirm_token.blank?
+            self.confirm_token = SecureRandom.urlsafe_base64.to_s
+        end
       end
 end

@@ -4,7 +4,7 @@ class UsersController < ApplicationController
 
   before_action :require_login, except: [:me]
   before_action :authenticate, only: [:me]
-  
+
   # A user's profile can only be edited or seen by
   #    themselves or
   #    their supervisor or
@@ -82,6 +82,7 @@ class UsersController < ApplicationController
   def update
     updater = User::Updater.new(@user)
     if updater.update_user(user_params)
+      UserMailer.registration_confirmation(updater).deliver
       flash['success'] = 'Profile updated'
       redirect_to @user
     else
@@ -108,6 +109,9 @@ class UsersController < ApplicationController
         :phone,
         :password,
         :password_confirmation,
+        :email,
+        :email_confirmed,
+        :confirm_token,
         :mother_tongue_id,
         :interface_language_id,
         :role_id,
@@ -134,7 +138,7 @@ class UsersController < ApplicationController
     # Confirms authorised user for edit.
     def authorised_user_edit
       get_param_user
-      redirect_to(root_url) unless 
+      redirect_to(root_url) unless
           logged_in_user?(@user) or logged_in_user.can_edit_user?
       #    or @user.supervisor?(logged_in_user)
     end
@@ -142,7 +146,7 @@ class UsersController < ApplicationController
     # Confirms authorised user for show.
     def authorised_user_show
       get_param_user
-      redirect_to(root_url) unless 
+      redirect_to(root_url) unless
           logged_in_user?(@user) or logged_in_user.can_view_all_users?
       #    or @user.supervisor?(logged_in_user)
     end
