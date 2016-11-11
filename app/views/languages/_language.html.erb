@@ -1,8 +1,9 @@
 
     <%= link_to language, class: "collection-item" do %>
       <%= language.name %>
-      <span class="secondary-content colour <%= language.colour %>">&nbsp;</span>
-      <% if language.lwc? %>
+      <span id="status_<%= language.id %>" class="secondary-content colour" style="background-color: <%= language.translation_status_colour %>" >&nbsp;</span>
+        <paper-tooltip position="left" for="status_<%= language.id %>"><%= language.translation_status.to_s.humanize %></paper-tooltip>
+        <% if language.lwc? %>
         <span class="secondary-content lwc">LWC</span>
       <% end %>
     <% end %>
