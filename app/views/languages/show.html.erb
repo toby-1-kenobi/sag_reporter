@@ -17,6 +17,11 @@
     padding-left: 3em;
     padding-right: 3em;
   }
+  paper-card.translation-status {
+    --paper-card-background-color: <%= @language.translation_status_colour %>;
+    --paper-card-header-color: #B0B0B0;
+    margin: 1em;
+  }
   paper-spinner {
     margin: 2em;
   }
@@ -156,29 +161,34 @@
     <% if @language.number_of_translations && @language.number_of_translations > 0 %>
         <p>Already existing: <strong><%= @language.number_of_translations %></strong> Bible <%= 'version'.pluralize(@language.number_of_translations) %></p>
     <% end %>
-    <% if @language.translation_progress == 'not_started' %>
-      <p>Translation need: <strong><%= @language.translation_need.humanize %></strong></p>
-    <% end %>
-    <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
+    <paper-card class="translation-status" heading="<%= @language.translation_status.to_s.humanize %>">
+      <div class="card-content">
+        <p>Translation need/status: <strong><%= @language.translation_need.humanize %></strong></p>
+        <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
+      </div>
+    </paper-card>
     <% if @language.translation_info %>
         <p><%= @language.translation_info %></p>
     <% end %>
-    <strong>Organisations involved with translation:</strong>
-    <div role="listbox" id="translating-organisations-list">
-    <% if @language.translating_organisations.any? %>
+    <div>
+      <strong>Organisations involved with translation:</strong>
+      <div role="listbox" id="translating-organisations-list">
+        <% if @language.translating_organisations.any? %>
           <% @language.translating_organisations.each do |org| %>
               <%= link_to org do %>
                 <paper-item data-org-id="<%= org.id %>"><%= org.name_with_abbr %></paper-item>
               <% end %>
           <% end %>
-    <% end %>
-      <paper-item>
-        <paper-button raised class="icon-only" title="Change translating organisations" onclick="translatingOrganisationDialog.open()">
-          <iron-icon icon="create"></iron-icon>
-        </paper-button>
-      </paper-item>
+        <% else %>
+            <paper-item><em>No engaged organisations</em></paper-item>
+        <% end %>
+        <paper-item>
+          <paper-button raised class="icon-only" title="Change translating organisations" onclick="translatingOrganisationDialog.open()">
+            <iron-icon icon="create"></iron-icon>
+          </paper-button>
+        </paper-item>
+      </div>
     </div>
-
 
   </div>
 
