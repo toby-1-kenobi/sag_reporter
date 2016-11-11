@@ -1,5 +1,23 @@
 <% provide(:title, 'All language') %>
+
 <h1>All languages</h1>
+<div class="row">
+  <div class="language-filter-controls col s6 offset-s6 m4 offset-m8 l3 offset-l9">
+    <% Language.translation_status_colour.each do |status, colour| %>
+        <span id="<%= status.to_s %>-span" style="background-color: <%= colour %>;">
+      <input
+        checked
+        type="checkbox"
+        value="<%= status.to_s %>"
+        id="<%= status.to_s %>-check"
+        class="filter-trigger"
+        data-filter-trigger-label="translation-status"
+      />
+      <label for="<%= status.to_s %>-check">&nbsp;</label></span>
+        <paper-tooltip position="top" for="<%= status.to_s %>-span"><%= status.to_s.humanize %></paper-tooltip>
+    <% end %>
+  </div>
+</div>
 
 <div class="languages collection">
   <%= render @languages %>

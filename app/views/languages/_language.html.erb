@@ -1,9 +1,9 @@
 
-    <%= link_to language, class: "collection-item" do %>
+    <%= link_to language, class: 'collection-item filterable-item', 'data-filter-label': 'translation-status', data: language.translation_status.to_s do %>
       <%= language.name %>
       <span id="status_<%= language.id %>" class="secondary-content colour" style="background-color: <%= language.translation_status_colour %>" >&nbsp;</span>
         <paper-tooltip position="left" for="status_<%= language.id %>"><%= language.translation_status.to_s.humanize %></paper-tooltip>
-        <% if language.lwc? %>
-        <span class="secondary-content lwc">LWC</span>
+        <% if language.iso.present? %>
+        <span class="secondary-content lwc"><%= language.iso %></span>
       <% end %>
     <% end %>
