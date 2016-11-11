@@ -81,14 +81,29 @@ class UsersController < ApplicationController
 
   def update
     updater = User::Updater.new(@user)
+    raise updater.instance.inspect
     if updater.update_user(user_params)
-      UserMailer.registration_confirmation(updater).deliver
+    #   if @user.email_changed?
+    #   raise "t".inspect
+    # end
+      if updater.instance.email_confirmed
+        UserMailer.user_email_confirmation(updater.instance).deliver
+      end
       flash['success'] = 'Profile updated'
       redirect_to @user
     else
       @user = updater.instance()
       assign_for_user_form
       render 'edit'
+    end
+  end
+
+  def confirm_email
+    user = User.find_by_confirm_token(params[:id])
+    if user
+      user.email_activate
+      flash[:success] = "Your email has been confirmed."
+      redirect_to @user
     end
   end
 
