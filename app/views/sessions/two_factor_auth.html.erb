@@ -13,10 +13,12 @@
     </div>
       <%= f.hidden_field :phone, value: @phone %>
       <%= f.hidden_field :password, value: @password %>
-      <%= text_field_tag :code, @otp_code %>
-      <a href='javascript:;' class='resend_otp'>Resend OTP</a><%= button_tag( :class => "btn waves-effect waves-light right", :id => "btn_login", :type => "button") do %>
-        Log in
-      <% end %>
+      <div class="right">
+        <a href='javascript:;' class='resend_otp otp_btn'>Resend OTP</a>
+        <%= button_tag( :class => "btn waves-effect waves-light", :id => "btn_login", :type => "button") do %>
+          Log in
+        <% end %>
+      </div>
   <% end %>
 </div>
 <div class="row">
