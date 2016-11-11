@@ -1,4 +1,7 @@
 class Language < ActiveRecord::Base
+  class << self
+    attr_reader :translation_status_colour
+  end
 
   enum translation_need: {
       survey_required: 0,
@@ -12,6 +15,14 @@ class Language < ActiveRecord::Base
       not_in_progress: 0,
       currently_in_progress: 1,
       in_progress_in_neighbouring_country: 3
+  }
+
+  @translation_status_colour = {
+      work_in_progress: '#ffff00', #yellow
+      scripture_available: '#00ff00', #green
+      action_needed: '#ff0000', #red
+      no_translation_need: '#4a86e8', #blue
+      translation_progress_in_neighbouring_country: '#ff9900' #orange
   }
 
   has_many :user_mt_speakers, class_name: 'User', foreign_key: 'mother_tongue_id'
@@ -52,6 +63,25 @@ class Language < ActiveRecord::Base
 
   def geo_state_ids_str
     geo_state_ids.join ','
+  end
+
+  def translation_status
+    case
+      when translation_need == 'new_testament_published', translation_need == 'whole_bible_published'
+        :scripture_available
+      when translation_progress == 'in_progress_in_neighbouring_country'
+        :translation_progress_in_neighbouring_country
+      when translation_progress == 'currently_in_progress'
+        :work_in_progress
+      when translation_need == 'no_translation_need'
+        :no_translation_need
+      else
+        :action_needed
+    end
+  end
+
+  def translation_status_colour
+    Language.translation_status_colour[translation_status]
   end
 
   def tagged_impact_report_count(geo_state, from_date = nil, to_date = nil)
