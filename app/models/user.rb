@@ -84,6 +84,12 @@ class User < ActiveRecord::Base
     Zone.of_states geo_states
   end
 
+  def email_activate
+    self.email_confirmed = true
+    self.confirm_token = nil
+    save!(:validate => false)
+  end
+
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles
   # or can_PERM1_or_PERM2?
