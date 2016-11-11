@@ -76,6 +76,7 @@ gem 'knock'
 gem 'httparty'
 gem 'active_model_otp'
 gem 'twilio-ruby', '~> 4.11.1'
+gem 'sendgrid-ruby'
 # Use Unicorn as the app server
 # gem 'unicorn'
 
