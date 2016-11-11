@@ -50,8 +50,13 @@ Rails.application.routes.draw do
   end
   resources :tallies
   resources :topics
+
   resources :users do
     get :me, on: :collection
+
+    member do
+      get :confirm_email
+    end
   end
 
   get    'adduser' => 'users#new'
@@ -62,7 +67,7 @@ Rails.application.routes.draw do
   post   'verify_otp' => 'sessions#verify_otp'
   get    'resend_otp' => 'sessions#resend_otp'
   delete 'logout'  => 'sessions#destroy'
-  
+
   get    'roles'   => 'roles#index'
   patch  'roles'   => 'roles#update'
   post   'roles'   => 'roles#create'

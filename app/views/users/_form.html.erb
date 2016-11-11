@@ -4,12 +4,12 @@
     <%= render 'shared/error_messages', object: f.object %>
 
     <div class="row">
-      <div class="input-field col s8">
+      <div class="input-field col s6">
         <i class="material-icons prefix">account_circle</i>
         <%= f.text_field :name %>
         <%= f.label :name, class: form_action == "edit" ? "active" : "" %>
       </div>
-      <div class="input-field col s4">
+      <div class="input-field col s6">
         <i class="material-icons prefix">phone</i>
         <%= f.telephone_field :phone %>
         <%= f.label :phone, class: form_action == "edit" ? "active" : "" %>
@@ -27,6 +27,16 @@
         <%= f.password_field :password_confirmation %>
         <%= f.label :password_confirmation, "Confirm Password" %>
       </div>
+    </div>
+
+    <div class="row">
+      <div class="input-field col s12">
+        <i class="material-icons prefix">email</i>
+        <%= f.email_field :email %>
+        <%= f.label :email %>
+        <% if !@user.email_confirmed %>
+          <span>Email not confirmed</span>
+        <% end %>
     </div>
 
     <div class="row">
@@ -62,8 +72,16 @@
         </div>
       <% end %>
       <div class="input-field col s12 m6">
-        <%= f.collection_select(:mother_tongue_id, @languages, :id, :name, {include_blank: true}, {class: "mother-tongue-select"}) %>
-        <%= f.label :mother_tongue_id, "Select mother tongue" %>
+        <div class="row">
+          <div class="input-field col s12 m6">
+            <%= f.collection_select(:mother_tongue_id, @languages, :id, :name, {include_blank: true}, {class: "mother-tongue-select"}) %>
+            <%= f.label :mother_tongue_id, "Select mother tongue" %>
+          </div>
+          <div class="input-field col s12 m6">
+            <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name) %>
+            <%= f.label :interface_language_id, "Language for using Reporter" %>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -80,10 +98,6 @@
           collection: @languages,
           selected: @user.spoken_languages
         } %>
-      </div>
-      <div class="input-field col s12 m6">
-        <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name) %>
-        <%= f.label :interface_language_id, "Language for using Reporter" %>
       </div>
     </div>
 
