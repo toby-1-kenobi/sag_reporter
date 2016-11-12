@@ -81,15 +81,12 @@ class UsersController < ApplicationController
 
   def update
     updater = User::Updater.new(@user)
-    raise updater.instance.inspect
+    message = "Profile updated"
     if updater.update_user(user_params)
-    #   if @user.email_changed?
-    #   raise "t".inspect
-    # end
-      if updater.instance.email_confirmed
-        UserMailer.user_email_confirmation(updater.instance).deliver
+      if updater.instance.confirm_token.present?
+        message = "Profile updated with email. Please check mail and confirm your email."
       end
-      flash['success'] = 'Profile updated'
+      flash['success'] = message
       redirect_to @user
     else
       @user = updater.instance()
@@ -103,7 +100,7 @@ class UsersController < ApplicationController
     if user
       user.email_activate
       flash[:success] = "Your email has been confirmed."
-      redirect_to @user
+      redirect_to root_path
     end
   end
 
