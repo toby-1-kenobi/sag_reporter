@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   has_many :output_counts
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources
+  before_update :send_confirmation_email
 
   attr_accessor :remember_token
 
@@ -110,6 +111,7 @@ class User < ActiveRecord::Base
     end
   end
 
+
       private
 
       def tokenize(string_to_split)
@@ -124,9 +126,10 @@ class User < ActiveRecord::Base
         /^can_([a-zA-Z]\w*)\?$/.match(method_id.to_s)
       end
 
-      def confirmation_token
-        if self.confirm_token.blank?
+      def send_confirmation_email
+        if self.confirm_token.blank? && self.email_changed?
             self.confirm_token = SecureRandom.urlsafe_base64.to_s
+            UserMailer.user_email_confirmation(self).deliver
         end
       end
 end
