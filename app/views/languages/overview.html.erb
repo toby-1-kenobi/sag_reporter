@@ -1,16 +1,17 @@
 <% provide(:title, 'Language Overview') %>
 
 <h1>Language Overview</h1>
-
-<div role="listbox">
-  <% language_total = @languages.count %>
-  <% extinct_count = @languages.select{ |l| l.population == 0 }.count %>
-  <paper-item>Total language count: <%= language_total %> (<%= extinct_count %> are extinct)</paper-item>
-  <% Language.translation_status_colour.each do |status, colour| %>
-      <% status_count = @languages.select{ |l| l.translation_status == status }.count %>
-    <paper-item style="background-color: <%= colour %>">
-      <%= status.to_s.humanize %>: <%= status_count %>
-      (<%= (status_count * 100) / language_total %>%)
-    </paper-item>
-  <% end %>
-</div>
+<paper-card heading="Translation Status">
+  <div class="card-content" role="listbox">
+    <% language_total = @languages.count %>
+    <% extinct_count = @languages.select{ |l| l.population == 0 }.count %>
+    <paper-item>Total language count: <%= language_total %> (<%= extinct_count %> are extinct)</paper-item>
+    <% Language.translation_status_colour.each do |status, colour| %>
+        <% status_count = @languages.select{ |l| l.translation_status == status }.count %>
+      <paper-item style="background-color: <%= colour %>">
+        <%= status.to_s.humanize %>: <%= status_count %>
+        (<%= (status_count * 100) / language_total %>%)
+      </paper-item>
+    <% end %>
+  </div>
+</paper-card>
