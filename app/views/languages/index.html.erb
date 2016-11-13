@@ -1,25 +1,26 @@
 <% provide(:title, 'All languages') %>
 
 <h1>All languages</h1>
-<div class="row">
-  <div class="language-filter-controls col s6 offset-s6 m4 offset-m8 l3 offset-l9">
-    <% Language.translation_status_colour.each do |status, colour| %>
-        <span id="<%= status.to_s %>-span" style="background-color: <%= colour %>;">
-      <input
-        checked
-        type="checkbox"
-        value="<%= status.to_s %>"
-        id="<%= status.to_s %>-check"
-        class="filter-trigger"
-        data-filter-trigger-label="translation-status"
-      />
-      <label for="<%= status.to_s %>-check">&nbsp;</label></span>
-        <paper-tooltip position="top" for="<%= status.to_s %>-span"><%= status.to_s.humanize %></paper-tooltip>
-    <% end %>
-  </div>
+<%= link_to overview_languages_path do %>
+    <paper-button id="language-overview-button">Overview</paper-button>
+<% end %>
+<div class="row language-filter-controls">
+  <% Language.translation_status_colour.each do |status, colour| %>
+      <span id="<%= status.to_s %>-span" class="language-filter-checkbox" style="background-color: <%= colour %>;">
+    <input
+      checked
+      type="checkbox"
+      value="<%= status.to_s %>"
+      id="<%= status.to_s %>-check"
+      class="filter-trigger"
+      data-filter-trigger-label="translation-status"
+    />
+    <label for="<%= status.to_s %>-check">&nbsp;</label></span>
+      <paper-tooltip position="top" for="<%= status.to_s %>-span"><%= status.to_s.humanize %></paper-tooltip>
+  <% end %>
 </div>
 
-<div class="languages collection">
+<div class="languages" role="listbox">
   <%= render @languages %>
 </div>
 

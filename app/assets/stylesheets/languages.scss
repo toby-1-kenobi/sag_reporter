@@ -4,22 +4,48 @@
 
 @import 'common';
 
-.collection-item {
-	span.lwc {
-		margin-top: -0.3em;
-		margin-right: 1em;
-		background-color: #CCCCFF;
-		font-size: small;
-		padding: 0.3em;
-		@include box_sizing;
-		@include border-radius(4px);
-	}
-	span.colour {
-		min-width: 10em;
-		@include box_sizing;
-		@include border-radius(4px);
-		margin-right: 1em;
-	}
+.language-item {
+  border: 0.1ex solid #B0B0B0;
+  border-bottom: 0;
+  &.extinct {
+    background-color: #DADADA;
+  }
+  &:hover {
+    background-color: #E0E0F0;
+  }
+  &.extinct:hover {
+    background-color: #CACADA;
+  }
+  span.iso {
+      font-style: italic;
+  }
+  span.colour {
+      min-width: 6em;
+      @include box_sizing;
+      @include border-radius(1ex);
+      margin-right: 1em;
+  }
+  span.population {
+    padding-left: 3em;
+  }
+}
+
+div.languages {
+  border-bottom: 0.1ex solid #B0B0B0;
+}
+
+.language-filter-controls {
+  text-align: right;
+  padding-right: 1.2ex;
+}
+
+.language-filter-checkbox {
+  padding: 1em 0 1em 1em;
+  margin: 0.3ex;
+}
+
+#language-overview-button:hover {
+  background-color: #E0E0F0;
 }
 
 h1.coloured {
