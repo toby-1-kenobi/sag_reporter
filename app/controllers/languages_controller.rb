@@ -21,6 +21,12 @@ class LanguagesController < ApplicationController
   	@languages = Language.order('LOWER(name)')
   end
 
+  def overview
+    # convert to an array here and manage it in the view
+    # this is for lack of scopes in the model for translation status
+    @languages = Language.all.to_a
+  end
+
   def new
   	@language = Language.new
   	@colour_columns = 3
