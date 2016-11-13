@@ -1,16 +1,27 @@
 <% provide(:title, "Organisation: #{@organisation.name}") %>
 <h1><%= @organisation.name_with_abbr %></h1>
 
-<% if @organisation.engaged_languages.any? %>
-  <p><strong>Engaged with these language communities</strong></p>
-  <div class="languages" role="listbox">
-    <%= render partial: 'languages/language', collection: @organisation.engaged_languages  %>
-  </div>
-<% end %>
+<style is="custom-style">
+  .flex-equal-justified {
+    @apply(--layout-horizontal);
+    @apply(--layout-justified);
+  }
+</style>
 
-<% if @organisation.translating_languages.any? %>
-  <p><strong>Translating Scriptures with these language communities</strong></p>
-  <div class="languages" role="listbox">
-    <%= render partial: 'languages/language', collection: @organisation.translating_languages %>
-  </div>
-<% end %>
+<div class="flex-equal-justified">
+  <% if @organisation.engaged_languages.any? %>
+    <paper-card heading="Engaged with these language communities">
+      <div class="languages card-content" role="listbox">
+        <%= render partial: 'languages/language', collection: @organisation.engaged_languages  %>
+      </div>
+    </paper-card>
+  <% end %>
+
+  <% if @organisation.translating_languages.any? %>
+    <paper-card heading="Translating Scriptures with these language communities">
+      <div class="languages" role="listbox">
+        <%= render partial: 'languages/language', collection: @organisation.translating_languages %>
+      </div>
+    </paper-card>
+  <% end %>
+</div>
