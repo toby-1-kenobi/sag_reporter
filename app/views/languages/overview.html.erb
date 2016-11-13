@@ -1,0 +1,15 @@
+<% provide(:title, 'Language Overview') %>
+
+<h1>Language Overview</h1>
+
+<div role="listbox">
+  <% language_total = @languages.count %>
+  <paper-item><strong>Total language count: <%= language_total %></strong></paper-item>
+  <% Language.translation_status_colour.each do |status, colour| %>
+      <% status_count = @languages.select{ |l| l.translation_status == status }.count %>
+    <paper-item style="background-color: <%= colour %>">
+      <%= status.to_s.humanize %>: <%= status_count %>
+      (<%= (status_count * 100) / language_total %>%)
+    </paper-item>
+  <% end %>
+</div>

@@ -22,6 +22,9 @@ Rails.application.routes.draw do
     end
   end
   resources :languages do
+    collection do
+      get 'overview'
+    end
     member do
       patch 'add_engaged_org/:org', to: 'languages#add_engaged_org', as: 'add_engaged_org_to'
       patch 'remove_engaged_org/:org', to: 'languages#remove_engaged_org', as: 'remove_engaged_org_from'

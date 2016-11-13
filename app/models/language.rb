@@ -65,6 +65,7 @@ class Language < ActiveRecord::Base
     geo_state_ids.join ','
   end
 
+  # should probably have a scope for each of these. It would help with the overview page
   def translation_status
     case
       when translation_need == 'new_testament_published', translation_need == 'whole_bible_published'
