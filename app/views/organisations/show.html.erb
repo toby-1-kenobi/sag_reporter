@@ -2,15 +2,15 @@
 <h1><%= @organisation.name_with_abbr %></h1>
 
 <% if @organisation.engaged_languages.any? %>
-  <p>Engaged with these language communities</p>
-  <div class="languages collection">
+  <p><strong>Engaged with these language communities</strong></p>
+  <div class="languages" role="listbox">
     <%= render partial: 'languages/language', collection: @organisation.engaged_languages  %>
   </div>
 <% end %>
 
 <% if @organisation.translating_languages.any? %>
-  <p>Translating Scriptures with these language communities</p>
-  <div class="languages collection">
+  <p><strong>Translating Scriptures with these language communities</strong></p>
+  <div class="languages" role="listbox">
     <%= render partial: 'languages/language', collection: @organisation.translating_languages %>
   </div>
 <% end %>
