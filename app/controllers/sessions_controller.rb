@@ -40,9 +40,13 @@ class SessionsController < ApplicationController
   def resend_otp
     user = User.find_by(id: session[:temp_user]) if session[:temp_user]
     phone_number = user.phone
-    if user && valid?("+91#{phone_number}") == true
+    message = "OTP has been sent in your registered mobile number"
+    if user && valid?("+91#{phone_number}")
       send_otp_on_phone("+91#{phone_number}", user.otp_code)
-      render json: { success: true, message: "OTP sent successfully." }
+      if send_otp_via_mail(user, user.otp_code)
+        message = message + " and your registered email address."
+      end
+      render json: { success: true, message: message }
     else
       render json: { success: false, message: "Oops. Something went wrong. Please try later." }
     end
