@@ -13,7 +13,7 @@ $(document).ready ->
 					$(".teal").hide();
 					$(".otp_msg").show().html(response.message);
 			error: (response) ->
-				$(".otp_msg").html(response);
+				$(".otp_msg").show().html(response);
 
 	$(document).on	'click' , ".resend_otp", ->
 		$.ajax "/resend_otp",
@@ -23,7 +23,7 @@ $(document).ready ->
 				$(".teal").hide();
 				$(".otp_msg").show().html(response.message);
 			error: (response) ->
-				$(".otp_msg").html(response.message);
+				$(".otp_msg").show().html(response.message);
 
 	$(document).on  'click' , ".resend-confirm-email-button", ->
   	$.ajax "/re_send_to_confirm_email",
