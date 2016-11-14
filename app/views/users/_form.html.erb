@@ -34,6 +34,7 @@
         <i class="material-icons prefix">email</i>
         <%= f.email_field :email %>
         <%= f.label :email %>
+        <%= link_to 'Resend Email Confirmation', "javascript:;", class: 'Black text-lighten-3 right resend-confirm-email-button' if !logged_in_user.email_confirmed %>
     </div>
 
     <div class="row">
