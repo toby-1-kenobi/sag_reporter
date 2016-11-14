@@ -34,9 +34,6 @@
         <i class="material-icons prefix">email</i>
         <%= f.email_field :email %>
         <%= f.label :email %>
-        <% if !@user.email_confirmed %>
-          <span>Email not confirmed</span>
-        <% end %>
     </div>
 
     <div class="row">
