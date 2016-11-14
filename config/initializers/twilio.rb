@@ -3,3 +3,4 @@ Twilio.configure do |config|
   config.auth_token = ENV['AUTH_TOKEN']
 end
 TWILIO = Twilio::REST::Client.new
+TWILIO_LOOKUP_CLIENT = Twilio::REST::LookupsClient.new
