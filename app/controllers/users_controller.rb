@@ -100,7 +100,18 @@ class UsersController < ApplicationController
     if user
       user.email_activate
       flash[:success] = "Your email has been confirmed."
-      redirect_to root_path
+    else
+      flash[:success] = "User not found."
+    end
+    redirect_to root_path
+  end
+
+  def re_confirm_email
+    if current_user.resend_email_token
+      UserMailer.user_email_confirmation(current_user).deliver
+      render json: {success: true, message: "Email sent"}
+    else
+      render json: {success: true, message: "Ooops Something went wrong. Please try later"}
     end
   end
 
