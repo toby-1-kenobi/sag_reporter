@@ -91,6 +91,7 @@ class User < ActiveRecord::Base
     save!(:validate => false)
   end
 
+
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles
   # or can_PERM1_or_PERM2?
@@ -111,6 +112,11 @@ class User < ActiveRecord::Base
     end
   end
 
+  def resend_email_token
+    self.confirm_token = SecureRandom.urlsafe_base64.to_s
+    save!(:validate => false)
+  end
+
 
       private
 
@@ -128,8 +134,8 @@ class User < ActiveRecord::Base
 
       def send_confirmation_email
         if self.confirm_token.blank? && self.email_changed?
-            self.confirm_token = SecureRandom.urlsafe_base64.to_s
-            UserMailer.user_email_confirmation(self).deliver
+          self.confirm_token = SecureRandom.urlsafe_base64.to_s
+          UserMailer.user_email_confirmation(self).deliver
         end
       end
 end
