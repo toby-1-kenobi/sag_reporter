@@ -59,6 +59,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get 're_send_to_confirm_email' => 'users#re_confirm_email'
+
   get    'adduser' => 'users#new'
 
   get    'login'   => 'sessions#new'
