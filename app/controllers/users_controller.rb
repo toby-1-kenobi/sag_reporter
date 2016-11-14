@@ -109,7 +109,7 @@ class UsersController < ApplicationController
   def re_confirm_email
     if current_user.resend_email_token
       UserMailer.user_email_confirmation(current_user).deliver
-      render json: {success: true, message: "Email sent"}
+      render json: {success: true, message: "Confirmation email sent to your email address!"}
     else
       render json: {success: true, message: "Ooops Something went wrong. Please try later"}
     end
