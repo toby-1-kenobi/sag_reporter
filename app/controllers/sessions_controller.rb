@@ -12,14 +12,13 @@ class SessionsController < ApplicationController
       otp_code = user.otp_code
       session[:temp_user] = user.id
       message = "OTP has been sent in your registered mobile number"
-      if valid? "+91#{@phone}"
-        send_otp_on_phone("+91#{@phone}", otp_code)
+      if send_otp_on_phone("+91#{@phone}", otp_code)
         if send_otp_via_mail(user, otp_code)
           message = message + " and your registered email address."
         end
         flash.now['info'] = message
       else
-        flash.now['info'] = "Something went wrong. Please check phone number or Internet connection."
+        flash.now['info'] = "Something went wrong. Please enter valid phone number or check Internet connection."
         render 'new'
       end
     else
@@ -41,8 +40,7 @@ class SessionsController < ApplicationController
     user = User.find_by(id: session[:temp_user]) if session[:temp_user]
     phone_number = user.phone
     message = "OTP has been sent in your registered mobile number"
-    if user && valid?("+91#{phone_number}")
-      send_otp_on_phone("+91#{phone_number}", user.otp_code)
+    if user && send_otp_on_phone("+91#{phone_number}", user.otp_code)
       if send_otp_via_mail(user, user.otp_code)
         message = message + " and your registered email address."
       end
@@ -80,11 +78,16 @@ class SessionsController < ApplicationController
   private
 
   def send_otp_on_phone(phone_number, otp_code)
-    TWILIO.messages.create(
-      from: ENV['PHONE_NUMBER'],
-      to: phone_number,
-      body: 'Your LCI verification code is:'+otp_code.to_s
-    )
+    begin
+      TWILIO.messages.create(
+        from: ENV['PHONE_NUMBER'],
+        to: phone_number,
+        body: 'Your LCI verification code is:'+otp_code.to_s
+      )
+      return true
+    rescue => e
+      return false
+    end
   end
 
   def send_otp_via_mail(user, otp_code)
@@ -92,16 +95,6 @@ class SessionsController < ApplicationController
       UserMailer.user_otp_code(user, otp_code).deliver
       return true
     else
-      return false
-    end
-  end
-
-  def valid?(phone_number)
-    begin
-      response = TWILIO_LOOKUP_CLIENT.phone_numbers.get(phone_number)
-      response.phone_number #if invalid, throws an exception. If valid, no problems.
-      return true
-    rescue => e
       return false
     end
   end
