@@ -9,10 +9,19 @@ class SessionsController < ApplicationController
     if user && user.authenticate(params[:session][:password])
       @phone = params[:session][:phone]
       @password = params[:session][:password]
-      @otp_code = user.otp_code
+      otp_code = user.otp_code
       session[:temp_user] = user.id
-      send_otp(user)
-      flash.now['info'] = "OTP has been sent in your registered mobile number"
+      message = "OTP has been sent in your registered mobile number"
+      if valid? "+91#{@phone}"
+        send_otp_on_phone("+91#{@phone}", otp_code)
+        if send_otp_via_mail(user, otp_code)
+          message = message + " and your registered email address."
+        end
+        flash.now['info'] = message
+      else
+        flash.now['info'] = "Something went wrong. Please check phone number or Internet connection."
+        render 'new'
+      end
     else
       flash.now['error'] = 'Phone number or password not correct'
       render 'new'
@@ -30,8 +39,9 @@ class SessionsController < ApplicationController
 
   def resend_otp
     user = User.find_by(id: session[:temp_user]) if session[:temp_user]
-    if user
-      send_otp(user)
+    phone_number = user.phone
+    if user && valid?("+91#{phone_number}") == true
+      send_otp_on_phone("+91#{phone_number}", user.otp_code)
       render json: { success: true, message: "OTP sent successfully." }
     else
       render json: { success: false, message: "Oops. Something went wrong. Please try later." }
@@ -65,12 +75,31 @@ class SessionsController < ApplicationController
 
   private
 
-  def send_otp(user)
+  def send_otp_on_phone(phone_number, otp_code)
     TWILIO.messages.create(
       from: ENV['PHONE_NUMBER'],
-      to: "+91"+user.phone.to_s,
-      body: 'Your LCI verification code is:'+user.otp_code.to_s
+      to: phone_number,
+      body: 'Your LCI verification code is:'+otp_code.to_s
     )
+  end
+
+  def send_otp_via_mail(user, otp_code)
+    if user.email && user.email_confirmed
+      UserMailer.user_otp_code(user, otp_code).deliver
+      return true
+    else
+      return false
+    end
+  end
+
+  def valid?(phone_number)
+    begin
+      response = TWILIO_LOOKUP_CLIENT.phone_numbers.get(phone_number)
+      response.phone_number #if invalid, throws an exception. If valid, no problems.
+      return true
+    rescue => e
+      return false
+    end
   end
 
   def check_user
