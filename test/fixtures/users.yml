@@ -9,6 +9,7 @@ andrew:
   role: admin
   geo_states: nb, assam
   otp_secret_key: "ia3s5qx2r5k7ofrq"
+  confirm_token: "DGkSavscSzymTR9-7nDvLQ"
 
 emma:
   name: Emma Evaluator
