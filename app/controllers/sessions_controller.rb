@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
         end
         flash.now['info'] = message
       else
-        flash.now['info'] = "Something went wrong. Please enter valid phone number or check Internet connection."
+        flash.now['error'] = "Something went wrong. Please enter valid phone number or check Internet connection."
         render 'new'
       end
     else
@@ -30,7 +30,7 @@ class SessionsController < ApplicationController
   def verify_otp
     user = User.find_by(id: session[:temp_user])
     if user && user.authenticate_otp(params[:otp_code], drift:60)
-      render json: { success: true, message: "OTP sent successfully." }
+      render json: { success: true, message: "OTP verified successfully." }
     else
       render json: { success: false, message: "OTP has expired or you have entered wrong OTP. please click on resend OTP and try to login again." }
     end
@@ -92,7 +92,7 @@ class SessionsController < ApplicationController
 
   def send_otp_via_mail(user, otp_code)
     if user.email && user.email_confirmed
-      UserMailer.user_otp_code(user, otp_code).deliver
+      UserMailer.user_otp_code(user, otp_code).deliver_now
       return true
     else
       return false
