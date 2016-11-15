@@ -9,7 +9,7 @@ class UsersControllerTest < ActionController::TestCase
 
   def setup
     @user = users(:andrew)
-    @other_user = users(:peter)
+    @other_user = users(:emma)
   end
 
   test 'should get new' do
@@ -144,6 +144,13 @@ class UsersControllerTest < ActionController::TestCase
     assert_equal @user.name, response['name']
     assert_equal @user.phone, response['phone']
     assert_equal @user.geo_states.count, response['geo_states'].count
+  end
+
+  test 'user can update profile with email' do
+    log_in_as(@user)
+    patch :update, id: @user.id, user: { email: "test123@example.com" }
+    assert_equal 'Profile updated with email. Please check mail and confirm your email.', flash['success']
+    assert_redirected_to @user
   end
 
 end
