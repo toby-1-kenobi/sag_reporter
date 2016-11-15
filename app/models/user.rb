@@ -135,7 +135,7 @@ class User < ActiveRecord::Base
       def send_confirmation_email
         if self.confirm_token.blank? && self.email_changed?
           self.confirm_token = SecureRandom.urlsafe_base64.to_s
-          UserMailer.user_email_confirmation(self).deliver
+          UserMailer.user_email_confirmation(self).deliver_now
         end
       end
 end
