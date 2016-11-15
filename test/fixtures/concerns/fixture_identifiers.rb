@@ -4,7 +4,8 @@ module FixtureIdentifiers
 	  [
 		:richard,
 		:emma,
-		:andrew
+		:andrew,
+		:admin
 	  ]
 	end
 
