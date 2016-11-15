@@ -12,6 +12,10 @@ class UsersControllerTest < ActionController::TestCase
     @other_user = users(:emma)
   end
 
+  def json_response
+    ActiveSupport:: JSON.decode @response.body
+  end
+
   test 'should get new' do
     log_in_as(@user)
     get :new
@@ -151,6 +155,20 @@ class UsersControllerTest < ActionController::TestCase
     patch :update, id: @user.id, user: { email: "test123@example.com" }
     assert_equal 'Profile updated with email. Please check mail and confirm your email.', flash['success']
     assert_redirected_to @user
+  end
+
+  test 'vefied user with confirmation token' do
+    log_in_as(@user)
+    get :confirm_email, { id: @user.confirm_token}
+    assert_equal 'Your email has been confirmed.', flash['success']
+    assert_redirected_to root_path
+  end
+
+  test "resend confirm email to user" do
+    log_in_as(@user)
+    get :re_confirm_email
+    assert_equal "Confirmation email sent to your email address!", json_response['message']
+    assert_response :success
   end
 
 end
