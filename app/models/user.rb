@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
 
   include ContactDetails
-  
+
   belongs_to :role
   has_many :permissions, through: :role
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter
@@ -17,12 +17,14 @@ class User < ActiveRecord::Base
   has_many :output_counts
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources
+  after_save :send_confirmation_email
 
   attr_accessor :remember_token
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :phone, presence: true, length: { is: 10 }, format: { with: /\A\d+\Z/ }, uniqueness: true
   has_secure_password
+  has_one_time_password
   validates :password,
             presence: true,
             length: { minimum: 6 },
@@ -34,6 +36,11 @@ class User < ActiveRecord::Base
   validates :mother_tongue_id, presence: true, allow_nil: false
   validates :role_id, presence: true, allow_nil: false
   validates :geo_states, presence: true
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+  validates :email, length: { maximum: 255 },
+            allow_blank: true,
+            format: { with: VALID_EMAIL_REGEX },
+            uniqueness: { case_sensitive: false }
 
   # Returns the hash digest of the given string.
   def User.digest(string)
@@ -83,6 +90,13 @@ class User < ActiveRecord::Base
     Zone.of_states geo_states
   end
 
+  def email_activate
+    self.email_confirmed = true
+    self.confirm_token = nil
+    save!(:validate => false)
+  end
+
+
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles
   # or can_PERM1_or_PERM2?
@@ -103,6 +117,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def resend_email_token
+    self.confirm_token = SecureRandom.urlsafe_base64.to_s
+    save!(:validate => false)
+  end
+
+
       private
 
       def tokenize(string_to_split)
@@ -115,5 +135,13 @@ class User < ActiveRecord::Base
 
       def matches_dynamic_perm_check?(method_id)
         /^can_([a-zA-Z]\w*)\?$/.match(method_id.to_s)
+      end
+
+      def send_confirmation_email
+        if self.email_changed? && self.email
+          self.confirm_token = SecureRandom.urlsafe_base64.to_s
+          logger.debug 'sending email verification email'
+          UserMailer.user_email_confirmation(self).deliver_now
+        end
       end
 end

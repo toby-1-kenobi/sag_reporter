@@ -2,9 +2,9 @@ class UsersController < ApplicationController
 
   include ParamsHelper
 
-  before_action :require_login, except: [:me]
+  before_action :require_login, except: [:me, :confirm_email]
   before_action :authenticate, only: [:me]
-  
+
   # A user's profile can only be edited or seen by
   #    themselves or
   #    their supervisor or
@@ -81,13 +81,38 @@ class UsersController < ApplicationController
 
   def update
     updater = User::Updater.new(@user)
+    message = 'Profile updated'
     if updater.update_user(user_params)
-      flash['success'] = 'Profile updated'
+      if updater.instance.confirm_token.present?
+        message = 'Profile updated with email. Please check mail and confirm your email.'
+      end
+      flash['success'] = message
       redirect_to @user
     else
       @user = updater.instance()
       assign_for_user_form
       render 'edit'
+    end
+  end
+
+  def confirm_email
+    logger.debug 'validating email address'
+    user = User.find_by_confirm_token(params[:id])
+    if user
+      user.email_activate
+      flash[:success] = 'Your email has been validated.'
+    else
+      flash[:error] = 'User not found.'
+    end
+    redirect_to root_path
+  end
+
+  def re_confirm_email
+    if current_user.resend_email_token
+      UserMailer.user_email_confirmation(current_user).deliver_now
+      render json: {success: true, message: 'Confirmation email sent to your email address!'}
+    else
+      render json: {success: true, message: 'Ooops Something went wrong. Please try later'}
     end
   end
 
@@ -108,6 +133,9 @@ class UsersController < ApplicationController
         :phone,
         :password,
         :password_confirmation,
+        :email,
+        :email_confirmed,
+        :confirm_token,
         :mother_tongue_id,
         :interface_language_id,
         :role_id,
@@ -134,7 +162,7 @@ class UsersController < ApplicationController
     # Confirms authorised user for edit.
     def authorised_user_edit
       get_param_user
-      redirect_to(root_url) unless 
+      redirect_to(root_url) unless
           logged_in_user?(@user) or logged_in_user.can_edit_user?
       #    or @user.supervisor?(logged_in_user)
     end
@@ -142,7 +170,7 @@ class UsersController < ApplicationController
     # Confirms authorised user for show.
     def authorised_user_show
       get_param_user
-      redirect_to(root_url) unless 
+      redirect_to(root_url) unless
           logged_in_user?(@user) or logged_in_user.can_view_all_users?
       #    or @user.supervisor?(logged_in_user)
     end

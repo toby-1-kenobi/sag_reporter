@@ -6,14 +6,28 @@
         <% language_names = user_card.spoken_languages.map { |e| e.name } %>
         <% zone_names = user_card.zones.map { |e| e.name } %>
         <% state_names = user_card.geo_states.map { |e| e.name } %>
-        <tr><th>Phone:</th><td><%= user_card.pretty_phone %></td></tr>
-        <tr><th><%= "Zone".pluralize(zone_names.count) %>:</th>
-        <td><%= zone_names.join(', ') %></td>
-        <th><%= "State".pluralize(state_names.count) %>:</th>
-        <td><%= state_names.join(', ') %></td></tr>
-        <tr><th>Mother tongue:</th><td><%= user_card.mother_tongue.name %></td>
-        <th>Can speak:</th><td><%= language_names.join(', ') %></td></tr>
-        <tr><th>Role:</th><td><%= user_card.role.name %></td></tr>
+        <tr>
+          <th>Phone:</th>
+          <td><%= user_card.pretty_phone %></td>
+          <th>Email:</th>
+          <td><%= user_card.email %><%= link_to 'Click to Resend', "javascript:;", class: 'grey-text text-lighten-3 right resend-confirm-email-button' if user_card.email && !user_card.email_confirmed %></td>
+        </tr>
+        <tr>
+          <th><%= "Zone".pluralize(zone_names.count) %>:</th>
+          <td><%= zone_names.join(', ') %></td>
+          <th><%= "State".pluralize(state_names.count) %>:</th>
+          <td><%= state_names.join(', ') %></td>
+        </tr>
+        <tr>
+          <th>Mother tongue:</th>
+          <td><%= user_card.mother_tongue.name %></td>
+          <th>Can speak:</th>
+          <td><%= language_names.join(', ') %></td>
+        </tr>
+        <tr>
+          <th>Role:</th>
+          <td><%= user_card.role.name %></td>
+        </tr>
       </tbody>
     </table>
   </div>

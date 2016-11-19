@@ -53,16 +53,26 @@ Rails.application.routes.draw do
   end
   resources :tallies
   resources :topics
+
   resources :users do
     get :me, on: :collection
+
+    member do
+      get :confirm_email
+    end
   end
+
+  get 're_send_to_confirm_email' => 'users#re_confirm_email'
 
   get    'adduser' => 'users#new'
 
   get    'login'   => 'sessions#new'
   post   'login'   => 'sessions#create'
+  post   'two_factor_auth'   => 'sessions#two_factor_auth'
+  post   'verify_otp' => 'sessions#verify_otp'
+  get    'resend_otp' => 'sessions#resend_otp'
   delete 'logout'  => 'sessions#destroy'
-  
+
   get    'roles'   => 'roles#index'
   patch  'roles'   => 'roles#update'
   post   'roles'   => 'roles#create'
