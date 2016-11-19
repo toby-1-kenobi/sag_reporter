@@ -1,4 +1,4 @@
 Hi <%= @user.name %>,
 
-Thanks for updating information! To confirm your email click the URL below.
+Thanks for updating information! To confirm your email click the link.
 <%= link_to "Click here" , confirm_email_user_url(@user.confirm_token) %> to confirm.

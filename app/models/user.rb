@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
   has_many :output_counts
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources
-  before_update :send_confirmation_email
+  after_save :send_confirmation_email
 
   attr_accessor :remember_token
 
@@ -36,6 +36,11 @@ class User < ActiveRecord::Base
   validates :mother_tongue_id, presence: true, allow_nil: false
   validates :role_id, presence: true, allow_nil: false
   validates :geo_states, presence: true
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+  validates :email, length: { maximum: 255 },
+            allow_blank: true,
+            format: { with: VALID_EMAIL_REGEX },
+            uniqueness: { case_sensitive: false }
 
   # Returns the hash digest of the given string.
   def User.digest(string)
@@ -133,8 +138,9 @@ class User < ActiveRecord::Base
       end
 
       def send_confirmation_email
-        if self.confirm_token.blank? && self.email_changed?
+        if self.email_changed? && self.email
           self.confirm_token = SecureRandom.urlsafe_base64.to_s
+          logger.debug 'sending email verification email'
           UserMailer.user_email_confirmation(self).deliver_now
         end
       end

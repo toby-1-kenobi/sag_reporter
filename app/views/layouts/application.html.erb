@@ -26,8 +26,10 @@
           </div>
         </div>
       <% end %>
-      <% if logged_in_user && !logged_in_user.email_confirmed %>
-        <div class="card-panel light-blue email-msg">Your Email has not confirmed yet.</div>
+      <% if logged_in_user && logged_in_user.email && !logged_in_user.email_confirmed %>
+        <div class="card-panel light-blue email-msg">
+          Your Email address is not yet confirmed.
+        </div>
       <% end %>
       <% flash.each do |message_type, message| %>
         <% if flash_values[message_type] %>
