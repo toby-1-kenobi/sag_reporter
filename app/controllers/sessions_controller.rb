@@ -11,18 +11,15 @@ class SessionsController < ApplicationController
       @password = params[:session][:password]
       otp_code = user.otp_code
       session[:temp_user] = user.id
-      message = "OTP has been sent in your registered mobile number"
       if send_otp_on_phone("+91#{@phone}", otp_code)
-        if send_otp_via_mail(user, otp_code)
-          message = message + " and your registered email address."
-        end
-        flash.now['info'] = message
+        flash.now['info'] = "A short login code has been sent to your phone (#{@phone})"
+      elsif send_otp_via_mail(user, otp_code)
+        flash.now['info'] = "A short login code has been sent to your email (#{user.email})."
       else
-        flash.now['error'] = "Something went wrong. Please enter valid phone number or check Internet connection."
-        render 'new'
+        flash.now['error'] = 'We were not able to send the login code!'
       end
     else
-      flash.now['error'] = 'Phone number or password not correct'
+      flash.now['error'] = 'Phone number or password is not correct'
       render 'new'
     end
   end
@@ -30,23 +27,26 @@ class SessionsController < ApplicationController
   def verify_otp
     user = User.find_by(id: session[:temp_user])
     if user && user.authenticate_otp(params[:otp_code], drift:60)
-      render json: { success: true, message: "OTP verified successfully." }
+      render json: { success: true, message: 'Login code verified successfully.' }
     else
-      render json: { success: false, message: "OTP has expired or you have entered wrong OTP. please click on resend OTP and try to login again." }
+      render json: { success: false, message: 'Your login code expired or you did not enter it correctly. please click on \'resend code\' and try to login again.' }
     end
   end
 
   def resend_otp
     user = User.find_by(id: session[:temp_user]) if session[:temp_user]
     phone_number = user.phone
-    message = "OTP has been sent in your registered mobile number"
+    message = ''
     if user && send_otp_on_phone("+91#{phone_number}", user.otp_code)
-      if send_otp_via_mail(user, user.otp_code)
-        message = message + " and your registered email address."
-      end
-      render json: { success: true, message: message }
+      message += "A short login code has been sent to your phone (#{phone_number}). "
+    end
+    if send_otp_via_mail(user, user.otp_code)
+      message += "A short login code has been sent to your email (#{user.email})."
+    end
+    if message.present?
+      render json: { success: true, message: message}
     else
-      render json: { success: false, message: "Oops. Something went wrong. Please try later." }
+      render json: { success: false, message: 'Oops. We couldn\'t send the code. Please contact your supervisor.' }
     end
   end
 
@@ -86,6 +86,7 @@ class SessionsController < ApplicationController
       )
       return true
     rescue => e
+      logger.debug("couldn't send OTP to phone: #{e.message}")
       return false
     end
   end

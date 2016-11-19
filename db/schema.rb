@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160920021943) do
+ActiveRecord::Schema.define(version: 20161111064350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -533,13 +533,17 @@ ActiveRecord::Schema.define(version: 20160920021943) do
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "phone"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
     t.string   "password_digest"
     t.string   "remember_digest"
     t.integer  "role_id"
-    t.integer  "mother_tongue_id",      null: false
+    t.integer  "mother_tongue_id",                      null: false
     t.integer  "interface_language_id"
+    t.string   "otp_secret_key"
+    t.string   "email"
+    t.boolean  "email_confirmed",       default: false
+    t.string   "confirm_token"
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree

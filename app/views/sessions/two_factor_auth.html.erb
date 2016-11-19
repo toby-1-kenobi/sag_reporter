@@ -1,21 +1,21 @@
-<% provide(:title, "Log in") %>
+<% provide(:title, 'Log in') %>
 <h1></h1>
 <div class="row" >
   <div class="card-panel light-blue otp_msg" style='display:none;'></div>
 </div>
 <div class="row">
-  <%= form_for(:session, url: login_path, html: {class: "col s12", id: "otp_form"}) do |f| %>
+  <%= form_for(:session, url: login_path, html: {class: 'col s12', id: 'otp_form'}) do |f| %>
     <div class="row">
       <div class="input-field col s12">
         <%= f.text_field :otp_code %>
-        <%= f.label :otp, "OTP" %>
+        <%= f.label :otp, 'Short Login Code' %>
       </div>
     </div>
       <%= f.hidden_field :phone, value: @phone %>
       <%= f.hidden_field :password, value: @password %>
       <div class="right">
-        <a href='javascript:;' class='resend_otp otp_btn'>Resend OTP</a>
-        <%= button_tag( :class => "btn waves-effect waves-light", :id => "btn_login", :type => "button") do %>
+        <a href='javascript:;' class='resend_otp otp_btn'>Resend login code</a>
+        <%= button_tag( :class => 'btn waves-effect waves-light', :id => 'btn_login', :type => 'button') do %>
           Log in
         <% end %>
       </div>

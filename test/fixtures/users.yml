@@ -29,7 +29,7 @@ richard:
   geo_states: nb, assam
 
 twilio_user_unconfirmed:
-  name: Richard Reporter
+  name: Robert Reporter
   phone: 07903661930
   password_digest: <%= User.digest('password') %>
   mother_tongue: toto
@@ -39,7 +39,7 @@ twilio_user_unconfirmed:
   email_confirmed: false
 
 twilio_user_confirmed:
-  name: Richard Reporter
+  name: Rupert Reporter
   phone: 09503461730
   password_digest: <%= User.digest('password') %>
   mother_tongue: toto

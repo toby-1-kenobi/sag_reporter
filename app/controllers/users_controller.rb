@@ -2,7 +2,7 @@ class UsersController < ApplicationController
 
   include ParamsHelper
 
-  before_action :require_login, except: [:me]
+  before_action :require_login, except: [:me, :confirm_email]
   before_action :authenticate, only: [:me]
 
   # A user's profile can only be edited or seen by
@@ -81,10 +81,10 @@ class UsersController < ApplicationController
 
   def update
     updater = User::Updater.new(@user)
-    message = "Profile updated"
+    message = 'Profile updated'
     if updater.update_user(user_params)
       if updater.instance.confirm_token.present?
-        message = "Profile updated with email. Please check mail and confirm your email."
+        message = 'Profile updated with email. Please check mail and confirm your email.'
       end
       flash['success'] = message
       redirect_to @user
@@ -96,12 +96,13 @@ class UsersController < ApplicationController
   end
 
   def confirm_email
+    logger.debug 'validating email address'
     user = User.find_by_confirm_token(params[:id])
     if user
       user.email_activate
-      flash[:success] = "Your email has been confirmed."
+      flash[:success] = 'Your email has been validated.'
     else
-      flash[:success] = "User not found."
+      flash[:error] = 'User not found.'
     end
     redirect_to root_path
   end
@@ -109,9 +110,9 @@ class UsersController < ApplicationController
   def re_confirm_email
     if current_user.resend_email_token
       UserMailer.user_email_confirmation(current_user).deliver_now
-      render json: {success: true, message: "Confirmation email sent to your email address!"}
+      render json: {success: true, message: 'Confirmation email sent to your email address!'}
     else
-      render json: {success: true, message: "Ooops Something went wrong. Please try later"}
+      render json: {success: true, message: 'Ooops Something went wrong. Please try later'}
     end
   end
 
