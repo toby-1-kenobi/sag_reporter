@@ -18,7 +18,7 @@ class LanguagesController < ApplicationController
   end
 
   def index
-  	@languages = Language.order('LOWER(name)')
+  	@languages = Language.includes(:family, { geo_states: :zone }).order('LOWER(languages.name)')
   end
 
   def overview

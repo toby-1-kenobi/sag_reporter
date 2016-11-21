@@ -11,8 +11,19 @@
             <% if language.iso.present? %>
               <span class="iso"><%= language.iso %></span>
             <% end %>
+            <% if language.family.present? %>
+                <span class="language-family"><%= language.family.name %></span>
+            <% end %>
             <% if language.population.present? %>
                 <span class="population">population: <%= language.population %></span>
+            <% end %>
+            <% if language.geo_states.any? %>
+              <span class="states">
+                spoken in: <%= language.geo_states.map(&:name).join(', ') %>
+              </span>
+              <span class="zones">
+                <%= language.geo_states.map(&:zone_name).uniq.join(' and ') %> Zone
+              </span>
             <% end %>
           </div>
         </paper-item-body>
