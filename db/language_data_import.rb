@@ -98,7 +98,7 @@ end
 
 language_data.each do |row|
   if row[:iso].present?
-    lang = Language.find_or_initialize_by name: row[:iso]
+    lang = Language.find_or_initialize_by iso: row[:iso]
   else
     lang = Language.find_or_initialize_by name: row[:language_name]
   end
