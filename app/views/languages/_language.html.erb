@@ -1,5 +1,10 @@
 
-    <%= link_to language, class: 'filterable-item', 'data-filter-label': 'translation-status', data: language.translation_status.to_s do %>
+    <%= link_to language,
+                class: 'filterable-item',
+                'data-filter-label': 'translation-status language-family zone',
+                'data-translation-status': language.translation_status.to_s,
+                'data-language-family': language.family.present? ? language.family.id : 'family-unknown',
+                'data-zone': language.geo_states.any? ? language.geo_states.map(&:zone_id).uniq.join(',') : 'zone-unknown'  do %>
       <paper-item class="language-item<%= ' extinct' if language.population == 0 %>">
         <paper-item-body two-line>
           <div>
@@ -19,10 +24,10 @@
             <% end %>
             <% if language.geo_states.any? %>
               <span class="states">
-                spoken in: <%= language.geo_states.map(&:name).join(', ') %>
+                spoken in: <%= language.geo_states.map(&:name).to_sentence %>
               </span>
               <span class="zones">
-                <%= language.geo_states.map(&:zone_name).uniq.join(' and ') %> Zone
+                <%= language.geo_states.map(&:zone_name).uniq.to_sentence %> Zone
               </span>
             <% end %>
           </div>
