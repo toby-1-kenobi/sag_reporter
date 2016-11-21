@@ -1,23 +1,99 @@
 <% provide(:title, 'All languages') %>
 
+<style is="custom-style" include="iron-flex">
+  .language-filter-controls {
+    @apply(--layout-horizontal);
+    @apply(--layout-end);
+  }
+  .filter-controls {
+    @apply(--layout-flex);
+    margin: 1ex;
+  }
+</style>
+
 <h1>All languages</h1>
+
 <%= link_to overview_languages_path do %>
     <paper-button id="language-overview-button">Overview</paper-button>
 <% end %>
 <div class="row language-filter-controls">
-  <% Language.translation_status_colour.each do |status, colour| %>
-      <span id="<%= status.to_s %>-span" class="language-filter-checkbox" style="background-color: <%= colour %>;">
-    <input
-      checked
-      type="checkbox"
-      value="<%= status.to_s %>"
-      id="<%= status.to_s %>-check"
-      class="filter-trigger"
-      data-filter-trigger-label="translation-status"
-    />
-    <label for="<%= status.to_s %>-check">&nbsp;</label></span>
-      <paper-tooltip position="top" for="<%= status.to_s %>-span"><%= status.to_s.humanize %></paper-tooltip>
-  <% end %>
+
+  <paper-card class="filter-controls" heading="Language Family">
+    <div class="card-content" role = listbox>
+      <paper-item>
+        <input
+        checked
+        type="checkbox"
+        value="family-unknown"
+        id="family-unknown-check"
+        class="filter-trigger"
+        data-filter-trigger-label="language-family"
+        />
+        <label for="family-unknown-check">Unknown</label>
+      </paper-item>
+      <% LanguageFamily.all.order(:name).each do |family| %>
+        <paper-item>
+          <input
+          checked
+          type="checkbox"
+          value="<%= family.id %>"
+          id="family-<%= family.id %>-check"
+          class="filter-trigger"
+          data-filter-trigger-label="language-family"
+          />
+          <label for="family-<%= family.id %>-check"><%= family.name %></label>
+        </paper-item>
+      <% end %>
+    </div>
+  </paper-card>
+
+  <paper-card class="filter-controls" heading="Strategic Zone">
+    <div class="card-content" role = listbox>
+      <paper-item>
+        <input
+        checked
+        type="checkbox"
+        value="zone-unknown"
+        id="zone-unknown-check"
+        class="filter-trigger"
+        data-filter-trigger-label="zone"
+        />
+        <label for="zone-unknown-check">Unknown</label>
+      </paper-item>
+      <% Zone.all.order(:name).each do |zone| %>
+          <paper-item>
+            <input
+            checked
+            type="checkbox"
+            value="<%= zone.id %>"
+            id="zone-<%= zone.id %>-check"
+            class="filter-trigger"
+            data-filter-trigger-label="zone"
+            />
+            <label for="zone-<%= zone.id %>-check"><%= zone.name %></label>
+          </paper-item>
+      <% end %>
+    </div>
+  </paper-card>
+
+  <paper-card class="filter-controls" heading="Scripture Translation Status">
+    <div class="card-content" role = listbox>
+      <% Language.translation_status_colour.each do |status, colour| %>
+        <paper-item id="<%= status.to_s %>-item" class="language-filter-checkbox" style="background-color: <%= colour %>;">
+          <input
+          checked
+          type="checkbox"
+          value="<%= status.to_s %>"
+          id="<%= status.to_s %>-check"
+          class="filter-trigger"
+          data-filter-trigger-label="translation-status"
+          />
+          <label class="black-text" for="<%= status.to_s %>-check"><%= status.to_s.humanize %></label>
+        </paper-item>
+      <% end %>
+    </div>
+
+  </paper-card>
 </div>
 
 <div class="languages" role="listbox">
