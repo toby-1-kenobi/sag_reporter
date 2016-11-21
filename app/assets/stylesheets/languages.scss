@@ -25,7 +25,7 @@
       @include border-radius(1ex);
       margin-right: 1em;
   }
-  span.population {
+  span.population, span.states, span.language-family, span.zones {
     padding-left: 3em;
   }
 }
