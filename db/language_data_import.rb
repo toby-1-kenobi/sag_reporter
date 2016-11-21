@@ -97,7 +97,11 @@ def setTranslationStatus(lang, status, errors)
 end
 
 language_data.each do |row|
-  lang = Language.find_or_initialize_by name: row[:language_name]
+  if row[:iso].present?
+    lang = Language.find_or_initialize_by name: row[:iso]
+  else
+    lang = Language.find_or_initialize_by name: row[:language_name]
+  end
   if lang.new_record? and row[:state]
     state = GeoState.find_by_name(row[:state])
     if state
