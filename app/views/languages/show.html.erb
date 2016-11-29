@@ -85,11 +85,11 @@
     <% else %>
         <paper-item><em>No engaged organisations</em></paper-item>
     <% end %>
-  <paper-item>
+  <!--paper-item>
     <paper-button raised class="icon-only" title="Change engaged organisations" onclick="engagedOrganisationDialog.open()">
       <iron-icon icon="create"></iron-icon>
     </paper-button>
-  </paper-item>
+  </paper-item-->
 
 </div>
 
@@ -182,11 +182,11 @@
         <% else %>
             <paper-item><em>No engaged organisations</em></paper-item>
         <% end %>
-        <paper-item>
+        <!--paper-item>
           <paper-button raised class="icon-only" title="Change translating organisations" onclick="translatingOrganisationDialog.open()">
             <iron-icon icon="create"></iron-icon>
           </paper-button>
-        </paper-item>
+        </paper-item-->
       </div>
     </div>
 
@@ -298,7 +298,7 @@
   </div>
 </paper-dialog>
 
-<% if logged_in_user.can_edit_language? %>
+<% if false %>
     <%= link_to edit_language_path(@language), class: 'right' do %>
       <paper-fab icon="create" title="Edit"></paper-fab>
     <% end %>

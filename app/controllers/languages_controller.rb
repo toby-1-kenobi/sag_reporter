@@ -6,7 +6,7 @@ class LanguagesController < ApplicationController
 
     # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_language?
+    redirect_to root_path #unless logged_in_user.can_create_language?
   end
 
   before_action only: [:index] do
@@ -14,7 +14,7 @@ class LanguagesController < ApplicationController
   end
 
   before_action only: [:edit, :update] do
-    redirect_to root_path unless logged_in_user.can_edit_language?
+    redirect_to root_path #unless logged_in_user.can_edit_language?
   end
 
   def index
@@ -112,7 +112,7 @@ class LanguagesController < ApplicationController
     org = Organisation.find(params[:org])
     if org
       language = Language.find(params[:id])
-      language.engaged_organisations << org
+      #language.engaged_organisations << org
       success = language.engaged_organisations.include? org
     end
     respond_to do |format|
@@ -127,7 +127,7 @@ class LanguagesController < ApplicationController
     language = Language.find(params[:id])
     org = language.engaged_organisations.find(params[:org])
     if org
-      language.engaged_organisations.delete org
+      #language.engaged_organisations.delete org
       success = !language.engaged_organisations.include?(org)
     end
     respond_to do |format|
@@ -142,7 +142,7 @@ class LanguagesController < ApplicationController
     org = Organisation.find(params[:org])
     if org
       language = Language.find(params[:id])
-      language.translating_organisations << org
+      #language.translating_organisations << org
       success = language.translating_organisations.include? org
     end
     respond_to do |format|
@@ -157,7 +157,7 @@ class LanguagesController < ApplicationController
     language = Language.find(params[:id])
     org = language.translating_organisations.find(params[:org])
     if org
-      language.translating_organisations.delete org
+      #language.translating_organisations.delete org
       success = !language.translating_organisations.include?(org)
     end
     respond_to do |format|
