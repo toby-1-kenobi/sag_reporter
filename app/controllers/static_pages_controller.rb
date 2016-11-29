@@ -40,7 +40,7 @@ class StaticPagesController < ApplicationController
             category: 'other'
         },
         {
-            permission: 'report_numbers',
+            permission: 'add_resource',
             path: new_mt_resource_path,
             text: 'Report on a completed resource',
             icon: 'build',
