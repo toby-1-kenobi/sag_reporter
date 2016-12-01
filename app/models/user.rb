@@ -138,7 +138,7 @@ class User < ActiveRecord::Base
       end
 
       def send_confirmation_email
-        if self.email_changed? && self.email
+        if self.email_changed? && self.email.present?
           self.confirm_token = SecureRandom.urlsafe_base64.to_s
           logger.debug 'sending email verification email'
           UserMailer.user_email_confirmation(self).deliver_now
