@@ -28,6 +28,14 @@ richard:
   role: reporter
   geo_states: nb, assam
 
+peter:
+  name: Peter Pleb
+  phone: 0987654324
+  password_digest: <%= User.digest('password') %>
+  mother_tongue: toto
+  role: pleb
+  geo_states: nb, assam
+
 twilio_user_unconfirmed:
   name: Robert Reporter
   phone: 07903661930
