@@ -117,9 +117,13 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @name = @user.name
-    @user.destroy
-    flash[:success] = "User #{@name} deleted"
+    name = @user.name
+    if @user.destroy
+      flash[:success] = "User #{name} deleted"
+    else
+      flash[:error] = "Unable to delete #{name}"
+      flash[:error] += ': '+ @user.errors.messages.values.join(', ') if @user.errors.any?
+    end
     redirect_to users_url
   end
 

@@ -4,19 +4,18 @@ class User < ActiveRecord::Base
 
   belongs_to :role
   has_many :permissions, through: :role
-  has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter
-  has_many :events, inverse_of: :record_creator
-  has_many :people, inverse_of: :record_creator
-  has_many :progress_updates
-  has_many :impact_reports, foreign_key: 'reporter_id', inverse_of: :reporter
+  has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter, dependent: :restrict_with_error
+  has_many :events, inverse_of: :record_creator, dependent: :restrict_with_error
+  has_many :people, inverse_of: :record_creator, dependent: :restrict_with_error
+  has_many :progress_updates, dependent: :restrict_with_error
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :spoken_languages, class_name: 'Language'
   has_many :tally_updates
   has_and_belongs_to_many :geo_states
   delegate :zone, to: :geo_state, allow_nil: true
-  has_many :output_counts
+  has_many :output_counts, dependent: :restrict_with_error
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
-  has_many :mt_resources
+  has_many :mt_resources, dependent: :restrict_with_error
   after_save :send_confirmation_email
 
   attr_accessor :remember_token
