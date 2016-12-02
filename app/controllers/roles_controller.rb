@@ -36,6 +36,10 @@ class RolesController < ApplicationController
   	  	role.permissions << Permission.find_by_name(perm_name)
   	  end
   	end
+
+		# admin should never loose permission to view and edit roles
+		Role.find_by_name("admin").permissions << Permission.find_by_name("view_roles") << Permission.find_by_name("edit_role")
+
   	flash["success"] = 'Roles updated.'
   	redirect_to roles_url	
   end
