@@ -38,19 +38,23 @@ class RolesController < ApplicationController
   	end
 
 		# admin should never loose permission to view and edit roles
-		Role.find_by_name("admin").permissions << Permission.find_by_name("view_roles") << Permission.find_by_name("edit_role")
+    if admin_role = Role.find_by_name('admin')
+      admin_role.permissions << Permission.find_by_name('view_roles') << Permission.find_by_name('edit_role')
+    else
+      flash['warning'] = "It's best to have a role named 'admin' for administrative users."
+    end
 
-  	flash["success"] = 'Roles updated.'
+  	flash['success'] = 'Roles updated.'
   	redirect_to roles_url	
   end
 
   def create
-  	unless params["role"].empty?
+  	unless params['role'].empty?
       @role = Role.new(role_params)
       if @role.save
-        flash["success"] = "Role " + @role.name + " Created."
+        flash['success'] = 'Role ' + @role.name + ' Created.'
       else
-        flash["error"] = "Failed to create role: " + @role.name
+        flash['error'] = 'Failed to create role: ' + @role.name
       end
     end
   	redirect_to roles_url
