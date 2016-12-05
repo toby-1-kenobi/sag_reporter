@@ -30,15 +30,16 @@ class MtResourcesController < ApplicationController
       person_params = params.select{ |param| param[/^person__\d+$/] }
       person_params.each do |key, person_name|
         if !person_name.blank?
-					if person_name.length > 50
-			      flash['error'] = 'Name should include maximal 50 characters'
-				      @languages = Language.minorities(logged_in_user.geo_states).order('LOWER(languages.name)')
-      				render 'new' and return
-					end
-          @resource.contributers << Person.find_or_create_by(name: person_name) do |person|
+					contributer = Person.find_or_create_by(name: person_name) do |person|
             person.record_creator = logged_in_user
             person.geo_state = @resource.geo_state
           end
+					if !contributer.valid?
+			      flash['error'] = 'A Person couldn\'t be created'
+				    @languages = Language.minorities(logged_in_user.geo_states).order('LOWER(languages.name)')
+      			render 'new' and return
+					end
+          @resource.contributers << contributer
         end
       end
 			@resource.save
