@@ -52,7 +52,7 @@ class SessionsController < ApplicationController
 
   def create
     user = User.find_by(phone: params[:session][:phone])
-    if user && user.authenticate(params[:session][:password])
+    if user && session[:temp_user] == user.id && user.authenticate(params[:session][:password])
         session[:temp_user] = nil
         log_in user
         remember user

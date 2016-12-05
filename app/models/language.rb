@@ -25,20 +25,22 @@ class Language < ActiveRecord::Base
       translation_progress_in_neighbouring_country: '#ff9900' #orange
   }
 
-  has_many :user_mt_speakers, class_name: 'User', foreign_key: 'mother_tongue_id'
+  #TODO: write tests for destroying languages so that when restriction applies other dependants don't get destroyed
+  has_many :user_mt_speakers, class_name: 'User', foreign_key: 'mother_tongue_id', dependent: :restrict_with_error
+  has_many :output_counts
+  has_many :mt_resources, dependent: :restrict_with_error
   has_and_belongs_to_many :user_speakers, class_name: 'User'
   has_and_belongs_to_many :reports
   has_many :language_tallies, class_name: 'LanguagesTally', dependent: :destroy
   has_many :tallies, through: :language_tallies
   has_and_belongs_to_many :events
-  has_many :progress_markers, through: :language_progresses
-  has_many :output_counts
-  has_many :mt_resources
   has_many :state_languages, dependent: :destroy
+  has_many :language_progresses, through: :state_languages
+  has_many :progress_markers, through: :language_progresses
   has_many :geo_states, through: :state_languages
-  has_many :organisation_engagements
+  has_many :organisation_engagements, dependent: :destroy
   has_many :engaged_organisations, through: :organisation_engagements, source: :organisation
-  has_many :organisation_translations
+  has_many :organisation_translations, dependent: :destroy
   has_many :translating_organisations, through: :organisation_translations, source: :organisation
   belongs_to :family, class_name: 'LanguageFamily'
   belongs_to :pop_source, class_name: 'DataSource'
