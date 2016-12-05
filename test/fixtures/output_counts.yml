@@ -29,7 +29,7 @@
 %>
 
 <% (1..50).each do |index| %>
-output_tally_<%= index %>:
+output_count_<%= index %>:
   output_tally: <%= output_tallies.sample %>
   user: <%= users.sample %>
   language: bodo

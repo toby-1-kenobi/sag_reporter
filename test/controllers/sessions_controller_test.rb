@@ -15,18 +15,24 @@ class SessionsControllerTest < ActionController::TestCase
   test 'should get new' do
     get :new
     assert_response :success
-  end
+	end
 
-  test 'should send otp message on phone and show flash message' do
-  	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
-  	assert_equal @twilio_user_unconfirmed.id, session[:user_id]
-		value(flash['info']).wont_be_nil
-  end
+	test 'wont let users skip OTP' do
+		post :create, { session: {phone: @user.phone, password: 'password'} }
+    assert_not_equal session[:user_id], @user.id
+	end
 
-  test 'should send otp both phone and email and show flash message' do
+  # SMS server and mailer need to be mocked for these tests
+  # test 'should send otp message on phone and show flash message' do
+  # 	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
+  #   assert_equal session[:temp_user], @twilio_user_unconfirmed.id
+		# value(flash['info']).wont_be_nil
+  # end
+
+  test 'should show error message if phone and email cannot receive OTP' do
   	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
   	assert_equal @twilio_user_unconfirmed.id, session[:temp_user]
-		value(flash['info']).wont_be_nil
+		value(flash['error']).wont_be_nil
   end
 
   test 'should not send otp if user entered bad credentials' do
@@ -64,22 +70,18 @@ class SessionsControllerTest < ActionController::TestCase
 	end
 
 
-  test 'should log in user and redirected to edit user page' do
-		post :create, { session: {phone: '0987654321', password: 'password'} }
+  test 'should log in user and redirected to edit user page to change password' do
+    session[:temp_user] = @user.id
+		post :create, { session: {phone: @user.phone, password: 'password'} }
 		assert_redirected_to edit_user_path(@user)
 		value(flash['info']).wont_be_nil
   end
 
   test 'user should login and redirect to home page' do
-  	post :create, { session: {phone: '0987654322', password: 'test12345678'} }
+    session[:temp_user] = @other_user.id
+  	post :create, { session: {phone: @other_user.phone, password: 'test12345678'} }
 		assert_redirected_to root_path
 		assert_equal @other_user.id, session[:user_id]
-  end
-
-  test 'user should not able to login with wrong password' do
-  	post :create, { session: {phone: '0987654322', password: '12345678'} }
-		assert_response :success
-		value(flash['error']).wont_be_nil
   end
 
   test 'user should not able to login with wrong phone number' do
