@@ -36,17 +36,34 @@ class RolesController < ApplicationController
   	  	role.permissions << Permission.find_by_name(perm_name)
   	  end
   	end
-  	flash["success"] = 'Roles updated.'
+
+		# admin should never loose permission to view and edit roles
+    if admin_role = Role.find_by_name('admin')
+      if view_roles_perm = Permission.find_by_name('view_roles')
+        admin_role.permissions << view_roles_perm unless admin_role.permissions.include? view_roles_perm
+      else
+        logger.warn "can't find view roles permission!"
+      end
+      if edit_role_perm = Permission.find_by_name('edit_role')
+        admin_role.permissions << edit_role_perm unless admin_role.permissions.include? edit_role_perm
+      else
+        logger.warn "can't find edit roles permission!"
+      end
+    else
+      flash['warning'] = "It's best to have a role named 'admin' for administrative users."
+    end
+
+  	flash['success'] = 'Roles updated.'
   	redirect_to roles_url	
   end
 
   def create
-  	unless params["role"].empty?
+  	unless params['role'].empty?
       @role = Role.new(role_params)
       if @role.save
-        flash["success"] = "Role " + @role.name + " Created."
+        flash['success'] = 'Role ' + @role.name + ' Created.'
       else
-        flash["error"] = "Failed to create role: " + @role.name
+        flash['error'] = 'Failed to create role: ' + @role.name
       end
     end
   	redirect_to roles_url
