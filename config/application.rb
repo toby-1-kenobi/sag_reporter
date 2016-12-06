@@ -39,5 +39,9 @@ module SagReporter
     config.action_mailer.sendgrid_actionmailer_settings = {
       api_key: ENV['SENDGRID_API_KEY']
     }
+
+		config.action_view.field_error_proc = Proc.new { |html_tag, instance| 
+		  html_tag
+		}
   end
 end
