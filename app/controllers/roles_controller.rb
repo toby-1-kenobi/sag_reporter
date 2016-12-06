@@ -11,8 +11,12 @@ class RolesController < ApplicationController
     redirect_to root_path unless logged_in_user.can_view_roles?
   end
   
-  before_action only: [:update] do
+  before_action only: [:update, :destroy] do
     redirect_to root_path unless logged_in_user.can_edit_role?
+  end
+
+  before_action only: [:destroy] do
+    redirect_to root_path unless User.where(role: Role.find(params[:id])).count == 0
   end
 
   def index
@@ -66,6 +70,11 @@ class RolesController < ApplicationController
         flash['error'] = 'Failed to create role: ' + @role.name
       end
     end
+  	redirect_to roles_url
+  end
+
+  def destroy
+    Role.find(params[:id]).destroy
   	redirect_to roles_url
   end
 

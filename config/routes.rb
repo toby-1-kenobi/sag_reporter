@@ -73,9 +73,8 @@ Rails.application.routes.draw do
   get    'resend_otp' => 'sessions#resend_otp'
   delete 'logout'  => 'sessions#destroy'
 
-  get    'roles'   => 'roles#index'
+	resources 'roles', except: [:new, :show, :edit]
   patch  'roles'   => 'roles#update'
-  post   'roles'   => 'roles#create'
 
   get  'tally_updates' => 'tally_updates#index'
   post 'tally_updates' => 'tally_updates#create'
