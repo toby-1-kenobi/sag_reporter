@@ -51,6 +51,9 @@ Rails.application.routes.draw do
       get 'pictures'
     end
   end
+  resources :roles, except: [:new, :show, :edit, :update]
+  # roles update all at once
+  patch  'roles' => 'roles#update'
   resources :tallies
   resources :topics
 
@@ -73,8 +76,6 @@ Rails.application.routes.draw do
   get    'resend_otp' => 'sessions#resend_otp'
   delete 'logout'  => 'sessions#destroy'
 
-	resources 'roles', except: [:new, :show, :edit]
-  patch  'roles'   => 'roles#update'
 
   get  'tally_updates' => 'tally_updates#index'
   post 'tally_updates' => 'tally_updates#create'

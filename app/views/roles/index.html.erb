@@ -18,7 +18,7 @@
             		<% @roles.each do |role| %>
             		  <th>
 			              <% if logged_in_user.can_edit_role? %>
-											<% if (User.where(role: role).count == 0) %>
+											<% if (role.users.count == 0) %>
 									      <%= link_to role, method: :delete, class: "waves-effect waves-red btn-flat", data: { confirm: "Delete #{role.name}?" } do %>
 			            		    <i class="material-icons">delete</i>
 						            <% end %>
@@ -26,7 +26,7 @@
 										<br>
     			          <% end %>
 										<%= role.name %><br>
-										(<%= User.where(role: role).count %> user)
+										(<%= pluralize(role.users.count, 'user') %>)
 									</th>
             		<% end %>
             	</tr>
