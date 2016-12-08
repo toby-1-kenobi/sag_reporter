@@ -16,7 +16,7 @@ class RolesController < ApplicationController
   end
 
   before_action only: [:destroy] do
-    redirect_to root_path unless User.where(role: Role.find(params[:id])).count == 0
+    redirect_to root_path unless Role.find(params[:id]).users.count == 0
   end
 
   def index
