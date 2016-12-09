@@ -109,6 +109,8 @@ class ReportsController < ApplicationController
     @geo_states = logged_in_user.geo_states
     @zones = Zone.of_states(@geo_states)
     @languages = Language.minorities(@geo_states).order('LOWER(languages.name)')
+		@no_language_id = Language.order("id").last.try(:id).to_i + 1
+		@languages << Language.new(name:"<no connected language>", id: @no_language_id)
     @reports = Report.includes(:languages, :reporter, :observers, :pictures, :topics, :impact_report => [:progress_markers => :topic]).where(geo_state: @geo_states).order(:report_date => :desc)
   end
 

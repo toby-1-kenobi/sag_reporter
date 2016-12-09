@@ -2,7 +2,7 @@
   class_contents = "#{report.status} filterable-item #{'hide' if report.archived?}".html_safe
   element_options = 'data-filter-label="language geo_state status report-type" '.html_safe +
       "data-date=\"#{report.report_date}\" ".html_safe +
-      "data-language=\"#{report.languages.pluck(:id).join(',')}\" ".html_safe +
+      "data-language=\"#{report.languages.pluck(:id).join(',')}#{@no_language_id.to_s if report.languages.empty?}\" ".html_safe +
       "data-geo_state=\"#{report.geo_state_id}\" ".html_safe +
       "data-status=\"#{report.status}\" ".html_safe +
       "data-report-type=\"#{report.report_type_a.join(',')}\"".html_safe
