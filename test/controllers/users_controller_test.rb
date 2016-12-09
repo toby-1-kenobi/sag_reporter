@@ -157,10 +157,10 @@ class UsersControllerTest < ActionController::TestCase
     assert_redirected_to @user
   end
 
-  test 'vefied user with confirmation token' do
+  test 'verified user with confirmation token' do
     log_in_as(@user)
     get :confirm_email, { id: @user.confirm_token}
-    assert_equal 'Your email has been confirmed.', flash['success']
+    value(flash['success']).must_be :present?
     assert_redirected_to root_path
   end
 

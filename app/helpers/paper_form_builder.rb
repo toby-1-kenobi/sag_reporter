@@ -6,6 +6,10 @@ class PaperFormBuilder < ActionView::Helpers::FormBuilder
     PaperTextField.new(@object_name, method, @template, options).render
   end
 
+  def paper_number_field(method, options = {})
+    PaperNumberField.new(@object_name, method, @template, options).render
+  end
+
   def paper_autocomplete(method, options = {})
     autocomplete = PaperAutocomplete.new(@object_name, method, @template, options).render
   end
@@ -32,6 +36,24 @@ class PaperFormBuilder < ActionView::Helpers::FormBuilder
 
     def render
       options = @options.stringify_keys
+      options['maxlength'] = options['size'] unless options.key?('maxlength')
+      options['value'] = options.fetch('value') { value_before_type_cast(object) }
+      options['label'] ||= @method_name.humanize
+      add_default_name_and_id(options)
+      tag('paper-input', options)
+    end
+
+  end
+
+  class PaperNumberField < ActionView::Helpers::Tags::Base
+
+    def initialize(object_name, method_name, template_object, options = {})
+      super(object_name, method_name, template_object, options)
+    end
+
+    def render
+      options = @options.stringify_keys
+      options['type'] = 'number'
       options['maxlength'] = options['size'] unless options.key?('maxlength')
       options['value'] = options.fetch('value') { value_before_type_cast(object) }
       options['label'] ||= @method_name.humanize
