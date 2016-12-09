@@ -62,8 +62,14 @@ class LanguagesController < ApplicationController
       flash['success'] = 'Language updated'
       respond_to do |format|
         format.json {
+          logger.debug 'update request in json format'
           flash.keep('success')
           render json: {redirect: language_path(@language)}.to_json
+        }
+        format.html {
+          logger.debug 'update request in html format'
+          @all_orgs = Organisation.all.order(:name)
+          render 'show'
         }
       end
     else
@@ -71,6 +77,10 @@ class LanguagesController < ApplicationController
       respond_to do |format|
         format.json {
           render json: {errors: @language.errors.full_messages}.to_json
+        }
+        format.html {
+          @all_orgs = Organisation.all.order(:name)
+          render 'show'
         }
       end
     end

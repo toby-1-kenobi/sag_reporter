@@ -60,6 +60,11 @@
         <%= f.paper_radio_group :translation_progress %>
       </div>
     </div>
+    <div class="layout horizontal">
+      <div class="flex">
+        <%= f.paper_textarea :translation_info, label: 'Other translation information' %>
+      </div>
+    </div>
     <%= button_tag( :class => "btn waves-effect waves-light right") do %>
         Update Language <i class="material-icons right">create</i>
     <% end %>
