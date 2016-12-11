@@ -4,7 +4,7 @@ class RolesIndexTestTest < ActionDispatch::IntegrationTest
 
   def setup
     @user = users(:andrew)
-    @view_user = users(:vera)
+    @view_user = users(:peter)
   end
 
   test "index including create and update links" do
