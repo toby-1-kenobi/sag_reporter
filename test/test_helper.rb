@@ -32,10 +32,10 @@ module IntegrationHelper
 
   def log_in_as(user, options = {})
     password    = options[:password]    || 'password'
-    post two_factor_auth_path, session: { phone:       user.phone,
-		                                   password:       password}
-    post login_path, session: { phone:       user.phone,
-                             password:    	 password,
-														 otp_code:		   user.otp_code}
+    post two_factor_auth_path, session: { phone:    	   user.phone,
+		                                   		password:	     password}
+    post login_path, session: 					{ phone:   		   user.phone,
+		                            					password:    	 password,
+				 											  					otp_code:		   user.otp_code}
 	end
 end

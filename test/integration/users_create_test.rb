@@ -31,19 +31,21 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
   test "valid user create" do
     log_in_as(@admin)
     get adduser_path
+    assert_template 'users/new'
     assert_difference 'User.count', 1 do
       post_via_redirect users_path, user: { name:  "Example User",
                                             phone: "1029384756",
-                                            password:              "PassWord.123",
-                                            password_confirmation: "PassWord.123",
+                                            password:              "PassWord123",
+                                            password_confirmation: "PassWord123",
                                             role_id: Role.take.id,
                                             mother_tongue_id: Language.take.id,
-                                            geo_state_id: GeoState.take.id,
-                                            interface_language_id: languages(:english).id
+																					  geo_states: [GeoState.take],
+                                            interface_language_id: Language.take.id
                                           }
     end
     assert_template 'users/show'
-    assert_not flash.empty?
+    assert_not flash['error'].empty?
+		assert_equal nil, flash['error']
   end
 
 end
