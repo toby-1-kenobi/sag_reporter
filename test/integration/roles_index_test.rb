@@ -2,6 +2,8 @@ require 'test_helper'
 
 class RolesIndexTestTest < ActionDispatch::IntegrationTest
 
+	include IntegrationHelper
+
   def setup
     @user = users(:andrew)
     @view_user = users(:peter)

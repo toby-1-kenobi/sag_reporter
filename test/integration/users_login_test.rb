@@ -2,6 +2,8 @@ require 'test_helper'
 
 class UsersLoginTest < ActionDispatch::IntegrationTest
 
+	include IntegrationHelper
+
   def setup
     @user = users(:andrew)
   end

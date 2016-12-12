@@ -25,22 +25,18 @@ class ActiveSupport::TestCase
   # Logs in a test user.
   def log_in_as(user, options = {})
     password    = options[:password]    || 'password'
-    if integration_test?
-      post two_factor_auth_path, session: { phone:       user.phone,
-			                                   password:       password}
-      post login_path, session: { phone:       user.phone,
-                               password:    	 password,
-															 otp_code:		   user.otp_code}
-    else
-      session[:user_id] = user.id
-    end
+    session[:user_id] = user.id
   end
-
-  private
-
-    # Returns true inside an integration test.
-    def integration_test?
-      defined?(post_via_redirect)
-    end
 end
 
+module IntegrationHelper
+
+  def log_in_as(user, options = {})
+    password    = options[:password]    || 'password'
+    post two_factor_auth_path, session: { phone:       user.phone,
+		                                   password:       password}
+    post login_path, session: { phone:       user.phone,
+                             password:    	 password,
+														 otp_code:		   user.otp_code}
+	end
+end

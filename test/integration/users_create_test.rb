@@ -2,6 +2,8 @@ require 'test_helper'
 
 class UsersCreateTest < ActionDispatch::IntegrationTest
 
+	include IntegrationHelper
+
   def setup
     @admin = users(:andrew)
   end
