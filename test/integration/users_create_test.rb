@@ -39,12 +39,12 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
                                             password_confirmation: "PassWord123",
                                             role_id: Role.take.id,
                                             mother_tongue_id: Language.take.id,
-																					  geo_states: [GeoState.take],
+																					  geo_states: [GeoState.take.id],
                                             interface_language_id: Language.take.id
                                           }
     end
     assert_template 'users/show'
-    assert_not flash['error'].empty?
+		assert_not_equal nil, flash['success']
 		assert_equal nil, flash['error']
   end
 
