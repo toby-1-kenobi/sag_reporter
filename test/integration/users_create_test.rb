@@ -19,8 +19,8 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
                                password_confirmation: "bar",
                                role_id: Role.take.id,
                                mother_tongue_id: Language.take.id,
-                               geo_state_id: GeoState.take.id,
-                               interface_language_id: languages(:english).id
+	 	  												 geo_states: [GeoState.take.id],
+                               interface_language_id: Language.take.id
                              }
     end
     assert_template 'users/new'
