@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe GeoState do
 
-  let(:north_east_zone) { Zone.new name: "Test North East"}
+  let(:north_east_zone) { Zone.create name: "Test North East"}
   let(:assam_state) { GeoState.new name: "Test Assam", zone: north_east_zone }
   let(:minority_language) { Language.new name: "Test Toto", lwc: false }
   let(:state_language) { Language.new name: "Test Assamese", lwc: true }
@@ -12,9 +12,7 @@ describe GeoState do
   end
 
   it "returns its zone's id" do
-  	north_east_zone.stub(:id, 8) do
-  	  value(assam_state.zone_id).must_equal north_east_zone.id
-  	end
+  	value(assam_state.zone_id).must_equal north_east_zone.id
   end
 
   it "returns its minority languages" do
