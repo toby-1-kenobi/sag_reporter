@@ -6,7 +6,7 @@ class UsersIndexTest < ActionDispatch::IntegrationTest
 
   def setup
     @user = users(:andrew)
-    @view_user = users(:vera)
+    @view_user = users(:richard)
   end
 
   test "index including pagination and delete links" do

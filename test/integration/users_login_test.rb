@@ -21,8 +21,9 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
 
   test 'login with valid information followed by logout' do
     get login_path
-    post login_path, session: { phone: @user.phone, password: 'password' }
-    assert_redirected_to root_path
+    post two_factor_auth_path, session: { phone: @user.phone, password: 'password' }
+    post login_path, session: { phone: @user.phone, password: 'password', otp_code:		   @user.otp_code }
+    assert_redirected_to edit_user_path(@user)
     assert is_logged_in?
     follow_redirect!
     assert_select 'a[href=?]', login_path, count: 0
