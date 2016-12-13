@@ -5,9 +5,10 @@ describe ImpactReport do
   let(:report) { Report.new }
 
   it "can change into a planning report" do
-    impact_reports(:test_impact_report).make_not_impact
-    value(reports(:test_report).planning_report).must_be :present?
-    value(reports(:test_report).impact_report).wont_be :present?
+    impact_reports("impact-report-1").make_not_impact
+    value(reports("report-1").planning_report).must_be :present?
+    value(reports("report-1").impact_report).wont_be :present?
   end
 
 end
+
