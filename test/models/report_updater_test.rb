@@ -15,7 +15,7 @@ describe Report::Updater do
     updater.instance.languages << languages(:assamese)
     updater.instance.topics << topics(:movement_building)
     report_params = {
-      "geo_state_id"=>"#{geo_states(:nb).id}",
+      "geo_state_id"=>"#{geo_states(:assam_t).id}",
       "content"=>"This is an updated report",
       "impact_report"=>"0",
       "planning_report"=>"1",
@@ -25,7 +25,7 @@ describe Report::Updater do
       "mt_church"=>"0",
       "needs_society"=>"0",
       "needs_church"=>"0",
-      "languages"=>["#{languages(:toto).id}", "#{languages(:santali).id}"],
+      "languages"=>["#{state_languages(:assam_english_t).id}", "#{state_languages(:assam_hindi_t).id}"],
       "topics"=>["#{topics(:social_development).id}"]
     }
     result = updater.update_report(report_params)
