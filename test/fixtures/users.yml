@@ -19,14 +19,18 @@ emma:
   role: evaluator
   interface_language: hindi
   geo_states: nb, assam
+  otp_secret_key: "ia3s5qx2r5k7ofrq"
+  confirm_token: "DGkSavscSzymTR9-7nDvLQ"
 
 richard:
-  name: Richard Reporter
+  name: Richard Viewer
   phone: 0987654323
   password_digest: <%= User.digest('password') %>
   mother_tongue: toto
-  role: reporter
+  role: view
   geo_states: nb, assam
+  otp_secret_key: "ia3s5qx2r5k7ofrq"
+  confirm_token: "DGkSavscSzymTR9-7nDvLQ"
 
 peter:
   name: Peter Pleb
@@ -35,6 +39,8 @@ peter:
   mother_tongue: toto
   role: pleb
   geo_states: nb, assam
+  otp_secret_key: "ia3s5qx2r5k7ofrq"
+  confirm_token: "DGkSavscSzymTR9-7nDvLQ"
 
 twilio_user_unconfirmed:
   name: Robert Reporter

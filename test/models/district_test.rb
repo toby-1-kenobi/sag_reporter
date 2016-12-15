@@ -1,8 +1,9 @@
 require "test_helper"
 
 describe District do
-  let(:district) { District.new name: "Test", geo_state: geo_state }
   let(:geo_state) { GeoState.new }
+  let(:sub_district) { SubDistrict.new name: "Test" }
+  let(:district) { District.new name: "Test", geo_state: geo_state, sub_districts: [sub_district] }
 
   it "must be valid" do
     value(district).must_be :valid?
@@ -32,6 +33,7 @@ describe District do
     d2 = district.dup
     district.geo_state = GeoState.take
     d2.geo_state = geo_state
+    d2.sub_districts = [sub_district]
     district.save
     value(d2).must_be :valid?
   end

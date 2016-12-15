@@ -14,8 +14,15 @@
 <h1>All languages</h1>
 
 <%= link_to overview_languages_path do %>
-    <paper-button id="language-overview-button">Overview</paper-button>
+  <paper-button id="language-overview-button">Overview</paper-button>
 <% end %>
+
+<% if logged_in_user.can_create_language? %>
+	<%= link_to new_language_path, :class => "btn waves-effect waves-light right" do %>
+		<i class="material-icons right">add</i>Add a Language
+	<% end %>
+<% end %>
+
 <div class="row language-filter-controls">
 
   <paper-card class="filter-controls" heading="Language Family">
