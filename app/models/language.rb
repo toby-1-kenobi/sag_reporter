@@ -50,6 +50,15 @@ class Language < ActiveRecord::Base
   delegate :name, to: :cluster, prefix: true
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
+  validates :iso,
+            length: { is: 3 },
+            allow_blank: true,
+            uniqueness: { case_sensitive: false }
+
+  before_validation do |language|
+    language.iso.downcase! if language.iso.present?
+    language.iso = nil if language.iso.blank?
+  end
 
   def self.minorities(geo_states = nil)
     if geo_states
