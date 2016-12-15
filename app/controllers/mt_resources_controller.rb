@@ -26,21 +26,24 @@ class MtResourcesController < ApplicationController
   def create
     @resource = MtResource.new(resource_params)
     @resource.user = logged_in_user
+    error_list = Array.new
     if @resource.valid?
       person_params = params.select{ |param| param[/^person__\d+$/] }
       person_params.each do |key, person_name|
-        if !person_name.blank?
-					contributer = Person.find_or_create_by(name: person_name) do |person|
+        if person_name.present?
+					contributor = Person.find_or_create_by(name: person_name) do |person|
             person.record_creator = logged_in_user
             person.geo_state = @resource.geo_state
           end
-					if !contributer.valid?
-			      flash['error'] = 'A Person couldn\'t be created'
-				    @languages = Language.minorities(logged_in_user.geo_states).order('LOWER(languages.name)')
-      			render 'new' and return
+					if contributor.valid?
+            @resource.contributers << contributor
+          else
+			      error_list << "Could not create person: #{person_name}"
 					end
-          @resource.contributers << contributer
         end
+      end
+      if error_list.any?
+        flash['error'] = error_list.to_sentence
       end
 			@resource.save
       flash['success'] = 'New resource entered'
