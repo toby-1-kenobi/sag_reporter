@@ -5,6 +5,10 @@ class ProgressMarker < ActiveRecord::Base
   has_many :languages, through: :language_progresses 
   has_and_belongs_to_many :impact_reports
 
+  validates :name, presence: true, uniqueness: true
+  validates :description, presence: true
+  validates :topic, presence: true
+
   def self.weight_text
   	{
   		1 => "Expect to see",
