@@ -34,4 +34,14 @@ describe ProgressMarker do
     _(progress_marker).wont_be :valid?
   end
 
+  it 'has a status that defaults to active' do
+    _(progress_marker.status).must_equal 'active'
+  end
+
+  it 'accepts an alternate description' do
+    alt_description = 'Alternate description'
+    progress_marker.alternate_description = alt_description
+    _(progress_marker.alternate_description).must_equal alt_description
+  end
+
 end

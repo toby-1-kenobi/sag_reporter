@@ -1,5 +1,10 @@
 class ProgressMarker < ActiveRecord::Base
 
+  enum status: {
+      active: 0,
+      depricated: 1
+  }
+
   belongs_to :topic
   has_many :language_progresses, dependent: :destroy
   has_many :languages, through: :language_progresses 
