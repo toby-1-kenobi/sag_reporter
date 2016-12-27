@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161226105623) do
+ActiveRecord::Schema.define(version: 20161227061756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -374,8 +374,10 @@ ActiveRecord::Schema.define(version: 20161226105623) do
     t.integer  "weight",                default: 1, null: false
     t.integer  "status",                default: 0, null: false
     t.text     "alternate_description"
+    t.integer  "number"
   end
 
+  add_index "progress_markers", ["number"], name: "index_progress_markers_on_number", using: :btree
   add_index "progress_markers", ["status"], name: "index_progress_markers_on_status", using: :btree
   add_index "progress_markers", ["topic_id"], name: "index_progress_markers_on_topic_id", using: :btree
   add_index "progress_markers", ["weight"], name: "index_progress_markers_on_weight", using: :btree

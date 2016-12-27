@@ -24,6 +24,14 @@ describe ProgressMarker do
     _(pm2.errors[:name]).must_be :any?
   end
 
+  it 'wont be valid with a duplicate number' do
+    progress_marker.number = 5
+    pm2 = progress_marker.dup
+    progress_marker.save
+    _(pm2).wont_be :valid?
+    _(pm2.errors[:number]).must_be :any?
+  end
+
   it 'wont be valid without a description' do
     progress_marker.description = ''
     _(progress_marker).wont_be :valid?
