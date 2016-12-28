@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161227061756) do
+ActiveRecord::Schema.define(version: 20161228060334) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -558,12 +558,14 @@ ActiveRecord::Schema.define(version: 20161227061756) do
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
   create_table "zones", force: :cascade do |t|
-    t.string   "name",       null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "name",                            null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.integer  "pm_description_type", default: 0, null: false
   end
 
   add_index "zones", ["name"], name: "index_zones_on_name", using: :btree
+  add_index "zones", ["pm_description_type"], name: "index_zones_on_pm_description_type", using: :btree
 
   add_foreign_key "action_points", "events"
   add_foreign_key "action_points", "people", column: "responsible_id"

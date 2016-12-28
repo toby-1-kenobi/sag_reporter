@@ -94,6 +94,11 @@ class User < ActiveRecord::Base
     self.confirm_token = nil
     save!(:validate => false)
   end
+  
+  # If this user is in a zone that requires alternate pm descriptions return true
+  def use_alternate_pm_descriptions?
+    zones.inject(false) { |alt_required, zone| alt_required || zone.pm_description_type == 'alternate' }
+  end
 
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
