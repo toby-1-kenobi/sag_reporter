@@ -52,4 +52,28 @@ describe ProgressMarker do
     _(progress_marker.alternate_description).must_equal alt_description
   end
 
+  it 'finds or creates LanguageProgresses as necessary' do
+    state_language = state_languages(:arunachal_pradesh_galo)
+    init_language_progress_count = LanguageProgress.count
+    # the first call should create a new LanguageProgress and increase the count
+    language_progress = progress_marker.language_progress(state_language)
+    lp_count_after_first_call = LanguageProgress.count
+    _(lp_count_after_first_call).must_equal init_language_progress_count + 1
+    # the second call shouldn't create a new LanguageProgress since it's now already there
+    language_progress = progress_marker.language_progress(state_language)
+    _(LanguageProgress.count).must_equal lp_count_after_first_call
+  end
+
+  it 'groups active progress markers by outcome area then weight' do
+    pms = ProgressMarker.by_outcome_area_and_weight
+    _(pms.count).must_equal Topic.count
+    total_count = 0
+    pms.values.each do |by_topic|
+      by_topic.values.each do |by_weight|
+        total_count += by_weight.count
+      end
+    end
+    _(total_count).must_equal ProgressMarker.active.count
+  end
+
 end

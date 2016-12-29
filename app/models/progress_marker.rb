@@ -33,7 +33,7 @@ class ProgressMarker < ActiveRecord::Base
   end
 
   def language_progress(state_language)
-    LanguageProgress.where(progress_marker: self, state_language: state_language).first or LanguageProgress.create(progress_marker: self, state_language: state_language)
+    LanguageProgress.find_or_create_by(progress_marker: self, state_language: state_language)
   end
 
   def progress_at(state_language, date = nil)
@@ -42,7 +42,7 @@ class ProgressMarker < ActiveRecord::Base
 
   def self.by_outcome_area_and_weight
     progress_markers_by_oa_and_weight = Hash.new
-    includes(:topic).find_each do |pm|
+    self.active.includes(:topic).find_each do |pm|
       progress_markers_by_oa_and_weight[pm.topic] ||= weight_text.values.map{ |v| [v, Array.new] }.to_h
       progress_markers_by_oa_and_weight[pm.topic][weight_text[pm.weight]].push pm
     end
