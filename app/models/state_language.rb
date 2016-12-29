@@ -91,7 +91,7 @@ class StateLanguage < ActiveRecord::Base
         includes(:progress_marker).
         where('progress_markers.topic_id' => outcome_area.id).
         find_each do |progress|
-      score += progress.progress_marker.weight  * ProgressMarker.spread_text.keys.max
+      score += progress.progress_marker.weight  * ProgressMarker.spread_text.keys.max if progress.progress_marker.active?
     end
     return score
   end
@@ -101,7 +101,7 @@ class StateLanguage < ActiveRecord::Base
     scores = Hash.new(0)
     language_progresses.with_updates.
         includes(:progress_marker).find_each do |progress|
-      scores[progress.progress_marker.topic_id] += progress.progress_marker.weight  * ProgressMarker.spread_text.keys.max
+      scores[progress.progress_marker.topic_id] += progress.progress_marker.weight * ProgressMarker.spread_text.keys.max if progress.progress_marker.active?
     end
     return scores
   end

@@ -98,7 +98,7 @@ class ImpactReportsController < ApplicationController
         'reports.report_date' => date_range
       )
   	@outcome_areas = Topic.all
-  	@progress_markers_by_oa = ProgressMarker.includes(:topic).all.group_by{ |pm| pm.topic }
+  	@progress_markers_by_oa = ProgressMarker.active.includes(:topic).all.group_by{ |pm| pm.topic }
     #Todo: Switch to project languages instead of minority languages.
     @languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
     @ajax_url = url_for controller: 'impact_reports', action: 'tag_update', id: 'report_id'
