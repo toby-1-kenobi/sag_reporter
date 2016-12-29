@@ -8,7 +8,7 @@ class Topic < ActiveRecord::Base
 
 	def max_outcome_score
 		score = 0
-		progress_markers.each do |pm|
+		progress_markers.active.each do |pm|
 			score += pm.weight * ProgressMarker.spread_text.keys.max
 		end
 		return score

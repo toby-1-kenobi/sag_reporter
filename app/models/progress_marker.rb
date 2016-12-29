@@ -2,7 +2,7 @@ class ProgressMarker < ActiveRecord::Base
 
   enum status: {
       active: 0,
-      depricated: 1
+      deprecated: 1
   }
 
   belongs_to :topic
