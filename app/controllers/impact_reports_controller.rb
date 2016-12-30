@@ -120,8 +120,8 @@ class ImpactReportsController < ApplicationController
       #return_data.push "#{pm.id}_#{pm.name}_#{pm.description}_#{pm.topic.colour}"
       pm_hash = {
         id: pm.id,
-        name: pm.name,
-        description: pm.description,
+        number: pm.number,
+        description: pm.description_for(logged_in_user),
         colour: pm.topic.colour
       }
       return_data.push pm_hash.to_json

@@ -96,7 +96,7 @@ class User < ActiveRecord::Base
   end
   
   # If this user is in a zone that requires alternate pm descriptions return true
-  def use_alternate_pm_descriptions?
+  def sees_alternate_pm_descriptions?
     zones.inject(false) { |alt_required, zone| alt_required || zone.pm_description_type == 'alternate' }
   end
 

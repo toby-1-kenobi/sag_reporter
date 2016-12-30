@@ -80,7 +80,7 @@
                   <% markers.select{ |m| m.weight == weight }.each do |marker| %>
                     <div class="pm-checkbox">
                       <%= check_box_tag("pm-#{marker.id.to_s}", 1) %>
-                      <%= label_tag("pm-#{marker.id.to_s}", marker.description, class: "black-text") %>
+                      <%= label_tag("pm-#{marker.id.to_s}", marker.description_for(logged_in_user), class: "black-text") %>
                     </div>
                   <% end %>
                 </div>

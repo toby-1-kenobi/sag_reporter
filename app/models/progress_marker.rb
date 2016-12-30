@@ -40,6 +40,14 @@ class ProgressMarker < ActiveRecord::Base
     language_progress(state_language).value_at(date)
   end
 
+  def description_for(user)
+    if alternate_description.present? and user.sees_alternate_pm_descriptions?
+      alternate_description
+    else
+      description
+    end
+  end
+
   def self.by_outcome_area_and_weight
     progress_markers_by_oa_and_weight = Hash.new
     self.active.includes(:topic).find_each do |pm|

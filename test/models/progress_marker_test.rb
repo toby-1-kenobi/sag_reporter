@@ -7,6 +7,17 @@ describe ProgressMarker do
       description: 'Test Progress Marker',
       topic: topics(:movement_building)
   ) }
+  let(:zone_with_default_pms) { Zone.new(name: 'test zone 1') }
+  let(:state_in_default_zone) { GeoState.new(
+      name: 'test state 1',
+      zone: zone_with_default_pms
+  ) }
+  let(:zone_with_alt_pms) { Zone.new(name: 'test zone 2', pm_description_type: :alternate) }
+  let(:state_in_alt_zone) { GeoState.new(
+      name: 'test state 2',
+      zone: zone_with_alt_pms
+  ) }
+
 
   it 'must be valid' do
     _(progress_marker).must_be :valid?
@@ -74,6 +85,22 @@ describe ProgressMarker do
       end
     end
     _(total_count).must_equal ProgressMarker.active.count
+  end
+
+  it 'gives the appropriate description to the user' do
+    default_user = users(:andrew)
+    default_user.geo_states.clear
+    default_user.geo_states << state_in_default_zone
+    special_user = users(:emma)
+    special_user.geo_states.clear
+    special_user.geo_states << state_in_alt_zone
+    # no alternate description, both users see normal description
+    _(progress_marker.description_for(default_user)).must_equal progress_marker.description
+    _(progress_marker.description_for(special_user)).must_equal progress_marker.description
+    # with alternate description, special users see alt description
+    progress_marker.alternate_description = 'my alternate description'
+    _(progress_marker.description_for(default_user)).must_equal progress_marker.description
+    _(progress_marker.description_for(special_user)).must_equal progress_marker.alternate_description
   end
 
 end

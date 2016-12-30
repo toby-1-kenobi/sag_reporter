@@ -154,12 +154,12 @@ describe User do
 
   it 'specifies alternate pm descriptions if it is in a zone that requires them' do
     user.geo_states << state_in_alt_zone
-    _(user).must_be :use_alternate_pm_descriptions?
+    _(user).must_be :sees_alternate_pm_descriptions?
   end
 
   it "doesn't specify alternate pm descriptions if it is not in a zone that requires them" do
     user.zones.each{ |zone| zone.pm_description_type = 'default' }
-    _(user).wont_be :use_alternate_pm_descriptions?
+    _(user).wont_be :sees_alternate_pm_descriptions?
   end
 
   it 'knows it responds to can_...? and is_a_...? methods' do

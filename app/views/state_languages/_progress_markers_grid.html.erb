@@ -6,7 +6,8 @@
       <strong><%= weight_text %></strong>
       <% pms.each do |pm| %>
         <div class="row pm-level">
-          <div class="col s8 right-align tooltipped" data-tooltip="<%= pm.description %>"><%= pm.name %></div>
+          <div class="col s8 right-align tooltipped" data-tooltip="<%= pm.description_for(logged_in_user) %>">
+            <%= pm.number %>. <%= pm.description_for(logged_in_user).slice(0..50) %>...</div>
           <% lp = @language_progresses_by_pm_id[pm.id] %>
           <% level = lp ? lp.value_at : 0 %>
           <div class="col s4 tooltipped" data-position="top" data-tooltip="<%= ProgressMarker.spread_text[level] %>"><i class="lcr-icon-level-<%= level %>"></i></div>
