@@ -1,7 +1,7 @@
 require 'csv'
 
-$baseline_year = 2017
-$baseline_month = 01
+$baseline_year = 2016
+$baseline_month = 12
 
 # The data needs to be inserted under an existing user
 # use the user called "Toby Anderson" and if he doesn't exist take the first admin user
@@ -11,8 +11,6 @@ if !$user
   $user = User.where(role: admin_role).take
 end
 
-# when we've matched up progress markers once, we don't want to have to do all
-# that work again for the next file
 $pm_cache = Hash.new
 
 # count the updates we actually make
@@ -154,3 +152,19 @@ file_list.each do |file|
 end
 
 puts "Total number of updates: #{$update_count}"
+
+# Now for all deprecated progress markers we need to set the update to 0
+# in the same month we are putting the baseline data into.
+# This will allow us to maintain a historical record of progress updates
+# in deprecated markers, but prevent the score from these polluting the scores
+# for the new set of markers
+
+LanguageProgress.joins(:progress_marker).where('progress_markers.status' => 1).each do |lp|
+  geo_state = lp.state_language.geo_state
+  lp.progress_updates.create(
+      user: $user,
+      geo_state: geo_state,
+      year: $baseline_year,
+      month: $baseline_month,
+      progress: 0)
+end
