@@ -162,4 +162,10 @@ describe User do
     _(user).wont_be :use_alternate_pm_descriptions?
   end
 
+  it 'knows it responds to can_...? and is_a_...? methods' do
+    _(user).must_respond_to :is_a_bird?
+    _(user).must_respond_to :can_fly?
+    _(user).wont_respond_to :this_is_not_a_real_method
+  end
+
 end

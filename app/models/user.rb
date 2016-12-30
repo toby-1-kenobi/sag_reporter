@@ -121,6 +121,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def respond_to_missing?(method, *)
+    method =~ /\Ais_an?_([a-zA-Z]\w*)\?\z/ || method =~ /\Acan_([a-zA-Z]\w*)\?\z/ || super
+  end
+
   def resend_email_token
     self.confirm_token = SecureRandom.urlsafe_base64.to_s
     save!(:validate => false)
@@ -134,11 +138,11 @@ class User < ActiveRecord::Base
       end
 
       def matches_dynamic_role_check?(method_id)
-        /^is_an?_([a-zA-Z]\w*)\?$/.match(method_id.to_s)
+        /\Ais_an?_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
       end
 
       def matches_dynamic_perm_check?(method_id)
-        /^can_([a-zA-Z]\w*)\?$/.match(method_id.to_s)
+        /\Acan_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
       end
 
       def send_confirmation_email
