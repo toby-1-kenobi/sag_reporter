@@ -16,7 +16,7 @@ $pm_cache = Hash.new
 # count the updates we actually make
 $update_count = 0
 
-file_list = Dir[Rails.root.join('db', 'baseline_data', $baseline_year, '**', '*.csv')]
+file_list = Dir[Rails.root.join('db', 'baseline_data', $baseline_year.to_s, '**', '*.csv')]
 
 CSV::Converters[:blank_to_nil] = lambda do |field|
   field && field.empty? ? nil : field
@@ -73,7 +73,8 @@ end
 
 def parse_row(row, geo_states, languages)
   # get the progress marker
-  $pm_cache[row[:pm_number]] != ProgressMarker.find_by_number!(row[:pm_number])
+  $pm_cache[row[:pm_number]] ||= ProgressMarker.find_by_number!(row[:pm_number])
+  progress_marker = $pm_cache[row[:pm_number]]
 
   # now we've found the progress marker we can parse the rest of the row
   row.to_hash.slice!(:pm_number).each do |key, level|
@@ -88,8 +89,6 @@ def parse_row(row, geo_states, languages)
       end
     end
   end
-  puts '-'
-  puts "PMs remaining: #{unmatched_progress_markers.count}"
   return true
 end
 
@@ -108,19 +107,21 @@ def import_from_file(filename)
   geo_states = Hash.new
   languages = Hash.new
   geo_state_data.slice!(:pm_number).each do |key, geo_state_name|
-    if geo_state = GeoState.find_by_name(geo_state_name)
-      geo_states[key] = geo_state
-    else
-      raise "Could not find State: #{geo_state_name}"
-    end
-    if language = Language.find_by_name(language_data[key])
-      languages[key] = language
-    else
-      raise "Could not find language: #{language_data[key]}"
-    end
-    # check that the language is in the state
-    if !languages[key].geo_states.include? geo_states[key]
-      raise "#{language_data[key]} is not a member of #{geo_state_name}"
+    if geo_state_name.present? or language_data[key].present?
+      if geo_state = GeoState.find_by_name(geo_state_name)
+        geo_states[key] = geo_state
+      else
+        raise "Could not find State: #{geo_state_name}"
+      end
+      if language = Language.find_by_name(language_data[key])
+        languages[key] = language
+      else
+        raise "Could not find language: #{language_data[key]}"
+      end
+      # check that the language is in the state
+      if !languages[key].geo_states.include? geo_states[key]
+        raise "#{language_data[key]} is not a member of #{geo_state_name}"
+      end
     end
   end
 
@@ -129,20 +130,20 @@ def import_from_file(filename)
   unable_to_parse = Array.new
   while unparsed_rows.any?
     unparsed_rows.each do |row|
-      begin
+      # begin
         if parse_row(row, geo_states, languages)
           unparsed_rows.delete(row)
         end
-      rescue
-        puts $!.message
-        unable_to_parse << unparsed_rows.delete(row)
-      end
+      # rescue
+      #   unparsed_rows.delete(row)
+      #   unable_to_parse << "#{row[:pm_number]}: #{$!.message}"
+      # end
     end
   end
 
   if unable_to_parse.any?
     puts "unable to parse #{unable_to_parse.count} row(s):"
-    unable_to_parse.each{ |row| puts row[:progress_marker] }
+    unable_to_parse.each{ |row| puts row }
   end
 
 end
