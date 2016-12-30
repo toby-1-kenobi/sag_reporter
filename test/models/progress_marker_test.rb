@@ -43,7 +43,7 @@ describe ProgressMarker do
   end
 
   it 'has a status that defaults to active' do
-    _(progress_marker.status).must_equal 'active'
+    _(progress_marker).must_be :active?
   end
 
   it 'accepts an alternate description' do

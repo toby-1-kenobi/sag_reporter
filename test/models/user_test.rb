@@ -157,7 +157,7 @@ describe User do
     _(user).must_be :use_alternate_pm_descriptions?
   end
 
-  it 'doesnt specify alternate pm descriptions if it is not in a zone that requires them' do
+  it "doesn't specify alternate pm descriptions if it is not in a zone that requires them" do
     user.zones.each{ |zone| zone.pm_description_type = 'default' }
     _(user).wont_be :use_alternate_pm_descriptions?
   end
