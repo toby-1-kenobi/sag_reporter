@@ -19,7 +19,7 @@ class StateLanguage < ActiveRecord::Base
     language.name.downcase <=> sl.language.name.downcase
   end
 
-  def outcome_table_data(options = {})
+  def outcome_table_data(user, options = {})
     options[:from_date] ||= 6.months.ago
     options[:to_date] ||= Date.today
 
@@ -32,12 +32,14 @@ class StateLanguage < ActiveRecord::Base
 
     all_lps = language_progresses.includes({:progress_marker => :topic}, :progress_updates)
     all_lps.each do |lp|
-      oa_name = lp.progress_marker.topic.name
-      outcome_area_ids[oa_name] ||= lp.progress_marker.topic_id
-      table['content'][oa_name] ||= Hash.new {0}
-      lp.outcome_scores(options[:from_date], options[:to_date]).each do |date, score|
-        table['content'][oa_name][date] += score
-        table['Totals'][date] += score
+      unless lp.progress_marker.topic.hide_for?(user)
+        oa_name = lp.progress_marker.topic.name
+        outcome_area_ids[oa_name] ||= lp.progress_marker.topic_id
+        table['content'][oa_name] ||= Hash.new {0}
+        lp.outcome_scores(options[:from_date], options[:to_date]).each do |date, score|
+          table['content'][oa_name][date] += score
+          table['Totals'][date] += score
+        end
       end
     end
     if table['content'].any?
@@ -66,8 +68,8 @@ class StateLanguage < ActiveRecord::Base
   end
 
   # convert the table data into a format ChartKick can use
-  def outcome_chart_data(options = {})
-    table_data = outcome_table_data(options)
+  def outcome_chart_data(user, options = {})
+    table_data = outcome_table_data(user, options)
     if table_data
       chart_data = Array.new
       table_data['content'].each do |row_name, table_row|

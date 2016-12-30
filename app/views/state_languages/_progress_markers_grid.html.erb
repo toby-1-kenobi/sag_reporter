@@ -1,4 +1,5 @@
 <% @progress_markers_by_oa_and_weight.each do |topic, weights| %>
+    <% unless topic.hide_for?(logged_in_user) %>
 <div class="oa-name"><strong><%= topic.name %></strong></div>
 <div class="row">
   <% weights.each do |weight_text, pms| %>
@@ -16,4 +17,5 @@
     </div>
   <% end %>
 </div>
+        <% end %>
 <% end %>

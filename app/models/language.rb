@@ -95,7 +95,7 @@ class Language < ActiveRecord::Base
     tagged_impact_reports_in_date_range(geo_state, from_date, to_date).group_by{ |r| r.report_date.strftime('%Y-%m') }
   end
 
-  def table_data(geo_state, options = {})
+  def table_data(geo_state, user, options = {})
     options[:from_date] ||= 6.months.ago
     options[:to_date] ||= Date.today
     dates_by_month = (options[:from_date].to_date..options[:to_date].to_date).select{ |d| d.day == 1}
@@ -107,11 +107,13 @@ class Language < ActiveRecord::Base
     table.push(headers)
 
     OutputTally.all.order(:topic_id).each do |tally|
-      row = [tally.description]
-      dates_by_month.each do |date|
-        row.push(tally.total(geo_state, [self], date.year, date.month))
+      unless tally.topic.hide_for?(user)
+        row = [tally.description]
+        dates_by_month.each do |date|
+          row.push(tally.total(geo_state, [self], date.year, date.month))
+        end
+        table.push(row)
       end
-      table.push(row)
     end
 
     resources_row = ['Number of tools completed by the network']

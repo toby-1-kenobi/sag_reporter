@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161228060334) do
+ActiveRecord::Schema.define(version: 20161230150748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -498,11 +498,12 @@ ActiveRecord::Schema.define(version: 20161228060334) do
   add_index "tally_updates", ["user_id"], name: "index_tally_updates_on_user_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
-    t.string   "name",                          null: false
+    t.string   "name",                                               null: false
     t.text     "description"
-    t.string   "colour",      default: "white", null: false
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.string   "colour",                           default: "white", null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.boolean  "hide_on_alternate_pm_description", default: false,   null: false
   end
 
   create_table "translatables", force: :cascade do |t|

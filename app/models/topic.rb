@@ -13,5 +13,9 @@ class Topic < ActiveRecord::Base
 		end
 		return score
 	end
+
+	def hide_for?(user)
+    hide_on_alternate_pm_description? and user.sees_alternate_pm_descriptions?
+	end
 	
 end

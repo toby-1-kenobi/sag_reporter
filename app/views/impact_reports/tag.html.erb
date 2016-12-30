@@ -4,15 +4,15 @@
 
 <h1>Tag reports with progress markers</h1>
 <p class="instructions">
-  Choose a month<%= logged_in_user.geo_states.count > 1 ? ", a state" : "" %> and languages to tag reports within.
+  Choose a month<%= logged_in_user.geo_states.count > 1 ? ', a state' : '' %> and languages to tag reports within.
 </p>
 
 <div class="row">
   <div class="col s12 m4">
-    <a class='dropdown-button btn' href='#' data-activates='month_dropdown'><%= @date.strftime("%Y %B") %> </a>
+    <a class='dropdown-button btn' href='#' data-activates='month_dropdown'><%= @date.strftime('%Y %B') %> </a>
     <ul id='month_dropdown' class='dropdown-content'>
       <% (6.months.ago.to_date..Date.today).select{ |d| d.day == 1 }.each do |date| %>
-        <li><%= link_to date.strftime("%Y %B"), tag_month_impact_reports_path(date.month) %></li>
+        <li><%= link_to date.strftime('%Y %B'), tag_month_impact_reports_path(date.month) %></li>
       <% end %>
     </ul>
   </div>
@@ -21,20 +21,20 @@
       <select id="geo_state_id" name="geo_state_id" class="filter_trigger">
         <%= options_from_collection_for_select(logged_in_user.geo_states, 'id', 'name') %>
       </select>
-      <%= label_tag("geo_state_id", "State") %>
+      <%= label_tag('geo_state_id', 'State') %>
     </div>
   <% else %>
-    <%= hidden_field_tag("geo_state_id", logged_in_user.geo_states.first.id, id: "geo_state_id") %>
+    <%= hidden_field_tag('geo_state_id', logged_in_user.geo_states.first.id, id: 'geo_state_id') %>
   <% end %>
   <div class="col s12 m4">
-    <%= render partial: "shared/multiselect", locals: {
-      text: "languages…",
-      icon: "language",
-      object: "language",
-      attribute: "selected",
+    <%= render partial: 'shared/multiselect', locals: {
+      text: 'languages…',
+      icon: 'language',
+      object: 'language',
+      attribute: 'selected',
       display: :name,
       data: :geo_state_ids_str,
-      element_class: "filterable_item",
+      element_class: 'filterable_item',
       collection: @languages,
       selected: @languages
     } %>
@@ -49,7 +49,7 @@
   <div class="row">
     <% report_group.each do |report| %>
       <div class="col s12 m6 l4 report-tagging">
-        <%= render partial: "report_for_tagging", object: report %>
+        <%= render partial: 'report_for_tagging', object: report %>
       </div>
     <% end %>
   </div>
@@ -61,33 +61,35 @@
     <p class="get-pictures-trigger"><%= link_to 'Get pictures', pictures_report_path('000'), remote: true %></p>
     <div class="pictures hide"></div>
     <div class="not-impact-checkbox">
-      <%= check_box_tag("not-impact", 1) %>
-      <%= label_tag("not-impact", "This report does not show progress, it is a need or challenge", class: "black-text modal-close") %>
+      <%= check_box_tag('not-impact', 1) %>
+      <%= label_tag('not-impact', 'This report does not show progress, it is a need or challenge', class: 'black-text modal-close') %>
     </div>
     <div class="shareable-checkbox">
-      <%= check_box_tag("shareable", 1) %>
-      <%= label_tag("shareable", "This report is suitable for sharing with funders", class: "black-text") %>
+      <%= check_box_tag('shareable', 1) %>
+      <%= label_tag('shareable', 'This report is suitable for sharing with funders', class: 'black-text') %>
     </div>
     <ul class="collapsible" data-collapsible="accordion">
       <% @progress_markers_by_oa.each do |oa, markers| %>
-        <li id="<%= oa.id %>-progress-markers">
-          <div class="collapsible-header <%= oa.colour %>"><%= oa.name %></div>
-          <div class="collapsible-body <%= oa.colour %>">
-            <div class="row">
-              <% ProgressMarker.weight_text.each do |weight, weight_text| %>
-                <div class="col s12 m4">
-                  <p><%= weight_text %></p>
-                  <% markers.select{ |m| m.weight == weight }.each do |marker| %>
-                    <div class="pm-checkbox">
-                      <%= check_box_tag("pm-#{marker.id.to_s}", 1) %>
-                      <%= label_tag("pm-#{marker.id.to_s}", marker.description_for(logged_in_user), class: "black-text") %>
-                    </div>
-                  <% end %>
-                </div>
-              <% end %>
+        <% unless oa.hide_for?(logged_in_user) %>
+          <li id="<%= oa.id %>-progress-markers">
+            <div class="collapsible-header <%= oa.colour %>"><%= oa.name %></div>
+            <div class="collapsible-body <%= oa.colour %>">
+              <div class="row">
+                <% ProgressMarker.weight_text.each do |weight, weight_text| %>
+                  <div class="col s12 m4">
+                    <p><%= weight_text %></p>
+                    <% markers.select{ |m| m.weight == weight }.each do |marker| %>
+                      <div class="pm-checkbox">
+                        <%= check_box_tag("pm-#{marker.id.to_s}", 1) %>
+                        <%= label_tag("pm-#{marker.id.to_s}", marker.description_for(logged_in_user), class: 'black-text') %>
+                      </div>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
             </div>
-          </div>
-        </li>
+          </li>
+        <% end %>
       <% end %>
     </ul>
   </div>

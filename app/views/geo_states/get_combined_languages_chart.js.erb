@@ -1,5 +1,5 @@
 <% require 'securerandom' %>
-<% chart_data = @geo_state.languages_total_chart_data %>
+<% chart_data = @geo_state.languages_total_chart_data(logged_in_user) %>
   if( $('li.active .languages-total-chart-<%= @geo_state.id %>').length == 0 ) {
     $('li.active .charts').append('<div><span>All Languages scores</span><div class="languages-total-chart-<%= @geo_state.id %>"></div></div>');
   }
