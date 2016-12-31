@@ -82,7 +82,7 @@ class StateLanguagesController < ApplicationController
 
   def overview
     @zones = Zone.includes(:geo_states => {:state_languages => :language}).where('state_languages.project' => true)
-    @progress_marker_usage = LanguageProgress.with_updates.group(:state_language_id).uniq.count
+    @progress_marker_usage = LanguageProgress.with_updates.joins(:progress_marker).where('progress_markers.status' => 0).group(:state_language_id).uniq.count
     @progress_marker_count = ProgressMarker.active.count
     @pm_status_by_state = Hash.new
     @zones.each do |zone|
