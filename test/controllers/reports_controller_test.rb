@@ -5,7 +5,7 @@ class ReportsControllerTest < ActionController::TestCase
   def setup
     @admin_user = users(:andrew)
     @pleb_user = users(:peter)
-    @report = reports(:impact)
+    @report = reports("report-1")
   end
 
   test "should get new" do
