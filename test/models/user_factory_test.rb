@@ -67,7 +67,6 @@ describe User::Factory do
   end
 
   it "makes sure the mother-tongue is included in spoken languages" do
-    puts __method__
     user_params = {
       name: "Test User", 
       phone: "9876543210", 

@@ -18,9 +18,9 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
                                password:              "foo",
                                password_confirmation: "bar",
                                role_id: Role.take.id,
-                               mother_tongue_id: Language.take.id,
-	 	  												 geo_states: [GeoState.take.id],
-                               interface_language_id: Language.take.id
+                               mother_tongue_id: Language.first.id,
+                               geo_states: [GeoState.take.id],
+                               interface_language_id: Language.find_by_name("English").id
                              }
     end
     assert_template 'users/new'
@@ -38,9 +38,9 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
                                             password:              "PassWord123",
                                             password_confirmation: "PassWord123",
                                             role_id: Role.take.id,
-                                            mother_tongue_id: Language.take.id,
-																					  geo_states: [GeoState.take.id],
-                                            interface_language_id: Language.take.id
+                                            mother_tongue_id: Language.first.id,
+                                            geo_states: [GeoState.take.id],
+                                            interface_language_id: Language.find_by_name("English").id
                                           }
     end
     assert_template 'users/show'
