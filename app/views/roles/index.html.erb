@@ -16,7 +16,18 @@
             	<tr>
             		<th>Permissions</th>
             		<% @roles.each do |role| %>
-            		  <th><%= role.name %></th>
+            		  <th>
+			              <% if logged_in_user.can_edit_role? %>
+											<% if (role.users.count == 0) %>
+									      <%= link_to role, method: :delete, class: "waves-effect waves-red btn-flat", data: { confirm: "Delete #{role.name}?" } do %>
+			            		    <i class="material-icons">delete</i>
+						            <% end %>
+			              	<% end %>
+										<br>
+    			          <% end %>
+										<%= role.name %><br>
+										(<%= pluralize(role.users.count, 'user') %>)
+									</th>
             		<% end %>
             	</tr>
             </thead>

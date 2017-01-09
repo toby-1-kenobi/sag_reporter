@@ -21,4 +21,13 @@ class RoleTest < ActiveSupport::TestCase
     assert_not duplicate_role.valid?
   end
 
+  it 'can be destroyed without users' do
+    value(@role).must_be :destroy
+  end
+
+  it 'wont be destroyed with users' do
+    @role.users << User.new
+    value(@role).wont_be :destroy
+  end
+
 end

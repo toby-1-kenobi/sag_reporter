@@ -2,9 +2,11 @@ require 'test_helper'
 
 class RolesIndexTestTest < ActionDispatch::IntegrationTest
 
+	include IntegrationHelper
+
   def setup
     @user = users(:andrew)
-    @view_user = users(:vera)
+    @view_user = users(:richard)
   end
 
   test "index including create and update links" do
