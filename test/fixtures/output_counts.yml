@@ -31,7 +31,7 @@
 output_count_<%= index %>:
   output_tally: <%= output_tallies.sample %>
   user: <%= users.sample %>
-  language: bodo
+  language: toto
   geo_state: nb
   amount: <%= rand(1..10) %>
   year: 2015

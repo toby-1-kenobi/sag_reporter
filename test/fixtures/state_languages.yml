@@ -1,7 +1,5 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/state_languages.yml")).result %>
-
 assam_english_t:
   geo_state: assam_t
   language: english_t
@@ -10,5 +8,10 @@ assam_english_t:
 assam_hindi_t:
   geo_state: assam_t
   language: hindi_t
+  project: true
+
+nb_toto:
+  geo_state: nb
+  language: toto
   project: true
 
