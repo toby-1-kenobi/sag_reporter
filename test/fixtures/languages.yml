@@ -3,14 +3,14 @@
 <%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/languages.yml")).result %>
 
 english_t:
-  name: English
+  name: English_t
   description: "Desirable international language"
   lwc: true
   colour: 'indigo lighten-3'
   interface: true
 
 hindi_t:
-  name: Hindi
+  name: Hindi_t
   description: "National language"
   lwc: true
   colour: 'lime lighten-2'
