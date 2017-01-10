@@ -35,19 +35,11 @@
 
 	def sd_progress_markers
 	  [
-		:existing_skills_valued,
-		:symptoms_known,
-		:disease_prevented,
-		:visiting_doctor,
-		:skills_for_income,
 		:skills_used,
-		:demonstrated_care,
-		:knowledge_spread,
-		:businesses_started,
-		:facilitators_self_dependent,
+		:devotional,
 		:new_initiatives,
-		:businesses_skills_taught,
-		:local_doctors_or_ngos_invloved
+		:prayer,
+		:disease_prevented
 	  ]
 	end
 
