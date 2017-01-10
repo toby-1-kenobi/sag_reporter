@@ -1,4 +1,5 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
 <%
 tallies = [:books, :dictionaries, :storytelling]
 ranges = {books: (1..5), dictionaries: (1..80), storytelling: (1..20)}
