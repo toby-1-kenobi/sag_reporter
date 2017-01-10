@@ -1,6 +1,14 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/roles.yml")).result %>
+admin:
+  name: admin
+  permissions: create_user, edit_user, view_all_users,
+    delete_user, view_roles, edit_role, create_role,
+    view_all_languages, create_language, edit_language,
+    create_topic, view_all_topics, edit_topic,
+    view_all_reports, create_report, edit_report, archive_report, tag_report,
+    create_event, view_all_people, report_numbers, view_output_totals,
+    evaluate_progress, view_outcome_totals, add_resource, edit_resource, view_all_resources
 
 pleb:
   name: pleb
