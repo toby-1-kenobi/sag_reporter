@@ -4,10 +4,6 @@ assam:
   name: Assam
   zone: north_east
 
-assam_t:
-  name: Assam
-  zone: north_east
-
 nb:
   name: (northern) West Bengal
   zone: north_east

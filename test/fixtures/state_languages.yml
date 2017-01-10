@@ -1,13 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-assam_english_t:
-  geo_state: assam_t
-  language: english_t
+assam_english:
+  geo_state: assam
+  language: english
   project: true
 
-assam_hindi_t:
-  geo_state: assam_t
-  language: hindi_t
+assam_hindi:
+  geo_state: assam
+  language: assamese
   project: true
 
 nb_toto:
