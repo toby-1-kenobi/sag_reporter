@@ -1,3 +1,21 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/topics.yml")).result %>
+movement_building:
+  name: Movement Building
+  description: "A unified and visionary movement for mother tongue based transformation springing from the Gospel."
+  colour: amber
+
+social_development:
+  name: Social Development
+  description: "Healthy, productive and dignified communities."
+  colour: pink
+
+leadership_development:
+  name: Leadership Development
+  description: "Strong servant leadership in this movement and in local churches and the wider community."
+  colour: lime
+
+faith_development:
+  name: Faith Development
+  description: "Believers transformed by the Word of God and demonstrating discipleship principles in their community."
+  colour: green

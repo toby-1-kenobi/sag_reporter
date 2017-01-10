@@ -1,3 +1,17 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/output_tallies.yml")).result %>
+community_meetings:
+  name: "Community meetings"
+  description: "Number of community meetings"
+  topic: movement_building
+
+volunteers:
+  name: "Volunteers"
+  description: "Number of volunteers mobilised"
+  topic: movement_building
+
+discipleship_meetings:
+  name: "Discipleship meetings"
+  description: "Number of discipleship meetings"
+  topic: faith_development
+
