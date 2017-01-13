@@ -34,7 +34,9 @@
   </div>
 
   <% @output_tallies_by_topic.each do |topic, tally_group| %>
-    <div class="row outcome-area <%= colour_class(topic.colour) %>">
+        <% unless topic.hide_for?(logged_in_user) %>
+
+            <div class="row outcome-area <%= colour_class(topic.colour) %>">
       <div class="row">
         <h2 class="col s12 outcome-area-name"><%= topic.name %></h2>
       </div>
@@ -63,6 +65,7 @@
         </div>
       <% end %>
     </div>
+            <% end %>
   <% end %>
 
   <div class="row">

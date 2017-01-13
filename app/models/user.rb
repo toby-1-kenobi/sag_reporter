@@ -94,6 +94,11 @@ class User < ActiveRecord::Base
     self.confirm_token = nil
     save!(:validate => false)
   end
+  
+  # If this user is in a zone that requires alternate pm descriptions return true
+  def sees_alternate_pm_descriptions?
+    zones.inject(false) { |alt_required, zone| alt_required || zone.pm_description_type == 'alternate' }
+  end
 
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
@@ -116,6 +121,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def respond_to_missing?(method, *)
+    method =~ /\Ais_an?_([a-zA-Z]\w*)\?\z/ || method =~ /\Acan_([a-zA-Z]\w*)\?\z/ || super
+  end
+
   def resend_email_token
     self.confirm_token = SecureRandom.urlsafe_base64.to_s
     save!(:validate => false)
@@ -129,11 +138,11 @@ class User < ActiveRecord::Base
       end
 
       def matches_dynamic_role_check?(method_id)
-        /^is_an?_([a-zA-Z]\w*)\?$/.match(method_id.to_s)
+        /\Ais_an?_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
       end
 
       def matches_dynamic_perm_check?(method_id)
-        /^can_([a-zA-Z]\w*)\?$/.match(method_id.to_s)
+        /\Acan_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
       end
 
       def send_confirmation_email

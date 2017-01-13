@@ -2,6 +2,7 @@ require 'test_helper'
 
 describe StateLanguage do
   let(:state_language) { StateLanguage.new geo_state: geo_states(:nb), language: languages(:toto) }
+  let(:admin_user) { users(:andrew) }
 
   it 'must be valid' do
     value(state_language).must_be :valid?
@@ -32,7 +33,7 @@ describe StateLanguage do
     state_language.language_progresses.stubs(:includes).returns state_language.language_progresses
     max_scores = Hash.new(social_oa.id => 12, leader_oa.id => 3)
     state_language.stubs(:max_outcome_scores).returns max_scores
-    table = state_language.outcome_table_data(from_date: start_date, to_date: end_date)
+    table = state_language.outcome_table_data(admin_user, from_date: start_date, to_date: end_date)
 
     value(table['content'][social_oa.name]['October 2015']).must_equal 300.fdiv(12)
     value(table['content'][leader_oa.name]['October 2015']).must_equal 400.fdiv(3)
@@ -64,7 +65,7 @@ describe StateLanguage do
   it 'returns nil when asked for a table where there is no progress updates' do
     start_date = Date.new(2015,7,1)
     end_date = Date.new(2015,12,1)
-    _(state_language.outcome_table_data(from_date: start_date, to_date: end_date)).must_be_nil
+    _(state_language.outcome_table_data(admin_user, from_date: start_date, to_date: end_date)).must_be_nil
   end
 
 end

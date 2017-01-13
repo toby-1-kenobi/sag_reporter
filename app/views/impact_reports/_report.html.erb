@@ -26,8 +26,8 @@ element_options = "data-filter-label=\"language geo_state status\" data-date=\"#
   	<% end %>
     <ul class="progress_markers">
       <% report.progress_markers.each do |pm| %>
-        <li class="progress_marker tooltipped <%= colour_class(pm.topic.colour) %>" data-position="bottom" data-delay="50" data-tooltip="<%= pm.description %>">
-          <%= pm.name %>
+        <li class="progress_marker tooltipped <%= colour_class(pm.topic.colour) %>" data-position="bottom" data-delay="50" data-tooltip="<%= pm.number %>">
+          <%= pm.description_for(logged_in_user) %>
         </li>
       <% end %>
     </ul>

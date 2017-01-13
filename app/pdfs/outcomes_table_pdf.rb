@@ -1,9 +1,9 @@
 class OutcomesTablePdf < Prawn::Document
 
-  def initialize(state_language)
+  def initialize(state_language, user)
     super(page_layout: :landscape)
     @state_language = state_language
-    @table_data = @state_language.outcome_table_data()
+    @table_data = @state_language.outcome_table_data(user)
     header
     table_content
   end

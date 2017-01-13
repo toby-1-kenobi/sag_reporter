@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161111064350) do
+ActiveRecord::Schema.define(version: 20161230150748) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -239,11 +239,11 @@ ActiveRecord::Schema.define(version: 20161111064350) do
     t.integer  "category",                       null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
-    t.integer  "geo_state_id",                   null: false
     t.integer  "status",         default: 0,     null: false
     t.integer  "publish_year"
     t.string   "url"
     t.text     "how_to_access"
+    t.integer  "geo_state_id"
   end
 
   add_index "mt_resources", ["category"], name: "index_mt_resources_on_category", using: :btree
@@ -369,11 +369,16 @@ ActiveRecord::Schema.define(version: 20161111064350) do
     t.string   "name"
     t.text     "description"
     t.integer  "topic_id"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.integer  "weight",      default: 1, null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "weight",                default: 1, null: false
+    t.integer  "status",                default: 0, null: false
+    t.text     "alternate_description"
+    t.integer  "number"
   end
 
+  add_index "progress_markers", ["number"], name: "index_progress_markers_on_number", using: :btree
+  add_index "progress_markers", ["status"], name: "index_progress_markers_on_status", using: :btree
   add_index "progress_markers", ["topic_id"], name: "index_progress_markers_on_topic_id", using: :btree
   add_index "progress_markers", ["weight"], name: "index_progress_markers_on_weight", using: :btree
 
@@ -493,11 +498,12 @@ ActiveRecord::Schema.define(version: 20161111064350) do
   add_index "tally_updates", ["user_id"], name: "index_tally_updates_on_user_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
-    t.string   "name",                          null: false
+    t.string   "name",                                               null: false
     t.text     "description"
-    t.string   "colour",      default: "white", null: false
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.string   "colour",                           default: "white", null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.boolean  "hide_on_alternate_pm_description", default: false,   null: false
   end
 
   create_table "translatables", force: :cascade do |t|
@@ -553,12 +559,14 @@ ActiveRecord::Schema.define(version: 20161111064350) do
   add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
   create_table "zones", force: :cascade do |t|
-    t.string   "name",       null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "name",                            null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.integer  "pm_description_type", default: 0, null: false
   end
 
   add_index "zones", ["name"], name: "index_zones_on_name", using: :btree
+  add_index "zones", ["pm_description_type"], name: "index_zones_on_pm_description_type", using: :btree
 
   add_foreign_key "action_points", "events"
   add_foreign_key "action_points", "people", column: "responsible_id"

@@ -1,5 +1,5 @@
 <% require 'securerandom' %>
-<% if chart_data = @language.outcome_chart_data() %>
+<% if chart_data = @language.outcome_chart_data(logged_in_user) %>
   if( $('li.active .chart-<%= @language.id %>').length == 0 ) {
     $('li.active .charts').append('<div><span><%= @language.language_name %></span><div class="chart-<%= @language.id %>"></div></div>');
   }
