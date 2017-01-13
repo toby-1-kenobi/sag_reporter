@@ -34,4 +34,4 @@
 # Ignore files and folders containing private data
 /db/baseline_data/
 /db/seed_fixtures/
-#/db/language_data.csv
+/db/language_data.csv
