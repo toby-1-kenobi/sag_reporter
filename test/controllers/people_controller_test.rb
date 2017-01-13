@@ -14,7 +14,8 @@ describe PeopleController do
   	  password:              'password',
   	  password_confirmation: 'password',
   	  mother_tongue: Language.take,
-  	  role: Role.find_by_name('admin')
+  	  role: Role.find_by_name('admin'),
+      geo_states: [GeoState.take]
   	)
   }
 

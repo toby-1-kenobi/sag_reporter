@@ -2,13 +2,14 @@ require "test_helper"
 
 describe Attendance do
 
-  let (:john) { Person.new name: "John", geo_state: geo_states(:nb) }
+  let (:john) { Person.create name: "John", geo_state: geo_states(:nb) }
   let (:my_event) {
     Event.new event_label: "label",
     event_date: Date.today,
     geo_state: geo_states(:nb),
     participant_amount: 15,
-    sub_district: sub_districts(:falakata)
+    sub_district: sub_districts(:falakata),
+		user_id: users(:andrew).id 
   }
   let (:attendance) { Attendance.new person: john, event: my_event}
 

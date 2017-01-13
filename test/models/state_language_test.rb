@@ -31,7 +31,7 @@ describe StateLanguage do
 
     state_language.language_progresses << [lp_social1, lp_social2, lp_leader]
     state_language.language_progresses.stubs(:includes).returns state_language.language_progresses
-    max_scores = Hash.new(social_oa.id => 12, leader_oa.id => 3)
+    max_scores = {social_oa.id => 12, leader_oa.id => 3}
     state_language.stubs(:max_outcome_scores).returns max_scores
     table = state_language.outcome_table_data(admin_user, from_date: start_date, to_date: end_date)
 
