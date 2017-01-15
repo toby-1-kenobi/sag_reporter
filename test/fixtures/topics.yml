@@ -5,6 +5,11 @@ movement_building:
   description: "A unified and visionary movement for mother tongue based transformation springing from the Gospel."
   colour: amber
 
+language_development:
+  name: Language Development
+  description: "Communities using, reading and writing their language in church, school and community."
+  colour: yellow
+
 social_development:
   name: Social Development
   description: "Healthy, productive and dignified communities."
