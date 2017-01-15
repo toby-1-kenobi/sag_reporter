@@ -12,7 +12,7 @@ slCard.fadeOut("fast", function() {
       slCard.find('.card-content').append("<p>No progress marker levels have been set for this language.</p>");
     <% else %>
       slCard.find('.card-content').append("<%= j render(:partial => 'progress_markers_grid') %>");
-      <% if chart_data = @state_language.outcome_chart_data() %>
+      <% if chart_data = @state_language.outcome_chart_data(logged_in_user) %>
         chart = $("<%= escape_javascript(line_chart chart_data, id: "chartkick-#{@state_language.id}") %>");
       <% end %>
       $('.tooltipped').tooltip({delay: 50});

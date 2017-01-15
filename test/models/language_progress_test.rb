@@ -2,7 +2,7 @@ require "test_helper"
 
 describe LanguageProgress do
   let(:language_progress) { LanguageProgress.new progress_marker: pm, state_language: sl }
-  let(:pm) { ProgressMarker.new }
+  let(:pm) { ProgressMarker.new name: 'test pm', description: 'test pm', topic: topics(:language_development)}
   let(:sl) { StateLanguage.new }
 
   it "must be valid" do

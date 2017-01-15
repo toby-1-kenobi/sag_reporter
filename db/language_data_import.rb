@@ -57,11 +57,11 @@ def addTransOrgs(lang, orgs_str, errors)
       errors[lang.name] = Array.new if errors[lang.name].nil?
       errors[lang.name] << "couldn't find org: #{org_str}"
     else
-      org_trans = OrganisationTranslation.new(language: lang, organisation: org, note: note)
-      if (!org_trans.save)
+      org_trans = OrganisationTranslation.create(language: lang, organisation: org, note: note)
+      if (!org_trans.persisted?)
         errors[lang.name] = Array.new if errors[lang.name].nil?
         errors[lang.name] << 'couldn\'t save organisation_translation'
-        org_trans.errors.each_full{ |error| errors[lang.name] << error }
+        errors[lang.name] << org_trans.errors.full_messages
       end
     end
   end
@@ -97,10 +97,12 @@ def setTranslationStatus(lang, status, errors)
 end
 
 language_data.each do |row|
-  if row[:iso].present?
-    lang = Language.find_or_initialize_by iso: row[:iso]
+  lang = Language.find_by iso: row[:iso]
+  if lang
+    lang.name = row[:language_name]
   else
     lang = Language.find_or_initialize_by name: row[:language_name]
+    lang.iso = row[:iso] if row[:iso].present?
   end
   if lang.new_record? and row[:state]
     state = GeoState.find_by_name(row[:state])
@@ -134,17 +136,18 @@ language_data.each do |row|
   if row[:orgs_involved]
     addOrgs(lang, row[:orgs_involved], errors)
   end
-  if row[:tr_org]
-    addTransOrgs(lang, row[:tr_org], errors)
-  end
-  if row[:translation_statusneed]
-    setTranslationStatus(lang, row[:translation_statusneed], errors)
-  end
   if lang.save
     puts lang.name
+    if row[:tr_org]
+      addTransOrgs(lang, row[:tr_org], errors)
+    end
+    if row[:translation_statusneed]
+      setTranslationStatus(lang, row[:translation_statusneed], errors)
+    end
   else
     errors[lang.name] = Array.new if errors[lang.name].nil?
     errors[lang.name] << 'could not save language'
+    errors[lang.name] << lang.errors.full_messages
   end
 end
 

@@ -6,6 +6,7 @@ class LanguageProgress < ActiveRecord::Base
   belongs_to :state_language
   belongs_to :progress_marker
   has_many :progress_updates, dependent: :destroy
+  delegate :status, to: :progress_marker
 
   validates :progress_marker, presence: true, uniqueness: { scope: :state_language }
   validates :state_language, presence: true

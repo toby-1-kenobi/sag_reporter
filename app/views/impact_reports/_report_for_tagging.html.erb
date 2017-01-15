@@ -1,5 +1,5 @@
 <div
-  class="card impact_report for-tagging <%= report_for_tagging.progress_markers.count == 0 ? "green lighten-3" : "green lighten-1" %> z-depth-3 <%= report_for_tagging.shareable? ? "shareable" : "" %>"
+  class="card impact_report for-tagging <%= report_for_tagging.progress_markers.active.count == 0 ? "green lighten-3" : "green lighten-1" %> z-depth-3 <%= report_for_tagging.shareable? ? "shareable" : "" %>"
   id="ImpactReport-<%= report_for_tagging.id %>"
   data-report-id="<%= report_for_tagging.report_id %>"
   data-language="<%= report_for_tagging.languages.pluck(:id).join(' ') %>"
@@ -11,8 +11,8 @@
     <div class="report-content"><%= simple_format report_for_tagging.content %></div>
     <ul class="progress_markers">
       <% report_for_tagging.progress_markers.each do |pm| %>
-        <li class="progress_marker tooltipped <%= colour_class(pm.topic.colour) %>" data-position="bottom" data-delay="50" data-tooltip="<%= pm.description %>">
-          <%= pm.name %>
+        <li class="progress_marker tooltipped <%= colour_class(pm.topic.colour) %>" data-position="bottom" data-delay="50" data-tooltip="<%= pm.number%>">
+          <%= pm.description_for(logged_in_user) %>
         </li>
       <% end %>
     </ul>

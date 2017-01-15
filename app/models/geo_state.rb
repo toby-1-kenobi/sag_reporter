@@ -44,9 +44,9 @@ class GeoState < ActiveRecord::Base
       ).distinct
   end
 
-  def languages_total_chart_data
+  def languages_total_chart_data(user)
     combined_data = Hash.new
-    outcomes_data.values.each do |language_data|
+    outcomes_data(user).values.each do |language_data|
       if language_data
         language_data["content"].each do |oa_name, oa_data|
           oa_data.each do |date, value|
@@ -70,9 +70,9 @@ class GeoState < ActiveRecord::Base
     return chart_data
   end
 
-  def outcome_totals_chart_data
+  def outcome_totals_chart_data(user)
     chart_data = Array.new
-    outcomes_data.each do |state_language, data|
+    outcomes_data(user).each do |state_language, data|
       if data
         chart_row = {
           name: state_language.language_name,
@@ -84,9 +84,9 @@ class GeoState < ActiveRecord::Base
     return chart_data
   end
 
-  def outcome_area_chart_data(outcome_area)
+  def outcome_area_chart_data(outcome_area, user)
     chart_data = Array.new
-    outcomes_data.each do |state_language, data|
+    outcomes_data(user).each do |state_language, data|
       if data
         chart_row = {
           name: state_language.language_name,
@@ -100,10 +100,10 @@ class GeoState < ActiveRecord::Base
 
   private
 
-  def outcomes_data
+  def outcomes_data(user)
     data = Hash.new
     state_languages.in_project.includes(:language_progresses => [{:progress_marker => :topic}, :progress_updates]).each do |state_language|
-      data[state_language] = state_language.outcome_table_data
+      data[state_language] = state_language.outcome_table_data(user)
     end
     return data
   end

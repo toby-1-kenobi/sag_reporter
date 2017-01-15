@@ -25,7 +25,7 @@ class StateLanguagesController < ApplicationController
   def get_table
     @language = StateLanguage.find(params[:id])
 
-    table_data = @language.outcome_table_data
+    table_data = @language.outcome_table_data(logged_in_user)
 
     if table_data
       table_head = '<thead><tr><th></th>'
@@ -74,7 +74,7 @@ class StateLanguagesController < ApplicationController
     @state_language = StateLanguage.find(params[:id])
     respond_to do |format|
       format.pdf do
-        pdf = OutcomesTablePdf.new(@state_language)
+        pdf = OutcomesTablePdf.new(@state_language, logged_in_user)
         send_data pdf.render, filename: "#{@state_language.language_name}_outcomes.pdf", type: 'application/pdf'
       end
     end
@@ -82,8 +82,8 @@ class StateLanguagesController < ApplicationController
 
   def overview
     @zones = Zone.includes(:geo_states => {:state_languages => :language}).where('state_languages.project' => true)
-    @progress_marker_usage = LanguageProgress.with_updates.group(:state_language_id).uniq.count
-    @progress_marker_count = ProgressMarker.count
+    @progress_marker_usage = LanguageProgress.with_updates.joins(:progress_marker).where('progress_markers.status' => 0).group(:state_language_id).uniq.count
+    @progress_marker_count = ProgressMarker.active.count
     @pm_status_by_state = Hash.new
     @zones.each do |zone|
       zone.geo_states.each do |geo_state|
@@ -134,8 +134,8 @@ class StateLanguagesController < ApplicationController
     # for each project language get the aggregated data
     @outcome_scores = { date_a => Hash.new, date_b => Hash.new }
     StateLanguage.in_project.includes(:language_progresses =>[{:progress_marker => :topic}, :progress_updates]).find_each do |state_language|
-      @outcome_scores[date_a][state_language] = state_language.outcome_table_data(from_date: date_a, to_date: date_a)
-      @outcome_scores[date_b][state_language] = state_language.outcome_table_data(from_date: date_b, to_date: date_b)
+      @outcome_scores[date_a][state_language] = state_language.outcome_table_data(logged_in_user, from_date: date_a, to_date: date_a)
+      @outcome_scores[date_b][state_language] = state_language.outcome_table_data(logged_in_user, from_date: date_b, to_date: date_b)
     end
   end
 

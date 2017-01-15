@@ -34,7 +34,7 @@
 <% provide(:title, 'Show Language: ' + @language.name) %>
 <h1 class="coloured <%= colour_class(@language.colour) %>">
   <%= @language.name %>
-<% if @language.iso %>
+<% if @language.iso.present? %>
     [<em id="iso_<%= @language.iso %>"><%= @language.iso %></em>]
     <paper-tooltip position="right" for="iso_<%= @language.iso %>">ISO 693-2 code</paper-tooltip>
 <% end %>
@@ -67,10 +67,10 @@
 <% if @language.family %>
     <p>Family: <strong><%= @language.family_name %></strong></p>
 <% end %>
-<% if @language.description %>
+<% if @language.description.present? %>
     <p><%= @language.description %></p>
 <% end %>
-<% if @language.info %>
+<% if @language.info.present? %>
     <p><%= @language.info %></p>
 <% end %>
 
@@ -167,7 +167,7 @@
         <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
       </div>
     </paper-card>
-    <% if @language.translation_info %>
+    <% if @language.translation_info.present? %>
         <p><%= @language.translation_info %></p>
     <% end %>
     <div>
@@ -228,7 +228,7 @@
     </div>
   <% end %>
 
-  <% if @language.iso %>
+  <% if @language.iso.present? %>
     <paper-tab>JOSHUA PROJECT DATA</paper-tab>
     <div class="page jp-data">
       <div class="center"><paper-spinner class="jp-fetch" active></paper-spinner></div>
@@ -305,7 +305,7 @@
 <% end %>
 
 <% if logged_in_user.can_view_all_languages? %>
-  <%= link_to languages_path, class: "waves-effect btn" do %>
+  <%= link_to languages_path, class: 'waves-effect btn' do %>
     All languages
   <% end %>
 <% end %>

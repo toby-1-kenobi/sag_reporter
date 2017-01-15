@@ -90,11 +90,11 @@ $(document).ready ->
             pmObj = jQuery.parseJSON(pmData)
             new_pm_ids.push pmObj.id
             new_pm_element = $('<li/>',
-                'text': pmObj.name
+                'text': pmObj.description
                 'class': 'progress_marker tooltipped ' + pmObj.colour
                 'data-postion': 'bottom'
                 'data-delay': '50'
-                'data-tooltip': pmObj.description
+                'data-tooltip': pmObj.number
               )
             $('.card.impact_report.for-tagging.selected .progress_markers').append(new_pm_element)
             return
