@@ -9,6 +9,9 @@
   >
   <div class="card-content" href="#pm-modal">
     <div class="report-content"><%= simple_format report_for_tagging.content %></div>
+    <% report_for_tagging.pictures.each do |picture| %>
+        <%= image_tag picture.ref_url if picture.ref? %>
+    <% end %>
     <ul class="progress_markers">
       <% report_for_tagging.progress_markers.each do |pm| %>
         <li class="progress_marker tooltipped <%= colour_class(pm.topic.colour) %>" data-position="bottom" data-delay="50" data-tooltip="<%= pm.number%>">
