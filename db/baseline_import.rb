@@ -162,10 +162,22 @@ puts "Total number of updates: #{$update_count}"
 
 LanguageProgress.joins(:progress_marker).where('progress_markers.status' => 1).each do |lp|
   geo_state = lp.state_language.geo_state
-  lp.progress_updates.create(
-      user: $user,
+  lp.progress_updates.create_with(user: $user).find_or_create_by(
       geo_state: geo_state,
       year: $baseline_year,
       month: $baseline_month,
-      progress: 0)
+      progress: 0
+  )
 end
+
+# And we also need to remove any updates from these progress markers that occurred
+# after the month the data went into.
+ProgressUpdate.joins(language_progress: :progress_marker).
+    where('progress_markers.status' => 1).
+    where('progress_updates.year > ?', $baseline_year).
+    destroy_all
+ProgressUpdate.joins(language_progress: :progress_marker).
+    where('progress_markers.status' => 1).
+    where('progress_updates.year' => $baseline_year).
+    where('progress_updates.month > ?', $baseline_month).
+    destroy_all
