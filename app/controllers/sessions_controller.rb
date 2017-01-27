@@ -79,14 +79,10 @@ class SessionsController < ApplicationController
 
   def send_otp_on_phone(phone_number, otp_code)
     begin
-      TWILIO.messages.create(
-        from: ENV['PHONE_NUMBER'],
-        to: phone_number,
-        body: 'Your LCI verification code is:'+otp_code.to_s
-      )
-      return true
+      response = BcsSms.send_otp(phone_number, otp_code)
+      return BcsSms.success?(response)
     rescue => e
-      logger.debug("couldn't send OTP to phone: #{e.message}")
+      logger.error("couldn't send OTP to phone: #{e.message}")
       return false
     end
   end
