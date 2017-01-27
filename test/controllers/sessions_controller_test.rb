@@ -4,8 +4,8 @@ class SessionsControllerTest < ActionController::TestCase
 	def setup
 		@user = users(:andrew)
 		@other_user = users(:emma)
-		@twilio_user_unconfirmed = users(:twilio_user_unconfirmed)
-		@twilio_user_confirmed = users(:twilio_user_confirmed)
+		@user_email_unconfirmed = users(:email_unconfirmed)
+		@user_email_confirmed = users(:email_confirmed)
   end
 
   def json_response
@@ -23,23 +23,19 @@ class SessionsControllerTest < ActionController::TestCase
 	end
 
   # SMS server and mailer need to be mocked for these tests
-  # test 'should send otp message on phone and show flash message' do
-  # 	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
-  #   assert_equal session[:temp_user], @twilio_user_unconfirmed.id
-		# value(flash['info']).wont_be_nil
-  # end
-
-  test 'should show error message if phone and email cannot receive OTP' do
-  	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
-  	assert_equal @twilio_user_unconfirmed.id, session[:temp_user]
-		value(flash['error']).wont_be_nil
+  test 'should send otp message on phone and show flash message' do
+		BcsSms.expects(:send_otp).returns({'status' => true})
+  	post :two_factor_auth, { session: {phone: @user_email_unconfirmed.phone, password: 'password'} }
+    assert_equal session[:temp_user], @user_email_unconfirmed.id
+		value(flash['info']).wont_be_nil
   end
 
-  test 'should not send otp if user entered bad credentials' do
-  	post :two_factor_auth, { session: {phone: @user.phone, password: '12345678'} }
-		assert_response :success
+  test 'should show error message if phone and email cannot receive OTP' do
+    BcsSms.expects(:send_otp).returns({'status' => false})
+  	post :two_factor_auth, { session: {phone: @user_email_unconfirmed.phone, password: 'password'} }
+  	assert_equal @user_email_unconfirmed.id, session[:temp_user]
 		value(flash['error']).wont_be_nil
-	end
+  end
 
 	test 'should verify correct otp and flash message' do
 		otp_code = @user.otp_code
@@ -57,14 +53,16 @@ class SessionsControllerTest < ActionController::TestCase
 	end
 
 	test 'user should be able to resend otp in phone' do
-		session[:temp_user] = @twilio_user_unconfirmed.id
+    BcsSms.expects(:send_otp).returns({'status' => true})
+		session[:temp_user] = @user_email_unconfirmed.id
 		get :resend_otp
 		assert_response :success
 		value(json_response['message']).wont_be_nil
 	end
 
 	test 'user should be able to resend otp at both phone and mail with confirmed email ' do
-		session[:temp_user] = @twilio_user_confirmed.id
+    BcsSms.expects(:send_otp).returns({'status' => true})
+		session[:temp_user] = @user_email_confirmed.id
 		get :resend_otp
 		assert_response :success
 	end
@@ -90,19 +88,22 @@ class SessionsControllerTest < ActionController::TestCase
 		value(flash['error']).wont_be_nil
   end
 
-  test 'should send otp message on phone and show flash message' do
-  	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
-  	assert_equal @twilio_user_unconfirmed.id, session[:user_id]
+  it 'sends otp message on phone and show flash message' do
+    BcsSms.expects(:send_otp).returns({'status' => true})
+  	post :two_factor_auth, { session: {phone: @user_email_unconfirmed.phone, password: 'password'} }
+  	assert_equal @user_email_unconfirmed.id, session[:temp_user]
 		value(flash['info']).wont_be_nil
   end
 
   test 'should send otp both phone and email and show flash message' do
-  	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
-  	assert_equal @twilio_user_unconfirmed.id, session[:temp_user]
+    BcsSms.expects(:send_otp).returns({'status' => true})
+  	post :two_factor_auth, { session: {phone: @user_email_confirmed.phone, password: 'password'} }
+  	assert_equal @user_email_confirmed.id, session[:temp_user]
 		value(flash['info']).wont_be_nil
   end
 
   test 'should not send otp if user entered bad credentials' do
+    BcsSms.expects(:send_otp).never
   	post :two_factor_auth, { session: {phone: @user.phone, password: '12345678'} }
 		assert_response :success
 		value(flash['error']).wont_be_nil
@@ -124,30 +125,19 @@ class SessionsControllerTest < ActionController::TestCase
 	end
 
 	test 'user should be able to resend otp in phone' do
-		session[:temp_user] = @twilio_user_unconfirmed.id
+    BcsSms.expects(:send_otp).returns({'status' => true})
+		session[:temp_user] = @user_email_unconfirmed.id
 		get :resend_otp
 		assert_response :success
 		value(json_response['message']).wont_be_nil
 	end
 
 	test 'user should be able to resend otp at both phone and mail with confirmed email ' do
-		session[:temp_user] = @twilio_user_confirmed.id
+    BcsSms.expects(:send_otp).returns({'status' => true})
+		session[:temp_user] = @user_email_confirmed.id
 		get :resend_otp
 		assert_response :success
 	end
-
-
-  test 'should log in user and redirected to edit user page' do
-		post :create, { session: {phone: '0987654321', password: 'password'} }
-		assert_redirected_to edit_user_path(@user)
-		value(flash['info']).wont_be_nil
-  end
-
-  test 'user should login and redirect to home page' do
-  	post :create, { session: {phone: '0987654322', password: 'test12345678'} }
-		assert_redirected_to root_path
-		assert_equal @other_user.id, session[:user_id]
-  end
 
   test 'user should not able to login with wrong password' do
   	post :create, { session: {phone: '0987654322', password: '12345678'} }

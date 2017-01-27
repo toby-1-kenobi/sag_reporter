@@ -42,7 +42,7 @@ peter:
   otp_secret_key: "ia3s5qx2r5k7ofrq"
   confirm_token: "DGkSavscSzymTR9-7nDvLQ"
 
-twilio_user_unconfirmed:
+email_unconfirmed:
   name: Robert Reporter
   phone: 07903661930
   password_digest: <%= User.digest('password') %>
@@ -52,7 +52,7 @@ twilio_user_unconfirmed:
   otp_secret_key: "ia3s5qx2r5k7ofrq"
   email_confirmed: false
 
-twilio_user_confirmed:
+email_confirmed:
   name: Rupert Reporter
   phone: 09503461730
   password_digest: <%= User.digest('password') %>
