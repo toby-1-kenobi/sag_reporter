@@ -71,11 +71,23 @@ module SessionsHelper
 
   # authenticates the jwt-token
   def authenticate
-    token_params = params.permit :token
-    token = token_params[:token]
-    secret_key = Rails.application.secrets.secret_key_base
-    payload = JWT.decode token, secret_key, true, {algorithm: 'HS256'}
-    user = User.find payload[:sub]
-    head :unauthorized unless current_user.updated_at.to_i < payload[:iat]
+    head :unauthorized unless current_user
+  end
+
+  # gets the current user of the jwt-token-authorization
+  def current_user
+    begin
+puts params
+      token = request.headers['Authorization'].split.last
+puts token
+      secret_key = Rails.application.secrets.secret_key_base
+      payload, _ = JWT.decode token, secret_key, true, {algorithm: 'HS256'}
+puts payload
+      user = User.find payload['sub']
+puts user
+      user if user.updated_at.to_i < payload['iat']
+    rescue
+      nil
+    end
   end
 end

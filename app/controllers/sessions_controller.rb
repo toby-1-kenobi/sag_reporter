@@ -1,12 +1,13 @@
 class SessionsController < ApplicationController
   before_action :check_user, only: [:two_factor_auth, :new]
+  skip_before_action :verify_authenticity_token, only: [:create_external]
 
   def new
   end
 
   def create_external
-    auth_params = params.require(:auth).permit :phone, :password if params.empty?
-    user = user.find_by phone: auth_params[:phone]
+    auth_params = params.require(:auth).permit :phone, :password
+    user = User.find_by phone: auth_params[:phone]
     secret_key = Rails.application.secrets.secret_key_base
     payload = {sub: user.id, iat: Time.now.to_i}
     token = JWT.encode payload, secret_key, 'HS256'
