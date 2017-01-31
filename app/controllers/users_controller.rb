@@ -49,6 +49,25 @@ class UsersController < ApplicationController
           'languages' => languages
       }
     end
+    user_data['reports'] = Array.new
+    current_user.reports.each do |report|
+      if report.impact_report
+        language_ids = Array.new
+        report.languages.each do |rl|
+          language_ids << {rl.id.to_s => rl.id}
+        end
+        user_data['reports'] << {
+            'id' => report.id,
+            'geo_state_id' => report.geo_state.id,
+            'report_date' => report.report_date,
+            'content' => report.content,
+            'impact_report' => 1,
+            'languages' => language_ids,
+            'client' => report.client,
+            'version' => report.version
+        }
+      end
+    end
     render json: user_data
   end
 
