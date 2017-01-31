@@ -261,10 +261,6 @@ GEM
       railties (>= 3.2.16)
     json (1.8.3)
     jwt (1.5.4)
-    knock (1.4.2)
-      bcrypt (~> 3.1)
-      jwt (~> 1.5)
-      rails (>= 4.2)
     launchy (2.4.3)
       addressable (~> 2.3)
     listen (2.10.1)
@@ -460,7 +456,6 @@ DEPENDENCIES
   jquery-rails
   jquery-turbolinks
   jquery-ui-rails
-  knock
   launchy
   materialize-sass
   mini_magick
@@ -493,4 +488,4 @@ RUBY VERSION
    ruby 2.2.3p173
 
 BUNDLED WITH
-   1.12.3
+   1.13.7

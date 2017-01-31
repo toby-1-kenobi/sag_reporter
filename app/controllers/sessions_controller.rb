@@ -4,6 +4,19 @@ class SessionsController < ApplicationController
   def new
   end
 
+  def create_external
+    auth_params = params.require(:auth).permit :phone, :password if params.empty?
+    user = user.find_by phone: auth_params[:phone]
+    secret_key = Rails.application.secrets.secret_key_base
+    payload = {sub: user.id, iat: Time.now.to_i}
+    token = JWT.encode payload, secret_key, 'HS256'
+    if user.authenticate auth_params[:password]
+      render json: { jwt: token }, status: :created
+    else
+      head :not_found
+    end
+  end
+
   def two_factor_auth
     user = User.find_by(phone: params[:session][:phone])
     if user && user.authenticate(params[:session][:password])

@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  mount Knock::Engine => '/knock'
 
   root 'static_pages#home'
 
@@ -71,6 +70,7 @@ Rails.application.routes.draw do
 
   get    'login'   => 'sessions#new'
   post   'login'   => 'sessions#create'
+  get    'login_external'    => 'sessions#create_external'
   post   'two_factor_auth'   => 'sessions#two_factor_auth'
   post   'verify_otp' => 'sessions#verify_otp'
   get    'resend_otp' => 'sessions#resend_otp'
