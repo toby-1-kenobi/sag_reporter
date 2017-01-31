@@ -8,7 +8,9 @@ describe User do
     password: 'foobar',
     password_confirmation: 'foobar',
     role: Role.take,
-    mother_tongue: Language.take
+    mother_tongue: Language.take,
+    email: 'me@example.com',
+    email_confirmed: true
   ) }
   let(:zone_with_alt_pms) { Zone.new(name: 'test zone', pm_description_type: :alternate) }
   let(:state_in_alt_zone) { GeoState.new(
@@ -19,7 +21,7 @@ describe User do
   before do
     user.geo_states << geo_states(:nb)
   end
-\
+
 
   it 'must be valid' do
     value(user).must_be :valid?
@@ -166,6 +168,17 @@ describe User do
     _(user).must_respond_to :is_a_bird?
     _(user).must_respond_to :can_fly?
     _(user).wont_respond_to :this_is_not_a_real_method
+  end
+
+  it 'will unconfirm email and send confirmation on email change' do
+    mock_mailer = mock
+    mock_mailer.expects(:deliver_now).at_least_once
+    UserMailer.stubs(:user_email_confirmation).returns(mock_mailer)
+    _(user).must_be :save
+    user.update_column(:email_confirmed, true)
+    user.email = 'another_me@example.com'
+    user.save
+    _(user).wont_be :email_confirmed?
   end
 
 end

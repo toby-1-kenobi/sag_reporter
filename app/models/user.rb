@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
   has_many :output_counts, dependent: :restrict_with_error
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :restrict_with_error
+
   after_save :send_confirmation_email
 
   attr_accessor :remember_token
@@ -126,8 +127,8 @@ class User < ActiveRecord::Base
   end
 
   def resend_email_token
-    self.confirm_token = SecureRandom.urlsafe_base64.to_s
-    save!(:validate => false)
+    logger.debug 'resending email verification email'
+    UserMailer.user_email_confirmation(self).deliver_now
   end
 
 
@@ -147,7 +148,10 @@ class User < ActiveRecord::Base
 
       def send_confirmation_email
         if self.email_changed? && self.email.present?
-          self.confirm_token = SecureRandom.urlsafe_base64.to_s
+          self.update_columns(
+              confirm_token: SecureRandom.urlsafe_base64.to_s,
+              email_confirmed: false
+          )
           logger.debug 'sending email verification email'
           UserMailer.user_email_confirmation(self).deliver_now
         end
