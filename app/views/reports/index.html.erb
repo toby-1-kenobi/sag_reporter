@@ -3,7 +3,7 @@
 <%= form_tag spreadsheet_reports_path(format: :csv) do %>
     <div class="row controls">
       <div class="col l4 m6 s12 input-field">
-        <%= date_field_tag :from_date, 1.year.ago.strftime('%d %B, %Y'), class: 'datepicker active date-filter' %>
+        <%= date_field_tag :from_date, 6.months.ago.strftime('%d %B, %Y'), class: 'datepicker active date-filter' %>
         <%= label_tag :from_date, 'From', class: 'active' %>
       </div>
       <div class="col l4 m6 s12 input-field">

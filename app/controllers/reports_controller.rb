@@ -110,8 +110,20 @@ class ReportsController < ApplicationController
     @zones = Zone.of_states(@geo_states)
     @languages = Language.minorities(@geo_states).order('LOWER(languages.name)')
 		@no_language_id = Language.order('id').last.try(:id).to_i + 1
-		@languages << Language.new(name: '<no language>', id: @no_language_id)
-    @reports = Report.includes(:languages, :reporter, :observers, :pictures, :topics, :impact_report => [:progress_markers => :topic]).where(geo_state: @geo_states).order(:report_date => :desc)
+		@languages << Language.new(name:'<no language>', id: @no_language_id)
+    # limit reports to the last 6 months to keep things from slowing down too much
+    @reports = Report.
+        includes(
+            :languages,
+            :reporter,
+            :observers,
+            :pictures,
+            :topics,
+            :geo_state,
+            :impact_report => [:progress_markers => :topic]
+        ).where(geo_state: @geo_states).
+        where('reports.report_date > ?', 6.months.ago).
+        order(:report_date => :desc)
   end
 
   def by_language
