@@ -74,7 +74,7 @@ Rails.application.routes.draw do
   post   'verify_otp' => 'sessions#verify_otp'
   get    'resend_otp' => 'sessions#resend_otp'
   delete 'logout'  => 'sessions#destroy'
-  post   'sessions/create_external'
+  post   'knock/auth_token' => 'sessions#create_external'
 
 
   get  'tally_updates' => 'tally_updates#index'
