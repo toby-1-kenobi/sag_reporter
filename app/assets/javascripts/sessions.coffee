@@ -15,16 +15,6 @@ $(document).ready ->
 			error: (response) ->
 				$(".otp_msg").show().html(response);
 
-	$(document).on	'click' , ".resend_otp", ->
-		$.ajax "/resend_otp",
-			type: "GET",
-			success: (response) ->
-				console.log(response.otp_code);
-				$(".teal").hide();
-				$(".otp_msg").show().html(response.message);
-			error: (response) ->
-				$(".otp_msg").show().html(response.message);
-
 	$(document).on  'click' , ".resend-confirm-email-button", ->
   	$.ajax "/re_send_to_confirm_email",
   	type: "GET",

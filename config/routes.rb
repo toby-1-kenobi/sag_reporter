@@ -73,7 +73,8 @@ Rails.application.routes.draw do
   post   'login'   => 'sessions#create'
   post   'two_factor_auth'   => 'sessions#two_factor_auth'
   post   'verify_otp' => 'sessions#verify_otp'
-  get    'resend_otp' => 'sessions#resend_otp'
+  post 'resend_code_to_phone' => 'sessions#resend_otp_to_phone', as: 'resend_code_to_phone'
+  post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
   delete 'logout'  => 'sessions#destroy'
 
 
@@ -108,6 +109,7 @@ Rails.application.routes.draw do
   get 'overview/show_outcomes_progress/:id' => 'state_languages#show_outcomes_progress', as: 'show_outcomes_progress'
   get 'states/autocomplete_district_name/:geo_state_id' => 'geo_states#autocomplete_district_name', as: 'autocomplete_district_name_geo_state'
   get 'states/autocomplete_sub_district_name/:district_id' => 'districts#autocomplete_sub_district_name', as: 'autocomplete_sub_district_name_district'
+
 
   get 'whatsapp' => 'static_pages#whatsapp_link'
 

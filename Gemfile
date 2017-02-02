@@ -129,6 +129,7 @@ group :test do
 
   # Drives a headless browser (phantom js)
   gem 'poltergeist'
+  gem 'phantomjs', require: 'phantomjs/poltergeist'
 
 end
 
