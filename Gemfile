@@ -7,6 +7,10 @@ gem 'rails', '4.2.1'
 gem 'sass-rails', '~> 5.0'
 # Use Materialize for Google's Material Design layout
 gem 'materialize-sass'
+
+# Use Google's Material Design Lite for Google's Material Design UX
+gem 'material_design_lite-sass'
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views

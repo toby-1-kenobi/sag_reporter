@@ -19,6 +19,8 @@
 $primary-color: color("cyan", "darken-2") !default;
 @import 'materialize';
 
+@import 'material';
+
 @import 'common';
 
 .debug_dump {
