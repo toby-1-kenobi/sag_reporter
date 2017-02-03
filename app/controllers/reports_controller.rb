@@ -41,6 +41,36 @@ class ReportsController < ApplicationController
 
   # new report submitted by an external client
   def create_external
+    # convert image-strings to image-files
+    base64_data = params['report']['pictures_attributes']
+    base64_data.each do |fileNumber, file_data|
+      filename = "upload-image"
+      @tempfile = Tempfile.new(filename)
+      @tempfile.binmode
+      @tempfile.write Base64.decode64(file_data["ref"])
+      @tempfile.rewind
+
+      # for security we want the actual content type, not just what was passed in
+      content_type = `file --mime -b #{@tempfile.path}`.split(";")[0]
+
+      # we will also add the extension ourselves based on the above
+      # if it's not gif/jpeg/png, it will fail the validation in the upload model
+      extension = content_type.match(/gif|jpeg|png/).to_s
+      filename += ".#{extension}" if extension
+
+      params['report']['pictures_attributes'][fileNumber]['ref'] = ActionDispatch::Http::UploadedFile.new({
+        tempfile: @tempfile,
+        content_type: content_type,
+        filename: filename
+      })
+    end
+    # in any case: delete tempfile
+    ensure
+    if @tempfile
+      @tempfile.close
+      @tempfile.unlink
+    end
+    # create report
     full_params = report_params.merge({reporter: current_user})
     report_factory = Report::Factory.new
     response = Hash.new
