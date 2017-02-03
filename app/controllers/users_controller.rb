@@ -54,10 +54,14 @@ class UsersController < ApplicationController
       if report.impact_report
         language_ids = Array.new
         report.languages.each do |rl|
-          language_ids << {rl.id.to_s => rl.id}
+          language_ids << StateLanguage.find_by(
+              geo_state_id: report.geo_state_id, 
+              language_id: rl.id, 
+              project: true
+          ).id
         end
         user_data['reports'] << {
-            'id' => report.id,
+            'report_id' => report.id,
             'geo_state_id' => report.geo_state.id,
             'report_date' => report.report_date,
             'content' => report.content,

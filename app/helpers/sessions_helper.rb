@@ -82,7 +82,8 @@ module SessionsHelper
       payload, _ = JWT.decode token, secret_key, true, {algorithm: 'HS256'}
       user = User.find payload['sub']
       user if user.updated_at.to_i < payload['iat']
-    rescue
+    rescue => error
+      puts error
       nil
     end
   end
