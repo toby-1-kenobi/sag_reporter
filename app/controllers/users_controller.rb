@@ -99,10 +99,17 @@ class UsersController < ApplicationController
     logger.debug 'validating email address'
     user = User.find_by_confirm_token(params[:id])
     if user
-      user.email_activate
-      flash[:success] = 'Your email has been validated.'
+      # Allow email to be confirmed if the user is logged in
+      # or half logged in (authenticated but not OTP received)
+      if logged_in_user?(user) or session[:temp_user] == user.id
+        user.email_activate
+        flash[:success] = 'Your email address has been validated.'
+      else
+        log_out
+        flash[:error] = "You must be logged in as #{user.name} to validate that email address"
+      end
     else
-      flash[:error] = 'User not found.'
+      flash[:error] = 'Your email validation token is not valid. Try resending the email confirmation.'
     end
     redirect_to root_path
   end
@@ -112,7 +119,7 @@ class UsersController < ApplicationController
       UserMailer.user_email_confirmation(current_user).deliver_now
       render json: {success: true, message: 'Confirmation email sent to your email address!'}
     else
-      render json: {success: true, message: 'Ooops Something went wrong. Please try later'}
+      render json: {success: false, message: 'Ooops Something went wrong. Please try later'}
     end
   end
 

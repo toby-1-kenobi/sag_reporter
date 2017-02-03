@@ -20,6 +20,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
   end
 
   test 'login with valid information followed by logout' do
+    BcsSms.expects(:send_otp).returns({'status' => true})
     get login_path
     post two_factor_auth_path, session: { phone: @user.phone, password: 'password' }
     post login_path, session: { phone: @user.phone, password: 'password', otp_code:		   @user.otp_code }
@@ -41,6 +42,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
   end
 
   test 'login with remembering' do
+    BcsSms.expects(:send_otp).returns({'status' => true})
     log_in_as(@user)
     assert_not_nil cookies['remember_token']
   end
