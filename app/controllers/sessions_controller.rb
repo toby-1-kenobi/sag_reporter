@@ -8,6 +8,10 @@ class SessionsController < ApplicationController
   def create_external
     auth_params = params.require(:auth).permit :phone, :password
     user = User.find_by phone: auth_params[:phone]
+    if !user
+      head :not_found
+      return
+    end
     secret_key = Rails.application.secrets.secret_key_base
     payload = {sub: user.id, iat: Time.now.to_i}
     token = JWT.encode payload, secret_key, 'HS256'
