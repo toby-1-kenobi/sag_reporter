@@ -43,35 +43,29 @@ class ReportsController < ApplicationController
   def create_external
     # convert image-strings to image-files
     base64_data = params['report']['pictures_attributes']
-    base64_data.each do |fileNumber, file_data|
-      filename = "upload-image"
-      @tempfile = Tempfile.new(filename)
-      @tempfile.binmode
-      @tempfile.write Base64.decode64(file_data["ref"])
-      @tempfile.rewind
-
+    tempfile = []
+    base64_data.each do |image_number, image_data|
+      filename = "upload-image" + image_number
+      tempfile[image_number.to_i] = Tempfile.new(filename)
+      tempfile[image_number.to_i].binmode
+      tempfile[image_number.to_i].write Base64.decode64(image_data["data"])
+      tempfile[image_number.to_i].rewind
       # for security we want the actual content type, not just what was passed in
-      content_type = `file --mime -b #{@tempfile.path}`.split(";")[0]
+      content_type = `file --mime -b #{tempfile[image_number.to_i].path}`.split(";")[0]
 
       # we will also add the extension ourselves based on the above
       # if it's not gif/jpeg/png, it will fail the validation in the upload model
       extension = content_type.match(/gif|jpeg|png/).to_s
       filename += ".#{extension}" if extension
-
-      params['report']['pictures_attributes'][fileNumber]['ref'] = ActionDispatch::Http::UploadedFile.new({
-        tempfile: @tempfile,
+      params['report']['pictures_attributes'][image_number]['ref'] = ActionDispatch::Http::UploadedFile.new({
+        tempfile: tempfile[image_number.to_i],
         content_type: content_type,
         filename: filename
       })
     end
-    # in any case: delete tempfile
-    ensure
-    if @tempfile
-      @tempfile.close
-      @tempfile.unlink
-    end
     # create report
     full_params = report_params.merge({reporter: current_user})
+    puts full_params
     report_factory = Report::Factory.new
     response = Hash.new
     if report_factory.create_report(full_params)
@@ -89,6 +83,14 @@ class ReportsController < ApplicationController
     end
     puts response.to_json
     render json: response
+    # delete tempfile[image_number.to_i] afterwards
+  ensure
+    tempfile.each do |tmp|
+      if tmp
+        tmp.close
+        tmp.unlink
+      end
+    end
   end
 
   def create
