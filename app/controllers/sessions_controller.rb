@@ -23,15 +23,6 @@ class SessionsController < ApplicationController
     end
   end
 
-  def verify_otp
-    user = User.find_by(id: session[:temp_user])
-    if user && user.authenticate_otp(params[:otp_code], drift:60)
-      render json: { success: true, message: 'Login code verified successfully.' }
-    else
-      render json: { success: false, message: 'Your login code expired or you did not enter it correctly. please click on \'resend code\' and try to login again.' }
-    end
-  end
-
   def resend_otp_to_phone
     logger.debug('resend otp')
     if session[:temp_user]
@@ -67,22 +58,35 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user = User.find_by(phone: params[:session][:phone])
-    if user && session[:temp_user] == user.id && user.authenticate(params[:session][:password])
+    # don't need to create a session if we're already logged in
+    if logged_in?
+      logger.debug 'already logged in!'
+      redirect_to root_path and return
+    end
+    # if user password hasn't been authenticated yet then go back to login
+    if session[:temp_user].blank?
+      logger.debug 'user password not yet authenticated'
+      redirect_to login_path and return
+    end
+    user = User.find session[:temp_user]
+
+    if user and user.authenticate_otp(params[:session][:otp_code], drift:60)
         session[:temp_user] = nil
         log_in user
         remember user
-        if params[:session][:password] == 'password'
+        # if the user's password is "password" they should change it
+        if user.authenticate('password')
           flash['info'] = 'Welcome to Last Command Initiative Reporter.' +
               ' Please make a new password. It should be something another person could not guess.' +
               ' Type it here two times and click \'update\'.'
           redirect_to edit_user_path(user)
         else
-          redirect_back_or root_path
+          redirect_back_or root_path and return
         end
     else
-      flash.now['error'] = 'Phone number or password not correct'
-      render 'new'
+      @user = user
+      flash.now['error'] = 'Login code incorrect or expired.'
+      render 'two_factor_auth'
     end
   end
 

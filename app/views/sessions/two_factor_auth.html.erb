@@ -11,10 +11,8 @@
         <%= f.label :otp, 'Short Login Code' %>
       </div>
     </div>
-      <%= f.hidden_field :phone, value: @phone %>
-      <%= f.hidden_field :password, value: @password %>
       <div class="right">
-        <%= button_tag( :class => 'btn waves-effect waves-light', :id => 'btn_login', :type => 'button') do %>
+        <%= button_tag( :class => 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect', :id => 'btn_login') do %>
           Log in
         <% end %>
       </div>
@@ -41,24 +39,26 @@
     window.addEventListener('WebComponentsReady', function() {
       document.getElementById('resend-phone-form').addEventListener('iron-form-response', resendSmsResponseHandler)
     });
-    function resendEmailCodeResponseHandler(e) {
-      let response = e.detail.parseResponse();
-      console.log(response);
-      if (response.success) {
-        $('.otp_msg').html('Login code resent to email address');
-      } else {
-        $('.otp_msg').html('Could not resend the login code to your email!');
-      }
-      $('.otp_msg').hide().fadeIn();
-    }
-    window.addEventListener('WebComponentsReady', function() {
-      document.getElementById('resend-email-code-form').addEventListener('iron-form-response', resendEmailCodeResponseHandler)
-    });
-  </script>
+    </script>
   <%= form_tag(resend_code_to_phone_path, class: 'col s6', id: 'resend-phone-form', is: 'iron-form', 'on-iron-form-response': 'resendSmsResponseHandler') do |f| %>
     <paper-button onclick="submitResendPhoneForm()" class="resend_otp_to_phone">Resend Login Code to Phone</paper-button>
   <% end %>
   <% if @user.email.present? and @user.email_confirmed? %>
+      <script>
+        function resendEmailCodeResponseHandler(e) {
+          let response = e.detail.parseResponse();
+          console.log(response);
+          if (response.success) {
+            $('.otp_msg').html('Login code resent to email address');
+          } else {
+            $('.otp_msg').html('Could not resend the login code to your email!');
+          }
+          $('.otp_msg').hide().fadeIn();
+        }
+        window.addEventListener('WebComponentsReady', function() {
+          document.getElementById('resend-email-code-form').addEventListener('iron-form-response', resendEmailCodeResponseHandler)
+        });
+      </script>
     <%= form_tag(resend_code_to_email_path, class: 'col s6', id: 'resend-email-code-form', is: 'iron-form', 'on-iron-form-response': 'resendEmailCodeResponseHandler') do |f| %>
         <paper-button onclick="submitResendEmailCodeForm()" class="resend_otp_to_email">Resend Login Code to Email</paper-button>
     <% end %>
