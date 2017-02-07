@@ -1,28 +1,25 @@
-<% provide(:title, "Log in") %>
-<h1>Log in</h1>
-
-<div class="row">
-  <%= form_for(:session, url: two_factor_auth_path, html: {class: "col s12"}) do |f| %>
-
-    <div class="row">
-      <div class="input-field col s12">
-        <i class="material-icons prefix">fingerprint</i>
-        <%= f.text_field :phone %>
-        <%= f.label :phone, "Username" %>
+<% provide(:title, 'Log in') %>
+<div class="login-form-container">
+  <div class="mdl-card mdl-shadow--6dp">
+    <%= form_for(:session, url: two_factor_auth_path) do |f| %>
+      <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+        <h2 class="mdl-card__title-text">LCI Reporter Login</h2>
       </div>
-    </div>
-    <div class="row">
-      <div class="input-field col s12">
-        <i class="material-icons prefix">vpn_key</i>
-        <%= f.password_field :password %>
-        <%= f.label :password %>
+      <div class="mdl-card__supporting-text">
+        <div class="mdl-textfield mdl-js-textfield">
+          <%= f.text_field :phone, class: 'mdl-textfield__input' %>
+          <%= f.label :phone, 'Username', class: 'mdl-textfield__label' %>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield">
+          <%= f.password_field :password, class: 'mdl-textfield__input' %>
+          <%= f.label :password, class: 'mdl-textfield__label' %>
+        </div>
       </div>
-    </div>
-    
-    <%= button_tag( :class => "btn waves-effect waves-light right") do %>
-      Log in <i class="material-icons right">exit_to_app</i>
+      <div class="mdl-card__actions mdl-card--border">
+        <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Log in</button>
+      </div>
     <% end %>
-  <% end %>
+  </div>
 </div>
 
 <div class="row">

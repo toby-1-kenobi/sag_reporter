@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
   <title><%= full_title(yield(:title)) %></title>
@@ -11,10 +12,12 @@
   <%= favicon_link_tag %>
   <%= html_import_tag 'application', 'data-turbolinks-track' => false %>
 </head>
+
 <body>
 
+<div class="mdl-layout mdl-js-layout">
   <%= render 'layouts/header' unless @supress_header %>
-  <main>
+  <main class="mdl-layout__content">
     <div class="container">
       <% if logged_in_user and logged_in_user.authenticate('password') %>
         <div class="card orange" >
@@ -48,6 +51,8 @@
     %>
   </main>
   <%= render 'layouts/footer' unless @supress_footer %>
+</div>
 
 </body>
+
 </html>

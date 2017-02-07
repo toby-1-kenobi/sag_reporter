@@ -1,67 +1,108 @@
-<header>
-<nav class="top-nav <%= yield(:colour) %>" role="navigation">
-  <div class="nav-wrapper">
-    <a href="#" class="brand-logo center hide-on-small-and-down">LCI Reporter</a>
-    <a href="#" class="brand-logo center hide-on-med-and-up">LCIR</a>
-    <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-    <ul id="nav-head" class="right hide-on-med-and-down">
+<header class="mdl-layout__header">
+  <div class="mdl-layout-icon"></div>
+  <div class="mdl-layout__header-row">
+    <span class="mdl-layout__title">LCI Reporter</span>
+    <div class="mdl-layout-spacer"></div>
+    <nav class="mdl-navigation">
       <% if logged_in? %>
-        <li>
-          <%= link_to root_path do %>
-            <i class="material-icons left">home</i>
-            Home
-          <% end %>
-        </li>
-        <li>
-          <%= link_to logged_in_user do %>
-            <i class="material-icons left">account_circle</i>
-            <%= logged_in_user.name %>
-          <% end %>
-        </li>
-        <li>
-          <%= link_to logout_path, method: "delete" do %>
-            <i class="material-icons left">exit_to_app</i>
-            Logout
-          <% end %>
-        </li>
+            <%= link_to root_path, class: 'mdl-navigation__link' do %>
+                Home
+            <% end %>
+            <%= link_to logged_in_user, class: 'mdl-navigation__link' do %>
+                <%= logged_in_user.name %>
+            <% end %>
+            <%= link_to logout_path, method: 'delete', class: 'mdl-navigation__link' do %>
+                Logout
+            <% end %>
       <% else %>
-        <li>
-          <%= link_to login_path do %>
-            <i class="material-icons left">vpn_key</i>
-            Login
-          <% end %>
-        </li>
+            <%= link_to login_path, class: 'mdl-navigation__link' do %>
+                Login
+            <% end %>
       <% end %>
-    </ul>
-    <ul id="nav-mobile" class="side-nav">
-      <% if logged_in? %>
-        <li>
-          <%= link_to root_path do %>
-            <i class="material-icons left">home</i>
-            Home
-          <% end %>
-        </li>
-        <li>
-          <%= link_to logged_in_user do %>
-            <i class="material-icons left">account_circle</i>
-            <%= logged_in_user.name %>
-          <% end %>
-        </li>
-        <li>
-          <%= link_to logout_path, method: "delete" do %>
-            <i class="material-icons left">exit_to_app</i>
-            Logout
-          <% end %>
-        </li>
-      <% else %>
-        <li>
-          <%= link_to login_path do %>
-            <i class="material-icons left">vpn_key</i>
-            Login
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
+    </nav>
   </div>
-</nav>
 </header>
+<div class="mdl-layout__drawer">
+  <span class="mdl-layout__title">LCI Reporter</span>
+  <% if logged_in? %>
+      <%= link_to root_path, class: 'mdl-navigation__link' do %>
+          Home
+      <% end %>
+      <%= link_to logged_in_user, class: 'mdl-navigation__link' do %>
+          <%= logged_in_user.name %>
+      <% end %>
+      <%= link_to logout_path, method: 'delete', class: 'mdl-navigation__link' do %>
+          Logout
+      <% end %>
+  <% else %>
+      <%= link_to login_path, class: 'mdl-navigation__link' do %>
+          Login
+      <% end %>
+  <% end %>
+</div>
+<!--<nav class="top-nav <%= yield(:colour) %>" role="navigation">-->
+  <!--<div class="nav-wrapper">-->
+    <!--<a href="#" class="brand-logo center hide-on-small-and-down">LCI Reporter</a>-->
+    <!--<a href="#" class="brand-logo center hide-on-med-and-up">LCIR</a>-->
+    <!--<a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>-->
+    <!--<ul id="nav-head" class="right hide-on-med-and-down">-->
+      <!--<% if logged_in? %>-->
+        <!--<li>-->
+          <!--<%= link_to root_path do %>-->
+            <!--<i class="material-icons left">home</i>-->
+            <!--Home-->
+          <!--<% end %>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<%= link_to logged_in_user do %>-->
+            <!--<i class="material-icons left">account_circle</i>-->
+            <!--<%= logged_in_user.name %>-->
+          <!--<% end %>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<%= link_to logout_path, method: "delete" do %>-->
+            <!--<i class="material-icons left">exit_to_app</i>-->
+            <!--Logout-->
+          <!--<% end %>-->
+        <!--</li>-->
+      <!--<% else %>-->
+        <!--<li>-->
+          <!--<%= link_to login_path do %>-->
+            <!--<i class="material-icons left">vpn_key</i>-->
+            <!--Login-->
+          <!--<% end %>-->
+        <!--</li>-->
+      <!--<% end %>-->
+    <!--</ul>-->
+    <!--<ul id="nav-mobile" class="side-nav">-->
+      <!--<% if logged_in? %>-->
+        <!--<li>-->
+          <!--<%= link_to root_path do %>-->
+            <!--<i class="material-icons left">home</i>-->
+            <!--Home-->
+          <!--<% end %>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<%= link_to logged_in_user do %>-->
+            <!--<i class="material-icons left">account_circle</i>-->
+            <!--<%= logged_in_user.name %>-->
+          <!--<% end %>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<%= link_to logout_path, method: "delete" do %>-->
+            <!--<i class="material-icons left">exit_to_app</i>-->
+            <!--Logout-->
+          <!--<% end %>-->
+        <!--</li>-->
+      <!--<% else %>-->
+        <!--<li>-->
+          <!--<%= link_to login_path do %>-->
+            <!--<i class="material-icons left">vpn_key</i>-->
+            <!--Login-->
+          <!--<% end %>-->
+        <!--</li>-->
+      <!--<% end %>-->
+    <!--</ul>-->
+  <!--</div>-->
+<!--</nav>-->
+<!--</header>-->
