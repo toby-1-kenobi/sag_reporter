@@ -35,3 +35,4 @@
 /db/baseline_data/
 /db/seed_fixtures/
 /db/language_data.csv
+/config/locales/
