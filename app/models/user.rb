@@ -86,6 +86,15 @@ class User < ActiveRecord::Base
     geo_states.take
   end
 
+  # The locale string for this user
+  def locale
+    if interface_language.present?
+      interface_language.locale_tag
+    else
+      Language.interface_fallback.locale_tag
+    end
+  end
+
   def zones
     Zone.of_states geo_states
   end

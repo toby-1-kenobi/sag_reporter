@@ -17,6 +17,7 @@ describe User do
       name: 'test state',
       zone: zone_with_alt_pms
   ) }
+  let(:pirate_language) { Language.new(locale_tag: 'pirate') }
 
   before do
     user.geo_states << geo_states(:nb)
@@ -179,6 +180,12 @@ describe User do
     user.email = 'another_me@example.com'
     user.save
     _(user).wont_be :email_confirmed?
+  end
+
+  it 'has a locale with default "en"' do
+    _(user.locale).must_equal 'en'
+    user.interface_language = pirate_language
+    _(user.locale).must_equal 'pirate'
   end
 
 end

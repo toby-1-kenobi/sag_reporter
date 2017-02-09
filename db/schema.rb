@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161230150748) do
+ActiveRecord::Schema.define(version: 20170209090211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -196,6 +196,7 @@ ActiveRecord::Schema.define(version: 20161230150748) do
     t.text     "translation_info"
     t.integer  "translation_need",                 default: 0,       null: false
     t.integer  "translation_progress",             default: 0,       null: false
+    t.string   "locale_tag"
   end
 
   add_index "languages", ["cluster_id"], name: "index_languages_on_cluster_id", using: :btree
