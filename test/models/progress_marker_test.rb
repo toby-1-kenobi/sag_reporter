@@ -87,20 +87,27 @@ describe ProgressMarker do
     _(total_count).must_equal ProgressMarker.active.count
   end
 
-  it 'gives the appropriate description to the user' do
-    default_user = users(:andrew)
-    default_user.geo_states.clear
-    default_user.geo_states << state_in_default_zone
-    special_user = users(:emma)
-    special_user.geo_states.clear
-    special_user.geo_states << state_in_alt_zone
-    # no alternate description, both users see normal description
-    _(progress_marker.description_for(default_user)).must_equal progress_marker.description
-    _(progress_marker.description_for(special_user)).must_equal progress_marker.description
-    # with alternate description, special users see alt description
-    progress_marker.alternate_description = 'my alternate description'
-    _(progress_marker.description_for(default_user)).must_equal progress_marker.description
-    _(progress_marker.description_for(special_user)).must_equal progress_marker.alternate_description
+  # it 'gives the appropriate description to the user' do
+  #   default_user = users(:andrew)
+  #   default_user.geo_states.clear
+  #   default_user.geo_states << state_in_default_zone
+  #   special_user = users(:emma)
+  #   special_user.geo_states.clear
+  #   special_user.geo_states << state_in_alt_zone
+  #   # no alternate description, both users see normal description
+  #   _(progress_marker.description_for(default_user)).must_equal progress_marker.description
+  #   _(progress_marker.description_for(special_user)).must_equal progress_marker.description
+  #   # with alternate description, special users see alt description
+  #   progress_marker.alternate_description = 'my alternate description'
+  #   _(progress_marker.description_for(default_user)).must_equal progress_marker.description
+  #   _(progress_marker.description_for(special_user)).must_equal progress_marker.alternate_description
+  # end
+
+  it 'has a translation key based on its number' do
+    progress_marker.number = 5
+    _(progress_marker.translation_key).must_equal 'pm_05'
+    progress_marker.number = 23
+    _(progress_marker.translation_key).must_equal 'pm_23'
   end
 
 end

@@ -12,6 +12,17 @@ class ApplicationController < ActionController::Base
   include SessionsHelper
   include RolesHelper
 
+  # localisation
+  before_action :set_locale
+
+  def set_locale
+    if logged_in?
+      I18n.locale = logged_in_user.locale
+    else
+      I18n.locale = I18n.default_locale
+    end
+  end
+
   private
 
     def combine_colour(params)
