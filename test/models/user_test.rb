@@ -188,4 +188,12 @@ describe User do
     _(user.locale).must_equal 'pirate'
   end
 
+  it 'is not valid with an interface language that has no locale tag' do
+    interface_language = Language.new
+    user.interface_language = interface_language
+    _(user).wont_be :valid?
+    interface_language.locale_tag = 'ha'
+    _(user).must_be :valid?
+  end
+
 end

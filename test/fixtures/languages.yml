@@ -7,12 +7,12 @@ english_t:
   description: "Desirable international language"
   lwc: true
   colour: 'indigo lighten-3'
-  interface: true
+  locale_tag: en
 
 hindi_t:
   name: Hindi_t
   description: "National language"
   lwc: true
   colour: 'lime lighten-2'
-  interface: true
+  locale_tag: hi
 

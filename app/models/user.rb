@@ -41,6 +41,7 @@ class User < ActiveRecord::Base
             allow_blank: true,
             format: { with: VALID_EMAIL_REGEX },
             uniqueness: { case_sensitive: false }
+  validate :interface_language_must_have_locale_tag
 
   # Returns the hash digest of the given string.
   def User.digest(string)
@@ -163,6 +164,12 @@ class User < ActiveRecord::Base
           )
           logger.debug 'sending email verification email'
           UserMailer.user_email_confirmation(self).deliver_now
+        end
+      end
+
+      def interface_language_must_have_locale_tag
+        if interface_language.locale_tag.blank?
+          errors.add(:interface_language, 'must be a user interface language.')
         end
       end
 end
