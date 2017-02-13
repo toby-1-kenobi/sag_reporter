@@ -5,12 +5,12 @@ class RolesIndexTestTest < ActionDispatch::IntegrationTest
 	include IntegrationHelper
 
   def setup
-    @user = users(:andrew)
+    @admin_user = users(:andrew)
     @view_user = users(:richard)
   end
 
   test "index including create and update links" do
-    log_in_as(@user)
+    log_in_as(@admin_user)
     get roles_path
     assert_template 'roles/index'
     # new role button
