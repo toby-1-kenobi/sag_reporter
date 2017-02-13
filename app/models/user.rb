@@ -168,7 +168,7 @@ class User < ActiveRecord::Base
       end
 
       def interface_language_must_have_locale_tag
-        if interface_language.locale_tag.blank?
+        if interface_language.present? and interface_language.locale_tag.blank?
           errors.add(:interface_language, 'must be a user interface language.')
         end
       end
