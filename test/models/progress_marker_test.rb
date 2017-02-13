@@ -4,7 +4,6 @@ describe ProgressMarker do
 
   let(:progress_marker) { ProgressMarker.new(
       name: 'test pm',
-      description: 'Test Progress Marker',
       topic: topics(:movement_building)
   ) }
   let(:zone_with_default_pms) { Zone.new(name: 'test zone 1') }
@@ -41,11 +40,6 @@ describe ProgressMarker do
     progress_marker.save
     _(pm2).wont_be :valid?
     _(pm2.errors[:number]).must_be :any?
-  end
-
-  it 'wont be valid without a description' do
-    progress_marker.description = ''
-    _(progress_marker).wont_be :valid?
   end
 
   it 'wont be valid without an outcome area' do
