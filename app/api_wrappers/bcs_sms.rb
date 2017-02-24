@@ -4,14 +4,13 @@ require 'base64'
 class BcsSms
   include HTTParty
 
-  # debug_output $stdout
   base_uri 'smsserver.bridgeconn.com'
   format :json
 
   def self.send_otp(phone_number, otp_code)
     post '/send_otp', body: {
         mobile_number: BcsSms.encrypt(phone_number),
-        opt: BcsSms.encrypt(otp_code),
+        otp: BcsSms.encrypt(otp_code),
         secret_key: BcsSms.encrypt(Rails.application.secrets.sms_api_key),
         secret_token: BcsSms.encrypt(Rails.application.secrets.sms_api_token)
     }
