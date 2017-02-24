@@ -117,6 +117,56 @@ class User < ActiveRecord::Base
     zones.inject(false) { |alt_required, zone| alt_required || zone.pm_description_type == 'alternate' }
   end
 
+  # This is a transitional method for moving from using roles and permissions
+  # to using the simplified fields on the user model for user level access.
+  # it maps the permission names to the right values of the fields
+  #TODO: stop using this transitional method
+  def can?(permisssion)
+    case permisssion
+      when 'create_user', 'delete_user'
+        admin?
+      when 'edit_user'
+        # not including self
+        admin?
+      when 'view_all_users'
+        trusted?
+      when 'view_roles', 'edit_role', 'create_role'
+        admin?
+      when 'view_all_languages'
+        national?
+      when 'create_language'
+        national_curator?
+      when 'edit_language'
+        curator?
+      when 'create_topic', 'edit_topic'
+        admin?
+      when 'view_all_topics'
+        true
+      when 'view_all_reports'
+        national?
+      when 'create_report', 'edit_report', 'archive_report', 'tag_report'
+        true
+      when 'evaluate_progress', 'view_outcome_totals'
+        true
+      when 'create_tally', 'view_all_tallies', 'edit_tally', 'archive_tally', 'increase_tally'
+        # not used any more
+        false
+      when 'create_event', 'edit_event'
+        true
+      when 'view_all_people'
+        trusted? and national?
+      when 'edit_person'
+        trusted?
+      when 'report_numbers', 'view_output_totals'
+        true
+      when 'add_resource', 'edit_resource','view_all_resources'
+        true
+      else
+        logger.error("unknown permission: #{permisssion}")
+        false
+    end
+  end
+
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles
@@ -125,12 +175,15 @@ class User < ActiveRecord::Base
   def method_missing(method_id, *args)
     if match = matches_dynamic_role_check?(method_id)
       tokenize(match.captures.first).each do |role_name|
-        return true if role.name.downcase == role_name
+        return admin? if role_name == 'admin' or role_name == 'administrator'
+        return curator? if role_name == 'curator'
+        return national_curator? if role_name == 'national_curator'
+        return true if role_description.present? and role_name == role_description.parameterize('_')
       end
       return false
     elsif match = matches_dynamic_perm_check?(method_id)
       tokenize(match.captures.first).each do |perm_name|
-         return true if permissions.find_by_name(perm_name)
+         return true if can?(perm_name)
       end
       return false
     else

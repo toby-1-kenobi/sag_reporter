@@ -5,7 +5,7 @@
     <div class="row">
 
       <% @links.select{ |ld| ld[:category] == 'weekly' }.each do |link_data| %>
-        <% if logged_in_user.permissions.find_by_name link_data[:permission] %>
+        <% if logged_in_user.can? link_data[:permission] %>
           <div class="col s6 m4 l3">
             <%= link_to link_data[:path] do %>
               <div class="card-panel home-link <%= link_data[:colour] %> z-depth-2 center-align">
@@ -30,7 +30,7 @@
     <div class="row">
 
       <% @links.select{ |ld| ld[:category] == 'monthly' }.each do |link_data| %>
-          <% if logged_in_user.permissions.find_by_name link_data[:permission] %>
+          <% if logged_in_user.can? link_data[:permission] %>
               <div class="col s6 m4 l3">
                 <%= link_to link_data[:path] do %>
                     <div class="card-panel home-link <%= link_data[:colour] %> z-depth-2 center-align">
@@ -55,7 +55,7 @@
     <div class="row">
 
       <% @links.select{ |ld| ld[:category] == 'other' }.each do |link_data| %>
-          <% if logged_in_user.permissions.find_by_name link_data[:permission] %>
+          <% if logged_in_user.can? link_data[:permission] %>
               <div class="col s6 m4 l3">
                 <%= link_to link_data[:path] do %>
                     <div class="card-panel home-link <%= link_data[:colour] %> z-depth-2 center-align">

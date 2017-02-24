@@ -8,9 +8,8 @@ class ApplicationController < ActionController::Base
   # Allow controllers to require token authentication
   include Knock::Authenticable
 
-  # Access sessions helper and roles helper from application controllers.
+  # Access sessions helper from application controllers.
   include SessionsHelper
-  include RolesHelper
 
   # localisation
   before_action :set_locale
