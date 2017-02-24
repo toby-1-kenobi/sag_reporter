@@ -10,7 +10,12 @@ describe User do
     role: Role.take,
     mother_tongue: Language.take,
     email: 'me@example.com',
-    email_confirmed: true
+    email_confirmed: true,
+    trusted: true,
+    national: true,
+    admin: false,
+    curator: false,
+    national_curator: false
   ) }
   let(:zone_with_alt_pms) { Zone.new(name: 'test zone', pm_description_type: :alternate) }
   let(:state_in_alt_zone) { GeoState.new(
@@ -25,7 +30,34 @@ describe User do
 
 
   it 'must be valid' do
+    user.valid?
+    puts user.errors.full_messages
     value(user).must_be :valid?
+  end
+
+  it 'wont be valid without trusted set' do
+    user.trusted = nil
+    _(user).wont_be :valid?
+  end
+
+  it 'wont be valid without national set' do
+    user.national = nil
+    _(user).wont_be :valid?
+  end
+
+  it 'wont be valid without admin set' do
+    user.admin = nil
+    _(user).wont_be :valid?
+  end
+
+  it 'wont be valid without curator set' do
+    user.curator = nil
+    _(user).wont_be :valid?
+  end
+
+  it 'wont be valid without national curator set' do
+    user.national_curator = nil
+    _(user).wont_be :valid?
   end
   
   it 'can have multiple geo_states' do

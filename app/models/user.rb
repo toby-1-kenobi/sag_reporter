@@ -17,14 +17,13 @@ class User < ActiveRecord::Base
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :restrict_with_error
 
-  after_save :send_confirmation_email
-
   attr_accessor :remember_token
+
+  has_secure_password
+  has_one_time_password
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :phone, presence: true, length: { is: 10 }, format: { with: /\A\d+\Z/ }, uniqueness: true
-  has_secure_password
-  has_one_time_password
   validates :password,
             presence: true,
             length: { minimum: 6 },
@@ -41,7 +40,14 @@ class User < ActiveRecord::Base
             allow_blank: true,
             format: { with: VALID_EMAIL_REGEX },
             uniqueness: { case_sensitive: false }
+  validates :trusted, inclusion: [true, false]
+  validates :national, inclusion: [true, false]
+  validates :admin, inclusion: [true, false]
+  validates :curator, inclusion: [true, false]
+  validates :national_curator, inclusion: [true, false]
   validate :interface_language_must_have_locale_tag
+
+  after_save :send_confirmation_email
 
   # Returns the hash digest of the given string.
   def User.digest(string)
