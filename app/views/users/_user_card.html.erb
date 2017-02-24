@@ -10,7 +10,7 @@
           <th>Phone:</th>
           <td><%= user_card.pretty_phone %></td>
           <th>Email:</th>
-          <td><%= user_card.email %><%= link_to 'Click to Resend', "javascript:;", class: 'grey-text text-lighten-3 right resend-confirm-email-button' if user_card.email && !user_card.email_confirmed %></td>
+          <td><%= user_card.email %><%# link_to 'Resend email confirmation', "javascript:;", class: 'grey-text text-lighten-3 right resend-confirm-email-button' if user_card.email.present? && !user_card.email_confirmed %></td>
         </tr>
         <tr>
           <th><%= "Zone".pluralize(zone_names.count) %>:</th>
