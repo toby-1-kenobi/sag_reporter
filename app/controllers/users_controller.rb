@@ -151,9 +151,11 @@ class UsersController < ApplicationController
         :mother_tongue_id,
         :interface_language_id,
         :role_id,
+        :trusted,
         :admin,
         :national,
         :curator,
+        :role_description,
         {:speaks => []},
         {:geo_states => []}
       ]

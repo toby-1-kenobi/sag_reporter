@@ -97,6 +97,38 @@
           selected: @user.spoken_languages
         } %>
       </div>
+      <div class="col s12, m6">
+        <p class="switch">
+          Scope of access for this user:<br/>
+          <label>
+            State-based
+            <%= f.check_box(:national) %>
+            <span class="lever"></span>
+            National
+          </label>
+        </p>
+        <p class="switch">
+          This user can see:<br/>
+          <label>
+            Not sensitive data
+            <%= f.check_box(:trusted) %>
+            <span class="lever"></span>
+            Sensitive data
+          </label>
+        </p>
+        <p>
+          <%= f.check_box(:admin) %>
+          <%= f.label :admin, 'Administrator' %>
+        </p>
+        <p>
+          <%= f.check_box(:curator) %>
+          <%= f.label :curator %>
+        </p>
+        <p class="input-field">
+          <%= f.text_field(:role_description) %>
+          <%= f.label(:role_description) %>
+        </p>
+      </div>
     </div>
 
     <div class="row">

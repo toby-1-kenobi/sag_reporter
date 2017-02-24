@@ -104,10 +104,11 @@ class UsersControllerTest < ActionController::TestCase
     end
   end
 
-  it 'allows admin users to create new curator users' do
+  it 'allows admin users to create new trusted curator users' do
     log_in_as(@admin_user)
     user_params[:user][:curator] = 'true'
-    assert_difference 'User.where(curator: true).count' do
+    user_params[:user][:trusted] = 'true'
+    assert_difference 'User.where(curator: true, trusted: true).count' do
       post :create, user_params
     end
   end
