@@ -7,6 +7,18 @@ class UsersControllerTest < ActionController::TestCase
     request.env['HTTP_AUTHORIZATION'] = "Bearer #{token}"
   end
 
+  let(:some_state) { geo_states(:nb) }
+
+  let(:user_params) { { :user => {
+      name: 'test user',
+      phone: '1357924680',
+      password: 'PassWord123',
+      password_confirmation: 'PassWord123',
+      role_id: Role.take.id,
+      mother_tongue_id: Language.take.id,
+      geo_states: { some_state.id => some_state.id }
+  } } }
+
   def setup
     @admin_user = users(:andrew)
     @normal_user = users(:emma)
@@ -68,27 +80,36 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test 'should redirect create when not logged in' do
-    post :create, user: {
-      name: @admin_user.name,
-      phone: @admin_user.phone,
-      password: 'PassWord.123',
-      password_confirmation: 'PassWord.123',
-      role_id: Role.take.id
-    }
+    assert_no_difference 'User.count' do
+      post :create, user_params
+    end
     assert_not flash.empty?
     assert_redirected_to login_url
   end
 
-  test 'should redirect create when not have permission' do
+  test 'should redirect create when not admin' do
     log_in_as(@normal_user)
-    post :create, user: {
-      name: @admin_user.name,
-      phone: @admin_user.phone,
-      password: 'PassWord.123',
-      password_confirmation: 'PassWord.123',
-      role_id: Role.take.id
-    }
+    assert_no_difference 'User.count' do
+      post :create, user_params
+    end
     assert_redirected_to root_url
+  end
+
+  it 'allows admin users to create new national admin users' do
+    log_in_as(@admin_user)
+    user_params[:user][:admin] = 'true'
+    user_params[:user][:national] = 'true'
+    assert_difference 'User.where(admin: true, national: true).count' do
+      post :create, user_params
+    end
+  end
+
+  it 'allows admin users to create new curator users' do
+    log_in_as(@admin_user)
+    user_params[:user][:curator] = 'true'
+    assert_difference 'User.where(curator: true).count' do
+      post :create, user_params
+    end
   end
 
   # test "successful create" do
@@ -170,7 +191,7 @@ class UsersControllerTest < ActionController::TestCase
     assert_redirected_to root_path
   end
 
-  test "resend confirm email to user" do
+  test 'resend confirm email to user' do
     log_in_as(@admin_user)
     get :re_confirm_email
     assert_not_nil json_response['message']

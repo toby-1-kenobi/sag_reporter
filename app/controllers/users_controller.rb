@@ -70,6 +70,7 @@ class UsersController < ApplicationController
       flash['success'] = 'New User Created!'
       redirect_to user_factory.instance()
     else
+      logger.debug(user_factory.instance().errors.full_messages)
       assign_for_user_form
       @user = user_factory.instance()
       render 'new'
@@ -150,6 +151,9 @@ class UsersController < ApplicationController
         :mother_tongue_id,
         :interface_language_id,
         :role_id,
+        :admin,
+        :national,
+        :curator,
         {:speaks => []},
         {:geo_states => []}
       ]
