@@ -20,11 +20,16 @@
 </div>
 <div class="row">
   <script>
+    $(document).ready(submitResendPhoneForm);
     function submitResendPhoneForm() {
       document.getElementById('resend-phone-form').submit();
+      $('#resend-phone-form .mdl-spinner').addClass('is-active');
+      $('#resend-phone-form .resend_otp_to_phone').attr('disabled', '');
     }
     function submitResendEmailCodeForm() {
       document.getElementById('resend-email-code-form').submit();
+      $('#resend-email-code-form .mdl-spinner').addClass('is-active');
+      $('#resend-email-code-form .resend_otp_to_email').attr('disabled', '');
     }
     function resendSmsResponseHandler(e) {
       let response = e.detail.parseResponse();
@@ -34,6 +39,8 @@
       } else {
         $('.otp_msg').html('Could not resend the login code to your phone!');
       }
+      $('#resend-phone-form .mdl-spinner').removeClass('is-active');
+      $('#resend-phone-form .resend_otp_to_phone').removeAttr('disabled');
       $('.otp_msg').hide().fadeIn();
     }
     window.addEventListener('WebComponentsReady', function() {
@@ -42,6 +49,7 @@
     </script>
   <%= form_tag(resend_code_to_phone_path, class: 'col s6', id: 'resend-phone-form', is: 'iron-form', 'on-iron-form-response': 'resendSmsResponseHandler') do |f| %>
     <paper-button onclick="submitResendPhoneForm()" class="resend_otp_to_phone">Resend Login Code to Phone</paper-button>
+      <div class="mdl-spinner mdl-js-spinner"></div>
   <% end %>
   <% if @user.email.present? and @user.email_confirmed? %>
       <script>
@@ -53,6 +61,8 @@
           } else {
             $('.otp_msg').html('Could not resend the login code to your email!');
           }
+          $('#resend-email-code-form .mdl-spinner').removeClass('is-active');
+          $('#resend-email-code-form .resend_otp_to_email').removeAttr('disabled');
           $('.otp_msg').hide().fadeIn();
         }
         window.addEventListener('WebComponentsReady', function() {
@@ -61,6 +71,7 @@
       </script>
     <%= form_tag(resend_code_to_email_path, class: 'col s6', id: 'resend-email-code-form', is: 'iron-form', 'on-iron-form-response': 'resendEmailCodeResponseHandler') do |f| %>
         <paper-button onclick="submitResendEmailCodeForm()" class="resend_otp_to_email">Resend Login Code to Email</paper-button>
+          <div class="mdl-spinner mdl-js-spinner"></div>
     <% end %>
   <% end %>
 </div>

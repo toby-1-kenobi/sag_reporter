@@ -7,16 +7,16 @@ class SessionsController < ApplicationController
   def two_factor_auth
     @user = User.find_by(phone: params[:session][:phone])
     if @user && @user.authenticate(params[:session][:password])
-      phone = params[:session][:phone]
-      otp_code = @user.otp_code
+      # phone = params[:session][:phone]
+      # otp_code = @user.otp_code
       session[:temp_user] = @user.id
-      if send_otp_on_phone("+91#{phone}", otp_code)
-        flash.now['info'] = "A short login code has been sent to your phone (#{phone})"
-      elsif send_otp_via_mail(@user, otp_code)
-        flash.now['info'] = "A short login code has been sent to your email (#{@user.email})."
-      else
-        flash.now['error'] = "We were not able to send the login code to #{phone} or email #{@user.email}!"
-      end
+      # if send_otp_on_phone("+91#{phone}", otp_code)
+      #   flash.now['info'] = "A short login code has been sent to your phone (#{phone})"
+      # elsif send_otp_via_mail(@user, otp_code)
+      #   flash.now['info'] = "A short login code has been sent to your email (#{@user.email})."
+      # else
+      #   flash.now['error'] = "We were not able to send the login code to #{phone} or email #{@user.email}!"
+      # end
     else
       flash.now['error'] = 'Phone number or password is not correct'
       render 'new'
