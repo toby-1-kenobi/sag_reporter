@@ -105,7 +105,7 @@ class UsersController < ApplicationController
         user.email_activate
         flash[:success] = 'Your email address has been validated.'
       else
-        log_out
+        log_out if logged_in?
         flash[:error] = "You must be logged in as #{user.name} to validate that email address"
       end
     else
