@@ -159,9 +159,9 @@ class UsersController < ApplicationController
         {:speaks => []},
         {:geo_states => []}
       ]
-      # current user cannot change own role or state
+      # current user cannot change own access level or state
       if params[:id] and logged_in_user?(User.find(params[:id]))
-        safe_params.reject!{ |p| p == :role_id }
+        safe_params.reject!{ |p| [:role_id, :trusted, :admin, :national, :curator].include? p }
         # but admin user can change his own state
         safe_params.reject!{ |p| p == {:geo_states => []} } unless logged_in_user.is_an_admin?
       end
