@@ -14,7 +14,8 @@ element_options = "data-filter-label=\"language geo_state status\" data-date=\"#
   	  <div><%= time_ago_in_words(report.report_date) %> ago</div>
   	<% end %>
   	<%= simple_format report.content %>
-    <% if report.reporter %>
+    <%# Show the reporter name if the logged in user is trusted, or if it's them. %>
+    <% if report.reporter and (logged_in_user.trusted? or logged_in_user?(report.reporter)) %>
   	  <div class="reporter"><%= report.reporter.name %></div>
     <% end %>
   	<% if languages %>

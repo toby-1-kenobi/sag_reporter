@@ -5,18 +5,18 @@ class UsersIndexTest < ActionDispatch::IntegrationTest
 	include IntegrationHelper
 
   def setup
-    @user = users(:andrew)
+    @admin_user = users(:andrew)
     @view_user = users(:richard)
   end
 
   test "index including pagination and delete links" do
-    log_in_as(@user)
+    log_in_as(@admin_user)
     get users_path
     assert_template 'users/index'
     assert_select 'ul.pagination'
     User.order("LOWER(name)").paginate(page: 1).each do |user|
       assert_select 'a[href=?]', user_path(user), text: user.name
-      if user == @user
+      if user == @admin_user
         # no delete link for self
         assert_select 'a[href=?][data-method=delete]', user_path(user), count: 0
       else

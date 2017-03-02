@@ -6,18 +6,15 @@ describe Topic do
 
   let(:pm_weight_2) { ProgressMarker.new(
       weight: 2,
-      name: 'pm_weight_2',
-      description: 'pm weight 2'
+      name: 'pm_weight_2'
   ) }
   let(:pm_weight_3) { ProgressMarker.new(
       weight: 3,
-      name: 'pm_weight_3',
-      description: 'pm weight 3'
+      name: 'pm_weight_3'
   ) }
   let(:pm_weight_2_deprecated) { ProgressMarker.new(
       weight: 2,
       name: 'pm_weight_2_deprecated',
-      description: 'pm weight 2 deprecated',
       status: 'deprecated'
   ) }
 

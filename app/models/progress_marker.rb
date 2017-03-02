@@ -11,7 +11,6 @@ class ProgressMarker < ActiveRecord::Base
   has_and_belongs_to_many :impact_reports
 
   validates :name, presence: true, uniqueness: true
-  validates :description, presence: true
   validates :topic, presence: true
   validates :number, allow_nil: true, uniqueness: true
 

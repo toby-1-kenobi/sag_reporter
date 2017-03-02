@@ -16,6 +16,10 @@ class ReportsController < ApplicationController
     redirect_to root_path unless logged_in_user.can_view_all_reports?
   end
 
+  before_action only: [:by_reporter, :spreadsheet] do
+    redirect_to root_path unless logged_in_user.trusted?
+  end
+
   before_action only: [:show] do
   	# show shows single report only to reporter when report first created
   	redirect_to root_path unless logged_in_user?(Report.find(params[:id]).reporter) or logged_in_user.can_view_all_reports?
