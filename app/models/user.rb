@@ -3,7 +3,6 @@ class User < ActiveRecord::Base
   include ContactDetails
 
   belongs_to :role
-  has_many :permissions, through: :role
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter, dependent: :restrict_with_error
   has_many :events, inverse_of: :record_creator, dependent: :restrict_with_error
   has_many :people, inverse_of: :record_creator, dependent: :restrict_with_error
