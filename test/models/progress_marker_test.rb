@@ -58,7 +58,7 @@ describe ProgressMarker do
   end
 
   it 'finds or creates LanguageProgresses as necessary' do
-    state_language = state_languages(:arunachal_pradesh_galo)
+    state_language = state_languages(:nb_toto)
     init_language_progress_count = LanguageProgress.count
     # the first call should create a new LanguageProgress and increase the count
     language_progress = progress_marker.language_progress(state_language)

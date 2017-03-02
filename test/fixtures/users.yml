@@ -7,6 +7,22 @@ andrew:
   mother_tongue: english
   role: admin
   admin: true
+  trusted: true
+  national: true
+  geo_states: nb, assam
+  otp_secret_key: "ia3s5qx2r5k7ofrq"
+  confirm_token: "DGkSavscSzymTR9-7nDvLQ"
+
+nathan:
+  name: Nathan Nat Curator
+  phone: 0987654325
+  password_digest: <%= User.digest('password') %>
+  mother_tongue: english
+  role: admin
+  admin: true
+  trusted: true
+  national: true
+  national_curator: true
   geo_states: nb, assam
   otp_secret_key: "ia3s5qx2r5k7ofrq"
   confirm_token: "DGkSavscSzymTR9-7nDvLQ"
