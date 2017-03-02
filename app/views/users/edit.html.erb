@@ -1,4 +1,8 @@
-<% provide(:title, "Edit #{@user.name}'s profile") %>
+<% if logged_in_user.trusted? or logged_in_user?(user) %>
+    <% provide(:title, "Edit #{@user.name}'s profile") %>
+<% else %>
+    <% provide(:title, "Edit profile of user ##{@user.id}") %>
+<% end %>
 <% if logged_in_user?(@user)
      heading = "Edit your profile"
    else

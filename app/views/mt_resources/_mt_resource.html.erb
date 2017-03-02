@@ -2,7 +2,7 @@
   <div class="card">
     <div class="card-content yellow lighten-3">
       <span class="card-title orange-text text-darken-2"><%= mt_resource.name %></span>
-      <% unless mt_resource.contributers.empty? %>
+      <% if mt_resource.contributers.any? and logged_in_user.trusted? %>
         <p class="contributers">
           <%= mt_resource.contributers.map{ |p| p.name }.join("<br />".html_safe) %>
         </p>

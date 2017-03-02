@@ -4,7 +4,8 @@
     <% impact_report.pictures.each do |picture| %>
         <%= image_tag picture.ref_url if picture.ref? %>
     <% end %>
-    <% if impact_report.reporter %>
+    <%# Show reporter name if there is one and if the current user is trusted, or it's them. %>
+    <% if impact_report.reporter and (logged_in_user.trusted? or logged_in_user?(impact_report.reporter)) %>
       <div class="reporter"><%= impact_report.reporter.name %></div>
     <% end %>
   </div>

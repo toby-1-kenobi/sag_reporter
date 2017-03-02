@@ -1,6 +1,11 @@
 <div class="card user light-blue" id="user-<%= user_card.id %>">
+  <% if logged_in_user.trusted? or logged_in_user?(user) %>
+      <% user_name = user_card.name %>
+  <% else %>
+      <% user_name = "user ##{user_card.id}" %>
+  <% end %>
   <div class="card-content">
-    <span class="card-title"><i class="material-icons prefix">account_circle</i> <%= user_card.name %></span>
+    <span class="card-title"><i class="material-icons prefix">account_circle</i> <%= user_name %></span>
     <table class="bordered">
       <tbody>
         <% language_names = user_card.spoken_languages.map { |e| e.name } %>
