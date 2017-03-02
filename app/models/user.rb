@@ -120,8 +120,8 @@ class User < ActiveRecord::Base
   # to using the simplified fields on the user model for user level access.
   # it maps the permission names to the right values of the fields
   #TODO: stop using this transitional method
-  def can?(permisssion)
-    case permisssion
+  def can?(permission)
+    case permission
       when 'create_user', 'delete_user'
         admin?
       when 'edit_user'
@@ -161,7 +161,7 @@ class User < ActiveRecord::Base
       when 'add_resource', 'edit_resource','view_all_resources'
         true
       else
-        logger.error("unknown permission: #{permisssion}")
+        logger.error("unknown permission: #{permission}")
         false
     end
   end
