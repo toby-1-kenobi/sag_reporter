@@ -41,7 +41,7 @@ options_hash = {
   "#{fixtures_dir}/organisations.yml" => { model_name: 'Organisation', key_fields: ['name'], update?: false },
  "#{fixtures_dir}/translations.yml" => { model_name: 'Translation', key_fields: ['id'], update?: false },
 	"#{fixtures_dir}/topics.yml" => { model_name: 'Topic', key_fields: ['name'], update?: false },
- "#{fixtures_dir}/progress_markers.yml" => { model_name: 'ProgressMarker', key_fields: ['name'], update?: false },
+ "#{test_fixtures_dir}/progress_markers.yml" => { model_name: 'ProgressMarker', key_fields: ['name'], update?: false },
  "#{fixtures_dir}/output_tallies.yml" => { model_name: 'OutputTally', key_fields: ['name'], update?: false },
 	"#{test_fixtures_dir}/users.yml" => { model_name: 'User', key_fields: ['phone'], update?: false }
 }

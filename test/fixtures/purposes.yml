@@ -1,4 +1,6 @@
-# Read about fixtures at
-# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/purposes.yml")).result %>
+plan:
+  name: 'plan'
+  description: "Plan what is needed in their situation"
+

@@ -1,13 +1,28 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/languages.yml")).result %>
-
-english_t:
-  name: English_t
+english:
+  name: English
   description: "Desirable international language"
   lwc: true
   colour: 'indigo lighten-3'
   locale_tag: en
+
+assamese:
+  name: Assamese
+  lwc: false
+  colour: 'grey lighten-1'
+
+toto:
+  name: Toto
+  description: "About 1500 speakers all located in one village near Bhutan. Most speakers also fluent in Nepali. Educated Totos literate in Bengali. Script developed in 2015 with new characters. More MT literacy required."
+  lwc: false
+  colour: 'blue-grey lighten-1'
+
+santali:
+  name: Santali
+  description:
+  lwc: false
+  colour: 'yellow lighten-1'
 
 hindi_t:
   name: Hindi_t

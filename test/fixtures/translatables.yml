@@ -1,3 +1,66 @@
-# Read about fixtures at
-# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/translatables.yml")).result %>
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+report_event:
+  identifier: report_event
+  content: "Report about an event"
+
+event_name:
+  identifier: event_name
+  content: "Event name"
+
+location:
+  identifier: location
+  content: "Location"
+
+district:
+  identifier: district
+  content: "District"
+
+sub_dist:
+  identifier: sub_dist
+  content: "Sub-district"
+
+village:
+  identifier: village
+  content: "Village"
+
+date:
+  identifier: date
+  content: "Date"
+
+purpose:
+  identifier: purpose
+  content: "Purpose"
+
+number_participants:
+  identifier: number_participants
+  content: "Total number of participants"
+
+relates_languages:
+  identifier: relates_languages
+  content: "It relates to these languages"
+
+enable:
+  identifier: enable
+  content: "To enable…"
+
+people_involved:
+  identifier: people_involved
+  content: "People involved"
+
+one_name_row:
+  identifier: one_name_row
+  content: "Write one name in each row"
+
+anything_else:
+  identifier: anything_else
+  content: "If anything else happened in the event that should be recorded, write it here"
+
+submit:
+  identifier: submit
+  content: "Submit report"
+
+what_action:
+  identifier: what_action
+  content: "What action must be taken?"
+
