@@ -1,0 +1,67 @@
+<header>
+<nav class="top-nav <%= yield(:colour) %>" role="navigation">
+  <div class="nav-wrapper">
+    <a href="#" class="brand-logo center hide-on-small-and-down">LCI Reporter</a>
+    <a href="#" class="brand-logo center hide-on-med-and-up">LCIR</a>
+    <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    <ul id="nav-head" class="right hide-on-med-and-down">
+      <% if logged_in? %>
+        <li>
+          <%= link_to root_path do %>
+            <i class="material-icons left">home</i>
+            Home
+          <% end %>
+        </li>
+        <li>
+          <%= link_to logged_in_user do %>
+            <i class="material-icons left">account_circle</i>
+            <%= logged_in_user.name %>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to logout_path, method: "delete" do %>
+            <i class="material-icons left">exit_to_app</i>
+            Logout
+          <% end %>
+        </li>
+      <% else %>
+        <li>
+          <%= link_to login_path do %>
+            <i class="material-icons left">vpn_key</i>
+            Login
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+    <ul id="nav-mobile" class="side-nav">
+      <% if logged_in? %>
+        <li>
+          <%= link_to root_path do %>
+            <i class="material-icons left">home</i>
+            Home
+          <% end %>
+        </li>
+        <li>
+          <%= link_to logged_in_user do %>
+            <i class="material-icons left">account_circle</i>
+            <%= logged_in_user.name %>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to logout_path, method: "delete" do %>
+            <i class="material-icons left">exit_to_app</i>
+            Logout
+          <% end %>
+        </li>
+      <% else %>
+        <li>
+          <%= link_to login_path do %>
+            <i class="material-icons left">vpn_key</i>
+            Login
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</nav>
+</header>

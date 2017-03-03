@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
 
+<%# Transitioning from Materialize to MDL. Some pages use one for stying, other pages use the other. %>
+<%# The Materialize styles break the MDL ones so we need to know which page we're on and import the styles accordingly %>
+<%
+  if current_page?(login_path)
+    mdl = true
+  else
+    mdl = false
+  end
+%>
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
   <title><%= full_title(yield(:title)) %></title>
@@ -11,14 +21,23 @@
   <%= csrf_meta_tags %>
   <%= favicon_link_tag %>
   <%= html_import_tag 'application', 'data-turbolinks-track' => false %>
+  <%# if we're not using MDL on this page import Materialize %>
+  <% unless mdl %>
+    <!-- Compiled and minified CSS and JS for Materialize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+  <% end %>
 </head>
 
 <body>
 
 <div class="mdl-layout mdl-js-layout">
-  <%= render 'layouts/header' unless @supress_header %>
+  <% if mdl %>
+      <%= render 'layouts/header' unless @supress_header %>
+  <% else %>
+      <%= render 'layouts/materialize_header' unless @supress_header %>
+  <% end %>
   <main class="mdl-layout__content">
-    <div class="container">
       <% if logged_in_user and logged_in_user.authenticate('password') %>
         <div class="card orange" >
           <div class="card-content">
@@ -45,7 +64,6 @@
         <% end %>
       <% end %>
       <%= yield %>
-    </div>
     <%=
       debug(params) if Rails.env.development?
     %>
