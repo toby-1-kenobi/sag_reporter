@@ -10,13 +10,19 @@ describe User do
     role: Role.take,
     mother_tongue: Language.take,
     email: 'me@example.com',
-    email_confirmed: true
+    email_confirmed: true,
+    trusted: true,
+    national: true,
+    admin: false,
+    curator: false,
+    national_curator: false
   ) }
   let(:zone_with_alt_pms) { Zone.new(name: 'test zone', pm_description_type: :alternate) }
   let(:state_in_alt_zone) { GeoState.new(
       name: 'test state',
       zone: zone_with_alt_pms
   ) }
+  let(:pirate_language) { Language.new(locale_tag: 'pirate') }
 
   before do
     user.geo_states << geo_states(:nb)
@@ -24,7 +30,34 @@ describe User do
 
 
   it 'must be valid' do
+    user.valid?
+    puts user.errors.full_messages
     value(user).must_be :valid?
+  end
+
+  it 'wont be valid without trusted set' do
+    user.trusted = nil
+    _(user).wont_be :valid?
+  end
+
+  it 'wont be valid without national set' do
+    user.national = nil
+    _(user).wont_be :valid?
+  end
+
+  it 'wont be valid without admin set' do
+    user.admin = nil
+    _(user).wont_be :valid?
+  end
+
+  it 'wont be valid without curator set' do
+    user.curator = nil
+    _(user).wont_be :valid?
+  end
+
+  it 'wont be valid without national curator set' do
+    user.national_curator = nil
+    _(user).wont_be :valid?
   end
   
   it 'can have multiple geo_states' do
@@ -179,6 +212,20 @@ describe User do
     user.email = 'another_me@example.com'
     user.save
     _(user).wont_be :email_confirmed?
+  end
+
+  it 'has a locale with default "en"' do
+    _(user.locale).must_equal 'en'
+    user.interface_language = pirate_language
+    _(user.locale).must_equal 'pirate'
+  end
+
+  it 'is not valid with an interface language that has no locale tag' do
+    interface_language = Language.new
+    user.interface_language = interface_language
+    _(user).wont_be :valid?
+    interface_language.locale_tag = 'ha'
+    _(user).must_be :valid?
   end
 
 end

@@ -19,12 +19,12 @@
     @outcome_areas.each do |outcome_area|
       language_data0 = @outcome_scores[dates[0]][language]
       data0 = language_data0 ? language_data0['content'][outcome_area] : nil
-      value0 = data0 ? data0.values.first : 0
+      value0 = (data0.present? and data0.values.any?) ? data0.values.first : 0
       zone_aggregate[0][language.zone.name] ||= Hash.new(0)
       zone_aggregate[0][language.zone.name][outcome_area] += value0
       language_data1 = @outcome_scores[dates[1]][language]
       data1 = language_data1 ? language_data1['content'][outcome_area] : nil
-      value1 = data1 ? data1.values.first : 0
+      value1 = (data1.present? and data1.values.any?) ? data1.values.first : 0
       zone_aggregate[1][language.zone.name] ||= Hash.new(0)
       zone_aggregate[1][language.zone.name][outcome_area] += value1
       row.concat [value0.round, value1.round]

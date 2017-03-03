@@ -11,7 +11,6 @@ class ProgressMarker < ActiveRecord::Base
   has_and_belongs_to_many :impact_reports
 
   validates :name, presence: true, uniqueness: true
-  validates :description, presence: true
   validates :topic, presence: true
   validates :number, allow_nil: true, uniqueness: true
 
@@ -44,7 +43,7 @@ class ProgressMarker < ActiveRecord::Base
     if alternate_description.present? and user.sees_alternate_pm_descriptions?
       alternate_description
     else
-      description
+      I18n.t("progress_markers.descriptions.#{translation_key}")
     end
   end
 
@@ -55,6 +54,12 @@ class ProgressMarker < ActiveRecord::Base
       progress_markers_by_oa_and_weight[pm.topic][weight_text[pm.weight]].push pm
     end
     return progress_markers_by_oa_and_weight
+  end
+
+  # key for the l10n translation of the description
+  # is 'pm_xx' where 'xx' is a 2-digit representation of the number
+  def translation_key
+    "pm_#{sprintf('%02d', number)}"
   end
 
 end

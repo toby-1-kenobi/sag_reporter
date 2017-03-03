@@ -1,8 +1,9 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/geo_states.yml")).result %>
-
-assam_t:
+assam:
   name: Assam
   zone: north_east
 
+nb:
+  name: (northern) West Bengal
+  zone: north_east

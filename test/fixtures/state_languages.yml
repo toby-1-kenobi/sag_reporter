@@ -1,15 +1,17 @@
-# Read about fixtures at
-# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/state_languages.yml")).result %>
-
-assam_english_t:
-  geo_state: assam_t
-  language: english_t
+assam_english:
+  geo_state: assam
+  language: english
   project: true
 
-assam_hindi_t:
-  geo_state: assam_t
-  language: hindi_t
+assam_hindi:
+  geo_state: assam
+  language: assamese
+  project: true
+
+nb_toto:
+  geo_state: nb
+  language: toto
   project: true
 

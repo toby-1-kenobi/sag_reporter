@@ -24,7 +24,8 @@
   	<% end %>
     <div class="row">
       <div class="col s12 location-info grey-text"><%= report.full_location %></div>
-      <% if report.observers.any? %>
+      <%# List the names of source people if there are any and the logged in user is trusted. %>
+      <% if report.observers.any? and logged_in_user.trusted? %>
         <div class="col s6 observers">
           Sourced from <%= report.observers.pluck(:name).to_a.to_sentence %>
         </div>
@@ -34,7 +35,10 @@
     <% report.pictures.each do |picture| %>
       <%= image_tag picture.ref_url if picture.ref? %>
     <% end %>
-  	<div class="reporter"><%= report.reporter.name %></div>
+    <%# Show the reporter if the logged in user is trusted, or if it's them %>
+    <% if report.reporter.present? and (logged_in_user.trusted? or logged_in_user?(report.reporter)) %>
+  	  <div class="reporter"><%= report.reporter.name %></div>
+    <% end %>
   	<% if languages %>
   	  <div class="report-languages">
   	  	<% report.languages.each do |language| %>

@@ -1,17 +1,25 @@
 <div class="card user light-blue" id="user-<%= user_card.id %>">
+  <% if logged_in_user.trusted? or logged_in_user?(user) %>
+      <% user_name = user_card.name %>
+  <% else %>
+      <% user_name = "user ##{user_card.id}" %>
+  <% end %>
   <div class="card-content">
-    <span class="card-title"><i class="material-icons prefix">account_circle</i> <%= user_card.name %></span>
+    <span class="card-title"><i class="material-icons prefix">account_circle</i> <%= user_name %></span>
     <table class="bordered">
       <tbody>
         <% language_names = user_card.spoken_languages.map { |e| e.name } %>
         <% zone_names = user_card.zones.map { |e| e.name } %>
         <% state_names = user_card.geo_states.map { |e| e.name } %>
-        <tr>
-          <th>Phone:</th>
-          <td><%= user_card.pretty_phone %></td>
-          <th>Email:</th>
-          <td><%= user_card.email %><%= link_to 'Click to Resend', "javascript:;", class: 'grey-text text-lighten-3 right resend-confirm-email-button' if user_card.email && !user_card.email_confirmed %></td>
-        </tr>
+        <%# Show phone an email only if the current user is trusted, or it's them. %>
+        <% if logged_in_user.trusted? or logged_in_user?(user_card) %>
+          <tr>
+            <th>Phone:</th>
+            <td><%= user_card.pretty_phone %></td>
+            <th>Email:</th>
+            <td><%= user_card.email %><%# link_to 'Resend email confirmation', "javascript:;", class: 'grey-text text-lighten-3 right resend-confirm-email-button' if user_card.email.present? && !user_card.email_confirmed %></td>
+          </tr>
+        <% end %>
         <tr>
           <th><%= "Zone".pluralize(zone_names.count) %>:</th>
           <td><%= zone_names.join(', ') %></td>
@@ -26,7 +34,7 @@
         </tr>
         <tr>
           <th>Role:</th>
-          <td><%= user_card.role.name %></td>
+          <td><%= user_card.role_description %></td>
         </tr>
       </tbody>
     </table>

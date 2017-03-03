@@ -4,7 +4,6 @@ describe ProgressMarker do
 
   let(:progress_marker) { ProgressMarker.new(
       name: 'test pm',
-      description: 'Test Progress Marker',
       topic: topics(:movement_building)
   ) }
   let(:zone_with_default_pms) { Zone.new(name: 'test zone 1') }
@@ -43,11 +42,6 @@ describe ProgressMarker do
     _(pm2.errors[:number]).must_be :any?
   end
 
-  it 'wont be valid without a description' do
-    progress_marker.description = ''
-    _(progress_marker).wont_be :valid?
-  end
-
   it 'wont be valid without an outcome area' do
     progress_marker.topic = nil
     _(progress_marker).wont_be :valid?
@@ -64,7 +58,7 @@ describe ProgressMarker do
   end
 
   it 'finds or creates LanguageProgresses as necessary' do
-    state_language = state_languages(:arunachal_pradesh_galo)
+    state_language = state_languages(:nb_toto)
     init_language_progress_count = LanguageProgress.count
     # the first call should create a new LanguageProgress and increase the count
     language_progress = progress_marker.language_progress(state_language)
@@ -87,20 +81,27 @@ describe ProgressMarker do
     _(total_count).must_equal ProgressMarker.active.count
   end
 
-  it 'gives the appropriate description to the user' do
-    default_user = users(:andrew)
-    default_user.geo_states.clear
-    default_user.geo_states << state_in_default_zone
-    special_user = users(:emma)
-    special_user.geo_states.clear
-    special_user.geo_states << state_in_alt_zone
-    # no alternate description, both users see normal description
-    _(progress_marker.description_for(default_user)).must_equal progress_marker.description
-    _(progress_marker.description_for(special_user)).must_equal progress_marker.description
-    # with alternate description, special users see alt description
-    progress_marker.alternate_description = 'my alternate description'
-    _(progress_marker.description_for(default_user)).must_equal progress_marker.description
-    _(progress_marker.description_for(special_user)).must_equal progress_marker.alternate_description
+  # it 'gives the appropriate description to the user' do
+  #   default_user = users(:andrew)
+  #   default_user.geo_states.clear
+  #   default_user.geo_states << state_in_default_zone
+  #   special_user = users(:emma)
+  #   special_user.geo_states.clear
+  #   special_user.geo_states << state_in_alt_zone
+  #   # no alternate description, both users see normal description
+  #   _(progress_marker.description_for(default_user)).must_equal progress_marker.description
+  #   _(progress_marker.description_for(special_user)).must_equal progress_marker.description
+  #   # with alternate description, special users see alt description
+  #   progress_marker.alternate_description = 'my alternate description'
+  #   _(progress_marker.description_for(default_user)).must_equal progress_marker.description
+  #   _(progress_marker.description_for(special_user)).must_equal progress_marker.alternate_description
+  # end
+
+  it 'has a translation key based on its number' do
+    progress_marker.number = 5
+    _(progress_marker.translation_key).must_equal 'pm_05'
+    progress_marker.number = 23
+    _(progress_marker.translation_key).must_equal 'pm_23'
   end
 
 end

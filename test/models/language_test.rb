@@ -12,6 +12,11 @@ describe Language do
     value(language).must_be :valid?
   end
 
+  it 'wont be valid with blank locale tag' do
+    language.locale_tag = ''
+    _(language).wont_be :valid?
+  end
+
   it 'returns its states ids' do
   	language.geo_states << assam
   	language.geo_states << bihar

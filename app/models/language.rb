@@ -54,6 +54,8 @@ class Language < ActiveRecord::Base
             length: { is: 3 },
             allow_blank: true,
             uniqueness: { case_sensitive: false }
+  # when locale_tag is present the language can be used for the interface
+  validates :locale_tag, presence: true, allow_nil: true
 
   before_validation do |language|
     language.iso.downcase! if language.iso.present?

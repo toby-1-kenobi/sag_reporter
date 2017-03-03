@@ -10,13 +10,13 @@ class SessionsController < ApplicationController
       phone = params[:session][:phone]
       otp_code = @user.otp_code
       session[:temp_user] = @user.id
-      if send_otp_on_phone("+91#{phone}", otp_code)
-        flash.now['info'] = "A short login code has been sent to your phone (#{phone})"
-      elsif send_otp_via_mail(@user, otp_code)
-        flash.now['info'] = "A short login code has been sent to your email (#{@user.email})."
-      else
-        flash.now['error'] = "We were not able to send the login code to #{phone} or email #{@user.email}!"
-      end
+      @ticket =  send_otp_on_phone("+91#{phone}", otp_code)
+      #   flash.now['info'] = "A short login code has been sent to your phone (#{phone})"
+      # elsif send_otp_via_mail(@user, otp_code)
+      #   flash.now['info'] = "A short login code has been sent to your email (#{@user.email})."
+      # else
+      #   flash.now['error'] = "We were not able to send the login code to #{phone} or email #{@user.email}!"
+      # end
     else
       flash.now['error'] = 'Phone number or password is not correct'
       render 'new'
@@ -26,13 +26,11 @@ class SessionsController < ApplicationController
   def resend_otp_to_phone
     logger.debug('resend otp')
     if session[:temp_user]
-      user = User.find_by(id: session[:temp_user])
-      if user and send_otp_on_phone("+91#{user.phone}", user.otp_code)
-        #success
-        render json: { success: true }
+      if user = User.find_by(id: session[:temp_user])
+        render json: { ticket: send_otp_on_phone("+91#{user.phone}", user.otp_code) }
       else
-        #fail
-        render json: { success: false }
+        # temp user doesn't exist so go back to square 1
+        redirect_to login_path
       end
     else
       # no temp user so we need the login credentials
@@ -57,6 +55,12 @@ class SessionsController < ApplicationController
     end
   end
 
+  def poll
+    ticket = params[:ticket]
+    logger.debug("polling for #{ticket}")
+    render json: BcsSms.poll(ticket.to_i)
+  end
+
   def create
     # don't need to create a session if we're already logged in
     if logged_in?
@@ -70,7 +74,7 @@ class SessionsController < ApplicationController
     end
     user = User.find session[:temp_user]
 
-    if user and user.authenticate_otp(params[:session][:otp_code], drift:60)
+    if user and user.authenticate_otp(params[:session][:otp_code], drift: 300)
         session[:temp_user] = nil
         log_in user
         remember user
@@ -99,10 +103,10 @@ class SessionsController < ApplicationController
 
   def send_otp_on_phone(phone_number, otp_code)
     begin
-      logger.debug("phone: #{phone_number}, otp: #{otp_code}")
-      response = BcsSms.send_otp(phone_number, otp_code)
-      logger.debug(response)
-      return BcsSms.success?(response)
+      logger.debug("sending otp to phone: #{phone_number}, otp: #{otp_code}")
+      wait_ticket = BcsSms.send_otp(phone_number, otp_code)
+      logger.debug("waiting #{wait_ticket}")
+      return wait_ticket
     rescue => e
       logger.error("couldn't send OTP to phone: #{e.message}")
       return false

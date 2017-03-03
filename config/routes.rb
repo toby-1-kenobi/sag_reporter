@@ -72,7 +72,7 @@ Rails.application.routes.draw do
   get    'login'   => 'sessions#new'
   post   'login'   => 'sessions#create'
   post   'two_factor_auth'   => 'sessions#two_factor_auth'
-  post   'verify_otp' => 'sessions#verify_otp'
+  get 'otp_poll/:ticket' => 'sessions#poll', as: 'otp_poll'
   post 'resend_code_to_phone' => 'sessions#resend_otp_to_phone', as: 'resend_code_to_phone'
   post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
   delete 'logout'  => 'sessions#destroy'

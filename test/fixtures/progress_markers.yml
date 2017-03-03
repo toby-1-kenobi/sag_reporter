@@ -1,5 +1,36 @@
-# Read about fixtures at
-# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
+skills_used:
+  name: "Disease prevention"
+  alternate_description: "People outside the CF community groups are preventing some diseases (e.g. diarrhea, anemia, malnutrition) and go to hospital less"
+  topic: social_development
+  weight: 2
+  number: 1
 
-<%= ERB.new(IO.read(Rails.root.join "db/seed_fixtures/progress_markers.yml")).result %>
+devotional:
+  name: "Devotional"
+  alternate_description: "Local church or community leaders take time to be with the Lord, in his word and in personal prayer. They stay connected to the Vine. Leaders read the word of God in order to get direction for their ministry/work"
+  topic: leadership_development
+  weight: 1
+  number: 2
+
+new_initiatives:
+  name: "Opportunities for women and children"
+  alternate_description: "Women and children are protected and respected. More girls pursue higher education and have more opportunities"
+  topic: movement_building
+  weight: 2
+  number: 3
+
+prayer:
+  name: "Bible understanding"
+  alternate_description: "Local Christian leaders help people to understand the meaning of the Scriptures, and how to apply in their context."
+  topic: faith_development
+  weight: 2
+  number: 4
+
+disease_prevented:
+  name: "Healthy"
+  alternate_description: "CF community groups adopt a healthy and socially responsible lifestyle"
+  topic: language_development
+  weight: 1
+  number: 5

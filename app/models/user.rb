@@ -3,7 +3,6 @@ class User < ActiveRecord::Base
   include ContactDetails
 
   belongs_to :role
-  has_many :permissions, through: :role
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter, dependent: :restrict_with_error
   has_many :events, inverse_of: :record_creator, dependent: :restrict_with_error
   has_many :people, inverse_of: :record_creator, dependent: :restrict_with_error
@@ -17,14 +16,13 @@ class User < ActiveRecord::Base
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :restrict_with_error
 
-  after_save :send_confirmation_email
-
   attr_accessor :remember_token
+
+  has_secure_password
+  has_one_time_password
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :phone, presence: true, length: { is: 10 }, format: { with: /\A\d+\Z/ }, uniqueness: true
-  has_secure_password
-  has_one_time_password
   validates :password,
             presence: true,
             length: { minimum: 6 },
@@ -41,6 +39,14 @@ class User < ActiveRecord::Base
             allow_blank: true,
             format: { with: VALID_EMAIL_REGEX },
             uniqueness: { case_sensitive: false }
+  validates :trusted, inclusion: [true, false]
+  validates :national, inclusion: [true, false]
+  validates :admin, inclusion: [true, false]
+  validates :curator, inclusion: [true, false]
+  validates :national_curator, inclusion: [true, false]
+  validate :interface_language_must_have_locale_tag
+
+  after_save :send_confirmation_email
 
   # Returns the hash digest of the given string.
   def User.digest(string)
@@ -86,6 +92,15 @@ class User < ActiveRecord::Base
     geo_states.take
   end
 
+  # The locale string for this user
+  def locale
+    if interface_language.present?
+      interface_language.locale_tag
+    else
+      Language.interface_fallback.locale_tag
+    end
+  end
+
   def zones
     Zone.of_states geo_states
   end
@@ -101,6 +116,56 @@ class User < ActiveRecord::Base
     zones.inject(false) { |alt_required, zone| alt_required || zone.pm_description_type == 'alternate' }
   end
 
+  # This is a transitional method for moving from using roles and permissions
+  # to using the simplified fields on the user model for user level access.
+  # it maps the permission names to the right values of the fields
+  #TODO: stop using this transitional method
+  def can?(permission)
+    case permission
+      when 'create_user', 'delete_user'
+        admin?
+      when 'edit_user'
+        # not including self
+        admin?
+      when 'view_all_users'
+        trusted?
+      when 'view_roles', 'edit_role', 'create_role'
+        admin?
+      when 'view_all_languages'
+        national?
+      when 'create_language'
+        national_curator?
+      when 'edit_language'
+        curator?
+      when 'create_topic', 'edit_topic'
+        admin?
+      when 'view_all_topics'
+        true
+      when 'view_all_reports'
+        national?
+      when 'create_report', 'edit_report', 'archive_report', 'tag_report'
+        true
+      when 'evaluate_progress', 'view_outcome_totals'
+        true
+      when 'create_tally', 'view_all_tallies', 'edit_tally', 'archive_tally', 'increase_tally'
+        # not used any more
+        false
+      when 'create_event', 'edit_event'
+        true
+      when 'view_all_people'
+        trusted? and national?
+      when 'edit_person'
+        trusted?
+      when 'report_numbers', 'view_output_totals'
+        true
+      when 'add_resource', 'edit_resource','view_all_resources'
+        true
+      else
+        logger.error("unknown permission: #{permission}")
+        false
+    end
+  end
+
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles
@@ -109,12 +174,15 @@ class User < ActiveRecord::Base
   def method_missing(method_id, *args)
     if match = matches_dynamic_role_check?(method_id)
       tokenize(match.captures.first).each do |role_name|
-        return true if role.name.downcase == role_name
+        return admin? if role_name == 'admin' or role_name == 'administrator'
+        return curator? if role_name == 'curator'
+        return national_curator? if role_name == 'national_curator'
+        return true if role_description.present? and role_name == role_description.parameterize('_')
       end
       return false
     elsif match = matches_dynamic_perm_check?(method_id)
       tokenize(match.captures.first).each do |perm_name|
-         return true if permissions.find_by_name(perm_name)
+         return true if can?(perm_name)
       end
       return false
     else
@@ -154,6 +222,12 @@ class User < ActiveRecord::Base
           )
           logger.debug 'sending email verification email'
           UserMailer.user_email_confirmation(self).deliver_now
+        end
+      end
+
+      def interface_language_must_have_locale_tag
+        if interface_language.present? and interface_language.locale_tag.blank?
+          errors.add(:interface_language, 'must be a user interface language.')
         end
       end
 end

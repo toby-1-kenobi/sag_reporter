@@ -70,6 +70,7 @@ class UsersController < ApplicationController
       flash['success'] = 'New User Created!'
       redirect_to user_factory.instance()
     else
+      logger.debug(user_factory.instance().errors.full_messages)
       assign_for_user_form
       @user = user_factory.instance()
       render 'new'
@@ -105,7 +106,7 @@ class UsersController < ApplicationController
         user.email_activate
         flash[:success] = 'Your email address has been validated.'
       else
-        log_out
+        log_out if logged_in?
         flash[:error] = "You must be logged in as #{user.name} to validate that email address"
       end
     else
@@ -150,12 +151,17 @@ class UsersController < ApplicationController
         :mother_tongue_id,
         :interface_language_id,
         :role_id,
+        :trusted,
+        :admin,
+        :national,
+        :curator,
+        :role_description,
         {:speaks => []},
         {:geo_states => []}
       ]
-      # current user cannot change own role or state
+      # current user cannot change own access level or state
       if params[:id] and logged_in_user?(User.find(params[:id]))
-        safe_params.reject!{ |p| p == :role_id }
+        safe_params.reject!{ |p| [:role_id, :trusted, :admin, :national, :curator].include? p }
         # but admin user can change his own state
         safe_params.reject!{ |p| p == {:geo_states => []} } unless logged_in_user.is_an_admin?
       end
@@ -165,7 +171,7 @@ class UsersController < ApplicationController
     def assign_for_user_form
       @roles = Role.all
       @languages = Language.includes(:geo_states).order(:name)
-      @interface_languages = Language.where(interface: true).order(:name)
+      @interface_languages = Language.where.not(locale_tag: nil).order(:name)
       @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
       @zones = Zone.order(:name)
     end

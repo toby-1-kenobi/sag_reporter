@@ -2,7 +2,10 @@
       <li class="collection-item report <%= " archived hide" if report_listing.archived? %> <%= report_colour[report_listing.report_type] %>" id="report-<%= report_listing.id %>">
         <div>
           <span class="report-date"><%= time_ago_in_words report_listing.report_date %> ago</span>
-          <span class="reporter-name"><%= report_listing.reporter.name %></span>
+          <%# Only show the reporter name if the logged in user is trusted, or if it's them. %>
+          <% if logged_in_user.trusted? or logged_in_user?(report_listing.reporter) %>
+            <span class="reporter-name"><%= report_listing.reporter.name %></span>
+          <% end %>
         </div>
         <% content = report_listing.content.length > 52 ? report_listing.content[0..50] << '...' : report_listing.content %>
         <div class="report-content"><%= link_to content, report_listing %></div>
