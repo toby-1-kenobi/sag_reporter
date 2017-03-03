@@ -15,9 +15,11 @@
                 Logout
             <% end %>
       <% else %>
+          <% unless current_page?(login_path) %>
             <%= link_to login_path, class: 'mdl-navigation__link' do %>
                 Login
             <% end %>
+          <% end %>
       <% end %>
     </nav>
   </div>
