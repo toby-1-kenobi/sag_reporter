@@ -2,10 +2,10 @@ require 'test_helper'
 
 class SessionsControllerTest < ActionController::TestCase
 	def setup
-		@user = users(:andrew)
-		@other_user = users(:emma)
-		@twilio_user_unconfirmed = users(:twilio_user_unconfirmed)
-		@twilio_user_confirmed = users(:twilio_user_confirmed)
+		@admin_user = users(:andrew)
+		@normal_user = users(:emma)
+		@user_email_unconfirmed = users(:email_unconfirmed)
+		@user_email_confirmed = users(:email_confirmed)
   end
 
   def json_response
@@ -18,147 +18,98 @@ class SessionsControllerTest < ActionController::TestCase
 	end
 
 	test 'wont let users skip OTP' do
-		post :create, { session: {phone: @user.phone, password: 'password'} }
-    assert_not_equal session[:user_id], @user.id
+		post :create, { session: {phone: @admin_user.phone, password: 'password'} }
+    assert_not_equal session[:user_id], @admin_user.id
 	end
 
   # SMS server and mailer need to be mocked for these tests
-  # test 'should send otp message on phone and show flash message' do
-  # 	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
-  #   assert_equal session[:temp_user], @twilio_user_unconfirmed.id
-		# value(flash['info']).wont_be_nil
-  # end
+  test 'should send otp message on phone and show flash message' do
+		BcsSms.expects(:send_otp).returns({'status' => true})
+  	post :two_factor_auth, { session: {phone: @user_email_unconfirmed.phone, password: 'password'} }
+    assert_equal session[:temp_user], @user_email_unconfirmed.id
+		value(flash['info']).wont_be_nil
+  end
 
   test 'should show error message if phone and email cannot receive OTP' do
-  	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
-  	assert_equal @twilio_user_unconfirmed.id, session[:temp_user]
+    BcsSms.expects(:send_otp).returns({'status' => false})
+  	post :two_factor_auth, { session: {phone: @user_email_unconfirmed.phone, password: 'password'} }
+  	assert_equal @user_email_unconfirmed.id, session[:temp_user]
 		value(flash['error']).wont_be_nil
   end
 
-  test 'should not send otp if user entered bad credentials' do
-  	post :two_factor_auth, { session: {phone: @user.phone, password: '12345678'} }
-		assert_response :success
-		value(flash['error']).wont_be_nil
-	end
-
-	test 'should verify correct otp and flash message' do
-		otp_code = @user.otp_code
-		session[:temp_user] = @user.id
-		post :verify_otp, { otp_code: otp_code }
-		assert_response :success
-		value(json_response['message']).wont_be_nil
-	end
-
-	test 'should reject wrong otp and flash a message' do
-		session[:temp_user] = @user.id
-		post :verify_otp, { otp_code: 12897 }
-		assert_response :success
-		value(json_response['message']).wont_be_nil
-	end
-
-	test 'user should be able to resend otp in phone' do
-		session[:temp_user] = @twilio_user_unconfirmed.id
-		get :resend_otp
-		assert_response :success
-		value(json_response['message']).wont_be_nil
-	end
-
-	test 'user should be able to resend otp at both phone and mail with confirmed email ' do
-		session[:temp_user] = @twilio_user_confirmed.id
-		get :resend_otp
-		assert_response :success
-	end
-
+	# test 'should verify correct otp and flash message' do
+	# 	otp_code = @admin_user.otp_code
+	# 	session[:temp_user] = @admin_user.id
+	# 	post :verify_otp, { otp_code: otp_code }
+	# 	assert_response :success
+	# 	value(json_response['message']).wont_be_nil
+	# end
+  #
+	# test 'should reject wrong otp and flash a message' do
+	# 	session[:temp_user] = @admin_user.id
+	# 	post :verify_otp, { otp_code: 12897 }
+	# 	assert_response :success
+	# 	value(json_response['message']).wont_be_nil
+	# end
 
   test 'should log in user and redirected to edit user page to change password' do
-    session[:temp_user] = @user.id
-		post :create, { session: {phone: @user.phone, password: 'password'} }
-		assert_redirected_to edit_user_path(@user)
+    session[:temp_user] = @admin_user.id
+		post :create, { session: { otp_code: @admin_user.otp_code.to_s } }
+		assert_redirected_to edit_user_path(@admin_user)
 		value(flash['info']).wont_be_nil
   end
 
   test 'user should login and redirect to home page' do
-    session[:temp_user] = @other_user.id
-  	post :create, { session: {phone: @other_user.phone, password: 'test12345678'} }
+    session[:temp_user] = @normal_user.id
+  	post :create, { session: { otp_code: @normal_user.otp_code.to_s } }
 		assert_redirected_to root_path
-		assert_equal @other_user.id, session[:user_id]
+		assert_equal @normal_user.id, session[:user_id]
   end
 
   test 'user should not able to login with wrong phone number' do
-  	post :create, { session: {phone: '0987656329', password: '12345678'} }
+  	post :two_factor_auth, { session: {phone: '0987656329', password: '12345678'} }
 		assert_response :success
 		value(flash['error']).wont_be_nil
   end
 
-  test 'should send otp message on phone and show flash message' do
-  	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
-  	assert_equal @twilio_user_unconfirmed.id, session[:user_id]
+	test 'user should not able to login with wrong password' do
+		post :two_factor_auth, { session: {phone: '0987654322', password: '12345678'} }
+		assert_response :success
+		value(flash['error']).wont_be_nil
+	end
+
+  it 'sends otp message on phone and show flash message' do
+    BcsSms.expects(:send_otp).returns({'status' => true})
+  	post :two_factor_auth, { session: {phone: @user_email_unconfirmed.phone, password: 'password'} }
+  	assert_equal @user_email_unconfirmed.id, session[:temp_user]
 		value(flash['info']).wont_be_nil
   end
 
   test 'should send otp both phone and email and show flash message' do
-  	post :two_factor_auth, { session: {phone: @twilio_user_unconfirmed.phone, password: 'password'} }
-  	assert_equal @twilio_user_unconfirmed.id, session[:temp_user]
+    BcsSms.expects(:send_otp).returns({'status' => true})
+  	post :two_factor_auth, { session: {phone: @user_email_confirmed.phone, password: 'password'} }
+  	assert_equal @user_email_confirmed.id, session[:temp_user]
 		value(flash['info']).wont_be_nil
   end
 
   test 'should not send otp if user entered bad credentials' do
-  	post :two_factor_auth, { session: {phone: @user.phone, password: '12345678'} }
+    BcsSms.expects(:send_otp).never
+  	post :two_factor_auth, { session: {phone: @admin_user.phone, password: '12345678'} }
 		assert_response :success
 		value(flash['error']).wont_be_nil
 	end
 
-	test 'should verify correct otp and flash message' do
-		otp_code = @user.otp_code
-		session[:temp_user] = @user.id
-		post :verify_otp, { otp_code: otp_code }
-		assert_response :success
-		value(json_response['message']).wont_be_nil
-	end
-
-	test 'should reject wrong otp and flash a message' do
-		session[:temp_user] = @user.id
-		post :verify_otp, { otp_code: 12897 }
-		assert_response :success
-		value(json_response['message']).wont_be_nil
-	end
-
-	test 'user should be able to resend otp in phone' do
-		session[:temp_user] = @twilio_user_unconfirmed.id
-		get :resend_otp
-		assert_response :success
-		value(json_response['message']).wont_be_nil
-	end
-
-	test 'user should be able to resend otp at both phone and mail with confirmed email ' do
-		session[:temp_user] = @twilio_user_confirmed.id
-		get :resend_otp
+	test 'user should be able to resend otp to phone' do
+    BcsSms.expects(:send_otp).returns({'status' => true})
+		session[:temp_user] = @user_email_unconfirmed.id
+		get :resend_otp_to_phone
 		assert_response :success
 	end
 
-
-  test 'should log in user and redirected to edit user page' do
-		post :create, { session: {phone: '0987654321', password: 'password'} }
-		assert_redirected_to edit_user_path(@user)
-		value(flash['info']).wont_be_nil
-  end
-
-  test 'user should login and redirect to home page' do
-  	post :create, { session: {phone: '0987654322', password: 'test12345678'} }
-		assert_redirected_to root_path
-		assert_equal @other_user.id, session[:user_id]
-  end
-
-  test 'user should not able to login with wrong password' do
-  	post :create, { session: {phone: '0987654322', password: '12345678'} }
+	test 'user should be able to resend otp to mail with confirmed email' do
+		session[:temp_user] = @user_email_confirmed.id
+		get :resend_otp_to_email
 		assert_response :success
-		value(flash['error']).wont_be_nil
-  end
-
-  test 'user should not able to login with wrong phone number' do
-  	post :create, { session: {phone: '0987656329', password: '12345678'} }
-		assert_response :success
-		value(flash['error']).wont_be_nil
-  end
+	end
 
 end

@@ -5,7 +5,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
 	include IntegrationHelper
 
   def setup
-    @user = users(:andrew)
+    @admin_user = users(:andrew)
   end
 
   test 'login with invalid information' do
@@ -20,15 +20,16 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
   end
 
   test 'login with valid information followed by logout' do
+    BcsSms.expects(:send_otp).returns({'status' => true})
     get login_path
-    post two_factor_auth_path, session: { phone: @user.phone, password: 'password' }
-    post login_path, session: { phone: @user.phone, password: 'password', otp_code:		   @user.otp_code }
-    assert_redirected_to edit_user_path(@user)
+    post two_factor_auth_path, session: {phone: @admin_user.phone, password: 'password' }
+    post login_path, session: {phone: @admin_user.phone, password: 'password', otp_code:		   @admin_user.otp_code }
+    assert_redirected_to edit_user_path(@admin_user)
     assert is_logged_in?
     follow_redirect!
     assert_select 'a[href=?]', login_path, count: 0
     assert_select 'a[href=?]', logout_path
-    assert_select 'a[href=?]', user_path(@user)
+    assert_select 'a[href=?]', user_path(@admin_user)
     delete logout_path
     assert_not is_logged_in?
     assert_redirected_to login_url
@@ -37,22 +38,23 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_select 'a[href=?]', login_path
     assert_select 'a[href=?]', logout_path, count: 0
-    assert_select 'a[href=?]', user_path(@user), count: 0
+    assert_select 'a[href=?]', user_path(@admin_user), count: 0
   end
 
   test 'login with remembering' do
-    log_in_as(@user)
+    BcsSms.expects(:send_otp).returns({'status' => true})
+    log_in_as(@admin_user)
     assert_not_nil cookies['remember_token']
   end
 
   test 'get authentication token' do
-    post '/knock/auth_token', {auth: {phone: @user.phone, password: 'password'}}
+    post '/knock/auth_token', {auth: {phone: @admin_user.phone, password: 'password'}}
     response = ActiveSupport::JSON.decode @response.body
     assert_match /.*\..*\..*/, response['jwt']
   end
 
   test 'no authentication on bad credentials' do
-    post '/knock/auth_token', {auth: {phone: @user.phone, password: 'invalid'}}
+    post '/knock/auth_token', {auth: {phone: @admin_user.phone, password: 'invalid'}}
     assert_response :missing
   end
 

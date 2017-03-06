@@ -19,5 +19,9 @@ div.impact_report {
       padding: 3px;
       margin: 2px;
     }
+    img {
+      width: 100%;
+      object-fit: contain;
+    }
   }
 }

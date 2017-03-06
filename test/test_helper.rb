@@ -4,6 +4,7 @@ require 'rails/test_help'
 require "minitest/reporters"
 require "minitest/rails/capybara"
 require "mocha/mini_test"
+require "capybara/poltergeist"
 Minitest::Reporters.use!(
   Minitest::Reporters::ProgressReporter.new,
   ENV,

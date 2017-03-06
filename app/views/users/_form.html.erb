@@ -1,18 +1,18 @@
 
 
-<%= form_for(@user, html: {class: "col s12"}) do |f| %>
+<%= form_for(@user, html: {class: 'col s12'}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
 
     <div class="row">
       <div class="input-field col s6">
         <i class="material-icons prefix">account_circle</i>
         <%= f.text_field :name %>
-        <%= f.label :name, class: form_action == "edit" ? "active" : "" %>
+        <%= f.label :name, class: form_action == 'edit' ? 'active' : '' %>
       </div>
       <div class="input-field col s6">
         <i class="material-icons prefix">phone</i>
         <%= f.telephone_field :phone %>
-        <%= f.label :phone, class: form_action == "edit" ? "active" : "" %>
+        <%= f.label :phone, class: form_action == 'edit' ? 'active' : '' %>
       </div>
     </div>
 
@@ -25,7 +25,7 @@
       <div class="input-field col s6">
         <i class="material-icons prefix">vpn_key</i>
         <%= f.password_field :password_confirmation %>
-        <%= f.label :password_confirmation, "Confirm Password" %>
+        <%= f.label :password_confirmation, 'Confirm Password' %>
       </div>
     </div>
 
@@ -34,37 +34,37 @@
         <i class="material-icons prefix">email</i>
         <%= f.email_field :email %>
         <%= f.label :email %>
-        <%= link_to 'Resend Email Confirmation', "javascript:;", class: 'Black text-lighten-3 right resend-confirm-email-button' if !logged_in_user.email_confirmed %>
+      </div>
     </div>
 
     <div class="row">
       <% if !logged_in_user?(@user) or logged_in_user.is_an_admin? %>
         <div class="input-field col s12 m6">
           <div>
-            <%= render partial: "shared/multiselect", locals: {
-              text: "Zone",
-              icon: "language",
-              object: "user",
-              attribute: "zone",
+            <%= render partial: 'shared/multiselect', locals: {
+              text: 'Zone',
+              icon: 'language',
+              object: 'user',
+              attribute: 'zone',
               display: :name,
               data: :id,
               collection: @zones,
               selected: @user.zones,
-              check_box_options: {class: "filter-trigger", "data-filter-trigger-label" => "zone"}
+              check_box_options: {class: 'filter-trigger', 'data-filter-trigger-label' => 'zone'}
             } %>
           </div>
           <div>
-            <%= render partial: "shared/multiselect", locals: {
-              text: "State",
-              icon: "language",
-              object: "user",
-              attribute: "geo_states",
+            <%= render partial: 'shared/multiselect', locals: {
+              text: 'State',
+              icon: 'language',
+              object: 'user',
+              attribute: 'geo_states',
               display: :name,
               data: :zone_id,
-              element_options: {class: "filterable-item", "data-filter-label" => "zone"},
+              element_options: {class: 'filterable-item', 'data-filter-label' => 'zone'},
               collection: @geo_states,
               selected: @user.geo_states,
-              check_box_options: {class: "filter-trigger", "data-filter-trigger-label" => "geo_state"}
+              check_box_options: {class: 'filter-trigger', 'data-filter-trigger-label' => 'geo_state'}
             } %>
           </div>
         </div>
@@ -72,12 +72,12 @@
       <div class="input-field col s12 m6">
         <div class="row">
           <div class="input-field col s12 m6">
-            <%= f.collection_select(:mother_tongue_id, @languages, :id, :name, {include_blank: true}, {class: "mother-tongue-select"}) %>
-            <%= f.label :mother_tongue_id, "Select mother tongue" %>
+            <%= f.collection_select(:mother_tongue_id, @languages, :id, :name, {include_blank: true}, {class: 'mother-tongue-select'}) %>
+            <%= f.label :mother_tongue_id, 'Select mother tongue' %>
           </div>
           <div class="input-field col s12 m6">
             <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name) %>
-            <%= f.label :interface_language_id, "Language for using Reporter" %>
+            <%= f.label :interface_language_id, 'Language for using Reporter' %>
           </div>
         </div>
       </div>
@@ -85,30 +85,65 @@
 
     <div class="row">
       <div class="input-field col s12, m6">
-        <%= render partial: "shared/multiselect", locals: {
-          text: "Able to speak…",
-          icon: "language",
-          object: "user",
-          attribute: "speaks",
+        <%= render partial: 'shared/multiselect', locals: {
+          text: 'Able to speak…',
+          icon: 'language',
+          object: 'user',
+          attribute: 'speaks',
           display: :name,
           data: :geo_state_ids_str,
-          element_options: {class: "filterable-item", "data-filter-label" => "geo_state"},
+          element_options: {class: 'filterable-item', 'data-filter-label' => 'geo_state'},
           collection: @languages,
           selected: @user.spoken_languages
         } %>
       </div>
+      <%# Users cannot set their own levels of access %>
+      <% unless logged_in_user?(@user) %>
+        <div class="col s12, m6">
+          <p class="switch">
+            Scope of access for this user:<br/>
+            <label>
+              State-based
+              <%= f.check_box(:national) %>
+              <span class="lever"></span>
+              National
+            </label>
+          </p>
+          <p class="switch">
+            This user can see:<br/>
+            <label>
+              Not sensitive data
+              <%= f.check_box(:trusted) %>
+              <span class="lever"></span>
+              Sensitive data
+            </label>
+          </p>
+          <p>
+            <%= f.check_box(:admin) %>
+            <%= f.label :admin, 'Administrator' %>
+          </p>
+          <p>
+            <%= f.check_box(:curator) %>
+            <%= f.label :curator %>
+          </p>
+          <p class="input-field">
+            <%= f.text_field(:role_description) %>
+            <%= f.label(:role_description) %>
+          </p>
+        </div>
+      <% end %>
     </div>
 
     <div class="row">
       <% if !logged_in_user?(@user) %>
         <div class="input-field col s12 m6">
           <%= f.select(:role_id, @roles.collect{|r| [r.name, r.id]}) %>
-          <%= f.label :role_id, "Select role" %>
+          <%= f.label :role_id, 'Select role' %>
         </div>
       <% end %>
       <div class="col s12 m6">
-        <%= button_tag( :class => "btn waves-effect waves-light right") do %>
-          <%= form_action == "new" ? "Create New User" : "Update" %> <i class="material-icons right">create</i>
+        <%= button_tag( :class => 'btn waves-effect waves-light right') do %>
+          <%= form_action == 'new' ? 'Create New User' : 'Update' %> <i class="material-icons right">create</i>
         <% end %>
       </div>
     </div>

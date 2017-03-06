@@ -18,4 +18,5 @@
 //= require chartkick
 //= require autocomplete-rails
 //= require materialize-sprockets
+//= require material
 //= require_tree .

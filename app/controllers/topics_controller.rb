@@ -81,7 +81,7 @@ class TopicsController < ApplicationController
       else
         @progress_markers_by_weight = Hash.new
         Topic.all.each do |outcome_area|
-          @progress_markers_by_weight[outcome_area] = ProgressMarker.active.where(topic: outcome_area).group_by { |pm| pm.weight }
+          @progress_markers_by_weight[outcome_area] = ProgressMarker.active.where(topic: outcome_area).order(weight: :asc, number: :asc).group_by { |pm| pm.weight }
         end
         @monthly_reports = @language.tagged_impact_reports_monthly(@geo_state, @from_date, @to_date)
         @yearmonth = params[:yearmonth]

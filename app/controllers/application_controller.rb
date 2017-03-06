@@ -5,9 +5,19 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
-  # Access sessions helper and roles helper from application controllers.
+  # Access sessions helper from application controllers.
   include SessionsHelper
-  include RolesHelper
+
+  # localisation
+  before_action :set_locale
+
+  def set_locale
+    if logged_in?
+      I18n.locale = logged_in_user.locale
+    else
+      I18n.locale = I18n.default_locale
+    end
+  end
 
   private
 

@@ -15,12 +15,18 @@ class StateLanguage < ActiveRecord::Base
 
   scope :in_project, -> { where project: true }
 
+  # The date from which charting of outcome dat should start
+  BASE_DATE = Date.new(2016, 10)
+
   def <=>(sl)
     language.name.downcase <=> sl.language.name.downcase
   end
 
   def outcome_table_data(user, options = {})
     options[:from_date] ||= 6.months.ago
+    if options[:from_date] < BASE_DATE
+      options[:from_date] = BASE_DATE
+    end
     options[:to_date] ||= Date.today
 
     # this hash for one less db query

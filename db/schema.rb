@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161230150748) do
+ActiveRecord::Schema.define(version: 20170302061643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -184,7 +184,6 @@ ActiveRecord::Schema.define(version: 20161230150748) do
     t.datetime "created_at",                                         null: false
     t.datetime "updated_at",                                         null: false
     t.string   "colour",                           default: "white", null: false
-    t.boolean  "interface",                        default: false
     t.string   "iso",                    limit: 3
     t.integer  "family_id"
     t.integer  "population",             limit: 8
@@ -196,6 +195,7 @@ ActiveRecord::Schema.define(version: 20161230150748) do
     t.text     "translation_info"
     t.integer  "translation_need",                 default: 0,       null: false
     t.integer  "translation_progress",             default: 0,       null: false
+    t.string   "locale_tag"
   end
 
   add_index "languages", ["cluster_id"], name: "index_languages_on_cluster_id", using: :btree
@@ -345,21 +345,6 @@ ActiveRecord::Schema.define(version: 20161230150748) do
   add_index "people", ["name"], name: "index_people_on_name", using: :btree
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
-  create_table "permissions", force: :cascade do |t|
-    t.string   "name"
-    t.string   "description"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.integer  "category"
-  end
-
-  add_index "permissions", ["name"], name: "index_permissions_on_name", unique: true, using: :btree
-
-  create_table "permissions_roles", id: false, force: :cascade do |t|
-    t.integer "role_id"
-    t.integer "permission_id"
-  end
-
   create_table "planning_reports", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -367,7 +352,6 @@ ActiveRecord::Schema.define(version: 20161230150748) do
 
   create_table "progress_markers", force: :cascade do |t|
     t.string   "name"
-    t.text     "description"
     t.integer  "topic_id"
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
@@ -550,6 +534,12 @@ ActiveRecord::Schema.define(version: 20161230150748) do
     t.string   "email"
     t.boolean  "email_confirmed",       default: false
     t.string   "confirm_token"
+    t.boolean  "trusted",               default: false, null: false
+    t.boolean  "national",              default: false, null: false
+    t.boolean  "curator",               default: false, null: false
+    t.boolean  "admin",                 default: false, null: false
+    t.boolean  "national_curator",      default: false, null: false
+    t.string   "role_description"
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree

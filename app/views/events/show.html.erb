@@ -2,12 +2,14 @@
 
 <h1><%= @event.event_label %> - <%= @event.event_date.to_s(:rfc822) %></h1>
 
-<% if @event.record_creator %>
-  <p>
-   Reported by: <%= @event.record_creator.name %>
-   <%= time_ago_in_words @event.created_at %> ago.
-  </p>
-<% end %>
+
+<p>
+  <%# Can see the name of the record creator if the user is trusted, or if it's them %>
+  <% if @event.record_creator and (logged_in_user.trusted? or logged_in_user?(@event.record_creator)) %>
+    Reported by: <%= @event.record_creator.name %>.<br />
+  <% end %>
+  Reported <%= time_ago_in_words @event.created_at %> ago.
+</p>
 
 <% @event.purposes.each do |purpose| %>
   <p class="event-purpose">To enable <%= purpose.description %>.</p>
@@ -21,7 +23,8 @@
 <% if @event.participant_amount %>
   <p>A total of <%= @event.participant_amount %> people attended the event.</p>
 <% end %>
-<% if @event.people.any? %>
+<%# Show participant names if there are any and the logged in user is trusted. %>
+<% if @event.people.any? and logged_in_user.trusted? %>
   <ul class="collection event-attendees">
   	<% @event.people.each do |person| %>
   	  <li class="collection-item">

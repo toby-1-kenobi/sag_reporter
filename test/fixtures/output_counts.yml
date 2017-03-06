@@ -1,19 +1,10 @@
-# Read about fixtures at
-# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 <%
   def output_tallies
     [
       :community_meetings,
       :volunteers,
-      :tools_printed,
-      :literacy_classes,
-      :drafted_verses,
-      :church_approved_verses,
-      :consultant_approved_verses,
-      :jf_screening,
-      :oral_bible_tools,
-      :scripture_resources,
       :discipleship_meetings
     ]
   end
@@ -32,7 +23,7 @@
 output_count_<%= index %>:
   output_tally: <%= output_tallies.sample %>
   user: <%= users.sample %>
-  language: bodo
+  language: toto
   geo_state: nb
   amount: <%= rand(1..10) %>
   year: 2015

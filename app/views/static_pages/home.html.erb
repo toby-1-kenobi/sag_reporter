@@ -1,13 +1,13 @@
 <% provide(:title, "Home") %>
 <h1><i class="material-icons large">home</i> home</h1>
 
-<% if logged_in_user.is_a_reporter? or logged_in_user.is_an_evaluator? %>
+<% if not logged_in_user.admin? %>
   <%= render partial: 'reporter_home' %>
 <% else %>
   <div class="collection" id="home-menu">
 
     <% @links.each do |link_data| %>
-      <% if logged_in_user.permissions.find_by_name link_data[:permission] %>
+      <% if logged_in_user.can? link_data[:permission] %>
         <%= link_to link_data[:path], class: 'collection-item waves-effect' do %>
           <i class="material-icons"><%= link_data[:icon] %></i>
           <%= link_data[:text] %>

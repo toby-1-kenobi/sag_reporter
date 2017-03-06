@@ -105,14 +105,6 @@ class StaticPagesController < ApplicationController
             category: 'other'
         },
         {
-            permission: 'view_roles',
-            path: roles_path,
-            text: 'View roles and permissions',
-            icon: 'people_outline',
-            colour: 'light-blue',
-            category: 'other'
-        },
-        {
             permission: 'view_all_languages',
             path: languages_path,
             text: 'View all languages',
