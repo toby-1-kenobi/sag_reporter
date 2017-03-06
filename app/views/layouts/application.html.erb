@@ -4,12 +4,21 @@
 <%# Transitioning from Materialize to MDL. Some pages use one for stying, other pages use the other. %>
 <%# The Materialize styles break the MDL ones so we need to know which page we're on and import the styles accordingly %>
 <%
-  if current_page?(login_path)
+  if current_page?(login_path) or request.path == two_factor_auth_path
     mdl = true
   else
     mdl = false
   end
 %>
+
+<script>
+  console.log('current path: <%= request.path %>');
+  <% if mdl %>
+    console.log('using mdl');
+  <% else %>
+    console.log('using materialize');
+  <% end %>
+</script>
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
@@ -39,36 +48,38 @@
   <% end %>
   <main class="mdl-layout__content">
       <% if logged_in_user and logged_in_user.authenticate('password') %>
-        <div class="card orange" >
+        <div class="<%= mdl ? 'flash-message' : 'card' %> orange" >
           <div class="card-content">
             You have an insecure password, please change it.
           </div>
-          <div class="card-action">
+          <div class="card-action mdl-card__actions">
             <%= link_to 'change password', edit_user_path(logged_in_user), class: 'grey-text text-lighten-3' %>
           </div>
         </div>
       <% end %>
       <% if logged_in_user && logged_in_user.email.present? && !logged_in_user.email_confirmed %>
-        <div class="card-panel light-blue email-msg">
+        <div class="<%= mdl ? 'flash-message' : 'card-panel' %> light-blue email-msg">
           Your Email address is not yet confirmed.
         </div>
       <% end %>
       <% flash.each do |message_type, message| %>
         <% if flash_values[message_type] %>
-          <div class="card-panel <%= flash_values[message_type][:colour] %>">
+          <div class="<%= mdl ? 'flash-message' : 'card-panel' %> <%= flash_values[message_type][:colour] %>">
             <i class="material-icons"><%= flash_values[message_type][:icon] %></i>
             <span class="<%= flash_values[message_type][:text_colour] %>"><%= message %></span>
           </div>
         <% else %>
-          <div class="card-panel light-blue"><%= message %></div>
+          <div class="<%= mdl ? 'flash-message' : 'card-panel' %> light-blue"><%= message %></div>
         <% end %>
       <% end %>
-      <%= yield %>
-    <%=
-      debug(params) if Rails.env.development?
-    %>
+    <%= yield %>
   </main>
-  <%= render 'layouts/footer' unless @supress_footer %>
+  <% if mdl %>
+      <%= render 'layouts/footer' unless @supress_footer %>
+  <% else %>
+    <%= render 'layouts/materialize_footer' unless @supress_footer %>
+  <% end %>
+  <%# debug(params) if Rails.env.development? %>
 </div>
 
 </body>

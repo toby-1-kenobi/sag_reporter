@@ -1,19 +1,8 @@
 <% provide(:title, 'Log in') %>
-<style>
-  .mdl-layout {
-    align-items: center;
-    justify-content: center;
-  }
-  .mdl-layout__content {
-    padding: 24px;
-  }
-  .instructions {
-    margin-top: 2em;
-  }
-</style>
+
 <div class="mdl-card login-card mdl-shadow--6dp">
   <%= form_for(:session, url: two_factor_auth_path) do |f| %>
-    <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+    <div class="mdl-card__title">
     </div>
     <div class="mdl-card__supporting-text">
       <div class="mdl-textfield mdl-js-textfield">
@@ -30,7 +19,6 @@
     </div>
   <% end %>
 </div>
-
 
 <div class="mdl-card instructions">
   <div class="mdl-card__supporting-text">
