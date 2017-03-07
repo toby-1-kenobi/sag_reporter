@@ -4,7 +4,8 @@
 <%# Transitioning from Materialize to MDL. Some pages use one for stying, other pages use the other. %>
 <%# The Materialize styles break the MDL ones so we need to know which page we're on and import the styles accordingly %>
 <%
-  if current_page?(login_path) or request.path == two_factor_auth_path
+  case request.path
+  when login_path, two_factor_auth_path, root_path
     mdl = true
   else
     mdl = false

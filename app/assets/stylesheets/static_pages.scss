@@ -13,3 +13,35 @@
 .lcr-icon {
   line-height: 1;
 }
+
+.see-information .mdl-card__title, .do-tasks .mdl-card__title {
+  height: 200px;
+}
+
+.see-information .mdl-card__title {
+  height: 200px;
+  background: image-url("information.svg") no-repeat;
+  background-size: cover;
+  background-position: 0 -70px;
+}
+
+.do-tasks .mdl-card__title {
+  height: 200px;
+  background: image-url("tasks.svg") no-repeat;
+  background-size: cover;
+  background-position: 0 -70px;
+}
+
+.lci-info .mdl-card__title {
+  height: 150px;
+  background: image-url("LCI_logo.png") no-repeat;
+  background-size: cover;
+}
+
+.outcome-area-cell {
+  padding: 1em;
+}
+
+.mdl-card.outcome-area {
+  width: 100%;
+}

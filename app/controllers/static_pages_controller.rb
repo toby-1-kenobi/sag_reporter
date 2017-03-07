@@ -1,8 +1,12 @@
 class StaticPagesController < ApplicationController
 
-  before_action :require_login, only: [:home]
+  before_action :require_login, only: [:tasks, :home]
 
   def home
+    @outcome_areas = Topic.all
+  end
+
+  def tasks
     @links = [
         {
             permission: 'create_report',

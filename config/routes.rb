@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   root 'static_pages#home'
 
+  get 'tasks' => 'static_pages#tasks'
+
   resources :events do
     get :autocomplete_person_name, :on => :collection
   end
