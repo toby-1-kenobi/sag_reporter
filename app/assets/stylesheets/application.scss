@@ -23,6 +23,10 @@ $primary-color: color("cyan", "darken-2") !default;
 
 @import 'common';
 
+.hide {
+  display: none;
+}
+
 .mdl-layout__content {
   padding: 24px;
 }

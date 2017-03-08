@@ -62,7 +62,7 @@ class Language < ActiveRecord::Base
     language.iso = nil if language.iso.blank?
   end
 
-  scope :user_limited, lambda { |user|
+  scope :user_limited, -> user {
     if user.national?
       all
     else

@@ -9,16 +9,12 @@ class LanguagesController < ApplicationController
     redirect_to root_path unless logged_in_user.can_create_language?
   end
 
-  before_action only: [:index] do
-    redirect_to root_path unless logged_in_user.can_view_all_languages?
-  end
-
   before_action only: [:edit, :update] do
     redirect_to root_path unless logged_in_user.can_edit_language?
   end
 
   def index
-  	@languages = Language.includes(:family, { geo_states: :zone }).order('LOWER(languages.name)')
+  	@languages = Language.user_limited(logged_in_user).includes(:family, { geo_states: :zone }).order('LOWER(languages.name)')
   end
 
   def overview

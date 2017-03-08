@@ -5,7 +5,7 @@
 <%# The Materialize styles break the MDL ones so we need to know which page we're on and import the styles accordingly %>
 <%
   case request.path
-  when login_path, two_factor_auth_path, root_path
+  when login_path, two_factor_auth_path, root_path, languages_path
     mdl = true
   else
     mdl = false

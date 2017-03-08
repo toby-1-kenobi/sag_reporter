@@ -24,4 +24,16 @@ $(document).ready ->
   	prev_adjust = colour_adjust
   	return
 
+  $('.language-filter-controls .over').on 'click', ->
+    # get the thing that will slide out from under
+    under = $(this).nextAll('.under:first')
+    if ($(under).is(":visible"))
+      under.removeClass('mdl-shadow--4dp')
+      under.children('.shadow-clipper').fadeOut 200, ->
+        under.slideUp(300)
+    else
+      under.slideDown 300, ->
+        under.addClass('mdl-shadow--4dp')
+        under.children('.shadow-clipper').fadeIn(200)
+
   return
