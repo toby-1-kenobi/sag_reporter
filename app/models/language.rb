@@ -62,6 +62,14 @@ class Language < ActiveRecord::Base
     language.iso = nil if language.iso.blank?
   end
 
+  scope :user_limited, lambda { |user|
+    if user.national?
+      all
+    else
+      joins(:geo_states).where('geo_states.id' => user.geo_states)
+    end
+  }
+
   def self.minorities(geo_states = nil)
     if geo_states
       includes(:geo_states).where(lwc: false, 'geo_states.id' => geo_states.map{ |s| s.id })
