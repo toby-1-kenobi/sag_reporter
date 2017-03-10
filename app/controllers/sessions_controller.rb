@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
     payload = {sub: user.id, iat: Time.now.to_i}
     token = JWT.encode payload, secret_key, 'HS256'
     if user.authenticate auth_params[:password]
-      render json: { jwt: token }, status: :created
+      render json: { jwt: token, user: user.id }, status: :created
     else
       head :not_found
     end
