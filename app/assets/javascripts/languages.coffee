@@ -4,6 +4,8 @@
 
 $(document).ready ->
 
+  $('.outcome-progress-cell .get-chart-button').click()
+
   $('#jp-fetch-trigger').click()
 
   prev_adjust = ''

@@ -1,0 +1,8 @@
+<% require 'securerandom' %>
+
+<% if chart_data = @state_language.outcome_chart_data(logged_in_user) %>
+  $('.outcome-progress-cell .chart-<%= @state_language.id %>').html("<%= escape_javascript(line_chart chart_data, id: SecureRandom.uuid) %>");
+<% else %>
+  $('.outcome-progress-cell .chart-<%= @state_language.id %>').html('no outcome progress recorded');
+<% end %>
+$('.outcome-progress-cell .chart-<%= @state_language.id %>-button').addClass('hide');

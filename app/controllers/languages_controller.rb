@@ -46,6 +46,16 @@ class LanguagesController < ApplicationController
         ).
         find(params[:id])
     @all_orgs = Organisation.all.order(:name)
+    # get the latest impact report to show on the language dashboard
+    @impact_report = @language.reports.where.not(impact_report: nil).order(:report_date).last
+  end
+
+  def get_chart
+    @outcome_areas = Topic.all
+    @state_language = StateLanguage.find(params[:id])
+    respond_to do |format|
+      format.js
+    end
   end
 
   def fetch_jp_data

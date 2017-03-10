@@ -3,6 +3,10 @@
 
 <%# Transitioning from Materialize to MDL. Some pages use one for stying, other pages use the other. %>
 <%# The Materialize styles break the MDL ones so we need to know which page we're on and import the styles accordingly %>
+<script>
+  console.log('current path: <%= request.path %>');
+</script>
+
 <%
   case request.path
   when login_path, two_factor_auth_path, root_path, languages_path
@@ -10,10 +14,12 @@
   else
     mdl = false
   end
+  if @language and current_page?(language_path(@language))
+    mdl = true
+  end
 %>
 
 <script>
-  console.log('current path: <%= request.path %>');
   <% if mdl %>
     console.log('using mdl');
   <% else %>

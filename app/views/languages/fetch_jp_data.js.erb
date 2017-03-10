@@ -3,15 +3,6 @@
 jp_full_data = JoshuaProject.language @iso
 if JoshuaProject.success? jp_full_data
   jp_data = jp_full_data['data'][0]
-  if jp_data['JF_URL'].present? %>
-    $('.resources-list').prepend("<%= escape_javascript(render 'resource_item', url:  jp_data['JF_URL'], name: 'Jesus Film')%>");
-  <% end %>
-  <% if jp_data['GRN_URL'].present? %>
-    $('.resources-list').prepend("<%= escape_javascript(render 'resource_item', url:  jp_data['GRN_URL'], name: 'GRN audio recordings')%>");
-  <% end %>
-  <% if jp_data['4Laws_URL'].present? %>
-    $('.resources-list').prepend("<%= escape_javascript(render 'resource_item', url:  jp_data['4Laws_URL'], name: 'Four Spiritual Laws')%>");
-  <% end
 
         info = ''
         info += " #{number_with_delimiter(jp_data['JPPopulation'], delimiter: ',')} people speak this as their primary language." if jp_data['JPPopulation'].present?
@@ -53,14 +44,18 @@ if JoshuaProject.success? jp_full_data
             bible_status += " in #{jp_data['BibleYear']}" if jp_data['BibleYear']
         end
         %>
-  var card = $('<paper-card>').attr('heading', '<%= jp_data['Language'] %>');
-  var cardContent = $('<div>').addClass('card-content');
+  var card = $('<div>').addClass('jp-info mdl-card mdl-shadow--2dp');
+  var cardTitle = $('<div>').addClass('mdl-card__title');
+  var cardInnerTitle = $('<h2>').addClass('mdl-card__title-text').append('From the Joshua Project');
+  var cardContent = $('<div>').addClass('mdl-card__supporting-text');
   <% if info.present? %>
     cardContent.append("<p><%= info %></p>");
   <% end %>
   <% if bible_status.present? %>
     cardContent.append("<p><%= bible_status %>.</p>");
   <% end %>
+  cardTitle.append(cardInnerTitle);
+  card.append(cardTitle)
   card.append(cardContent).appendTo($('.jp-data'));
 <%
 end

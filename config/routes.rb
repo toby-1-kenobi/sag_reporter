@@ -89,6 +89,7 @@ Rails.application.routes.draw do
 
   get 'outcomes/select' => 'topics#assess_progress_select', as: 'select_to_assess'
   get 'outcomes/get_chart/:id' => 'state_languages#get_chart', as: 'outcomes_chart'
+  get 'outcomes/get_language_chart/:id' => 'languages#get_chart', as: 'language_outcomes_chart'
   get 'outcomes/get_totals_chart/:id' => 'geo_states#get_totals_chart', as: 'outcomes_totals_chart'
   get 'outcomes/get_combined_languages_chart/:id' => 'geo_states#get_combined_languages_chart', as: 'combined_languages_chart'
   get 'outcomes/get_outcome_area_chart/:id/:topic_id' => 'geo_states#get_outcome_area_chart', as: 'outcome_area_chart'
