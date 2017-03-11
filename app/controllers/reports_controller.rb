@@ -246,7 +246,7 @@ class ReportsController < ApplicationController
   private
 
   def report_params
-    logged_in_user ||= current_user
+    current_user = logged_in_user || current_user
     # make hash options into arrays
     param_reduce(params['report'], %w(topics languages))
     safe_params = [
@@ -269,7 +269,7 @@ class ReportsController < ApplicationController
       :client,
       :version
     ]
-    safe_params.delete :status unless logged_in_user.can_archive_report?
+    safe_params.delete :status unless current_user.can_archive_report?
     # if we have a date try to change it to db-friendly format
     # otherwise set it to nil
     if params[:report][:report_date]
