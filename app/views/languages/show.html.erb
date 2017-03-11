@@ -9,7 +9,11 @@
     <div class="language-name"><h2><%= @language.name %></h2></div>
     <div class="iso-code">[<%= @language.iso %>]</div>
   </div>
-</div><div class="mdl-grid language-dashboard">
+</div>
+
+<div class="mdl-grid language-dashboard">
+
+  <!-- general language data -->
   <div class="language-info mdl-cell mdl-cell--4-col">
     <% if @language.population %>
       <p>
@@ -31,17 +35,14 @@
         <p><%= @language.info %></p>
     <% end %>
     <% if @language.engaged_organisations.any? %>
-        <p>Organisations engaged with this language:
+        <h4>Organisations engaged with this language</h4>
         <ul class="mdl-list">
           <% @language.engaged_organisations.each do |org| %>
-            <%= link_to org do %>
-                <li class="mdl-list__item">
-                  <span class="mdl-list__item-primary-content"><%= org.name_with_abbr %></span>
-                </li>
-            <% end %>
+            <li class="mdl-list__item">
+              <%= link_to org.name_with_abbr, org, class: 'mdl-list__item-primary-content' %>
+            </li>
           <% end %>
         </ul>
-        </p>
     <% else %>
           <p><em>No organisations engaged with this language.</em></p>
     <% end %>
@@ -51,11 +52,12 @@
           <%= link_to 'Fetch JP Data', fetch_jp_data_path(@language.iso), remote: true, class: 'hide', id: 'jp-fetch-trigger' %>
         </div>
     <% end %>
-
   </div>
+
   <div class="outcome-progress-cell mdl-cell mdl-cell--4-col">
+    <h3>Outcome progress</h3>
     <% @language.state_languages.in_project.each do |state_language| %>
-        <div>Outcome progress in <%= state_language.state_name %> of <%= state_language.geo_state.zone_name %> Zone</div>
+        <div><strong>...in <%= state_language.state_name %> of <%= state_language.geo_state.zone_name %> Zone</strong></div>
         <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
         <div class="chart-<%= state_language.id %>"></div>
     <% end %>
@@ -64,9 +66,15 @@
         <p><%= @language.name %> is spoken in <%= non_project_states %>, but LCI does not track it there.</p>
     <% end %>
   </div>
+
+  <!-- map -->
   <div class="mdl-cell mdl-cell--4-col">
-    map
+    <% map = get_map(@language) %>
+    <% if map %>
+      <%= image_tag(map, alt: "Map for #{@language.name}", class: 'language-map mdl-shadow--2dp') %>
+    <% end %>
   </div>
+
   <div class="mdl-cell mdl-cell--3-col">
     <h3>Translation Status</h3>
     <% if @language.number_of_translations && @language.number_of_translations > 0 %>
@@ -90,11 +98,9 @@
           <h4>Organisations involved with translation</h4>
           <ul class="mdl-list">
             <% @language.translating_organisations.each do |org| %>
-                <%= link_to org do %>
-                    <li class="mdl-list__item">
-                      <span class="mdl-list__item-primary-content"><%= org.name_with_abbr %></span>
-                    </li>
-                <% end %>
+              <li class="mdl-list__item">
+                <%= link_to org.name_with_abbr, org, class: 'mdl-list__item-primary-content' %>
+              </li>
             <% end %>
           </ul>
       <% else %>
@@ -104,7 +110,7 @@
   </div>
   <div class="mdl-cell mdl-cell--3-col">
     <% if @impact_report %>
-      <div class="mdl-card mdl-shadow--2dp">
+      <div class="impact-story mdl-card mdl-shadow--2dp">
         <div class="mdl-card__title">
           <h2 class="mdl-card__title-text">Impact Story</h2>
         </div>

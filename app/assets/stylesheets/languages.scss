@@ -69,6 +69,10 @@ div.languages {
   background-color: #E0E0F0;
 }
 
+.iso-code {
+  font-size: 24px;
+}
+
 .translation-status.mdl-card {
   min-height: auto;
 }
@@ -82,6 +86,21 @@ div.languages {
     padding: 0.5ex;
     background-color: rgba(255,255,255,0.75);
   }
+}
+
+.impact-story .mdl-card__title {
+   height: 100px;
+   background: image-url("ripples.svg") no-repeat;
+   background-size: cover;
+   background-position: 0 -30px;
+   .mdl-card__title-text {
+     padding: 0.5ex;
+     background-color: rgba(255,255,255,0.75);
+   }
+ }
+
+img.language-map {
+  max-width: 100%;
 }
 
 h1.coloured {
