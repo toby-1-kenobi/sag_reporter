@@ -13,8 +13,12 @@ class LanguagesController < ApplicationController
     redirect_to root_path unless logged_in_user.can_edit_language?
   end
 
+  before_action only: [:show] do
+    redirect_to languages_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
+  end
+
   def index
-  	@languages = Language.user_limited(logged_in_user).includes(:family, { geo_states: :zone }).order('LOWER(languages.name)')
+  	@languages = Language.user_limited(logged_in_user).includes(:family, { geo_states: :zone }).order(:name)
   end
 
   def overview
