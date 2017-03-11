@@ -66,7 +66,7 @@ class Language < ActiveRecord::Base
     if user.national?
       all
     else
-      joins(:geo_states).where('geo_states.id' => user.geo_states)
+      joins(:geo_states).where('geo_states.id' => user.geo_states).uniq('languages.id')
     end
   }
 
