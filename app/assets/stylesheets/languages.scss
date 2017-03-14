@@ -73,6 +73,18 @@ div.languages {
   font-size: 24px;
 }
 
+.language-info {
+  padding-right: 20px;
+}
+
+table.language-data th {
+  vertical-align: top;
+  text-align: end;
+  padding: 1ex;
+  font-size: 20px;
+  font-weight: normal;
+}
+
 .translation-status.mdl-card {
   min-height: auto;
 }

@@ -15,25 +15,29 @@
 
   <!-- general language data -->
   <div class="language-info mdl-cell mdl-cell--4-col">
-    <% if @language.population %>
-      <p>
-        <span id="pop_<%= @language.iso %>">
-          Population: <strong><%= number_with_delimiter(@language.population, :delimiter => ',') %></strong>
-        </span>
+    <table class="language-data">
+      <% if @language.description.present? %>
+          <tr><th>Description</th><td><%= @language.description %></td></tr>
+      <% end %>
+      <% if @language.location.present? %>
+          <tr><th>Location</th><td><%= @language.location %></td></tr>
+      <% end %>
+      <% if @language.population %>
+        <tr id="pop_<%= @language.iso %>">
+          <th>Population</th><td><%= number_with_delimiter(@language.population, :delimiter => ',') %></td>
+        </tr>
         <% if @language.pop_source %>
           <div class="mdl-tooltip" for="pop_<%= @language.iso %>">source: <%= @language.pop_source.name %></div>
         <% end %>
-      </p>
-    <% end %>
-    <% if @language.family %>
-        <p>Family: <strong><%= @language.family_name %></strong></p>
-    <% end %>
-    <% if @language.description.present? %>
-        <p><%= @language.description %></p>
-    <% end %>
-    <% if @language.info.present? %>
-        <p><%= @language.info %></p>
-    <% end %>
+      <% end %>
+      <% if @language.family %>
+          <tr><th>Family</th><td><%= @language.family_name %></td></tr>
+      <% end %>
+      <% if @language.info.present? %>
+          <tr><th>Other information</th><td><%= @language.info %></td></tr>
+      <% end %>
+    </table>
+
     <% if @language.engaged_organisations.any? %>
         <h4>Organisations engaged with this language</h4>
         <ul class="mdl-list">
@@ -57,7 +61,7 @@
   <div class="outcome-progress-cell mdl-cell mdl-cell--4-col">
     <h3>Outcome progress</h3>
     <% @language.state_languages.in_project.each do |state_language| %>
-        <div><strong>...in <%= state_language.state_name %> of <%= state_language.geo_state.zone_name %> Zone</strong></div>
+        <h4><%= state_language.state_name %></h4>
         <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
         <div class="chart-<%= state_language.id %>"></div>
     <% end %>
@@ -76,10 +80,7 @@
   </div>
 
   <div class="mdl-cell mdl-cell--3-col">
-    <h3>Translation Status</h3>
-    <% if @language.number_of_translations && @language.number_of_translations > 0 %>
-        <p>Already existing: <strong><%= @language.number_of_translations %></strong> Bible <%= 'version'.pluralize(@language.number_of_translations) %></p>
-    <% end %>
+    <h4>Translation Status</h4>
     <div class="translation-status mdl-card mdl-shadow--2dp">
       <div class="mdl-card__title" style="background-color: <%= @language.translation_status_colour %>">
         <h2 class="mdl-card__title-text"><%= @language.translation_status.to_s.humanize %></h2>
@@ -89,10 +90,14 @@
         <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
       </div>
     </div>
-
-    <% if @language.translation_info.present? %>
-        <p><%= @language.translation_info %></p>
-    <% end %>
+    <table class="language-data">
+      <% if @language.number_of_translations && @language.number_of_translations > 0 %>
+          <tr><th>Already existing</th><td><%= @language.number_of_translations %> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
+      <% end %>
+      <% if @language.translation_info.present? %>
+          <tr><th>Translation info</th><td><%= @language.translation_info %></td></tr>
+      <% end %>
+    </table>
     <div>
       <% if @language.translating_organisations.any? %>
           <h4>Organisations involved with translation</h4>
