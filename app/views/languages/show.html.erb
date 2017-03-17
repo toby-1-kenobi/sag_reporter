@@ -79,7 +79,7 @@
     <% end %>
   </div>
 
-  <div class="mdl-cell mdl-cell--3-col">
+  <div class="mdl-cell mdl-cell--4-col">
     <h4>Translation Status</h4>
     <div class="translation-status mdl-card mdl-shadow--2dp">
       <div class="mdl-card__title" style="background-color: <%= @language.translation_status_colour %>">
@@ -113,7 +113,7 @@
       <% end %>
     </div>
   </div>
-  <div class="mdl-cell mdl-cell--3-col">
+  <div class="mdl-cell mdl-cell--4-col">
     <% if @impact_report %>
       <div class="impact-story mdl-card mdl-shadow--2dp">
         <div class="mdl-card__title">
@@ -140,7 +140,7 @@
       <p>No impact reports.</p>
     <% end %>
   </div>
-  <div class="mdl-cell mdl-cell--3-col">
+  <div class="mdl-cell mdl-cell--4-col">
     <% if @language.mt_resources.any? %>
         <ul class="mdl-list">
         <% @language.mt_resources.each do |resource| %>
@@ -160,9 +160,6 @@
       <p>No mother-tongue resources.</p>
     <% end %>
   </div>
-  <!--<div class="mdl-cell mdl-cell&#45;&#45;3-col">-->
-    <!-- more content to come -->
-  <!--</div>-->
 </div>
 
 <style is="custom-style" include="iron-flex">
