@@ -1,31 +1,20 @@
 <% provide(:title, 'Assess outcome progress by language') %>
 <h1>Assess outcome progress by language</h1>
 
-<div class="row">
-  <div class="col s12 m6 l4">Show report counts for...</div>
-  <div class="col s12 m6 l4 year-month-select"><%= render partial: 'shared/year_month_select', locals: {start_from: @from_date, up_to: @to_date, add_select_options: [['Last 12 months', 'all']], options: {class: 'filter-trigger', 'data-filter-trigger-label' => 'month'}} %></div>
-</div>
+<p>Choose a <%= @geo_states.count > 1 ? 'state and' : '' %> language to assess by:</p>
 
-<div class = "row" id="language-select">
-  <p>Choose a <%= @geo_states.count > 1 ? 'state and' : '' %> language to assess by:</p>
-  <ul class="collapsible">
-    <% logged_in_user.geo_states.each do |geo_state| %>
-      <li>
-        <div class="collapsible-header green lighten-2 <%= @geo_states.count == 1 ? 'active' : '' %>"><%= geo_state.name %>
-          <div class="report-counts right">
-            <% @month_range.each do |date|
-              report_count = geo_state.tagged_impact_report_count(date.beginning_of_month, date.end_of_month) %>
-              &nbsp; <span class="filterable-item tooltipped" data-filter-label="month" data="all,<%= date.strftime('%Y-%m') %>" data-delay="50" data-tooltip="<%= date.strftime('%B %Y') %> has <%= pluralize report_count, 'impact report' %> for <%= geo_state.name %>">
-                <%= report_count %>
-              </span>
-            <% end %>
-          </div>
-        </div>
-        <div class="collapsible-body collection">
-        	<%= render partial: 'topics/language', collection: geo_state.minority_languages.order(:name), locals: {geo_state: geo_state, start_from: @from_date, up_to: @to_date} %>
-        </div>
-      </li>
-    <% end %>
-  </ul>
-
+<div id="select-state-language">
+  <% logged_in_user.geo_states.each do |geo_state| %>
+    <div class="mdl-accordion <%= @geo_states.count == 1 ? 'mdl-accordion--opened' : '' %>">
+      <div class="mdl-accordion__button">
+        <i class="material-icons mdl-accordion__icon mdl-animation--default">expand_more</i>
+        <span><%= geo_state.name %></span>
+      </div>
+      <div class="mdl-accordion__content-wrapper">
+        <ul class="mdl-list mdl-accordion__content mdl-animation--default">
+          <%= render partial: 'topics/language', collection: geo_state.minority_languages.order(:name), locals: {geo_state: geo_state, start_from: @from_date, up_to: @to_date} %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
 </div>
