@@ -94,7 +94,7 @@ Rails.application.routes.draw do
   get 'outcomes/get_combined_languages_chart/:id' => 'geo_states#get_combined_languages_chart', as: 'combined_languages_chart'
   get 'outcomes/get_outcome_area_chart/:id/:topic_id' => 'geo_states#get_outcome_area_chart', as: 'outcome_area_chart'
   get 'outcomes/table/:id' => 'state_languages#get_table', as: 'outcomes_table'
-  get 'outcomes/:geo_state_id/:language_id/:yearmonth' => 'topics#assess_progress', as: 'assess_progress'
+  get 'outcomes/:state_language_id/:months' => 'topics#assess_progress', as: 'assess_progress'
   post 'outcomes/:geo_state_id/:language_id/:yearmonth' => 'topics#update_progress'
   get 'outcomes' => 'state_languages#outcomes', as: 'outcomes'
   get 'outcomes/:id' => 'state_languages#outcomes_data'

@@ -12,7 +12,7 @@
       </div>
       <div class="mdl-accordion__content-wrapper">
         <ul class="mdl-list mdl-accordion__content mdl-animation--default">
-          <%= render partial: 'topics/language', collection: geo_state.minority_languages.order(:name), locals: {geo_state: geo_state, start_from: @from_date, up_to: @to_date} %>
+          <%= render partial: 'topics/language', collection: geo_state.state_languages.in_project.joins(:language).order('languages.name'), locals: {start_from: @from_date, up_to: @to_date} %>
         </ul>
       </div>
     </div>
