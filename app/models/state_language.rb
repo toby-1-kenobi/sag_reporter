@@ -116,15 +116,15 @@ class StateLanguage < ActiveRecord::Base
     return scores
   end
 
-  # active impact reports in this state and tagged with this language in the last X months.
-  def recent_impact_reports(months)
+  # active impact reports in this state and tagged with this language in the specified duration.
+  def recent_impact_reports(duration)
     ImpactReport.
-        joins(report: :languages).
+        includes(:progress_markers, :report => [ :reporter, :languages ]).
         where(
             :reports => {status: 'active', geo_state_id: geo_state_id},
             :languages => {id: language_id},
         ).
-        where('reports.report_date >= ?', months.months.ago).distinct
+        where('reports.report_date >= ?', duration.ago).distinct
   end
 
 end

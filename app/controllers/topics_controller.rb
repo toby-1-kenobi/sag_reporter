@@ -69,37 +69,25 @@ class TopicsController < ApplicationController
 
   def assess_progress
     @state_language = StateLanguage.find(params[:state_language_id])
+    default_duration = 3.months
     if !@state_language
       redirect_to select_to_assess_path
     else
+      duration = params[:months].to_i.months if params[:months].present?
+      duration ||= default_duration
       @progress_markers_by_weight = Hash.new
       Topic.all.each do |outcome_area|
         # TODO: Try to do this without hitting the db separately for each outcome area
         @progress_markers_by_weight[outcome_area] = ProgressMarker.active.where(topic: outcome_area).order(weight: :asc, number: :asc).group_by { |pm| pm.weight }
       end
-      @monthly_reports = @language.tagged_impact_reports_monthly(@geo_state, @from_date, @to_date)
-      @yearmonth = params[:yearmonth]
-      if @yearmonth == "000000" then @yearmonth = Date.today.strftime("%Y%m") end
-      @year = @yearmonth.slice(0,4)
-      @month = @yearmonth.slice(4,2)
-      @month_date = Date.new(@year.to_i, @month.to_i)
+      @reports = @state_language.recent_impact_reports(duration)
       @existing_updates_this_month = ProgressUpdate.
         joins(:language_progress).
         where(
-          year: @year,
-          month: @month,
+          year: Time.now.year,
+          month: Time.now.month,
           :language_progresses => {state_language_id: @state_language}
         ).group('language_progresses.progress_marker_id').count
-      @reports = ImpactReport.
-        includes(:progress_markers, :report => [ :reporter, :languages ]).
-        where(
-          :reports => {
-            status: "active",
-            geo_state_id: @geo_state,
-            report_date: @month_date..@month_date.end_of_month
-          },
-          :languages => {id: @language}
-        ).order('progress_markers.id')
       @reports_by_pm = Hash.new
       @reports_by_oa = Hash.new
       @reports.each do |report|

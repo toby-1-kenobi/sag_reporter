@@ -106,14 +106,6 @@ class Language < ActiveRecord::Base
     Language.translation_status_colour[translation_status]
   end
 
-  def tagged_impact_report_count(geo_state, from_date = nil, to_date = nil)
-    tagged_impact_reports_in_date_range(geo_state, from_date, to_date).count
-  end
-
-  def tagged_impact_reports_monthly(geo_state, from_date = nil, to_date = nil)
-    tagged_impact_reports_in_date_range(geo_state, from_date, to_date).group_by{ |r| r.report_date.strftime('%Y-%m') }
-  end
-
   def table_data(geo_state, user, options = {})
     options[:from_date] ||= 6.months.ago
     options[:to_date] ||= Date.today
@@ -143,28 +135,6 @@ class Language < ActiveRecord::Base
 
     return table
 
-  end
-
-  private
-
-  def tagged_impact_reports(geo_state)
-    ImpactReport.
-      joins(:report, :progress_markers, report: :languages).
-      where(
-        :reports => {status: 'active', geo_state_id: geo_state.id},
-        :languages => {id: self.id},
-      ).distinct
-  end
-
-  def tagged_impact_reports_in_date_range(geo_state, from_date = nil, to_date = nil)
-    if from_date
-      to_date ||= Date.today
-      tagged_impact_reports(geo_state).where(:reports => {report_date: from_date..to_date})
-    elsif to_date
-      tagged_impact_reports(geo_state).where('reports.report_date <= ?', to_date)
-    else
-      tagged_impact_reports(geo_state)
-    end
   end
 
 end
