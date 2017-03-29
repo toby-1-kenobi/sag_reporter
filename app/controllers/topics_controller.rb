@@ -69,12 +69,16 @@ class TopicsController < ApplicationController
 
   def assess_progress
     @state_language = StateLanguage.find(params[:state_language_id])
-    default_duration = 3.months
+    # make sure months is an int and is bigger than 0 otherwise set it to default of 3
+    begin
+      assert params[:months].to_i > 0
+    rescue
+      params[:months] = '3'
+    end
     if !@state_language
       redirect_to select_to_assess_path
     else
-      duration = params[:months].to_i.months if params[:months].present?
-      duration ||= default_duration
+      duration = params[:months].to_i.months
       @progress_markers_by_weight = Hash.new
       Topic.all.each do |outcome_area|
         # TODO: Try to do this without hitting the db separately for each outcome area
