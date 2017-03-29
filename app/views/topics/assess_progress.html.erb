@@ -6,20 +6,38 @@
   <% end %>
 </datalist>
 
-<%= form_tag({controller: 'topics', action: 'update_progress'}, method: 'post') do %>
 
-  <div class="row">
-    <div class="col s12 m6 l4">
-      <%= render partial: 'languages/language_card', object: @state_language.language %>
-      <%= link_to select_to_assess_path, class: 'btn waves-effect' do %>
-        <i class="material-icons left">arrow_back</i>
-        Change language
-      <% end %>
-    </div>
-    <div class="col s12 m6 l4 input-field">
-    </div>
+<div class="row">
+  <div class="col s12 m6 l4">
+    <%= render partial: 'languages/language_card', object: @state_language.language %>
+    <%= link_to select_to_assess_path, class: 'btn waves-effect' do %>
+      <i class="material-icons left">arrow_back</i>
+      Change language
+    <% end %>
   </div>
+  <div class="col s12 m6 l4">
+    Assessing progress for a period of:
+    <div class="input-field">
+    <%= number_field_tag 'months', params[:months], min: 1, id: 'change-duration-field' %>
+    <%= label_tag 'months' %></div>
+    <%= link_to 'Update',
+                assess_progress_path(state_language_id: params[:state_language_id], months: params[:months]),
+                class: 'btn waves-effect',
+                id: 'change-duration-button'
+    %>
+    <script>
+      $('#change-duration-field').bind('keyup mouseup mousewheel', function() {
+        let ref = $('#change-duration-button').attr('href');
+        let refA = ref.split('/');
+        refA[refA.length -1] = $('#change-duration-field').val();
+        ref = refA.join('/');
+        $('#change-duration-button').attr('href', ref);
+      });
+    </script>
+  </div>
+</div>
 
+<%= form_tag({controller: 'topics', action: 'update_progress'}, method: 'post') do %>
   <ul class="tabs z-depth-1">
     <% @progress_markers_by_weight.keys.each do |outcome_area| %>
       <% unless outcome_area.hide_for?(logged_in_user) %>
