@@ -46,7 +46,7 @@ class TopicsController < ApplicationController
   def update
     @topic = Topic.find(params[:id])
     if @topic.update_attributes(combine_colour(topic_params))
-      flash["success"] = "Topic updated"
+      flash['success'] = 'Topic updated'
       redirect_to @topic
     else
       render 'edit'
@@ -56,7 +56,7 @@ class TopicsController < ApplicationController
   def create
     @topic = Topic.new(combine_colour(topic_params))
     if @topic.save
-      flash["success"] = "New topic added!"
+      flash['success'] = 'New topic added!'
       redirect_to @topic
     else
       render 'new'
@@ -102,43 +102,35 @@ class TopicsController < ApplicationController
   end 
 
   def update_progress
-    if Language.exists?(params[:language_id]) and GeoState.exists?(params[:geo_state_id])
-      language = Language.find(params[:language_id])
-      geo_state = GeoState.find(params[:geo_state_id])
-      state_language = StateLanguage.find_by(language: language, geo_state: geo_state)
-      if state_language
-        month = params[:yearmonth]
-        year = month.slice!(0,4)
-        successful_updates = Array.new
-        failed_updates = Hash.new
-        # We're only updating progress markers where the marker has been selected as done
-        # so filter the hash before looping
-        if params[:marker_complete]
-          params[:progress_marker].select{ |pm, l| params[:marker_complete][pm] }.each do |marker, level|
-            progress_marker = ProgressMarker.find(marker)
-            language_progress = LanguageProgress.find_or_create_by(state_language: state_language, progress_marker: progress_marker)
-            update = ProgressUpdate.create(language_progress: language_progress, progress: level, user: logged_in_user, year: year, month: month)
-            if update.persisted?
-              successful_updates << update
-            else
-              failed_updates[progress_marker.name] = update
-            end
+    state_language = StateLanguage.find(params[:state_language_id])
+    if state_language
+      successful_updates = Array.new
+      failed_updates = Hash.new
+      # We're only updating progress markers where the marker has been selected as done
+      # so filter the hash before looping
+      if params[:marker_complete]
+        params[:progress_marker].select{ |pm, l| params[:marker_complete][pm] }.each do |marker, level|
+          progress_marker = ProgressMarker.find(marker)
+          language_progress = LanguageProgress.find_or_create_by(state_language: state_language, progress_marker: progress_marker)
+          update = ProgressUpdate.create(language_progress: language_progress, progress: level, user: logged_in_user, year: Time.now.year, month: Time.now.month)
+          if update.persisted?
+            successful_updates << update
+          else
+            failed_updates[progress_marker.name] = update
           end
         end
-        if failed_updates.any?
-          fail_msg = "These progress marker levels were NOT updated for #{language.name}: "
-          fail_msg.concat failed_updates.keys.join(', ')
-          flash['error'] = fail_msg
-        elsif successful_updates.any?
-          flash['success'] = "#{successful_updates.count} progress marker levels updated for #{language.name}."
-        else
-          flash['warning'] = "No progress marker levels were updated."
-        end
+      end
+      if failed_updates.any?
+        fail_msg = "These progress marker levels were NOT updated for #{state_language.language_name}: "
+        fail_msg.concat failed_updates.keys.join(', ')
+        flash['error'] = fail_msg
+      elsif successful_updates.any?
+        flash['success'] = "#{successful_updates.count} progress marker levels updated for #{state_language.language_name}."
       else
-        flash['error'] = "Could not update progress marker levels. #{language.name} isn't in #{geo_state.name}"
+        flash['warning'] = 'No progress marker levels were updated.'
       end
     else
-      flash['error'] = "No progress marker levels were updated. Invalid language or state"
+      flash['error'] = 'Could not update progress marker levels.'
     end
     redirect_to select_to_assess_path
   end
