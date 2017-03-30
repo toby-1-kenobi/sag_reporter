@@ -128,7 +128,7 @@ class User < ActiveRecord::Base
         # not including self
         admin?
       when 'view_all_users'
-        trusted?
+        admin?
       when 'view_roles', 'edit_role', 'create_role'
         admin?
       when 'view_all_languages'
@@ -142,7 +142,7 @@ class User < ActiveRecord::Base
       when 'view_all_topics'
         true
       when 'view_all_reports'
-        national?
+        true
       when 'create_report', 'edit_report', 'archive_report', 'tag_report'
         true
       when 'evaluate_progress', 'view_outcome_totals'
@@ -153,7 +153,7 @@ class User < ActiveRecord::Base
       when 'create_event', 'edit_event'
         true
       when 'view_all_people'
-        trusted? and national?
+        trusted?
       when 'edit_person'
         trusted?
       when 'report_numbers', 'view_output_totals'
