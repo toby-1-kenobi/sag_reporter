@@ -45,6 +45,8 @@
   </div>
 </div>
 
+<%= link_to 'Download PDF', assess_progress_pdf_path, class: 'btn waves-effect' %>
+
 <%= form_tag({controller: 'topics', action: 'update_progress'}, method: 'post') do %>
   <ul class="tabs z-depth-1">
     <% @progress_markers_by_weight.keys.each do |outcome_area| %>

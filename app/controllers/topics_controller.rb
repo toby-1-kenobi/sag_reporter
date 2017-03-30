@@ -71,8 +71,9 @@ class TopicsController < ApplicationController
     @state_language = StateLanguage.find(params[:state_language_id])
     # make sure months is an int and is bigger than 0 otherwise set it to default of 3
     begin
-      assert params[:months].to_i > 0
-    rescue
+      raise 'months not enough' unless params[:months].to_i > 0
+    rescue => e
+      Rails.logger.debug(e.message)
       params[:months] = '3'
     end
     if !@state_language
@@ -101,6 +102,13 @@ class TopicsController < ApplicationController
           @reports_by_oa[pm.topic_id] ||= Set.new
           @reports_by_oa[pm.topic_id] << report
         end
+      end
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = AssessProgressPdf.new(@state_language, params[:months], logged_in_user)
+        send_data pdf.render, filename: "#{@state_language.language_name}_outcomes.pdf", type: 'application/pdf'
       end
     end
   end 
