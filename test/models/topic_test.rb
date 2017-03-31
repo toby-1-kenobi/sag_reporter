@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe Topic do
 
-  let(:topic) { Topic.new(name: 'test topic') }
+  let(:topic) { Topic.new(name: 'test topic', number: 6) }
 
   let(:pm_weight_2) { ProgressMarker.new(
       weight: 2,
@@ -17,6 +17,16 @@ describe Topic do
       name: 'pm_weight_2_deprecated',
       status: 'deprecated'
   ) }
+
+  it 'must have a name' do
+    topic.name = ''
+    _(topic).wont_be :valid?
+  end
+
+  it 'must have a number' do
+    topic.number = nil
+    _(topic).wont_be :valid?
+  end
 
   it 'gives the maximum possible score for its active progress markers' do
     max_spreadness_score = ProgressMarker.spread_text.keys.max
