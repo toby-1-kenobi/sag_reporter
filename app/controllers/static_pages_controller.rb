@@ -3,7 +3,7 @@ class StaticPagesController < ApplicationController
   before_action :require_login, only: [:tasks, :home]
 
   def home
-    @outcome_areas = Topic.all
+    @outcome_areas = Topic.all.order(:number)
   end
 
   def tasks

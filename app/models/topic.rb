@@ -6,6 +6,9 @@ class Topic < ActiveRecord::Base
 	has_many :tallies
 	has_many :output_tallies, dependent: :destroy
 
+  validates :name, presence: true
+  validates :number, presence: true
+
 	def max_outcome_score
 		score = 0
 		progress_markers.active.each do |pm|

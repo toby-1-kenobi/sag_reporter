@@ -69,14 +69,19 @@ class TopicsController < ApplicationController
 
   def assess_progress
     @state_language = StateLanguage.find(params[:state_language_id])
-    default_duration = 3.months
+    # make sure months is an int and is bigger than 0 otherwise set it to default of 3
+    begin
+      raise 'months not enough' unless params[:months].to_i > 0
+    rescue => e
+      Rails.logger.debug(e.message)
+      params[:months] = '3'
+    end
     if !@state_language
       redirect_to select_to_assess_path
     else
-      duration = params[:months].to_i.months if params[:months].present?
-      duration ||= default_duration
+      duration = params[:months].to_i.months
       @progress_markers_by_weight = Hash.new
-      Topic.all.each do |outcome_area|
+      Topic.all.order(:number).each do |outcome_area|
         # TODO: Try to do this without hitting the db separately for each outcome area
         @progress_markers_by_weight[outcome_area] = ProgressMarker.active.where(topic: outcome_area).order(weight: :asc, number: :asc).group_by { |pm| pm.weight }
       end
@@ -97,6 +102,13 @@ class TopicsController < ApplicationController
           @reports_by_oa[pm.topic_id] ||= Set.new
           @reports_by_oa[pm.topic_id] << report
         end
+      end
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = AssessProgressPdf.new(@state_language, params[:months], logged_in_user, @reports_by_pm)
+        send_data pdf.render, filename: "#{@state_language.language_name}_outcomes.pdf", type: 'application/pdf'
       end
     end
   end 
