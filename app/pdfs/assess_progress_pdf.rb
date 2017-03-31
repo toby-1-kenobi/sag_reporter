@@ -17,7 +17,7 @@ class AssessProgressPdf < Prawn::Document
   end
 
   def content
-    Topic.find_each do |outcome_area|
+    Topic.all.order(:number).each do |outcome_area|
       pad_top(10) { text outcome_area.name, size: 16, style: :bold }
       outcome_area.progress_markers.active.order(:number).each do |pm|
         bounding_box([0, cursor], width: 500) do

@@ -81,7 +81,7 @@ class TopicsController < ApplicationController
     else
       duration = params[:months].to_i.months
       @progress_markers_by_weight = Hash.new
-      Topic.all.each do |outcome_area|
+      Topic.all.order(:number).each do |outcome_area|
         # TODO: Try to do this without hitting the db separately for each outcome area
         @progress_markers_by_weight[outcome_area] = ProgressMarker.active.where(topic: outcome_area).order(weight: :asc, number: :asc).group_by { |pm| pm.weight }
       end
