@@ -44,7 +44,6 @@ class User < ActiveRecord::Base
   validates :trusted, inclusion: [true, false]
   validates :national, inclusion: [true, false]
   validates :admin, inclusion: [true, false]
-  validates :curator, inclusion: [true, false]
   validates :national_curator, inclusion: [true, false]
   validate :interface_language_must_have_locale_tag
 
