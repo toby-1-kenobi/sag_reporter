@@ -1,0 +1,5 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+andrew_assam:
+  user: andrew
+  geo_state: assam

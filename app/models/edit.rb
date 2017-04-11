@@ -35,15 +35,19 @@ class Edit < ActiveRecord::Base
     end
   end
 
-  def approve
+  def approve(curator)
     case
       when auto_approved?, approved?, rejected?
         return false
       when pending_double_approval?
+        update_attributes(curated_by: curator, curation_date: Time.now)
+        logger.debug "curaton date: #{curation_date} (#{curation_date.class})"
         pending_national_approval!
         return true
       when pending_single_approval?, pending_national_approval?
         thing_for_editing = model_klass_name.constantize.find(record_id)
+        update_attributes(curated_by: curator, curation_date: Time.now) if pending_single_approval?
+        update_attributes(second_curation_date: Time.now) if pending_national_approval?
         if thing_for_editing.update_attributes(attribute_name => new_value)
           approved!
           return true

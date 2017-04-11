@@ -28,37 +28,43 @@ describe Edit do
 
   it 'cant be approved if it needs no approval' do
     language_edit.auto_approved!
-    _(language_edit).wont_be :approve
+    _(language_edit).wont_be :approve, admin_user
   end
 
   it 'cant be approved if it has already been approved' do
     language_edit.approved!
-    _(language_edit).wont_be :approve
+    _(language_edit).wont_be :approve, admin_user
   end
 
   it 'cant be approved if it has been rejected' do
     language_edit.rejected!
-    _(language_edit).wont_be :approve
+    _(language_edit).wont_be :approve, admin_user
   end
 
   it 'goes to national level without affecting record when approved on double approval' do
     language_edit.pending_double_approval!
-    _(language_edit).must_be :approve
+    _(language_edit).must_be :approve, admin_user
+    _(language_edit.curation_date).must_be :>, 10.seconds.ago
     _(language_edit).must_be :pending_national_approval?
+    _(language_edit.curated_by).must_equal admin_user
+    language.reload
     _(language.name).must_equal language_edit.old_value
   end
 
   it 'modifies record when pending single approval and approved' do
     language_edit.pending_single_approval!
-    _(language_edit).must_be :approve
+    _(language_edit).must_be :approve, admin_user
+    _(language_edit.curation_date).must_be :>, 10.seconds.ago
     _(language_edit).must_be :approved?
+    _(language_edit.curated_by).must_equal admin_user
     language.reload
     _(language.name).must_equal language_edit.new_value
   end
 
   it 'modifies record when pending national approval and approved' do
     language_edit.pending_national_approval!
-    _(language_edit).must_be :approve
+    _(language_edit).must_be :approve, admin_user
+    _(language_edit.second_curation_date).must_be :>, 10.seconds.ago
     _(language_edit).must_be :approved?
     language.reload
     _(language.name).must_equal language_edit.new_value
@@ -67,7 +73,8 @@ describe Edit do
   it 'becomes rejected on approval when the new value is invalid recording error message' do
     language_edit.pending_single_approval!
     language_edit.new_value = ''
-    _(language_edit).wont_be :approve
+    _(language_edit).wont_be :approve, admin_user
+    _(language_edit.curation_date).must_be :>, 10.seconds.ago
     _(language_edit).must_be :rejected?
     _(language_edit.record_errors).must_be :present?
   end
