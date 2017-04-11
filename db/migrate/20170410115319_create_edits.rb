@@ -10,6 +10,7 @@ class CreateEdits < ActiveRecord::Migration
       t.integer :status, null: false, default: 0, index: true
       t.datetime :curation_date, index: true
       t.datetime :second_curation_date, index: true
+      t.text :record_errors
 
       t.timestamps null: false
     end

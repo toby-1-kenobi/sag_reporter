@@ -16,8 +16,8 @@ class Edit < ActiveRecord::Base
   validates :model_klass_name, presence: true
   validates :record_id, presence: true
   validates :attribute_name, presence: true
-  validates :old_value, presence: true
-  validates :new_value, presence: true
+  validates :old_value, presence: true, allow_blank: true
+  validates :new_value, presence: true, allow_blank: true
   validates :status, inclusion: { in: statuses.keys }
   validate :record_id_exists
 
@@ -49,7 +49,10 @@ class Edit < ActiveRecord::Base
           return true
         else
           logger.debug "could not approve edit"
-          logger.debug thing_for_editing.errors.full_messages
+          rejected!
+          logger.debug thing_for_editing.errors.full_messages.to_sentence
+          update_attribute(:record_errors, thing_for_editing.errors.full_messages.to_sentence)
+          return false
         end
     end
   end
@@ -58,11 +61,10 @@ class Edit < ActiveRecord::Base
 
   def record_id_exists
     begin
-      model_klass_name.constantize.find(record_id)
+      errors.add(:record_id, "Could not find #{model_klass_name} with id #{record_id}") unless model_klass_name.constantize.find(record_id)
     rescue ActiveRecord::RecordNotFound => e
       errors.add(:record_id, e.message)
     end
-
   end
 
 end

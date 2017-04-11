@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20170410115319) do
     t.integer  "status",               default: 0, null: false
     t.datetime "curation_date"
     t.datetime "second_curation_date"
+    t.text     "record_errors"
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
     t.integer  "curated_by_id"

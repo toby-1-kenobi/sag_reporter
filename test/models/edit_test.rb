@@ -64,4 +64,12 @@ describe Edit do
     _(language.name).must_equal language_edit.new_value
   end
 
+  it 'becomes rejected on approval when the new value is invalid recording error message' do
+    language_edit.pending_single_approval!
+    language_edit.new_value = ''
+    _(language_edit).wont_be :approve
+    _(language_edit).must_be :rejected?
+    _(language_edit.record_errors).must_be :present?
+  end
+
 end
