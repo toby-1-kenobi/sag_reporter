@@ -52,13 +52,17 @@ class Edit < ActiveRecord::Base
           approved!
           return true
         else
-          logger.debug "could not approve edit"
           rejected!
           logger.debug thing_for_editing.errors.full_messages.to_sentence
           update_attribute(:record_errors, thing_for_editing.errors.full_messages.to_sentence)
           return false
         end
     end
+  end
+
+  def reject(curator)
+    update_attributes(curated_by: curator, curation_date: Time.now)
+    rejected!
   end
 
   private

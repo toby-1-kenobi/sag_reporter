@@ -76,7 +76,15 @@ describe Edit do
     _(language_edit).wont_be :approve, admin_user
     _(language_edit.curation_date).must_be :>, 10.seconds.ago
     _(language_edit).must_be :rejected?
+    _(language_edit.curated_by).must_equal admin_user
     _(language_edit.record_errors).must_be :present?
+  end
+
+  it 'can be rejected' do
+    language_edit.reject(admin_user)
+    _(language_edit.curation_date).must_be :>, 10.seconds.ago
+    language_edit.must_be :rejected?
+    _(language_edit.curated_by).must_equal admin_user
   end
 
 end
