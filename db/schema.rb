@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170410115319) do
+ActiveRecord::Schema.define(version: 20170411093617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,13 @@ ActiveRecord::Schema.define(version: 20170410115319) do
   add_index "edits", ["second_curation_date"], name: "index_edits_on_second_curation_date", using: :btree
   add_index "edits", ["status"], name: "index_edits_on_status", using: :btree
   add_index "edits", ["user_id"], name: "index_edits_on_user_id", using: :btree
+
+  create_table "edits_geo_states", id: false, force: :cascade do |t|
+    t.integer "edit_id",      null: false
+    t.integer "geo_state_id", null: false
+  end
+
+  add_index "edits_geo_states", ["edit_id", "geo_state_id"], name: "index_edits_geo_states_on_edit_id_and_geo_state_id", unique: true, using: :btree
 
   create_table "events", force: :cascade do |t|
     t.integer  "user_id",            null: false

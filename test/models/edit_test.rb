@@ -3,14 +3,7 @@ require "test_helper"
 describe Edit do
   let(:language) { languages(:assamese) }
   let(:admin_user) { users(:andrew) }
-  let(:language_edit) { Edit.new(
-      user: admin_user,
-      model_klass_name: 'Language',
-      record_id: language.id,
-      attribute_name: 'name',
-      old_value: language.name,
-      new_value: 'new name'
-  ) }
+  let(:language_edit) { edits(:language_edit) }
 
   it 'must be valid' do
     value(language_edit).must_be :valid?
@@ -23,6 +16,7 @@ describe Edit do
   end
 
   it 'has the same geo_states as the language' do
+    language_edit.save
     value(language_edit.geo_states).must_equal language.geo_states
   end
 

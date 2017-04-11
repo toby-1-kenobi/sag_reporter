@@ -1,0 +1,10 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+language_edit:
+  user: andrew
+  model_klass_name: 'Language'
+  record_id: <%= ActiveRecord::FixtureSet.identify(:assamese) %>
+  attribute_name: 'name'
+  old_value: 'Assamese'
+  new_value: 'new name'

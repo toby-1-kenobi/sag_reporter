@@ -11,6 +11,7 @@ class Edit < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :curated_by, class_name: 'User'
+  has_and_belongs_to_many :geo_states
 
   validates :user, presence: true
   validates :model_klass_name, presence: true
@@ -21,19 +22,7 @@ class Edit < ActiveRecord::Base
   validates :status, inclusion: { in: statuses.keys }
   validate :record_id_exists
 
-  def geo_states
-    case model_klass_name
-      when 'Language'
-        if language = Language.find(record_id)
-          language.geo_states
-        else
-          logger.error "Edit #{id} has invalid record id!"
-          return
-        end
-      else
-        user.geo_states
-    end
-  end
+  after_save :set_geo_states
 
   def approve(curator)
     case
@@ -72,6 +61,16 @@ class Edit < ActiveRecord::Base
       errors.add(:record_id, "Could not find #{model_klass_name} with id #{record_id}") unless model_klass_name.constantize.find(record_id)
     rescue ActiveRecord::RecordNotFound => e
       errors.add(:record_id, e.message)
+    end
+  end
+
+  def set_geo_states
+    geo_states.clear
+    case model_klass_name
+      when 'Language'
+        geo_states << Language.find(record_id).geo_states
+      else
+        geo_states << user.geo_states
     end
   end
 

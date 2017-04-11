@@ -14,6 +14,7 @@ class GeoState < ActiveRecord::Base
   has_many :districts, dependent: :destroy
   has_many :curatings, dependent: :destroy
   has_many :curators, through: :curatings, class_name: 'User', source: 'user', inverse_of: :curated_states
+  has_and_belongs_to_many :edits
   delegate :name, to: :zone, prefix: true
 
   def minority_languages
