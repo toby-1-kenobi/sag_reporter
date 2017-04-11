@@ -3,17 +3,65 @@ require "test_helper"
 describe Edit do
   let(:language) { languages(:assamese) }
   let(:admin_user) { users(:andrew) }
-  let(:edit) { Edit.new(
+  let(:language_edit) { Edit.new(
       user: admin_user,
-      table_name: 'languages',
-      field_name: 'name',
+      model_klass_name: 'Language',
       record_id: language.id,
+      attribute_name: 'name',
       old_value: language.name,
       new_value: 'new name'
   ) }
 
   it 'must be valid' do
-    puts "lang id: #{language.id}"
-    value(edit).must_be :valid?
+    value(language_edit).must_be :valid?
   end
+
+  it 'wont be valid with a non-existent record id' do
+    language_edit.record_id = -1
+    _(language_edit).wont_be :valid?
+    _(language_edit.errors[:record_id]).must_be :present?
+  end
+
+  it 'has the same geo_states as the language' do
+    value(language_edit.geo_states).must_equal language.geo_states
+  end
+
+  it 'cant be approved if it needs no approval' do
+    language_edit.auto_approved!
+    _(language_edit).wont_be :approve
+  end
+
+  it 'cant be approved if it has already been approved' do
+    language_edit.approved!
+    _(language_edit).wont_be :approve
+  end
+
+  it 'cant be approved if it has been rejected' do
+    language_edit.rejected!
+    _(language_edit).wont_be :approve
+  end
+
+  it 'goes to national level without affecting record when approved on double approval' do
+    language_edit.pending_double_approval!
+    _(language_edit).must_be :approve
+    _(language_edit).must_be :pending_national_approval?
+    _(language.name).must_equal language_edit.old_value
+  end
+
+  it 'modifies record when pending single approval and approved' do
+    language_edit.pending_single_approval!
+    _(language_edit).must_be :approve
+    _(language_edit).must_be :approved?
+    language.reload
+    _(language.name).must_equal language_edit.new_value
+  end
+
+  it 'modifies record when pending national approval and approved' do
+    language_edit.pending_national_approval!
+    _(language_edit).must_be :approve
+    _(language_edit).must_be :approved?
+    language.reload
+    _(language.name).must_equal language_edit.new_value
+  end
+
 end

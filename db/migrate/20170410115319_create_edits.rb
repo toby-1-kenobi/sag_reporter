@@ -1,9 +1,9 @@
 class CreateEdits < ActiveRecord::Migration
   def change
     create_table :edits do |t|
-      t.string :table_name, null: false
-      t.string :field_name, null: false
+      t.string :model_klass_name, null: false
       t.integer :record_id, null: false
+      t.string :attribute_name, null: false
       t.string :old_value, null: false
       t.string :new_value, null: false
       t.references :user, index: true, foreign_key: true, null: false

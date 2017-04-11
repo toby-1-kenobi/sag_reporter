@@ -94,9 +94,9 @@ ActiveRecord::Schema.define(version: 20170410115319) do
   add_index "districts", ["name"], name: "index_districts_on_name", using: :btree
 
   create_table "edits", force: :cascade do |t|
-    t.string   "table_name",                       null: false
-    t.string   "field_name",                       null: false
+    t.string   "model_klass_name",                 null: false
     t.integer  "record_id",                        null: false
+    t.string   "attribute_name",                   null: false
     t.string   "old_value",                        null: false
     t.string   "new_value",                        null: false
     t.integer  "user_id",                          null: false
