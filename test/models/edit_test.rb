@@ -81,4 +81,24 @@ describe Edit do
     _(language_edit.curated_by).must_equal admin_user
   end
 
+  it 'scopes to pending edits' do
+    _(Edit.pending).wont_include language_edit
+    _(Edit.pending).must_include edits(:pending_single)
+    _(Edit.pending).must_include edits(:pending_double)
+    _(Edit.pending).wont_include edits(:pending_national)
+    _(Edit.pending).wont_include edits(:approved)
+    _(Edit.pending).wont_include edits(:rejected)
+  end
+
+  it 'scopes to a users curating geo_states' do
+    # callbacks are skipped when fixtures are inserted
+    # we need the results of the after_save callback for this test
+    # so save all edits.
+    Edit.find_each do |edit|
+      edit.save
+    end
+    _(Edit.for_curating(admin_user)).must_include language_edit
+    _(Edit.for_curating(admin_user)).wont_include edits(:pending_double)
+  end
+
 end

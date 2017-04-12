@@ -7,14 +7,12 @@ describe User do
     phone: '9876543210',
     password: 'foobar',
     password_confirmation: 'foobar',
-    role: Role.take,
     mother_tongue: Language.take,
     email: 'me@example.com',
     email_confirmed: true,
     trusted: true,
     national: true,
     admin: false,
-    curator: false,
     national_curator: false
   ) }
   let(:zone_with_alt_pms) { Zone.new(name: 'test zone', pm_description_type: :alternate) }
@@ -23,6 +21,10 @@ describe User do
       zone: zone_with_alt_pms
   ) }
   let(:pirate_language) { Language.new(locale_tag: 'pirate') }
+  let(:user_curating_assam) { users(:andrew) }
+  let(:user_curating_nb) { users(:nathan) }
+  let(:assam_edit) { edits(:pending_single) }
+  let(:nb_edit) { edits(:pending_double) }
 
   before do
     user.geo_states << geo_states(:nb)
@@ -47,11 +49,6 @@ describe User do
 
   it 'wont be valid without admin set' do
     user.admin = nil
-    _(user).wont_be :valid?
-  end
-
-  it 'wont be valid without curator set' do
-    user.curator = nil
     _(user).wont_be :valid?
   end
 
@@ -226,6 +223,18 @@ describe User do
     _(user).wont_be :valid?
     interface_language.locale_tag = 'ha'
     _(user).must_be :valid?
+  end
+
+  it 'scopes to curators for an edit' do
+    # callbacks are skipped when fixtures are inserted
+    # we need the results of the after_save callback on Edit for this test
+    # so save the edits.
+    assam_edit.save
+    nb_edit.save
+    _(User.curating(assam_edit)).must_include user_curating_assam
+    _(User.curating(assam_edit)).wont_include user_curating_nb
+    _(User.curating(nb_edit)).must_include user_curating_nb
+    _(User.curating(nb_edit)).wont_include user_curating_assam
   end
 
 end

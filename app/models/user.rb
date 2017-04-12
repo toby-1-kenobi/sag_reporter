@@ -17,6 +17,8 @@ class User < ActiveRecord::Base
   has_many :mt_resources, dependent: :restrict_with_error
   has_many :curatings, dependent: :destroy
   has_many :curated_states, through: :curatings, class_name: 'GeoState', source: 'geo_state', inverse_of: :curators
+  has_many :edits, dependent: :destroy
+  has_many :curated_edits, foreign_key: 'curated_by_id', inverse_of: :curated_by, dependent: :nullify
 
   attr_accessor :remember_token
 
@@ -48,6 +50,8 @@ class User < ActiveRecord::Base
   validate :interface_language_must_have_locale_tag
 
   after_save :send_confirmation_email
+
+  scope :curating, ->(edit) { joins(:curated_states).where('geo_states.id' => edit.geo_states) }
 
   # Returns the hash digest of the given string.
   def User.digest(string)

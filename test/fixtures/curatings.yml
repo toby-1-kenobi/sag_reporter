@@ -3,3 +3,7 @@
 andrew_assam:
   user: andrew
   geo_state: assam
+
+nathan_nb:
+  user: nathan
+  geo_state: nb
