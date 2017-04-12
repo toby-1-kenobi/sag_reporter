@@ -1,0 +1,19 @@
+<% if @edit.errors.any? %>
+  $('#edit-response')
+      .addClass('error')
+      .html("<%= @edit.errors.full_messages.to_sentence %>")
+      .removeClass('hide');
+<% elsif @edit.record_errors.present? %>
+  $('#edit-response')
+      .addClass('error')
+      .html("<%= @edit.record_errors %>")
+      .removeClass('hide');
+<% elsif @edit.pending_single_approval? or @edit.pending_double_approval? %>
+  $('#edit-response')
+      .removeClass('error')
+      .html("Your edit is waiting for approval")
+      .removeClass('hide');
+<% elsif @edit.auto_approved? %>
+  //TODO: update page with new value
+<% end %>
+

@@ -96,3 +96,23 @@ ul.collapsible {
   margin-left: 48px;
   width: calc(100% - 48px);
 }
+
+.editable {
+  border: {
+    width: 2px;
+    radius: 6px;
+    style: solid;
+    color: transparent;
+  }
+  padding: 5px;
+  position: relative;
+  &:hover {
+    border-color: grey;
+  }
+  .edit-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: grey;
+  }
+}

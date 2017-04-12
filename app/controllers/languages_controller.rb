@@ -4,21 +4,18 @@ class LanguagesController < ApplicationController
 
   before_action :require_login
 
-    # Let only permitted users do some things
+  # Let only permitted users do some things
   before_action only: [:new, :create] do
     redirect_to root_path unless logged_in_user.can_create_language?
   end
 
+  # can edit a language if the language is in one of the user's states, or if the user is national
   before_action only: [:edit, :update] do
-    redirect_to root_path unless logged_in_user.can_edit_language?
-  end
-
-  before_action only: [:show] do
-    redirect_to languages_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
+    redirect_to root_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
   end
 
   def index
-  	@languages = Language.user_limited(logged_in_user).includes(:family, { geo_states: :zone }).order(:name)
+  	@languages = Language.includes(:family, { geo_states: :zone }).order(:name)
   end
 
   def overview

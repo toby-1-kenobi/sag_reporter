@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
+
   mount Knock::Engine => '/knock'
 
   root 'static_pages#home'
 
   get 'tasks' => 'static_pages#tasks'
 
+  resources :edits, only: [:create, :index, :show]
   resources :events do
     get :autocomplete_person_name, :on => :collection
   end
@@ -113,7 +115,6 @@ Rails.application.routes.draw do
   get 'overview/show_outcomes_progress/:id' => 'state_languages#show_outcomes_progress', as: 'show_outcomes_progress'
   get 'states/autocomplete_district_name/:geo_state_id' => 'geo_states#autocomplete_district_name', as: 'autocomplete_district_name_geo_state'
   get 'states/autocomplete_sub_district_name/:district_id' => 'districts#autocomplete_sub_district_name', as: 'autocomplete_sub_district_name_district'
-
 
   get 'whatsapp' => 'static_pages#whatsapp_link'
 

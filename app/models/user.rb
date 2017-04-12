@@ -86,11 +86,6 @@ class User < ActiveRecord::Base
     self.phone.slice(0..3) + ' ' + self.phone.slice(4..6) + ' ' + self.phone.slice(7..-1)
   end
 
-  # True if this user belongs to all states instead of one
-  def in_all_geo_states?
-    true unless self.geo_states.length > 0
-  end
-
   # Transitional method
   #TODO: make sure nothing uses this, then remove it
   def geo_state

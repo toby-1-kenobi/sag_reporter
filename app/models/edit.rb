@@ -37,19 +37,22 @@ class Edit < ActiveRecord::Base
         pending_national_approval!
         return true
       when pending_single_approval?, pending_national_approval?
-        thing_for_editing = model_klass_name.constantize.find(record_id)
         update_attributes(curated_by: curator, curation_date: Time.now) if pending_single_approval?
         update_attributes(second_curation_date: Time.now) if pending_national_approval?
-        if thing_for_editing.update_attributes(attribute_name => new_value)
-          approved!
-          return true
-        else
-          rejected!
-          logger.debug thing_for_editing.errors.full_messages.to_sentence
-          update_attribute(:record_errors, thing_for_editing.errors.full_messages.to_sentence)
-          return false
-        end
+        approved!
+        # if apply fails it will change status to rejected and populate record_errors field
+        return apply
     end
+  end
+
+  def apply
+    thing_for_editing = model_klass_name.constantize.find(record_id)
+    success = thing_for_editing.update_attributes(attribute_name => new_value)
+    unless success
+      update_attribute(:record_errors, thing_for_editing.errors.full_messages.to_sentence)
+      rejected!
+    end
+    return success
   end
 
   def reject(curator)
