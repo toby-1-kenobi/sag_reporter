@@ -14,6 +14,6 @@
       .html("Your edit is waiting for approval")
       .removeClass('hide');
 <% elsif @edit.auto_approved? %>
-  //TODO: update page with new value
+  $('#<%= @element_id %>').html("<%= @edit.new_value %>");
 <% end %>
 

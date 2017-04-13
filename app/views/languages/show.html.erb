@@ -21,6 +21,7 @@
   <dialog id="edit-dialog-name" class="mdl-dialog" data-for="language-name">
     <div class="mdl-dialog__content ">
       <%= form_tag edits_path, remote: true, method: :post do %>
+          <%= hidden_field_tag 'element_id', 'language-name' %>
           <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
           <%= hidden_field_tag 'edit[record_id]', @language.id %>
           <%= hidden_field_tag 'edit[attribute_name]', 'name' %>

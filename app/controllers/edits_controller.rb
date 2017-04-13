@@ -3,6 +3,7 @@ class EditsController < ApplicationController
   before_action :require_login
 
   def create
+    @element_id = params[:element_id]
     @edit = Edit.new(edit_params)
     @edit.user = logged_in_user
     if @edit.model_klass_name == 'Language'
@@ -14,18 +15,9 @@ class EditsController < ApplicationController
     else
       @edit.auto_approved!
     end
-    response = Hash.new
     if @edit.save
-      response[:success] = true
-      if @edit.auto_approved?
-        response[:success] = @edit.apply
-        response[:error] = @edit.record_errors unless response[:success]
-      end
-    else
-      response[:success] = false
-      response[:error] = @edit.errors.full_messages.to_sentence
+      @edit.apply if @edit.auto_approved?
     end
-    response[:approval] = @edit.status
     respond_to do |format|
       format.js
     end
