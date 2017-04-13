@@ -17,7 +17,7 @@
   if @language and current_page?(language_path(@language))
     mdl = true
   end
-  if @user and current_page?(edit_user_path(@user))
+  if @user and @user.id.present? and current_page?(edit_user_path(@user))
     mdl = true
   end
 %>

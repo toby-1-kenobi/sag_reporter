@@ -35,6 +35,9 @@ class Edit < ActiveRecord::Base
         update_attributes(curated_by: curator, curation_date: Time.now)
         logger.debug "curaton date: #{curation_date} (#{curation_date.class})"
         pending_national_approval!
+        if curator.national_curator?
+          return approve(curator)
+        end
         return true
       when pending_single_approval?, pending_national_approval?
         update_attributes(curated_by: curator, curation_date: Time.now) if pending_single_approval?

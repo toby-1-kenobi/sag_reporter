@@ -2,9 +2,9 @@ class EditsController < ApplicationController
 
   before_action :require_login
 
-  # Only users who are curators can crate edits
+  # Only users who are curators can curate edits
   before_action only: [:curate] do
-    redirect_to root_path unless logged_in_user.curated_states.any?
+    redirect_to root_path unless logged_in_user.curated_states.any? or logged_in_user.national_curator?
   end
 
   def create
@@ -36,6 +36,37 @@ class EditsController < ApplicationController
 
   def curate
     @edits = Edit.includes(:user, :geo_states).pending.for_curating(logged_in_user)
+    if logged_in_user.national_curator?
+      @national_edits = Edit.pending_national_approval
+    else
+      @national_edits = false
+    end
+  end
+
+  def approve
+    @edit = Edit.find params[:id]
+    # check permission to curate
+    if User.curating(@edit).include? logged_in_user
+      @edit.approve(logged_in_user)
+      respond_to do |format|
+        format.js
+      end
+    else
+      head(:forbidden)
+    end
+  end
+
+  def reject
+    @edit = Edit.find params[:id]
+    # check permission to curate
+    if User.curating(@edit).include? logged_in_user
+      @edit.reject(logged_in_user)
+      respond_to do |format|
+        format.js
+      end
+    else
+      head(:forbidden)
+    end
   end
 
   private

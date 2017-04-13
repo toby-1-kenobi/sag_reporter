@@ -10,6 +10,10 @@ Rails.application.routes.draw do
     collection do
       get 'curate'
     end
+    member do
+      patch 'approve'
+      patch 'reject'
+    end
   end
   resources :events do
     get :autocomplete_person_name, :on => :collection

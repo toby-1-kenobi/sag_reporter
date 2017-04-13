@@ -7,6 +7,16 @@
         </div>
       <% end %>
     </div>
-<% else %>
+<% end %>
+<% if @national_edits %>
+    <div class="mdl-grid">
+      <% @national_edits.each do |edit| %>
+          <div class="mdl-cell mdl-cell--4-col">
+            <%= render edit %>
+          </div>
+      <% end %>
+    </div>
+<% end %>
+<% unless @edits.any? or @national_edits %>
     <p>There are no pending edits for you to curate.</p>
 <% end %>
