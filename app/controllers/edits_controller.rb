@@ -2,6 +2,11 @@ class EditsController < ApplicationController
 
   before_action :require_login
 
+  # Only users who are curators can crate edits
+  before_action only: [:curate] do
+    redirect_to root_path unless logged_in_user.curated_states.any?
+  end
+
   def create
     @element_id = params[:element_id]
     @edit = Edit.new(edit_params)
@@ -27,6 +32,10 @@ class EditsController < ApplicationController
   end
 
   def show
+  end
+
+  def curate
+    @edits = Edit.includes(:user, :geo_states).pending.for_curating(logged_in_user)
   end
 
   private

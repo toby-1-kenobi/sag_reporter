@@ -1,0 +1,12 @@
+<% provide(:title, 'Curating') %>
+<% if @edits.any? %>
+    <div class="mdl-grid">
+      <% @edits.each do |edit| %>
+        <div class="mdl-cell mdl-cell--4-col">
+          <%= render edit %>
+        </div>
+      <% end %>
+    </div>
+<% else %>
+    <p>There are no pending edits for you to curate.</p>
+<% end %>

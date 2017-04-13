@@ -1,0 +1,29 @@
+<% object = edit.model_klass_name.constantize.find(edit.record_id) %>
+<div class="edit <%= edit.status %> mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">
+      Edit for <%= edit.model_klass_name.titleize %>&nbsp;
+      <%= link_to object.respond_to?(:name) ? object.name : object.id, object %></h2>
+    <h3 class="mdl-card__subtitle-text"></h3>
+  </div>
+  <div class="mdl-card__supporting-text">
+    <div class="edit-description">
+      Change the <%= edit.attribute_name.humanize.downcase %>
+      from <span class="attribute_value"><%= edit.old_value %></span> to <span class="attribute_value"><%= edit.new_value %></span>
+    </div>
+    <div>
+      Suggested by <%= logged_in_user.trusted? ? link_to(edit.user.name, edit.user) : "user #{edit.user_id}" %> <%= time_ago_in_words(edit.created_at) %> ago.
+    </div>
+    <div>
+      Affecting <%= 'state'.pluralize(edit.geo_states.length) %>: <%= edit.geo_states.map(&:name).to_sentence %>.
+    </div>
+  </div>
+  <div class="mdl-card__actions mdl-card--border">
+    <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
+      <i class="material-icons">clear</i> Reject
+    </button>
+    <button class="approve-edit mdl-button mdl-js-button mdl-button--primary">
+      <i class="material-icons">done</i> Approve
+    </button>
+  </div>
+</div>

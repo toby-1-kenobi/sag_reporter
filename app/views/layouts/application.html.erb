@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-<%# Transitioning from Materialize to MDL. Some pages use one for stying, other pages use the other. %>
+<%# Transitioning from Materialize to MDL. Some pages use one for styling, other pages use the other. %>
 <%# The Materialize styles break the MDL ones so we need to know which page we're on and import the styles accordingly %>
 <script>
   console.log('current path: <%= request.path %>');
@@ -9,12 +9,15 @@
 
 <%
   case request.path
-  when login_path, two_factor_auth_path, root_path, languages_path, select_to_assess_path, new_user_path, edit_user_path
+  when login_path, two_factor_auth_path, root_path, languages_path, select_to_assess_path, new_user_path, curate_edits_path
     mdl = true
   else
     mdl = false
   end
   if @language and current_page?(language_path(@language))
+    mdl = true
+  end
+  if @user and current_page?(edit_user_path(@user))
     mdl = true
   end
 %>
