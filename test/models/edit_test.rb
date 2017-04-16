@@ -15,6 +15,11 @@ describe Edit do
     _(language_edit.errors[:record_id]).must_be :present?
   end
 
+  it 'wont be valid if the value isnt changed' do
+    language_edit.new_value = language_edit.old_value
+    _(language_edit).wont_be :valid?
+  end
+
   it 'has the same geo_states as the language' do
     language_edit.save
     value(language_edit.geo_states).must_equal language.geo_states

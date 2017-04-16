@@ -21,6 +21,7 @@ class Edit < ActiveRecord::Base
   validates :new_value, presence: true, allow_blank: true
   validates :status, inclusion: { in: statuses.keys }
   validate :record_id_exists
+  validate :new_value_is_new
 
   after_save :set_geo_states
 
@@ -71,6 +72,10 @@ class Edit < ActiveRecord::Base
     rescue ActiveRecord::RecordNotFound => e
       errors.add(:record_id, e.message)
     end
+  end
+
+  def new_value_is_new
+    errors.add(:new_value, 'must be different') if new_value == old_value
   end
 
   def set_geo_states
