@@ -1,18 +1,22 @@
 <% if @edit.errors.any? %>
   $('#edit-response')
-      .addClass('error')
-      .html("<%= @edit.errors.full_messages.to_sentence %>")
-      .removeClass('hide');
+      .slideUp('fast', function(){
+        $(this)
+            .addClass('error')
+            .html("<%= @edit.errors.full_messages.to_sentence %>")
+            .slideDown('fast');
+      });
 <% elsif @edit.record_errors.present? %>
   $('#edit-response')
-      .addClass('error')
-      .html("<%= @edit.record_errors %>")
-      .removeClass('hide');
+      .slideUp('fast', function() {
+        $(this)
+            .addClass('error')
+            .html("<%= @edit.record_errors %>")
+            .slideDown('fast');
+      });
 <% elsif @edit.pending_single_approval? or @edit.pending_double_approval? %>
-  $('#edit-response')
-      .removeClass('error')
-      .html("Your edit is waiting for approval")
-      .removeClass('hide');
+  $('#edit-response').slideUp('fast');
+  $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render @edit %></div>')
 <% elsif @edit.auto_approved? %>
   $('#<%= @element_id %>').html("<%= @edit.new_value %>");
 <% end %>

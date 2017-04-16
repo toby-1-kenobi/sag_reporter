@@ -7,6 +7,11 @@ class EditsController < ApplicationController
     redirect_to root_path unless logged_in_user.curated_states.any? or logged_in_user.national_curator?
   end
 
+  before_action only: [:approve, :reject] do
+    @edit = Edit.find params[:id]
+    head :forbidden unless User.curating(@edit).include? logged_in_user
+  end
+
   def create
     @element_id = params[:element_id]
     @edit = Edit.new(edit_params)
@@ -44,28 +49,25 @@ class EditsController < ApplicationController
   end
 
   def approve
-    @edit = Edit.find params[:id]
-    # check permission to curate
-    if User.curating(@edit).include? logged_in_user
-      @edit.approve(logged_in_user)
-      respond_to do |format|
-        format.js
-      end
-    else
-      head(:forbidden)
+    @edit.approve(logged_in_user)
+    respond_to do |format|
+      format.js
     end
   end
 
   def reject
+    @edit.reject(logged_in_user)
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def destroy
     @edit = Edit.find params[:id]
-    # check permission to curate
-    if User.curating(@edit).include? logged_in_user
-      @edit.reject(logged_in_user)
-      respond_to do |format|
-        format.js
-      end
-    else
-      head(:forbidden)
+    head :forbidden unless logged_in_user?(@edit.user)
+    @edit.destroy
+    respond_to do |format|
+      format.js
     end
   end
 

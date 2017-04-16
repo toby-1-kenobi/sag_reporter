@@ -17,22 +17,36 @@
     <div>
       Affecting <%= 'state'.pluralize(edit.geo_states.length) %>: <%= edit.geo_states.map(&:name).to_sentence %>.
     </div>
+    <div>
+      <%= edit.status.humanize %>.
+    </div>
     <% if logged_in_user.trusted? %>
     <div>
       May be curated by <%= User.curating(edit).map{ |u| link_to content_tag(:span, u.name), u }.to_sentence.html_safe %>.
     </div>
     <% end %>
   </div>
-  <div class="mdl-card__actions mdl-card--border">
-    <%= link_to reject_edit_path(edit), method: :patch, remote: true, data: {confirm: 'Reject it, are you sure?'} do %>
-      <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
-        <i class="material-icons">clear</i> Reject
-      </button>
-    <% end %>
-    <%= link_to approve_edit_path(edit), method: :patch, remote: true, data: {confirm: 'Approve it, are you sure?'} do %>
-      <button class="approve-edit mdl-button mdl-js-button mdl-button--primary">
-        <i class="material-icons">done</i> Approve
-      </button>
-    <% end %>
-  </div>
+  <% if logged_in_user?(edit.user) or User.curating(edit).include? logged_in_user %>
+    <div class="mdl-card__actions mdl-card--border">
+      <% if logged_in_user?(edit.user) %>
+        <%= link_to edit_path(edit), method: :delete, remote: true do %>
+          <button class="cancel-edit mdl-button mdl-js-button mdl-button--accent">
+            <i class="material-icons">delete</i> Cancel
+          </button>
+        <% end %>
+      <% end %>
+      <% if User.curating(edit).include? logged_in_user %>
+        <%= link_to reject_edit_path(edit), method: :patch, remote: true, data: {confirm: 'Reject it, are you sure?'} do %>
+          <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
+            <i class="material-icons">clear</i> Reject
+          </button>
+        <% end %>
+        <%= link_to approve_edit_path(edit), method: :patch, remote: true, data: {confirm: 'Approve it, are you sure?'} do %>
+          <button class="approve-edit mdl-button mdl-js-button mdl-button--primary">
+            <i class="material-icons">done</i> Approve
+          </button>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

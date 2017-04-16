@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   get 'tasks' => 'static_pages#tasks'
 
-  resources :edits, only: [:create, :index, :show] do
+  resources :edits, only: [:create, :index, :show, :destroy] do
     collection do
       get 'curate'
     end

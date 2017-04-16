@@ -6,6 +6,13 @@
 <%= '<script>console.log("page is editable");</script>'.html_safe if editable %>
 
 <div id="edit-response"></div>
+<div id="pending-edits" class="mdl-grid">
+  <% @user_pending_edits.each do |edit| %>
+    <div class="mdl-cell mdl-cell--4-col">
+      <%= render edit %>
+    </div>
+  <% end %>
+</div>
 
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--6-col mdl-cell--2-col-phone">
@@ -37,22 +44,23 @@
       <button type="button" class="mdl-button cancel">Cancel</button>
     </div>
   </dialog>
-    <dialog id="edit-dialog-iso" class="mdl-dialog" data-for="language-iso">
-      <h4 class="mdl-dialog__title">Edit the ISO code</h4>
-      <div class="mdl-dialog__content">
-        <%= form_tag edits_path, remote: true, method: :post do %>
-            <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-            <%= hidden_field_tag 'edit[record_id]', @language.id %>
-            <%= hidden_field_tag 'edit[attribute_name]', 'iso' %>
-            <%= hidden_field_tag 'edit[old_value]', @language.iso %>
-            <%= text_field_tag 'edit[new_value]', @language.iso %>
-        <% end %>
-      </div>
-      <div class="md-dialog__actions">
-        <button type="button" class="mdl-button submit">Submit</button>
-        <button type="button" class="mdl-button cancel">Cancel</button>
-      </div>
-    </dialog>
+
+  <dialog id="edit-dialog-iso" class="mdl-dialog" data-for="language-iso">
+    <h4 class="mdl-dialog__title">Edit the ISO code</h4>
+    <div class="mdl-dialog__content">
+      <%= form_tag edits_path, remote: true, method: :post do %>
+          <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
+          <%= hidden_field_tag 'edit[record_id]', @language.id %>
+          <%= hidden_field_tag 'edit[attribute_name]', 'iso' %>
+          <%= hidden_field_tag 'edit[old_value]', @language.iso %>
+          <%= text_field_tag 'edit[new_value]', @language.iso %>
+      <% end %>
+    </div>
+    <div class="md-dialog__actions">
+      <button type="button" class="mdl-button submit">Submit</button>
+      <button type="button" class="mdl-button cancel">Cancel</button>
+    </div>
+  </dialog>
 <% end %>
 
 <div class="mdl-grid language-dashboard">
