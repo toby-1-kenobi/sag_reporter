@@ -8,15 +8,19 @@ module LanguagesHelper
     # the file name is based on the language iso code
     if Rails.env.production? or Rails.env.development?
       # for production maps are stored in the cloud
-      map_uri = "https://storage.googleapis.com/lci-language-maps/#{language.iso}.png"
+      map_uri_base = "https://storage.googleapis.com/lci-language-maps/#{language.iso}"
+      extensions = ['png', 'jpg']
+      found_map_uri = false
       require 'open-uri'
-      begin
-        open map_uri
-      rescue => e
-        Rails.logger.debug("no map: #{e.message}")
-        return false
+      while !found_map_uri and extensions.any?
+        begin
+          found_map_uri = "#{map_uri_base}.#{extensions.shift}"
+          open found_map_uri
+        rescue => e
+          found_map_uri = false
+        end
       end
-      map_uri
+      found_map_uri
     else
       # for test and development maps are stored locally
       link_path = '/uploads/maps'
