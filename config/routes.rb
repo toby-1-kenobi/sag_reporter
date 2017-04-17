@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   resources :edits, only: [:create, :index, :show, :destroy] do
     collection do
       get 'curate'
+      get 'my'
     end
     member do
       patch 'approve'

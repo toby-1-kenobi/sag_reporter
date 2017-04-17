@@ -40,12 +40,16 @@ class EditsController < ApplicationController
   end
 
   def curate
-    @edits = Edit.includes(:user, :geo_states).pending.for_curating(logged_in_user)
+    @edits = Edit.includes(:user, :geo_states).pending.for_curating(logged_in_user).order(:created_at)
     if logged_in_user.national_curator?
       @national_edits = Edit.pending_national_approval
     else
       @national_edits = false
     end
+  end
+
+  def my
+    @edits = logged_in_user.edits.includes(:user, :geo_states).order(:created_at)
   end
 
   def approve
