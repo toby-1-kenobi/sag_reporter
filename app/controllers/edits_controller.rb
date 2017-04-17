@@ -55,14 +55,14 @@ class EditsController < ApplicationController
   def approve
     @edit.approve(logged_in_user)
     respond_to do |format|
-      format.js
+      format.js {render 'change'}
     end
   end
 
   def reject
     @edit.reject(logged_in_user)
     respond_to do |format|
-      format.js
+      format.js {render 'change'}
     end
   end
 
