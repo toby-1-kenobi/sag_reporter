@@ -35,12 +35,6 @@ class EditsController < ApplicationController
     end
   end
 
-  def index
-  end
-
-  def show
-  end
-
   def curate
     @edits = Edit.includes(:user, :geo_states).pending.for_curating(logged_in_user).order(:created_at)
     if logged_in_user.national_curator?
