@@ -16,7 +16,9 @@ class EditsController < ApplicationController
     @element_id = params[:element_id]
     @edit = Edit.new(edit_params)
     @edit.user = logged_in_user
-    if @edit.model_klass_name == 'Language'
+    if @edit.user.national_curator?
+      @edit.auto_approved!
+    elsif @edit.model_klass_name == 'Language'
       if ['name', 'iso', 'population', 'location'].include? @edit.attribute_name
         @edit.pending_double_approval!
       else
