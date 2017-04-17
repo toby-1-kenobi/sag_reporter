@@ -141,7 +141,7 @@ class StaticPagesController < ApplicationController
             category: 'other'
         },
         {
-            condition: logged_in_user.curated_states.any?,
+            condition: (logged_in_user.curated_states.any? or logged_in_user.national_curator?),
             path: curate_edits_path,
             text: 'Curate',
             icon: 'done_all',
