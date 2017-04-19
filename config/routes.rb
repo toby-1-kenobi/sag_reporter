@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   mount Knock::Engine => '/knock'
 
   root 'static_pages#home'
@@ -66,6 +67,8 @@ Rails.application.routes.draw do
       get :confirm_email
     end
   end
+
+  resources :zones, only: [:index, :show]
 
   get 're_send_to_confirm_email' => 'users#re_confirm_email'
 

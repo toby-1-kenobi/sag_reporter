@@ -1,0 +1,10 @@
+<% provide(:title, 'Choose Zone') %>
+<ul class="zone-list mdl-list">
+  <% @zones.each do |zone| %>
+    <li class="mdl-list__item">
+      <%= link_to zone do %>
+        <span class="mdl-list__item-primary-content"><%= zone.name %></span>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
