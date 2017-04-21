@@ -1,5 +1,10 @@
 <% provide(:title, 'Choose Zone') %>
 <ul class="zone-list mdl-list">
+  <li class="mdl-list__item">
+    <%= link_to nation_path do %>
+      <span class="mdl-list__item-primary-content">All India</span>
+    <% end %>
+  </li>
   <% @zones.each do |zone| %>
     <li class="mdl-list__item">
       <%= link_to zone do %>
