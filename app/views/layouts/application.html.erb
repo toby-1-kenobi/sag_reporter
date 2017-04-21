@@ -10,7 +10,8 @@
 <%
   case request.path
   when login_path, two_factor_auth_path, root_path, languages_path,
-      select_to_assess_path, zones_path, /^\/zones\/[0-9]+$/, /^\/languages\/[0-9]+$/
+      select_to_assess_path, zones_path, /^\/zones\/[0-9]+$/, /^\/languages\/[0-9]+$/,
+      /^\/geo_states\/[0-9]+$/
     mdl = true
   else
     mdl = false

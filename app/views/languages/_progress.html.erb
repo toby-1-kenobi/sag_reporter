@@ -1,6 +1,6 @@
 <div class="mdl-grid">
   <%
-    languages_by_translation_status = @zone.languages.group_by{ |l| l.translation_status.to_s.humanize }
+    languages_by_translation_status = languages.group_by{ |l| l.translation_status.to_s.humanize }
     colour_hash = Language.translation_status_colour.map{ |k, v| [k.to_s.humanize, v] }.to_h
   %>
   <div class="chart-pane mdl-grid--4-col">

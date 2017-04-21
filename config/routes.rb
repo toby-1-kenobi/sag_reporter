@@ -9,6 +9,9 @@ Rails.application.routes.draw do
   resources :events do
     get :autocomplete_person_name, :on => :collection
   end
+
+  resources :geo_states, only: [:show]
+
   resources :impact_reports, except: [:new, :create, :index] do
     collection do
       get 'tag'
@@ -54,10 +57,7 @@ Rails.application.routes.draw do
       get 'pictures'
     end
   end
-  resources :roles, except: [:new, :show, :edit, :update]
-  # roles update all at once
-  patch  'roles' => 'roles#update'
-  resources :tallies
+
   resources :topics
 
   resources :users do

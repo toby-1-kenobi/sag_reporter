@@ -4,6 +4,10 @@ class GeoStatesController < ApplicationController
 
   autocomplete :district, :name, full: true
 
+  def show
+    @geo_state = GeoState.find params[:id]
+  end
+
   def get_autocomplete_items(parameters)
     super(parameters).where(:geo_state_id => params[:geo_state_id])
   end

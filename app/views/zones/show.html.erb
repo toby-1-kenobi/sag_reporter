@@ -10,10 +10,18 @@
     <a href="#organisations-tab" class="mdl-tabs__tab">Organisations</a>
   </div>
   <div class="mdl-tabs__panel is-active" id="progress-tab">
-    <%= render 'progress' %>
+    <%= render 'languages/progress', languages: @zone.languages %>
   </div>
   <div class="mdl-tabs__panel" id="states-tab">
-
+    <ul class="state-list mdl-list">
+      <% @zone.geo_states.each do |state| %>
+          <li class="mdl-list__item">
+            <%= link_to state do %>
+                <span class="mdl-list__item-primary-content"><%= state.name %></span>
+            <% end %>
+          </li>
+      <% end %>
+    </ul>
   </div>
   <div class="mdl-tabs__panel" id="languages-tab">
 
