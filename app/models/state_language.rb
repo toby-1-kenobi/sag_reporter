@@ -14,6 +14,7 @@ class StateLanguage < ActiveRecord::Base
   validates :language, presence: true
 
   scope :in_project, -> { where project: true }
+  scope :not_in_project, -> { where project: false }
 
   # The date from which charting of outcome dat should start
   BASE_DATE = Date.new(2016, 10)

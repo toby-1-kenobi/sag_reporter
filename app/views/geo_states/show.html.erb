@@ -12,7 +12,14 @@
     <%= render 'languages/progress', languages: @geo_state.languages %>
   </div>
   <div class="mdl-tabs__panel" id="languages-tab">
-
+    <h3>Languages tracked by LCI</h3>
+    <ul class="project-languages mdl-list">
+      <%= render partial: 'state_language', collection: @geo_state.state_languages.in_project.includes(language: :family).order('languages.name') %>
+    </ul>
+    <h3>Other languages</h3>
+    <ul class="project-languages mdl-list">
+      <%= render partial: 'state_language', collection: @geo_state.state_languages.not_in_project.includes(language: :family).order('languages.name') %>
+    </ul>
   </div>
   <div class="mdl-tabs__panel" id="organisations-tab">
 
