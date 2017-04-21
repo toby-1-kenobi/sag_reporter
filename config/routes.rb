@@ -117,6 +117,7 @@ Rails.application.routes.draw do
   get 'states/autocomplete_district_name/:geo_state_id' => 'geo_states#autocomplete_district_name', as: 'autocomplete_district_name_geo_state'
   get 'states/autocomplete_sub_district_name/:district_id' => 'districts#autocomplete_sub_district_name', as: 'autocomplete_sub_district_name_district'
 
+  get 'nation' => 'zones#nation', as: 'nation'
 
   get 'whatsapp' => 'static_pages#whatsapp_link'
 

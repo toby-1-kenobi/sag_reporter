@@ -10,4 +10,8 @@ class ZonesController < ApplicationController
     @zone = Zone.find params[:id]
   end
 
+  def nation
+
+  end
+
 end

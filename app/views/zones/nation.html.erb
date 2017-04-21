@@ -1,21 +1,32 @@
-<% provide(:title, 'Zone Dashboard') %>
-<h1><%= @zone.name %> Zone</h1>
+<% provide(:title, 'National Dashboard') %>
+<h1>India</h1>
 <!-- breadcrumbs will go here -->
-<!-- India | Current Zone | previously navigated state | previously navigated language -->
+<!-- India | previously navigated Zone | previously navigated state | previously navigated language -->
 
 <div class="mdl-tabs mdl-js-tabs">
   <div class="mdl-tabs__tab-bar">
     <a href="#progress-tab" class="mdl-tabs__tab">Progress</a>
+    <a href="#zones-tab" class="mdl-tabs__tab">Zones</a>
     <a href="#states-tab" class="mdl-tabs__tab">States</a>
     <a href="#languages-tab" class="mdl-tabs__tab">Languages</a>
-    <a href="#organisations-tab" class="mdl-tabs__tab">Organisations</a>
   </div>
   <div class="mdl-tabs__panel is-active" id="progress-tab">
-    <%= render 'languages/progress', languages: @zone.languages %>
+    <%= render 'languages/progress', languages: Language.all %>
+  </div>
+  <div class="mdl-tabs__panel" id="zones-tab">
+    <ul class="zone-list mdl-list">
+      <% Zone.find_each do |zone| %>
+          <li class="mdl-list__item">
+            <%= link_to zone do %>
+                <span class="mdl-list__item-primary-content"><%= zone.name %></span>
+            <% end %>
+          </li>
+      <% end %>
+    </ul>
   </div>
   <div class="mdl-tabs__panel" id="states-tab">
     <ul class="state-list mdl-list">
-      <% @zone.geo_states.each do |state| %>
+      <% GeoState.find_each do |state| %>
           <li class="mdl-list__item">
             <%= link_to state do %>
                 <span class="mdl-list__item-primary-content"><%= state.name %></span>
@@ -29,18 +40,8 @@
     <%= render 'languages/list_filter_controls' %>
 
     <ul class="languages mdl-list">
-      <%= render partial: 'languages/language', collection: @zone.languages %>
+      <%= render partial: 'languages/language', collection: Language.all %>
     </ul>
 
-  </div>
-  <div class="mdl-tabs__panel" id="organisations-tab">
-    <h3>Working here</h3>
-    <ul class="mdl-list">
-      <%= render partial: 'organisations/organisation', collection: @zone.engaged_organisations.uniq %>
-    </ul>
-    <h3>Translating here</h3>
-    <ul class="mdl-list">
-      <%= render partial: 'organisations/organisation', collection: @zone.translating_organisations.uniq %>
-    </ul>
   </div>
 </div>
