@@ -1,1 +1,24 @@
 <h1><%= @zone.name %> Zone</h1>
+<!-- breadcrumbs will go here -->
+<!-- India | Current Zone | previously navigated state | previously navigated language -->
+
+<div class="mdl-tabs mdl-js-tabs">
+  <div class="mdl-tabs__tab-bar">
+    <a href="#progress-tab" class="mdl-tabs__tab">Progress</a>
+    <a href="#states-tab" class="mdl-tabs__tab">States</a>
+    <a href="#languages-tab" class="mdl-tabs__tab">Languages</a>
+    <a href="#organisations-tab" class="mdl-tabs__tab">Organisations</a>
+  </div>
+  <div class="mdl-tabs__panel is-active" id="progress-tab">
+    <%= render 'progress' %>
+  </div>
+  <div class="mdl-tabs__panel" id="states-tab">
+
+  </div>
+  <div class="mdl-tabs__panel" id="languages-tab">
+
+  </div>
+  <div class="mdl-tabs__panel" id="organisations-tab">
+
+  </div>
+</div>

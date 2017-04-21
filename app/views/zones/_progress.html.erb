@@ -1,0 +1,40 @@
+<div class="mdl-grid">
+  <%
+    languages_by_translation_status = @zone.languages.group_by{ |l| l.translation_status.to_s.humanize }
+    colour_hash = Language.translation_status_colour.map{ |k, v| [k.to_s.humanize, v] }.to_h
+  %>
+  <div class="chart-pane mdl-grid--4-col">
+    <div class="mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">Transformation index by language</h2>
+      </div>
+      <div class="mdl-card__supporting-text">
+        <%
+          transformation_index_data = languages_by_translation_status.dup.update(languages_by_translation_status){ |k, v1, v2| v1.length }
+          colours = []
+          transformation_index_data.each do |status, _|
+            colours << colour_hash[status]
+          end
+        %>
+        <%= pie_chart transformation_index_data, colors: colours %>
+      </div>
+    </div>
+  </div>
+  <div class="chart-pane mdl-grid--4-col">
+    <div class="mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">Transformation index by population</h2>
+      </div>
+      <div class="mdl-card__supporting-text">
+        <%
+          transformation_pop_data = languages_by_translation_status.dup.update(languages_by_translation_status){ |k, v1, v2| v1.reduce(0){ |sum, l| sum + (l.population || 0) } }
+          colours = []
+          transformation_index_data.each do |status, _|
+            colours << colour_hash[status]
+          end
+        %>
+        <%= pie_chart transformation_pop_data, colors: colours %>
+      </div>
+    </div>
+  </div>
+</div>
