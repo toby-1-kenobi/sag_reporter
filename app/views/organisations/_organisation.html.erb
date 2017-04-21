@@ -1,5 +1,5 @@
-<%= link_to organisation do %>
-  <paper-item>
-    <%= organisation.name_with_abbr %>
-  </paper-item>
-<% end %>
+<li class="organisation mdl-list__item">
+  <span class="mdl-list__item-primary-content">
+    <%= link_to organisation.name_with_abbr, organisation %>
+  </span>
+</li>

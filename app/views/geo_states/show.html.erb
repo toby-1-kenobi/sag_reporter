@@ -22,6 +22,23 @@
     </ul>
   </div>
   <div class="mdl-tabs__panel" id="organisations-tab">
-
+    <div class="mdl-grid">
+      <% if @geo_state.engaged_organisations.any? %>
+        <div class="mdl--4-col">
+          <h3>Working here</h3>
+          <ul class="mdl-list">
+            <%= render partial: 'organisations/organisation', collection: @geo_state.engaged_organisations.uniq %>
+          </ul>
+        </div>
+      <% end %>
+      <% if @geo_state.translating_organisations.any? %>
+        <div class="mdl--4-col">
+          <h3>Translating here</h3>
+          <ul class="mdl-list">
+            <%= render partial: 'organisations/organisation', collection: @geo_state.translating_organisations.uniq %>
+          </ul>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>

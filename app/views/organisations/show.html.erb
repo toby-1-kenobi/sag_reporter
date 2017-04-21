@@ -10,18 +10,20 @@
 
 <div class="flex-equal-justified">
   <% if @organisation.engaged_languages.any? %>
-    <paper-card heading="Engaged with these language communities">
-      <div class="languages card-content" role="listbox">
+    <div>
+      <h3><strong>Working</strong> with these language communities</h3>
+      <ul class="mdl-list">
         <%= render partial: 'languages/language', collection: @organisation.engaged_languages  %>
-      </div>
-    </paper-card>
+      </ul>
+    </div>
   <% end %>
 
   <% if @organisation.translating_languages.any? %>
-    <paper-card heading="Translating Scriptures with these language communities">
-      <div class="languages" role="listbox">
+    <div>
+      <h3><strong>Translating</strong> with these language communities</h3>
+      <ul class="mdl-list">
         <%= render partial: 'languages/language', collection: @organisation.translating_languages %>
-      </div>
-    </paper-card>
+      </ul>
+    </div>
   <% end %>
 </div>

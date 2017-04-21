@@ -12,6 +12,8 @@ class GeoState < ActiveRecord::Base
   has_many :output_counts
   has_many :progress_updates
   has_many :districts, dependent: :destroy
+  has_many :engaged_organisations, through: :languages
+  has_many :translating_organisations, through: :languages
   delegate :name, to: :zone, prefix: true
 
   def minority_languages

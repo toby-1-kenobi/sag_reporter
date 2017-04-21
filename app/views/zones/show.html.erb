@@ -33,6 +33,13 @@
 
   </div>
   <div class="mdl-tabs__panel" id="organisations-tab">
-
+    <h3>Working here</h3>
+    <ul class="mdl-list">
+      <%= render partial: 'organisations/organisation', collection: @zone.engaged_organisations.uniq %>
+    </ul>
+    <h3>Translating here</h3>
+    <ul class="mdl-list">
+      <%= render partial: 'organisations/organisation', collection: @zone.translating_organisations.uniq %>
+    </ul>
   </div>
 </div>
