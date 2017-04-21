@@ -1,0 +1,115 @@
+<div class="mdl-grid language-filter-controls">
+
+  <div class="mdl-cell mdl-cell--4-col">
+    <div class="over mdl-shadow--4dp"><h4>Strategic Zone</h4></div>
+    <div class="under mdl-shadow--2dp">
+      <div class="shadow-clipper"></div>
+      <ul class="mdl-list">
+        <%# one list item to allow users to select languages where no zone is defined %>
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Unknown</span>
+          <span class="mdl-list__item-secondary-action">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="zone-unknown-check">
+              <input
+              checked
+              type="checkbox"
+              value="zone-unknown"
+              id="zone-unknown-check"
+              class="mdl-checkbox__input filter-trigger"
+              data-filter-trigger-label="zone"
+              />
+            </label>
+          </span>
+        </li>
+        <% Zone.all.order(:name).each do |zone| %>
+            <li class="mdl-list__item">
+              <span class="mdl-list__item-primary-content"><%= zone.name %></span>
+            <span class="mdl-list__item-secondary-action">
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="zone-<%= zone.id %>-check">
+                <input
+                checked
+                type="checkbox"
+                value="<%= zone.id %>"
+                id="zone-<%= zone.id %>-check"
+                class="mdl-checkbox__input filter-trigger"
+                data-filter-trigger-label="zone"
+                />
+              </label>
+            </span>
+            </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mdl-cell mdl-cell--4-col">
+    <div class="over mdl-shadow--4dp"><h4>Language Family</h4></div>
+    <div class="under mdl-shadow--2dp">
+      <div class="shadow-clipper"></div>
+      <ul class="mdl-list">
+        <%# one list item to allow users to select languages where no language family is defined %>
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">Unknown</span>
+          <span class="mdl-list__item-secondary-action">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="family-unknown-check">
+              <input
+              checked
+              type="checkbox"
+              value="family-unknown"
+              id="family-unknown-check"
+              class="mdl-checkbox__input filter-trigger"
+              data-filter-trigger-label="language-family"
+              />
+            </label>
+          </span>
+        </li>
+        <% LanguageFamily.all.order(:name).each do |family| %>
+            <li class="mdl-list__item">
+              <span class="mdl-list__item-primary-content"><%= family.name %></span>
+            <span class="mdl-list__item-secondary-action">
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="family-<%= family.id %>-check">
+                <input
+                checked
+                type="checkbox"
+                value="<%= family.id %>"
+                id="family-<%= family.id %>-check"
+                class="mdl-checkbox__input filter-trigger"
+                data-filter-trigger-label="language-family"
+                />
+              </label>
+            </span>
+            </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+
+
+  <div class="mdl-cell mdl-cell--4-col">
+    <div class="over mdl-shadow--4dp"><h4>Translation Status</h4></div>
+    <div class="under mdl-shadow--2dp">
+      <div class="shadow-clipper"></div>
+      <ul class="mdl-list">
+        <% Language.translation_status_colour.each do |status, colour| %>
+            <li class="mdl-list__item" style="background-color: <%= colour %>">
+              <span class="mdl-list__item-primary-content"><%= status.to_s.humanize %></span>
+            <span class="mdl-list__item-secondary-action">
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="<%= status.to_s %>-check">
+                <input
+                checked
+                type="checkbox"
+                value="<%= status.to_s %>"
+                id="<%= status.to_s %>-check"
+                class="mdl-checkbox__input filter-trigger"
+                data-filter-trigger-label="translation-status"
+                />
+              </label>
+            </span>
+            </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+
+</div>

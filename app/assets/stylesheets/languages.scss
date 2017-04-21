@@ -5,14 +5,20 @@
 @import 'common';
 
 .language-filter-controls {
+  $bg: white;
+  background-color: $bg;
   .over {
     padding: 1em;
     cursor: pointer;
     h3 {
       text-align: center;
     }
+    &:hover {
+      background-color: cyan;
+    }
   }
   .under {
+    background-color: $bg;
     display: none;
     position: relative;
     -webkit-transition: box-shadow 200ms;
@@ -24,7 +30,7 @@
       display: none;
       width: 100%;
       height: 25px;
-      background-color: white;
+      background-color: $bg;
       position: absolute;
       top: -15px;
     }

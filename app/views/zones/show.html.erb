@@ -25,6 +25,12 @@
   </div>
   <div class="mdl-tabs__panel" id="languages-tab">
 
+    <%= render 'languages/list_filter_controls' %>
+
+    <ul class="languages mdl-list">
+      <%= render partial: 'languages/language', collection: @zone.languages %>
+    </ul>
+
   </div>
   <div class="mdl-tabs__panel" id="organisations-tab">
 
