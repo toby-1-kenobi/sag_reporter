@@ -45,7 +45,7 @@
     <%= render 'languages/list_filter_controls' %>
 
     <ul class="languages mdl-list">
-      <%= render partial: 'languages/language', collection: Language.all %>
+      <%= render partial: 'languages/language', collection: Language.all.includes({geo_states: :zone}, :family) %>
     </ul>
 
   </div>

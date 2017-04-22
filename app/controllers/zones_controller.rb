@@ -8,6 +8,7 @@ class ZonesController < ApplicationController
 
   def show
     @zone = Zone.find params[:id]
+    @languages = Language.includes({geo_states: :zone}, :family).where(geo_states: {zone: @zone})
   end
 
   def nation
