@@ -133,7 +133,7 @@ class StateLanguagesController < ApplicationController
     date_b = Date.new params[:year_b].to_i, params[:month_b].to_i
     # for each project language get the aggregated data
     @outcome_scores = { date_a => Hash.new, date_b => Hash.new }
-    StateLanguage.in_project.includes(:language_progresses =>[{:progress_marker => :topic}, :progress_updates]).find_each do |state_language|
+    StateLanguage.in_project.includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).find_each do |state_language|
       @outcome_scores[date_a][state_language] = state_language.outcome_table_data(logged_in_user, from_date: date_a, to_date: date_a)
       @outcome_scores[date_b][state_language] = state_language.outcome_table_data(logged_in_user, from_date: date_b, to_date: date_b)
     end
