@@ -117,6 +117,24 @@ class StateLanguage < ActiveRecord::Base
     return scores
   end
 
+  # get percentage score for each outcome area at two dates
+  def transformation(user, date_1, date_2)
+    transformation = { date_1 => Hash.new {0}, date_2 => Hash.new {0} }
+    # go through every language_progress for this state_language
+    # (there's one for each progress marker used)
+    # and get it's score at each of the dates
+    # and total these scores by outcome area
+    language_progresses.includes({progress_marker: :topic}, :progress_updates).find_each do |lp|
+      # don't include outcome areas that should be invisible to the user
+      unless lp.progress_marker.topic.hide_for?(user)
+        oa_name = lp.progress_marker.topic.name
+        transformation[date_1][oa_name] += lp.month_score(date_1.year, date_1.month)
+        transformation[date_2][oa_name] += lp.month_score(date_2.year, date_2.month)
+      end
+    end
+    transformation
+  end
+
   # active impact reports in this state and tagged with this language in the specified duration.
   def recent_impact_reports(duration)
     ImpactReport.
