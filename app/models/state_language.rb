@@ -132,6 +132,21 @@ class StateLanguage < ActiveRecord::Base
         transformation[date_2][oa_name] += lp.month_score(date_2.year, date_2.month)
       end
     end
+    # we need the max possible score for each outcome area to make our scores a percentage
+    # this shouldn't change, but it's a bad idea to assume it wont,
+    # but we don't want to have to calculate it every time we run this method so cache it.
+    max_scores = Rails.cache.fetch("max_scores", expires_in: 10.minutes) do
+      scores = {}
+      Topic.find_each do |outcome_area|
+        scores[outcome_area.name] = outcome_area.max_outcome_score
+      end
+      scores
+    end
+    transformation.each do |date, all_scores|
+      all_scores.each do |oa_name, score|
+        transformation[date][oa_name] = (score * 100).fdiv(max_scores[oa_name])
+      end
+    end
     transformation
   end
 
