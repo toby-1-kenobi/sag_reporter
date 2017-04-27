@@ -222,8 +222,8 @@
         <h2 class="mdl-card__title-text"><%= @language.translation_status.to_s.humanize %></h2>
       </div>
       <div class="mdl-card__supporting-text">
-        <p>Translation need/status: <strong><%= @language.translation_need.humanize %></strong></p>
-        <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
+        <p>Translation need/status: <strong id="language-translation-need" class="<%= 'editable' if editable %>"><%= @language.translation_need.humanize %><%= render 'shared/edit_icon' if editable %></strong></p>
+        <p>Translation progress: <strong id="language-translation-progress" class="<%= 'editable' if editable %>"><%= @language.translation_progress.humanize %><%= render 'shared/edit_icon' if editable %></strong></p>
       </div>
     </div>
     <table class="language-data">
@@ -249,6 +249,48 @@
       <% end %>
     </div>
   </div>
+
+  <% if editable %>
+    <dialog id="edit-dialog-translation_need" class="mdl-dialog" data-for="language-translation-need">
+      <div class="mdl-dialog__content ">
+        <%= form_tag edits_path, remote: true, method: :post do %>
+            <%= hidden_field_tag 'element_id', 'language-translation-need' %>
+            <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
+            <%= hidden_field_tag 'edit[record_id]', @language.id %>
+            <%= hidden_field_tag 'edit[attribute_name]', 'translation_need' %>
+            <%= hidden_field_tag 'edit[old_value]', @language.translation_need %>
+            <div>
+              <%= label_tag 'edit[new_value]', 'Translation need' %>
+              <%= select_tag 'edit[new_value]', options_for_select(Language.translation_needs.map{ |k, v| [k.humanize, k] }, @language.translation_need) %>
+            </div>
+        <% end %>
+      </div>
+      <div class="md-dialog__actions">
+        <button type="button" class="mdl-button submit">Submit</button>
+        <button type="button" class="mdl-button cancel">Cancel</button>
+      </div>
+    </dialog>
+    <dialog id="edit-dialog-translation_progress" class="mdl-dialog" data-for="language-translation-progress">
+      <div class="mdl-dialog__content ">
+        <%= form_tag edits_path, remote: true, method: :post do %>
+            <%= hidden_field_tag 'element_id', 'language-translation-progress' %>
+            <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
+            <%= hidden_field_tag 'edit[record_id]', @language.id %>
+            <%= hidden_field_tag 'edit[attribute_name]', 'translation_progress' %>
+            <%= hidden_field_tag 'edit[old_value]', @language.translation_progress %>
+            <div>
+              <%= label_tag 'edit[new_value]', 'Translation progress' %>
+              <%= select_tag 'edit[new_value]', options_for_select(Language.translation_progresses.map{ |k, v| [k.humanize, k] }, @language.translation_progress) %>
+            </div>
+        <% end %>
+      </div>
+      <div class="md-dialog__actions">
+        <button type="button" class="mdl-button submit">Submit</button>
+        <button type="button" class="mdl-button cancel">Cancel</button>
+      </div>
+    </dialog>
+  <% end %>
+
   <div class="mdl-cell mdl-cell--4-col">
     <% if @impact_report %>
       <div class="impact-story mdl-card mdl-shadow--2dp">

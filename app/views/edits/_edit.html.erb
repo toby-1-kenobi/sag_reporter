@@ -9,7 +9,7 @@
   <div class="mdl-card__supporting-text">
     <div class="edit-description">
       Change the <%= edit.attribute_name.humanize.downcase %>
-      from <span class="attribute_value"><%= edit.old_value %></span> to <span class="attribute_value"><%= edit.new_value %></span>
+      from <span class="attribute_value"><%= edit.old_value.humanize %></span> to <span class="attribute_value"><%= edit.new_value.humanize %></span>
       <% if edit.record_errors.present? %>
         <div>
           <i class="material-icons">warning</i>

@@ -18,7 +18,7 @@
   $('#edit-response').slideUp('fast');
   $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render @edit %></div>');
 <% elsif @edit.auto_approved? %>
-  $('#<%= @element_id %>').html("<%= @edit.new_value %>");
+  $('#<%= @element_id %>').html("<%= @edit.new_value.humanize %>");
   $('#edit-dialog-<%= @edit.attribute_name %> #edit_old_value').val("<%= @edit.new_value %>");
 <% end %>
 
