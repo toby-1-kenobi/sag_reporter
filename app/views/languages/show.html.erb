@@ -60,12 +60,12 @@
 
   <div class="outcome-progress-cell mdl-cell mdl-cell--4-col">
     <h3>Outcome progress</h3>
-    <% @language.state_languages.in_project.each do |state_language| %>
-        <h4><%= state_language.state_name %></h4>
+    <% @language.state_languages.in_project.includes(:geo_state).each do |state_language| %>
+        <h4><%= link_to state_language.state_name, state_language.geo_state %></h4>
         <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
         <div class="chart-<%= state_language.id %>"></div>
     <% end %>
-    <% non_project_states = @language.state_languages.joins(:geo_state).where(project: false).pluck('geo_states.name').to_sentence %>
+    <% non_project_states = @language.state_languages.includes(:geo_state).where(project: false).map{ |sl| link_to sl.state_name, sl.geo_state }.to_sentence %>
     <% if non_project_states.present? %>
         <p><%= @language.name %> is spoken in <%= non_project_states %>, but LCI does not track it there.</p>
     <% end %>
