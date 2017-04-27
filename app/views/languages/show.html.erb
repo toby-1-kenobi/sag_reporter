@@ -84,7 +84,7 @@
         <% end %>
       <% end %>
       <% if @language.family or editable %>
-          <tr><th>Family</th><td id="language-family" class="<%# 'editable' if editable %>"><%= @language.family_name %><%# render 'shared/edit_icon' if editable %></td></tr>
+          <tr><th>Family</th><td id="language-family" class="<%# 'editable' if editable %>"><%= @language.family_name if @language.family %><%# render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
       <% if @language.info.present? or editable %>
           <tr><th>Other information</th><td id="language-info" class="<%= 'editable' if editable %>"><%= @language.info %><%= render 'shared/edit_icon' if editable %></td></tr>
