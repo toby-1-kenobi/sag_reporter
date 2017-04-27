@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   resources :languages do
     collection do
       get 'overview'
+      get 'search'
     end
     member do
       patch 'add_engaged_org/:org', to: 'languages#add_engaged_org', as: 'add_engaged_org_to'

@@ -54,6 +54,27 @@ class LanguagesController < ApplicationController
     @impact_report = @language.reports.where.not(impact_report: nil).order(:report_date).last
   end
 
+  # match a search query against language names
+  def search
+    query = params['q']
+    if query.present?
+      # for single character search, just get languages that start with the character
+      # otherwise search anywhere in the name
+      # also downcase the query string for case insensitive search
+      if query.length == 1
+        query = "#{query.downcase}%"
+      else
+        query = "%#{query.downcase}%"
+      end
+      @languages = Language.where('lower(name) LIKE ?', query)
+      respond_to do |format|
+        format.js
+      end
+    else
+      head :no_content
+    end
+  end
+
   def get_chart
     @outcome_areas = Topic.all
     @state_language = StateLanguage.find(params[:id])
