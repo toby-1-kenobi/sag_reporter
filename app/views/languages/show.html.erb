@@ -91,95 +91,22 @@
       <% end %>
     </table>
 
-    <% if editable %>
-        <dialog id="edit-dialog-description" class="mdl-dialog" data-for="language-description">
-          <div class="mdl-dialog__content ">
-            <%= form_tag edits_path, remote: true, method: :post do %>
-                <%= hidden_field_tag 'element_id', 'language-description' %>
-                <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-                <%= hidden_field_tag 'edit[record_id]', @language.id %>
-                <%= hidden_field_tag 'edit[attribute_name]', 'description' %>
-                <%= hidden_field_tag 'edit[old_value]', @language.description %>
-                <div class="mdl-textfield mdl-js-textfield">
-                  <%= label_tag 'edit[new_value]', 'Language description' %>
-                  <%= text_area_tag 'edit[new_value]', @language.description, class: 'mdl-textfield__input' %>
-                </div>
-            <% end %>
-          </div>
-          <div class="md-dialog__actions">
-            <button type="button" class="mdl-button submit">Submit</button>
-            <button type="button" class="mdl-button cancel">Cancel</button>
-          </div>
-        </dialog>
-
-        <dialog id="edit-dialog-location" class="mdl-dialog" data-for="language-location">
-          <div class="mdl-dialog__content ">
-            <%= form_tag edits_path, remote: true, method: :post do %>
-                <%= hidden_field_tag 'element_id', 'language-location' %>
-                <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-                <%= hidden_field_tag 'edit[record_id]', @language.id %>
-                <%= hidden_field_tag 'edit[attribute_name]', 'location' %>
-                <%= hidden_field_tag 'edit[old_value]', @language.location %>
-                <div class="mdl-textfield mdl-js-textfield">
-                  <%= label_tag 'edit[new_value]', 'Language location' %>
-                  <%= text_area_tag 'edit[new_value]', @language.location, class: 'mdl-textfield__input' %>
-                </div>
-            <% end %>
-          </div>
-          <div class="md-dialog__actions">
-            <button type="button" class="mdl-button submit">Submit</button>
-            <button type="button" class="mdl-button cancel">Cancel</button>
-          </div>
-        </dialog>
-
-        <dialog id="edit-dialog-population" class="mdl-dialog" data-for="language-population">
-          <div class="mdl-dialog__content ">
-            <%= form_tag edits_path, remote: true, method: :post do %>
-                <%= hidden_field_tag 'element_id', 'language-population' %>
-                <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-                <%= hidden_field_tag 'edit[record_id]', @language.id %>
-                <%= hidden_field_tag 'edit[attribute_name]', 'population' %>
-                <%= hidden_field_tag 'edit[old_value]', @language.population %>
-                <div class="mdl-textfield mdl-js-textfield">
-                  <%= label_tag 'edit[new_value]', 'Language population' %>
-                  <%= text_field_tag 'edit[new_value]', @language.population, class: 'mdl-textfield__input', pattern: '-?[0-9]*(\.[0-9]+)?' %>
-                  <span class="mdl-textfield__error">Numbers only please!</span>
-                </div>
-            <% end %>
-          </div>
-          <div class="md-dialog__actions">
-            <button type="button" class="mdl-button submit">Submit</button>
-            <button type="button" class="mdl-button cancel">Cancel</button>
-          </div>
-        </dialog>
-
-        <dialog id="edit-dialog-info" class="mdl-dialog" data-for="language-info">
-          <div class="mdl-dialog__content ">
-            <%= form_tag edits_path, remote: true, method: :post do %>
-                <%= hidden_field_tag 'element_id', 'language-info' %>
-                <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-                <%= hidden_field_tag 'edit[record_id]', @language.id %>
-                <%= hidden_field_tag 'edit[attribute_name]', 'info' %>
-                <%= hidden_field_tag 'edit[old_value]', @language.info %>
-                <div class="mdl-textfield mdl-js-textfield">
-                  <%= label_tag 'edit[new_value]', 'Other language information' %>
-                  <%= text_area_tag 'edit[new_value]', @language.info, class: 'mdl-textfield__input' %>
-                </div>
-            <% end %>
-          </div>
-          <div class="md-dialog__actions">
-            <button type="button" class="mdl-button submit">Submit</button>
-            <button type="button" class="mdl-button cancel">Cancel</button>
-          </div>
-        </dialog>
-    <% end %>
-
     <% if @language.engaged_organisations.any? %>
         <h4>Organisations engaged with this language</h4>
-        <ul class="mdl-list">
+        <ul class="engaged-orgs mdl-list">
           <% @language.engaged_organisations.each do |org| %>
-            <li class="mdl-list__item">
+            <li class="org-<%= org.id %> mdl-list__item">
               <%= link_to org.name_with_abbr, org, class: 'mdl-list__item-primary-content' %>
+              <% if editable %>
+                <%= link_to remove_engaged_org_from_language_path(@language, org),
+                            method: :patch,
+                            remote: true,
+                            class: 'mdl-list__item-secondary-content' do %>
+                  <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                    <i class="material-icons">clear</i>
+                  </button>
+                <% end %>
+              <% end %>
             </li>
           <% end %>
         </ul>
@@ -250,47 +177,6 @@
     </div>
   </div>
 
-  <% if editable %>
-    <dialog id="edit-dialog-translation_need" class="mdl-dialog" data-for="language-translation-need">
-      <div class="mdl-dialog__content ">
-        <%= form_tag edits_path, remote: true, method: :post do %>
-            <%= hidden_field_tag 'element_id', 'language-translation-need' %>
-            <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-            <%= hidden_field_tag 'edit[record_id]', @language.id %>
-            <%= hidden_field_tag 'edit[attribute_name]', 'translation_need' %>
-            <%= hidden_field_tag 'edit[old_value]', @language.translation_need %>
-            <div>
-              <%= label_tag 'edit[new_value]', 'Translation need' %>
-              <%= select_tag 'edit[new_value]', options_for_select(Language.translation_needs.map{ |k, v| [k.humanize, k] }, @language.translation_need) %>
-            </div>
-        <% end %>
-      </div>
-      <div class="md-dialog__actions">
-        <button type="button" class="mdl-button submit">Submit</button>
-        <button type="button" class="mdl-button cancel">Cancel</button>
-      </div>
-    </dialog>
-    <dialog id="edit-dialog-translation_progress" class="mdl-dialog" data-for="language-translation-progress">
-      <div class="mdl-dialog__content ">
-        <%= form_tag edits_path, remote: true, method: :post do %>
-            <%= hidden_field_tag 'element_id', 'language-translation-progress' %>
-            <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-            <%= hidden_field_tag 'edit[record_id]', @language.id %>
-            <%= hidden_field_tag 'edit[attribute_name]', 'translation_progress' %>
-            <%= hidden_field_tag 'edit[old_value]', @language.translation_progress %>
-            <div>
-              <%= label_tag 'edit[new_value]', 'Translation progress' %>
-              <%= select_tag 'edit[new_value]', options_for_select(Language.translation_progresses.map{ |k, v| [k.humanize, k] }, @language.translation_progress) %>
-            </div>
-        <% end %>
-      </div>
-      <div class="md-dialog__actions">
-        <button type="button" class="mdl-button submit">Submit</button>
-        <button type="button" class="mdl-button cancel">Cancel</button>
-      </div>
-    </dialog>
-  <% end %>
-
   <div class="mdl-cell mdl-cell--4-col">
     <% if @impact_report %>
       <div class="impact-story mdl-card mdl-shadow--2dp">
@@ -339,6 +225,8 @@
     <% end %>
   </div>
 </div>
+
+<%= render 'edit_dialogs' if editable %>
 
 <script>
   $('dialog').each(function() {

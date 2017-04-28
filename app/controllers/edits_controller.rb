@@ -17,15 +17,15 @@ class EditsController < ApplicationController
     @edit = Edit.new(edit_params)
     @edit.user = logged_in_user
     if @edit.user.national_curator?
-      @edit.auto_approved!
+      @edit.status = :auto_approved
     elsif @edit.model_klass_name == 'Language'
       if ['name', 'iso', 'population', 'location'].include? @edit.attribute_name
-        @edit.pending_double_approval!
+        @edit.status = :pending_double_approval
       else
-        @edit.pending_single_approval!
+        @edit.status = :pending_single_approval
       end
     else
-      @edit.auto_approved!
+      @edit.status = :auto_approved
     end
     if @edit.save
       @edit.apply if @edit.auto_approved?

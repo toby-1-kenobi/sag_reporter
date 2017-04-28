@@ -141,17 +141,25 @@ class LanguagesController < ApplicationController
   end
 
   def remove_engaged_org
-    success = false
     language = Language.find(params[:id])
     org = language.engaged_organisations.find(params[:org])
-    if org
-      language.engaged_organisations.delete org
-      success = !language.engaged_organisations.include?(org)
+    @edit = Edit.new(
+        user: logged_in_user,
+        model_klass_name: 'Language',
+        record_id: language.id,
+        attribute_name: 'engaged_organisations',
+        old_value: org.id.to_s,
+        new_value: Edit.removal_code,
+        status: :pending_single_approval
+    )
+    if @edit.save
+      if @edit.user.national_curator?
+        @edit.auto_approved!
+        @edit.apply
+      end
     end
     respond_to do |format|
-      format.json {
-        render json: {success: success}.to_json
-      }
+      format.js
     end
   end
 

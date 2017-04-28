@@ -29,6 +29,12 @@ class Edit < ActiveRecord::Base
   scope :pending, -> { where(status: [statuses[:pending_single_approval], statuses[:pending_double_approval]]) }
   scope :for_curating, ->(user) { joins(:geo_states).where('geo_states.id' => user.curated_states) }
 
+
+  @@removal_code = 'REMOVE_THIS_ENTITY'
+  def self.removal_code
+    @@removal_code
+  end
+
   # not including pending for national level approval.
   def pending?
     pending_single_approval? or pending_double_approval?
@@ -60,8 +66,16 @@ class Edit < ActiveRecord::Base
   end
 
   def apply
-    thing_for_editing = model_klass_name.constantize.find(record_id)
-    success = thing_for_editing.update_attributes(attribute_name => new_value)
+    model_klass = model_klass_name.constantize
+    thing_for_editing = model_klass.find(record_id)
+    case
+      when new_value == Edit.removal_code
+        assoc_klass = model_klass.reflect_on_association(attribute_name.to_sym).klass
+        thing_to_remove = assoc_klass.find(old_value)
+        success = thing_for_editing.send(attribute_name.to_sym).delete(thing_to_remove)
+      else
+        success = thing_for_editing.update_attributes(attribute_name => new_value)
+    end
     unless success
       update_attribute(:record_errors, thing_for_editing.errors.full_messages.to_sentence)
       rejected!
