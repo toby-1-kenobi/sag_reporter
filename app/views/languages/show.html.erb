@@ -96,12 +96,12 @@
         <ul class="engaged-orgs mdl-list">
           <% @language.engaged_organisations.each do |org| %>
             <li class="org-<%= org.id %> mdl-list__item">
-              <%= link_to org.name_with_abbr, org, class: 'mdl-list__item-primary-content' %>
+              <%= link_to org.name_with_abbr, org, class: 'org-name mdl-list__item-primary-content' %>
               <% if editable %>
                 <%= link_to remove_engaged_org_from_language_path(@language, org),
                             method: :patch,
                             remote: true,
-                            class: 'mdl-list__item-secondary-content' do %>
+                            class: 'remove-button mdl-list__item-secondary-content' do %>
                   <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
                     <i class="material-icons">clear</i>
                   </button>

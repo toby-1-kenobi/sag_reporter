@@ -8,8 +8,14 @@
   </div>
   <div class="mdl-card__supporting-text">
     <div class="edit-description">
-      Change the <%= edit.attribute_name.humanize.downcase %>
-      from <span class="attribute_value"><%= edit.old_value.humanize %></span> to <span class="attribute_value"><%= edit.new_value.humanize %></span>
+      <% if edit.new_value == Edit.removal_code %>
+          <% assoc_klass = edit.model_klass_name.constantize.reflect_on_association(edit.attribute_name.to_sym).klass %>
+          <% thing_to_remove = assoc_klass.find(edit.old_value) %>
+        Remove <%= thing_to_remove ? thing_to_remove : "#{assoc_klass} ##{edit.old_value}" %> from <%= edit.attribute_name.humanize %>.
+      <% else %>
+        Change the <%= edit.attribute_name.humanize.downcase %>
+        from <span class="attribute_value"><%= edit.old_value.humanize %></span> to <span class="attribute_value"><%= edit.new_value.humanize %></span>
+      <% end %>
       <% if edit.record_errors.present? %>
         <div>
           <i class="material-icons">warning</i>

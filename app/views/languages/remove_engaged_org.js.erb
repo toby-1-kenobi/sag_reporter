@@ -17,6 +17,8 @@ $('#edit-response')
 <% elsif @edit.pending_single_approval? or @edit.pending_double_approval? %>
 $('#edit-response').slideUp('fast');
 $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render partial: 'edits/edit', object: @edit %></div>');
+$('.engaged-orgs .org-<%= @edit.old_value %>').addClass('pending-removal');
+$('.engaged-orgs .org-<%= @edit.old_value %> .remove-button').hide();
 <% elsif @edit.auto_approved? %>
 $('.engaged-orgs .org-<%= @edit.old_value %>').remove();
 <% end %>
