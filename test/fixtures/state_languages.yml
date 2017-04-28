@@ -5,7 +5,7 @@ assam_english:
   language: english
   project: true
 
-assam_hindi:
+assam_assamese:
   geo_state: assam
   language: assamese
   project: true

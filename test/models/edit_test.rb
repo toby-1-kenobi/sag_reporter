@@ -20,6 +20,16 @@ describe Edit do
     _(language_edit).wont_be :valid?
   end
 
+  it 'wont be valid if the user isnt a member of the relevant state(s) or national' do
+    language_edit.user = users(:peter)
+    _(language_edit).wont_be :valid?
+  end
+
+  it 'must be valid if the user isnt a member of the relevant state(s) but is national' do
+    language_edit.user = users(:richard)
+    _(language_edit).must_be :valid?
+  end
+
   it 'has the same geo_states as the language' do
     language_edit.save
     value(language_edit.geo_states).must_equal language.geo_states

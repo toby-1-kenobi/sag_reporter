@@ -22,6 +22,7 @@ class Edit < ActiveRecord::Base
   validates :status, inclusion: { in: statuses.keys }
   validate :record_id_exists
   validate :new_value_is_new
+  validate :user_has_permission
 
   after_save :set_geo_states
 
@@ -85,6 +86,14 @@ class Edit < ActiveRecord::Base
 
   def new_value_is_new
     errors.add(:new_value, 'must be different') if new_value == old_value
+  end
+
+  def user_has_permission
+    return if user.national?
+    user.geo_states.find_each do |user_state|
+      return if geo_states.exists? user_state.id
+    end
+    errors.add(:user, 'does not have permission to edit this')
   end
 
   def set_geo_states
