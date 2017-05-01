@@ -154,11 +154,11 @@
       </div>
     </div>
     <table class="language-data">
-      <% if @language.number_of_translations && @language.number_of_translations > 0 %>
-          <tr><th>Already existing</th><td><%= @language.number_of_translations %> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
+      <% if editable or (@language.number_of_translations && @language.number_of_translations > 0) %>
+          <tr><th>Already existing</th><td><span id="language-number-of-translations" class="<%= 'editable' if editable %>"><%= @language.number_of_translations ? @language.number_of_translations : 0 %><%= render 'shared/edit_icon' if editable %></span> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
       <% end %>
-      <% if @language.translation_info.present? %>
-          <tr><th>Translation info</th><td><%= @language.translation_info %></td></tr>
+      <% if editable or @language.translation_info.present? %>
+          <tr><th>Translation info</th><td id="language-translation-info" class="<%= 'editable' if editable %>"><%= @language.translation_info %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
     </table>
     <div>
