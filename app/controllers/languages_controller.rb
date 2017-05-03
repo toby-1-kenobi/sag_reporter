@@ -126,17 +126,26 @@ class LanguagesController < ApplicationController
   end
 
   def add_engaged_org
-    success = false
-    org = Organisation.find(params[:org])
-    if org
-      language = Language.find(params[:id])
-      language.engaged_organisations << org
-      success = language.engaged_organisations.include? org
+    language = Language.find(params[:id])
+    @org = Organisation.find(params[:org])
+    @edit = Edit.new(
+        user: logged_in_user,
+        model_klass_name: 'Language',
+        record_id: language.id,
+        attribute_name: 'engaged_organisations',
+        old_value: Edit.addition_code,
+        new_value: params[:org],
+        status: :pending_single_approval,
+        relationship: true
+    )
+    if @edit.save
+      if @edit.user.national_curator?
+        @edit.auto_approved!
+        @edit.apply
+      end
     end
     respond_to do |format|
-      format.json {
-        render json: {success: success, orgId: org.id, orgName: org.name_with_abbr}.to_json
-      }
+      format.js
     end
   end
 
@@ -165,17 +174,26 @@ class LanguagesController < ApplicationController
   end
 
   def add_translating_org
-    success = false
-    org = Organisation.find(params[:org])
-    if org
-      language = Language.find(params[:id])
-      language.translating_organisations << org
-      success = language.translating_organisations.include? org
+    language = Language.find(params[:id])
+    @org = Organisation.find(params[:org])
+    @edit = Edit.new(
+        user: logged_in_user,
+        model_klass_name: 'Language',
+        record_id: language.id,
+        attribute_name: 'translating_organisations',
+        old_value: Edit.addition_code,
+        new_value: params[:org],
+        status: :pending_single_approval,
+        relationship: true
+    )
+    if @edit.save
+      if @edit.user.national_curator?
+        @edit.auto_approved!
+        @edit.apply
+      end
     end
     respond_to do |format|
-      format.json {
-        render json: {success: success, orgId: org.id, orgName: org.name_with_abbr}.to_json
-      }
+      format.js
     end
   end
 

@@ -51,7 +51,7 @@
       <% end %>
     </table>
 
-    <% if @language.engaged_organisations.any? %>
+    <% if @language.engaged_organisations.any? or editable%>
         <h4>Organisations engaged with this language</h4>
         <ul class="engaged-orgs mdl-list">
           <% @language.engaged_organisations.each do |org| %>
@@ -68,6 +68,16 @@
                 <% end %>
               <% end %>
             </li>
+          <% end %>
+          <% if editable %>
+              <li class="add-another mdl-list__item">
+                <span class="mdl-list__item-primary-content">...</span>
+                <span class="mdl-list__item-secondary-content">
+                  <button class="add-engaged-org-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored" title="Add engaged organisation">
+                    <i class="material-icons">add</i>
+                  </button>
+                </span>
+              </li>
           <% end %>
         </ul>
     <% else %>
@@ -122,7 +132,7 @@
       <% end %>
     </table>
     <div>
-      <% if @language.translating_organisations.any? %>
+      <% if @language.translating_organisations.any? or editable%>
           <h4>Organisations involved with translation</h4>
           <ul class="translating-orgs mdl-list">
             <% @language.translating_organisations.each do |org| %>
@@ -138,6 +148,16 @@
                         </button>
                     <% end %>
                 <% end %>
+              </li>
+            <% end %>
+            <% if editable %>
+              <li class="add-another mdl-list__item">
+                <span class="mdl-list__item-primary-content">...</span>
+                <span class="mdl-list__item-secondary-content">
+                  <button class="add-translating-org-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored" title="Add translating organisation">
+                    <i class="material-icons">add</i>
+                  </button>
+                </span>
               </li>
             <% end %>
           </ul>

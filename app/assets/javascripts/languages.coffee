@@ -20,6 +20,14 @@ $(document).ready ->
     $("dialog[data-for=\"#{id}\"]").get(0).showModal()
     return
 
+  $('.add-engaged-org-button').on 'click', ->
+    $('#add-engaged-org-dialog').get(0).showModal()
+    return
+
+  $('.add-translating-org-button').on 'click', ->
+    $('#add-translating-org-dialog').get(0).showModal()
+    return
+
   prev_adjust = ''
 
   $('.colour-darkness-range').on 'change', ->

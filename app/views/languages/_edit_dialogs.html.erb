@@ -218,3 +218,35 @@
     <button type="button" class="mdl-button cancel">Cancel</button>
   </div>
 </dialog>
+
+<dialog id="add-engaged-org-dialog" class="mdl-dialog">
+  <h4 class="mdl-dialog__title">Which organisation is engaged with this language?</h4>
+  <div class="mdl-dialog__content ">
+    <ul class="potentially-engaged-orgs mdl-list">
+      <% Organisation.where('id not in (?)', @language.engaged_organisation_ids).find_each do |org| %>
+        <li class="org-<%= org.id %> mdl-list__item">
+          <%= link_to org.name_with_abbr, add_engaged_org_to_language_path(@language, org), class: 'org-name mdl-list__item-primary-content', method: :patch, remote: true %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+</dialog>
+
+<dialog id="add-translating-org-dialog" class="mdl-dialog">
+  <h4 class="mdl-dialog__title">Which organisation is translating with this language?</h4>
+  <div class="mdl-dialog__content ">
+    <ul class="potentially-translating-orgs mdl-list">
+      <% Organisation.where('id not in (?)', @language.translating_organisation_ids).find_each do |org| %>
+          <li class="org-<%= org.id %> mdl-list__item">
+            <%= link_to org.name_with_abbr, add_translating_org_to_language_path(@language, org), class: 'org-name mdl-list__item-primary-content', method: :patch, remote: true %>
+          </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+</dialog>

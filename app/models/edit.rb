@@ -36,6 +36,11 @@ class Edit < ActiveRecord::Base
     @@removal_code
   end
 
+  @@addition_code = 'ADD_THIS_ENTITY'
+  def self.addition_code
+    @@addition_code
+  end
+
   # not including pending for national level approval.
   def pending?
     pending_single_approval? or pending_double_approval?
@@ -82,6 +87,18 @@ class Edit < ActiveRecord::Base
       case
         when new_value == Edit.removal_code
           success = object_under_edition.send(attribute_name).delete(old_value)
+        when old_value == Edit.addition_code
+          if object_under_edition.send(attribute_name).include? related_object(new_value)
+            # we can't add this object to this association, because it's already there
+            # report success without doing anything
+            success = true
+          else
+            begin
+              success = object_under_edition.send(attribute_name).send(:<<, related_object(new_value))
+            rescue ActiveRecord::RecordNotFound
+              success = false
+            end
+          end
         else
           # check the thing we're about to relate it to currently exists
           begin
@@ -94,7 +111,7 @@ class Edit < ActiveRecord::Base
       success = object_under_edition.update_attributes(attribute_name => new_value)
     end
     unless success
-      update_attribute(:record_errors, thing_for_editing.errors.full_messages.to_sentence)
+      update_attribute(:record_errors, object_under_edition.errors.full_messages.to_sentence)
       rejected!
     end
     return success

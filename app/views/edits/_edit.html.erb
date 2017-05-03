@@ -10,10 +10,12 @@
     <div class="edit-description">
       <% if edit.relationship? %>
         <%
-          begin
-            old_thing = edit.related_object(edit.old_value)
-          rescue ActiveRecord::RecordNotFound
-            old_thing = "<em>Object not found! ID: #{edit.old_value}</em>".html_safe
+          unless edit.old_value == Edit.addition_code
+            begin
+              old_thing = edit.related_object(edit.old_value)
+            rescue ActiveRecord::RecordNotFound
+              old_thing = "<em>Object not found! ID: #{edit.old_value}</em>".html_safe
+            end
           end
           unless edit.new_value == Edit.removal_code
             begin
@@ -25,6 +27,8 @@
         %>
         <% if edit.new_value == Edit.removal_code %>
           Remove <span class="attribute_value"><%= old_thing %></span> from <%= edit.attribute_name.humanize.downcase %>.
+        <% elsif edit.old_value == Edit.addition_code %>
+          Add <span class="attribute_value"><%= new_thing %></span> to <%= edit.attribute_name.humanize.downcase %>.
         <% else %>
           Change the <%= edit.attribute_name.humanize.downcase %>
           from <span class="attribute_value"><%= old_thing %></span> to <span class="attribute_value"><%= new_thing %></span>

@@ -138,8 +138,16 @@ p.iso {
   background-color: #BBBBFF;
 }
 
-.pending-removal .org-name {
+.pending-removal .org-name, .pending-approval .org-name {
   color: lightgrey !important;
+}
+
+#add-engaged-org-dialog, #add-translating-org-dialog {
+  width: 350px;
+  .mdl-dialog__content {
+    max-height: calc(100vh - 300px);
+    overflow-y: auto;
+  }
 }
 
 paper-tabs {
