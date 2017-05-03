@@ -79,7 +79,8 @@ class EditsController < ApplicationController
         :record_id,
         :attribute_name,
         :old_value,
-        :new_value
+        :new_value,
+        :relationship
     )
   end
 
