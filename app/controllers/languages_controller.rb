@@ -150,7 +150,8 @@ class LanguagesController < ApplicationController
         attribute_name: 'engaged_organisations',
         old_value: org.id.to_s,
         new_value: Edit.removal_code,
-        status: :pending_single_approval
+        status: :pending_single_approval,
+        relationship: true
     )
     if @edit.save
       if @edit.user.national_curator?
@@ -188,7 +189,8 @@ class LanguagesController < ApplicationController
         attribute_name: 'translating_organisations',
         old_value: org.id.to_s,
         new_value: Edit.removal_code,
-        status: :pending_single_approval
+        status: :pending_single_approval,
+        relationship: true
     )
     if @edit.save
       if @edit.user.national_curator?

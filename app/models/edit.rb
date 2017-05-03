@@ -23,6 +23,7 @@ class Edit < ActiveRecord::Base
   validate :record_id_exists
   validate :new_value_is_new
   validate :user_has_permission
+  validate :new_related_record_exists
 
   after_save :set_geo_states
 
@@ -42,6 +43,17 @@ class Edit < ActiveRecord::Base
 
   def applied?
     approved? or auto_approved?
+  end
+
+  def object_under_edition
+    model_klass = model_klass_name.constantize
+    model_klass.find(record_id)
+  end
+
+  def related_object(id)
+    model_klass = model_klass_name.constantize
+    assoc_klass = model_klass.reflect_on_association(attribute_name).klass
+    assoc_klass.find id
   end
 
   def approve(curator)
@@ -66,15 +78,20 @@ class Edit < ActiveRecord::Base
   end
 
   def apply
-    model_klass = model_klass_name.constantize
-    thing_for_editing = model_klass.find(record_id)
-    case
-      when new_value == Edit.removal_code
-        assoc_klass = model_klass.reflect_on_association(attribute_name.to_sym).klass
-        thing_to_remove = assoc_klass.find(old_value)
-        success = thing_for_editing.send(attribute_name.to_sym).delete(thing_to_remove)
-      else
-        success = thing_for_editing.update_attributes(attribute_name => new_value)
+    if relationship?
+      case
+        when new_value == Edit.removal_code
+          success = object_under_edition.send(attribute_name).delete(old_value)
+        else
+          # check the thing we're about to relate it to currently exists
+          begin
+            success = object_under_edition.update_attributes(attribute_name => related_object(new_value))
+          rescue ActiveRecord::RecordNotFound
+            success = false
+          end
+      end
+    else
+      success = object_under_edition.update_attributes(attribute_name => new_value)
     end
     unless success
       update_attribute(:record_errors, thing_for_editing.errors.full_messages.to_sentence)
@@ -108,6 +125,12 @@ class Edit < ActiveRecord::Base
       return if geo_states.exists? user_state.id
     end
     errors.add(:user, 'does not have permission to edit this')
+  end
+
+  def new_related_record_exists
+    if relationship? and new_value != Edit.removal_code
+      errors.add(:new_value, 'related object not found') unless related_object(new_value)
+    end
   end
 
   def set_geo_states

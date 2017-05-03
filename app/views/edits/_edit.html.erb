@@ -8,10 +8,27 @@
   </div>
   <div class="mdl-card__supporting-text">
     <div class="edit-description">
-      <% if edit.new_value == Edit.removal_code %>
-          <% assoc_klass = edit.model_klass_name.constantize.reflect_on_association(edit.attribute_name.to_sym).klass %>
-          <% thing_to_remove = assoc_klass.find(edit.old_value) %>
-        Remove <%= thing_to_remove ? thing_to_remove : "#{assoc_klass} ##{edit.old_value}" %> from <%= edit.attribute_name.humanize %>.
+      <% if edit.relationship? %>
+        <%
+          begin
+            old_thing = edit.related_object(edit.old_value)
+          rescue ActiveRecord::RecordNotFound
+            old_thing = "<em>Object not found! ID: #{edit.old_value}</em>".html_safe
+          end
+          unless edit.new_value == Edit.removal_code
+            begin
+              new_thing = edit.related_object(edit.new_value)
+            rescue ActiveRecord::RecordNotFound
+              new_thing = "<em>Object not found! ID: #{edit.new_value}</em>".html_safe
+            end
+          end
+        %>
+        <% if edit.new_value == Edit.removal_code %>
+          Remove <span class="attribute_value"><%= old_thing %></span> from <%= edit.attribute_name.humanize.downcase %>.
+        <% else %>
+          Change the <%= edit.attribute_name.humanize.downcase %>
+          from <span class="attribute_value"><%= old_thing %></span> to <span class="attribute_value"><%= new_thing %></span>
+        <% end %>
       <% else %>
         Change the <%= edit.attribute_name.humanize.downcase %>
         from <span class="attribute_value"><%= edit.old_value.humanize %></span> to <span class="attribute_value"><%= edit.new_value.humanize %></span>

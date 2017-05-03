@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170411093617) do
+ActiveRecord::Schema.define(version: 20170502171445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,19 +94,20 @@ ActiveRecord::Schema.define(version: 20170411093617) do
   add_index "districts", ["name"], name: "index_districts_on_name", using: :btree
 
   create_table "edits", force: :cascade do |t|
-    t.string   "model_klass_name",                 null: false
-    t.integer  "record_id",                        null: false
-    t.string   "attribute_name",                   null: false
-    t.string   "old_value",                        null: false
-    t.string   "new_value",                        null: false
-    t.integer  "user_id",                          null: false
-    t.integer  "status",               default: 0, null: false
+    t.string   "model_klass_name",                     null: false
+    t.integer  "record_id",                            null: false
+    t.string   "attribute_name",                       null: false
+    t.string   "old_value",                            null: false
+    t.string   "new_value",                            null: false
+    t.integer  "user_id",                              null: false
+    t.integer  "status",               default: 0,     null: false
     t.datetime "curation_date"
     t.datetime "second_curation_date"
     t.text     "record_errors"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
     t.integer  "curated_by_id"
+    t.boolean  "relationship",         default: false, null: false
   end
 
   add_index "edits", ["created_at"], name: "index_edits_on_created_at", using: :btree
