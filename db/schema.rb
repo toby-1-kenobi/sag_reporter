@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170331065823) do
+ActiveRecord::Schema.define(version: 20170504105808) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,16 @@ ActiveRecord::Schema.define(version: 20170331065823) do
   add_index "creations", ["person_id", "mt_resource_id"], name: "index_people_mt_resources", unique: true, using: :btree
   add_index "creations", ["person_id"], name: "index_creations_on_person_id", using: :btree
 
+  create_table "curatings", force: :cascade do |t|
+    t.integer  "user_id",      null: false
+    t.integer  "geo_state_id", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "curatings", ["geo_state_id"], name: "index_curatings_on_geo_state_id", using: :btree
+  add_index "curatings", ["user_id"], name: "index_curatings_on_user_id", using: :btree
+
   create_table "data_sources", force: :cascade do |t|
     t.string   "name",       null: false
     t.datetime "created_at", null: false
@@ -82,6 +92,37 @@ ActiveRecord::Schema.define(version: 20170331065823) do
 
   add_index "districts", ["geo_state_id"], name: "index_districts_on_geo_state_id", using: :btree
   add_index "districts", ["name"], name: "index_districts_on_name", using: :btree
+
+  create_table "edits", force: :cascade do |t|
+    t.string   "model_klass_name",                     null: false
+    t.integer  "record_id",                            null: false
+    t.string   "attribute_name",                       null: false
+    t.string   "old_value",                            null: false
+    t.string   "new_value",                            null: false
+    t.integer  "user_id",                              null: false
+    t.integer  "status",               default: 0,     null: false
+    t.datetime "curation_date"
+    t.datetime "second_curation_date"
+    t.text     "record_errors"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.integer  "curated_by_id"
+    t.boolean  "relationship",         default: false, null: false
+  end
+
+  add_index "edits", ["created_at"], name: "index_edits_on_created_at", using: :btree
+  add_index "edits", ["curated_by_id"], name: "index_edits_on_curated_by_id", using: :btree
+  add_index "edits", ["curation_date"], name: "index_edits_on_curation_date", using: :btree
+  add_index "edits", ["second_curation_date"], name: "index_edits_on_second_curation_date", using: :btree
+  add_index "edits", ["status"], name: "index_edits_on_status", using: :btree
+  add_index "edits", ["user_id"], name: "index_edits_on_user_id", using: :btree
+
+  create_table "edits_geo_states", id: false, force: :cascade do |t|
+    t.integer "edit_id",      null: false
+    t.integer "geo_state_id", null: false
+  end
+
+  add_index "edits_geo_states", ["edit_id", "geo_state_id"], name: "index_edits_geo_states_on_edit_id_and_geo_state_id", unique: true, using: :btree
 
   create_table "events", force: :cascade do |t|
     t.integer  "user_id",            null: false
@@ -166,6 +207,18 @@ ActiveRecord::Schema.define(version: 20170331065823) do
   end
 
   add_index "language_families", ["name"], name: "index_language_families_on_name", unique: true, using: :btree
+
+  create_table "language_names", force: :cascade do |t|
+    t.integer  "language_id",                       null: false
+    t.string   "name",                              null: false
+    t.boolean  "preferred",         default: false, null: false
+    t.boolean  "used_by_speakers",  default: false, null: false
+    t.boolean  "used_by_outsiders", default: false, null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
+
+  add_index "language_names", ["language_id"], name: "index_language_names_on_language_id", using: :btree
 
   create_table "language_progresses", force: :cascade do |t|
     t.integer  "progress_marker_id", null: false
@@ -537,7 +590,6 @@ ActiveRecord::Schema.define(version: 20170331065823) do
     t.string   "confirm_token"
     t.boolean  "trusted",               default: false, null: false
     t.boolean  "national",              default: false, null: false
-    t.boolean  "curator",               default: false, null: false
     t.boolean  "admin",                 default: false, null: false
     t.boolean  "national_curator",      default: false, null: false
     t.string   "role_description"
@@ -566,12 +618,17 @@ ActiveRecord::Schema.define(version: 20170331065823) do
   add_foreign_key "attendances", "people"
   add_foreign_key "creations", "mt_resources"
   add_foreign_key "creations", "people"
+  add_foreign_key "curatings", "geo_states"
+  add_foreign_key "curatings", "users"
   add_foreign_key "districts", "geo_states"
+  add_foreign_key "edits", "users"
+  add_foreign_key "edits", "users", column: "curated_by_id"
   add_foreign_key "events", "geo_states"
   add_foreign_key "events", "users"
   add_foreign_key "events_purposes", "events"
   add_foreign_key "events_purposes", "purposes"
   add_foreign_key "geo_states", "zones"
+  add_foreign_key "language_names", "languages"
   add_foreign_key "language_progresses", "progress_markers"
   add_foreign_key "language_progresses", "state_languages"
   add_foreign_key "languages", "clusters"
