@@ -46,6 +46,7 @@ class Language < ActiveRecord::Base
   belongs_to :pop_source, class_name: 'DataSource'
   belongs_to :cluster
   has_many :language_names, dependent: :destroy
+  has_many :dialects, dependent: :destroy
 
   delegate :name, to: :family, prefix: true
   delegate :name, to: :cluster, prefix: true

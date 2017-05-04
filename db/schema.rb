@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170504105808) do
+ActiveRecord::Schema.define(version: 20170504111615) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +82,17 @@ ActiveRecord::Schema.define(version: 20170504105808) do
   end
 
   add_index "data_sources", ["name"], name: "index_data_sources_on_name", unique: true, using: :btree
+
+  create_table "dialects", force: :cascade do |t|
+    t.integer  "language_id", null: false
+    t.string   "name",        null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "dialects", ["language_id", "name"], name: "language_dialect_names", unique: true, using: :btree
+  add_index "dialects", ["language_id"], name: "index_dialects_on_language_id", using: :btree
+  add_index "dialects", ["name"], name: "index_dialects_on_name", using: :btree
 
   create_table "districts", force: :cascade do |t|
     t.string   "name",         null: false
@@ -218,7 +229,9 @@ ActiveRecord::Schema.define(version: 20170504105808) do
     t.datetime "updated_at",                        null: false
   end
 
+  add_index "language_names", ["language_id", "name"], name: "uniq_language_names", unique: true, using: :btree
   add_index "language_names", ["language_id"], name: "index_language_names_on_language_id", using: :btree
+  add_index "language_names", ["name"], name: "index_language_names_on_name", using: :btree
 
   create_table "language_progresses", force: :cascade do |t|
     t.integer  "progress_marker_id", null: false
@@ -620,6 +633,7 @@ ActiveRecord::Schema.define(version: 20170504105808) do
   add_foreign_key "creations", "people"
   add_foreign_key "curatings", "geo_states"
   add_foreign_key "curatings", "users"
+  add_foreign_key "dialects", "languages"
   add_foreign_key "districts", "geo_states"
   add_foreign_key "edits", "users"
   add_foreign_key "edits", "users", column: "curated_by_id"
