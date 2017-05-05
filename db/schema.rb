@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170504111615) do
+ActiveRecord::Schema.define(version: 20170504113108) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -244,24 +244,62 @@ ActiveRecord::Schema.define(version: 20170504111615) do
   add_index "language_progresses", ["state_language_id"], name: "index_language_progresses_on_state_language_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
-    t.string   "name",                                               null: false
+    t.string   "name",                                                  null: false
     t.text     "description"
     t.boolean  "lwc"
-    t.datetime "created_at",                                         null: false
-    t.datetime "updated_at",                                         null: false
-    t.string   "colour",                           default: "white", null: false
-    t.string   "iso",                    limit: 3
+    t.datetime "created_at",                                            null: false
+    t.datetime "updated_at",                                            null: false
+    t.string   "colour",                              default: "white", null: false
+    t.string   "iso",                       limit: 3
     t.integer  "family_id"
-    t.integer  "population",             limit: 8
+    t.integer  "population",                limit: 8
     t.integer  "pop_source_id"
     t.text     "location"
     t.integer  "number_of_translations"
     t.integer  "cluster_id"
     t.text     "info"
     t.text     "translation_info"
-    t.integer  "translation_need",                 default: 0,       null: false
-    t.integer  "translation_progress",             default: 0,       null: false
+    t.integer  "translation_need",                    default: 0,       null: false
+    t.integer  "translation_progress",                default: 0,       null: false
     t.string   "locale_tag"
+    t.integer  "population_all_countries"
+    t.string   "population_concentration"
+    t.string   "age_distribution"
+    t.string   "village_size"
+    t.text     "mixed_marriages"
+    t.string   "clans"
+    t.string   "castes"
+    t.string   "genetic_classification"
+    t.text     "location_access"
+    t.text     "travel"
+    t.text     "ethnic_groups_in_area"
+    t.string   "religion"
+    t.boolean  "believers"
+    t.boolean  "local_fellowship"
+    t.string   "literate_believers"
+    t.string   "related_languages"
+    t.string   "subgroups"
+    t.string   "lexical_similarity"
+    t.text     "attitude"
+    t.integer  "bible_first_published"
+    t.integer  "bible_last_published"
+    t.integer  "nt_first_published"
+    t.integer  "nt_last_published"
+    t.integer  "portions_first_published"
+    t.integer  "portions_last_published"
+    t.string   "selections_published"
+    t.boolean  "nt_out_of_print"
+    t.boolean  "tr_committee_established"
+    t.text     "translation_interest"
+    t.text     "translator_background"
+    t.text     "translation_local_support"
+    t.string   "mt_literacy"
+    t.string   "l2_literacy"
+    t.string   "script"
+    t.text     "attitude_to_lang_dev"
+    t.text     "mt_literacy_programs"
+    t.boolean  "poetry_print"
+    t.boolean  "oral_traditions_print"
   end
 
   add_index "languages", ["cluster_id"], name: "index_languages_on_cluster_id", using: :btree

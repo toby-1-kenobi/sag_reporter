@@ -1,0 +1,42 @@
+class AddLosaDataToLanguages < ActiveRecord::Migration
+  def change
+    add_column :languages, :population_all_countries, :integer
+    add_column :languages, :population_concentration, :string
+    add_column :languages, :age_distribution, :string
+    add_column :languages, :village_size, :string
+    add_column :languages, :mixed_marriages, :text
+    add_column :languages, :clans, :string
+    add_column :languages, :castes, :string
+    add_column :languages, :genetic_classification, :string
+    add_column :languages, :location_access, :text
+    add_column :languages, :travel, :text
+    add_column :languages, :ethnic_groups_in_area, :text
+    add_column :languages, :religion, :string
+    add_column :languages, :believers, :boolean
+    add_column :languages, :local_fellowship, :boolean
+    add_column :languages, :literate_believers, :string
+    add_column :languages, :related_languages, :string
+    add_column :languages, :subgroups, :string
+    add_column :languages, :lexical_similarity, :string
+    add_column :languages, :attitude, :text
+    add_column :languages, :bible_first_published, :integer
+    add_column :languages, :bible_last_published, :integer
+    add_column :languages, :nt_first_published, :integer
+    add_column :languages, :nt_last_published, :integer
+    add_column :languages, :portions_first_published, :integer
+    add_column :languages, :portions_last_published, :integer
+    add_column :languages, :selections_published, :string
+    add_column :languages, :nt_out_of_print, :boolean
+    add_column :languages, :tr_committee_established, :boolean
+    add_column :languages, :translation_interest, :text
+    add_column :languages, :translator_background, :text
+    add_column :languages, :translation_local_support, :text
+    add_column :languages, :mt_literacy, :string
+    add_column :languages, :l2_literacy, :string
+    add_column :languages, :script, :string
+    add_column :languages, :attitude_to_lang_dev, :text
+    add_column :languages, :mt_literacy_programs, :text
+    add_column :languages, :poetry_print, :boolean
+    add_column :languages, :oral_traditions_print, :boolean
+  end
+end
