@@ -290,6 +290,7 @@ ActiveRecord::Schema.define(version: 20170504113108) do
     t.string   "selections_published"
     t.boolean  "nt_out_of_print"
     t.boolean  "tr_committee_established"
+    t.string   "translation_consultants"
     t.text     "translation_interest"
     t.text     "translator_background"
     t.text     "translation_local_support"

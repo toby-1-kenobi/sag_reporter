@@ -28,6 +28,7 @@ class AddLosaDataToLanguages < ActiveRecord::Migration
     add_column :languages, :selections_published, :string
     add_column :languages, :nt_out_of_print, :boolean
     add_column :languages, :tr_committee_established, :boolean
+    add_column :languages, :translation_consultants, :string
     add_column :languages, :translation_interest, :text
     add_column :languages, :translator_background, :text
     add_column :languages, :translation_local_support, :text

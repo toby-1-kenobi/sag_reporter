@@ -46,9 +46,9 @@ def attribute(marker)
       :castes
     when 'REG'
       :location
-    when 'SI'
-      :location_access_1
     when 'ACC'
+      :location_access
+    when 'SI'
       :location_access_2
     when 'TRV'
       :travel
@@ -87,7 +87,7 @@ def attribute(marker)
     when 'IEE'
       :translation_info
     when 'BT'
-      :translation_progress
+      :translation_consultants
     when 'TIN'
       :translation_interest
     when 'BKT'
@@ -115,25 +115,145 @@ def attribute(marker)
   end
 end
 
+class String
+  def from_sentence(words_connector: ',', two_words_connector: ' and ', last_word_connector: ', and ')
+    self.gsub(/#{last_word_connector}/,"#{words_connector}").gsub(/#{two_words_connector}/,"#{words_connector}").split("#{words_connector}").map(&:strip)
+  end
+end
+
+def process_language_names(lang, record)
+  names = record.delete(:language_names).from_sentence.map{ |n| n.humanize }
+  existing_names = lang.language_names.pluck :name
+  names.each do |name|
+    lang.language_names.create(name: name) unless existing_names.include? name
+  end
+end
+
+def process_insider_names(lang, record)
+  names = record.delete(:name_speakers_use).from_sentence.map{ |n| n.humanize }
+  names.each do |name|
+    name_obj = lang.language_names.find_or_initialize_by(name: name)
+    name_obj.used_by_speakers = true
+    name_obj.save!
+  end
+end
+
+def process_outsider_names(lang, record)
+  names = record.delete(:name_others_use).from_sentence.map{ |n| n.humanize }
+  names.each do |name|
+    name_obj = lang.language_names.find_or_initialize_by(name: name)
+    name_obj.used_by_outsiders = true
+    name_obj.save!
+  end
+end
+
+def process_preferred_name(lang, name)
+  name_obj = lang.language_names.find_or_initialize_by(name: name.humanize)
+  name_obj.preferred = true
+  name_obj.save!
+end
+
+def process_dialects(lang, record)
+  dialects = record.delete(:dialects).from_sentence.map{ |n| n.humanize }
+  existing_dialects = lang.dialects.pluck :name
+  dialects.each do |dialect|
+    lang.dialects.create(name: dialect) unless existing_dialects.include? dialect
+  end
+end
+
+def fix_location_access(record)
+  if record[:location_access_2] == 'Y'
+    record.delete(:location_access_2)
+  elsif record[:location_access].present?
+    record[:location_access] += " Also, #{record.delete(:location_access_2)}"
+  else
+    record[:location_access] = record.delete(:location_access_2)
+  end
+end
+
+def process_pre_existing_fields(lang, record)
+  if lang.info.present?
+    lang.info +=" Also, #{record.delete(:info)}"
+  end
+  if lang.location.present?
+    lang.location +=" Also, #{record.delete(:location)}"
+  end
+  if lang.translation_info.present?
+    lang.translation_info +=" Also, #{record.delete(:translation_info)}"
+  end
+end
+
+def process_pub_dates(record)
+  if record[:bible_first_published].present?
+    if record[:bible_first_published].match(/(\d{4}).*(\d{4})/)
+      record[:bible_first_published] = $1.to_i
+      record[:bible_last_published] = $2.to_i
+    else
+      record[:bible_first_published] = record[:bible_first_published].to_i
+    end
+  end
+  if record[:nt_first_published].present?
+    if record[:nt_first_published].match(/(\d{4}).*(\d{4})/)
+      record[:nt_first_published] = $1.to_i
+      record[:nt_last_published] = $2.to_i
+    else
+      record[:nt_first_published] = record[:nt_first_published].to_i
+    end
+  end
+  if record[:portions_first_published].present?
+    if record[:portions_first_published].match(/(\d{4}).*(\d{4})/)
+      record[:portions_first_published] = $1.to_i
+      record[:portions_last_published] = $2.to_i
+    else
+      record[:portions_first_published] = record[:portions_first_published].to_i
+    end
+  end
+end
+
 def process_record(record)
   lang = Language.find_by_iso(record[:iso].downcase) if record[:iso]
   if lang
-    puts "found language #{lang.name} [#{lang.iso}]"
+    puts "processing #{lang.name} [#{lang.iso}]"
+    process_language_names(lang, record) if record[:language_names].present?
+    process_insider_names(lang, record) if record[:name_speakers_use].present?
+    process_outsider_names(lang, record) if record[:name_others_use].present?
+    process_preferred_name(lang, record.delete(:name)) if record[:name].present?
+    process_dialects(lang, record) if record[:dialects].present?
+    fix_location_access(record) if record[:location_access_2].present?
+    process_pre_existing_fields(lang, record)
+    process_pub_dates(record)
+    lang.update_attributes(record)
+    lang
   else
-    puts "couldn't find language #{record[:name]} [#{record[:iso]}]"
+    false
   end
 end
 
 relevant_record = false
 current_record = {}
 current_key = nil
+unprocessed_records = []
+successful = []
+failed = {}
 File.foreach(data_file) do |line|
   parsed_line = parse_line(line)
   if parsed_line[:marker].present? and parsed_line[:marker] == 'Key'
-    # new record
-    process_record(current_record) unless current_record.empty?
+    # new record so process the current one
+    if current_record.any?
+      begin
+        result = process_record(current_record)
+        if result
+          successful << result
+        else
+          unprocessed_records << current_record
+        end
+      rescue => e
+        failed["#{current_record[:name]} [#{current_record[:iso]}]"] = e.message
+      end
+    end
     # skip over it if it's outside India
     relevant_record = parsed_line[:value].include? 'India'
+    # reset the current record
     current_record = {}
   end
 
@@ -151,4 +271,19 @@ File.foreach(data_file) do |line|
       current_record[current_key] += " #{parsed_line[:value]}" if current_key
     end
   end
+end
+
+if unprocessed_records.any?
+  puts "couldn't process #{unprocessed_records.count} records."
+end
+
+if failed.any?
+  puts "failed when processing #{failed.count} languages."
+  failed.each do |record_id, failure|
+    puts "    #{record_id}: #{failure}"
+  end
+end
+
+if successful.any?
+  puts "successfully processed #{successful.count} languages."
 end
