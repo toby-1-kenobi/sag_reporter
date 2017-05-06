@@ -274,7 +274,7 @@ ActiveRecord::Schema.define(version: 20170504113108) do
     t.text     "travel"
     t.text     "ethnic_groups_in_area"
     t.string   "religion"
-    t.boolean  "believers"
+    t.integer  "believers"
     t.boolean  "local_fellowship"
     t.string   "literate_believers"
     t.string   "related_languages"

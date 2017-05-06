@@ -12,7 +12,7 @@ class AddLosaDataToLanguages < ActiveRecord::Migration
     add_column :languages, :travel, :text
     add_column :languages, :ethnic_groups_in_area, :text
     add_column :languages, :religion, :string
-    add_column :languages, :believers, :boolean
+    add_column :languages, :believers, :integer
     add_column :languages, :local_fellowship, :boolean
     add_column :languages, :literate_believers, :string
     add_column :languages, :related_languages, :string

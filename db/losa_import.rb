@@ -161,6 +161,40 @@ def process_dialects(lang, record)
   end
 end
 
+def fix_population(lang, record)
+  # don't overwrite population that's already in the database.
+  record.delete(:population) if lang.population
+  
+  if record[:population].present?
+    # remove commas
+    record[:population] = record[:population].tr(',', '')
+    if record[:population].match /(\d\d*)\ ?-\ ?(\d\d*)/
+      # average of range
+      record[:population] = ($1.to_i + $2.to_i) / 2
+    else
+      record[:population] = record[:population].to_i
+    end
+  end
+
+  if record[:population_all_countries].present?
+    record[:population_all_countries] = record[:population_all_countries].tr(',', '')
+    if record[:population_all_countries].match /(\d\d*)\ ?-\ ?(\d\d*)/
+      record[:population_all_countries] = ($1.to_i + $2.to_i) / 2
+    else
+      record[:population_all_countries] = record[:population_all_countries].to_i
+    end
+  end
+
+  if record[:believers].present?
+    record[:believers] = record[:believers].tr(',', '')
+    if record[:believers].match /(\d\d*)\ ?-\ ?(\d\d*)/
+      record[:believers] = ($1.to_i + $2.to_i) / 2
+    else
+      record[:believers] = record[:believers].to_i
+    end
+  end
+end
+
 def fix_location_access(record)
   if record[:location_access_2] == 'Y'
     record.delete(:location_access_2)
@@ -210,6 +244,14 @@ def process_pub_dates(record)
   end
 end
 
+def fix_bools(record)
+  record[:local_fellowship] = record[:local_fellowship] == 'Y' if record[:local_fellowship].present?
+  record[:nt_out_of_print] = record[:nt_out_of_print] == 'Y' if record[:nt_out_of_print].present?
+  record[:tr_committee_established] = record[:tr_committee_established] == 'Y' if record[:tr_committee_established].present?
+  record[:poetry_print] = record[:poetry_print] == 'Y' if record[:poetry_print].present?
+  record[:oral_traditions_print] = record[:oral_traditions_print] == 'Y' if record[:oral_traditions_print].present?
+end
+
 def process_record(record)
   lang = Language.find_by_iso(record[:iso].downcase) if record[:iso]
   if lang
@@ -219,9 +261,11 @@ def process_record(record)
     process_outsider_names(lang, record) if record[:name_others_use].present?
     process_preferred_name(lang, record.delete(:name)) if record[:name].present?
     process_dialects(lang, record) if record[:dialects].present?
+    fix_population(lang, record)
     fix_location_access(record) if record[:location_access_2].present?
     process_pre_existing_fields(lang, record)
     process_pub_dates(record)
+    fix_bools(record)
     lang.update_attributes(record)
     lang
   else
