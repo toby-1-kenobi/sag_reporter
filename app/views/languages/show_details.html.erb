@@ -1,0 +1,50 @@
+<% provide(:title, 'Language Details: ' + @language.name) %>
+
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--6-col mdl-cell--2-col-phone">
+    <h1>Language Details</h1>
+  </div>
+  <div class="mdl-cell mdl-cell--4-offset-desktop mdl-cell--2-col">
+    <div class="language-name"><h2><%= @language.name %></h2></div>
+    <div class="iso-code">[<%= @language.iso %>]</div>
+  </div>
+</div>
+
+<div class="mdl-grid">
+  <div class="mdl-cell mdl-cell--6-col">
+    <h2>General</h2>
+    <h3>Alternate Names</h3>
+    <% check_mark = '<i class="material-icons">done</i>'.html_safe %>
+    <table class="mdl-data-table mdl-js-data-table">
+      <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Name</th>
+        <th class="mdl-data-table__cell--non-numeric">Used by <%= @language.name %> speakers</th>
+        <th class="mdl-data-table__cell--non-numeric">Used by outsiders</th>
+        <th class="mdl-data-table__cell--non-numeric">Preferred</th>
+      </tr>
+      </thead>
+      <tbody>
+        <% @language.language_names.order(:name).each do |name| %>
+          <tr>
+            <td class="check mdl-data-table__cell--non-numeric"><%= name.name %></td>
+            <td class="check mdl-data-table__cell--non-numeric"><%= name.used_by_speakers? ? check_mark : '' %></td>
+            <td class="check mdl-data-table__cell--non-numeric"><%= name.used_by_outsiders? ? check_mark : '' %></td>
+            <td class="check mdl-data-table__cell--non-numeric"><%= name.preferred? ? check_mark : '' %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <h3>Classification</h3>
+    <h3>Population</h3>
+    <h3>Groupings</h3>
+    <h3>Organisations Involved</h3>
+
+  </div>
+  <div class="mdl-cell mdl-cell--6-col">
+    <h2>Bible Translation</h2>
+    <h3>Publication dates</h3>
+    <h3>Organisations involved</h3>
+    <h2>Literacy</h2>
+  </div>
+</div>

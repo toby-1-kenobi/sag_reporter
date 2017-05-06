@@ -42,7 +42,6 @@ class LanguagesController < ApplicationController
         includes(
             :pop_source,
             :family,
-            :cluster,
             :engaged_organisations,
             :translating_organisations,
             :mt_resources,
@@ -52,6 +51,22 @@ class LanguagesController < ApplicationController
     @all_orgs = Organisation.all.order(:name)
     # get the latest impact report to show on the language dashboard
     @impact_report = @language.reports.where.not(impact_report: nil).order(:report_date).last
+    end
+
+  def show_details
+    @language = Language.
+        includes(
+            :language_names,
+            :dialects,
+            :pop_source,
+            :family,
+            :engaged_organisations,
+            :translating_organisations,
+            :mt_resources,
+            {:state_languages => {:geo_state => :zone}}
+        ).
+        find(params[:id])
+    @all_orgs = Organisation.all.order(:name)
   end
 
   # match a search query against language names
