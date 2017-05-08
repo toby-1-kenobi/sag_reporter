@@ -23,8 +23,8 @@
         <% end %>
       </table>
 
+    <a name="language-names"><h3>Alternate Names</h3></a>
     <% if @language.language_names.any? %>
-      <h3>Alternate Names</h3>
       <% check_mark = '<i class="material-icons">done</i>'.html_safe %>
       <table class="mdl-data-table mdl-js-data-table">
         <thead>
@@ -46,6 +46,8 @@
           <% end %>
         </tbody>
       </table>
+    <% else %>
+      <p>None</p>
     <% end %>
 
     <h3>Location</h3>
@@ -169,7 +171,7 @@
 
     <% if logged_in_user.sees_faith_based_data? %>
 
-      <h2>Bible Translation</h2>
+      <a name="bible-translation"><h2>Bible Translation</h2></a>
       <h3>Translation Status</h3>
       <div class="translation-status mdl-card mdl-shadow--2dp">
         <div class="mdl-card__title" style="background-color: <%= @language.translation_status_colour %>">
@@ -248,7 +250,7 @@
         </table>
       <% end %>
 
-      <h3>Organisations involved</h3>
+      <a name="translating-organisations"><h3>Organisations involved with translation</h3></a>
       <% if @language.translating_organisations.any? %>
           <ul class="mdl-list">
             <% @language.translating_organisations.each do |org| %>
@@ -263,7 +265,7 @@
 
     <% end %>
 
-    <h2>Literacy</h2>
+    <a name="literacy"><h2>Literacy</h2></a>
       <table class="language-data">
         <% if @language.script.present? %>
             <tr><th>Script</th><td><%= @language.script %></td></tr>
@@ -291,8 +293,8 @@
         <% end %>
       </table>
 
+      <a name="mt-resources"><h3>Mother Tongue Resources</h3></a>
       <% if @language.mt_resources.any? %>
-        <h3>Mother Tongue Resources</h3>
         <ul class="mdl-list">
           <% @language.mt_resources.each do |resource| %>
               <li class="mdl-list__item mdl-list__item--two-line">
@@ -307,6 +309,8 @@
               </li>
           <% end %>
         </ul>
+      <% else %>
+        <p>None recorded</p>
       <% end %>
 
     <% if @language.iso.present? %>

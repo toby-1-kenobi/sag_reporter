@@ -52,34 +52,7 @@
       <% if @language.info.present? or editable %>
           <tr><th>Other information</th><td id="language-info" class="<%= 'editable' if editable %>"><%= @language.info %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
-    </table>
-
-  </div>
-
-  <div class="mdl-cell mdl-cell--4-col">
-    <ul class="mdl-list">
-      <li class="language-outcome-progress mdl-list__item">
-        <%= link_to 'Outcome Progress', show_details_language_path(@language, anchor: 'outcome-progress'), class: 'mdl-list__item-primary-content' %>
-      </li>
-      <li class="language-engaged-organisations mdl-list__item">
-        <%= link_to 'Engaged Organisations', show_details_language_path(@language, anchor: 'engaged-organisations'), class: 'mdl-list__item-primary-content' %>
-        <%= link_to show_details_language_path(@language, anchor: 'engaged-organisations'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
-            <span class="mdl-chip__text"><%= @language.engaged_organisations.count %></span>
-        <% end %>
-      </li>
-    </ul>
-  </div>
-
-  <!-- map -->
-  <div class="mdl-cell mdl-cell--4-col">
-    <% map = get_map(@language) %>
-    <% if map %>
-      <%= image_tag(map, alt: "Map for #{@language.name}", class: 'language-map mdl-shadow--2dp') %>
-    <% end %>
-  </div>
-
-  <div class="mdl-cell mdl-cell--4-col">
-    <h4>Translation Status</h4>
+    </table><h4>Translation Status</h4>
     <div class="translation-status mdl-card mdl-shadow--2dp">
       <div class="mdl-card__title" style="background-color: <%= @language.translation_status_colour %>">
         <h2 class="mdl-card__title-text"><%= @language.translation_status.to_s.humanize %></h2>
@@ -97,40 +70,53 @@
           <tr><th>Translation info</th><td id="language-translation-info" class="<%= 'editable' if editable %>"><%= @language.translation_info %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
     </table>
-    <div>
-      <% if @language.translating_organisations.any? or editable%>
-          <h4>Organisations involved with translation</h4>
-          <ul class="translating-orgs mdl-list">
-            <% @language.translating_organisations.each do |org| %>
-              <li class="org-<%= org.id %> mdl-list__item">
-                <%= link_to org.name_with_abbr, org, class: 'org-name mdl-list__item-primary-content' %>
-                <% if editable %>
-                    <%= link_to remove_translating_org_from_language_path(@language, org),
-                                method: :patch,
-                                remote: true,
-                                class: 'remove-button mdl-list__item-secondary-content' do %>
-                        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
-                          <i class="material-icons">clear</i>
-                        </button>
-                    <% end %>
-                <% end %>
-              </li>
-            <% end %>
-            <% if editable %>
-              <li class="add-another mdl-list__item">
-                <span class="mdl-list__item-primary-content">...</span>
-                <span class="mdl-list__item-secondary-content">
-                  <button class="add-translating-org-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored" title="Add translating organisation">
-                    <i class="material-icons">add</i>
-                  </button>
-                </span>
-              </li>
-            <% end %>
-          </ul>
-      <% else %>
-          <p><em>No organisations engaged with translating for this language.</em></p>
-      <% end %>
-    </div>
+
+  </div>
+
+  <div class="mdl-cell mdl-cell--4-col">
+    <ul class="mdl-list">
+      <li class="language-names mdl-list__item">
+        <%= link_to 'Alternate Names', show_details_language_path(@language, anchor: 'language-names'), class: 'mdl-list__item-primary-content' %>
+        <%= link_to show_details_language_path(@language, anchor: 'language-names'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
+            <span class="mdl-chip__text"><%= @language.language_names.count %></span>
+        <% end %>
+      </li>
+      <li class="language-outcome-progress mdl-list__item">
+        <%= link_to 'Outcome Progress', show_details_language_path(@language, anchor: 'outcome-progress'), class: 'mdl-list__item-primary-content' %>
+      </li>
+      <li class="language-bible-translation mdl-list__item">
+        <%= link_to 'Bible Translation', show_details_language_path(@language, anchor: 'bible-translation'), class: 'mdl-list__item-primary-content' %>
+      </li>
+      <li class="language-engaged-organisations mdl-list__item">
+        <%= link_to 'Engaged Organisations', show_details_language_path(@language, anchor: 'engaged-organisations'), class: 'mdl-list__item-primary-content' %>
+        <%= link_to show_details_language_path(@language, anchor: 'engaged-organisations'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
+            <span class="mdl-chip__text"><%= @language.engaged_organisations.count %></span>
+        <% end %>
+      </li>
+      <li class="language-translating-organisations mdl-list__item">
+        <%= link_to 'Translating Organisations', show_details_language_path(@language, anchor: 'translating-organisations'), class: 'mdl-list__item-primary-content' %>
+        <%= link_to show_details_language_path(@language, anchor: 'translating-organisations'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
+            <span class="mdl-chip__text"><%= @language.translating_organisations.count %></span>
+        <% end %>
+      </li>
+      <li class="language-literacy mdl-list__item">
+        <%= link_to 'Literacy', show_details_language_path(@language, anchor: 'literacy'), class: 'mdl-list__item-primary-content' %>
+      </li>
+      <li class="language-mt-resources mdl-list__item">
+        <%= link_to 'Mother Tongue Resources', show_details_language_path(@language, anchor: 'mt-resources'), class: 'mdl-list__item-primary-content' %>
+        <%= link_to show_details_language_path(@language, anchor: 'mt-resources'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
+            <span class="mdl-chip__text"><%= @language.mt_resources.count %></span>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+
+  <!-- map -->
+  <div class="mdl-cell mdl-cell--4-col">
+    <% map = get_map(@language) %>
+    <% if map %>
+      <%= image_tag(map, alt: "Map for #{@language.name}", class: 'language-map mdl-shadow--2dp') %>
+    <% end %>
   </div>
 
   <div class="mdl-cell mdl-cell--4-col">
@@ -158,26 +144,6 @@
       </div>
     <% else %>
       <p>No impact reports.</p>
-    <% end %>
-  </div>
-  <div class="mdl-cell mdl-cell--4-col">
-    <% if @language.mt_resources.any? %>
-        <ul class="mdl-list">
-        <% @language.mt_resources.each do |resource| %>
-            <li class="mdl-list__item mdl-list__item--two-line">
-                <span class="mdl-list__item-primary-content">
-                <% if resource.url %>
-                  <a href="<%= resource.url %>" tabindex="-1"><%= resource.name %></a>
-                <% else %>
-                  <%= resource.name %>
-                <% end %>
-                  <span class="mdl-list__item-sub-title"><%= resource.description %></span>
-                </span>
-            </li>
-        <% end %>
-        </ul>
-    <% else %>
-      <p>No mother-tongue resources.</p>
     <% end %>
   </div>
 </div>
