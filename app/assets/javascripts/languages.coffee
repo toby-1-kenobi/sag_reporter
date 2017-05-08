@@ -4,7 +4,7 @@
 
 $(document).ready ->
 
-  $('.outcome-progress-cell .get-chart-button').click()
+  $('.get-chart-button').click()
 
   $('#jp-fetch-trigger').click()
 

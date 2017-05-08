@@ -54,57 +54,20 @@
       <% end %>
     </table>
 
-    <% if @language.engaged_organisations.any? or editable%>
-        <h4>Organisations engaged with this language</h4>
-        <ul class="engaged-orgs mdl-list">
-          <% @language.engaged_organisations.each do |org| %>
-            <li class="org-<%= org.id %> mdl-list__item">
-              <%= link_to org.name_with_abbr, org, class: 'org-name mdl-list__item-primary-content' %>
-              <% if editable %>
-                <%= link_to remove_engaged_org_from_language_path(@language, org),
-                            method: :patch,
-                            remote: true,
-                            class: 'remove-button mdl-list__item-secondary-content' do %>
-                  <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
-                    <i class="material-icons">clear</i>
-                  </button>
-                <% end %>
-              <% end %>
-            </li>
-          <% end %>
-          <% if editable %>
-              <li class="add-another mdl-list__item">
-                <span class="mdl-list__item-primary-content">...</span>
-                <span class="mdl-list__item-secondary-content">
-                  <button class="add-engaged-org-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored" title="Add engaged organisation">
-                    <i class="material-icons">add</i>
-                  </button>
-                </span>
-              </li>
-          <% end %>
-        </ul>
-    <% else %>
-          <p><em>No organisations engaged with this language.</em></p>
-    <% end %>
-    <% if @language.iso.present? %>
-        <div class="jp-data">
-          <div class="center"><paper-spinner class="jp-fetch" active></paper-spinner></div>
-          <%= link_to 'Fetch JP Data', fetch_jp_data_path(@language.iso), remote: true, class: 'hide', id: 'jp-fetch-trigger' %>
-        </div>
-    <% end %>
   </div>
 
-  <div class="outcome-progress-cell mdl-cell mdl-cell--4-col">
-    <h3>Outcome progress</h3>
-    <% @language.state_languages.in_project.each do |state_language| %>
-        <h4><%= state_language.state_name %></h4>
-        <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
-        <div class="chart-<%= state_language.id %>"></div>
-    <% end %>
-    <% non_project_states = @language.state_languages.joins(:geo_state).where(project: false).pluck('geo_states.name').to_sentence %>
-    <% if non_project_states.present? %>
-        <p><%= @language.name %> is spoken in <%= non_project_states %>, but LCI does not track it there.</p>
-    <% end %>
+  <div class="mdl-cell mdl-cell--4-col">
+    <ul class="mdl-list">
+      <li class="language-outcome-progress mdl-list__item">
+        <%= link_to 'Outcome Progress', show_details_language_path(@language, anchor: 'outcome-progress'), class: 'mdl-list__item-primary-content' %>
+      </li>
+      <li class="language-engaged-organisations mdl-list__item">
+        <%= link_to 'Engaged Organisations', show_details_language_path(@language, anchor: 'engaged-organisations'), class: 'mdl-list__item-primary-content' %>
+        <%= link_to show_details_language_path(@language, anchor: 'engaged-organisations'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
+            <span class="mdl-chip__text"><%= @language.engaged_organisations.count %></span>
+        <% end %>
+      </li>
+    </ul>
   </div>
 
   <!-- map -->
