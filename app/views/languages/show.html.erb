@@ -29,51 +29,41 @@
 
 <div class="mdl-grid language-dashboard">
 
-  <!-- general language data -->
-  <div class="language-info mdl-cell mdl-cell--4-col">
-    <table class="language-data">
-      <% if @language.description.present? or editable %>
-          <tr><th>Description</th><td id="language-description" class="<%= 'editable' if editable %>"><%= @language.description %><%= render 'shared/edit_icon' if editable %></td></tr>
-      <% end %>
-      <% if @language.location.present? or editable %>
-          <tr><th>Location</th><td id="language-location" class="<%= 'editable' if editable %>"><%= @language.location %><%= render 'shared/edit_icon' if editable %></td></tr>
-      <% end %>
-      <% if @language.population or editable%>
-        <tr id="pop_<%= @language.iso %>">
-          <th>Population</th><td id="language-population" class="<%# 'editable' if editable %>"><%= number_with_delimiter(@language.population, :delimiter => ',') %><%# render 'shared/edit_icon' if editable %></td>
+  <!-- finish line markers -->
+  <div class="finish-line-status mdl-cell mdl-cell--4-col">
+
+    <h3>Finish Line Status</h3>
+    <table class="finish-line-status mdl-data-table mdl-js-data-table">
+      <thead>
+        <tr>
+          <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
+          <th class="mdl-data-table__cell--non-numeric" colspan="2">Status</th>
         </tr>
-        <% if @language.pop_source %>
-          <div class="mdl-tooltip" for="pop_<%= @language.iso %>">source: <%= @language.pop_source.name %></div>
+      </thead>
+      <tbody>
+        <% FinishLineMarker.find_each do |marker| %>
+          <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+          <tr class="<%= progress.complete? ? 'complete' : 'incomplete' %>">
+            <td id="finish-line-marker-<%= marker.number %>-name">
+              <%= marker.name %>
+              <span for="finish-line-marker-<%= marker.number %>-name" class="mdl-tooltip"><%= marker.description %></span>
+            </td>
+            <td>
+              <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-<%= marker.name %>">
+                <input type="checkbox" id="switch-<%= marker.name %>" class="mdl-switch__input" <%= progress.complete? ? 'checked' : '' %>>
+                <span class="mdl-switch__label"></span>
+              </label>
+            </td>
+            <td><%= progress.status.humanize %></td>
+          </tr>
         <% end %>
-      <% end %>
-      <% if @language.family or editable %>
-          <tr><th>Family</th><td id="language-family" class="<%= 'editable' if editable %>"><%= @language.family_name if @language.family %><%= render 'shared/edit_icon' if editable %></td></tr>
-      <% end %>
-      <% if @language.info.present? or editable %>
-          <tr><th>Other information</th><td id="language-info" class="<%= 'editable' if editable %>"><%= @language.info %><%= render 'shared/edit_icon' if editable %></td></tr>
-      <% end %>
-    </table><h4>Translation Status</h4>
-    <div class="translation-status mdl-card mdl-shadow--2dp">
-      <div class="mdl-card__title" style="background-color: <%= @language.translation_status_colour %>">
-        <h2 class="mdl-card__title-text"><%= @language.translation_status.to_s.humanize %></h2>
-      </div>
-      <div class="mdl-card__supporting-text">
-        <p>Translation need/status: <strong id="language-translation-need" class="<%= 'editable' if editable %>"><%= @language.translation_need.humanize %><%= render 'shared/edit_icon' if editable %></strong></p>
-        <p>Translation progress: <strong id="language-translation-progress" class="<%= 'editable' if editable %>"><%= @language.translation_progress.humanize %><%= render 'shared/edit_icon' if editable %></strong></p>
-      </div>
-    </div>
-    <table class="language-data">
-      <% if editable or (@language.number_of_translations && @language.number_of_translations > 0) %>
-          <tr><th>Already existing</th><td><span id="language-number-of-translations" class="<%= 'editable' if editable %>"><%= @language.number_of_translations ? @language.number_of_translations : 0 %><%= render 'shared/edit_icon' if editable %></span> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
-      <% end %>
-      <% if editable or @language.translation_info.present? %>
-          <tr><th>Translation info</th><td id="language-translation-info" class="<%= 'editable' if editable %>"><%= @language.translation_info %><%= render 'shared/edit_icon' if editable %></td></tr>
-      <% end %>
+      </tbody>
     </table>
 
   </div>
 
   <div class="mdl-cell mdl-cell--4-col">
+    <h3>More Language Details</h3>
     <ul class="mdl-list">
       <li class="language-names mdl-list__item">
         <%= link_to 'Alternate Names', show_details_language_path(@language, anchor: 'language-names'), class: 'mdl-list__item-primary-content' %>

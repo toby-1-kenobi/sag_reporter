@@ -17,7 +17,7 @@ class FinishLineProgress < ActiveRecord::Base
 
   validates :status, presence: true
 
-  def complete
+  def complete?
     no_further_expressed_needs? or further_expressed_needs? or further_steps_in_progress?
   end
 
