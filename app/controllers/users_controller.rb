@@ -70,9 +70,15 @@ class UsersController < ApplicationController
       flash['success'] = 'New User Created!'
       redirect_to user_factory.instance()
     else
-      logger.debug(user_factory.instance().errors.full_messages)
+      if user_factory.instance()
+        logger.debug(user_factory.instance().errors.full_messages)
+        @user = user_factory.instance()
+      else
+        logger.error('no instance in user factory when creating a user failed')
+        flash.error('Something went wrong with creating the user. Sorry')
+        @user = User.new
+      end
       assign_for_user_form
-      @user = user_factory.instance()
       render 'new'
     end
   end
