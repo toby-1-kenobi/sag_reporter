@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170508160548) do
+ActiveRecord::Schema.define(version: 20170508163005) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -179,6 +179,18 @@ ActiveRecord::Schema.define(version: 20170508160548) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
+
+  create_table "finish_line_progresses", force: :cascade do |t|
+    t.integer  "language_id",           null: false
+    t.integer  "finish_line_marker_id", null: false
+    t.integer  "status",                null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  add_index "finish_line_progresses", ["finish_line_marker_id"], name: "index_finish_line_progresses_on_finish_line_marker_id", using: :btree
+  add_index "finish_line_progresses", ["language_id", "finish_line_marker_id"], name: "index_lang_finish_line", unique: true, using: :btree
+  add_index "finish_line_progresses", ["language_id"], name: "index_finish_line_progresses_on_language_id", using: :btree
 
   create_table "geo_states", force: :cascade do |t|
     t.string   "name",       null: false
@@ -688,6 +700,8 @@ ActiveRecord::Schema.define(version: 20170508160548) do
   add_foreign_key "events", "users"
   add_foreign_key "events_purposes", "events"
   add_foreign_key "events_purposes", "purposes"
+  add_foreign_key "finish_line_progresses", "finish_line_markers"
+  add_foreign_key "finish_line_progresses", "languages"
   add_foreign_key "geo_states", "zones"
   add_foreign_key "language_names", "languages"
   add_foreign_key "language_progresses", "progress_markers"
