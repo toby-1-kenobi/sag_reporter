@@ -128,9 +128,6 @@ language_data.each do |row|
   if row[:of_translations]
     lang.number_of_translations ||= row[:of_translations].to_i
   end
-  if row[:cluster]
-    lang.cluster ||= Cluster.find_or_create_by name: row[:cluster]
-  end
   lang.info ||= row[:other_information]
   lang.translation_info ||= row[:decision_criteria]
   if row[:orgs_involved]

@@ -39,7 +39,6 @@ class LanguagesController < ApplicationController
         includes(
             :pop_source,
             :family,
-            :cluster,
             :engaged_organisations,
             :translating_organisations,
             :mt_resources,
@@ -50,6 +49,43 @@ class LanguagesController < ApplicationController
     @user_pending_edits = Edit.pending.where(user: logged_in_user, model_klass_name: 'Language', record_id: @language.id)
     # get the latest impact report to show on the language dashboard
     @impact_report = @language.reports.where.not(impact_report: nil).order(:report_date).last
+    end
+
+  def show_details
+    @language = Language.
+        includes(
+            :language_names,
+            :dialects,
+            :pop_source,
+            :family,
+            :engaged_organisations,
+            :translating_organisations,
+            :mt_resources,
+            {:state_languages => {:geo_state => :zone}}
+        ).
+        find(params[:id])
+    @all_orgs = Organisation.all.order(:name)
+  end
+
+  # match a search query against language names
+  def search
+    query = params['q']
+    if query.present?
+      # for single character search, just get languages that start with the character
+      # otherwise search anywhere in the name
+      # also downcase the query string for case insensitive search
+      if query.length == 1
+        query = "#{query.downcase}%"
+      else
+        query = "%#{query.downcase}%"
+      end
+      @languages = Language.where('lower(name) LIKE ?', query)
+      respond_to do |format|
+        format.js
+      end
+    else
+      head :no_content
+    end
   end
 
   def get_chart

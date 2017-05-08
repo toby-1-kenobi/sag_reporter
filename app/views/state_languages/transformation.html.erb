@@ -3,7 +3,7 @@
 <h1>Transformation by language and outcome area</h1>
 
 <%
-  dates = @outcome_scores.keys
+  dates = @transformations.values.first.keys
   outcome_areas = @outcome_area_colours.keys
 %>
 
@@ -65,20 +65,18 @@
     </tr>
   </thead>
   <tbody>
-    <% @outcome_scores.values.first.each_key do |language| %>
+  <%# @outcome_scores contains a hash for each of the two dates %>
+  <%# the keys in each of those hashes are StateLanguage objects %>
+    <% @transformations.each_key do |language| %>
       <tr>
         <td><%= language.zone.name %></td>
         <td><%= language.state_name %></td>
         <td><%= language.language_name %></td>
         <% outcome_areas.each do |outcome_area|
-          language_data0 = @outcome_scores[dates[0]][language]
-          data0 = language_data0 ? language_data0['content'][outcome_area] : nil
-          value0 = data0 ? data0.values.first : 0
+          value0 = @transformations[language][dates[0]][outcome_area]
           zone_aggregate[0][language.zone.name] ||= Hash.new(0)
           zone_aggregate[0][language.zone.name][outcome_area] += value0
-          language_data1 = @outcome_scores[dates[1]][language]
-          data1 = language_data1 ? language_data1['content'][outcome_area] : nil
-          value1 = data1 ? data1.values.first : 0
+          value1 = @transformations[language][dates[1]][outcome_area]
           zone_aggregate[1][language.zone.name] ||= Hash.new(0)
           zone_aggregate[1][language.zone.name][outcome_area] += value1
           change = value1 - value0

@@ -19,6 +19,9 @@ Rails.application.routes.draw do
   resources :events do
     get :autocomplete_person_name, :on => :collection
   end
+
+  resources :geo_states, only: [:show]
+
   resources :impact_reports, except: [:new, :create, :index] do
     collection do
       get 'tag'
@@ -37,8 +40,10 @@ Rails.application.routes.draw do
   resources :languages do
     collection do
       get 'overview'
+      get 'search'
     end
     member do
+      get 'show_details'
       patch 'add_engaged_org/:org', to: 'languages#add_engaged_org', as: 'add_engaged_org_to'
       patch 'remove_engaged_org/:org', to: 'languages#remove_engaged_org', as: 'remove_engaged_org_from'
       patch 'add_translating_org/:org', to: 'languages#add_translating_org', as: 'add_translating_org_to'
@@ -64,10 +69,7 @@ Rails.application.routes.draw do
       get 'pictures'
     end
   end
-  resources :roles, except: [:new, :show, :edit, :update]
-  # roles update all at once
-  patch  'roles' => 'roles#update'
-  resources :tallies
+
   resources :topics
 
   resources :users do
@@ -77,6 +79,8 @@ Rails.application.routes.draw do
       get :confirm_email
     end
   end
+
+  resources :zones, only: [:index, :show]
 
   get 're_send_to_confirm_email' => 'users#re_confirm_email'
 
@@ -124,6 +128,8 @@ Rails.application.routes.draw do
   get 'overview/show_outcomes_progress/:id' => 'state_languages#show_outcomes_progress', as: 'show_outcomes_progress'
   get 'states/autocomplete_district_name/:geo_state_id' => 'geo_states#autocomplete_district_name', as: 'autocomplete_district_name_geo_state'
   get 'states/autocomplete_sub_district_name/:district_id' => 'districts#autocomplete_sub_district_name', as: 'autocomplete_sub_district_name_district'
+
+  get 'nation' => 'zones#nation', as: 'nation'
 
   get 'whatsapp' => 'static_pages#whatsapp_link'
 

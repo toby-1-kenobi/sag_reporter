@@ -9,16 +9,14 @@
 
 <%
   case request.path
-  when login_path, two_factor_auth_path, root_path, languages_path, select_to_assess_path, new_user_path, curate_edits_path, my_edits_path
+  when login_path, two_factor_auth_path, root_path, languages_path, select_to_assess_path
+  when login_path, two_factor_auth_path, root_path, languages_path, nation_path,
+      select_to_assess_path, zones_path, /^\/zones\/[0-9]+$/, /^\/languages\/[0-9]+$/,
+      /^\/geo_states\/[0-9]+$/, /^\/organisations\/[0-9]+$/, show_details_language_path,
+      new_user_path, curate_edits_path, my_edits_path, /^\/users\/[0-9]+\/edit$/
     mdl = true
   else
     mdl = false
-  end
-  if @language and current_page?(language_path(@language))
-    mdl = true
-  end
-  if @user and @user.id.present? and current_page?(edit_user_path(@user))
-    mdl = true
   end
 %>
 

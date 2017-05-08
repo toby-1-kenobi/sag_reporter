@@ -124,18 +124,17 @@ class StateLanguagesController < ApplicationController
   private
 
   def collect_transformation_data
-    # Use dates from parameters or last month and this month
+    # Use dates from parameters or 6 months ago and this month
     params[:year_a] ||= 6.months.ago.year
     params[:month_a] ||= 6.months.ago.month
     date_a = Date.new params[:year_a].to_i, params[:month_a].to_i
     params[:year_b] ||= Date.today.year
     params[:month_b] ||= Date.today.month
     date_b = Date.new params[:year_b].to_i, params[:month_b].to_i
-    # for each project language get the aggregated data
-    @outcome_scores = { date_a => Hash.new, date_b => Hash.new }
-    StateLanguage.in_project.includes(:language_progresses =>[{:progress_marker => :topic}, :progress_updates]).find_each do |state_language|
-      @outcome_scores[date_a][state_language] = state_language.outcome_table_data(logged_in_user, from_date: date_a, to_date: date_a)
-      @outcome_scores[date_b][state_language] = state_language.outcome_table_data(logged_in_user, from_date: date_b, to_date: date_b)
+    # for each project language get the aggregated data for both dates
+    @transformations = Hash.new
+    StateLanguage.in_project.includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).find_each do |state_language|
+      @transformations[state_language] = state_language.transformation(logged_in_user, date_a, date_b)
     end
   end
 

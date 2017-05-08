@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170502171445) do
+ActiveRecord::Schema.define(version: 20170504113108) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +82,17 @@ ActiveRecord::Schema.define(version: 20170502171445) do
   end
 
   add_index "data_sources", ["name"], name: "index_data_sources_on_name", unique: true, using: :btree
+
+  create_table "dialects", force: :cascade do |t|
+    t.integer  "language_id", null: false
+    t.string   "name",        null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "dialects", ["language_id", "name"], name: "language_dialect_names", unique: true, using: :btree
+  add_index "dialects", ["language_id"], name: "index_dialects_on_language_id", using: :btree
+  add_index "dialects", ["name"], name: "index_dialects_on_name", using: :btree
 
   create_table "districts", force: :cascade do |t|
     t.string   "name",         null: false
@@ -208,6 +219,20 @@ ActiveRecord::Schema.define(version: 20170502171445) do
 
   add_index "language_families", ["name"], name: "index_language_families_on_name", unique: true, using: :btree
 
+  create_table "language_names", force: :cascade do |t|
+    t.integer  "language_id",                       null: false
+    t.string   "name",                              null: false
+    t.boolean  "preferred",         default: false, null: false
+    t.boolean  "used_by_speakers",  default: false, null: false
+    t.boolean  "used_by_outsiders", default: false, null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
+
+  add_index "language_names", ["language_id", "name"], name: "uniq_language_names", unique: true, using: :btree
+  add_index "language_names", ["language_id"], name: "index_language_names_on_language_id", using: :btree
+  add_index "language_names", ["name"], name: "index_language_names_on_name", using: :btree
+
   create_table "language_progresses", force: :cascade do |t|
     t.integer  "progress_marker_id", null: false
     t.datetime "created_at",         null: false
@@ -219,24 +244,63 @@ ActiveRecord::Schema.define(version: 20170502171445) do
   add_index "language_progresses", ["state_language_id"], name: "index_language_progresses_on_state_language_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
-    t.string   "name",                                               null: false
+    t.string   "name",                                                  null: false
     t.text     "description"
     t.boolean  "lwc"
-    t.datetime "created_at",                                         null: false
-    t.datetime "updated_at",                                         null: false
-    t.string   "colour",                           default: "white", null: false
-    t.string   "iso",                    limit: 3
+    t.datetime "created_at",                                            null: false
+    t.datetime "updated_at",                                            null: false
+    t.string   "colour",                              default: "white", null: false
+    t.string   "iso",                       limit: 3
     t.integer  "family_id"
-    t.integer  "population",             limit: 8
+    t.integer  "population",                limit: 8
     t.integer  "pop_source_id"
     t.text     "location"
     t.integer  "number_of_translations"
     t.integer  "cluster_id"
     t.text     "info"
     t.text     "translation_info"
-    t.integer  "translation_need",                 default: 0,       null: false
-    t.integer  "translation_progress",             default: 0,       null: false
+    t.integer  "translation_need",                    default: 0,       null: false
+    t.integer  "translation_progress",                default: 0,       null: false
     t.string   "locale_tag"
+    t.integer  "population_all_countries"
+    t.string   "population_concentration"
+    t.string   "age_distribution"
+    t.string   "village_size"
+    t.text     "mixed_marriages"
+    t.string   "clans"
+    t.string   "castes"
+    t.string   "genetic_classification"
+    t.text     "location_access"
+    t.text     "travel"
+    t.text     "ethnic_groups_in_area"
+    t.string   "religion"
+    t.integer  "believers"
+    t.boolean  "local_fellowship"
+    t.string   "literate_believers"
+    t.string   "related_languages"
+    t.string   "subgroups"
+    t.string   "lexical_similarity"
+    t.text     "attitude"
+    t.integer  "bible_first_published"
+    t.integer  "bible_last_published"
+    t.integer  "nt_first_published"
+    t.integer  "nt_last_published"
+    t.integer  "portions_first_published"
+    t.integer  "portions_last_published"
+    t.string   "selections_published"
+    t.boolean  "nt_out_of_print"
+    t.boolean  "tr_committee_established"
+    t.string   "translation_consultants"
+    t.text     "translation_interest"
+    t.text     "translator_background"
+    t.text     "translation_local_support"
+    t.string   "mt_literacy"
+    t.string   "l2_literacy"
+    t.string   "script"
+    t.text     "attitude_to_lang_dev"
+    t.text     "mt_literacy_programs"
+    t.boolean  "poetry_print"
+    t.boolean  "oral_traditions_print"
   end
 
   add_index "languages", ["cluster_id"], name: "index_languages_on_cluster_id", using: :btree
@@ -608,6 +672,7 @@ ActiveRecord::Schema.define(version: 20170502171445) do
   add_foreign_key "creations", "people"
   add_foreign_key "curatings", "geo_states"
   add_foreign_key "curatings", "users"
+  add_foreign_key "dialects", "languages"
   add_foreign_key "districts", "geo_states"
   add_foreign_key "edits", "users"
   add_foreign_key "edits", "users", column: "curated_by_id"
@@ -616,6 +681,7 @@ ActiveRecord::Schema.define(version: 20170502171445) do
   add_foreign_key "events_purposes", "events"
   add_foreign_key "events_purposes", "purposes"
   add_foreign_key "geo_states", "zones"
+  add_foreign_key "language_names", "languages"
   add_foreign_key "language_progresses", "progress_markers"
   add_foreign_key "language_progresses", "state_languages"
   add_foreign_key "languages", "clusters"

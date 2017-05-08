@@ -14,6 +14,7 @@ class StateLanguage < ActiveRecord::Base
   validates :language, presence: true
 
   scope :in_project, -> { where project: true }
+  scope :not_in_project, -> { where project: false }
 
   # The date from which charting of outcome dat should start
   BASE_DATE = Date.new(2016, 10)
@@ -114,6 +115,39 @@ class StateLanguage < ActiveRecord::Base
       scores[progress.progress_marker.topic_id] += progress.progress_marker.weight * ProgressMarker.spread_text.keys.max
     end
     return scores
+  end
+
+  # get percentage score for each outcome area at two dates
+  def transformation(user, date_1, date_2)
+    transformation = { date_1 => Hash.new {0}, date_2 => Hash.new {0} }
+    # go through every language_progress for this state_language
+    # (there's one for each progress marker used)
+    # and get it's score at each of the dates
+    # and total these scores by outcome area
+    language_progresses.includes({progress_marker: :topic}, :progress_updates).find_each do |lp|
+      # don't include outcome areas that should be invisible to the user
+      unless lp.progress_marker.topic.hide_for?(user)
+        oa_name = lp.progress_marker.topic.name
+        transformation[date_1][oa_name] += lp.month_score(date_1.year, date_1.month)
+        transformation[date_2][oa_name] += lp.month_score(date_2.year, date_2.month)
+      end
+    end
+    # we need the max possible score for each outcome area to make our scores a percentage
+    # this shouldn't change, but it's a bad idea to assume it wont,
+    # but we don't want to have to calculate it every time we run this method so cache it.
+    max_scores = Rails.cache.fetch("max_scores", expires_in: 10.minutes) do
+      scores = {}
+      Topic.find_each do |outcome_area|
+        scores[outcome_area.name] = outcome_area.max_outcome_score
+      end
+      scores
+    end
+    transformation.each do |date, all_scores|
+      all_scores.each do |oa_name, score|
+        transformation[date][oa_name] = (score * 100).fdiv(max_scores[oa_name])
+      end
+    end
+    transformation
   end
 
   # active impact reports in this state and tagged with this language in the specified duration.
