@@ -148,6 +148,11 @@ table td.check {
   text-align: center !important;
 }
 
+.mdl-card.translation-status {
+  width: initial;
+  max-width: 400px;
+}
+
 paper-tabs {
   color: #fff;
   box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);

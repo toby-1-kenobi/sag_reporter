@@ -168,7 +168,7 @@ def fix_population(lang, record)
   if record[:population].present?
     # remove commas
     record[:population] = record[:population].tr(',', '')
-    if record[:population].match /(\d\d*)\ ?-\ ?(\d\d*)/
+    if record[:population].match /(\d\d*) ?- ?(\d\d*)/
       # average of range
       record[:population] = ($1.to_i + $2.to_i) / 2
     else
@@ -178,19 +178,26 @@ def fix_population(lang, record)
 
   if record[:population_all_countries].present?
     record[:population_all_countries] = record[:population_all_countries].tr(',', '')
-    if record[:population_all_countries].match /(\d\d*)\ ?-\ ?(\d\d*)/
+    if record[:population_all_countries].match /(\d\d*) ?- ?(\d\d*)/
       record[:population_all_countries] = ($1.to_i + $2.to_i) / 2
     else
       record[:population_all_countries] = record[:population_all_countries].to_i
     end
   end
 
+
   if record[:believers].present?
-    record[:believers] = record[:believers].tr(',', '')
-    if record[:believers].match /(\d\d*)\ ?-\ ?(\d\d*)/
-      record[:believers] = ($1.to_i + $2.to_i) / 2
+    # make sure the entry starts with a digit others we'll get 0 on to_i
+    if record[:believers].match /^\d/
+      record[:believers] = record[:believers].tr(',', '')
+      if record[:believers].match /(\d\d*) ?- ?(\d\d*)/
+        record[:believers] = ($1.to_i + $2.to_i) / 2
+      else
+        record[:believers] = record[:believers].to_i
+      end
     else
-      record[:believers] = record[:believers].to_i
+      # if it doesn't skip it.
+      record.delete(:believers)
     end
   end
 end
@@ -206,14 +213,29 @@ def fix_location_access(record)
 end
 
 def process_pre_existing_fields(lang, record)
-  if lang.info.present?
-    lang.info +=" Also, #{record.delete(:info)}"
+  if lang.info.present? and record[:info].present?
+    lang.info = lang.info.gsub(" Also, #{record[:info]}", '')
+    if lang.info.include? record[:info]
+      record.delete(:info)
+    else
+      lang.info += " Also, #{record.delete(:info)}" if lang.info.present?
+    end
   end
-  if lang.location.present?
-    lang.location +=" Also, #{record.delete(:location)}"
+  if lang.location.present? and record[:location].present?
+    lang.location = lang.location.gsub(" Also, #{record[:location]}", '')
+    if lang.location.include? record[:location]
+      record.delete(:location)
+    else
+      lang.location += " Also, #{record.delete(:location)}" if lang.location.present?
+    end
   end
-  if lang.translation_info.present?
-    lang.translation_info +=" Also, #{record.delete(:translation_info)}"
+  if lang.translation_info.present? and record[:translation_info].present?
+    lang.translation_info = lang.translation_info.gsub(" Also, #{record[:translation_info]}", '')
+    if lang.translation_info.include? record[:translation_info]
+      record.delete(:translation_info)
+    else
+      lang.translation_info += " Also, #{record.delete(:translation_info)}" if lang.translation_info.present?
+    end
   end
 end
 
@@ -267,7 +289,11 @@ def process_record(record)
     process_pub_dates(record)
     fix_bools(record)
     lang.update_attributes(record)
-    lang
+    if lang.save
+      lang
+    else
+      false
+    end
   else
     false
   end

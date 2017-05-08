@@ -116,6 +116,10 @@ class User < ActiveRecord::Base
     zones.inject(false) { |alt_required, zone| alt_required || zone.pm_description_type == 'alternate' }
   end
 
+  def sees_faith_based_data?
+    !sees_alternate_pm_descriptions?
+  end
+
   # This is a transitional method for moving from using roles and permissions
   # to using the simplified fields on the user model for user level access.
   # it maps the permission names to the right values of the fields

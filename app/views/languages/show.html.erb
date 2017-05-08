@@ -4,6 +4,9 @@
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--6-col mdl-cell--2-col-phone">
     <h1>Language Overview</h1>
+    <%= link_to show_details_language_path(@language) do %>
+      <i class="material-icons">pageview</i> More details
+    <% end %>
   </div>
   <div class="mdl-cell mdl-cell--4-offset-desktop mdl-cell--2-col">
     <div class="language-name"><h2><%= @language.name %></h2></div>
@@ -50,12 +53,6 @@
     <% else %>
           <p><em>No organisations engaged with this language.</em></p>
     <% end %>
-    <% if @language.iso.present? %>
-        <div class="jp-data">
-          <div class="center"><paper-spinner class="jp-fetch" active></paper-spinner></div>
-          <%= link_to 'Fetch JP Data', fetch_jp_data_path(@language.iso), remote: true, class: 'hide', id: 'jp-fetch-trigger' %>
-        </div>
-    <% end %>
   </div>
 
   <div class="outcome-progress-cell mdl-cell mdl-cell--4-col">
@@ -94,7 +91,7 @@
       <% if @language.number_of_translations && @language.number_of_translations > 0 %>
           <tr><th>Already existing</th><td><%= @language.number_of_translations %> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
       <% end %>
-      <% if @language.translation_info.present? %>
+      <% if @language.translation_info.present? and logged_in_user.trusted? %>
           <tr><th>Translation info</th><td><%= @language.translation_info %></td></tr>
       <% end %>
     </table>
