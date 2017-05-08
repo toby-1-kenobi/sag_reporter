@@ -1,0 +1,30 @@
+// Place all the styles related to the edit controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.edit.mdl-card {
+  width: initial;
+  max-width: 460px;
+  &.pending_single_approval, &.pending_double_approval, &.pending_national_approval {
+    background-color: cyan;
+  }
+  &.rejected {
+    background-color: lightpink;
+  }
+  &.approved, &.auto_approved {
+    background-color: lightgreen;
+  }
+  .edit-description {
+    font-size: larger;
+    padding: 1ex;
+    line-height: 150%;
+  }
+  .attribute_value {
+    border: {
+      width: 1px;
+      style: solid;
+      color: grey;
+    }
+    padding: 3px;
+  }
+}

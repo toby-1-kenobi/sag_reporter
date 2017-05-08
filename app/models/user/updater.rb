@@ -9,6 +9,7 @@ class User::Updater
   def update_user(params)
     speaks = params.delete(:speaks)
     geo_states = params.delete(:geo_states)
+    curated_states = params.delete(:curated_states)
     result = @instance.update_attributes(params)
     if speaks
       @instance.spoken_languages.clear
@@ -23,6 +24,12 @@ class User::Updater
       @instance.geo_states.clear
       geo_states.each do |geo_state_id|
         @instance.geo_states << GeoState.find(geo_state_id)
+      end
+    end
+    if curated_states
+      @instance.curated_states.clear
+      curated_states.each do |state_id|
+        @instance.curated_states << GeoState.find(state_id)
       end
     end
     return result

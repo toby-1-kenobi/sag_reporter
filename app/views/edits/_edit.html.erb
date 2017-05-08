@@ -1,0 +1,102 @@
+<% object = edit.model_klass_name.constantize.find(edit.record_id) %>
+<div id="edit-<%= edit.id %>" class="edit <%= edit.status %> mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">
+      Edit for <%= edit.model_klass_name.titleize %>&nbsp;
+      <%= link_to object.respond_to?(:name) ? object.name : object.id, object %></h2>
+    <h3 class="mdl-card__subtitle-text"></h3>
+  </div>
+  <div class="mdl-card__supporting-text">
+    <div class="edit-description">
+      <% if edit.relationship? %>
+        <%
+          unless edit.old_value == Edit.addition_code
+            begin
+              old_thing = edit.related_object(edit.old_value)
+            rescue ActiveRecord::RecordNotFound
+              old_thing = "<em>Object not found! ID: #{edit.old_value}</em>".html_safe
+            end
+          end
+          unless edit.new_value == Edit.removal_code
+            begin
+              new_thing = edit.related_object(edit.new_value)
+            rescue ActiveRecord::RecordNotFound
+              new_thing = "<em>Object not found! ID: #{edit.new_value}</em>".html_safe
+            end
+          end
+        %>
+        <% if edit.new_value == Edit.removal_code %>
+          Remove <span class="attribute_value"><%= old_thing %></span> from <%= edit.attribute_name.humanize.downcase %>.
+        <% elsif edit.old_value == Edit.addition_code %>
+          Add <span class="attribute_value"><%= new_thing %></span> to <%= edit.attribute_name.humanize.downcase %>.
+        <% else %>
+          Change the <%= edit.attribute_name.humanize.downcase %>
+          from <span class="attribute_value"><%= old_thing %></span> to <span class="attribute_value"><%= new_thing %></span>
+        <% end %>
+      <% else %>
+        Change the <%= edit.attribute_name.humanize.downcase %>
+        from <span class="attribute_value"><%= edit.old_value.humanize %></span> to <span class="attribute_value"><%= edit.new_value.humanize %></span>
+      <% end %>
+      <% if edit.record_errors.present? %>
+        <div>
+          <i class="material-icons">warning</i>
+          Not valid: <%= edit.record_errors %>
+        </div>
+      <% end %>
+    </div>
+    <div>
+      Suggested by <%= logged_in_user.trusted? ? link_to(edit.user.name, edit.user) : "user #{edit.user_id}" %> <%= time_ago_in_words(edit.created_at) %> ago.
+    </div>
+    <div>
+      Affecting <%= 'state'.pluralize(edit.geo_states.length) %>: <%= edit.geo_states.map(&:name).to_sentence %>.
+    </div>
+    <div>
+      <%= edit.status.humanize %>.
+    </div>
+    <% if logged_in_user.trusted? and edit.pending? %>
+    <div>
+      May be curated by <%= User.curating(edit).map{ |u| link_to content_tag(:span, u.name), u }.to_sentence({last_word_connector: ' or '}).html_safe %>.
+    </div>
+    <% end %>
+    <% if edit.curation_date.present? %>
+    <div>
+      <%= (edit.approved? or edit.pending_national_approval? or edit.second_curation_date.present?) ? 'Approved' : 'Rejected' %>
+      by <%= logged_in_user.trusted? ? link_to(edit.curated_by.name, edit.curated_by) : "user #{edit.curated_by_id}" %> <%= time_ago_in_words(edit.curation_date) %> ago.
+    </div>
+    <% end %>
+    <% if edit.second_curation_date.present? %>
+        <div>
+          <%= edit.approved? ? 'Approved' : 'Rejected' %> by the national curator <%= time_ago_in_words(edit.second_curation_date) %> ago.
+        </div>
+    <% end %>
+  </div>
+  <%# only show the action panel if there are any actions available %>
+  <% if (logged_in_user?(edit.user) and !edit.applied?) or
+      (edit.pending? and User.curating(edit).include? logged_in_user) or
+      (edit.pending_national_approval? and logged_in_user.national_curator?) %>
+    <div class="mdl-card__actions mdl-card--border">
+      <%# if the user made this edit and it hasn't already been applied give a cancel option %>
+      <% if logged_in_user?(edit.user) and !edit.applied? %>
+        <%= link_to edit_path(edit), method: :delete, remote: true do %>
+          <button class="cancel-edit mdl-button mdl-js-button mdl-button--accent">
+            <i class="material-icons">delete</i> Cancel
+          </button>
+        <% end %>
+      <% end %>
+      <%# give curating options if the user has curating privileges over this edit and it is pending %>
+      <% if (edit.pending? and User.curating(edit).include? logged_in_user) or
+          (edit.pending_national_approval? and logged_in_user.national_curator?) %>
+        <%= link_to reject_edit_path(edit), method: :patch, remote: true, data: {confirm: 'Reject it, are you sure?'} do %>
+          <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
+            <i class="material-icons">clear</i> Reject
+          </button>
+        <% end %>
+        <%= link_to approve_edit_path(edit), method: :patch, remote: true, data: {confirm: 'Approve it, are you sure?'} do %>
+          <button class="approve-edit mdl-button mdl-js-button mdl-button--primary">
+            <i class="material-icons">done</i> Approve
+          </button>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

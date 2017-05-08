@@ -1,13 +1,26 @@
 
 <% provide(:title, 'Language Overview: ' + @language.name) %>
 
+<% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
+
+<%= '<script>console.log("page is editable");</script>'.html_safe if editable %>
+
+<div id="edit-response"></div>
+<div id="pending-edits" class="mdl-grid">
+  <% @user_pending_edits.each do |edit| %>
+    <div class="mdl-cell mdl-cell--4-col">
+      <%= render edit %>
+    </div>
+  <% end %>
+</div>
+
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--6-col mdl-cell--2-col-phone">
     <h1>Language Overview</h1>
   </div>
   <div class="mdl-cell mdl-cell--4-offset-desktop mdl-cell--2-col">
-    <div class="language-name"><h2><%= @language.name %></h2></div>
-    <div class="iso-code">[<%= @language.iso %>]</div>
+    <div class="language-name"><h2 id="language-name" class="<%= 'editable' if editable %>"><%= @language.name %><%= render 'shared/edit_icon' if editable %></h2></div>
+    <div id="language-iso" class="iso-code <%= 'editable' if editable %>">[<%= @language.iso %>]<%= render 'shared/edit_icon' if editable %></div>
   </div>
 </div>
 
@@ -16,35 +29,55 @@
   <!-- general language data -->
   <div class="language-info mdl-cell mdl-cell--4-col">
     <table class="language-data">
-      <% if @language.description.present? %>
-          <tr><th>Description</th><td><%= @language.description %></td></tr>
+      <% if @language.description.present? or editable %>
+          <tr><th>Description</th><td id="language-description" class="<%= 'editable' if editable %>"><%= @language.description %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
-      <% if @language.location.present? %>
-          <tr><th>Location</th><td><%= @language.location %></td></tr>
+      <% if @language.location.present? or editable %>
+          <tr><th>Location</th><td id="language-location" class="<%= 'editable' if editable %>"><%= @language.location %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
-      <% if @language.population %>
+      <% if @language.population or editable%>
         <tr id="pop_<%= @language.iso %>">
-          <th>Population</th><td><%= number_with_delimiter(@language.population, :delimiter => ',') %></td>
+          <th>Population</th><td id="language-population" class="<%# 'editable' if editable %>"><%= number_with_delimiter(@language.population, :delimiter => ',') %><%# render 'shared/edit_icon' if editable %></td>
         </tr>
         <% if @language.pop_source %>
           <div class="mdl-tooltip" for="pop_<%= @language.iso %>">source: <%= @language.pop_source.name %></div>
         <% end %>
       <% end %>
-      <% if @language.family %>
-          <tr><th>Family</th><td><%= @language.family_name %></td></tr>
+      <% if @language.family or editable %>
+          <tr><th>Family</th><td id="language-family" class="<%= 'editable' if editable %>"><%= @language.family_name if @language.family %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
-      <% if @language.info.present? %>
-          <tr><th>Other information</th><td><%= @language.info %></td></tr>
+      <% if @language.info.present? or editable %>
+          <tr><th>Other information</th><td id="language-info" class="<%= 'editable' if editable %>"><%= @language.info %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
     </table>
 
-    <% if @language.engaged_organisations.any? %>
+    <% if @language.engaged_organisations.any? or editable%>
         <h4>Organisations engaged with this language</h4>
-        <ul class="mdl-list">
+        <ul class="engaged-orgs mdl-list">
           <% @language.engaged_organisations.each do |org| %>
-            <li class="mdl-list__item">
-              <%= link_to org.name_with_abbr, org, class: 'mdl-list__item-primary-content' %>
+            <li class="org-<%= org.id %> mdl-list__item">
+              <%= link_to org.name_with_abbr, org, class: 'org-name mdl-list__item-primary-content' %>
+              <% if editable %>
+                <%= link_to remove_engaged_org_from_language_path(@language, org),
+                            method: :patch,
+                            remote: true,
+                            class: 'remove-button mdl-list__item-secondary-content' do %>
+                  <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                    <i class="material-icons">clear</i>
+                  </button>
+                <% end %>
+              <% end %>
             </li>
+          <% end %>
+          <% if editable %>
+              <li class="add-another mdl-list__item">
+                <span class="mdl-list__item-primary-content">...</span>
+                <span class="mdl-list__item-secondary-content">
+                  <button class="add-engaged-org-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored" title="Add engaged organisation">
+                    <i class="material-icons">add</i>
+                  </button>
+                </span>
+              </li>
           <% end %>
         </ul>
     <% else %>
@@ -60,12 +93,12 @@
 
   <div class="outcome-progress-cell mdl-cell mdl-cell--4-col">
     <h3>Outcome progress</h3>
-    <% @language.state_languages.in_project.includes(:geo_state).each do |state_language| %>
-        <h4><%= link_to state_language.state_name, state_language.geo_state %></h4>
+    <% @language.state_languages.in_project.each do |state_language| %>
+        <h4><%= state_language.state_name %></h4>
         <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
         <div class="chart-<%= state_language.id %>"></div>
     <% end %>
-    <% non_project_states = @language.state_languages.includes(:geo_state).where(project: false).map{ |sl| link_to sl.state_name, sl.geo_state }.to_sentence %>
+    <% non_project_states = @language.state_languages.joins(:geo_state).where(project: false).pluck('geo_states.name').to_sentence %>
     <% if non_project_states.present? %>
         <p><%= @language.name %> is spoken in <%= non_project_states %>, but LCI does not track it there.</p>
     <% end %>
@@ -86,25 +119,45 @@
         <h2 class="mdl-card__title-text"><%= @language.translation_status.to_s.humanize %></h2>
       </div>
       <div class="mdl-card__supporting-text">
-        <p>Translation need/status: <strong><%= @language.translation_need.humanize %></strong></p>
-        <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
+        <p>Translation need/status: <strong id="language-translation-need" class="<%= 'editable' if editable %>"><%= @language.translation_need.humanize %><%= render 'shared/edit_icon' if editable %></strong></p>
+        <p>Translation progress: <strong id="language-translation-progress" class="<%= 'editable' if editable %>"><%= @language.translation_progress.humanize %><%= render 'shared/edit_icon' if editable %></strong></p>
       </div>
     </div>
     <table class="language-data">
-      <% if @language.number_of_translations && @language.number_of_translations > 0 %>
-          <tr><th>Already existing</th><td><%= @language.number_of_translations %> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
+      <% if editable or (@language.number_of_translations && @language.number_of_translations > 0) %>
+          <tr><th>Already existing</th><td><span id="language-number-of-translations" class="<%= 'editable' if editable %>"><%= @language.number_of_translations ? @language.number_of_translations : 0 %><%= render 'shared/edit_icon' if editable %></span> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
       <% end %>
-      <% if @language.translation_info.present? %>
-          <tr><th>Translation info</th><td><%= @language.translation_info %></td></tr>
+      <% if editable or @language.translation_info.present? %>
+          <tr><th>Translation info</th><td id="language-translation-info" class="<%= 'editable' if editable %>"><%= @language.translation_info %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
     </table>
     <div>
-      <% if @language.translating_organisations.any? %>
+      <% if @language.translating_organisations.any? or editable%>
           <h4>Organisations involved with translation</h4>
-          <ul class="mdl-list">
+          <ul class="translating-orgs mdl-list">
             <% @language.translating_organisations.each do |org| %>
-              <li class="mdl-list__item">
-                <%= link_to org.name_with_abbr, org, class: 'mdl-list__item-primary-content' %>
+              <li class="org-<%= org.id %> mdl-list__item">
+                <%= link_to org.name_with_abbr, org, class: 'org-name mdl-list__item-primary-content' %>
+                <% if editable %>
+                    <%= link_to remove_translating_org_from_language_path(@language, org),
+                                method: :patch,
+                                remote: true,
+                                class: 'remove-button mdl-list__item-secondary-content' do %>
+                        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                          <i class="material-icons">clear</i>
+                        </button>
+                    <% end %>
+                <% end %>
+              </li>
+            <% end %>
+            <% if editable %>
+              <li class="add-another mdl-list__item">
+                <span class="mdl-list__item-primary-content">...</span>
+                <span class="mdl-list__item-secondary-content">
+                  <button class="add-translating-org-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored" title="Add translating organisation">
+                    <i class="material-icons">add</i>
+                  </button>
+                </span>
               </li>
             <% end %>
           </ul>
@@ -113,6 +166,7 @@
       <% end %>
     </div>
   </div>
+
   <div class="mdl-cell mdl-cell--4-col">
     <% if @impact_report %>
       <div class="impact-story mdl-card mdl-shadow--2dp">
@@ -161,6 +215,27 @@
     <% end %>
   </div>
 </div>
+
+<%= render 'edit_dialogs' if editable %>
+
+<script>
+  $('dialog').each(function() {
+    let dialog = this;
+    if (! dialog.showModal) {
+      dialogPolyfill.registerDialog(dialog);
+    }
+    $(dialog).find('.submit').on('click', function() {
+      $(dialog).find('form').submit();
+      dialog.close();
+    });
+    $(dialog).find('.cancel').on('click', function() {
+      dialog.close();
+    });
+  });
+  $( document ).ajaxSuccess(function( event, xhr, settings, data ) {
+    console.log(data);
+  });
+</script>
 
 <style is="custom-style" include="iron-flex">
   paper-spinner {

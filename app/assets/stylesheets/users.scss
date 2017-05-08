@@ -2,3 +2,26 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+.zone-state-language {
+  h3 {
+    padding-left: 16px;
+  }
+}
+
+.inline-controls {
+  .mdl-checkbox, .mdl-radio {
+    display: inline;
+  }
+  .control-divider {
+    margin-right: 1ex;
+  }
+}
+.checkbox-clarification {
+  position: absolute;
+  right: 0;
+}
+.checkbox-clarification-wrapper {
+  position: relative;
+}
+
+

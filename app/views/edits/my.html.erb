@@ -1,0 +1,12 @@
+<% provide(:title, 'My Edits') %>
+<% if @edits.any? %>
+    <div class="mdl-grid">
+      <% @edits.each do |edit| %>
+          <div class="mdl-cell mdl-cell--4-col">
+            <%= render edit %>
+          </div>
+      <% end %>
+    </div>
+<% else %>
+    <p>You do not have any pending edits.</p>
+<% end %>

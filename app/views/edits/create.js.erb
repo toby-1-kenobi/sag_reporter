@@ -1,0 +1,24 @@
+<% if @edit.errors.any? %>
+  $('#edit-response')
+      .slideUp('fast', function(){
+        $(this)
+            .addClass('error')
+            .html("<%= @edit.errors.full_messages.to_sentence %>")
+            .slideDown('fast');
+      });
+<% elsif @edit.record_errors.present? %>
+  $('#edit-response')
+      .slideUp('fast', function() {
+        $(this)
+            .addClass('error')
+            .html("<%= @edit.record_errors %>")
+            .slideDown('fast');
+      });
+<% elsif @edit.pending_single_approval? or @edit.pending_double_approval? %>
+  $('#edit-response').slideUp('fast');
+  $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render @edit %></div>');
+<% elsif @edit.auto_approved? %>
+  $('#<%= @element_id %>').html("<%= @edit.new_value.humanize %>");
+  $('#edit-dialog-<%= @edit.attribute_name %> #edit_old_value').val("<%= @edit.new_value %>");
+<% end %>
+

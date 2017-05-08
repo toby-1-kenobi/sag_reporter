@@ -15,4 +15,9 @@ class Organisation < ActiveRecord::Base
       name
     end
   end
+
+  def to_s
+    name
+  end
+
 end

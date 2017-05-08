@@ -4,21 +4,18 @@ class LanguagesController < ApplicationController
 
   before_action :require_login
 
-    # Let only permitted users do some things
+  # Let only permitted users do some things
   before_action only: [:new, :create] do
     redirect_to root_path unless logged_in_user.can_create_language?
   end
 
+  # can edit a language if the language is in one of the user's states, or if the user is national
   before_action only: [:edit, :update] do
-    redirect_to root_path unless logged_in_user.can_edit_language?
-  end
-
-  before_action only: [:show] do
-    redirect_to languages_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
+    redirect_to root_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
   end
 
   def index
-  	@languages = Language.user_limited(logged_in_user).includes(:family, { geo_states: :zone }).order(:name)
+  	@languages = Language.includes(:family, { geo_states: :zone }).order(:name)
   end
 
   def overview
@@ -42,7 +39,6 @@ class LanguagesController < ApplicationController
         includes(
             :pop_source,
             :family,
-            :cluster,
             :engaged_organisations,
             :translating_organisations,
             :mt_resources,
@@ -50,8 +46,25 @@ class LanguagesController < ApplicationController
         ).
         find(params[:id])
     @all_orgs = Organisation.all.order(:name)
+    @user_pending_edits = Edit.pending.where(user: logged_in_user, model_klass_name: 'Language', record_id: @language.id)
     # get the latest impact report to show on the language dashboard
     @impact_report = @language.reports.where.not(impact_report: nil).order(:report_date).last
+    end
+
+  def show_details
+    @language = Language.
+        includes(
+            :language_names,
+            :dialects,
+            :pop_source,
+            :family,
+            :engaged_organisations,
+            :translating_organisations,
+            :mt_resources,
+            {:state_languages => {:geo_state => :zone}}
+        ).
+        find(params[:id])
+    @all_orgs = Organisation.all.order(:name)
   end
 
   # match a search query against language names
@@ -149,62 +162,98 @@ class LanguagesController < ApplicationController
   end
 
   def add_engaged_org
-    success = false
-    org = Organisation.find(params[:org])
-    if org
-      language = Language.find(params[:id])
-      language.engaged_organisations << org
-      success = language.engaged_organisations.include? org
+    language = Language.find(params[:id])
+    @org = Organisation.find(params[:org])
+    @edit = Edit.new(
+        user: logged_in_user,
+        model_klass_name: 'Language',
+        record_id: language.id,
+        attribute_name: 'engaged_organisations',
+        old_value: Edit.addition_code,
+        new_value: params[:org],
+        status: :pending_single_approval,
+        relationship: true
+    )
+    if @edit.save
+      if @edit.user.national_curator?
+        @edit.auto_approved!
+        @edit.apply
+      end
     end
     respond_to do |format|
-      format.json {
-        render json: {success: success, orgId: org.id, orgName: org.name_with_abbr}.to_json
-      }
+      format.js
     end
   end
 
   def remove_engaged_org
-    success = false
     language = Language.find(params[:id])
     org = language.engaged_organisations.find(params[:org])
-    if org
-      language.engaged_organisations.delete org
-      success = !language.engaged_organisations.include?(org)
+    @edit = Edit.new(
+        user: logged_in_user,
+        model_klass_name: 'Language',
+        record_id: language.id,
+        attribute_name: 'engaged_organisations',
+        old_value: org.id.to_s,
+        new_value: Edit.removal_code,
+        status: :pending_single_approval,
+        relationship: true
+    )
+    if @edit.save
+      if @edit.user.national_curator?
+        @edit.auto_approved!
+        @edit.apply
+      end
     end
     respond_to do |format|
-      format.json {
-        render json: {success: success}.to_json
-      }
+      format.js
     end
   end
 
   def add_translating_org
-    success = false
-    org = Organisation.find(params[:org])
-    if org
-      language = Language.find(params[:id])
-      language.translating_organisations << org
-      success = language.translating_organisations.include? org
+    language = Language.find(params[:id])
+    @org = Organisation.find(params[:org])
+    @edit = Edit.new(
+        user: logged_in_user,
+        model_klass_name: 'Language',
+        record_id: language.id,
+        attribute_name: 'translating_organisations',
+        old_value: Edit.addition_code,
+        new_value: params[:org],
+        status: :pending_single_approval,
+        relationship: true
+    )
+    if @edit.save
+      if @edit.user.national_curator?
+        @edit.auto_approved!
+        @edit.apply
+      end
     end
     respond_to do |format|
-      format.json {
-        render json: {success: success, orgId: org.id, orgName: org.name_with_abbr}.to_json
-      }
+      format.js
     end
   end
 
   def remove_translating_org
-    success = false
     language = Language.find(params[:id])
     org = language.translating_organisations.find(params[:org])
-    if org
-      language.translating_organisations.delete org
-      success = !language.translating_organisations.include?(org)
+    @edit = Edit.new(
+        user: logged_in_user,
+        model_klass_name: 'Language',
+        record_id: language.id,
+        attribute_name: 'translating_organisations',
+        old_value: org.id.to_s,
+        new_value: Edit.removal_code,
+        status: :pending_single_approval,
+        relationship: true
+    )
+    if @edit.save
+      if @edit.user.national_curator?
+        @edit.auto_approved!
+        @edit.apply
+      end
     end
     respond_to do |format|
-      format.json {
-        render json: {success: success}.to_json
-      }
+      format.js
     end
   end
 

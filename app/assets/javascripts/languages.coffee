@@ -8,6 +8,26 @@ $(document).ready ->
 
   $('#jp-fetch-trigger').click()
 
+  $('.editable').hover (->
+    $(this).find('.edit-icon').removeClass('hide')
+    return
+  ), ->
+    $(this).find('.edit-icon').addClass('hide')
+    return
+
+  $('.editable').on 'click', ->
+    id = this.id
+    $("dialog[data-for=\"#{id}\"]").get(0).showModal()
+    return
+
+  $('.add-engaged-org-button').on 'click', ->
+    $('#add-engaged-org-dialog').get(0).showModal()
+    return
+
+  $('.add-translating-org-button').on 'click', ->
+    $('#add-translating-org-dialog').get(0).showModal()
+    return
+
   prev_adjust = ''
 
   $('.colour-darkness-range').on 'change', ->

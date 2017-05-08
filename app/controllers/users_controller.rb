@@ -145,7 +145,7 @@ class UsersController < ApplicationController
 
     def user_params
       # make hash options into arrays
-      param_reduce(params['user'], ['geo_states', 'speaks'])
+      param_reduce(params['user'], ['geo_states', 'speaks', 'curated_states'])
       safe_params = [
         :name,
         :phone,
@@ -156,20 +156,21 @@ class UsersController < ApplicationController
         :confirm_token,
         :mother_tongue_id,
         :interface_language_id,
-        :role_id,
         :trusted,
         :admin,
         :national,
-        :curator,
         :role_description,
         {:speaks => []},
-        {:geo_states => []}
+        {:geo_states => []},
+        {:curated_states => []}
       ]
       # current user cannot change own access level or state
       if params[:id] and logged_in_user?(User.find(params[:id]))
-        safe_params.reject!{ |p| [:role_id, :trusted, :admin, :national, :curator].include? p }
-        # but admin user can change his own state
-        safe_params.reject!{ |p| p == {:geo_states => []} } unless logged_in_user.is_an_admin?
+        safe_params.reject!{ |p| [:admin].include? p }
+        # but admin user can change his own state and curated states
+        safe_params.reject!{ |p|
+          p == {:geo_states => []} || p == {:curated_states => []} || [:trusted, :national].include?(p)
+        } unless logged_in_user.admin?
       end
       params.require(:user).permit(safe_params)
     end
