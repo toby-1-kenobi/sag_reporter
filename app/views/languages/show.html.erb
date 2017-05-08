@@ -17,6 +17,9 @@
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--6-col mdl-cell--2-col-phone">
     <h1>Language Overview</h1>
+    <%= link_to show_details_language_path(@language) do %>
+        <i class="material-icons">pageview</i> More details
+    <% end %>
   </div>
   <div class="mdl-cell mdl-cell--4-offset-desktop mdl-cell--2-col">
     <div class="language-name"><h2 id="language-name" class="<%= 'editable' if editable %>"><%= @language.name %><%= render 'shared/edit_icon' if editable %></h2></div>
