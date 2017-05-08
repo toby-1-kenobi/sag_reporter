@@ -1,0 +1,17 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+flm_01:
+  name: "Jesus Film"
+  description: "Jesus Film is available"
+  number: 1
+
+flm_02:
+  name: "Oral Bible Stories"
+  description: "Oral bible stories are available"
+  number: 2
+
+flm_03:
+  name: "Radio Program"
+  number: 3
+  description: "Radio program is available"
