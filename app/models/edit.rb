@@ -137,11 +137,12 @@ class Edit < ActiveRecord::Base
   end
 
   def user_has_permission
+    # national user has permission
     return if user.national?
-    user.geo_states.find_each do |user_state|
-      return if geo_states.exists? user_state.id
+    # if there's no intersect between the user's states and the states for this edit then they don't have permission
+    if user.geo_states.where(id: get_geo_states.pluck(:id)).empty?
+      errors.add(:user, 'does not have permission to edit this')
     end
-    errors.add(:user, 'does not have permission to edit this')
   end
 
   def new_related_record_exists
@@ -152,11 +153,17 @@ class Edit < ActiveRecord::Base
 
   def set_geo_states
     geo_states.clear
+    geo_states << get_geo_states
+  end
+
+  def get_geo_states
     case model_klass_name
       when 'Language'
-        geo_states << Language.find(record_id).geo_states
+        Language.find(record_id).geo_states
+      when 'FinishLineProgress'
+        FinishLineProgress.find(record_id).language.geo_states
       else
-        geo_states << user.geo_states
+        user.geo_states
     end
   end
 
