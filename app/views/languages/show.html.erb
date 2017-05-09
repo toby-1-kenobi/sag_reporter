@@ -41,7 +41,7 @@
         </tr>
       </thead>
       <tbody>
-        <% FinishLineMarker.order(:number).find_each do |marker| %>
+        <% FinishLineMarker.order(:number).each do |marker| %>
           <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
           <tr class="<%= progress.complete? ? 'complete' : 'incomplete' %>">
             <td id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
