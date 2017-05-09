@@ -25,4 +25,8 @@ class FinishLineProgress < ActiveRecord::Base
     no_further_needs_expressed? or further_needs_expressed? or further_work_in_progress?
   end
 
+  def human_status
+    "#{complete? ? 'Completed' : 'Not completed'}, #{status.humanize}"
+  end
+
 end

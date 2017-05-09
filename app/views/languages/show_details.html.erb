@@ -3,6 +3,9 @@
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--6-col mdl-cell--2-col-phone">
     <h1>Language Details</h1>
+    <%= link_to @language do %>
+        <i class="material-icons">pageview</i> Language dashboard
+    <% end %>
   </div>
   <div class="mdl-cell mdl-cell--4-offset-desktop mdl-cell--2-col">
     <div class="language-name"><h2><%= @language.name %></h2></div>
@@ -12,120 +15,147 @@
 
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--6-col">
+    <a name="church-engagement"><h3>Church Engagement</h3></a>
+    <table class="language-data">
+      <% church_engagement_marker = FinishLineMarker.find_by_number(0) %>
+      <tr><th>Church Engagement Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: church_engagement_marker).human_status %></td></tr>
+    </table>
 
-    <h2>General</h2>
-      <table class="language-data">
-        <% if @language.description.present? %>
-          <tr><th>Description</th><td><%= @language.description %></td></tr>
-        <% end %>
-        <% if @language.info.present? %>
-            <tr><th>General information</th><td><%= @language.info %></td></tr>
-        <% end %>
-      </table>
+    <a name="bible-materials"><h3>Bible Materials</h3></a>
+    <table class="language-data">
+      <% jesus_film_marker = FinishLineMarker.find_by_number(1) %>
+      <tr><th>Jesus Film Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: jesus_film_marker).human_status %></td></tr>
+      <% obs_marker = FinishLineMarker.find_by_number(2) %>
+      <tr><th>Oral Bible Stories Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: obs_marker).human_status %></td></tr>
+      <% radio_marker = FinishLineMarker.find_by_number(3) %>
+      <tr><th>Radio Programs Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: radio_marker).human_status %></td></tr>
+      <% songs_marker = FinishLineMarker.find_by_number(4) %>
+      <tr><th>Songs Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: songs_marker).human_status %></td></tr>
+    </table>
 
-    <a name="language-names"><h3>Alternate Names</h3></a>
-    <% if @language.language_names.any? %>
-      <% check_mark = '<i class="material-icons">done</i>'.html_safe %>
-      <table class="mdl-data-table mdl-js-data-table">
-        <thead>
-        <tr>
-          <th class="mdl-data-table__cell--non-numeric">Name</th>
-          <th class="mdl-data-table__cell--non-numeric">Used by <%= @language.name %> speakers</th>
-          <th class="mdl-data-table__cell--non-numeric">Used by outsiders</th>
-          <th class="mdl-data-table__cell--non-numeric">Preferred</th>
-        </tr>
-        </thead>
-        <tbody>
-          <% @language.language_names.order(:name).each do |name| %>
-            <tr>
-              <td class="check mdl-data-table__cell--non-numeric"><%= name.name %></td>
-              <td class="check mdl-data-table__cell--non-numeric"><%= name.used_by_speakers? ? check_mark : '' %></td>
-              <td class="check mdl-data-table__cell--non-numeric"><%= name.used_by_outsiders? ? check_mark : '' %></td>
-              <td class="check mdl-data-table__cell--non-numeric"><%= name.preferred? ? check_mark : '' %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% else %>
-      <p>None</p>
+
+    <a name="bible-translation"><h3>Bible Translation</h3></a>
+
+    <table class="language-data">
+      <% if @language.number_of_translations && @language.number_of_translations > 0 %>
+          <tr><th>Already existing</th><td><%= @language.number_of_translations %> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
+      <% end %>
+      <% if @language.translation_info.present? and logged_in_user.trusted? %>
+          <tr><th>Translation info</th><td><%= @language.translation_info %></td></tr>
+      <% end %>
+      <% if @language.tr_committee_established.present? %>
+          <tr><th>Translation committee established</th><td><%= @language.tr_committee_established? ? 'Yes' : 'No' %></td></tr>
+      <% end %>
+    </table>
+
+    <h4>Publication dates</h4>
+    <table class="mdl-data-table mdl-js-data-table">
+      <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Type</th>
+        <th>Year first published</th>
+        <th>Year last published</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="check mdl-data-table__cell--non-numeric">Whole Bible</td>
+        <td><%= @language.bible_first_published %></td>
+        <td><%= @language.bible_last_published %></td>
+      </tr>
+      <tr>
+        <td class="check mdl-data-table__cell--non-numeric">New Testament</td>
+        <td>
+          <%= @language.nt_first_published %>
+        </td>
+        <td><%= @language.nt_last_published %>
+          <% if @language.nt_out_of_print %>
+              (now out of print)
+          <% end %></td>
+      </tr>
+      <tr>
+        <td class="check mdl-data-table__cell--non-numeric">Portions</td>
+        <td><%= @language.portions_first_published %></td>
+        <td><%= @language.portions_last_published %></td>
+      </tr>
+      </tbody>
+    </table>
+    <% if @language.selections_published.present? %>
+        <table class="language-data">
+          <tr><th>Selections</th><td><%= @language.selections_published %></td></tr>
+        </table>
     <% end %>
 
-    <h3>Location</h3>
+    <% if logged_in_user.trusted? %>
+        <h4>People involved</h4>
+        <table class="language-data">
+          <% if @language.translation_consultants.present? %>
+              <tr><th>Translation consultants</th><td><%= @language.translation_consultants %></td></tr>
+          <% end %>
+          <% if @language.translation_interest.present? %>
+              <tr><th>Translation interest</th><td><%= @language.translation_interest %></td></tr>
+          <% end %>
+          <% if @language.translator_background.present? %>
+              <tr><th>Translator Background</th><td><%= @language.translator_background %></td></tr>
+          <% end %>
+          <% if @language.translation_local_support.present? %>
+              <tr><th>Local support for translation</th><td><%= @language.translation_local_support %></td></tr>
+          <% end %>
+        </table>
+    <% end %>
+
+
+    <a name="literacy"><h3>Literacy</h3></a>
     <table class="language-data">
-      <% if @language.location.present? %>
-          <tr><th>Location</th><td><%= @language.location %></td></tr>
+      <% literacy_marker = FinishLineMarker.find_by_number(8) %>
+      <tr><th>Basic Literacy Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: literacy_marker).human_status %></td></tr>
+      <% dictionary_marker = FinishLineMarker.find_by_number(9) %>
+      <tr><th>Dictionary Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: dictionary_marker).human_status %></td></tr>
+      <% if @language.script.present? %>
+          <tr><th>Script</th><td><%= @language.script %></td></tr>
       <% end %>
-      <% if @language.location_access.present? %>
-          <tr><th>Physical Access</th><td><%= @language.location_access %></td></tr>
+      <% if @language.mt_literacy.present? %>
+          <tr><th>Mother-Tongue literacy</th><td><%= @language.mt_literacy %></td></tr>
       <% end %>
-      <% if @language.travel.present? %>
-          <tr><th>Travel Habits</th><td><%= @language.travel %></td></tr>
+      <% if @language.l2_literacy.present? %>
+          <tr><th>Second language literacy</th><td><%= @language.l2_literacy %></td></tr>
+      <% end %>
+      <% if @language.literate_believers.present? and logged_in_user.sees_faith_based_data? %>
+          <tr><th>Literate believers</th><td><%= @language.literate_believers %></td></tr>
+      <% end %>
+      <% if @language.mt_literacy_programs.present? %>
+          <tr><th>Mother-Tongue literacy programs</th><td><%= @language.mt_literacy_programs %></td></tr>
+      <% end %>
+      <% if @language.attitude_to_lang_dev.present? %>
+          <tr><th>Attitude towards development</th><td><%= @language.attitude_to_lang_dev %></td></tr>
+      <% end %>
+      <% if @language.oral_traditions_print.present? %>
+          <tr><th>Oral traditions are in print</th><td><%= @language.oral_traditions_print ? 'Yes' : 'No' %></td></tr>
+      <% end %>
+      <% if @language.poetry_print.present? %>
+          <tr><th>Mother-Tongue poetry is in print</th><td><%= @language.poetry_print? ? 'Yes' : 'No' %></td></tr>
       <% end %>
     </table>
 
-    <h3>Classification</h3>
-      <table class="language-data">
-        <% if @language.family_id.present? %>
-          <tr><th>Family</th><td><%= @language.family_name %></td></tr>
-        <% end %>
-        <% if @language.genetic_classification.present? %>
-          <tr><th>Classification</th><td><%= @language.genetic_classification %></td></tr>
-        <% end %>
-        <% if @language.lexical_similarity.present? %>
-            <tr><th>Lexical similarity</th><td><%= @language.lexical_similarity %></td></tr>
-        <% end %>
-        <% if @language.related_languages.present? %>
-        <tr><th>Related languages</th><td><%= @language.related_languages %></td></tr>
-        <% end %>
-      </table>
-
-    <h3>Population</h3>
-      <table class="language-data">
-        <% if @language.population.present? %>
-          <tr><th>Population in India</th><td><%= number_with_delimiter(@language.population, :delimiter => ',') %>
-            <% if @language.pop_source %>
-              (source: <%= @language.pop_source.name %>)
-            <% end %>
-          </td></tr>
-        <% end %>
-        <%# if @language.population_all_countries.present? %>
-          <!--tr><th>In all countries</th><td><%# number_with_delimiter(@language.population_all_countries, :delimiter => ',') %></td></tr-->
-        <%# end %>
-        <% if @language.population_concentration.present? %>
-            <tr><th>Population concentration</th><td><%= @language.population_concentration %></td></tr>
-        <% end %>
-        <% if @language.age_distribution.present? %>
-            <tr><th>Age distribution</th><td><%= @language.age_distribution %></td></tr>
-        <% end %>
-        <% if @language.village_size.present? %>
-            <tr><th>Average village size</th><td><%= @language.village_size %></td></tr>
-        <% end %>
-      </table>
-
-    <h3>Groupings</h3>
-    <table class="language-data">
-      <% if @language.dialects.any? %>
-          <tr><th>Dialects</th><td><%= @language.dialects.pluck(:name).to_sentence %></td></tr>
-      <% end %>
-      <% if @language.clans.present? %>
-          <tr><th>Clans</th><td><%= @language.clans %></td></tr>
-      <% end %>
-      <% if @language.castes.present? %>
-          <tr><th>Castes</th><td><%= @language.castes %></td></tr>
-      <% end %>
-      <% if @language.subgroups.present? %>
-          <tr><th>Subgroups</th><td><%= @language.subgroups %></td></tr>
-      <% end %>
-      <% if @language.ethnic_groups_in_area.present? %>
-          <tr><th>Other ethnic groups in the same area</th><td><%= @language.ethnic_groups_in_area %></td></tr>
-      <% end %>
-      <% if @language.mixed_marriages.present? %>
-          <tr><th>Mixed marriages</th><td><%= @language.mixed_marriages %></td></tr>
-      <% end %>
-      <% if @language.attitude.present? %>
-          <tr><th>Attitude to languages</th><td><%= @language.attitude %></td></tr>
-      <% end %>
-    </table>
+    <a name="mt-resources"><h3>Mother Tongue Resources</h3></a>
+    <% if @language.mt_resources.any? %>
+        <ul class="mdl-list">
+          <% @language.mt_resources.each do |resource| %>
+              <li class="mdl-list__item mdl-list__item--two-line">
+                <span class="mdl-list__item-primary-content">
+                <% if resource.url %>
+                  <a href="<%= resource.url %>" tabindex="-1"><%= resource.name %></a>
+                <% else %>
+                  <%= resource.name %>
+                <% end %>
+                  <span class="mdl-list__item-sub-title"><%= resource.description %></span>
+                </span>
+              </li>
+          <% end %>
+        </ul>
+    <% else %>
+        <p>None recorded</p>
+    <% end %>
 
     <h3>Religion</h3>
     <table class="language-data">
@@ -142,6 +172,135 @@
       <% end %>
     </table>
 
+  </div>
+  <div class="mdl-cell mdl-cell--6-col">
+
+    <a name="outcome-progress"><h3>Outcome progress</h3></a>
+    <% @language.state_languages.in_project.each do |state_language| %>
+        <h4><%= state_language.state_name %></h4>
+        <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
+        <div class="chart-<%= state_language.id %>"></div>
+    <% end %>
+    <% non_project_states = @language.state_languages.joins(:geo_state).where(project: false).pluck('geo_states.name').to_sentence %>
+    <% if non_project_states.present? %>
+        <p><%= @language.name %> is spoken in <%= non_project_states %>, but LCI does not track it there.</p>
+    <% end %>
+
+        <a name="language-names"><h3>Alternate Names</h3></a>
+        <% if @language.language_names.any? %>
+            <% check_mark = '<i class="material-icons">done</i>'.html_safe %>
+            <table class="mdl-data-table mdl-js-data-table">
+              <thead>
+              <tr>
+                <th class="mdl-data-table__cell--non-numeric">Name</th>
+                <th class="mdl-data-table__cell--non-numeric">Used by <%= @language.name %> speakers</th>
+                <th class="mdl-data-table__cell--non-numeric">Used by outsiders</th>
+                <th class="mdl-data-table__cell--non-numeric">Preferred</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @language.language_names.order(:name).each do |name| %>
+                  <tr>
+                    <td class="check mdl-data-table__cell--non-numeric"><%= name.name %></td>
+                    <td class="check mdl-data-table__cell--non-numeric"><%= name.used_by_speakers? ? check_mark : '' %></td>
+                    <td class="check mdl-data-table__cell--non-numeric"><%= name.used_by_outsiders? ? check_mark : '' %></td>
+                    <td class="check mdl-data-table__cell--non-numeric"><%= name.preferred? ? check_mark : '' %></td>
+                  </tr>
+              <% end %>
+              </tbody>
+            </table>
+        <% else %>
+            <p>None</p>
+        <% end %>
+
+    <h3>General</h3>
+    <table class="language-data">
+      <% if @language.description.present? %>
+          <tr><th>Description</th><td><%= @language.description %></td></tr>
+      <% end %>
+      <% if @language.info.present? %>
+          <tr><th>General information</th><td><%= @language.info %></td></tr>
+      <% end %>
+    </table>
+
+        <h4>Classification</h4>
+        <table class="language-data">
+          <% if @language.family_id.present? %>
+              <tr><th>Family</th><td><%= @language.family_name %></td></tr>
+          <% end %>
+          <% if @language.genetic_classification.present? %>
+              <tr><th>Classification</th><td><%= @language.genetic_classification %></td></tr>
+          <% end %>
+          <% if @language.lexical_similarity.present? %>
+              <tr><th>Lexical similarity</th><td><%= @language.lexical_similarity %></td></tr>
+          <% end %>
+          <% if @language.related_languages.present? %>
+              <tr><th>Related languages</th><td><%= @language.related_languages %></td></tr>
+          <% end %>
+        </table>
+
+    <h4>Location</h4>
+    <table class="language-data">
+      <% if @language.location.present? %>
+          <tr><th>Location</th><td><%= @language.location %></td></tr>
+      <% end %>
+      <% if @language.location_access.present? %>
+          <tr><th>Physical Access</th><td><%= @language.location_access %></td></tr>
+      <% end %>
+      <% if @language.travel.present? %>
+          <tr><th>Travel Habits</th><td><%= @language.travel %></td></tr>
+      <% end %>
+    </table>
+
+        <h4>Population</h4>
+        <table class="language-data">
+          <% if @language.population.present? %>
+              <tr><th>Population in India</th><td><%= number_with_delimiter(@language.population, :delimiter => ',') %>
+                <% if @language.pop_source %>
+                    (source: <%= @language.pop_source.name %>)
+                <% end %>
+              </td></tr>
+          <% end %>
+          <%# if @language.population_all_countries.present? %>
+          <!--tr><th>In all countries</th><td><%# number_with_delimiter(@language.population_all_countries, :delimiter => ',') %></td></tr-->
+          <%# end %>
+          <% if @language.population_concentration.present? %>
+              <tr><th>Population concentration</th><td><%= @language.population_concentration %></td></tr>
+          <% end %>
+          <% if @language.age_distribution.present? %>
+              <tr><th>Age distribution</th><td><%= @language.age_distribution %></td></tr>
+          <% end %>
+          <% if @language.village_size.present? %>
+              <tr><th>Average village size</th><td><%= @language.village_size %></td></tr>
+          <% end %>
+        </table>
+
+        <h4>Groupings</h4>
+        <table class="language-data">
+          <% if @language.dialects.any? %>
+              <tr><th>Dialects</th><td><%= @language.dialects.pluck(:name).to_sentence %></td></tr>
+          <% end %>
+          <% if @language.clans.present? %>
+              <tr><th>Clans</th><td><%= @language.clans %></td></tr>
+          <% end %>
+          <% if @language.castes.present? %>
+              <tr><th>Castes</th><td><%= @language.castes %></td></tr>
+          <% end %>
+          <% if @language.subgroups.present? %>
+              <tr><th>Subgroups</th><td><%= @language.subgroups %></td></tr>
+          <% end %>
+          <% if @language.ethnic_groups_in_area.present? %>
+              <tr><th>Other ethnic groups in the same area</th><td><%= @language.ethnic_groups_in_area %></td></tr>
+          <% end %>
+          <% if @language.mixed_marriages.present? %>
+              <tr><th>Mixed marriages</th><td><%= @language.mixed_marriages %></td></tr>
+          <% end %>
+          <% if @language.attitude.present? %>
+              <tr><th>Attitude to languages</th><td><%= @language.attitude %></td></tr>
+          <% end %>
+        </table>
+
+
     <a name="engaged-organisations"><h3>Organisations Involved</h3></a>
     <% if @language.engaged_organisations.any? %>
         <ul class="mdl-list">
@@ -155,100 +314,6 @@
         <p><em>No organisations engaged with this language.</em></p>
     <% end %>
 
-  </div>
-  <div class="mdl-cell mdl-cell--6-col">
-
-    <a name="outcome-progress"><h2>Outcome progress</h2></a>
-    <% @language.state_languages.in_project.each do |state_language| %>
-        <h4><%= state_language.state_name %></h4>
-        <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
-        <div class="chart-<%= state_language.id %>"></div>
-    <% end %>
-    <% non_project_states = @language.state_languages.joins(:geo_state).where(project: false).pluck('geo_states.name').to_sentence %>
-    <% if non_project_states.present? %>
-        <p><%= @language.name %> is spoken in <%= non_project_states %>, but LCI does not track it there.</p>
-    <% end %>
-
-    <% if logged_in_user.sees_faith_based_data? %>
-
-      <a name="bible-translation"><h2>Bible Translation</h2></a>
-      <h3>Translation Status</h3>
-      <div class="translation-status mdl-card mdl-shadow--2dp">
-        <div class="mdl-card__title" style="background-color: <%= @language.translation_status_colour %>">
-          <h2 class="mdl-card__title-text"><%= @language.translation_status.to_s.humanize %></h2>
-        </div>
-        <div class="mdl-card__supporting-text">
-          <p>Translation need/status: <strong><%= @language.translation_need.humanize %></strong></p>
-          <p>Translation progress: <strong><%= @language.translation_progress.humanize %></strong></p>
-        </div>
-      </div>
-      <table class="language-data">
-        <% if @language.number_of_translations && @language.number_of_translations > 0 %>
-            <tr><th>Already existing</th><td><%= @language.number_of_translations %> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
-        <% end %>
-        <% if @language.translation_info.present? and logged_in_user.trusted? %>
-            <tr><th>Translation info</th><td><%= @language.translation_info %></td></tr>
-        <% end %>
-        <% if @language.tr_committee_established.present? %>
-            <tr><th>Translation committee established</th><td><%= @language.tr_committee_established? ? 'Yes' : 'No' %></td></tr>
-        <% end %>
-      </table>
-
-      <h3>Publication dates</h3>
-      <table class="mdl-data-table mdl-js-data-table">
-        <thead>
-        <tr>
-          <th class="mdl-data-table__cell--non-numeric">Type</th>
-          <th>Year first published</th>
-          <th>Year last published</th>
-        </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="check mdl-data-table__cell--non-numeric">Whole Bible</td>
-            <td><%= @language.bible_first_published %></td>
-            <td><%= @language.bible_last_published %></td>
-          </tr>
-          <tr>
-            <td class="check mdl-data-table__cell--non-numeric">New Testament</td>
-            <td>
-              <%= @language.nt_first_published %>
-            </td>
-            <td><%= @language.nt_last_published %>
-              <% if @language.nt_out_of_print %>
-                  (now out of print)
-              <% end %></td>
-          </tr>
-          <tr>
-            <td class="check mdl-data-table__cell--non-numeric">Portions</td>
-            <td><%= @language.portions_first_published %></td>
-            <td><%= @language.portions_last_published %></td>
-          </tr>
-        </tbody>
-      </table>
-      <% if @language.selections_published.present? %>
-        <table class="language-data">
-          <tr><th>Selections</th><td><%= @language.selections_published %></td></tr>
-        </table>
-      <% end %>
-
-      <% if logged_in_user.trusted? %>
-        <h3>People involved</h3>
-        <table class="language-data">
-          <% if @language.translation_consultants.present? %>
-              <tr><th>Translation consultants</th><td><%= @language.translation_consultants %></td></tr>
-          <% end %>
-          <% if @language.translation_interest.present? %>
-              <tr><th>Translation interest</th><td><%= @language.translation_interest %></td></tr>
-          <% end %>
-          <% if @language.translator_background.present? %>
-              <tr><th>Translator Background</th><td><%= @language.translator_background %></td></tr>
-          <% end %>
-          <% if @language.translation_local_support.present? %>
-              <tr><th>Local support for translation</th><td><%= @language.translation_local_support %></td></tr>
-          <% end %>
-        </table>
-      <% end %>
 
       <a name="translating-organisations"><h3>Organisations involved with translation</h3></a>
       <% if @language.translating_organisations.any? %>
@@ -261,56 +326,6 @@
           </ul>
       <% else %>
           <p><em>No organisations engaged with translating for this language.</em></p>
-      <% end %>
-
-    <% end %>
-
-    <a name="literacy"><h2>Literacy</h2></a>
-      <table class="language-data">
-        <% if @language.script.present? %>
-            <tr><th>Script</th><td><%= @language.script %></td></tr>
-        <% end %>
-        <% if @language.mt_literacy.present? %>
-            <tr><th>Mother-Tongue literacy</th><td><%= @language.mt_literacy %></td></tr>
-        <% end %>
-        <% if @language.l2_literacy.present? %>
-            <tr><th>Second language literacy</th><td><%= @language.l2_literacy %></td></tr>
-        <% end %>
-        <% if @language.literate_believers.present? and logged_in_user.sees_faith_based_data? %>
-            <tr><th>Literate believers</th><td><%= @language.literate_believers %></td></tr>
-        <% end %>
-        <% if @language.mt_literacy_programs.present? %>
-            <tr><th>Mother-Tongue literacy programs</th><td><%= @language.mt_literacy_programs %></td></tr>
-        <% end %>
-        <% if @language.attitude_to_lang_dev.present? %>
-            <tr><th>Attitude towards development</th><td><%= @language.attitude_to_lang_dev %></td></tr>
-        <% end %>
-        <% if @language.oral_traditions_print.present? %>
-            <tr><th>Oral traditions are in print</th><td><%= @language.oral_traditions_print ? 'Yes' : 'No' %></td></tr>
-        <% end %>
-        <% if @language.poetry_print.present? %>
-            <tr><th>Mother-Tongue poetry is in print</th><td><%= @language.poetry_print? ? 'Yes' : 'No' %></td></tr>
-        <% end %>
-      </table>
-
-      <a name="mt-resources"><h3>Mother Tongue Resources</h3></a>
-      <% if @language.mt_resources.any? %>
-        <ul class="mdl-list">
-          <% @language.mt_resources.each do |resource| %>
-              <li class="mdl-list__item mdl-list__item--two-line">
-                <span class="mdl-list__item-primary-content">
-                <% if resource.url %>
-                  <a href="<%= resource.url %>" tabindex="-1"><%= resource.name %></a>
-                <% else %>
-                  <%= resource.name %>
-                <% end %>
-                  <span class="mdl-list__item-sub-title"><%= resource.description %></span>
-                </span>
-              </li>
-          <% end %>
-        </ul>
-      <% else %>
-        <p>None recorded</p>
       <% end %>
 
       <% if @impact_report %>
