@@ -36,7 +36,6 @@ class User < ActiveRecord::Base
             },
             allow_nil: true
   validates :mother_tongue_id, presence: true, allow_nil: false
-  validates :role_id, presence: true, allow_nil: false
   validates :geo_states, presence: true
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, length: { maximum: 255 },
