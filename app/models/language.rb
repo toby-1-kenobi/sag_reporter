@@ -74,6 +74,10 @@ class Language < ActiveRecord::Base
     end
   }
 
+  def to_s
+    name
+  end
+
   def self.minorities(geo_states = nil)
     if geo_states
       includes(:geo_states).where(lwc: false, 'geo_states.id' => geo_states.map{ |s| s.id })

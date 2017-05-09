@@ -257,6 +257,31 @@ class LanguagesController < ApplicationController
     end
   end
 
+  def set_finish_line_progress
+    language = Language.find(params[:id])
+    marker = FinishLineMarker.find_by_number(params[:marker])
+    progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: marker)
+    @edit = Edit.new(
+        user: logged_in_user,
+        model_klass_name: 'FinishLineProgress',
+        record_id: progress.id,
+        attribute_name: 'status',
+        old_value: progress.status,
+        new_value: params[:progress],
+        status: :pending_double_approval,
+        relationship: false
+    )
+    if @edit.save
+      if @edit.user.national_curator?
+        @edit.auto_approved!
+        @edit.apply
+      end
+    end
+    respond_to do |format|
+      format.js
+    end
+  end
+
   private
 
   def lang_params

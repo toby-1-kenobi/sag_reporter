@@ -15,10 +15,33 @@ $(document).ready ->
     $(this).find('.edit-icon').addClass('hide')
     return
 
+  openFinishLineDialog = (number) ->
+    name = $("#finish-line-marker-#{number}-name").html()
+    description = $("#finish-line-marker-#{number}-description").html()
+    dialog = $('#finish-line-dialog')
+    dialog.find('.mdl-dialog__title').html(name)
+    dialog.find('.description').html(description)
+    # need to put the marker number in the link hrefs
+    dialog.find('a.progress-link').each ->
+      $(this).attr('href', $(this).attr('href').replace(/set_finish_line_progress\/.*\//, "set_finish_line_progress/#{number}/"))
+    dialog.get(0).showModal()
+    return
+
   $('.editable').on 'click', ->
     id = this.id
-    $("dialog[data-for=\"#{id}\"]").get(0).showModal()
+    if $(this).hasClass('finish-line-progress-status')
+      number = id.substring(id.lastIndexOf('-') + 1)
+      openFinishLineDialog(number)
+    else
+      $("dialog[data-for=\"#{id}\"]").get(0).showModal()
     return
+
+  $('.finish-line-switch').on 'click', ->
+    id = this.id
+    number = id.substring(id.lastIndexOf('-') + 1)
+    openFinishLineDialog(number)
+    # prevent the switch from switching
+    return false
 
   $('.add-engaged-org-button').on 'click', ->
     $('#add-engaged-org-dialog').get(0).showModal()

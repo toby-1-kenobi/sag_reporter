@@ -250,3 +250,20 @@
     <button type="button" class="mdl-button cancel">Cancel</button>
   </div>
 </dialog>
+
+<dialog id="finish-line-dialog" class="mdl-dialog" data-for="language-translation-info">
+  <h4 class="mdl-dialog__title"></h4>
+  <div class="mdl-dialog__content ">
+    <span class="description"></span>
+    <ul class="finish-line-prgress-options mdl-list">
+      <% FinishLineProgress.statuses.each do |status, status_id| %>
+          <li class="mdl-list__item">
+            <%= link_to status.humanize, set_flp_for_language_path(id: @language, marker: 00, progress: status_id), class: 'progress-link mdl-list__item-primary-content', method: :patch, remote: true %>
+          </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+</dialog>
