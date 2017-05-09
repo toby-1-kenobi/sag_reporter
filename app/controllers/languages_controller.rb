@@ -47,8 +47,6 @@ class LanguagesController < ApplicationController
         find(params[:id])
     @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(user: logged_in_user, model_klass_name: 'Language', record_id: @language.id)
-    # get the latest impact report to show on the language dashboard
-    @impact_report = @language.reports.where.not(impact_report: nil).order(:report_date).last
     end
 
   def show_details
@@ -65,6 +63,9 @@ class LanguagesController < ApplicationController
         ).
         find(params[:id])
     @all_orgs = Organisation.all.order(:name)
+    @user_pending_edits = Edit.pending.where(user: logged_in_user, model_klass_name: 'Language', record_id: @language.id)
+    # get the latest impact report to show on the language details page
+    @impact_report = @language.reports.where.not(impact_report: nil).order(:report_date).last
   end
 
   # match a search query against language names

@@ -35,7 +35,7 @@
     <%= render 'languages/list_filter_controls' %>
 
     <ul class="languages mdl-list">
-      <%= render partial: 'languages/language', collection: @languages %>
+      <%= render partial: 'languages/language', collection: @languages.order(:name) %>
     </ul>
 
   </div>

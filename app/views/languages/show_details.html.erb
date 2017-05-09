@@ -313,6 +313,32 @@
         <p>None recorded</p>
       <% end %>
 
+      <% if @impact_report %>
+          <div class="impact-story mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title">
+              <h2 class="mdl-card__title-text">Impact Story</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+              <div><%= time_ago_in_words(@impact_report.report_date) %> ago</div>
+              <%= simple_format @impact_report.content %>
+              <% @impact_report.pictures.each do |picture| %>
+                  <%= image_tag picture.ref_url if picture.ref? %>
+              <% end %>
+              <%# Show the reporter name if the logged in user is trusted, or if it's them. %>
+              <% if @impact_report.reporter and (logged_in_user.trusted? or logged_in_user?(report.reporter)) %>
+                  <div class="reporter"><%= @impact_report.reporter.name %></div>
+              <% end %>
+            </div>
+            <div class="mdl-card__actions">
+              <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                More impact stories...
+              </a>
+            </div>
+          </div>
+      <% else %>
+          <p>No impact reports.</p>
+      <% end %>
+
     <% if @language.iso.present? %>
         <div class="jp-data">
           <div class="center"><paper-spinner class="jp-fetch" active></paper-spinner></div>
