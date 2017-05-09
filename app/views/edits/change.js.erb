@@ -1,4 +1,1 @@
-let editElement = $('#edit-<%= @edit.id %>');
-let parentElement = editElement.parent();
-editElement.remove();
-parentElement.append('<%= j render @edit %>');
+$('#edit-<%= @edit.id %>').replaceWith('<%= j render @edit %>');

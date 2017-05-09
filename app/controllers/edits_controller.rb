@@ -51,14 +51,14 @@ class EditsController < ApplicationController
   def approve
     @edit.approve(logged_in_user)
     respond_to do |format|
-      format.js {render 'change'}
+      format.js {render 'curate_edit'}
     end
   end
 
   def reject
     @edit.reject(logged_in_user)
     respond_to do |format|
-      format.js {render 'change'}
+      format.js {render 'curate_edit'}
     end
   end
 
@@ -68,6 +68,24 @@ class EditsController < ApplicationController
     @edit.destroy
     respond_to do |format|
       format.js
+    end
+  end
+
+  def add_creator_comment
+    @edit = Edit.find params[:edit_id]
+    @edit.creator_comment = params[:comment]
+    @edit.save
+    respond_to do |format|
+      format.js {render 'change'}
+    end
+  end
+
+  def add_curator_comment
+    @edit = Edit.find params[:edit_id]
+    @edit.curator_comment = params[:comment]
+    @edit.save
+    respond_to do |format|
+      format.js {render 'change'}
     end
   end
 

@@ -48,6 +48,11 @@
     <div>
       Suggested by <%= logged_in_user.trusted? ? link_to(edit.user.name, edit.user) : "user #{edit.user_id}" %> <%= time_ago_in_words(edit.created_at) %> ago.
     </div>
+    <% if edit.creator_comment.present? %>
+      <div>
+        <%= logged_in_user.trusted? ? "#{edit.user.name} says" : "They say" %> <span class="creator-comment"><%= edit.creator_comment %></span>
+      </div>
+    <% end %>
     <div>
       Affecting <%= 'state'.pluralize(edit.geo_states.length) %>: <%= edit.geo_states.map(&:name).to_sentence %>.
     </div>
@@ -64,6 +69,11 @@
       <%= (edit.approved? or edit.pending_national_approval? or edit.second_curation_date.present?) ? 'Approved' : 'Rejected' %>
       by <%= logged_in_user.trusted? ? link_to(edit.curated_by.name, edit.curated_by) : "user #{edit.curated_by_id}" %> <%= time_ago_in_words(edit.curation_date) %> ago.
     </div>
+      <% if edit.curator_comment.present? %>
+        <div>
+          <%= logged_in_user.trusted? ? "#{edit.curated_by.name} says" : "They say" %> <span class="curator-comment"><%= edit.curator_comment %></span>
+        </div>
+      <% end %>
     <% end %>
     <% if edit.second_curation_date.present? %>
         <div>

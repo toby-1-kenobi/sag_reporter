@@ -17,6 +17,11 @@
 <% elsif @edit.pending_single_approval? or @edit.pending_double_approval? %>
   $('#edit-response').slideUp('fast');
   $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render @edit %></div>');
+  let commentDialog = $("#edit-creator-comment-dialog");
+  commentDialog.find('.mdl-dialog__title').html('change <%= @edit.attribute_name.humanize %>');
+  commentDialog.find('.edit-id-field').val('<%= @edit.id %>');
+  commentDialog.find('.comment-field').val('');
+  commentDialog.get(0).showModal();
 <% elsif @edit.auto_approved? %>
   $('#<%= @element_id %>').html("<%= @edit.new_value.humanize %>");
   $('#edit-dialog-<%= @edit.attribute_name %> #edit_old_value').val("<%= @edit.new_value %>");

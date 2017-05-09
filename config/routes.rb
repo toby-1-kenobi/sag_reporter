@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     collection do
       get 'curate'
       get 'my'
+      patch 'add_creator_comment', as: 'add_creator_comment_to'
+      patch 'add_curator_comment', as: 'add_curator_comment_to'
     end
     member do
       patch 'approve'
