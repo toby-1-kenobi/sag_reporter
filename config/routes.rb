@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+
   mount Knock::Engine => '/knock'
 
   root 'static_pages#home'
@@ -49,6 +50,8 @@ Rails.application.routes.draw do
       patch 'add_translating_org/:org', to: 'languages#add_translating_org', as: 'add_translating_org_to'
       patch 'remove_translating_org/:org', to: 'languages#remove_translating_org', as: 'remove_translating_org_from'
       patch 'set_finish_line_progress/:marker/:progress', to: 'languages#set_finish_line_progress', as: 'set_flp_for'
+      # This is a hack to work around something I haven't worked out yet.
+      get 'set_finish_line_progress/:marker/:progress', to: 'languages#show'
     end
   end
   resources :mt_resources

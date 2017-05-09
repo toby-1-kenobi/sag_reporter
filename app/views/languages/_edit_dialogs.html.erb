@@ -257,8 +257,9 @@
     <span class="description"></span>
     <ul class="finish-line-prgress-options mdl-list">
       <% FinishLineProgress.statuses.each do |status, status_id| %>
+          <% link_text = status_id > 3 ? "Completed, #{status.humanize}" : "Not completed, #{status.humanize}" %>
           <li class="mdl-list__item">
-            <%= link_to status.humanize, set_flp_for_language_path(id: @language, marker: 00, progress: status_id), class: 'progress-link mdl-list__item-primary-content', method: :patch, remote: true %>
+            <%= link_to link_text, set_flp_for_language_path(id: @language, marker: 0, progress: status), class: 'progress-link mdl-list__item-primary-content cancel', method: :patch, remote: true %>
           </li>
       <% end %>
     </ul>
