@@ -7,9 +7,9 @@ class FinishLineProgress < ActiveRecord::Base
       expressed_needs: 2,
       in_progress: 3,
       # 4-6 are options for done markers
-      no_further_expressed_needs: 4,
-      further_expressed_needs: 5,
-      further_steps_in_progress: 6
+      no_further_needs_expressed: 4,
+      further_needs_expressed: 5,
+      further_work_in_progress: 6
   }
 
   belongs_to :language
