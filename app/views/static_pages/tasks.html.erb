@@ -1,9 +1,9 @@
 <% provide(:title, "Tasks") %>
 <h1>tasks</h1>
 
-<% if not logged_in_user.admin? %>
-  <%= render partial: 'reporter_tasks' %>
-<% else %>
+<%# if not logged_in_user.admin? %>
+  <%# render partial: 'reporter_tasks' %>
+<%# else %>
   <div class="collection" id="home-menu">
 
     <% @links.each do |link_data| %>
@@ -16,4 +16,4 @@
     <% end %>
 
   </div>
-<% end %>
+<%# end %>
