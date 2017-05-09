@@ -75,7 +75,7 @@ class UsersController < ApplicationController
         @user = user_factory.instance()
       else
         logger.error('no instance in user factory when creating a user failed')
-        flash.error('Something went wrong with creating the user. Sorry')
+        flash[:error] = 'Something went wrong with creating the user. Sorry'
         @user = User.new
       end
       assign_for_user_form
