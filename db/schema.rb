@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170508170110) do
+ActiveRecord::Schema.define(version: 20170509155000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,6 +119,8 @@ ActiveRecord::Schema.define(version: 20170508170110) do
     t.datetime "updated_at",                           null: false
     t.integer  "curated_by_id"
     t.boolean  "relationship",         default: false, null: false
+    t.text     "creator_comment"
+    t.text     "curator_comment"
   end
 
   add_index "edits", ["created_at"], name: "index_edits_on_created_at", using: :btree
