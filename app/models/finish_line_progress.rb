@@ -22,7 +22,7 @@ class FinishLineProgress < ActiveRecord::Base
   end
 
   def complete?
-    no_further_expressed_needs? or further_expressed_needs? or further_steps_in_progress?
+    no_further_needs_expressed? or further_needs_expressed? or further_work_in_progress?
   end
 
 end
