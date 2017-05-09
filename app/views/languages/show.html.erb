@@ -12,6 +12,11 @@
       <%= render edit %>
     </div>
   <% end %>
+  <% @user_pending_fl_edits.each do |edit| %>
+      <div class="mdl-cell mdl-cell--4-col">
+        <%= render edit %>
+      </div>
+  <% end %>
 </div>
 
 <div class="mdl-grid">

@@ -194,12 +194,6 @@ describe User do
     _(user).wont_be :sees_alternate_pm_descriptions?
   end
 
-  it 'knows it responds to can_...? and is_a_...? methods' do
-    _(user).must_respond_to :is_a_bird?
-    _(user).must_respond_to :can_fly?
-    _(user).wont_respond_to :this_is_not_a_real_method
-  end
-
   it 'will unconfirm email and send confirmation on email change' do
     mock_mailer = mock
     mock_mailer.expects(:deliver_now).at_least_once
@@ -235,6 +229,14 @@ describe User do
     _(User.curating(assam_edit)).wont_include user_curating_nb
     _(User.curating(nb_edit)).must_include user_curating_nb
     _(User.curating(nb_edit)).wont_include user_curating_assam
+  end
+
+  it 'knows if it curates for a language' do
+    user.curated_states.clear
+    _(user.curates_for? languages(:toto)).wont_equal true
+    user.curated_states << languages(:toto).geo_states.first
+    user.save
+    _(user.curates_for? languages(:toto)).must_equal true
   end
 
 end

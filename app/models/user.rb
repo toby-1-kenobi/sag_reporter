@@ -119,6 +119,11 @@ class User < ActiveRecord::Base
     !sees_alternate_pm_descriptions?
   end
 
+  # find out if this user curates for a particular language
+  def curates_for?(language)
+    curated_states.where(id: language.geo_states.pluck(:id)).any?
+  end
+
   # This is a transitional method for moving from using roles and permissions
   # to using the simplified fields on the user model for user level access.
   # it maps the permission names to the right values of the fields
