@@ -55,11 +55,11 @@
             </td>
             <td class="mdl-data-table__cell--non-numeric">
               <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-<%= marker.number %>">
-                <input type="checkbox" id="switch-<%= marker.number %>" class="finish-line-switch mdl-switch__input" <%= progress.complete? ? 'checked' : '' %>>
+                <input type="checkbox" id="switch-<%= marker.number %>" class="<%= 'church-engagement' if marker.number == 0 %>finish-line-switch mdl-switch__input" <%= progress.complete? ? 'checked' : '' %>>
                 <span class="mdl-switch__label"></span>
               </label>
             </td>
-            <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if editable %>"><%= progress.status.humanize %><%= render 'shared/edit_icon' if editable %></td>
+            <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if editable %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.simple_human_status %><%= render 'shared/edit_icon' if editable %></td>
           </tr>
         <% end %>
       </tbody>

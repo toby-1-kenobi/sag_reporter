@@ -35,8 +35,16 @@
           from <span class="attribute_value"><%= old_thing %></span> to <span class="attribute_value"><%= new_thing %></span>
         <% end %>
       <% else %>
+          <% if edit.model_klass_name == 'FinishLineProgress' %>
+              <% church_engagement = object.finish_line_marker.number == 0 %>
+              <% old_thing = FinishLineProgress.human_of_status(edit.old_value, church_engagement) %>
+              <% new_thing = FinishLineProgress.human_of_status(edit.new_value, church_engagement) %>
+          <% else %>
+          <% old_thing = edit.old_value.humanize %>
+          <% new_thing = edit.new_value.humanize %>
+          <% end %>
         Change the <%= edit.attribute_name.humanize.downcase %>
-        from <span class="attribute_value"><%= edit.old_value.humanize %></span> to <span class="attribute_value"><%= edit.new_value.humanize %></span>
+        from <span class="attribute_value"><%= old_thing %></span> to <span class="attribute_value"><%= new_thing %></span>
       <% end %>
       <% if edit.record_errors.present? %>
         <div>

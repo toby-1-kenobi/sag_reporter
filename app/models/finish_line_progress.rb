@@ -3,7 +3,7 @@ class FinishLineProgress < ActiveRecord::Base
   enum status: {
       # 0-3 are options for not done markers
       no_need: 0,
-      potential_need: 1,
+      possible_need: 1,
       expressed_needs: 2,
       in_progress: 3,
       # 4-6 are options for done markers
@@ -23,6 +23,62 @@ class FinishLineProgress < ActiveRecord::Base
 
   def complete?
     no_further_needs_expressed? or further_needs_expressed? or further_work_in_progress?
+  end
+
+  def human_status
+    if finish_line_marker.number == 0
+      church_engagement_status[status]
+    else
+      case status
+        when 'no_need'
+          'No need'
+        when 'possible_need', 'expressed_needs'
+          "#{status.humanize}, not started"
+        when 'in_progress'
+          'In progress, not completed'
+        else
+          "Completed, #{status.humanize}"
+      end
+    end
+  end
+
+  def simple_human_status
+    if finish_line_marker.number == 0
+      FinishLineProgress.church_engagement_status[status]
+    else
+      status.humanize
+    end
+  end
+
+  def self.human_of_status(status, church_engagement)
+    # possible_need used to be called potential_need
+    if status == 'potential_need' then status = 'possible_need' end
+    if church_engagement
+      church_engagement_status[status]
+    else
+      case status
+        when 'no_need'
+          'No need'
+        when 'possible_need', 'expressed_needs'
+          "#{status.humanize}, not started"
+        when 'in_progress'
+          'In progress, not completed'
+        when 'no_further_needs_expressed', 'further_needs_expressed', 'further_work_in_progress'
+          "Completed, #{status.humanize}"
+        else
+          false
+      end
+    end
+  end
+
+  def self.church_engagement_status
+    {
+        'no_need' => 'No churches',
+        'possible_need' => 'No use',
+        'in_progress' => 'Few churches using',
+        'no_further_needs_expressed' => 'Many churches using',
+        'further_work_in_progress' => 'Church running project'
+    }
   end
 
 end

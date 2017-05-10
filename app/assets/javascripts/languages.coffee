@@ -15,10 +15,16 @@ $(document).ready ->
     $(this).find('.edit-icon').addClass('hide')
     return
 
-  openFinishLineDialog = (number) ->
+  openFinishLineDialog = (number, churchEngagement) ->
     name = $("#finish-line-marker-#{number}-name").html()
     description = $("#finish-line-marker-#{number}-description").html()
     dialog = $('#finish-line-dialog')
+    if churchEngagement
+      dialog.find('.finish-line-progress-options-ce').removeClass('hide')
+      dialog.find('.finish-line-progress-options').addClass('hide')
+    else
+      dialog.find('.finish-line-progress-options-ce').addClass('hide')
+      dialog.find('.finish-line-progress-options').removeClass('hide')
     dialog.find('.mdl-dialog__title').html(name)
     dialog.find('.description').html(description)
     # need to put the marker number in the link hrefs
@@ -31,7 +37,7 @@ $(document).ready ->
     id = this.id
     if $(this).hasClass('finish-line-progress-status')
       number = id.substring(id.lastIndexOf('-') + 1)
-      openFinishLineDialog(number)
+      openFinishLineDialog(number, $(this).hasClass('church-engagement'))
     else
       $("dialog[data-for=\"#{id}\"]").get(0).showModal()
     return
@@ -39,7 +45,7 @@ $(document).ready ->
   $('.finish-line-switch').on 'click', ->
     id = this.id
     number = id.substring(id.lastIndexOf('-') + 1)
-    openFinishLineDialog(number)
+    openFinishLineDialog(number, $(this).hasClass('church-engagement'))
     # prevent the switch from switching
     return false
 
