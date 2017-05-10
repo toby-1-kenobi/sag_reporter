@@ -90,4 +90,32 @@ class FinishLineProgress < ActiveRecord::Base
     }
   end
 
+  def human_status
+    case status
+      when 'no_need'
+        'No need'
+      when 'possible_need', 'expressed_needs'
+        "#{status.humanize}, not started"
+      when 'in_progress'
+        'In progress, not completed'
+      else
+        "Completed, #{status.humanize}"
+    end
+  end
+
+  def self.human_of_status(status)
+    case status
+      when 'no_need'
+        'No need'
+      when 'possible_need', 'expressed_needs'
+        "#{status.humanize}, not started"
+      when 'in_progress'
+        'In progress, not completed'
+      when 'no_further_needs_expressed', 'further_needs_expressed', 'further_work_in_progress'
+        "Completed, #{status.humanize}"
+      else
+        false
+    end
+  end
+
 end

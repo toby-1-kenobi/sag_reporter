@@ -19,6 +19,11 @@ $('#edit-response').slideUp('fast');
 $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render partial: 'edits/edit', object: @edit %></div>');
 $('.translating-orgs .org-<%= @edit.old_value %>').addClass('pending-removal');
 $('.translating-orgs .org-<%= @edit.old_value %> .remove-button').hide();
+let commentDialog = $("#edit-creator-comment-dialog");
+commentDialog.find('.mdl-dialog__title').html('change <%= @edit.attribute_name.humanize %>');
+commentDialog.find('.edit-id-field').val('<%= @edit.id %>');
+commentDialog.find('.comment-field').val('');
+commentDialog.get(0).showModal();
 <% elsif @edit.auto_approved? %>
 $('.translating-orgs .org-<%= @edit.old_value %>').remove();
 <% end %>

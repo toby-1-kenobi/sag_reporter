@@ -1,0 +1,23 @@
+<dialog id="edit-dialog-<%= element_id %>" class="mdl-dialog" data-for="<%= element_id %>">
+  <div class="mdl-dialog__content ">
+    <%= form_tag edits_path, remote: true, method: :post do %>
+        <%= hidden_field_tag 'element_id', element_id %>
+        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
+        <%= hidden_field_tag 'edit[record_id]', @language.id %>
+        <%= hidden_field_tag 'edit[attribute_name]', attribute_name %>
+        <%= hidden_field_tag 'edit[old_value]', @language.send(attribute_name) %>
+        <div class="mdl-textfield mdl-js-textfield">
+          <%= label_tag 'edit[new_value]', label %>
+          <% if area %>
+              <%= text_area_tag 'edit[new_value]', @language.send(attribute_name), class: 'mdl-textfield__input' %>
+          <% else %>
+            <%= text_field_tag 'edit[new_value]', @language.send(attribute_name), class: 'mdl-textfield__input' %>
+          <% end %>
+        </div>
+    <% end %>
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button submit">Submit</button>
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+</dialog>

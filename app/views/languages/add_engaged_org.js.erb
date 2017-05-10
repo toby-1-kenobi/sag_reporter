@@ -24,6 +24,11 @@ $('#edit-response')
     $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render partial: 'edits/edit', object: @edit %></div>');
     listItem.addClass('pending-approval');
     $('.engaged-orgs li.add-another').before(listItem);
+    let commentDialog = $("#edit-creator-comment-dialog");
+    commentDialog.find('.mdl-dialog__title').html('change <%= @edit.attribute_name.humanize %>');
+    commentDialog.find('.edit-id-field').val('<%= @edit.id %>');
+    commentDialog.find('.comment-field').val('');
+    commentDialog.get(0).showModal();
   <% elsif @edit.auto_approved? %>
     let removeButton = $('<%= j link_to '<button></button>'.html_safe, remove_engaged_org_from_language_path(@edit.record_id, @org),
                     method: :patch,

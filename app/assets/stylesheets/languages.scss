@@ -168,6 +168,10 @@ p.iso {
   background-color: #BBBBFF;
 }
 
+.pending-field {
+  background-color: cyan;
+}
+
 .pending-removal .org-name, .pending-approval .org-name {
   color: lightgrey !important;
 }
@@ -178,6 +182,10 @@ p.iso {
     max-height: calc(100vh - 300px);
     overflow-y: auto;
   }
+}
+
+.mdl-dialog.wide {
+  width: 350px;
 }
 
 table td.check {

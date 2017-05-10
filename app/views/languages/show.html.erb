@@ -35,7 +35,7 @@
 <div class="mdl-grid language-dashboard">
 
   <!-- finish line markers -->
-  <div class="finish-line-status mdl-cell mdl-cell--4-col">
+  <div class="finish-line-status mdl-cell mdl-cell--5-col">
 
     <h3>Finish Line Status</h3>
     <table class="finish-line-status mdl-data-table mdl-js-data-table">
@@ -49,10 +49,9 @@
       <tbody>
         <% FinishLineMarker.order(:number).each do |marker| %>
           <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
-          <tr class="<%= progress.category.to_s %>">
+          <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
             <td id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-              <%= marker.name %>
-              <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-name" class="mdl-tooltip"><%= marker.description %></span>
+              <%= link_to marker.name, show_details_language_path(@language, anchor: marker.name.parameterize('-')), class: "finish-line-marker-#{marker.number}-name" %>
             </td>
             <td class="mdl-data-table__cell--non-numeric">
               <button class="mdl-button mdl-js-button mdl-button--icon finish-line-progress-icon <%= 'church-engagement' if marker.number == 0 %>">
@@ -70,26 +69,24 @@
             </td>
             <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if editable %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.simple_human_status %><%= render 'shared/edit_icon' if editable %></td>
           </tr>
+          <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
         <% end %>
       </tbody>
     </table>
 
   </div>
 
-  <div class="mdl-cell mdl-cell--4-col">
+  <div class="mdl-cell mdl-cell--3-col">
     <h3>More Language Details</h3>
     <ul class="mdl-list">
+      <li class="language-outcome-progress mdl-list__item">
+        <%= link_to 'Outcome Progress', show_details_language_path(@language, anchor: 'outcome-progress'), class: 'mdl-list__item-primary-content' %>
+      </li>
       <li class="language-names mdl-list__item">
         <%= link_to 'Alternate Names', show_details_language_path(@language, anchor: 'language-names'), class: 'mdl-list__item-primary-content' %>
         <%= link_to show_details_language_path(@language, anchor: 'language-names'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
             <span class="mdl-chip__text"><%= @language.language_names.count %></span>
         <% end %>
-      </li>
-      <li class="language-outcome-progress mdl-list__item">
-        <%= link_to 'Outcome Progress', show_details_language_path(@language, anchor: 'outcome-progress'), class: 'mdl-list__item-primary-content' %>
-      </li>
-      <li class="language-bible-translation mdl-list__item">
-        <%= link_to 'Bible Translation', show_details_language_path(@language, anchor: 'bible-translation'), class: 'mdl-list__item-primary-content' %>
       </li>
       <li class="language-engaged-organisations mdl-list__item">
         <%= link_to 'Engaged Organisations', show_details_language_path(@language, anchor: 'engaged-organisations'), class: 'mdl-list__item-primary-content' %>
@@ -101,15 +98,6 @@
         <%= link_to 'Translating Organisations', show_details_language_path(@language, anchor: 'translating-organisations'), class: 'mdl-list__item-primary-content' %>
         <%= link_to show_details_language_path(@language, anchor: 'translating-organisations'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
             <span class="mdl-chip__text"><%= @language.translating_organisations.count %></span>
-        <% end %>
-      </li>
-      <li class="language-literacy mdl-list__item">
-        <%= link_to 'Literacy', show_details_language_path(@language, anchor: 'literacy'), class: 'mdl-list__item-primary-content' %>
-      </li>
-      <li class="language-mt-resources mdl-list__item">
-        <%= link_to 'Mother Tongue Resources', show_details_language_path(@language, anchor: 'mt-resources'), class: 'mdl-list__item-primary-content' %>
-        <%= link_to show_details_language_path(@language, anchor: 'mt-resources'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
-            <span class="mdl-chip__text"><%= @language.mt_resources.count %></span>
         <% end %>
       </li>
     </ul>
@@ -127,20 +115,4 @@
 </div>
 
 <%= render 'edit_dialogs' if editable %>
-
-<script>
-  $('dialog').each(function() {
-    let dialog = this;
-    if (! dialog.showModal) {
-      dialogPolyfill.registerDialog(dialog);
-    }
-    $(dialog).find('.submit').on('click', function() {
-      $(dialog).find('form').submit();
-      dialog.close();
-    });
-    $(dialog).find('.cancel').on('click', function() {
-      dialog.close();
-    });
-  });
-</script>
 
