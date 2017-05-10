@@ -326,10 +326,20 @@
 
     <a name="engaged-organisations"><h3>Organisations Involved</h3></a>
     <% if @language.engaged_organisations.any? %>
-        <ul class="mdl-list">
+        <ul class="engaged-orgs mdl-list">
           <% @language.engaged_organisations.each do |org| %>
-              <li class="mdl-list__item">
-                <%= link_to org.name_with_abbr, org, class: 'mdl-list__item-primary-content' %>
+              <li class="org-<%= org.id %> mdl-list__item">
+                <%= link_to org.name_with_abbr, org, class: 'org-name mdl-list__item-primary-content' %>
+                <% if editable %>
+                    <%= link_to remove_engaged_org_from_language_path(@language, org),
+                                method: :patch,
+                                remote: true,
+                                class: 'mdl-list__item-secondary-content' do %>
+                        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                          <i class="material-icons">clear</i>
+                        </button>
+                    <% end %>
+                <% end %>
               </li>
           <% end %>
         </ul>
@@ -340,10 +350,20 @@
 
       <a name="translating-organisations"><h3>Organisations involved with translation</h3></a>
       <% if @language.translating_organisations.any? %>
-          <ul class="mdl-list">
+          <ul class="translating-orgs mdl-list">
             <% @language.translating_organisations.each do |org| %>
-                <li class="mdl-list__item">
-                  <%= link_to org.name_with_abbr, org, class: 'mdl-list__item-primary-content' %>
+                <li class="org-<%= org.id %> mdl-list__item">
+                  <%= link_to org.name_with_abbr, org, class: 'org-name mdl-list__item-primary-content' %>
+                  <% if editable %>
+                      <%= link_to remove_translating_org_from_language_path(@language, org),
+                                  method: :patch,
+                                  remote: true,
+                                  class: 'remove-button mdl-list__item-secondary-content' do %>
+                          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                            <i class="material-icons">clear</i>
+                          </button>
+                      <% end %>
+                  <% end %>
                 </li>
             <% end %>
           </ul>
