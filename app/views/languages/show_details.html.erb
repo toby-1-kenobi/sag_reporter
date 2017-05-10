@@ -142,16 +142,16 @@
           <tr><th>Mother-Tongue literacy</th><td id="language-mt-literacy" class="<%= 'editable' if editable %>"><%= @language.mt_literacy %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
       <% if editable or @language.l2_literacy.present? %>
-          <tr><th>Second language literacy</th><td id="language-mt-literacy" class="<%= 'editable' if editable %>"><%= @language.l2_literacy %><%= render 'shared/edit_icon' if editable %></td></tr>
+          <tr><th>Second language literacy</th><td id="language-l2-literacy" class="<%= 'editable' if editable %>"><%= @language.l2_literacy %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
-      <% if @language.literate_believers.present? and logged_in_user.sees_faith_based_data? %>
-          <tr><th>Literate believers</th><td><%= @language.literate_believers %></td></tr>
+      <% if editable or @language.literate_believers.present? and logged_in_user.sees_faith_based_data? %>
+          <tr><th>Literate believers</th><td id="language-literate-believers" class="<%= 'editable' if editable %>"><%= @language.literate_believers %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
-      <% if @language.mt_literacy_programs.present? %>
-          <tr><th>Mother-Tongue literacy programs</th><td><%= @language.mt_literacy_programs %></td></tr>
+      <% if editable or @language.mt_literacy_programs.present? %>
+          <tr><th>Mother-Tongue literacy programs</th><td id="language-mt-literacy-programs" class="<%= 'editable' if editable %>"><%= @language.mt_literacy_programs %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
-      <% if @language.attitude_to_lang_dev.present? %>
-          <tr><th>Attitude towards development</th><td><%= @language.attitude_to_lang_dev %></td></tr>
+      <% if editable or @language.attitude_to_lang_dev.present? %>
+          <tr><th>Attitude towards development</th><td id="language-attitude-to-lang-dev" class="<%= 'editable' if editable %>"><%= @language.attitude_to_lang_dev %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
       <% if @language.oral_traditions_print.present? %>
           <tr><th>Oral traditions are in print</th><td><%= @language.oral_traditions_print ? 'Yes' : 'No' %></td></tr>

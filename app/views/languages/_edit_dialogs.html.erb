@@ -319,6 +319,66 @@
   </div>
 </dialog>
 
+<dialog id="edit-dialog-literate-believers" class="mdl-dialog" data-for="language-literate-believers">
+  <div class="mdl-dialog__content ">
+    <%= form_tag edits_path, remote: true, method: :post do %>
+        <%= hidden_field_tag 'element_id', 'language-literate-believers' %>
+        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
+        <%= hidden_field_tag 'edit[record_id]', @language.id %>
+        <%= hidden_field_tag 'edit[attribute_name]', 'literate_believers' %>
+        <%= hidden_field_tag 'edit[old_value]', @language.literate_believers %>
+        <div class="mdl-textfield mdl-js-textfield">
+          <%= label_tag 'edit[new_value]', 'Literate Believers' %>
+          <%= text_field_tag 'edit[new_value]', @language.literate_believers, class: 'mdl-textfield__input' %>
+        </div>
+    <% end %>
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button submit">Submit</button>
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+</dialog>
+
+<dialog id="edit-dialog-attitude-to-lang-dev" class="mdl-dialog" data-for="language-attitude-to-lang-dev">
+  <div class="mdl-dialog__content ">
+    <%= form_tag edits_path, remote: true, method: :post do %>
+        <%= hidden_field_tag 'element_id', 'language-attitude-to-lang-dev' %>
+        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
+        <%= hidden_field_tag 'edit[record_id]', @language.id %>
+        <%= hidden_field_tag 'edit[attribute_name]', 'attitude_to_lang_dev' %>
+        <%= hidden_field_tag 'edit[old_value]', @language.attitude_to_lang_dev %>
+        <div class="mdl-textfield mdl-js-textfield">
+          <%= label_tag 'edit[new_value]', 'Community attitude to language development' %>
+          <%= text_area_tag 'edit[new_value]', @language.attitude_to_lang_dev, class: 'mdl-textfield__input' %>
+        </div>
+    <% end %>
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button submit">Submit</button>
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+</dialog>
+
+<dialog id="edit-dialog-mt-literacy-programs" class="mdl-dialog" data-for="language-mt-literacy-programs">
+  <div class="mdl-dialog__content ">
+    <%= form_tag edits_path, remote: true, method: :post do %>
+        <%= hidden_field_tag 'element_id', 'language-mt-literacy-programs' %>
+        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
+        <%= hidden_field_tag 'edit[record_id]', @language.id %>
+        <%= hidden_field_tag 'edit[attribute_name]', 'mt_literacy_programs' %>
+        <%= hidden_field_tag 'edit[old_value]', @language.mt_literacy_programs %>
+        <div class="mdl-textfield mdl-js-textfield">
+          <%= label_tag 'edit[new_value]', 'Mother-Tongue literacy programs' %>
+          <%= text_area_tag 'edit[new_value]', @language.mt_literacy_programs, class: 'mdl-textfield__input' %>
+        </div>
+    <% end %>
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button submit">Submit</button>
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+</dialog>
+
 <dialog id="add-engaged-org-dialog" class="mdl-dialog">
   <h4 class="mdl-dialog__title">Which organisation is engaged with this language?</h4>
   <div class="mdl-dialog__content ">
