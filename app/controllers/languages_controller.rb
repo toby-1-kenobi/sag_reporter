@@ -54,7 +54,7 @@ class LanguagesController < ApplicationController
       @user_pending_fl_edits = @user_pending_fl_edits.where(user: logged_in_user)
     end
     @user_pending_fl_edits = @user_pending_fl_edits.to_a.select{ |edit| FinishLineProgress.find(edit.record_id).language == @language }
-    end
+  end
 
   def show_details
     @language = Language.
@@ -71,9 +71,13 @@ class LanguagesController < ApplicationController
         find(params[:id])
     @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(model_klass_name: 'Language', record_id: @language.id)
+    @user_pending_fl_edits = Edit.pending.where(model_klass_name: 'FinishLineProgress')
     unless logged_in_user.curates_for?(@language)
-      @user_pending_edits.where(user: logged_in_user)
+      logger.debug "limiting edits"
+      @user_pending_edits = @user_pending_edits.where(user: logged_in_user)
+      @user_pending_fl_edits = @user_pending_fl_edits.where(user: logged_in_user)
     end
+    @user_pending_fl_edits = @user_pending_fl_edits.to_a.select{ |edit| FinishLineProgress.find(edit.record_id).language == @language }
     # get the latest impact report to show on the language details page
     @impact_report = @language.reports.where.not(impact_report: nil).order(:report_date).last
   end
