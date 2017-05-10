@@ -42,22 +42,31 @@
       <thead>
         <tr>
           <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
-          <th class="mdl-data-table__cell--non-numeric" colspan="2">Status</th>
+          <th class="mdl-data-table__cell--non-numeric">Category</th>
+          <th class="mdl-data-table__cell--non-numeric">Status</th>
         </tr>
       </thead>
       <tbody>
         <% FinishLineMarker.order(:number).each do |marker| %>
           <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
-          <tr class="<%= progress.complete? ? 'complete' : 'incomplete' %>">
+          <tr class="<%= progress.category.to_s %>">
             <td id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
               <%= marker.name %>
               <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-name" class="mdl-tooltip"><%= marker.description %></span>
             </td>
             <td class="mdl-data-table__cell--non-numeric">
-              <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-<%= marker.number %>">
-                <input type="checkbox" id="switch-<%= marker.number %>" class="<%= 'church-engagement' if marker.number == 0 %>finish-line-switch mdl-switch__input" <%= progress.complete? ? 'checked' : '' %>>
-                <span class="mdl-switch__label"></span>
-              </label>
+              <button class="mdl-button mdl-js-button mdl-button--icon finish-line-progress-icon <%= 'church-engagement' if marker.number == 0 %>">
+                <% case progress.category
+                    when :no_progress %>
+                    <i class="material-icons">star_border</i>
+                  <% when :progress %>
+                    <i class="material-icons">star_half</i>
+                  <% when :complete %>
+                    <i class="material-icons">star</i>
+                  <% else %>
+                    <%# show nothing for nothing %>
+                <% end %>
+              </button>
             </td>
             <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if editable %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.simple_human_status %><%= render 'shared/edit_icon' if editable %></td>
           </tr>

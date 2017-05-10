@@ -21,8 +21,17 @@ class FinishLineProgress < ActiveRecord::Base
     "#{finish_line_marker.name} for #{language.name}"
   end
 
-  def complete?
-    no_further_needs_expressed? or further_needs_expressed? or further_work_in_progress?
+  def category
+    case status
+      when 'no_need'
+        :nothing
+      when 'possible_need', 'expressed_needs'
+        :no_progress
+      when 'in_progress'
+        :progress
+      else
+        :complete
+    end
   end
 
   def human_status

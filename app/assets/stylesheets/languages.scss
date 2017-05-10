@@ -91,6 +91,30 @@ table.language-data th {
   font-weight: normal;
 }
 
+table.finish-line-status  {
+  tr.nothing {
+    background-color: lightgrey;
+  }
+  tr.no_progress {
+    background-color: lightskyblue;
+    .finish-line-progress-icon {
+      color: dodgerblue;
+    }
+  }
+  tr.progress {
+    background-color: palegoldenrod;
+    .finish-line-progress-icon {
+      color: orangered;
+    }
+  }
+  tr.complete {
+    background-color: springgreen;
+    .finish-line-progress-icon {
+      color: forestgreen;
+    }
+  }
+}
+
 .translation-status.mdl-card {
   min-height: auto;
 }

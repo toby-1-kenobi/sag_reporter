@@ -42,7 +42,7 @@ $(document).ready ->
       $("dialog[data-for=\"#{id}\"]").get(0).showModal()
     return
 
-  $('.finish-line-switch').on 'click', ->
+  $('.finish-line-progress-icon').on 'click', ->
     id = this.id
     number = id.substring(id.lastIndexOf('-') + 1)
     openFinishLineDialog(number, $(this).hasClass('church-engagement'))
