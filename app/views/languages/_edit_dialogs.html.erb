@@ -208,7 +208,7 @@
         <%= hidden_field_tag 'edit[attribute_name]', 'translator_background' %>
         <%= hidden_field_tag 'edit[old_value]', @language.translator_background %>
         <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Translation interest' %>
+          <%= label_tag 'edit[new_value]', 'Translator background' %>
           <%= text_field_tag 'edit[new_value]', @language.translator_background, class: 'mdl-textfield__input' %>
         </div>
     <% end %>
@@ -228,7 +228,7 @@
         <%= hidden_field_tag 'edit[attribute_name]', 'translation_local_support' %>
         <%= hidden_field_tag 'edit[old_value]', @language.translation_local_support %>
         <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Translation interest' %>
+          <%= label_tag 'edit[new_value]', 'Local support for translation' %>
           <%= text_field_tag 'edit[new_value]', @language.translation_local_support, class: 'mdl-textfield__input' %>
         </div>
     <% end %>

@@ -19,7 +19,10 @@ class EditsController < ApplicationController
     if @edit.user.national_curator?
       @edit.status = :auto_approved
     elsif @edit.model_klass_name == 'Language'
-      if ['name', 'iso', 'population', 'location', 'translating_organisations', 'translation_info'].include? @edit.attribute_name
+      logger.debug "double_approve_fields: #{double_approve_fields['Language']}"
+      logger.debug "attribute: #{@edit.attribute_name}"
+      logger.debug "double: #{double_approve_fields['Language'].include? @edit.attribute_name}"
+      if double_approve_fields['Language'].include? @edit.attribute_name
         @edit.status = :pending_double_approval
       else
         @edit.status = :pending_single_approval
@@ -100,6 +103,16 @@ class EditsController < ApplicationController
         :new_value,
         :relationship
     )
+  end
+
+  def double_approve_fields
+    {
+        'Language' => %w(
+          name iso population location translating_organisations
+          translation_info translation_consultants translation_interest
+          translator_background translation_local_support
+        )
+    }
   end
 
 end
