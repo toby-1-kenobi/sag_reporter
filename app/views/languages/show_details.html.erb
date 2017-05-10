@@ -324,7 +324,7 @@
         </table>
 
 
-    <a name="engaged-organisations"><h3>Organisations Involved</h3></a>
+    <a name="engaged-organisations"><h3>Organisations engaged</h3></a>
     <% if @language.engaged_organisations.any? %>
         <ul class="engaged-orgs mdl-list">
           <% @language.engaged_organisations.each do |org| %>
@@ -340,6 +340,16 @@
                         </button>
                     <% end %>
                 <% end %>
+              </li>
+          <% end %>
+          <% if editable %>
+              <li class="add-another mdl-list__item">
+                <span class="mdl-list__item-primary-content">...</span>
+                <span class="mdl-list__item-secondary-content">
+                  <button class="add-engaged-org-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored" title="Add engaged organisation">
+                    <i class="material-icons">add</i>
+                  </button>
+                </span>
               </li>
           <% end %>
         </ul>
@@ -364,6 +374,16 @@
                           </button>
                       <% end %>
                   <% end %>
+                </li>
+            <% end %>
+            <% if editable %>
+                <li class="add-another mdl-list__item">
+                  <span class="mdl-list__item-primary-content">...</span>
+                <span class="mdl-list__item-secondary-content">
+                  <button class="add-translating-org-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored" title="Add translating organisation">
+                    <i class="material-icons">add</i>
+                  </button>
+                </span>
                 </li>
             <% end %>
           </ul>
