@@ -46,9 +46,9 @@
       <tbody>
         <% FinishLineMarker.order(:number).each do |marker| %>
           <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
-          <tr id="finish-line-marker-<%= marker.number %>-name"  class="<%= progress.complete? ? 'complete' : 'incomplete' %>">
+          <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.complete? ? 'complete' : 'incomplete' %>">
             <td class="mdl-data-table__cell--non-numeric">
-              <%= link_to marker.name, show_details_language_path(@language, anchor: marker.name.parameterize('-')) %>
+              <%= link_to marker.name, show_details_language_path(@language, anchor: marker.name.parameterize('-')), class: "finish-line-marker-#{marker.number}-name" %>
             </td>
             <td class="mdl-data-table__cell--non-numeric">
               <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-<%= marker.number %>">
@@ -58,7 +58,7 @@
             </td>
             <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if editable %>"><%= progress.status.humanize %><%= render 'shared/edit_icon' if editable %></td>
           </tr>
-          <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-name" class="mdl-tooltip"><%= marker.description %></span>
+          <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
         <% end %>
       </tbody>
     </table>
