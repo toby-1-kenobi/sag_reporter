@@ -111,7 +111,7 @@
         <%= hidden_field_tag 'edit[attribute_name]', 'number_of_translations' %>
         <%= hidden_field_tag 'edit[old_value]', @language.number_of_translations %>
         <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Number of Bible translations in progress' %>
+          <%= label_tag 'edit[new_value]', 'Number of Bible translation projects' %>
           <%= text_field_tag 'edit[new_value]', @language.number_of_translations, class: 'mdl-textfield__input', pattern: '-?[0-9]*(\.[0-9]+)?' %>
           <span class="mdl-textfield__error">Numbers only please!</span>
         </div>
