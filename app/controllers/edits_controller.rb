@@ -19,7 +19,7 @@ class EditsController < ApplicationController
     if @edit.user.national_curator?
       @edit.status = :auto_approved
     elsif @edit.model_klass_name == 'Language'
-      if ['name', 'iso', 'population', 'location'].include? @edit.attribute_name
+      if ['name', 'iso', 'population', 'location', 'translating_organisations', 'translation_info'].include? @edit.attribute_name
         @edit.status = :pending_double_approval
       else
         @edit.status = :pending_single_approval

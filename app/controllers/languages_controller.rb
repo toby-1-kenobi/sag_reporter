@@ -234,7 +234,7 @@ class LanguagesController < ApplicationController
         attribute_name: 'translating_organisations',
         old_value: Edit.addition_code,
         new_value: params[:org],
-        status: :pending_single_approval,
+        status: :pending_double_approval,
         relationship: true
     )
     if @edit.save
@@ -258,7 +258,7 @@ class LanguagesController < ApplicationController
         attribute_name: 'translating_organisations',
         old_value: org.id.to_s,
         new_value: Edit.removal_code,
-        status: :pending_single_approval,
+        status: :pending_double_approval,
         relationship: true
     )
     if @edit.save
