@@ -1,16 +1,18 @@
 <% provide(:title, 'Language Details: ' + @language.name) %>
 
-<div class="mdl-grid">
+<% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
+
+   <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--6-col mdl-cell--2-col-phone">
     <h1>Language Details</h1>
     <%= link_to @language do %>
         <i class="material-icons">pageview</i> Language dashboard
     <% end %>
   </div>
-  <div class="mdl-cell mdl-cell--4-offset-desktop mdl-cell--2-col">
-    <div class="language-name"><h2><%= @language.name %></h2></div>
-    <div class="iso-code">[<%= @language.iso %>]</div>
-  </div>
+   <div class="mdl-cell mdl-cell--4-offset-desktop mdl-cell--2-col">
+     <div class="language-name"><h2 id="language-name" class="<%= 'editable' if editable %>"><%= @language.name %><%= render 'shared/edit_icon' if editable %></h2></div>
+     <div id="language-iso" class="iso-code <%= 'editable' if editable %>">[<%= @language.iso %>]<%= render 'shared/edit_icon' if editable %></div>
+   </div>
 </div>
 
 <div class="mdl-grid">
@@ -37,11 +39,17 @@
     <a name="bible-translation"><h3>Bible Translation</h3></a>
 
     <table class="language-data">
+      <% gospel_marker = FinishLineMarker.find_by_number(5) %>
+      <tr><th>Gospel Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: gospel_marker).human_status %></td></tr>
+      <% nt_marker = FinishLineMarker.find_by_number(6) %>
+      <tr><th>New Testament Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: nt_marker).human_status %></td></tr>
+      <% ot_marker = FinishLineMarker.find_by_number(7) %>
+      <tr><th>Old Testament Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: ot_marker).human_status %></td></tr>
       <% if @language.number_of_translations && @language.number_of_translations > 0 %>
-          <tr><th>Already existing</th><td><%= @language.number_of_translations %> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
+          <tr><th>Already existing</th><td><span id="language-number-of-translations" class="<%= 'editable' if editable %>"><%= @language.number_of_translations %><%= render 'shared/edit_icon' if editable %></span> Bible <%= 'version'.pluralize(@language.number_of_translations) %></td></tr>
       <% end %>
-      <% if @language.translation_info.present? and logged_in_user.trusted? %>
-          <tr><th>Translation info</th><td><%= @language.translation_info %></td></tr>
+      <% if (@language.translation_info.present? or editable) and logged_in_user.trusted? %>
+          <tr><th>Translation info</th><td id="language-translation-info" class="<%= 'editable' if editable %>"><%= @language.translation_info %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
       <% if @language.tr_committee_established.present? %>
           <tr><th>Translation committee established</th><td><%= @language.tr_committee_established? ? 'Yes' : 'No' %></td></tr>
@@ -215,18 +223,18 @@
 
     <h3>General</h3>
     <table class="language-data">
-      <% if @language.description.present? %>
-          <tr><th>Description</th><td><%= @language.description %></td></tr>
+      <% if @language.description.present? or editable %>
+          <tr><th>Description</th><td id="language-description" class="<%= 'editable' if editable %>"><%= @language.description %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
       <% if @language.info.present? %>
-          <tr><th>General information</th><td><%= @language.info %></td></tr>
+          <tr><th>General information</th><td id="language-info" class="<%= 'editable' if editable %>"><%= @language.info %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
     </table>
 
         <h4>Classification</h4>
         <table class="language-data">
           <% if @language.family_id.present? %>
-              <tr><th>Family</th><td><%= @language.family_name %></td></tr>
+              <tr><th>Family</th><td id="language-family" class="<%= 'editable' if editable %>"><%= @language.family_name %><%= render 'shared/edit_icon' if editable %></td></tr>
           <% end %>
           <% if @language.genetic_classification.present? %>
               <tr><th>Classification</th><td><%= @language.genetic_classification %></td></tr>
@@ -242,7 +250,7 @@
     <h4>Location</h4>
     <table class="language-data">
       <% if @language.location.present? %>
-          <tr><th>Location</th><td><%= @language.location %></td></tr>
+          <tr><th>Location</th><td id="language-location" class="<%= 'editable' if editable %>"><%= @language.location %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
       <% if @language.location_access.present? %>
           <tr><th>Physical Access</th><td><%= @language.location_access %></td></tr>
@@ -362,3 +370,5 @@
     <% end %>
   </div>
 </div>
+
+<%= render 'edit_dialogs' if editable %>

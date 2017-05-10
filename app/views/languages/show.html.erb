@@ -3,8 +3,6 @@
 
 <% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
 
-<%= '<script>console.log("page is editable");</script>'.html_safe if editable %>
-
 <div id="edit-response"></div>
 <div id="pending-edits" class="mdl-grid">
   <% @user_pending_edits.each do |edit| %>
@@ -48,10 +46,9 @@
       <tbody>
         <% FinishLineMarker.order(:number).each do |marker| %>
           <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
-          <tr class="<%= progress.complete? ? 'complete' : 'incomplete' %>">
-            <td id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-              <%= marker.name %>
-              <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-name" class="mdl-tooltip"><%= marker.description %></span>
+          <tr id="finish-line-marker-<%= marker.number %>-name"  class="<%= progress.complete? ? 'complete' : 'incomplete' %>">
+            <td class="mdl-data-table__cell--non-numeric">
+              <%= link_to marker.name, show_details_language_path(@language, anchor: marker.name.parameterize('-')) %>
             </td>
             <td class="mdl-data-table__cell--non-numeric">
               <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-<%= marker.number %>">
@@ -61,6 +58,7 @@
             </td>
             <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if editable %>"><%= progress.status.humanize %><%= render 'shared/edit_icon' if editable %></td>
           </tr>
+          <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-name" class="mdl-tooltip"><%= marker.description %></span>
         <% end %>
       </tbody>
     </table>
@@ -106,20 +104,4 @@
 </div>
 
 <%= render 'edit_dialogs' if editable %>
-
-<script>
-  $('dialog').each(function() {
-    let dialog = this;
-    if (! dialog.showModal) {
-      dialogPolyfill.registerDialog(dialog);
-    }
-    $(dialog).find('.submit').on('click', function() {
-      $(dialog).find('form').submit();
-      dialog.close();
-    });
-    $(dialog).find('.cancel').on('click', function() {
-      dialog.close();
-    });
-  });
-</script>
 

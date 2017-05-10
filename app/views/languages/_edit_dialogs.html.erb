@@ -138,46 +138,6 @@
   </div>
 </dialog>
 
-<dialog id="edit-dialog-translation_need" class="mdl-dialog" data-for="language-translation-need">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-translation-need' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'translation_need' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.translation_need %>
-        <div>
-          <%= label_tag 'edit[new_value]', 'Translation need' %>
-          <%= select_tag 'edit[new_value]', options_for_select(Language.translation_needs.map{ |k, v| [k.humanize, k] }, @language.translation_need) %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
-
-<dialog id="edit-dialog-translation_progress" class="mdl-dialog" data-for="language-translation-progress">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-translation-progress' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'translation_progress' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.translation_progress %>
-        <div>
-          <%= label_tag 'edit[new_value]', 'Translation progress' %>
-          <%= select_tag 'edit[new_value]', options_for_select(Language.translation_progresses.map{ |k, v| [k.humanize, k] }, @language.translation_progress) %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
-
 <dialog id="edit-dialog-translation-number" class="mdl-dialog" data-for="language-number-of-translations">
   <div class="mdl-dialog__content ">
     <%= form_tag edits_path, remote: true, method: :post do %>
@@ -300,3 +260,19 @@
     <button type="button" class="mdl-button submit">OK</button>
   </div>
 </dialog>
+
+<script>
+  $('dialog').each(function() {
+    let dialog = this;
+    if (! dialog.showModal) {
+      dialogPolyfill.registerDialog(dialog);
+    }
+    $(dialog).find('.submit').on('click', function() {
+      $(dialog).find('form').submit();
+      dialog.close();
+    });
+    $(dialog).find('.cancel').on('click', function() {
+      dialog.close();
+    });
+  });
+</script>
