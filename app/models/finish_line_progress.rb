@@ -2,14 +2,14 @@ class FinishLineProgress < ActiveRecord::Base
 
   enum status: {
       # 0-3 are options for not done markers
-      no_need: 0,
-      potential_need: 1,
-      expressed_needs: 2,
-      in_progress: 3,
+      not_completed_no_need: 0,
+      not_completed_potential_need: 1,
+      not_completed_expressed_needs: 2,
+      not_completed_in_progress: 3,
       # 4-6 are options for done markers
-      no_further_needs_expressed: 4,
-      further_needs_expressed: 5,
-      further_work_in_progress: 6
+      completed_no_further_needs_expressed: 4,
+      completed_further_needs_expressed: 5,
+      completed_further_work_in_progress: 6
   }
 
   belongs_to :language
@@ -22,7 +22,7 @@ class FinishLineProgress < ActiveRecord::Base
   end
 
   def complete?
-    no_further_needs_expressed? or further_needs_expressed? or further_work_in_progress?
+    completed_no_further_needs_expressed? or completed_further_needs_expressed? or completed_further_work_in_progress?
   end
 
   def human_status
