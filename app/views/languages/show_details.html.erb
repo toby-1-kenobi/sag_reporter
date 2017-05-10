@@ -62,7 +62,7 @@
       <tr><th>Old Testament Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: ot_marker).human_status %></td></tr>
       <% if (@language.number_of_translations && @language.number_of_translations > 0) or editable %>
           <% tr_num = @language.number_of_translations || 0 %>
-          <tr><th>Already existing</th><td><span id="language-number-of-translations" class="<%= 'editable' if editable %>"><%= tr_num %><%= render 'shared/edit_icon' if editable %></span> Bible <%= 'version'.pluralize(tr_num) %></td></tr>
+          <tr><th>Number of translations in progress</th><td><span id="language-number-of-translations" class="<%= 'editable' if editable %>"><%= tr_num %><%= render 'shared/edit_icon' if editable %></span> Bible <%= 'version'.pluralize(tr_num) %></td></tr>
       <% end %>
       <% if (@language.translation_info.present? or editable) and logged_in_user.trusted? %>
           <tr><th>Translation info</th><td id="language-translation-info" class="<%= 'editable' if editable %>"><%= @language.translation_info %><%= render 'shared/edit_icon' if editable %></td></tr>
