@@ -1,0 +1,29 @@
+<div class="mdl-grid">
+  <% language_amount = languages.count  %>
+  <div class="mdl-grid--4-col">
+    <%= language_amount %> languages.
+    <% finish_line_data = build_finish_line_table(languages) %>
+    <table class="mdl-data-table mdl-js-data-table">
+      <thead>
+        <tr>
+          <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
+          <th>No Progress yet</th>
+          <th>In Progress</th>
+          <th>Complete</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% finish_line_data.each do |marker, data| %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric"><%= marker.name %></td>
+          <td><%= data[:no_progress] %> (<%= (data[:no_progress] *100) / language_amount %>%)</td>
+          <td><%= data[:progress] %> (<%= (data[:progress] *100) / language_amount %>%)</td>
+          <td><%= data[:complete] %> (<%= (data[:complete] *100) / language_amount %>%)</td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="mdl-grid--4-col">
+  </div>
+</div>
