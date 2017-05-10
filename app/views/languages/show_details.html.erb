@@ -135,14 +135,14 @@
       <tr><th>Basic Literacy Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: literacy_marker).human_status %></td></tr>
       <% dictionary_marker = FinishLineMarker.find_by_number(9) %>
       <tr><th>Dictionary Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: dictionary_marker).human_status %></td></tr>
-      <% if @language.script.present? %>
-          <tr><th>Script</th><td><%= @language.script %></td></tr>
+      <% if editable or @language.script.present? %>
+          <tr><th>Script</th><td id="language-script" class="<%= 'editable' if editable %>"><%= @language.script %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
-      <% if @language.mt_literacy.present? %>
-          <tr><th>Mother-Tongue literacy</th><td><%= @language.mt_literacy %></td></tr>
+      <% if editable or @language.mt_literacy.present? %>
+          <tr><th>Mother-Tongue literacy</th><td id="language-mt-literacy" class="<%= 'editable' if editable %>"><%= @language.mt_literacy %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
-      <% if @language.l2_literacy.present? %>
-          <tr><th>Second language literacy</th><td><%= @language.l2_literacy %></td></tr>
+      <% if editable or @language.l2_literacy.present? %>
+          <tr><th>Second language literacy</th><td id="language-mt-literacy" class="<%= 'editable' if editable %>"><%= @language.l2_literacy %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
       <% if @language.literate_believers.present? and logged_in_user.sees_faith_based_data? %>
           <tr><th>Literate believers</th><td><%= @language.literate_believers %></td></tr>
