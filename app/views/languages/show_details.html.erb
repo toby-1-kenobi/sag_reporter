@@ -265,7 +265,7 @@
 
     <h4>Location</h4>
     <table class="language-data">
-      <% if @language.location.present? %>
+      <% if editable or @language.location.present? %>
           <tr><th>Location</th><td id="language-location" class="<%= 'editable' if editable %>"><%= @language.location %><%= render 'shared/edit_icon' if editable %></td></tr>
       <% end %>
       <% if @language.location_access.present? %>
