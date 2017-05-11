@@ -8,11 +8,11 @@ class ZonesController < ApplicationController
 
   def show
     @zone = Zone.find params[:id]
-    @languages = Language.includes({geo_states: :zone}, :family).where(geo_states: {zone: @zone})
+    @languages = Language.includes({geo_states: :zone}, :family, :finish_line_progresses).where(geo_states: {zone: @zone})
   end
 
   def nation
-
+    @languages = Language.includes(:family, :finish_line_progresses).all
   end
 
 end
