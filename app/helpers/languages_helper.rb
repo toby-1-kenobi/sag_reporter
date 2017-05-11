@@ -44,4 +44,9 @@ module LanguagesHelper
     table
   end
 
+  def colours_for_finish_line_data(data)
+    colour_map = {nothing: 'grey', no_progress: 'blue', progress: 'orange', complete: 'green'}
+    data.keys.map{ |status| colour_map[status] }
+  end
+
 end
