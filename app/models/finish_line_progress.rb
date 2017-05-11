@@ -7,7 +7,7 @@ class FinishLineProgress < ActiveRecord::Base
       expressed_needs: 2,
       in_progress: 3,
       # 4-6 are options for done markers
-      no_further_needs_expressed: 4,
+      completed: 4,
       further_needs_expressed: 5,
       further_work_in_progress: 6
   }
@@ -45,6 +45,8 @@ class FinishLineProgress < ActiveRecord::Base
           "#{status.humanize}, not started"
         when 'in_progress'
           'In progress, not completed'
+        when 'completed'
+          'Completed'
         else
           "Completed, #{status.humanize}"
       end
@@ -72,7 +74,9 @@ class FinishLineProgress < ActiveRecord::Base
           "#{status.humanize}, not started"
         when 'in_progress'
           'In progress, not completed'
-        when 'no_further_needs_expressed', 'further_needs_expressed', 'further_work_in_progress'
+        when 'completed'
+          'Completed'
+        when 'further_needs_expressed', 'further_work_in_progress'
           "Completed, #{status.humanize}"
         else
           false
@@ -85,9 +89,47 @@ class FinishLineProgress < ActiveRecord::Base
         'no_need' => 'No churches',
         'possible_need' => 'No use',
         'in_progress' => 'Few churches using',
-        'no_further_needs_expressed' => 'Many churches using',
+        'completed' => 'Many churches using',
         'further_work_in_progress' => 'Church running project'
     }
+  end
+
+  def self.status_description(status, church_engagement)
+    if church_engagement
+      case status
+        when 'no_need'
+          'There are no local churches'
+        when 'possible_need'
+          'There are local churches but none are accepting and using the mother tongue materials for transformation'
+        when 'in_progress'
+          'Some local churches (a few only) are accepting and using the mother tongue materials for transformation'
+        when 'completed'
+          'Many local churches, from a range of denominations, are accepting and using the mother tongue materials for transformation'
+        when 'further_work_in_progress'
+          'Local churches are going beyond use, to resourcing and running the project themselves'
+        else
+          ''
+      end
+    else
+      case status
+        when 'no_need'
+          'Material is not available, but based on the available information there is no need'
+        when 'possible_need'
+          'Material is not available, but could emerge as a potential need'
+        when 'expressed_needs'
+          'Material is not available, but there is a need (based on the research and/or through church request) to make the material available'
+        when 'in_progress'
+          'Work on the material is in progress'
+        when 'completed'
+          'Material is available and there is no further need expressed'
+        when 'further_needs_expressed'
+          'Even though the material is available, further need is expressed because of a dialect or script difference'
+        when 'further_work_in_progress'
+          'Even though the material is available, because of a dialect or script difference, work is in progress (in a different dialect or a script)'
+        else
+          ''
+      end
+    end
   end
 
 end

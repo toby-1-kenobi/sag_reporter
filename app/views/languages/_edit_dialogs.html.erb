@@ -383,7 +383,8 @@
       <% FinishLineProgress.statuses.each do |status, status_id| %>
           <% link_text = FinishLineProgress.human_of_status(status, false) %>
           <li class="mdl-list__item">
-            <%= link_to link_text, set_flp_for_language_path(id: @language, marker: 0, progress: status), class: 'progress-link mdl-list__item-primary-content cancel', method: :patch, remote: true %>
+            <%= link_to link_text, set_flp_for_language_path(id: @language, marker: 0, progress: status), class: 'progress-link mdl-list__item-primary-content cancel', id: "flp-status-#{status}", method: :patch, remote: true %>
+            <span class="mdl-tooltip" for="flp-status-<%= status %>"><%= FinishLineProgress.status_description(status, false) %></span>
           </li>
       <% end %>
     </ul>
@@ -393,7 +394,8 @@
         <% link_text = FinishLineProgress.human_of_status(status, true) %>
         <% if link_text %>
           <li class="mdl-list__item">
-            <%= link_to link_text, set_flp_for_language_path(id: @language, marker: 0, progress: status), class: 'progress-link mdl-list__item-primary-content cancel', method: :patch, remote: true %>
+            <%= link_to link_text, set_flp_for_language_path(id: @language, marker: 0, progress: status), class: 'progress-link mdl-list__item-primary-content cancel', id: "flp-ce-status-#{status}", method: :patch, remote: true %>
+            <span class="mdl-tooltip" for="flp-ce-status-<%= status %>"><%= FinishLineProgress.status_description(status, true) %></span>
           </li>
         <% end %>
       <% end %>
