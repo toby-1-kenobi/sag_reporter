@@ -121,7 +121,7 @@ class FinishLineProgress < ActiveRecord::Base
         when 'in_progress'
           'Work on the material is in progress'
         when 'completed'
-          'Material is available and there is no further need expressed'
+          'Material is available'
         when 'further_needs_expressed'
           'Even though the material is available, further need is expressed because of a dialect or script difference'
         when 'further_work_in_progress'
