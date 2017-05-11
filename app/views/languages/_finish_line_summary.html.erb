@@ -10,6 +10,7 @@
           <th>No Progress yet <i class="material-icons">star_border</i></th>
           <th>In Progress <i class="material-icons">star_half</i></th>
           <th>Complete <i class="material-icons">star</i></th>
+          <th><i class="material-icons">pie_chart</i></th>
         </tr>
       </thead>
       <tbody>
@@ -19,6 +20,13 @@
           <td><%= data[:no_progress] %> (<%= (data[:no_progress] *100) / language_amount %>%)</td>
           <td><%= data[:progress] %> (<%= (data[:progress] *100) / language_amount %>%)</td>
           <td><%= data[:complete] %> (<%= (data[:complete] *100) / language_amount %>%)</td>
+          <td>
+            <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-<%= marker.number %>">
+              <input type="checkbox" id="pie-toggle-<%= marker.number %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-<%= marker.number %>">
+              <i class="mdl-icon-toggle__label material-icons on hide">pie_chart</i>
+              <i class="mdl-icon-toggle__label material-icons off">pie_chart_outlined</i>
+            </label>
+          </td>
         </tr>
       <% end %>
       </tbody>
@@ -26,7 +34,7 @@
   </div>
   <div class="mdl-grid--6-col">
     <% finish_line_data.each do |marker, data| %>
-        <div class="chart-card mdl-card mdl-shadow--2dp">
+        <div id="pie-chart-<%= marker.number %>" class="chart-card mdl-card mdl-shadow--2dp hide">
           <div class="mdl-card__title">
             <h2 class="mdl-card__title-text"><%= marker.name %></h2>
           </div>
