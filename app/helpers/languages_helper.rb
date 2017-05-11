@@ -33,10 +33,10 @@ module LanguagesHelper
     end
   end
 
-  def build_finish_line_table(languages)
-    table = FinishLineMarker.all.map{ |marker| [marker, Hash.new(0)] }.to_h
+  def build_finish_line_table(languages, markers)
+    table = markers.map{ |marker| [marker, Hash.new(0)] }.to_h
     languages.each do |lang|
-      FinishLineMarker.find_each do |marker|
+      markers.each do |marker|
         flp = FinishLineProgress.find_or_create_by(language: lang, finish_line_marker: marker)
         table[marker][flp.category] += 1
       end

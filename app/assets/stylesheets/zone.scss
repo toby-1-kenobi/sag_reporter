@@ -2,9 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.chart-pane {
-  padding: 1ex;
-  .mdl-card {
-    width: 500px;
-  }
+.chart-card {
+  margin: 20px;
+  width: 500px !important;
 }

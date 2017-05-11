@@ -3,8 +3,6 @@
 
 <% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
 
-<%= '<script>console.log("page is editable");</script>'.html_safe if editable %>
-
 <div id="edit-response"></div>
 <div id="pending-edits" class="mdl-grid">
   <% @user_pending_edits.each do |edit| %>
