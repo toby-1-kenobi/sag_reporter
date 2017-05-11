@@ -9,7 +9,7 @@ class EditsController < ApplicationController
 
   before_action only: [:approve, :reject] do
     @edit = Edit.find params[:id]
-    head :forbidden unless User.curating(@edit).include? logged_in_user
+    head :forbidden unless (logged_in_user.national_curator? or User.curating(@edit).include? logged_in_user)
   end
 
   def create
