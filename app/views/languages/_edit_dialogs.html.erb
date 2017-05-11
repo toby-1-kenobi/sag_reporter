@@ -406,50 +406,6 @@
   </div>
 </dialog>
 
-<dialog id="edit-creator-comment-dialog" class="mdl-dialog">
-  <h4 class="mdl-dialog__title"></h4>
-  <div class="mdl-dialog__content ">
-  <%= form_tag add_creator_comment_to_edits_path, remote: true, method: :patch do %>
-      <%= hidden_field_tag 'edit_id', '0', class: 'edit-id-field' %>
-      <div class="mdl-textfield mdl-js-textfield">
-        <%= label_tag 'comment', 'How do you know?' %>
-        <%= text_area_tag 'comment', '', class: 'mdl-textfield__input' %>
-      </div>
-  <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">OK</button>
-  </div>
-</dialog>
+<%= render 'shared/edit_message_dialog' %>
 
-<dialog id="edit-curator-comment-dialog" class="mdl-dialog">
-  <h4 class="mdl-dialog__title"></h4>
-  <div class="mdl-dialog__content ">
-    <%= form_tag add_curator_comment_to_edits_path, remote: true, method: :patch do %>
-        <%= hidden_field_tag 'edit_id', '0', class: 'edit-id-field' %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'comment', 'Please give a reason' %>
-          <%= text_area_tag 'comment', '', class: 'comment-field mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">OK</button>
-  </div>
-</dialog>
-
-<script>
-  $('dialog').each(function() {
-    let dialog = this;
-    if (! dialog.showModal) {
-      dialogPolyfill.registerDialog(dialog);
-    }
-    $(dialog).find('.submit').on('click', function() {
-      $(dialog).find('form').submit();
-      dialog.close();
-    });
-    $(dialog).find('.cancel').on('click', function() {
-      dialog.close();
-    });
-  });
-</script>
+<%= render 'shared/dialog_activation' %>
