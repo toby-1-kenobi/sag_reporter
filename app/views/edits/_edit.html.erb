@@ -58,7 +58,7 @@
     </div>
     <% if edit.creator_comment.present? %>
       <div>
-        <%= logged_in_user.trusted? ? "#{edit.user.name} says" : "They say" %> <span class="creator-comment"><%= edit.creator_comment %></span>
+        <%= logged_in_user.trusted? ? "#{edit.user.name} says" : "They say" %>: <span class="creator-comment"><%= edit.creator_comment %></span>
       </div>
     <% end %>
     <div>
@@ -79,7 +79,7 @@
     </div>
       <% if edit.curator_comment.present? %>
         <div>
-          <%= logged_in_user.trusted? ? "#{edit.curated_by.name} says" : "They say" %> <span class="curator-comment"><%= edit.curator_comment %></span>
+          <%= logged_in_user.trusted? ? "#{edit.curated_by.name} says" : "They say" %>: <span class="curator-comment"><%= edit.curator_comment %></span>
         </div>
       <% end %>
     <% end %>
