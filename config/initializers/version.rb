@@ -1,4 +1,4 @@
 class SagReporter::Application
   APP_SHORT_NAME = 'LCIR'
-  VERSION = '1.5.2'
+  VERSION = '2.1.1'
 end
