@@ -54,6 +54,10 @@ class LanguagesController < ApplicationController
       @user_pending_fl_edits = @user_pending_fl_edits.where(user: logged_in_user)
     end
     @user_pending_fl_edits = @user_pending_fl_edits.to_a.select{ |edit| FinishLineProgress.find(edit.record_id).language == @language }
+    # if the user is national or the language is in at least one of the user's member states then the user can edit it
+    @editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language))
+    # attributes with pending edits should be visually distinct in the form
+    @pending_attributes = @user_pending_edits.pluck :attribute_name
   end
 
   def show_details
@@ -80,6 +84,10 @@ class LanguagesController < ApplicationController
     @user_pending_fl_edits = @user_pending_fl_edits.to_a.select{ |edit| FinishLineProgress.find(edit.record_id).language == @language }
     # get the latest impact report to show on the language details page
     @impact_report = @language.reports.where.not(impact_report: nil).order(:report_date).last
+    # if the user is national or the language is in at least one of the user's member states then the user can edit it
+    @editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language))
+    # attributes with pending edits should be visually distinct in the form
+    @pending_attributes = @user_pending_edits.pluck :attribute_name
   end
 
   # match a search query against language names

@@ -1,23 +1,54 @@
 
 <%= render partial: 'text_edit_dialog', locals: {
-    element_id: 'language-name',
     attribute_name: 'name',
-    label: 'Language name',
-    area: false
+    label: 'Language name'
 } %>
 
 <%= render partial: 'text_edit_dialog', locals: {
-    element_id: 'language-iso',
     attribute_name: 'iso',
-    label: 'ISO code',
-    area: false
+    label: 'ISO code'
 } %>
 
 <%= render partial: 'text_edit_dialog', locals: {
-    element_id: 'language-description',
     attribute_name: 'description',
     label: 'Language description',
     area: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'bible_first_published',
+    label: 'Year the whole Bible was first published',
+    number: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'bible_last_published',
+    label: 'Year the whole Bible was most recently published',
+    number: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'nt_first_published',
+    label: 'Year the New Testament was first published',
+    number: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'nt_last_published',
+    label: 'Year the New Testament was most recently published',
+    number: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'portions_first_published',
+    label: 'Year a book of the Bible was first published',
+    number: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'portions_last_published',
+    label: 'Year a book of the Bible was most recently published',
+    number: true
 } %>
 
 <dialog id="edit-dialog-location" class="mdl-dialog wide" data-for="language-location">

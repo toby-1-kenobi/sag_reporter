@@ -1,3 +1,7 @@
+<% element_id = "language-#{attribute_name.dasherize}" %>
+<% area = false unless defined? area %>
+<% number = false unless defined? area %>
+<% if number then area = false end %>
 <dialog id="edit-dialog-<%= element_id %>" class="mdl-dialog" data-for="<%= element_id %>">
   <div class="mdl-dialog__content ">
     <%= form_tag edits_path, remote: true, method: :post do %>
@@ -11,7 +15,14 @@
           <% if area %>
               <%= text_area_tag 'edit[new_value]', @language.send(attribute_name), class: 'mdl-textfield__input' %>
           <% else %>
-            <%= text_field_tag 'edit[new_value]', @language.send(attribute_name), class: 'mdl-textfield__input' %>
+              <% if number %>
+                <%= text_field_tag 'edit[new_value]', @language.send(attribute_name), class: 'mdl-textfield__input', pattern: '-?[0-9]*(\.[0-9]+)?' %>
+              <% else %>
+                <%= text_field_tag 'edit[new_value]', @language.send(attribute_name), class: 'mdl-textfield__input' %>
+              <% end %>
+          <% end %>
+          <% if number %>
+              <span class="mdl-textfield__error">Numbers only please!</span>
           <% end %>
         </div>
     <% end %>
