@@ -17,6 +17,7 @@
 <% elsif @edit.pending_single_approval? or @edit.pending_double_approval? %>
   $('#edit-response').slideUp('fast');
   $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render @edit %></div>');
+  $('#<%= @element_id %>').addClass('pending-field');
   let commentDialog = $("#edit-creator-comment-dialog");
   commentDialog.find('.mdl-dialog__title').html('change <%= @edit.attribute_name.humanize %>');
   commentDialog.find('.edit-id-field').val('<%= @edit.id %>');
