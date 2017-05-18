@@ -59,10 +59,10 @@
       <tr><th>Old Testament Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: ot_marker).human_status %></td></tr>
       <% if (@language.number_of_translations && @language.number_of_translations > 0) or @editable %>
           <% tr_num = @language.number_of_translations || 0 %>
-          <tr><th>Number of translation projects</th><td id="language-number-of-translations" class="<%= 'editable' if @editable %> <%= 'pending-field' if @pending_attributes.include? 'number_of_translations' %>"><%= tr_num %><%= render 'shared/edit_icon' if @editable %></td></tr>
+          <%= render 'attribute_table_row', title: 'Number of translation projects', attribute_name: 'number_of_translations' %>
       <% end %>
       <% if (@language.translation_info.present? or @editable) and logged_in_user.trusted? %>
-          <tr><th>Translation information</th><td id="language-translation-info" class="<%= 'editable' if @editable %> <%= 'pending-field' if @pending_attributes.include? 'translation_info' %>"><%= @language.translation_info %><%= render 'shared/edit_icon' if @editable %></td></tr>
+          <%= render 'attribute_table_row', title: 'Translation information', attribute_name: 'translation_info' %>
       <% end %>
       <% if @language.tr_committee_established.present? %>
           <tr><th>Translation committee established</th><td><%= @language.tr_committee_established? ? 'Yes' : 'No' %></td></tr>
@@ -121,9 +121,9 @@
       </tr>
       </tbody>
     </table>
-    <% if @language.selections_published.present? %>
+    <% if @language.selections_published.present? or @editable%>
         <table class="language-data">
-          <tr><th>Selections</th><td><%= @language.selections_published %></td></tr>
+          <%= render 'attribute_table_row', title: 'Selections', attribute_name: 'selections_published' %>
         </table>
     <% end %>
 
@@ -177,39 +177,22 @@
       <% dictionary_marker = FinishLineMarker.find_by_number(9) %>
       <tr><th>Dictionary Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: dictionary_marker).human_status %></td></tr>
       <% if @editable or @language.script.present? %>
-          <tr>
-            <th>Script</th>
-            <td id="language-script" class="<%= 'editable' if @editable %> <%= 'pending-field' if @pending_attributes.include? 'script' %>">
-              <%= @language.script %>
-              <%= render 'shared/edit_icon' if @editable %>
-            </td>
-          </tr>
+          <%= render 'attribute_table_row', title: 'Script', attribute_name: 'script' %>
       <% end %>
       <% if @editable or @language.mt_literacy.present? %>
-          <tr>
-            <th>Mother-Tongue literacy</th>
-            <!--<td id="language-mt-literacy" class="<%= 'editable' if @editable %> <%= 'pending-field' if @pending_attributes.include? 'mt_literacy' %>">-->
-              <!--<%= @language.mt_literacy %>-->
-              <!--<%= render 'shared/edit_icon' if @editable %>-->
-            <!--</td>-->
-            <%= render partial: 'text_value', locals: {
-                html_tag: :td,
-                attribute_name: 'mt_literacy',
-                object: @language
-            } %>
-          </tr>
+          <%= render 'attribute_table_row', title: 'Mother-Tongue literacy', attribute_name: 'mt_literacy' %>
       <% end %>
       <% if @editable or @language.l2_literacy.present? %>
-          <tr><th>Second language literacy</th><td id="language-l2-literacy" class="<%= 'editable' if @editable %> <%= 'pending-field' if @pending_attributes.include? 'l2_literacy' %>"><%= @language.l2_literacy %><%= render 'shared/edit_icon' if @editable %></td></tr>
+          <%= render 'attribute_table_row', title: 'Second language literacy', attribute_name: 'l2_literacy' %>
       <% end %>
       <% if @editable or @language.literate_believers.present? and logged_in_user.sees_faith_based_data? %>
-          <tr><th>Literate believers</th><td id="language-literate-believers" class="<%= 'editable' if @editable %>"><%= @language.literate_believers %><%= render 'shared/edit_icon' if @editable %></td></tr>
+          <%= render 'attribute_table_row', title: 'Literate believers', attribute_name: 'literate_believers' %>
       <% end %>
       <% if @editable or @language.mt_literacy_programs.present? %>
-          <tr><th>Mother-Tongue literacy programs</th><td id="language-mt-literacy-programs" class="<%= 'editable' if @editable %>"><%= @language.mt_literacy_programs %><%= render 'shared/edit_icon' if @editable %></td></tr>
+          <%= render 'attribute_table_row', title: 'Mother-Tongue literacy programs', attribute_name: 'mt_literacy_programs' %>
       <% end %>
       <% if @editable or @language.attitude_to_lang_dev.present? %>
-          <tr><th>Attitude towards development</th><td id="language-attitude-to-lang-dev" class="<%= 'editable' if @editable %>"><%= @language.attitude_to_lang_dev %><%= render 'shared/edit_icon' if @editable %></td></tr>
+          <%= render 'attribute_table_row', title: 'Attitude towards development', attribute_name: 'attitude_to_lang_dev' %>
       <% end %>
       <% if @language.oral_traditions_print.present? %>
           <tr><th>Oral traditions are in print</th><td><%= @language.oral_traditions_print ? 'Yes' : 'No' %></td></tr>
@@ -242,7 +225,7 @@
     <h3>Religion</h3>
     <table class="language-data">
       <% if @language.religion.present? %>
-          <tr><th>Religion</th><td><%= @language.religion %></td></tr>
+          <%= render 'attribute_table_row', title: 'Religion', attribute_name: 'religion' %>
       <% end %>
       <% if @language.local_fellowship.present? and logged_in_user.sees_faith_based_data? %>
           <tr><th>Local Fellowship exists</th><td><%= @language.local_fellowship? ? 'Yes' : 'No' %></td></tr>

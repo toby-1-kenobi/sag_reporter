@@ -51,6 +51,16 @@
     number: true
 } %>
 
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'selections_published',
+    label: 'Publications of Bible selections (less than a book)'
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'religion',
+    label: 'Religion'
+} %>
+
 <dialog id="edit-dialog-location" class="mdl-dialog wide" data-for="language-location">
   <div class="mdl-dialog__content ">
     <%= form_tag edits_path, remote: true, method: :post do %>

@@ -1,0 +1,8 @@
+<tr>
+  <th><%= title %></th>
+  <%= render partial: 'text_value', locals: {
+      html_tag: :td,
+      attribute_name: attribute_name,
+      object: @language
+  }%>
+</tr>
