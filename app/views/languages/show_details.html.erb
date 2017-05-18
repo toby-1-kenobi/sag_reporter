@@ -367,7 +367,7 @@
 
 
     <a name="engaged-organisations"><h3>Organisations engaged</h3></a>
-    <% if @language.engaged_organisations.any? %>
+    <% if @editable or @language.engaged_organisations.any? %>
         <ul class="engaged-orgs mdl-list">
           <% @language.engaged_organisations.each do |org| %>
               <li class="org-<%= org.id %> mdl-list__item">
@@ -401,7 +401,7 @@
 
 
       <a name="translating-organisations"><h3>Organisations involved with translation</h3></a>
-      <% if @language.translating_organisations.any? %>
+      <% if @editable or @language.translating_organisations.any? %>
           <ul class="translating-orgs mdl-list">
             <% @language.translating_organisations.each do |org| %>
                 <li class="org-<%= org.id %> mdl-list__item">
