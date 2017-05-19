@@ -36,9 +36,8 @@
         <% end %>
       <% else %>
           <% if edit.model_klass_name == 'FinishLineProgress' %>
-              <% church_engagement = object.finish_line_marker.number == 0 %>
-              <% old_thing = FinishLineProgress.human_of_status(edit.old_value, church_engagement) %>
-              <% new_thing = FinishLineProgress.human_of_status(edit.new_value, church_engagement) %>
+              <% old_thing = FinishLineProgress.human_of_status(edit.old_value, object.finish_line_marker.number) %>
+              <% new_thing = FinishLineProgress.human_of_status(edit.new_value, object.finish_line_marker.number) %>
           <% else %>
           <% old_thing = edit.old_value.humanize %>
           <% new_thing = edit.new_value.humanize %>

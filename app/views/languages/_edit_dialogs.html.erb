@@ -416,36 +416,30 @@
   </div>
 </dialog>
 
-<dialog id="finish-line-dialog" class="mdl-dialog">
-  <h4 class="mdl-dialog__title"></h4>
-  <div class="mdl-dialog__content ">
-    <span class="description"></span>
-    <ul class="finish-line-progress-options mdl-list">
-      <% FinishLineProgress.statuses.each do |status, status_id| %>
-          <% link_text = FinishLineProgress.human_of_status(status, false) %>
-          <li class="mdl-list__item">
-            <%= link_to link_text, set_flp_for_language_path(id: @language, marker: 0, progress: status), class: 'progress-link mdl-list__item-primary-content cancel', id: "flp-status-#{status}", method: :patch, remote: true %>
-            <span class="mdl-tooltip" for="flp-status-<%= status %>"><%= FinishLineProgress.status_description(status, false) %></span>
-          </li>
-      <% end %>
-    </ul>
-    <%# special set of options for church engagement %>
-    <ul class="finish-line-progress-options-ce mdl-list">
-      <% FinishLineProgress.statuses.each do |status, status_id| %>
-        <% link_text = FinishLineProgress.human_of_status(status, true) %>
-        <% if link_text %>
-          <li class="mdl-list__item">
-            <%= link_to link_text, set_flp_for_language_path(id: @language, marker: 0, progress: status), class: 'progress-link mdl-list__item-primary-content cancel', id: "flp-ce-status-#{status}", method: :patch, remote: true %>
-            <span class="mdl-tooltip" for="flp-ce-status-<%= status %>"><%= FinishLineProgress.status_description(status, true) %></span>
-          </li>
+<% FinishLineMarker.find_each do |marker| %>
+
+  <dialog id="finish-line-dialog-<%= marker.number %>" class="mdl-dialog">
+    <h4 class="mdl-dialog__title"><%= marker.name %></h4>
+    <div class="mdl-dialog__content ">
+      <span class="description"><%= marker.description %></span>
+      <ul class="finish-line-progress-options-ce mdl-list">
+        <% FinishLineProgress.statuses.each do |status, status_id| %>
+          <% link_text = FinishLineProgress.human_of_status(status, marker.number) %>
+          <% if link_text %>
+            <li class="mdl-list__item">
+              <%= link_to link_text, set_flp_for_language_path(id: @language, marker: marker.number, progress: status), class: 'progress-link mdl-list__item-primary-content cancel', id: "flp-#{marker.number}-status-#{status}", method: :patch, remote: true %>
+              <span class="mdl-tooltip" for="flp-<%= marker.number %>-status-<%= status %>"><%= marker.status_description(status) %></span>
+            </li>
+          <% end %>
         <% end %>
-      <% end %>
-    </ul>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
+      </ul>
+    </div>
+    <div class="md-dialog__actions">
+      <button type="button" class="mdl-button cancel">Cancel</button>
+    </div>
+  </dialog>
+
+<% end %>
 
 <%= render 'shared/edit_message_dialog' %>
 
