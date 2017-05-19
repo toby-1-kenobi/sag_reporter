@@ -37,6 +37,7 @@ def merge_state_languages(from_sl, to_sl)
   if from_sl.project?
     to_sl.update_attribute(:project, true)
   end
+  from_sl.language_progresses.update_all(state_language_id: to_sl.id)
   from_sl.destroy
 end
 
@@ -146,7 +147,8 @@ if response.start_with?('y')
 
   if response.start_with?('y')
     from_lang.reload
+    puts "deleting #{from_lang.name}"
     from_lang.destroy
   end
-  
+
 end
