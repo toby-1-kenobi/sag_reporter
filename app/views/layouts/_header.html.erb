@@ -5,8 +5,23 @@
     <div class="mdl-layout-spacer"></div>
     <nav class="mdl-navigation">
       <% if logged_in? %>
+          <%= form_tag search_languages_path, method: :get, remote: true do %>
+              <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
+                <!--<%= search_field_tag 'q', nil, class: 'mdl-textfield__input' %>-->
+                <!--<%= label_tag 'q', 'Search for any language...', class: 'mdl-textfield__label' %>-->
+              <!--</div>-->
+              <!--<%= submit_tag 'Search', class: 'mdl-button mdl-js-button mdl-button&#45;&#45;raised' %>-->
+              <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label">
+                <label class="mdl-button mdl-js-button mdl-button--icon" for="header-search-field">
+                  <i class="material-icons">search</i>
+                </label>
+                <div class="mdl-textfield__expandable-holder">
+                  <input class="mdl-textfield__input" type="text" name="q" id="header-search-field" />
+                </div>
+              </div>
+          <% end %>
             <%= link_to root_path, class: 'mdl-navigation__link' do %>
-                Home
+              <i class="material-icons">home</i>
             <% end %>
             <%= link_to logged_in_user, class: 'mdl-navigation__link' do %>
                 <%= logged_in_user.name %>
