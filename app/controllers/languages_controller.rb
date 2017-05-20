@@ -100,9 +100,11 @@ class LanguagesController < ApplicationController
       if query.length == 1
         query = "#{query.downcase}%"
       else
+        iso_query = query.downcase
         query = "%#{query.downcase}%"
       end
-      @languages = Language.where('lower(name) LIKE ?', query)
+      @languages = Language.where('lower(name) LIKE ? or iso = ?', query, iso_query)
+      @states = GeoState.where('lower(name) LIKE ?', query)
       respond_to do |format|
         format.js
       end

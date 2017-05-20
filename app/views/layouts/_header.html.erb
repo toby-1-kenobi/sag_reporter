@@ -6,11 +6,6 @@
     <nav class="mdl-navigation">
       <% if logged_in? %>
           <%= form_tag search_languages_path, method: :get, remote: true do %>
-              <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
-                <!--<%= search_field_tag 'q', nil, class: 'mdl-textfield__input' %>-->
-                <!--<%= label_tag 'q', 'Search for any language...', class: 'mdl-textfield__label' %>-->
-              <!--</div>-->
-              <!--<%= submit_tag 'Search', class: 'mdl-button mdl-js-button mdl-button&#45;&#45;raised' %>-->
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label">
                 <label class="mdl-button mdl-js-button mdl-button--icon" for="header-search-field">
                   <i class="material-icons">search</i>
