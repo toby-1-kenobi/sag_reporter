@@ -37,7 +37,11 @@ def merge_state_languages(from_sl, to_sl)
   if from_sl.project?
     to_sl.update_attribute(:project, true)
   end
-  from_sl.language_progresses.update_all(state_language_id: to_sl.id)
+  from_sl.language_progresses.find_each do |lp|
+    new_lp = LanguageProgress.find_or_create_by(state_language: to_sl, progress_marker: lp.progress_marker)
+    lp.progress_updates.update_all(language_progress: new_lp)
+    lp.destroy
+  end
   from_sl.destroy
 end
 
@@ -112,14 +116,6 @@ if response.start_with?('y')
     convert_states(from_lang, to_lang)
   else
     puts 'no states'
-  end
-
-  language_progress_count = from_lang.language_progresses.count
-  if language_progress_count > 0
-    puts "converting #{language_progress_count} language_progresses"
-    convert_language_progresses(from_lang, to_lang)
-  else
-    puts 'no language_progresses'
   end
 
   engaged_organisation_count = from_lang.engaged_organisations.count
