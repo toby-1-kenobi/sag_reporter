@@ -45,6 +45,20 @@ def merge_state_languages(from_sl, to_sl)
   from_sl.destroy
 end
 
+def convert_translating_organisations(from_lang, to_lang)
+  from_lang.translating_organisations.each do |org|
+    OrganisationTranslation.find_or_create_by(language: to_lang, organisation: org)
+    from_lang.translating_organisations.delete org
+  end
+end
+
+def convert_engaged_organisations(from_lang, to_lang)
+  from_lang.engaged_organisations.each do |org|
+    OrganisationEngagement.find_or_create_by(language: to_lang, organisation: org)
+    from_lang.engaged_organisations.delete org
+  end
+end
+
 from_lang = Language.find ARGV[0]
 to_lang = Language.find ARGV[1]
 
