@@ -39,7 +39,7 @@ def merge_state_languages(from_sl, to_sl)
   end
   from_sl.language_progresses.find_each do |lp|
     new_lp = LanguageProgress.find_or_create_by(state_language: to_sl, progress_marker: lp.progress_marker)
-    lp.progress_updates.update_all(language_progress: new_lp)
+    lp.progress_updates.update_all(language_progress_id: new_lp.id)
     lp.destroy
   end
   from_sl.destroy
