@@ -53,7 +53,7 @@
   <% else %>
       <%= render 'layouts/materialize_header' unless @supress_header %>
   <% end %>
-  <main class="mdl-layout__content">
+  <main class="mdl-layout__content <%= yield(:container_class) %>">
       <% if logged_in_user and logged_in_user.authenticate('password') %>
         <div class="<%= mdl ? 'flash-message' : 'card' %> orange" >
           <div class="card-content">

@@ -4,6 +4,10 @@
 
 @import 'common';
 
+main.no-iso {
+  background-color: lightgoldenrodyellow;
+}
+
 .language-filter-controls {
   $bg: white;
   background-color: $bg;
@@ -115,9 +119,6 @@ table.finish-line-status  {
   }
 }
 
-.translation-status.mdl-card {
-  min-height: auto;
-}
 
 .jp-info .mdl-card__title {
   height: 100px;
@@ -195,11 +196,6 @@ table td.check {
 .mdl-card.translation-status {
   width: initial;
   max-width: 400px;
-}
-
-paper-tabs {
-  color: #fff;
-  box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);
 }
 
 #colour_picker {

@@ -1,4 +1,5 @@
 <% provide(:title, 'Language Details: ' + @language.name) %>
+<% provide(:container_class, 'no-iso') if @language.iso.blank? %>
 
 <div id="edit-response"></div>
 <div id="pending-edits" class="mdl-grid">
