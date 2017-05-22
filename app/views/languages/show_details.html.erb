@@ -288,7 +288,7 @@
       <% end %>
     </table>
 
-        <h4>Classification</h4>
+    <a name="classification"><h4>Classification</h4></a>
         <table class="language-data">
           <% if @language.family_id.present? %>
               <tr><th>Family</th><td id="language-family" class="<%= 'editable' if @editable %>"><%= @language.family_name %><%= render 'shared/edit_icon' if @editable %></td></tr>
