@@ -124,9 +124,9 @@
             <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
             <div class="chart-<%= state_language.id %>"></div>
         <% end %>
-        <% non_project_states = @language.state_languages.joins(:geo_state).where(project: false).pluck('geo_states.name').to_sentence %>
+        <% non_project_states = @language.state_languages.joins(:geo_state).where(project: false).map{ |sl| link_to sl.state_name, sl.geo_state }.to_sentence.html_safe %>
         <% if non_project_states.present? %>
-            <p><%= @language.name %> is spoken in <%= non_project_states %>, but LCI does not track it there.</p>
+            <p><%= @language.name %> is spoken in <%= non_project_states %>, but LCI does not yet track it's transformation there.</p>
         <% end %>
       </div>
 
