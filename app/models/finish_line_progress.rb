@@ -21,7 +21,7 @@ class FinishLineProgress < ActiveRecord::Base
     "#{finish_line_marker.name} for #{language.name}"
   end
 
-  def category
+  def self.category(status)
     case status
       when 'no_need'
         :nothing
@@ -32,6 +32,10 @@ class FinishLineProgress < ActiveRecord::Base
       else
         :complete
     end
+  end
+
+  def category
+    FinishLineProgress.category(status)
   end
 
   def human_status

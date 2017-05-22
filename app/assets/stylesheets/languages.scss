@@ -20,6 +20,12 @@ main.no-iso {
     &:hover {
       background-color: cyan;
     }
+    position: relative;
+    #finish-line-marker-select {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+    }
   }
   .under {
     background-color: $bg;

@@ -67,4 +67,20 @@ $(document).ready ->
         under.addClass('mdl-shadow--4dp')
         under.children('.shadow-clipper').fadeIn(200)
 
+  $('#finish-line-marker-select').on 'click', (event) ->
+    event.stopPropagation()
+    return
+
+  $('.flm-option').on 'click', (event) ->
+    event.stopPropagation()
+    # hide any visible under panels
+    $('.finish-line-status-panel:visible')
+      .removeClass('mdl-shadow--4dp')
+      .children('.shadow-clipper').fadeOut 200, ->
+        $('.finish-line-status-panel:visible').slideUp(300)
+    $('#flm-filter-name').html($(this).find('.flm-name').html())
+    flmNum = $(this).attr('data-flm-number')
+    $("#finish-line-status-select-#{flmNum}").addClass('under').removeClass('hide')
+    return
+
   return

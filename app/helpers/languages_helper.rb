@@ -49,4 +49,17 @@ module LanguagesHelper
     data.keys.map{ |status| colour_map[status] }
   end
 
+  def finish_line_progress_icon(category)
+    case category
+      when :no_progress
+        '<i class="material-icons">star_border</i>'.html_safe
+      when :progress
+        '<i class="material-icons">star_half</i>'.html_safe
+      when :complete
+        '<i class="material-icons">star</i>'.html_safe
+      else
+        # show nothing for nothing
+    end
+  end
+
 end
