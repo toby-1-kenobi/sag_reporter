@@ -24,12 +24,28 @@
             <div class="mdl-tooltip" data-mdl-for="header-home-icon">
               Home
             </div>
-            <%= link_to logged_in_user, class: 'mdl-navigation__link' do %>
-                <%= logged_in_user.name %>
-            <% end %>
-            <%= link_to logout_path, method: 'delete', class: 'mdl-navigation__link' do %>
-                Logout
-            <% end %>
+            <button id="account-menu" class="mdl-button mdl-js-button">
+              <i class="material-icons">account_circle</i> <%= logged_in_user.name %>
+            </button>
+            <div class="mdl-tooltip" data-mdl-for="account-menu">
+              My Account
+            </div>
+            <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect" for="account-menu">
+              <li class="mdl-menu__item">
+                <%= link_to logged_in_user do %>
+                    <i class="material-icons">account_circle</i> <%= logged_in_user.name %>
+                <% end %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link_to edit_user_path(logged_in_user) do %>
+                    <i class="material-icons">edit</i> Edit my account
+                <% end %></li>
+              <li class="mdl-menu__item">
+                <%= link_to logout_path, method: 'delete' do %>
+                    <i class="material-icons">exit_to_app</i> Logout
+                <% end %>
+              </li>
+            </ul>
       <% else %>
           <% unless current_page?(login_path) %>
             <%= link_to login_path, class: 'mdl-navigation__link' do %>
@@ -41,20 +57,41 @@
   </div>
 </header>
 <div class="mdl-layout__drawer">
-  <span class="mdl-layout__title">LCI Reporter</span>
-  <% if logged_in? %>
-      <%= link_to root_path, class: 'mdl-navigation__link' do %>
-          Home
-      <% end %>
-      <%= link_to logged_in_user, class: 'mdl-navigation__link' do %>
-          <%= logged_in_user.name %>
-      <% end %>
-      <%= link_to logout_path, method: 'delete', class: 'mdl-navigation__link' do %>
-          Logout
-      <% end %>
-  <% else %>
-      <%= link_to login_path, class: 'mdl-navigation__link' do %>
-          Login
-      <% end %>
-  <% end %>
+  <span class="mdl-layout__title">LCI App</span>
+  <nav class="mdl-navigation">
+    <% if logged_in? %>
+        <%= link_to root_path, class: 'mdl-navigation__link' do %>
+            <i class="material-icons">home</i> Home
+        <% end %>
+        <%= link_to logged_in_user, class: 'mdl-navigation__link' do %>
+            <i class="material-icons">account_circle</i> My account
+        <% end %>
+        <%= link_to tasks_path, class: 'mdl-navigation__link' do %>
+            <i class="material-icons">build</i> Enter reports
+        <% end %>
+        <%= link_to zones_path, class: 'mdl-navigation__link' do %>
+            <i class="material-icons">explore</i> Zone map
+        <% end %>
+        <% logged_in_user.zones.each do |zone| %>
+          <%= link_to "#{zone.name} Zone", zone_path(zone), class: 'mdl-navigation__link' %>
+        <% end %>
+        <% if logged_in_user.geo_states.count <= 3 %>
+          <% logged_in_user.geo_states.each do |state| %>
+              <%= link_to state.name, geo_state_path(state), class: 'mdl-navigation__link' %>
+          <% end %>
+        <% end %>
+        <% if logged_in_user.edits.any? %>
+        <%= link_to edits_path, class: 'mdl-navigation__link' do %>
+            <i class="material-icons">edit</i> My edits
+        <% end %>
+        <% end %>
+        <%= link_to logout_path, method: 'delete', class: 'mdl-navigation__link' do %>
+            <i class="material-icons">exit_to_app</i> Logout
+        <% end %>
+    <% else %>
+        <%= link_to login_path, class: 'mdl-navigation__link' do %>
+            Login
+        <% end %>
+    <% end %>
+  </nav>
 </div>
