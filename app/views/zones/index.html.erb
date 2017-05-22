@@ -1,15 +1,14 @@
 <% provide(:title, 'Choose Zone') %>
 
-<h1>Find Information</h1>
-<h3>Choose a strategic zone or search for a language.</h3>
+<h4>Choose a strategic zone.</h4>
 
-<ul class="zone-list mdl-list">
-  <li class="mdl-list__item">
-    <%= link_to nation_path do %>
-      <span class="mdl-list__item-primary-content">All India</span>
-    <% end %>
-  </li>
-</ul>
+<!--<ul class="zone-list mdl-list">-->
+  <!--<li class="mdl-list__item">-->
+    <!--<%= link_to nation_path do %>-->
+      <!--<span class="mdl-list__item-primary-content">All India</span>-->
+    <!--<% end %>-->
+  <!--</li>-->
+<!--</ul>-->
 
 <%= image_tag 'LCI_zonal_map.png', alt: 'Strtegic Zones', usemap: '#ZoneMap', width: 1000 %>
 <% south_zone_path = zone_path(Zone.find_by_name 'South') %>

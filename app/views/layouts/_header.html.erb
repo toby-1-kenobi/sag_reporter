@@ -7,17 +7,23 @@
       <% if logged_in? %>
           <%= form_tag search_languages_path, method: :get, remote: true do %>
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label">
-                <label class="mdl-button mdl-js-button mdl-button--icon" for="header-search-field">
+                <label id="header-search-icon-label" class="mdl-button mdl-js-button mdl-button--icon" for="header-search-field">
                   <i class="material-icons">search</i>
                 </label>
                 <div class="mdl-textfield__expandable-holder">
                   <input class="mdl-textfield__input" type="text" name="q" id="header-search-field" />
                 </div>
               </div>
+              <div class="mdl-tooltip" data-mdl-for="header-search-icon-label">
+                Search for language or state
+              </div>
           <% end %>
             <%= link_to root_path, class: 'mdl-navigation__link' do %>
-              <i class="material-icons">home</i>
+              <i id="header-home-icon" class="material-icons">home</i>
             <% end %>
+            <div class="mdl-tooltip" data-mdl-for="header-home-icon">
+              Home
+            </div>
             <%= link_to logged_in_user, class: 'mdl-navigation__link' do %>
                 <%= logged_in_user.name %>
             <% end %>
