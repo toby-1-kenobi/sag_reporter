@@ -102,12 +102,12 @@
     </div>
 
     <% FinishLineMarker.find_each do |flm| %>
-      <div id="finish-line-status-select-<%= flm.number %>" class="finish-line-status-panel hide mdl-shadow--2dp">
+      <div id="finish-line-status-select-<%= flm.number %>" class="finish-line-status finish-line-filter-panel hide mdl-shadow--2dp">
         <div class="shadow-clipper"></div>
         <ul class="mdl-list">
           <% FinishLineProgress.statuses.keys.each do |status| %>
             <% if human_status = FinishLineProgress.human_of_status(status, flm.number) %>
-              <li class="<%= status %> mdl-list__item">
+              <li class="<%= FinishLineProgress.category(status) %> mdl-list__item">
                 <span class="mdl-list__item-primary-content"><%= human_status %></span>
                 <span class="mdl-list__item-secondary-action">
                   <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="flm-<%= flm.number %>-<%= status %>-check">
@@ -117,7 +117,7 @@
                     value="<%= status %>"
                     id="flm-<%= flm.number %>-<%= status %>-check"
                     class="mdl-checkbox__input filter-trigger"
-                    data-filter-trigger-label="language-flm-<%= flm.number %>"
+                    data-filter-trigger-label="flm-<%= flm.number %>"
                     />
                   </label>
                 </span>

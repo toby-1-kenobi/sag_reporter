@@ -101,29 +101,30 @@ table.language-data th {
   font-weight: normal;
 }
 
-table.finish-line-status  {
-  tr.nothing {
+.finish-line-status  {
+  .nothing {
     background-color: lightgrey;
   }
-  tr.no_progress {
+  .no_progress {
     background-color: lightskyblue;
     .finish-line-progress-icon {
       color: dodgerblue;
     }
   }
-  tr.progress {
+  .progress {
     background-color: palegoldenrod;
     .finish-line-progress-icon {
       color: orangered;
     }
   }
-  tr.complete {
+  .complete {
     background-color: springgreen;
     .finish-line-progress-icon {
       color: forestgreen;
     }
   }
 }
+
 
 
 .jp-info .mdl-card__title {

@@ -2,10 +2,12 @@
 
       <li
         class="language-item filterable-item<%= ' extinct' if language.population == 0 %> mdl-list__item mdl-list__item--two-line"
-        data-filter-label="translation-status language-family zone"
-        data-translation-status="<%= language.translation_status.to_s %>"
+        data-filter-label="language-family zone <%= language.finish_line_progresses.map{ |flp| "flm-#{flp.finish_line_marker.number}" }.join(' ') %>"
         data-language-family="<%= language.family.present? ? language.family.id : 'family-unknown' %>"
         data-zone="<%= language.geo_states.any? ? language.geo_states.map(&:zone_id).uniq.join(',') : 'zone-unknown' %>"
+        <% language.finish_line_progresses.each do |flp| %>
+          data-flm-<%= flp.finish_line_marker.number %>="<%= flp.status %>"
+        <% end %>
       >
           <span class="mdl-list__item-primary-content">
             <span><%= link_to language.name, language %></span>
@@ -29,9 +31,11 @@
               <% end %>
             </span>
           </span>
-          <span class="mdl-list__item-secondary-content">
-            <span class="mdl-chip" style="background-color: <%= language.translation_status_colour %>">
-                <span class="mdl-chip__text"><%= language.translation_status.to_s.humanize %></span>
+          <span class="finish-line-status mdl-list__item-secondary-content">
+            <% language.finish_line_progresses.each do |flp| %>
+              <span class="mdl-chip language-flp-chip <%= flp.category %> flm-<%= flp.finish_line_marker.number %> hide">
+                <span class="mdl-chip__text"><%= flp.simple_human_status %></span>
               </span>
+            <% end %>
           </span>
       </li>
