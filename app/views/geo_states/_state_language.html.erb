@@ -1,1 +1,2 @@
-<%= render partial: 'languages/language', object: state_language.language %>
+<% flm_num = logged_in_user.sees_faith_based_data? ? 6 : 8 %>
+<%= render partial: 'languages/language', object: state_language.language, locals: { flm_number: flm_num } %>
