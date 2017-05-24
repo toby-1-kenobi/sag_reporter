@@ -81,7 +81,7 @@
           <% end %>
         <% end %>
         <% if logged_in_user.edits.any? %>
-        <%= link_to edits_path, class: 'mdl-navigation__link' do %>
+        <%= link_to my_edits_path, class: 'mdl-navigation__link' do %>
             <i class="material-icons">edit</i> My edits
         <% end %>
         <% end %>
