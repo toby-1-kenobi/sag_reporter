@@ -33,9 +33,11 @@
           </span>
           <span class="finish-line-status mdl-list__item-secondary-content">
             <% language.finish_line_progresses.each do |flp| %>
-              <span class="mdl-chip language-flp-chip <%= flp.category %> flm-<%= flp.finish_line_marker.number %> hide">
+                <% number = flp.finish_line_marker.number %>
+              <span id="flp-chip-<%= language.id %>-<%= number %>" class="mdl-chip language-flp-chip <%= flp.category %> flm-<%= number %> hide">
                 <span class="mdl-chip__text"><%= flp.simple_human_status %></span>
               </span>
+              <span for="flp-chip-<%= language.id %>-<%= number %>" class="mdl-tooltip"><%= flp.finish_line_marker.name %></span>
             <% end %>
           </span>
       </li>
