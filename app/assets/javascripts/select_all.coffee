@@ -6,13 +6,12 @@ $(document).ready ->
     category = $(this).attr 'data-select-all-trigger'
     console.log(category)
     if $(this).is(':checked')
-      $(".select-all-target:not(checked)[data-select-all-target*=#{category}]").each ->
-        console.log this
+      $(".select-all-target:not(checked)[data-select-all-target=#{category}]").each ->
         $(this).parent()[0].MaterialCheckbox.check()
         $(this).trigger('change')
         return
     else
-      $(".select-all-target:checked[data-select-all-target*=#{category}]").each ->
+      $(".select-all-target:checked[data-select-all-target=#{category}]").each ->
         $(this).parent()[0].MaterialCheckbox.uncheck()
         $(this).trigger('change')
         return
