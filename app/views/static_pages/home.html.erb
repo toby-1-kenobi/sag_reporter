@@ -28,7 +28,7 @@
         LCI App lets you enter reports and do other tasks to keep the information here up to date.
       </div>
       <div class="mdl-card__actions mdl-card--border">
-        <%= link_to 'Do Tasks', tasks_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' %>
+        <%= link_to 'Reporter', tasks_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' %>
       </div>
     </div>
   </div>
@@ -41,7 +41,7 @@
         LCI App shows you information about languages, resources and progress towards LCI outcomes.
       </div>
       <div class="mdl-card__actions mdl-card--border">
-        <%= link_to 'See Information', zones_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' %>
+        <%= link_to 'Language Information', zones_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' %>
       </div>
     </div>
   </div>
@@ -53,7 +53,3 @@
 <div class="outcome-areas mdl-grid">
   <%= render partial: 'outcome_area', collection: @outcome_areas %>
 </div>
-
-<% content_for :attribution do %>
-    | <em>Images designed by <a href="http://www.freepik.com">Freepik</a></em>
-<% end %>
