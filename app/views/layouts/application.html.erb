@@ -12,7 +12,7 @@
   when login_path, two_factor_auth_path, root_path, languages_path, nation_path,
       select_to_assess_path, zones_path, /^\/zones\/[0-9]+$/, /^\/languages\/[0-9]+$/,
       /^\/geo_states\/[0-9]+$/, /^\/organisations\/[0-9]+$/, /^\/languages\/[0-9]+\/show_details$/,
-      new_user_path, curate_edits_path, my_edits_path, /^\/users\/[0-9]+\/edit$/
+      new_user_path, curate_edits_path, my_edits_path, /^\/users\/[0-9]+\/edit$/, tasks_path
     mdl = true
   else
     mdl = false
@@ -47,7 +47,7 @@
 
 <body>
 
-<div class="mdl-layout mdl-js-layout">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
   <% if mdl %>
       <%= render 'layouts/header' unless @supress_header %>
   <% else %>

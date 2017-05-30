@@ -1,19 +1,34 @@
 <% provide(:title, "Tasks") %>
-<h1>tasks</h1>
 
-<%# if not logged_in_user.admin? %>
-  <%# render partial: 'reporter_tasks' %>
-<%# else %>
-  <div class="collection" id="home-menu">
+<% grouped_links = @links.group_by{ |l| l[:category] } %>
+<% active_category = grouped_links.keys.first %>
 
-    <% @links.each do |link_data| %>
-      <% if link_data[:condition] %>
-        <%= link_to link_data[:path], class: 'collection-item waves-effect' do %>
-          <i class="material-icons"><%= link_data[:icon] %></i>
-          <%= link_data[:text] %>
-        <% end %>
-      <% end %>
+
+<% content_for :header_tabs do %>
+  <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+    <% grouped_links.keys.each do |category| %>
+      <%= link_to category.humanize, "##{category}", class: "mdl-layout__tab #{'is-active' if category == active_category}" %>
     <% end %>
-
   </div>
-<%# end %>
+<% end %>
+
+<% grouped_links.each do |category, links| %>
+    <section class="mdl-layout__tab-panel <%= 'is-active' if category == active_category %>" id="<%= category %>">
+      <div class="page-content">
+        <ul class="mdl-list">
+          <% links.select{ |link| link[:condition] }.each do |link_data| %>
+            <li class="mdl-list__item">
+              <span class="mdl-list__item-primary-content">
+                <%= link_to link_data[:path], class: 'collection-item waves-effect' do %>
+                  <i class="material-icons"><%= link_data[:icon] %></i>
+                  <%= link_data[:text] %>
+                <% end %>
+              </span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </section>
+<% end %>
+
+
