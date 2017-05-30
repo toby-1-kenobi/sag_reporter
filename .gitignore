@@ -28,8 +28,9 @@
 # Ignore file uploads
 /public/uploads
 
-# Ignore rubymine project files
+# Ignore rubymine/aptana project files
 /.idea
+/.project
 
 # Ignore files and folders containing private data
 /db/baseline_data/

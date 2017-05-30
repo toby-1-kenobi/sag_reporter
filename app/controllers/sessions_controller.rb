@@ -1,7 +1,26 @@
 class SessionsController < ApplicationController
+
   before_action :check_user, only: [:two_factor_auth, :new, :resend_otp_to_phone, :resend_otp_to_email]
+  skip_before_action :verify_authenticity_token, only: [:create_external]
 
   def new
+  end
+
+  def create_external
+    auth_params = params.require(:auth).permit :phone, :password
+    user = User.find_by phone: auth_params[:phone]
+    if !user
+      head :not_found
+      return
+    end
+    secret_key = Rails.application.secrets.secret_key_base
+    payload = {sub: user.id, iat: Time.now.to_i}
+    token = JWT.encode payload, secret_key, 'HS256'
+    if user.authenticate auth_params[:password]
+      render json: { jwt: token, user: user.id }, status: :created
+    else
+      head :not_found
+    end
   end
 
   def two_factor_auth
