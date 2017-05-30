@@ -1,0 +1,9 @@
+<% if @edit.pending_national_approval? or @edit.rejected? %>
+  let commentDialog = $("#edit-curator-comment-dialog");
+  commentDialog.find('.mdl-dialog__title').html('<%= @edit.rejected? ? 'Reject' : 'Approve' %> change <%= @edit.attribute_name.humanize %>');
+  commentDialog.find('.edit-id-field').val('<%= @edit.id %>');
+  commentDialog.find('.comment-field').val('');
+  commentDialog.get(0).showModal();
+<% else %>
+  $('#edit-<%= @edit.id %>').replaceWith('<%= j render @edit %>');
+<% end %>

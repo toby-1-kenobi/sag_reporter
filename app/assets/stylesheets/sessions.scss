@@ -4,6 +4,25 @@
 
 @import 'common';
 
-.otp_btn {
-    margin : 10px 25px 0px 0px;
+.login-card, .instructions {
+  margin-top: 2em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-card .mdl-card__title {
+  background-color: #fff !important;
+  color: 000;
+  height: 154px;
+  background: image-url("LCI_logo.png") center / cover;
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+
+.resend-controls {
+  text-align: center;
+  margin-top: 1em;
+  form {
+    display: inline-block;
   }
+}

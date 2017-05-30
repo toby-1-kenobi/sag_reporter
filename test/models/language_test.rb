@@ -3,10 +3,10 @@ require 'test_helper'
 describe Language do
 
   let(:language) { Language.new name: 'Test language', lwc: false}
-  let(:assam) { GeoState.new name: 'Assam'
-  }
-  let(:bihar) { GeoState.new name: 'bihar'
-  }
+  let(:assam) { GeoState.new name: 'Assam' }
+  let(:bihar) { GeoState.new name: 'bihar' }
+  let(:national_user) { users(:nathan) }
+  let(:state_based_user) { users(:emma) }
 
   it 'must be valid' do
     value(language).must_be :valid?
@@ -46,5 +46,20 @@ describe Language do
     _(language2).wont_be :valid?
     _(language2.errors[:iso]).must_be :any?
   end
-  
+
+  it 'wont limit scope for national users' do
+    _(national_user).must_be :national?
+    _(Language.user_limited(national_user).count).must_equal Language.all.count
+  end
+
+  it 'will limit scope for state based users' do
+    _(state_based_user).wont_be :national?
+    #count the languages the user has access to
+    language_count = 0
+    state_based_user.geo_states.each do |state|
+      language_count += state.languages.count
+    end
+    _(language_count).wont_equal Language.all.count
+    _(Language.user_limited(state_based_user).count).must_equal language_count
+  end
 end

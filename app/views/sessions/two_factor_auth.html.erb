@@ -1,24 +1,23 @@
 <% provide(:title, 'Log in') %>
-<h1></h1>
-<div class="row" >
-  <div class="card-panel light-blue otp_msg" style='display:none;'></div>
-</div>
-<div class="row">
+
+<div class="flash-message light-blue otp_msg">Please wait for your login code</div>
+
+<div class="mdl-card login-card mdl-shadow--6dp">
   <%= form_for(:session, url: login_path, html: {class: 'col s12', id: 'otp_form'}) do |f| %>
-    <div class="row">
-      <div class="input-field col s12">
-        <%= f.text_field :otp_code %>
-        <%= f.label :otp, 'Short Login Code' %>
-      </div>
+    <div class="mdl-card__title">
     </div>
-      <div class="right">
-        <%= button_tag( :class => 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect', :id => 'btn_login') do %>
-          Log in
-        <% end %>
+      <div class="mdl-card__supporting-text">
+        <div class="mdl-textfield mdl-js-textfield">
+          <%= f.text_field :otp_code %>
+          <%= f.label :otp, 'Short Login Code' %>
+        </div>
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+        <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Log in</button>
       </div>
   <% end %>
 </div>
-<div class="row">
+<div class="resend-controls">
   <script>
     function submitResendPhoneForm() {
       document.getElementById('resend-phone-form').submit();
@@ -83,7 +82,7 @@
     });
     </script>
   <%= form_tag(resend_code_to_phone_path, class: 'col s6', id: 'resend-phone-form', is: 'iron-form', 'on-iron-form-response': 'resendSmsResponseHandler') do |f| %>
-    <paper-button onclick="submitResendPhoneForm()" class="resend_otp_to_phone">Resend Login Code to Phone</paper-button>
+    <button onclick="submitResendPhoneForm()" class="resend_otp_to_phone mdl-button mdl-js-button mdl-button--raised mdl-button--accent">Resend Login Code to Phone</button>
       <div class="mdl-spinner mdl-js-spinner"></div>
   <% end %>
   <% if @user.email.present? and @user.email_confirmed? %>
@@ -110,7 +109,7 @@
         });
       </script>
     <%= form_tag(resend_code_to_email_path, class: 'col s6', id: 'resend-email-code-form', is: 'iron-form', 'on-iron-form-response': 'resendEmailCodeResponseHandler') do |f| %>
-        <paper-button onclick="submitResendEmailCodeForm()" class="resend_otp_to_email">Resend Login Code to Email</paper-button>
+        <button onclick="submitResendEmailCodeForm()" class="resend_otp_to_email mdl-button mdl-js-button mdl-button--raised mdl-button--accent">Resend Login Code to Email</button>
           <div class="mdl-spinner mdl-js-spinner"></div>
     <% end %>
   <% end %>

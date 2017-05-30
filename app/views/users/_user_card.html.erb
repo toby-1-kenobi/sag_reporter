@@ -1,5 +1,5 @@
 <div class="card user light-blue" id="user-<%= user_card.id %>">
-  <% if logged_in_user.trusted? or logged_in_user?(user) %>
+  <% if logged_in_user.trusted? or logged_in_user?(user_card) %>
       <% user_name = user_card.name %>
   <% else %>
       <% user_name = "user ##{user_card.id}" %>
@@ -8,9 +8,15 @@
     <span class="card-title"><i class="material-icons prefix">account_circle</i> <%= user_name %></span>
     <table class="bordered">
       <tbody>
-        <% language_names = user_card.spoken_languages.map { |e| e.name } %>
-        <% zone_names = user_card.zones.map { |e| e.name } %>
-        <% state_names = user_card.geo_states.map { |e| e.name } %>
+        <% language_names = user_card.spoken_languages.map { |e| e.name }
+           zone_names = user_card.zones.map { |e| e.name }
+           state_names = user_card.geo_states.map { |e| e.name }
+           privileges = Array.new
+           privileges << 'Administrator' if user_card.admin?
+           privileges << 'Can view sensitive data' if user_card.trusted?
+           privileges << 'Can edit at national level' if user_card.national?
+           privileges << 'Is the national curator' if user_card.national_curator?
+        %>
         <%# Show phone an email only if the current user is trusted, or it's them. %>
         <% if logged_in_user.trusted? or logged_in_user?(user_card) %>
           <tr>
@@ -35,7 +41,17 @@
         <tr>
           <th>Role:</th>
           <td><%= user_card.role_description %></td>
+          <% if user_card.curated_states.any? %>
+            <th>Curating for</th>
+            <td><%= user_card.curated_states.pluck(:name).join(', ') %></td>
+          <% end %>
         </tr>
+        <% if privileges.any? %>
+          <tr>
+            <th>Privileges:</th>
+            <td colspan="3"><%= privileges.join(', ') %></td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>

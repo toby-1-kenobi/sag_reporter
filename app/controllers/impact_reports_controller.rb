@@ -71,7 +71,6 @@ class ImpactReportsController < ApplicationController
   end
 
   def tag
-    store_location
     if params[:month]
       # If the month is later than current month, it must be refering to last year
       # Future dates dont make sense here

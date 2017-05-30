@@ -1,0 +1,52 @@
+<% provide(:title, 'National Dashboard') %>
+
+<!-- breadcrumbs will go here -->
+<!-- India | previously navigated Zone | previously navigated state | previously navigated language -->
+<ul class="breadcrumbs">
+  <li><%= link_to 'India', nation_path %></li>
+</ul>
+
+<h1>India</h1>
+
+<div class="mdl-tabs mdl-js-tabs">
+  <div class="mdl-tabs__tab-bar">
+    <a href="#progress-tab" class="mdl-tabs__tab">Progress</a>
+    <a href="#zones-tab" class="mdl-tabs__tab">Zones</a>
+    <a href="#states-tab" class="mdl-tabs__tab">States</a>
+    <a href="#languages-tab" class="mdl-tabs__tab">Languages</a>
+  </div>
+  <div class="mdl-tabs__panel is-active" id="progress-tab">
+    <%= render 'languages/finish_line_summary', languages: Language.all %>
+  </div>
+  <div class="mdl-tabs__panel" id="zones-tab">
+    <ul class="zone-list mdl-list">
+      <% Zone.find_each do |zone| %>
+          <li class="mdl-list__item">
+            <%= link_to zone do %>
+                <span class="mdl-list__item-primary-content"><%= zone.name %></span>
+            <% end %>
+          </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="mdl-tabs__panel" id="states-tab">
+    <ul class="state-list mdl-list">
+      <% GeoState.find_each do |state| %>
+          <li class="mdl-list__item">
+            <%= link_to state do %>
+                <span class="mdl-list__item-primary-content"><%= state.name %></span>
+            <% end %>
+          </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="mdl-tabs__panel" id="languages-tab">
+
+    <%= render 'languages/list_filter_controls' %>
+
+    <ul class="languages mdl-list">
+      <%= render partial: 'languages/language', collection: Language.all.includes({geo_states: :zone}, :family) %>
+    </ul>
+
+  </div>
+</div>

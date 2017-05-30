@@ -1,5 +1,4 @@
-<% provide(:title, "Assess Progress Markers for #{@language.name}") %>
-<% provide(:title, "Assess Progress Markers for #{@language.name}") %>
+<% provide(:title, "Assess Progress Markers for #{@state_language.language_name}") %>
 
 <datalist id="pm-data" class="hide">
   <% ProgressMarker.spread_text.each do |key, text| %>
@@ -7,35 +6,48 @@
   <% end %>
 </datalist>
 
-<%= form_tag({controller: "topics", action: "update_progress"}, method: "post") do %>
 
-  <div class="row">
-    <div class="col s12 m6 l4">
-      <%= render partial: 'languages/language_card', object: @language %>
-      <%= link_to select_to_assess_path, class: "btn waves-effect" do %>
-        <i class="material-icons left">arrow_back</i>
-        Change language
-      <% end %>
-    </div>
-    <div class="col s12 m6 l4 input-field year-month-select">
-      <a class='dropdown-button btn' href='#' data-activates='month-dropdown'><%= "#{Date::MONTHNAMES[@month.to_i]} #{@year}" %></a>
-      <ul id='month-dropdown' class='dropdown-content'>
-        <% (@from_date..@to_date).select{ |d| d.day == 1 }.each do |date| %>
-          <% count = @monthly_reports[date.strftime("%Y-%m")] ?
-          @monthly_reports[date.strftime("%Y-%m")].count :
-          0 %>
-          <li>
-            <% if date.strftime("%Y%m") == @yearmonth %>
-              <a><%= "#{date.strftime("%B %Y")} (#{count})" %></a>
-            <% else %>
-              <%= link_to "#{date.strftime("%B %Y")} (#{count})", assess_progress_path(geo_state_id: @geo_state.id, language_id: @language.id, yearmonth: date.strftime("%Y%m")) %>
-            <% end %>
-          </li>
-        <% end %>
-      </ul>
-    </div>
+<div class="row">
+  <div class="col s12 m6 l4">
+    <%= render partial: 'languages/language_card', object: @state_language.language %>
+    <%= link_to select_to_assess_path, class: 'btn waves-effect' do %>
+      <i class="material-icons left">arrow_back</i>
+      Change language
+    <% end %>
   </div>
+  <div class="col s12 m6 l4">
+    Assessing progress for a period of:
+    <div class="input-field">
+    <%= number_field_tag 'months', params[:months], min: 1, id: 'change-duration-field', class: 'active' %>
+    <%= label_tag 'months' %></div>
+    <%= link_to 'Update',
+                assess_progress_path(state_language_id: params[:state_language_id], months: params[:months]),
+                class: 'btn-flat waves-effect right',
+                id: 'change-duration-button'
+    %>
+    <script>
+      $('#change-duration-field').bind('keyup mouseup mousewheel', function() {
+        let ref = $('#change-duration-button').attr('href');
+        let refA = ref.split('/');
+        let newValue = $('#change-duration-field').val();
+        if (newValue != '') {
+          refA[refA.length - 1] = newValue;
+          ref = refA.join('/');
+          $('#change-duration-button').attr('href', ref);
+        }
+        if (newValue == '<%= params[:months] %>' || newValue == '') {
+          $('#change-duration-button').removeClass('btn').addClass('btn-flat');
+        } else {
+          $('#change-duration-button').removeClass('btn-flat').addClass('btn');
+        }
+      });
+    </script>
+  </div>
+</div>
 
+<%= link_to 'Download PDF', assess_progress_pdf_path, class: 'btn waves-effect' %>
+
+<%= form_tag({controller: 'topics', action: 'update_progress'}, method: 'post') do %>
   <ul class="tabs z-depth-1">
     <% @progress_markers_by_weight.keys.each do |outcome_area| %>
       <% unless outcome_area.hide_for?(logged_in_user) %>
@@ -78,8 +90,8 @@
                       <div class="row">
                         <div class="col s6 range-field">
 
-                          <%= label_tag("progress_marker_#{progress_marker.id}", "Asses the level of activity this month for #{@language.name}") %>
-                          <%= range_field('progress_marker', progress_marker.id, in: ProgressMarker.spread_text.keys, list: "pm-data", value: progress_marker.progress_at(@state_language, @month_date.end_of_month), class: "activity-level-select") %>
+                          <%= label_tag("progress_marker_#{progress_marker.id}", "Asses the level of activity this month for #{@state_language.language_name}") %>
+                          <%= range_field('progress_marker', progress_marker.id, in: ProgressMarker.spread_text.keys, list: 'pm-data', value: progress_marker.progress_at(@state_language), class: 'activity-level-select') %>
                         </div>
                         <div class="input-field col s6">
                           <div class="spreadness-text"></div>
@@ -100,7 +112,7 @@
                     <% if @reports_by_pm[progress_marker] %>
                       <% @reports_by_pm[progress_marker].each do |report| %>
                         <div class="col s12 m6 l4">
-                          <%= render partial: "impact_report", object: report %>
+                          <%= render partial: 'impact_report', object: report %>
                         </div>
                       <% end %>
                     <% else %>
@@ -116,7 +128,7 @@
     <% end %>
   <% end %>
   <div class="row">
-      <%= button_tag( :class => "btn waves-effect waves-light right") do %>
+      <%= button_tag( :class => 'btn waves-effect waves-light right') do %>
         Submit Update <i class="material-icons right">send</i>
       <% end %>
   </div>

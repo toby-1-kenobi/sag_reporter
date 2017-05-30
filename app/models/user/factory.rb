@@ -5,6 +5,7 @@ class User::Factory
   def build_user(params)
     speaks = params.delete(:speaks)
     geo_states = params.delete(:geo_states)
+    curated_states = params.delete(:curated_states)
     begin
       @instance = User.new(params)
     rescue
@@ -21,6 +22,11 @@ class User::Factory
       if geo_states
         geo_states.each do |geo_state_id|
           @instance.geo_states << GeoState.find(geo_state_id)
+        end
+      end
+      if curated_states
+        curated_states.each do |geo_state_id|
+          @instance.curated_states << GeoState.find(geo_state_id)
         end
       end
       return true

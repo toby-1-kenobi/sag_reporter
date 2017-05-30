@@ -1,0 +1,6 @@
+let editElement = $('#edit-<%= @edit.id %>');
+let parentElement = editElement.parent();
+editElement.remove();
+if(parentElement.children().length === 0) {
+  parentElement.remove();
+}

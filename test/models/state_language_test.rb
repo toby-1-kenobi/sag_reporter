@@ -69,4 +69,10 @@ describe StateLanguage do
     _(state_language.outcome_table_data(admin_user, from_date: start_date, to_date: end_date)).must_be_nil
   end
 
+  it 'returns recent active impact reports' do
+    duration = 3.months
+    report_count = languages(:toto).reports.active.where('report_date >= ?', duration.ago).count
+    _(state_languages(:nb_toto).recent_impact_reports(duration).count).must_equal report_count
+  end
+
 end

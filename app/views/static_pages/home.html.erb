@@ -1,19 +1,59 @@
-<% provide(:title, "Home") %>
-<h1><i class="material-icons large">home</i> home</h1>
+<% provide(:title, "LCI App Home") %>
 
-<% if not logged_in_user.admin? %>
-  <%= render partial: 'reporter_home' %>
-<% else %>
-  <div class="collection" id="home-menu">
+<h1 class="front-page-title">Welcome to the LCI App</h1>
 
-    <% @links.each do |link_data| %>
-      <% if logged_in_user.can? link_data[:permission] %>
-        <%= link_to link_data[:path], class: 'collection-item waves-effect' do %>
-          <i class="material-icons"><%= link_data[:icon] %></i>
-          <%= link_data[:text] %>
-        <% end %>
-      <% end %>
-    <% end %>
 
+<div class="mdl-grid">
+
+  <div class="mdl-cell mdl-cell--4-col">
+    <div class="lci-info mdl-card">
+      <div class="mdl-card__title">
+      </div>
+      <div class="mdl-card__supporting-text">
+        The Last Command Initiative (LCI) is a broad partnership of church planting, scripture engagement,
+        language development and Bible translation organisations with a vision to reach all language
+        communities with remaining needs. Dependent on God for its success, LCI aims to see that by the
+        year 2025 all viable remaining language communities of India will have Bible translation and
+        language development-related work started that need it; while by 2035 all will have the Scriptures in
+        the languages and forms that communicate to them most effectively, and these Scriptures will be
+        having a transforming effect on their lives and communities.
+      </div>
+    </div>
   </div>
+  <div class="mdl-cell mdl-cell--4-col">
+    <div class="do-tasks mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title">
+      </div>
+      <div class="mdl-card__supporting-text">
+        LCI App lets you enter reports and do other tasks to keep the information here up to date.
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+        <%= link_to 'Do Tasks', tasks_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mdl-cell mdl-cell--4-col">
+    <div class="see-information mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title">
+      </div>
+      <div class="mdl-card__supporting-text">
+        LCI App shows you information about languages, resources and progress towards LCI outcomes.
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+        <%= link_to 'See Information', zones_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' %>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>LCI Outcome Areas</h2>
+
+<div class="outcome-areas mdl-grid">
+  <%= render partial: 'outcome_area', collection: @outcome_areas %>
+</div>
+
+<% content_for :attribution do %>
+    | <em>Images designed by <a href="http://www.freepik.com">Freepik</a></em>
 <% end %>

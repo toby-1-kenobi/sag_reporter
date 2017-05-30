@@ -1,0 +1,19 @@
+<% provide(:title, "Tasks") %>
+<h1>tasks</h1>
+
+<%# if not logged_in_user.admin? %>
+  <%# render partial: 'reporter_tasks' %>
+<%# else %>
+  <div class="collection" id="home-menu">
+
+    <% @links.each do |link_data| %>
+      <% if link_data[:condition] %>
+        <%= link_to link_data[:path], class: 'collection-item waves-effect' do %>
+          <i class="material-icons"><%= link_data[:icon] %></i>
+          <%= link_data[:text] %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+  </div>
+<%# end %>

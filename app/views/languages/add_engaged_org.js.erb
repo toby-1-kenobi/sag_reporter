@@ -1,0 +1,42 @@
+<% if @edit.errors.any? %>
+$('#edit-response')
+    .slideUp('fast', function(){
+      $(this)
+          .addClass('error')
+          .html("<%= @edit.errors.full_messages.to_sentence %>")
+          .slideDown('fast');
+    });
+<% elsif @edit.record_errors.present? %>
+$('#edit-response')
+    .slideUp('fast', function() {
+      $(this)
+          .addClass('error')
+          .html("<%= @edit.record_errors %>")
+          .slideDown('fast');
+    });
+<% else %>
+  $('#add-engaged-org-dialog').find('.cancel').click();
+  $('#add-engaged-org-dialog .org-<%= @edit.new_value %>').remove();
+  let listItem = $('<li></li>').addClass('org-<%= @edit.new_value %> mdl-list__item');
+  listItem.append('<%= j link_to(@org.name_with_abbr, @org, class: 'org-name mdl-list__item-primary-content') %>');
+  <% if @edit.pending_single_approval? or @edit.pending_double_approval? %>
+    $('#edit-response').slideUp('fast');
+    $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render partial: 'edits/edit', object: @edit %></div>');
+    listItem.addClass('pending-approval');
+    $('.engaged-orgs li.add-another').before(listItem);
+    let commentDialog = $("#edit-creator-comment-dialog");
+    commentDialog.find('.mdl-dialog__title').html('change <%= @edit.attribute_name.humanize %>');
+    commentDialog.find('.edit-id-field').val('<%= @edit.id %>');
+    commentDialog.find('.comment-field').val('');
+    commentDialog.get(0).showModal();
+  <% elsif @edit.auto_approved? %>
+    let removeButton = $('<%= j link_to '<button></button>'.html_safe, remove_engaged_org_from_language_path(@edit.record_id, @org),
+                    method: :patch,
+                    remote: true,
+                    class: 'remove-button mdl-list__item-secondary-content' %>');
+    removeButton.find('button').addClass("mdl-button mdl-js-button mdl-button--icon mdl-button--colored");
+    removeButton.find('button').html('<i class="material-icons">clear</i>');
+    listItem.append(removeButton);
+    $('.engaged-orgs li.add-another').before(listItem);
+  <% end %>
+<% end %>

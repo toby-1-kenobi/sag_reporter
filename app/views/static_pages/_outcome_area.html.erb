@@ -1,0 +1,12 @@
+<% unless outcome_area.hide_for?(logged_in_user) %>
+  <div class="outcome-area-cell mdl-cell mdl-cell--3-col">
+    <div class="outcome-area mdl-card mdl-shadow--2dp <%= outcome_area.colour %>" id="outcome-<%= outcome_area.id %>">
+      <div class="mdl-card__title">
+        <h3 class="mdl-card__title-text"><%= outcome_area.name %></h3>
+      </div>
+      <div class="mdl-card__supporting-text">
+        <%= outcome_area.description %>
+      </div>
+    </div>
+  </div>
+<% end %>

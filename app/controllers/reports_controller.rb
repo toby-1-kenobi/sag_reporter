@@ -167,7 +167,6 @@ class ReportsController < ApplicationController
     @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
     @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
     @languages = Language.all.order('LOWER(languages.name)')
-    recent_view
   end
 
   def by_topic
@@ -175,24 +174,22 @@ class ReportsController < ApplicationController
     @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
     @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
     @topics = Topic.all
-    recent_view
   end
 
   def by_reporter
     @geo_states = logged_in_user.geo_states
     @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
     @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
-    recent_view
   end
 
   def archive
     @report.archived!
-    redirect_recent_or root_path
+    redirect_to root_path
   end
 
   def unarchive
     @report.active!
-    redirect_recent_or report
+    redirect_to report
   end
 
   def pictures
@@ -284,17 +281,6 @@ class ReportsController < ApplicationController
 
   def find_report
     @report = Report.find params[:id]
-  end
-
-  # Redirects to recent view (or to the default).
-  def redirect_recent_or(default)
-    redirect_to(session[:report_recent_view] || default)
-    session.delete(:report_recent_view)
-  end
-
-  # Store which is the recent view in the session
-  def recent_view
-    session[:report_recent_view] = request.url if request.get?
   end
 
   def get_translations

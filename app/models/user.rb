@@ -15,6 +15,10 @@ class User < ActiveRecord::Base
   has_many :output_counts, dependent: :restrict_with_error
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :restrict_with_error
+  has_many :curatings, dependent: :destroy
+  has_many :curated_states, through: :curatings, class_name: 'GeoState', source: 'geo_state', inverse_of: :curators
+  has_many :edits, dependent: :destroy
+  has_many :curated_edits, foreign_key: 'curated_by_id', inverse_of: :curated_by, dependent: :nullify
 
   attr_accessor :remember_token
 
@@ -32,7 +36,6 @@ class User < ActiveRecord::Base
             },
             allow_nil: true
   validates :mother_tongue_id, presence: true, allow_nil: false
-  validates :role_id, presence: true, allow_nil: false
   validates :geo_states, presence: true
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, length: { maximum: 255 },
@@ -42,11 +45,12 @@ class User < ActiveRecord::Base
   validates :trusted, inclusion: [true, false]
   validates :national, inclusion: [true, false]
   validates :admin, inclusion: [true, false]
-  validates :curator, inclusion: [true, false]
   validates :national_curator, inclusion: [true, false]
   validate :interface_language_must_have_locale_tag
 
   after_save :send_confirmation_email
+
+  scope :curating, ->(edit) { joins(:curated_states).where('geo_states.id' => edit.geo_states) }
 
   # Returns the hash digest of the given string.
   def User.digest(string)
@@ -81,11 +85,6 @@ class User < ActiveRecord::Base
     self.phone.slice(0..3) + ' ' + self.phone.slice(4..6) + ' ' + self.phone.slice(7..-1)
   end
 
-  # True if this user belongs to all states instead of one
-  def in_all_geo_states?
-    true unless self.geo_states.length > 0
-  end
-
   # Transitional method
   #TODO: make sure nothing uses this, then remove it
   def geo_state
@@ -116,6 +115,15 @@ class User < ActiveRecord::Base
     zones.inject(false) { |alt_required, zone| alt_required || zone.pm_description_type == 'alternate' }
   end
 
+  def sees_faith_based_data?
+    !sees_alternate_pm_descriptions?
+  end
+
+  # find out if this user curates for a particular language
+  def curates_for?(language)
+    curated_states.where(id: language.geo_states.pluck(:id)).any?
+  end
+
   # This is a transitional method for moving from using roles and permissions
   # to using the simplified fields on the user model for user level access.
   # it maps the permission names to the right values of the fields
@@ -128,7 +136,7 @@ class User < ActiveRecord::Base
         # not including self
         admin?
       when 'view_all_users'
-        trusted?
+        admin?
       when 'view_roles', 'edit_role', 'create_role'
         admin?
       when 'view_all_languages'
@@ -142,7 +150,7 @@ class User < ActiveRecord::Base
       when 'view_all_topics'
         true
       when 'view_all_reports'
-        national?
+        true
       when 'create_report', 'edit_report', 'archive_report', 'tag_report'
         true
       when 'evaluate_progress', 'view_outcome_totals'
@@ -153,7 +161,7 @@ class User < ActiveRecord::Base
       when 'create_event', 'edit_event'
         true
       when 'view_all_people'
-        trusted? and national?
+        trusted?
       when 'edit_person'
         trusted?
       when 'report_numbers', 'view_output_totals'

@@ -1,5 +1,5 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-<% (1..5).each do |index| %>
+<% (1..80).each do |index| %>
   impact-report-<%= index %>: {}
 <% end %>

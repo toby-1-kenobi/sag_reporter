@@ -1,0 +1,29 @@
+<% if @edit.errors.any? %>
+$('#edit-response')
+    .slideUp('fast', function(){
+      $(this)
+          .addClass('error')
+          .html("<%= @edit.errors.full_messages.to_sentence %>")
+          .slideDown('fast');
+    });
+<% elsif @edit.record_errors.present? %>
+$('#edit-response')
+    .slideUp('fast', function() {
+      $(this)
+          .addClass('error')
+          .html("<%= @edit.record_errors %>")
+          .slideDown('fast');
+    });
+<% elsif @edit.pending_single_approval? or @edit.pending_double_approval? %>
+$('#edit-response').slideUp('fast');
+$('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render partial: 'edits/edit', object: @edit %></div>');
+$('.engaged-orgs .org-<%= @edit.old_value %>').addClass('pending-removal');
+$('.engaged-orgs .org-<%= @edit.old_value %> .remove-button').hide();
+let commentDialog = $("#edit-creator-comment-dialog");
+commentDialog.find('.mdl-dialog__title').html('change <%= @edit.attribute_name.humanize %>');
+commentDialog.find('.edit-id-field').val('<%= @edit.id %>');
+commentDialog.find('.comment-field').val('');
+commentDialog.get(0).showModal();
+<% elsif @edit.auto_approved? %>
+$('.engaged-orgs .org-<%= @edit.old_value %>').remove();
+<% end %>

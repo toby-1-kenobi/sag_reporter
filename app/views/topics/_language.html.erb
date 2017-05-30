@@ -1,14 +1,5 @@
-
-    <%= link_to outcomes_path + "/#{geo_state.id}/#{language.id}/000000", class: "collection-item #{colour_class(language.colour)} waves-effect language-link" do %>
-      <%= language.name %>
-      <div class="right">
-      <%
-      monthly_reports = language.tagged_impact_reports_monthly(geo_state, start_from, up_to)
-      (start_from..up_to).select{ |d| d.day == 1 }.each do |date|
-        year_month = date.strftime("%Y-%m")
-        report_count = monthly_reports[year_month] ? monthly_reports[year_month].count : 0
-        %>
-        &nbsp; <span class="filterable-item tooltipped" data-filter-label="month" data="all,<%= year_month %>" data-delay="50" data-tooltip="<%= "#{date.strftime("%B %Y")} has #{pluralize report_count, 'impact report'} for #{language.name}" %>"><%= report_count %></span>
-      <% end %>
-      </div>
+  <li class="mdl-list__item">
+    <%= link_to outcomes_path + "/#{language.id}/3", class: 'waves-effect language-link' do %>
+      <%= language.language_name %>
     <% end %>
+  </li>
