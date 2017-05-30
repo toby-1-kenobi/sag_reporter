@@ -1,4 +1,5 @@
-<% provide(:title, 'Language Details: ' + @language.name) %>
+<% provide(:title, "#{@language.name} details") %>
+<% provide(:context_title, "#{@language.name} details") %>
 <% provide(:container_class, 'no-iso') if @language.iso.blank? %>
 
 <div id="edit-response"></div>
@@ -19,7 +20,7 @@
   <div class="mdl-cell mdl-cell--6-col mdl-cell--2-col-phone">
     <h1>Language Details</h1>
     <%= link_to @language do %>
-        <i class="material-icons">pageview</i> Language dashboard
+        <i class="material-icons">dashboard</i> Language dashboard
     <% end %>
   </div>
    <div class="mdl-cell mdl-cell--4-offset-desktop mdl-cell--2-col">

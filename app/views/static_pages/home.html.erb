@@ -1,7 +1,6 @@
 <% provide(:title, "LCI App Home") %>
 
-<h1 class="front-page-title">Welcome to the LCI App</h1>
-
+<% provide(:context_title, 'Welcome!') %>
 
 <div class="mdl-grid">
 
@@ -48,7 +47,7 @@
 
 </div>
 
-<h2>LCI Outcome Areas</h2>
+<h3>LCI Outcome Areas</h3>
 
 <div class="outcome-areas mdl-grid">
   <%= render partial: 'outcome_area', collection: @outcome_areas %>

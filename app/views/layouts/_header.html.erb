@@ -3,6 +3,8 @@
   <div class="mdl-layout__header-row">
     <span class="mdl-layout__title">LCI App</span>
     <div class="mdl-layout-spacer"></div>
+    <span class="mdl-layout__title"><%= yield(:context_title) %></span>
+    <div class="mdl-layout-spacer"></div>
     <nav class="mdl-navigation">
       <% if logged_in? %>
           <%= form_tag search_languages_path, method: :get, remote: true do %>

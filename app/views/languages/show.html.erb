@@ -1,5 +1,6 @@
 
-<% provide(:title, 'Language Overview: ' + @language.name) %>
+<% provide(:title, "#{@language.name} Dashboard") %>
+<% provide(:context_title, @language.name) %>
 <% provide(:container_class, 'no-iso') if @language.iso.blank? %>
 
 <% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>

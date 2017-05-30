@@ -1,8 +1,9 @@
-<% provide(:title, "Tasks") %>
+<% provide(:title, 'Tasks') %>
 
 <% grouped_links = @links.group_by{ |l| l[:category] } %>
 <% active_category = grouped_links.keys.first %>
 
+<% provide(:context_title, 'Tasks') %>
 
 <% content_for :header_tabs do %>
   <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
