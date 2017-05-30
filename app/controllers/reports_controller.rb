@@ -45,7 +45,31 @@ class ReportsController < ApplicationController
 
   # new report submitted by an external client
   def create_external
+    # convert image-strings to image-files
+    base64_data = params['report']['pictures_attributes']
+    tempfile = []
+    base64_data.each do |image_number, image_data|
+      filename = "upload-image" + image_number
+      tempfile[image_number.to_i] = Tempfile.new(filename)
+      tempfile[image_number.to_i].binmode
+      tempfile[image_number.to_i].write Base64.decode64(image_data["data"])
+      tempfile[image_number.to_i].rewind
+      # for security we want the actual content type, not just what was passed in
+      content_type = `file --mime -b #{tempfile[image_number.to_i].path}`.split(";")[0]
+
+      # we will also add the extension ourselves based on the above
+      # if it's not gif/jpeg/png, it will fail the validation in the upload model
+      extension = content_type.match(/gif|jpeg|png/).to_s
+      filename += ".#{extension}" if extension
+      params['report']['pictures_attributes'][image_number]['ref'] = ActionDispatch::Http::UploadedFile.new({
+        tempfile: tempfile[image_number.to_i],
+        content_type: content_type,
+        filename: filename
+      })
+    end
+    # create report
     full_params = report_params.merge({reporter: current_user})
+    puts full_params
     report_factory = Report::Factory.new
     response = Hash.new
     if report_factory.create_report(full_params)
@@ -63,6 +87,14 @@ class ReportsController < ApplicationController
     end
     puts response.to_json
     render json: response
+    # delete tempfile[image_number.to_i] afterwards
+  ensure
+    tempfile.each do |tmp|
+      if tmp
+        tmp.close
+        tmp.unlink
+      end
+    end
   end
 
   def create
@@ -211,7 +243,7 @@ class ReportsController < ApplicationController
   private
 
   def report_params
-    logged_in_user ||= current_user
+    current_user = logged_in_user || current_user
     # make hash options into arrays
     param_reduce(params['report'], %w(topics languages))
     safe_params = [
@@ -234,7 +266,7 @@ class ReportsController < ApplicationController
       :client,
       :version
     ]
-    safe_params.delete :status unless logged_in_user.can_archive_report?
+    safe_params.delete :status unless current_user.can_archive_report?
     # if we have a date try to change it to db-friendly format
     # otherwise set it to nil
     if params[:report][:report_date]

@@ -68,5 +68,23 @@ module SessionsHelper
   def store_location
     session[:forwarding_url] = request.url if request.get?
   end
-  
+
+  # authenticates the jwt-token
+  def authenticate
+    head :unauthorized unless current_user
+  end
+
+  # gets the current user of the jwt-token-authorization
+  def current_user
+    @current_user ||= begin
+      token = request.headers['Authorization'].split.last
+      secret_key = Rails.application.secrets.secret_key_base
+      payload, _ = JWT.decode token, secret_key, true, {algorithm: 'HS256'}
+      user = User.find payload['sub']
+      user if user.updated_at.to_i < payload['iat']
+    rescue => error
+      puts error
+      nil
+    end
+  end
 end

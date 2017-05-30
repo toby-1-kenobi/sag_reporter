@@ -1,8 +1,5 @@
 Rails.application.routes.draw do
 
-
-  mount Knock::Engine => '/knock'
-
   root 'static_pages#home'
 
   get 'tasks' => 'static_pages#tasks'
@@ -99,6 +96,7 @@ Rails.application.routes.draw do
   post 'resend_code_to_phone' => 'sessions#resend_otp_to_phone', as: 'resend_code_to_phone'
   post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
   delete 'logout'  => 'sessions#destroy'
+  post   'knock/auth_token' => 'sessions#create_external'
 
 
   get  'tally_updates' => 'tally_updates#index'

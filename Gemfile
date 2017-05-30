@@ -73,9 +73,6 @@ gem 'mini_magick'
 gem 'polymer-rails', github: 'alchaplinsky/polymer-rails'
 gem 'polymer-elements-rails', github: 'alchaplinsky/polymer-elements-rails'
 
-# token based authentication with JWT
-gem 'knock'
-
 # simplify http requests
 gem 'httparty'
 gem 'active_model_otp'
