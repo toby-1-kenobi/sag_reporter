@@ -60,6 +60,14 @@ class UsersController < ApplicationController
               project: true
           ).id
         end
+
+        pictures = Hash.new
+        report.pictures.each do |picture|
+          picture_id = picture[:id]
+          file_content = Base64.encode64 picture.ref.read
+          pictures[picture_id] = file_content
+        end
+
         user_data['reports'] << {
             'report_id' => report.id,
             'geo_state_id' => report.geo_state.id,
@@ -67,6 +75,7 @@ class UsersController < ApplicationController
             'content' => report.content,
             'impact_report' => 1,
             'languages' => language_ids,
+            'pictures' => pictures,
             'client' => report.client,
             'version' => report.version
         }

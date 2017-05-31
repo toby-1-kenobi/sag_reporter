@@ -47,29 +47,29 @@ class ReportsController < ApplicationController
   def create_external
     # convert image-strings to image-files
     base64_data = params['report']['pictures_attributes']
-    tempfile = []
+    tempfiles = Array.new
     base64_data.each do |image_number, image_data|
       filename = "upload-image" + image_number
-      tempfile[image_number.to_i] = Tempfile.new(filename)
-      tempfile[image_number.to_i].binmode
-      tempfile[image_number.to_i].write Base64.decode64(image_data["data"])
-      tempfile[image_number.to_i].rewind
+      tempfile = Tempfile.new(filename)
+      tempfile.binmode
+      tempfile.write Base64.decode64(image_data["data"])
+      tempfile.rewind
       # for security we want the actual content type, not just what was passed in
       content_type = `file --mime -b #{tempfile[image_number.to_i].path}`.split(";")[0]
 
       # we will also add the extension ourselves based on the above
       # if it's not gif/jpeg/png, it will fail the validation in the upload model
-      extension = content_type.match(/gif|jpeg|png/).to_s
+      extension = content_type.match(/gif|jpg|jpeg|png/).to_s
       filename += ".#{extension}" if extension
       params['report']['pictures_attributes'][image_number]['ref'] = ActionDispatch::Http::UploadedFile.new({
-        tempfile: tempfile[image_number.to_i],
-        content_type: content_type,
+        tempfile: tempfile,
+        type: content_type,
         filename: filename
       })
+      tempfiles.push tempfile
     end
     # create report
     full_params = report_params.merge({reporter: current_user})
-    puts full_params
     report_factory = Report::Factory.new
     response = Hash.new
     if report_factory.create_report(full_params)
@@ -89,10 +89,10 @@ class ReportsController < ApplicationController
     render json: response
     # delete tempfile[image_number.to_i] afterwards
   ensure
-    tempfile.each do |tmp|
-      if tmp
-        tmp.close
-        tmp.unlink
+    tempfiles.each do |tempfile|
+      if tempfile
+        tempfile.close
+        tempfile.unlink
       end
     end
   end
