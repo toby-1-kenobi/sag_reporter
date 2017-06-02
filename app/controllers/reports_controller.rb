@@ -3,9 +3,9 @@ class ReportsController < ApplicationController
   helper ColoursHelper
   include ParamsHelper
 
-  skip_before_action :verify_authenticity_token, only: [:create_external]
-  before_action :require_login, except: [:create_external]
-  before_action :authenticate, only: [:create_external]
+#  skip_before_action :verify_authenticity_token, only: [:create_external, :send_external]
+  before_action :require_login, except: [:create_external, :send_external]
+  before_action :authenticate, only: [:create_external, :send_external]
 
     # Let only permitted users do some things
   before_action only: [:new, :create] do
@@ -95,6 +95,43 @@ class ReportsController < ApplicationController
         tempfile.unlink
       end
     end
+  end
+
+  def send_external
+    report_data = Array.new
+    Report.all.each do |report|
+      if report.impact_report
+        language_ids = Array.new
+        report.languages.each do |rl|
+          language_ids << StateLanguage.find_by(
+              geo_state_id: report.geo_state_id, 
+              language_id: rl.id, 
+              project: true
+          ).id
+        end
+
+        pictures = Hash.new
+        report.pictures.each do |picture|
+          picture_id = picture[:id]
+          file_content = Base64.encode64 picture.ref.read
+          pictures[picture_id] = file_content
+        end
+
+        report_data << {
+            'id' => report.id,
+            'geo_state_id' => report.geo_state.id,
+            'report_date' => report.report_date,
+            'content' => report.content,
+            'author_id' => report.reporter_id,
+            'impact_report' => 1,
+            'languages' => language_ids,
+            'pictures' => pictures,
+            'client' => report.client,
+            'version' => report.version
+        }
+      end
+    end
+    render json: {'reports' => report_data}
   end
 
   def create

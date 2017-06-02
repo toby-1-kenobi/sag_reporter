@@ -2,8 +2,8 @@ class UsersController < ApplicationController
 
   include ParamsHelper
 
-  before_action :require_login, except: [:me, :confirm_email]
-  before_action :authenticate, only: [:me]
+  before_action :require_login, except: [:send_external, :send_my_data_external, :confirm_email]
+  before_action :authenticate, only: [:send_external, :send_my_data_external]
 
   # A user's profile can only be edited or seen by
   #    themselves or
@@ -29,11 +29,9 @@ class UsersController < ApplicationController
     redirect_to root_path unless logged_in_user.can_view_all_users?
   end
 
-  def me
+  def send_my_data_external
     user_data = Hash.new
     user_data['id'] = current_user.id
-    user_data['name'] = current_user.name
-    user_data['phone'] = current_user.phone
     user_data['geo_states'] = Array.new
     current_user.geo_states.includes(:state_languages).each do |gs|
       languages = Array.new
@@ -49,39 +47,22 @@ class UsersController < ApplicationController
           'languages' => languages
       }
     end
-    user_data['reports'] = Array.new
-    current_user.reports.each do |report|
-      if report.impact_report
-        language_ids = Array.new
-        report.languages.each do |rl|
-          language_ids << StateLanguage.find_by(
-              geo_state_id: report.geo_state_id, 
-              language_id: rl.id, 
-              project: true
-          ).id
-        end
-
-        pictures = Hash.new
-        report.pictures.each do |picture|
-          picture_id = picture[:id]
-          file_content = Base64.encode64 picture.ref.read
-          pictures[picture_id] = file_content
-        end
-
-        user_data['reports'] << {
-            'report_id' => report.id,
-            'geo_state_id' => report.geo_state.id,
-            'report_date' => report.report_date,
-            'content' => report.content,
-            'impact_report' => 1,
-            'languages' => language_ids,
-            'pictures' => pictures,
-            'client' => report.client,
-            'version' => report.version
-        }
-      end
-    end
     render json: user_data
+  end
+
+  def send_external
+    user_data = Array.new
+    User.all.each do |user|
+      user_specific_data = {
+          'id' => user.id,
+          'name' => user.name
+      }
+      if user.id == current_user.id
+        user_specific_data['phone'] = user.phone
+      end 
+      user_data << user_specific_data
+    end
+    render json: {'users' => user_data}
   end
 
   def new
