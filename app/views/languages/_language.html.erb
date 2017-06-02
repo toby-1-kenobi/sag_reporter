@@ -1,12 +1,18 @@
-
+<%# @all_flm_numbers = FinishLineMarker.all.map{ |m| m.number } unless defined?(@all_flm_numbers) %>
+<%
+  finish_line_status = {}
+  language.finish_line_progresses.each do |flp|
+    finish_line_status[flp.finish_line_marker.number] = flp.status
+  end
+%>
 
       <li
         class="language-item filterable-item<%= ' extinct' if language.population == 0 %> mdl-list__item mdl-list__item--two-line"
-        data-filter-label="language-family zone <%= language.finish_line_progresses.map{ |flp| "flm-#{flp.finish_line_marker.number}" }.join(' ') %>"
+        data-filter-label="language-family zone <%= finish_line_status.keys.map{ |flm_num| "flm-#{flm_num}" }.join(' ') %>"
         data-language-family="<%= language.family.present? ? language.family.id : 'family-unknown' %>"
         data-zone="<%= language.geo_states.any? ? language.geo_states.map(&:zone_id).uniq.join(',') : 'zone-unknown' %>"
-        <% language.finish_line_progresses.each do |flp| %>
-          data-flm-<%= flp.finish_line_marker.number %>="<%= flp.status %>"
+        <% finish_line_status.each do |flm_num, fl_status| %>
+          data-flm-<%= flm_num %>="<%= fl_status %>"
         <% end %>
       >
           <span class="mdl-list__item-primary-content">

@@ -34,11 +34,23 @@ module LanguagesHelper
   end
 
   def build_finish_line_table(languages, markers)
+    check_list = markers.map{ |m| m.number }
     table = markers.map{ |marker| [marker, Hash.new(0)] }.to_h
     languages.each do |lang|
-      markers.each do |marker|
-        flp = lang.finish_line_progresses.find_or_initialize_by(finish_line_marker: marker)
-        table[marker][flp.category] += 1
+      lang_check_list = check_list.dup
+      lang.finish_line_progresses.each do |flp|
+        marker = flp.finish_line_marker
+        if table[marker]
+          table[marker][flp.category] += 1
+          lang_check_list.delete(marker.number)
+        end
+      end
+      if lang_check_list.any?
+        lang_check_list.each do |marker_number|
+          marker = markers.find_by_number(marker_number)
+          flp = lang.finish_line_progresses.find_or_create_by(finish_line_maerker: marker)
+          table[marker][flp.category] += 1
+        end
       end
     end
     table
