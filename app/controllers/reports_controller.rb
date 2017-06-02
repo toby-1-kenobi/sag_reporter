@@ -55,7 +55,7 @@ class ReportsController < ApplicationController
       tempfile.write Base64.decode64(image_data["data"])
       tempfile.rewind
       # for security we want the actual content type, not just what was passed in
-      content_type = `file --mime -b #{tempfile[image_number.to_i].path}`.split(";")[0]
+      content_type = `file --mime -b #{tempfile.path}`.split(";")[0]
 
       # we will also add the extension ourselves based on the above
       # if it's not gif/jpeg/png, it will fail the validation in the upload model
@@ -243,7 +243,7 @@ class ReportsController < ApplicationController
   private
 
   def report_params
-    current_user = logged_in_user || current_user
+    actual_user = logged_in_user || current_user
     # make hash options into arrays
     param_reduce(params['report'], %w(topics languages))
     safe_params = [
@@ -266,7 +266,7 @@ class ReportsController < ApplicationController
       :client,
       :version
     ]
-    safe_params.delete :status unless current_user.can_archive_report?
+    safe_params.delete :status unless actual_user.can_archive_report?
     # if we have a date try to change it to db-friendly format
     # otherwise set it to nil
     if params[:report][:report_date]
