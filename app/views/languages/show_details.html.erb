@@ -447,7 +447,7 @@
                   <%= image_tag picture.ref_url if picture.ref? %>
               <% end %>
               <%# Show the reporter name if the logged in user is trusted, or if it's them. %>
-              <% if @impact_report.reporter and (logged_in_user.trusted? or logged_in_user?(report.reporter)) %>
+              <% if @impact_report.reporter and (logged_in_user.trusted? or logged_in_user?(@impact_report.reporter)) %>
                   <div class="reporter"><%= @impact_report.reporter.name %></div>
               <% end %>
             </div>
