@@ -128,8 +128,9 @@ class StateLanguage < ActiveRecord::Base
       # don't include outcome areas that should be invisible to the user
       unless lp.progress_marker.topic.hide_for?(user)
         oa_name = lp.progress_marker.topic.name
-        transformation[date_1][oa_name] += lp.month_score(date_1.year, date_1.month)
-        transformation[date_2][oa_name] += lp.month_score(date_2.year, date_2.month)
+        scores =  lp.double_month_score(date_1.year, date_1.month, date_2.year, date_2.month)
+        transformation[date_1][oa_name] += scores.first
+        transformation[date_2][oa_name] += scores.last
       end
     end
     # we need the max possible score for each outcome area to make our scores a percentage
