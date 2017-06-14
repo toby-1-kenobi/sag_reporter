@@ -61,7 +61,8 @@
       <tr><th>Old Testament Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: ot_marker).human_status %></td></tr>
       <% if (@language.number_of_translations && @language.number_of_translations > 0) or @editable %>
           <% tr_num = @language.number_of_translations || 0 %>
-          <%= render 'attribute_table_row', title: 'Number of translation projects', attribute_name: 'number_of_translations' %>
+          <%= render 'attribute_table_row', title: 'Number of ongoing translation projects', attribute_name: 'number_of_translations' %>
+          <span class="mdl-tooltip" for="attribute-row-<%= @language.id %>-number_of_translations">Is there more than one organization working in the language for translation (this is to track duplication effort)?</span>
       <% end %>
       <% if (@language.translation_info.present? or @editable) and logged_in_user.trusted? %>
           <%= render 'attribute_table_row', title: 'Translation information', attribute_name: 'translation_info' %>
