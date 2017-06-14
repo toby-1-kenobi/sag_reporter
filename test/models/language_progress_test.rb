@@ -35,10 +35,14 @@ describe LanguageProgress do
   end
 
   it 'gives monthly outcome scores accross a date range' do
+    pu0 = ProgressUpdate.new progress: 1, year:2015, month: 8
     pu1 = ProgressUpdate.new progress: 2, year:2015, month: 8
     pu2 = ProgressUpdate.new progress: 3, year:2015, month: 10
     pu3 = ProgressUpdate.new progress: 1, year:2015, month: 11
-    language_progress.progress_updates << [pu1, pu2, pu3]
+    # multiple updates in one month - the last one takes precedence
+    pu0.created_at = Date.new(2015,8,5)
+    pu1.created_at = Date.new(2015,8,10)
+    language_progress.progress_updates << [pu0, pu1, pu2, pu3]
     language_progress.progress_marker.weight = 1
     scores = language_progress.outcome_scores(Date.new(2015,7,1), Date.new(2015,12,1))
     value(scores.count).must_equal 6
@@ -47,9 +51,17 @@ describe LanguageProgress do
     value(scores['September 2015']).must_equal 2
     value(scores['October 2015']).must_equal 3
     value(scores['November 2015']).must_equal 1
+
+    # check the last of multiple updates in a month really is taking precedence
+    pu0.created_at = Date.new(2015,8,10)
+    pu1.created_at = Date.new(2015,8,5)
+    scores = language_progress.outcome_scores(Date.new(2015,7,1), Date.new(2015,12,1))
+    value(scores['August 2015']).must_equal 1
+
+    # check progress marker weight is taken into account
     language_progress.progress_marker.weight = 2
     scores = language_progress.outcome_scores(Date.new(2015,6,1), Date.new(2015,12,1))
-    value(scores['August 2015']).must_equal 4
+    value(scores['October 2015']).must_equal 6
   end
 
   it 'has a scope for having progress_updates' do
