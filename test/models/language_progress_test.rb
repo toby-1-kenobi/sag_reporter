@@ -4,6 +4,18 @@ describe LanguageProgress do
   let(:language_progress) { LanguageProgress.new progress_marker: pm, state_language: sl }
   let(:pm) { ProgressMarker.new name: 'test pm', topic: topics(:language_development)}
   let(:sl) { StateLanguage.new }
+  let(:pu1) { ProgressUpdate.new progress: 2,
+                                 year:2015,
+                                 month: 8,
+                                 language_progress: language_progress,
+                                 geo_state: geo_states(:nb),
+                                 user: users(:andrew) }
+  let(:pu2) { ProgressUpdate.new progress: 3,
+                                 year:2015,
+                                 month: 10,
+                                 language_progress: language_progress,
+                                 geo_state: geo_states(:nb),
+                                 user: users(:andrew) }
 
   it 'must be valid' do
     value(language_progress).must_be :valid?
@@ -62,6 +74,25 @@ describe LanguageProgress do
     language_progress.progress_marker.weight = 2
     scores = language_progress.outcome_scores(Date.new(2015,6,1), Date.new(2015,12,1))
     value(scores['October 2015']).must_equal 6
+  end
+
+  it 'knows the score for a given month' do
+    pu1.save
+    pu2.save
+    _(language_progress.month_score(2015, 8)).must_equal 2
+    _(language_progress.month_score(2015, 10)).must_equal 3
+  end
+
+  it 'uses the latest update of multiple given in a single month' do
+    pu1.created_at = Date.new(2015,8,5)
+    pu1.save
+    pu2.month = 8
+    pu2.created_at = Date.new(2015,8,10)
+    pu2.save
+    _(language_progress.month_score(2015, 8)).must_equal pu2.progress
+    pu1.created_at = Date.new(2015,8,15)
+    pu1.save
+    _(language_progress.month_score(2015, 8)).must_equal pu1.progress
   end
 
   it 'has a scope for having progress_updates' do
