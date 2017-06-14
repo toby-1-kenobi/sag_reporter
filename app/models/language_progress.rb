@@ -29,9 +29,8 @@ class LanguageProgress < ActiveRecord::Base
   def month_score(year = Date.today.year, month = Date.today.month)
     cutoff = Date.new(year, month, -1).end_of_day
     state_updates = progress_updates.select{ |pu| pu.progress_date <= cutoff }
-    # if more than one update shares the same progress_date then max_by will select the first of these
-    # we want the one added most recently so we reverse sort by created_at
-    return state_updates.empty? ? earliest_score : state_updates.sort{ |a,b| b.created_at <=> a.created_at }.max_by(&:progress_date).progress * progress_marker.weight
+    # if more than one update shares the same progress_date then we'll use the most recently added
+    return state_updates.empty? ? earliest_score : state_updates.sort!.last.progress * progress_marker.weight
   end
 
   def earliest_score
