@@ -35,7 +35,7 @@ class LanguageProgress < ActiveRecord::Base
     cutoff = Date.new(year, month, -1).end_of_day
     state_updates = updates.select{ |pu| pu.progress_date <= cutoff }
     # if more than one update shares the same progress_date then we'll use the most recently added
-    return state_updates.empty? ? earliest_score(updates) : state_updates.sort!.last.progress * progress_marker.weight
+    return state_updates.empty? ? 0 : state_updates.sort!.last.progress * progress_marker.weight
   end
 
   def earliest_score(updates)
