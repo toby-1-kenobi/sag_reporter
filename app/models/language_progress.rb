@@ -29,7 +29,16 @@ class LanguageProgress < ActiveRecord::Base
   def month_score(year = Date.today.year, month = Date.today.month)
     state_updates = progress_updates.where('year < ? OR (year = ? AND month <= ?)', year, year, month)
     # if more than one update shares the same month then include created_at in the ordering to get the most recent of those added
-  	return state_updates.empty? ? 0 : state_updates.order(:year, :month, :created_at).last.progress * progress_marker.weight
+  	return state_updates.empty? ? earliest_score : state_updates.order(:year, :month, :created_at).last.progress * progress_marker.weight
+  end
+
+  def earliest_score
+    earliest_update = progress_updates.order(:year, :month, created_at: :desc).first
+    if earliest_update
+      earliest_update.progress * progress_marker.weight
+    else
+      0
+    end
   end
 
   def outcome_scores(start_date, end_date)

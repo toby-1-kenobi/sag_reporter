@@ -93,6 +93,23 @@ describe LanguageProgress do
     pu1.created_at = Date.new(2015,8,15)
     pu1.save
     _(language_progress.month_score(2015, 8)).must_equal pu1.progress
+
+    # check progress marker weight is taken into account
+    language_progress.progress_marker.weight = 2
+    _(language_progress.month_score(2015, 8)).must_equal pu1.progress * 2
+  end
+
+  it 'projects the earliest month score backwards in time' do
+    pu1.save
+    _(language_progress.month_score(2010, 1)).must_equal pu1.progress
+
+    # check progress marker weight is taken into account
+    language_progress.progress_marker.weight = 2
+    _(language_progress.month_score(2010, 1)).must_equal pu1.progress * 2
+
+    # 0 if there's no progress updates at all
+    language_progress.progress_updates.clear
+    _(language_progress.month_score(2010, 1)).must_equal 0
   end
 
   it 'has a scope for having progress_updates' do
