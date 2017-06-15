@@ -24,24 +24,24 @@ class LanguageProgress < ActiveRecord::Base
     valid_updates.empty? ? 0 : valid_updates.sort{ |a,b| b.created_at <=> a.created_at }.max_by(&:progress_date).progress
   end
 
-  def double_month_score(year1, month1, year2, month2)
+  def double_month_score(year1, month1, year2, month2, pm_weight)
     all_updates = progress_updates.to_a
-    [month_score(year1, month1, all_updates), month_score(year2, month2, all_updates)]
+    [month_score(year1, month1, all_updates, pm_weight), month_score(year2, month2, all_updates, pm_weight)]
   end
 
   # find the latest progress update in or before a given month
   # and use this to get the score for that month
-  def month_score(year = Date.today.year, month = Date.today.month, updates)
+  def month_score(year = Date.today.year, month = Date.today.month, updates, pm_weight)
     cutoff = Date.new(year, month, -1).end_of_day
     state_updates = updates.select{ |pu| pu.progress_date <= cutoff }
     # if more than one update shares the same progress_date then we'll use the most recently added
-    return state_updates.empty? ? 0 : state_updates.sort!.last.progress * progress_marker.weight
+    return state_updates.empty? ? earliest_score(updates, pm_weight) : state_updates.sort!.last.progress * pm_weight[progress_marker_id]
   end
 
-  def earliest_score(updates)
+  def earliest_score(updates, pm_weight)
     earliest_update = updates.sort_by{ |u| [u.year, u.month, -u.created_at.to_i] }.first
     if earliest_update
-      earliest_update.progress * progress_marker.weight
+      earliest_update.progress * pm_weight[progress_marker_id]
     else
       0
     end

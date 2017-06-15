@@ -121,6 +121,7 @@ class StateLanguagesController < ApplicationController
     end
   end
 
+
   private
 
   def collect_transformation_data

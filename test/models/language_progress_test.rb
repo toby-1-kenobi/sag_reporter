@@ -77,41 +77,39 @@ describe LanguageProgress do
   end
 
   it 'knows the score for a given month' do
-    _(language_progress.month_score(2015, 8, [pu1, pu2])).must_equal 2
-    _(language_progress.month_score(2015, 10, [pu1, pu2])).must_equal 3
+    _(language_progress.month_score(2015, 8, [pu1, pu2], {pu1.id => 1, pu2.id => 1})).must_equal 2
+    _(language_progress.month_score(2015, 10, [pu1, pu2], {pu1.id => 1, pu2.id => 1})).must_equal 3
   end
 
   it 'uses the latest update of multiple given in a single month' do
     pu1.created_at = Date.new(2015,8,5)
     pu2.month = 8
     pu2.created_at = Date.new(2015,8,10)
-    _(language_progress.month_score(2015, 8, [pu1, pu2])).must_equal pu2.progress
+    _(language_progress.month_score(2015, 8, [pu1, pu2], {pu1.id => 1, pu2.id => 1})).must_equal pu2.progress
     pu1.created_at = Date.new(2015,8,15)
-    _(language_progress.month_score(2015, 8, [pu1, pu2])).must_equal pu1.progress
+    _(language_progress.month_score(2015, 8, [pu1, pu2], {pu1.id => 1, pu2.id => 1})).must_equal pu1.progress
 
     # check progress marker weight is taken into account
-    language_progress.progress_marker.weight = 2
-    _(language_progress.month_score(2015, 8, [pu1, pu2])).must_equal pu1.progress * 2
+    _(language_progress.month_score(2015, 8, [pu1, pu2], {pu1.id => 2, pu2.id => 2})).must_equal pu1.progress * 2
   end
 
   it 'projects the earliest month score backwards in time' do
-    _(language_progress.month_score(2010, 1, [pu1, pu2])).must_equal pu1.progress
+    _(language_progress.month_score(2010, 1, [pu1, pu2], {pu1.id => 1, pu2.id => 1})).must_equal pu1.progress
 
     # check progress marker weight is taken into account
-    language_progress.progress_marker.weight = 2
-    _(language_progress.month_score(2010, 1, [pu1, pu2])).must_equal pu1.progress * 2
+    _(language_progress.month_score(2010, 1, [pu1, pu2], {pu1.id => 2, pu2.id => 2})).must_equal pu1.progress * 2
 
     # 0 if there's no progress updates at all
-    _(language_progress.month_score(2010, 1, [])).must_equal 0
+    _(language_progress.month_score(2010, 1, [], {})).must_equal 0
   end
 
   it 'projects the earliest month score backwards in time using the last added update for multiple in earliest month' do
     pu1.month = pu2.month
     pu1.created_at = Date.new(2015,8,5)
     pu2.created_at = Date.new(2015,8,10)
-    _(language_progress.month_score(2010, 1, [pu1, pu2])).must_equal pu2.progress
+    _(language_progress.month_score(2010, 1, [pu1, pu2], {pu1.id => 1, pu2.id => 1})).must_equal pu2.progress
     pu1.created_at = Date.new(2015,8,15)
-    _(language_progress.month_score(2010, 1, [pu1, pu2])).must_equal pu1.progress
+    _(language_progress.month_score(2010, 1, [pu1, pu2], {pu1.id => 1, pu2.id => 1})).must_equal pu1.progress
   end
 
   it 'has a scope for having progress_updates' do
