@@ -61,8 +61,11 @@
       <tr><th>Old Testament Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: ot_marker).human_status %></td></tr>
       <% if (@language.number_of_translations && @language.number_of_translations > 0) or @editable %>
           <% tr_num = @language.number_of_translations || 0 %>
-          <%= render 'attribute_table_row', title: 'Number of ongoing translation projects', attribute_name: 'number_of_translations' %>
-          <span class="mdl-tooltip" for="attribute-row-<%= @language.id %>-number_of_translations">Is there more than one organization working in the language for translation (this is to track duplication effort)?</span>
+          <%= render 'attribute_table_row',
+                     title: 'Number of ongoing translation projects',
+                     attribute_name: 'number_of_translations',
+                     tooltip: 'Is there more than one organization working in the language for translation (this is to track duplication effort)?'
+          %>
       <% end %>
       <% if (@language.translation_info.present? or @editable) and logged_in_user.trusted? %>
           <%= render 'attribute_table_row', title: 'Translation information', attribute_name: 'translation_info' %>
@@ -142,33 +145,6 @@
                 </td>
               </tr>
           <% end %>
-          <% if @editable or @language.translation_interest.present? %>
-              <tr>
-                <th>Translation interest</th>
-                <td id="language-translation-interest" class="<%= 'editable' if @editable %> <%= 'pending-field' if @pending_attributes.include? 'translation_interest' %>">
-                  <%= @language.translation_interest %>
-                  <%= render 'shared/edit_icon' if @editable %>
-                </td>
-              </tr>
-          <% end %>
-          <% if @editable or @language.translator_background.present? %>
-              <tr>
-                <th>Translator Background</th>
-                <td id="language-translator-background" class="<%= 'editable' if @editable %> <%= 'pending-field' if @pending_attributes.include? 'translator_background' %>">
-                  <%= @language.translator_background %>
-                  <%= render 'shared/edit_icon' if @editable %>
-                </td>
-              </tr>
-          <% end %>
-          <% if @editable or @language.translation_local_support.present? %>
-              <tr>
-                <th>Local support for translation</th>
-                <td id="language-translation-local-support" class="<%= 'editable' if @editable %> <%= 'pending-field' if @pending_attributes.include? 'translation_local_support' %>">
-                  <%= @language.translation_local_support %>
-                  <%= render 'shared/edit_icon' if @editable %>
-                </td>
-              </tr>
-          <% end %>
         </table>
     <% end %>
 
@@ -180,19 +156,31 @@
       <% dictionary_marker = FinishLineMarker.find_by_number(9) %>
       <tr><th>Dictionary Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: dictionary_marker).human_status %></td></tr>
       <% if @editable or @language.script.present? %>
-          <%= render 'attribute_table_row', title: 'Script', attribute_name: 'script' %>
+          <%= render 'attribute_table_row',
+                     title: 'Script',
+                     attribute_name: 'script',
+                     tooltip: 'Which script(s) are used to write the language?'
+          %>
       <% end %>
       <% if @editable or @language.mt_literacy.present? %>
           <%= render 'attribute_table_row', title: 'Mother-Tongue literacy', attribute_name: 'mt_literacy' %>
       <% end %>
       <% if @editable or @language.l2_literacy.present? %>
-          <%= render 'attribute_table_row', title: 'Second language literacy', attribute_name: 'l2_literacy' %>
+          <%= render 'attribute_table_row',
+                     title: 'Second language literacy',
+                     attribute_name: 'l2_literacy',
+                     tooltip: 'What is the literacy rate in second language or the language of education?'
+          %>
       <% end %>
       <% if @editable or @language.literate_believers.present? and logged_in_user.sees_faith_based_data? %>
           <%= render 'attribute_table_row', title: 'Literate believers', attribute_name: 'literate_believers' %>
       <% end %>
       <% if @editable or @language.mt_literacy_programs.present? %>
-          <%= render 'attribute_table_row', title: 'Mother-Tongue literacy programs', attribute_name: 'mt_literacy_programs' %>
+          <%= render 'attribute_table_row',
+                     title: 'Mother-Tongue literacy programs',
+                     attribute_name: 'mt_literacy_programs',
+                     tooltip: 'Write the interest of the community in mother tongue literacy program in less than 50 words'
+          %>
       <% end %>
       <% if @editable or @language.attitude_to_lang_dev.present? %>
           <%= render 'attribute_table_row', title: 'Attitude towards development', attribute_name: 'attitude_to_lang_dev' %>
@@ -228,7 +216,11 @@
     <h3>Religion</h3>
     <table class="language-data">
       <% if @language.religion.present? %>
-          <%= render 'attribute_table_row', title: 'Religion', attribute_name: 'religion' %>
+          <%= render 'attribute_table_row',
+                     title: 'Religion',
+                     attribute_name: 'religion',
+                     tooltip: 'What religious affiliation do the people claim? What is the estimated percentage?'
+          %>
       <% end %>
       <% if @language.local_fellowship.present? and logged_in_user.sees_faith_based_data? %>
           <tr><th>Local Fellowship exists</th><td><%= @language.local_fellowship? ? 'Yes' : 'No' %></td></tr>
@@ -284,10 +276,17 @@
     <h3>General</h3>
     <table class="language-data">
       <% if @language.description.present? or @editable %>
-          <tr><th>Description</th><td id="language-description" class="<%= 'editable' if @editable %>"><%= @language.description %><%= render 'shared/edit_icon' if @editable %></td></tr>
+          <%= render 'attribute_table_row',
+                     title: 'Description',
+                     attribute_name: 'description'
+          %>
       <% end %>
       <% if @language.info.present? %>
-          <tr><th>General information</th><td id="language-info" class="<%= 'editable' if @editable %>"><%= @language.info %><%= render 'shared/edit_icon' if @editable %></td></tr>
+          <%= render 'attribute_table_row',
+                     title: 'General information',
+                     attribute_name: 'info',
+                     tooltip: 'Any general remark about the people and the language'
+          %>
       <% end %>
     </table>
 
@@ -297,13 +296,22 @@
               <tr><th>Family</th><td id="language-family" class="<%= 'editable' if @editable %>"><%= @language.family_name %><%= render 'shared/edit_icon' if @editable %></td></tr>
           <% end %>
           <% if @language.genetic_classification.present? %>
-              <tr><th>Classification</th><td><%= @language.genetic_classification %></td></tr>
+              <%= render 'attribute_table_row',
+                         title: 'Classification',
+                         attribute_name: 'genetic_classification'
+              %>
           <% end %>
           <% if @language.lexical_similarity.present? %>
-              <tr><th>Lexical similarity</th><td><%= @language.lexical_similarity %></td></tr>
+              <%= render 'attribute_table_row',
+                         title: 'Lexical similarity',
+                         attribute_name: 'lexical_similarity'
+              %>
           <% end %>
           <% if @language.related_languages.present? %>
-              <tr><th>Related languages</th><td><%= @language.related_languages %></td></tr>
+              <%= render 'attribute_table_row',
+                         title: 'Related languages',
+                         attribute_name: 'related_languages'
+              %>
           <% end %>
         </table>
 
