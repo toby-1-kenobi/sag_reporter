@@ -12,11 +12,8 @@ class BcsSms
   @requests_waiting = Hash.new
 
   # start a thread that sends the OTP and return the id of that thread
-  def self.send_otp(phone_number, otp_code)
-    if Rails.env.development?
-      puts "Login code: #{otp_code}"
-      return 0
-    else
+  def self.send_otp(phone_number, otp_code, debug = false)
+    if Rails.env.production? or debug
       thr = Thread.new do
         @requests_waiting[Thread.current.object_id] = :pending
         begin
@@ -34,6 +31,9 @@ class BcsSms
         end
       end
       return thr.object_id
+    else
+      puts "Login code: #{otp_code}"
+      return 0
     end
   end
 

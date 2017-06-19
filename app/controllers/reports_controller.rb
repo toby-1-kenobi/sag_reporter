@@ -33,6 +33,10 @@ class ReportsController < ApplicationController
     redirect_to root_path unless logged_in_user.can_archive_report?
   end
 
+  before_action only: [:pictures] do
+    head :forbidden unless logged_in_user.trusted? or logged_in_user?(Report.find(params[:id]).reporter)
+  end
+
   before_action :get_translations, only: [:new, :edit]
   before_action :find_report, only: [:edit, :update, :show, :archive, :unarchive, :pictures]
 

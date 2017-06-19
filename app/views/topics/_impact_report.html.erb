@@ -1,12 +1,14 @@
 <div class="card report green lighten-3" id="report-<%= impact_report.id %>">
   <div class="card-content">
     <p><%= simple_format impact_report.content %></p>
-    <% impact_report.pictures.each do |picture| %>
-        <%= image_tag picture.ref_url if picture.ref? %>
-    <% end %>
-    <%# Show reporter name if there is one and if the current user is trusted, or it's them. %>
-    <% if impact_report.reporter and (logged_in_user.trusted? or logged_in_user?(impact_report.reporter)) %>
-      <div class="reporter"><%= impact_report.reporter.name %></div>
+    <%# Show pictures and reporter name if the current user is trusted, or it's them. %>
+    <% if logged_in_user.trusted? or logged_in_user?(impact_report.reporter) %>
+      <% impact_report.pictures.each do |picture| %>
+          <%= image_tag picture.ref_url if picture.ref? %>
+      <% end %>
+      <% if impact_report.reporter %>
+        <div class="reporter"><%= impact_report.reporter.name %></div>
+      <% end %>
     <% end %>
   </div>
   <div class="card-action">

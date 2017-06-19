@@ -32,12 +32,14 @@
       <% end %>
     </div>
   	<%= simple_format report.content %>
-    <% report.pictures.each do |picture| %>
-      <%= image_tag picture.ref_url if picture.ref? %>
-    <% end %>
-    <%# Show the reporter if the logged in user is trusted, or if it's them %>
-    <% if report.reporter.present? and (logged_in_user.trusted? or logged_in_user?(report.reporter)) %>
-  	  <div class="reporter"><%= report.reporter.name %></div>
+    <%# Show pictures and the reporter name if the logged in user is trusted, or if it's them %>
+    <% if logged_in_user.trusted? or logged_in_user?(report.reporter) %>
+      <% report.pictures.each do |picture| %>
+        <%= image_tag picture.ref_url if picture.ref? %>
+      <% end %>
+      <% if report.reporter.present? %>
+        <div class="reporter"><%= report.reporter.name %></div>
+      <% end %>
     <% end %>
   	<% if languages %>
   	  <div class="report-languages">
