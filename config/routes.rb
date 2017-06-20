@@ -20,7 +20,9 @@ Rails.application.routes.draw do
     get :autocomplete_person_name, :on => :collection
   end
 
-  resources :geo_states, only: [:show]
+  resources :geo_states, only: [:show] do
+    get :bulk_assess, on: :member
+  end
 
   resources :impact_reports, except: [:new, :create, :index] do
     collection do

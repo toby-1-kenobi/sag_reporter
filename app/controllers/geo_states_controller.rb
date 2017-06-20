@@ -1,11 +1,11 @@
 class GeoStatesController < ApplicationController
 
   before_action :require_login
+  before_action :find_state, except: [:get_autocomplete_items]
 
   autocomplete :district, :name, full: true
 
   def show
-    @geo_state = GeoState.find params[:id]
   end
 
   def get_autocomplete_items(parameters)
@@ -13,14 +13,12 @@ class GeoStatesController < ApplicationController
   end
 
   def get_totals_chart
-    @geo_state = GeoState.find(params[:id])
     respond_to do |format|
       format.js
     end
   end
 
   def get_outcome_area_chart
-    @geo_state = GeoState.find(params[:id])
     @outcome_area = Topic.find(params[:topic_id])
     respond_to do |format|
       format.js
@@ -28,10 +26,19 @@ class GeoStatesController < ApplicationController
   end
 
   def get_combined_languages_chart
-    @geo_state = GeoState.find(params[:id])
     respond_to do |format|
       format.js
     end
+  end
+
+  def bulk_assess
+
+  end
+
+  private
+
+  def find_state
+    @geo_state = GeoState.find(params[:id])
   end
 
 end
