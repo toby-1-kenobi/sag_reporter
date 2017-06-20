@@ -8,11 +8,21 @@ class Organisation < ActiveRecord::Base
   validates :name, presence: true, allow_blank: false, allow_nil: false, uniqueness: true
   validates :abbreviation, uniqueness: true, allow_nil: true
 
+  # return the name with abbreviation if it's present and different from the naem
   def name_with_abbr
     if abbreviation.present? and abbreviation != name
       "#{name} (#{abbreviation})"
     else
       name
+    end
+  end
+
+  # return the name with abbreviation if the given user is trusted otherwise just the id
+  def name_with_abbr_or_not(user)
+    if user.trusted?
+      name_with_abbr
+    else
+      "Organisation ##{id}"
     end
   end
 

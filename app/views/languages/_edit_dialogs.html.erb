@@ -346,7 +346,7 @@
     <ul class="potentially-engaged-orgs mdl-list">
       <% Organisation.where('id not in (?)', @language.engaged_organisation_ids).find_each do |org| %>
         <li class="org-<%= org.id %> mdl-list__item">
-          <%= link_to org.name_with_abbr, add_engaged_org_to_language_path(@language, org), class: 'org-name mdl-list__item-primary-content', method: :patch, remote: true %>
+          <%= link_to org.name_with_abbr_or_not(logged_in_user), add_engaged_org_to_language_path(@language, org), class: 'org-name mdl-list__item-primary-content', method: :patch, remote: true %>
         </li>
       <% end %>
     </ul>
@@ -362,7 +362,7 @@
     <ul class="potentially-translating-orgs mdl-list">
       <% Organisation.where('id not in (?)', @language.translating_organisation_ids).find_each do |org| %>
           <li class="org-<%= org.id %> mdl-list__item">
-            <%= link_to org.name_with_abbr, add_translating_org_to_language_path(@language, org), class: 'org-name mdl-list__item-primary-content', method: :patch, remote: true %>
+            <%= link_to org.name_with_abbr_or_not(logged_in_user), add_translating_org_to_language_path(@language, org), class: 'org-name mdl-list__item-primary-content', method: :patch, remote: true %>
           </li>
       <% end %>
     </ul>
