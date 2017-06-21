@@ -1,5 +1,6 @@
-<% html_class = "#{'editable' if editable} #{'pending-field' if pending_attributes.include? attribute_name}" %>
+<% html_class = "#{'editable' if @editable} #{'pending-field' if @pending_attributes.include? attribute_name}" %>
+<% html_id = "#{object.class.name.underscore.dasherize}-#{attribute_name.dasherize}" %>
 <%= content_tag html_tag, {id: html_id, class: html_class} do %>
-  <%= attribute_value %>
-  <%= render 'shared/edit_icon' if editable %>
+  <%= object.send(attribute_name) %>
+  <%= render 'shared/edit_icon' if @editable %>
 <% end %>

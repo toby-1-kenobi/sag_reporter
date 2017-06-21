@@ -20,3 +20,7 @@
 <% unless @edits.any? or @national_edits %>
     <p>There are no pending edits for you to curate.</p>
 <% end %>
+
+<%= render 'shared/edit_message_dialog' %>
+
+<%= render 'shared/dialog_activation' %>

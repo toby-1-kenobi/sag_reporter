@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   has_many :curatings, dependent: :destroy
   has_many :curated_states, through: :curatings, class_name: 'GeoState', source: 'geo_state', inverse_of: :curators
   has_many :edits, dependent: :destroy
-  has_many :curated_edits, foreign_key: 'curated_by_id', inverse_of: :curated_by, dependent: :nullify
+  has_many :curated_edits, class_name: 'Edit', foreign_key: 'curated_by_id', inverse_of: :curated_by, dependent: :nullify
 
   attr_accessor :remember_token
 

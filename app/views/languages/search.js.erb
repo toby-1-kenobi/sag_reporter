@@ -1,13 +1,28 @@
-<% if @languages.any? %>
-  let resultList = $('<ul>').addClass('mdl-list');
+<% if @languages.any? or @states.any? %>
+  let languageResultList = $('<ul>').addClass('mdl-list');
   <% @languages.find_each do |lang| %>
     let listItem<%= lang.id %> = $('<li>').addClass('mdl-list__item');
     let listItemContent<%= lang.id %> = $('<span>').addClass('mdl-list__item-primary-content');
     listItemContent<%= lang.id %>.html("<%= j link_to lang.name, lang %>");
     listItem<%= lang.id %>.html(listItemContent<%= lang.id %>);
-    resultList.append(listItem<%= lang.id %>);
+    languageResultList.append(listItem<%= lang.id %>);
   <% end %>
-  $('#language-search-results').html(resultList);
+  let stateResultList = $('<ul>').addClass('mdl-list');
+  <% @states.find_each do |state| %>
+    let listItem<%= state.id %> = $('<li>').addClass('mdl-list__item');
+    let listItemContent<%= state.id %> = $('<span>').addClass('mdl-list__item-primary-content');
+    listItemContent<%= state.id %>.html("<%= j link_to state.name, state %>");
+    listItem<%= state.id %>.html(listItemContent<%= state.id %>);
+    stateResultList.append(listItem<%= state.id %>);
+  <% end %>
+  let langCell = $('<div>').addClass('mdl-cell').addClass('mdl-cell--4-col');
+  langCell.html(languageResultList);
+  let stateCell = $('<div>').addClass('mdl-cell').addClass('mdl-cell--4-col');
+  stateCell.html(stateResultList);
+  let grid = $('<div>').addClass('mdl-grid');
+  grid.append(langCell);
+  grid.append(stateCell);
+  $('#language-search-results').html(grid);
 <% else %>
-  $('#language-search-results').html('No languages were found with names that match your search term.');
+  $('#language-search-results').html('No languages or states found that match your search term.');
 <% end %>

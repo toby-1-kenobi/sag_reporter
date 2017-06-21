@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="mdl-card__actions mdl-card--border">
-        <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Log in</button>
+        <button class="mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect">Log in</button>
       </div>
   <% end %>
 </div>
@@ -82,7 +82,7 @@
     });
     </script>
   <%= form_tag(resend_code_to_phone_path, class: 'col s6', id: 'resend-phone-form', is: 'iron-form', 'on-iron-form-response': 'resendSmsResponseHandler') do |f| %>
-    <button onclick="submitResendPhoneForm()" class="resend_otp_to_phone mdl-button mdl-js-button mdl-button--raised mdl-button--accent">Resend Login Code to Phone</button>
+    <button onclick="submitResendPhoneForm()" class="resend_otp_to_phone mdl-button mdl-js-button mdl-button--colored">Resend Login Code to Phone</button>
       <div class="mdl-spinner mdl-js-spinner"></div>
   <% end %>
   <% if @user.email.present? and @user.email_confirmed? %>
@@ -109,7 +109,7 @@
         });
       </script>
     <%= form_tag(resend_code_to_email_path, class: 'col s6', id: 'resend-email-code-form', is: 'iron-form', 'on-iron-form-response': 'resendEmailCodeResponseHandler') do |f| %>
-        <button onclick="submitResendEmailCodeForm()" class="resend_otp_to_email mdl-button mdl-js-button mdl-button--raised mdl-button--accent">Resend Login Code to Email</button>
+        <button onclick="submitResendEmailCodeForm()" class="resend_otp_to_email mdl-button mdl-js-button mdl-button--colored">Resend Login Code to Email</button>
           <div class="mdl-spinner mdl-js-spinner"></div>
     <% end %>
   <% end %>

@@ -15,29 +15,11 @@ $(document).ready ->
     $(this).find('.edit-icon').addClass('hide')
     return
 
-  openFinishLineDialog = (number, churchEngagement) ->
-    name = $("#finish-line-marker-#{number}-name").html()
-    description = $("#finish-line-marker-#{number}-description").html()
-    dialog = $('#finish-line-dialog')
-    if churchEngagement
-      dialog.find('.finish-line-progress-options-ce').removeClass('hide')
-      dialog.find('.finish-line-progress-options').addClass('hide')
-    else
-      dialog.find('.finish-line-progress-options-ce').addClass('hide')
-      dialog.find('.finish-line-progress-options').removeClass('hide')
-    dialog.find('.mdl-dialog__title').html(name)
-    dialog.find('.description').html(description)
-    # need to put the marker number in the link hrefs
-    dialog.find('a.progress-link').each ->
-      $(this).attr('href', $(this).attr('href').replace(/set_finish_line_progress\/.*\//, "set_finish_line_progress/#{number}/"))
-    dialog.get(0).showModal()
-    return
-
   $('.editable').on 'click', ->
     id = this.id
     if $(this).hasClass('finish-line-progress-status')
       number = id.substring(id.lastIndexOf('-') + 1)
-      openFinishLineDialog(number, $(this).hasClass('church-engagement'))
+      $("dialog#finish-line-dialog-#{number}").get(0).showModal()
     else
       $("dialog[data-for=\"#{id}\"]").get(0).showModal()
     return
@@ -45,9 +27,7 @@ $(document).ready ->
   $('.finish-line-progress-icon').on 'click', ->
     id = this.id
     number = id.substring(id.lastIndexOf('-') + 1)
-    openFinishLineDialog(number, $(this).hasClass('church-engagement'))
-    # prevent the switch from switching
-    return false
+    $("dialog#finish-line-dialog-#{number}").get(0).showModal()
 
   $('.add-engaged-org-button').on 'click', ->
     $('#add-engaged-org-dialog').get(0).showModal()
@@ -86,5 +66,36 @@ $(document).ready ->
       under.slideDown 300, ->
         under.addClass('mdl-shadow--4dp')
         under.children('.shadow-clipper').fadeIn(200)
+
+  $('#finish-line-marker-select').on 'click', (event) ->
+    event.stopPropagation()
+    return
+
+  $('.flm-option').on 'click', (event) ->
+    event.stopPropagation()
+    # hide any visible under panels
+    $('.finish-line-filter-panel:visible')
+      .removeClass('mdl-shadow--4dp')
+      .children('.shadow-clipper').fadeOut 200, ->
+        $('.finish-line-filter-panel:visible').slideUp(300)
+        return
+    # make all panels not 'under'
+    $('.under.finish-line-filter-panel').addClass('hide').removeClass('under')
+    # recheck every checkbox and refilter to remove finish line filter
+    $('.finish-line-filter-panel').find('input:checkbox:not(:checked)').each ->
+      console.log(this)
+      $(this).parent()[0].MaterialCheckbox.check()
+      $(this).trigger('change')
+      return
+    # set the name on the filter box to the selected finish line marker
+    $('#flm-filter-name').html($(this).find('.flm-name').html())
+    # hide all finish line chips in the language list
+    $('.language-flp-chip').addClass('hide')
+    # show the chips related to the selected marker
+    flmNum = $(this).attr('data-flm-number')
+    $(".language-flp-chip.flm-#{flmNum}").removeClass('hide')
+    # make the proper filter options the ones that will come up when the filter is clicked
+    $("#finish-line-status-select-#{flmNum}").addClass('under').removeClass('hide')
+    return
 
   return

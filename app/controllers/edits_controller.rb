@@ -110,7 +110,9 @@ class EditsController < ApplicationController
         'Language' => %w(
           name iso population location translating_organisations
           translation_info translation_consultants translation_interest
-          translator_background translation_local_support
+          translator_background translation_local_support bible_first_published
+          bible_last_published nt_first_published nt_last_published
+          portions_first_published portions_last_published
         )
     }
   end

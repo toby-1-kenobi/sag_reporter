@@ -21,7 +21,7 @@ class FinishLineProgress < ActiveRecord::Base
     "#{finish_line_marker.name} for #{language.name}"
   end
 
-  def category
+  def self.category(status)
     case status
       when 'no_need'
         :nothing
@@ -32,6 +32,10 @@ class FinishLineProgress < ActiveRecord::Base
       else
         :complete
     end
+  end
+
+  def category
+    FinishLineProgress.category(status)
   end
 
   def human_status
@@ -46,9 +50,19 @@ class FinishLineProgress < ActiveRecord::Base
         when 'in_progress'
           'In progress, not completed'
         when 'completed'
-          'Completed'
+          case finish_line_marker.number
+            when 2, 3, 4, 8, 9, 10
+              'Reached requirements'
+            else
+              'Completed'
+          end
         else
-          "Completed, #{status.humanize}"
+          case finish_line_marker.number
+            when 2, 3, 4, 8, 9, 10
+              "Reached requirements, #{status.humanize}"
+            else
+              "Completed, #{status.humanize}"
+          end
       end
     end
   end
@@ -57,14 +71,23 @@ class FinishLineProgress < ActiveRecord::Base
     if finish_line_marker.number == 0
       FinishLineProgress.church_engagement_status[status]
     else
-      status.humanize
+      if status == 'completed'
+        case finish_line_marker.number
+          when 2, 3, 4, 8, 9, 10
+            'Reached requirements'
+          else
+            'Completed'
+        end
+      else
+        status.humanize
+      end
     end
   end
 
-  def self.human_of_status(status, church_engagement)
+  def self.human_of_status(status, marker_number)
     # possible_need used to be called potential_need
     if status == 'potential_need' then status = 'possible_need' end
-    if church_engagement
+    if marker_number == 0
       church_engagement_status[status]
     else
       case status
@@ -75,9 +98,19 @@ class FinishLineProgress < ActiveRecord::Base
         when 'in_progress'
           'In progress, not completed'
         when 'completed'
-          'Completed'
+          case marker_number
+            when 2, 3, 4, 8, 9, 10
+              'Reached requirements'
+            else
+              'Completed'
+          end
         when 'further_needs_expressed', 'further_work_in_progress'
-          "Completed, #{status.humanize}"
+          case marker_number
+            when 2, 3, 4, 8, 9, 10
+              "Reached requirements, #{status.humanize}"
+            else
+              "Completed, #{status.humanize}"
+          end
         else
           false
       end
@@ -92,44 +125,6 @@ class FinishLineProgress < ActiveRecord::Base
         'completed' => 'Many churches using',
         'further_work_in_progress' => 'Church running project'
     }
-  end
-
-  def self.status_description(status, church_engagement)
-    if church_engagement
-      case status
-        when 'no_need'
-          'There are no local churches'
-        when 'possible_need'
-          'There are local churches but none are accepting and using the mother tongue materials for transformation'
-        when 'in_progress'
-          'Some local churches (a few only) are accepting and using the mother tongue materials for transformation'
-        when 'completed'
-          'Many local churches, from a range of denominations, are accepting and using the mother tongue materials for transformation'
-        when 'further_work_in_progress'
-          'Local churches are going beyond use, to resourcing and running the project themselves'
-        else
-          ''
-      end
-    else
-      case status
-        when 'no_need'
-          'Material is not available, but based on the available information there is no need'
-        when 'possible_need'
-          'Material is not available, but could emerge as a potential need'
-        when 'expressed_needs'
-          'Material is not available, but there is a need (based on the research and/or through church request) to make the material available'
-        when 'in_progress'
-          'Work on the material is in progress'
-        when 'completed'
-          'Material is available'
-        when 'further_needs_expressed'
-          'Even though the material is available, further need is expressed because of a dialect or script difference'
-        when 'further_work_in_progress'
-          'Even though the material is available, because of a dialect or script difference, work is in progress (in a different dialect or a script)'
-        else
-          ''
-      end
-    end
   end
 
 end

@@ -1,4 +1,6 @@
-<% provide(:title, 'Zone Dashboard') %>
+<% provide(:title, "#{@zone.name} Zone Dashboard") %>
+
+<% provide(:context_title, "#{@zone.name} Zone") %>
 
 <!-- breadcrumbs will go here -->
 <!-- India | Current Zone | previously navigated state | previously navigated language -->
@@ -6,8 +8,6 @@
   <li><%=	 link_to 'India', nation_path %></li>
   <li><%= link_to "#{@zone.name} Zone", zone_path(@zone) %></li>
 </ul>
-
-<h1><%= @zone.name %> Zone</h1>
 
 <div class="mdl-tabs mdl-js-tabs">
   <div class="mdl-tabs__tab-bar">

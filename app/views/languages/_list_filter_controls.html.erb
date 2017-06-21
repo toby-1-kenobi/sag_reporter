@@ -1,10 +1,25 @@
 <div class="mdl-grid language-filter-controls">
 
   <div class="mdl-cell mdl-cell--4-col">
-    <div class="over mdl-shadow--4dp"><h4>Strategic Zone</h4></div>
+    <div class="over mdl-shadow--4dp"><h4>Strategic Zone <i class="material-icons">arrow_drop_down</i></h4></div>
     <div class="under mdl-shadow--2dp">
       <div class="shadow-clipper"></div>
       <ul class="mdl-list">
+        <%# one checkbox for selecting all %>
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">&nbsp;</span>
+          <span class="mdl-list__item-secondary-action">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="strategic-zone-filter-select-all">
+              <input
+              checked
+              type="checkbox"
+              id="strategic-zone-filter-select-all"
+              class="mdl-checkbox__input select-all-trigger"
+              data-select-all-trigger="strategic-zone"
+              />
+            </label>
+          </span>
+        </li>
         <%# one list item to allow users to select languages where no zone is defined %>
         <li class="mdl-list__item">
           <span class="mdl-list__item-primary-content">Unknown</span>
@@ -15,8 +30,9 @@
               type="checkbox"
               value="zone-unknown"
               id="zone-unknown-check"
-              class="mdl-checkbox__input filter-trigger"
+              class="mdl-checkbox__input filter-trigger select-all-target"
               data-filter-trigger-label="zone"
+              data-select-all-target="strategic-zone"
               />
             </label>
           </span>
@@ -31,8 +47,9 @@
                 type="checkbox"
                 value="<%= zone.id %>"
                 id="zone-<%= zone.id %>-check"
-                class="mdl-checkbox__input filter-trigger"
+                class="mdl-checkbox__input filter-trigger select-all-target"
                 data-filter-trigger-label="zone"
+                data-select-all-target="strategic-zone"
                 />
               </label>
             </span>
@@ -43,10 +60,25 @@
   </div>
 
   <div class="mdl-cell mdl-cell--4-col">
-    <div class="over mdl-shadow--4dp"><h4>Language Family</h4></div>
+    <div class="over mdl-shadow--4dp"><h4>Language Family <i class="material-icons">arrow_drop_down</i></h4></div>
     <div class="under mdl-shadow--2dp">
       <div class="shadow-clipper"></div>
       <ul class="mdl-list">
+        <%# one checkbox for selecting all %>
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content">&nbsp;</span>
+          <span class="mdl-list__item-secondary-action">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="family-filter-select-all">
+              <input
+              checked
+              type="checkbox"
+              id="family-filter-select-all"
+              class="mdl-checkbox__input select-all-trigger"
+              data-select-all-trigger="family"
+              />
+            </label>
+          </span>
+        </li>
         <%# one list item to allow users to select languages where no language family is defined %>
         <li class="mdl-list__item">
           <span class="mdl-list__item-primary-content">Unknown</span>
@@ -57,15 +89,16 @@
               type="checkbox"
               value="family-unknown"
               id="family-unknown-check"
-              class="mdl-checkbox__input filter-trigger"
+              class="mdl-checkbox__input filter-trigger select-all-target"
               data-filter-trigger-label="language-family"
+              data-select-all-target="family"
               />
             </label>
           </span>
         </li>
         <% LanguageFamily.all.order(:name).each do |family| %>
-            <li class="mdl-list__item">
-              <span class="mdl-list__item-primary-content"><%= family.name %></span>
+          <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content"><%= family.name %></span>
             <span class="mdl-list__item-secondary-action">
               <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="family-<%= family.id %>-check">
                 <input
@@ -73,12 +106,13 @@
                 type="checkbox"
                 value="<%= family.id %>"
                 id="family-<%= family.id %>-check"
-                class="mdl-checkbox__input filter-trigger"
+                class="mdl-checkbox__input filter-trigger select-all-target"
                 data-filter-trigger-label="language-family"
+                data-select-all-target="family"
                 />
               </label>
             </span>
-            </li>
+          </li>
         <% end %>
       </ul>
     </div>
@@ -87,29 +121,62 @@
 
 
   <div class="mdl-cell mdl-cell--4-col">
-    <div class="over mdl-shadow--4dp"><h4>Translation Status</h4></div>
-    <div class="under mdl-shadow--2dp">
-      <div class="shadow-clipper"></div>
-      <ul class="mdl-list">
-        <% Language.translation_status_colour.each do |status, colour| %>
-            <li class="mdl-list__item" style="background-color: <%= colour %>">
-              <span class="mdl-list__item-primary-content"><%= status.to_s.humanize %></span>
+    <div class="over mdl-shadow--4dp">
+      <button id="finish-line-marker-select"
+              class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">more_vert</i>
+      </button>
+      <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+          for="finish-line-marker-select">
+        <% FinishLineMarker.order(:number).pluck(:name, :number).each do |flm_name, flm_number| %>
+          <li class="mdl-menu__item flm-option" data-flm-number="<%= flm_number %>"><span class="flm-name"><%= flm_name %></span></li>
+        <% end %>
+      </ul>
+      <h4><span id="flm-filter-name">Finish Line Marker</span> <i class="material-icons">arrow_drop_down</i></h4>
+    </div>
+
+    <% FinishLineMarker.find_each do |flm| %>
+      <div id="finish-line-status-select-<%= flm.number %>" class="finish-line-status finish-line-filter-panel hide mdl-shadow--2dp">
+        <div class="shadow-clipper"></div>
+        <ul class="mdl-list">
+          <%# one checkbox for selecting all %>
+          <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">&nbsp;</span>
             <span class="mdl-list__item-secondary-action">
-              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="<%= status.to_s %>-check">
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="flm-<%= flm.number %>-filter-select-all">
                 <input
                 checked
                 type="checkbox"
-                value="<%= status.to_s %>"
-                id="<%= status.to_s %>-check"
-                class="mdl-checkbox__input filter-trigger"
-                data-filter-trigger-label="translation-status"
+                id="flm-<%= flm.number %>-filter-select-all"
+                class="mdl-checkbox__input select-all-trigger"
+                data-select-all-trigger="flm-<%= flm.number %>"
                 />
               </label>
             </span>
-            </li>
-        <% end %>
-      </ul>
-    </div>
+          </li>
+          <% FinishLineProgress.statuses.keys.each do |status| %>
+            <% if human_status = FinishLineProgress.human_of_status(status, flm.number) %>
+              <li class="<%= FinishLineProgress.category(status) %> mdl-list__item">
+                <span class="mdl-list__item-primary-content"><%= human_status %></span>
+                <span class="mdl-list__item-secondary-action">
+                  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="flm-<%= flm.number %>-<%= status %>-check">
+                    <input
+                    checked
+                    type="checkbox"
+                    value="<%= status %>"
+                    id="flm-<%= flm.number %>-<%= status %>-check"
+                    class="mdl-checkbox__input filter-trigger select-all-target"
+                    data-filter-trigger-label="flm-<%= flm.number %>"
+                    data-select-all-target="flm-<%= flm.number %>"
+                    />
+                  </label>
+                </span>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
   </div>
 
 </div>

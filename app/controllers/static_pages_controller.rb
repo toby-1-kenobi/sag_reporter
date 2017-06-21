@@ -15,7 +15,7 @@ class StaticPagesController < ApplicationController
             icon: 'create',
             lcr_icon: 'lcr-icon-write-report',
             colour: 'blue',
-            category: 'weekly'
+            category: 'report'
         },
         {
             condition: (logged_in_user.can? 'create_report'),
@@ -24,7 +24,7 @@ class StaticPagesController < ApplicationController
             icon: 'create',
             lcr_icon: 'lcr-icon-workshop',
             colour: 'teal',
-            category: 'other'
+            category: 'report'
         },
         {
             condition: (logged_in_user.can? 'create_report'),
@@ -33,32 +33,32 @@ class StaticPagesController < ApplicationController
             icon: 'create',
             lcr_icon: 'lcr-icon-build',
             colour: 'yellow',
-            category: 'weekly'
+            category: 'report'
         },
-        {
-            condition: (logged_in_user.can? 'create_event'),
-            path: events_new_path,
-            text: Translation.get_string('report_event', logged_in_user),
-            icon: 'event',
-            colour: 'cyan',
-            category: 'other'
-        },
+        # {
+        #     condition: (logged_in_user.can? 'create_event'),
+        #     path: events_new_path,
+        #     text: Translation.get_string('report_event', logged_in_user),
+        #     icon: 'event',
+        #     colour: 'cyan',
+        #     category: 'report'
+        # },
         {
             condition: (logged_in_user.can? 'add_resource'),
             path: new_mt_resource_path,
             text: 'Report on a completed resource',
             icon: 'build',
             colour: 'brown',
-            category: 'monthly'
+            category: 'report'
         },
-        {
-            condition: (logged_in_user.can? 'report_numbers'),
-            path: report_numbers_path,
-            text: 'Report numbers for the month',
-            icon: 'assessment',
-            colour: 'green',
-            category: 'monthly'
-        },
+        # {
+        #     condition: (logged_in_user.can? 'report_numbers'),
+        #     path: report_numbers_path,
+        #     text: 'Report numbers for the month',
+        #     icon: 'assessment',
+        #     colour: 'green',
+        #     category: 'report'
+        # },
         {
             condition: (logged_in_user.can? 'tag_report'),
             path: tag_impact_reports_path,
@@ -66,7 +66,7 @@ class StaticPagesController < ApplicationController
             icon: 'label',
             lcr_icon: 'lcr-icon-tag',
             colour: 'red',
-            category: 'weekly'
+            category: 'progress'
         },
         {
             condition: (logged_in_user.can? 'evaluate_progress'),
@@ -74,23 +74,23 @@ class StaticPagesController < ApplicationController
             text: 'Assess progress marker levels',
             icon: 'check_circle',
             colour: 'purple',
-            category: 'monthly'
+            category: 'progress'
         },
-        {
-            condition: (logged_in_user.can? 'view_output_totals'),
-            path: outputs_path,
-            text: 'View output totals',
-            icon: 'tab',
-            colour: 'pink',
-            category: 'other'
-        },
+        # {
+        #     condition: (logged_in_user.can? 'view_output_totals'),
+        #     path: outputs_path,
+        #     text: 'View output totals',
+        #     icon: 'tab',
+        #     colour: 'pink',
+        #     category: 'progress'
+        # },
         {
             condition: (logged_in_user.can? 'view_outcome_totals'),
             path: outcomes_path,
-            text: 'View outcome progress',
+            text: 'View outcome transformation progress',
             icon: 'tab',
             colour: 'indigo',
-            category: 'other'
+            category: 'progress'
         },
         {
             condition: (logged_in_user.can? 'view_all_reports'),
@@ -98,7 +98,7 @@ class StaticPagesController < ApplicationController
             text: 'View all reports',
             icon: 'dashboard',
             colour: 'amber',
-            category: 'other'
+            category: 'progress'
         },
         {
             condition: (logged_in_user.can? 'view_all_users'),
@@ -108,22 +108,22 @@ class StaticPagesController < ApplicationController
             colour: 'lime',
             category: 'other'
         },
-        {
-            condition: (logged_in_user.can? 'view_all_languages'),
-            path: languages_path,
-            text: 'View all languages',
-            icon: 'language',
-            colour: 'orange',
-            category: 'other'
-        },
-        {
-            condition: (logged_in_user.can? 'view_all_topics'),
-            path: topics_path,
-            text: 'View all outcome areas',
-            icon: 'local_offer',
-            colour: 'light-green',
-            category: 'other'
-        },
+        # {
+        #     condition: (logged_in_user.can? 'view_all_languages'),
+        #     path: languages_path,
+        #     text: 'View all languages',
+        #     icon: 'language',
+        #     colour: 'orange',
+        #     category: 'other'
+        # },
+        # {
+        #     condition: (logged_in_user.can? 'view_all_topics'),
+        #     path: topics_path,
+        #     text: 'View all outcome areas',
+        #     icon: 'local_offer',
+        #     colour: 'light-green',
+        #     category: 'other'
+        # },
         {
             condition: (logged_in_user.can? 'view_all_languages'),
             path: overview_path,

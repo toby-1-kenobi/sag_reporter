@@ -1,0 +1,16 @@
+
+<script>
+  $('dialog').each(function() {
+    let dialog = this;
+    if (! dialog.showModal) {
+      dialogPolyfill.registerDialog(dialog);
+    }
+    $(dialog).find('.submit').on('click', function() {
+      $(dialog).find('form').submit();
+      dialog.close();
+    });
+    $(dialog).find('.cancel').on('click', function() {
+      dialog.close();
+    });
+  });
+</script>

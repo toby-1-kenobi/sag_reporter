@@ -1,11 +1,19 @@
-
+<%# @all_flm_numbers = FinishLineMarker.all.map{ |m| m.number } unless defined?(@all_flm_numbers) %>
+<%
+  finish_line_status = {}
+  language.finish_line_progresses.each do |flp|
+    finish_line_status[flp.finish_line_marker.number] = flp.status
+  end
+%>
 
       <li
         class="language-item filterable-item<%= ' extinct' if language.population == 0 %> mdl-list__item mdl-list__item--two-line"
-        data-filter-label="translation-status language-family zone"
-        data-translation-status="<%= language.translation_status.to_s %>"
+        data-filter-label="language-family zone <%= finish_line_status.keys.map{ |flm_num| "flm-#{flm_num}" }.join(' ') %>"
         data-language-family="<%= language.family.present? ? language.family.id : 'family-unknown' %>"
         data-zone="<%= language.geo_states.any? ? language.geo_states.map(&:zone_id).uniq.join(',') : 'zone-unknown' %>"
+        <% finish_line_status.each do |flm_num, fl_status| %>
+          data-flm-<%= flm_num %>="<%= fl_status %>"
+        <% end %>
       >
           <span class="mdl-list__item-primary-content">
             <span><%= link_to language.name, language %></span>
@@ -29,9 +37,21 @@
               <% end %>
             </span>
           </span>
-          <span class="mdl-list__item-secondary-content">
-            <span class="mdl-chip" style="background-color: <%= language.translation_status_colour %>">
-                <span class="mdl-chip__text"><%= language.translation_status.to_s.humanize %></span>
+          <span class="finish-line-status mdl-list__item-secondary-content">
+            <% if defined?(flm_number) %>
+              <% flm = FinishLineMarker.find_by_number flm_number %>
+              <% flp = language.finish_line_progresses.find_by_finish_line_marker_id flm.id %>
+              <span id="flp-chip-<%= language.id %>-<%= flm_number %>" class="mdl-chip language-flp-chip <%= flp.category %> flm-<%= flm_number %>">
+                <span class="mdl-chip__text"><%= flm.name %>: <%= flp.simple_human_status %></span>
               </span>
+            <% else %>
+              <% language.finish_line_progresses.each do |flp| %>
+                  <% number = flp.finish_line_marker.number %>
+                <span id="flp-chip-<%= language.id %>-<%= number %>" class="mdl-chip language-flp-chip <%= flp.category %> flm-<%= number %> hide">
+                  <span class="mdl-chip__text"><%= flp.simple_human_status %></span>
+                </span>
+                <span for="flp-chip-<%= language.id %>-<%= number %>" class="mdl-tooltip"><%= flp.finish_line_marker.name %></span>
+              <% end %>
+            <% end %>
           </span>
       </li>
