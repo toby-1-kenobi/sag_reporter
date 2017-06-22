@@ -3,9 +3,9 @@ class ReportsController < ApplicationController
   helper ColoursHelper
   include ParamsHelper
 
-  skip_before_action :verify_authenticity_token, only: [:create_external, :send_external]
-  before_action :require_login, except: [:create_external, :send_external]
-  before_action :authenticate, only: [:create_external, :send_external]
+  skip_before_action :verify_authenticity_token, only: [:create_external, :index_external]
+  before_action :require_login, except: [:create_external, :index_external]
+  before_action :authenticate, only: [:create_external, :index_external]
 
     # Let only permitted users do some things
   before_action only: [:new, :create] do
@@ -37,11 +37,11 @@ class ReportsController < ApplicationController
   before_action :find_report, only: [:edit, :update, :show, :archive, :unarchive, :pictures]
 
   before_action only: [:create_external] do
-    render json: {success: false, errors: 'Permission denied'} if current_user.can_create_report?
+    render json: {success: false, errors: 'Permission denied'} unless current_user.can_create_report?
   end
 
   before_action only: [:index_external] do
-    render json: {errors: 'Permission denied'} if current_user.can_view_all_reports?
+    render json: {errors: 'Permission denied'} unless current_user.can_view_all_reports?
   end
 
   def new
@@ -76,6 +76,7 @@ class ReportsController < ApplicationController
   def index_external
     report_data = Array.new
     Report.all.each do |report|
+      next unless current_user.geo_states.include? report.geo_state
       if report.impact_report
         language_ids = Array.new
         report.languages.each do |rl|

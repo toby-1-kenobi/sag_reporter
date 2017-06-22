@@ -2,8 +2,8 @@ class UsersController < ApplicationController
 
   include ParamsHelper
 
-  before_action :require_login, except: [:send_external, :send_my_data_external, :confirm_email]
-  before_action :authenticate, only: [:send_external, :send_my_data_external]
+  before_action :require_login, except: [:show_external, :index_external, :confirm_email]
+  before_action :authenticate, only: [:show_external, :index_external]
 
   # A user's profile can only be edited or seen by
   #    themselves or
@@ -30,7 +30,7 @@ class UsersController < ApplicationController
   end
 
   before_action only: [:index_external] do
-    render json: {errors: 'Permission denied'} if current_user.can_view_all_users?
+    render json: {errors: 'Permission denied'} unless current_user.can_view_all_users?
   end
 
   def show_external
