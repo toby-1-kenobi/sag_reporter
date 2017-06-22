@@ -3,7 +3,7 @@ class ReportsController < ApplicationController
   helper ColoursHelper
   include ParamsHelper
 
-#  skip_before_action :verify_authenticity_token, only: [:create_external, :send_external]
+  skip_before_action :verify_authenticity_token, only: [:create_external, :send_external]
   before_action :require_login, except: [:create_external, :send_external]
   before_action :authenticate, only: [:create_external, :send_external]
 
@@ -45,30 +45,6 @@ class ReportsController < ApplicationController
 
   # new report submitted by an external client
   def create_external
-    # convert image-strings to image-files
-    base64_data = params['report']['pictures_attributes']
-    tempfiles = Array.new
-    base64_data.each do |image_number, image_data|
-      filename = "upload-image" + image_number
-      tempfile = Tempfile.new(filename)
-      tempfile.binmode
-      tempfile.write Base64.decode64(image_data["data"])
-      tempfile.rewind
-      # for security we want the actual content type, not just what was passed in
-      content_type = `file --mime -b #{tempfile.path}`.split(";")[0]
-
-      # we will also add the extension ourselves based on the above
-      # if it's not gif/jpeg/png, it will fail the validation in the upload model
-      extension = content_type.match(/gif|jpg|jpeg|png/).to_s
-      filename += ".#{extension}" if extension
-      params['report']['pictures_attributes'][image_number]['ref'] = ActionDispatch::Http::UploadedFile.new({
-        tempfile: tempfile,
-        type: content_type,
-        filename: filename
-      })
-      tempfiles.push tempfile
-    end
-    # create report
     full_params = report_params.merge({reporter: current_user})
     report_factory = Report::Factory.new
     response = Hash.new
@@ -87,14 +63,6 @@ class ReportsController < ApplicationController
     end
     puts response.to_json
     render json: response
-    # delete tempfile[image_number.to_i] afterwards
-  ensure
-    tempfiles.each do |tempfile|
-      if tempfile
-        tempfile.close
-        tempfile.unlink
-      end
-    end
   end
 
   def send_external
@@ -112,9 +80,11 @@ class ReportsController < ApplicationController
 
         pictures = Hash.new
         report.pictures.each do |picture|
-          picture_id = picture[:id]
-          file_content = Base64.encode64 picture.ref.read
-          pictures[picture_id] = file_content
+          if picture.ref.file.exists?
+            picture_id = picture[:id]
+            file_content = Base64.encode64 picture.ref.read
+            pictures[picture_id] = file_content
+          end
         end
 
         report_data << {
@@ -295,7 +265,7 @@ class ReportsController < ApplicationController
       :impact_report,
       {:languages => []},
       {:topics => []},
-      {:pictures_attributes => [:ref, :_destroy, :id]},
+      {:pictures_attributes => [:ref, :_destroy, :id, :created_external]},
       {:observers_attributes => [:id, :name]},
       :status,
       :location,
