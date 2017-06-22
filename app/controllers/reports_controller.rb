@@ -36,6 +36,14 @@ class ReportsController < ApplicationController
   before_action :get_translations, only: [:new, :edit]
   before_action :find_report, only: [:edit, :update, :show, :archive, :unarchive, :pictures]
 
+  before_action only: [:create_external] do
+    render json: {success: false, errors: 'Permission denied'} if current_user.can_create_report?
+  end
+
+  before_action only: [:index_external] do
+    render json: {errors: 'Permission denied'} if current_user.can_view_all_reports?
+  end
+
   def new
   	@report = Report.new
     @report.pictures.build
@@ -65,7 +73,7 @@ class ReportsController < ApplicationController
     render json: response
   end
 
-  def send_external
+  def index_external
     report_data = Array.new
     Report.all.each do |report|
       if report.impact_report

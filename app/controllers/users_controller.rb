@@ -29,7 +29,11 @@ class UsersController < ApplicationController
     redirect_to root_path unless logged_in_user.can_view_all_users?
   end
 
-  def send_my_data_external
+  before_action only: [:index_external] do
+    render json: {errors: 'Permission denied'} if current_user.can_view_all_users?
+  end
+
+  def show_external
     user_data = Hash.new
     user_data['id'] = current_user.id
     user_data['geo_states'] = Array.new
@@ -50,7 +54,7 @@ class UsersController < ApplicationController
     render json: user_data
   end
 
-  def send_external
+  def index_external
     user_data = Array.new
     User.all.each do |user|
       user_specific_data = {

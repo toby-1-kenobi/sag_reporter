@@ -65,7 +65,7 @@ Rails.application.routes.draw do
       get 'by_reporter'
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
       post 'create_external'
-      get 'send_external'
+      get 'index_external'
     end
     member do
       patch 'archive'
@@ -78,8 +78,8 @@ Rails.application.routes.draw do
 
   resources :users do
     collection do
-      get :send_external
-      get :send_my_data_external
+      get :show_external
+      get :index_external
     end
 
     member do
