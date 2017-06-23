@@ -29,10 +29,6 @@ class UsersController < ApplicationController
     redirect_to root_path unless logged_in_user.can_view_all_users?
   end
 
-  before_action only: [:index_external] do
-    render json: {errors: 'Permission denied'} unless current_user.can_view_all_users?
-  end
-
   def show_external
     user_data = Hash.new
     user_data['id'] = current_user.id
@@ -61,9 +57,6 @@ class UsersController < ApplicationController
           'id' => user.id,
           'name' => user.name
       }
-      if user.id == current_user.id
-        user_specific_data['phone'] = user.phone
-      end 
       user_data << user_specific_data
     end
     render json: {'users' => user_data}
