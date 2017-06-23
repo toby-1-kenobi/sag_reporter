@@ -7,19 +7,23 @@ class SessionsController < ApplicationController
   end
 
   def create_external
-    auth_params = params.require(:auth).permit :phone, :password
-    user = User.find_by phone: auth_params[:phone]
-    if !user
-      head :not_found
-      return
-    end
-    secret_key = Rails.application.secrets.secret_key_base
-    payload = {sub: user.id, iat: Time.now.to_i}
-    token = JWT.encode payload, secret_key, 'HS256'
-    if user.authenticate auth_params[:password]
-      render json: { jwt: token, user: user.id }, status: :created
-    else
-      head :not_found
+    begin
+      auth_params = params.require(:auth).permit :phone, :password, :device_id, :device_name
+      user = User.find_by phone: auth_params[:phone]
+      unless user
+        head :not_found
+        return
+      end
+      secret_key = Rails.application.secrets.secret_key_base
+      payload = {sub: user.id, iat: Time.now.to_i}
+      token = JWT.encode payload, secret_key, 'HS256'
+      if user.authenticate auth_params[:password]
+        render json: { jwt: token, user: user.id }, status: :created
+      else
+        head :not_found
+      end
+    rescue => e
+      render json: { error: e, secret_key_found: !!secret_key, payload_found: !!payload, token_found: !!token}
     end
   end
 

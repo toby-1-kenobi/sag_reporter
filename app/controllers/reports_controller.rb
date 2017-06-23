@@ -75,16 +75,17 @@ class ReportsController < ApplicationController
 
   def index_external
     report_data = Array.new
-    Report.all.each do |report|
-      next unless current_user.geo_states.include? report.geo_state
+    user_geo_states = current_user.geo_states.ids
+    state_languages = StateLanguage.in_project
+    Report.includes(:languages, :pictures).where(impact_report: true).each do |report|
+      next unless user_geo_states.include? report.geo_state_id
       if report.impact_report
         language_ids = Array.new
-        report.languages.each do |rl|
-          language_ids << StateLanguage.find_by(
-              geo_state_id: report.geo_state_id, 
-              language_id: rl.id, 
-              project: true
-          ).id
+        report.languages.each do |report_language|
+          language_ids << state_languages.find do |state_language|
+            state_language.geo_state_id == report.geo_state_id &&
+                state_language.language_id == report_language.id
+          end.id
         end
 
         pictures = Hash.new
@@ -98,7 +99,7 @@ class ReportsController < ApplicationController
 
         report_data << {
             'id' => report.id,
-            'geo_state_id' => report.geo_state.id,
+            'geo_state_id' => report.geo_state_id,
             'report_date' => report.report_date,
             'content' => report.content,
             'author_id' => report.reporter_id,

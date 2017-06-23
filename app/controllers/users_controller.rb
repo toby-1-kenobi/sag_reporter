@@ -33,17 +33,18 @@ class UsersController < ApplicationController
     user_data = Hash.new
     user_data['id'] = current_user.id
     user_data['geo_states'] = Array.new
-    current_user.geo_states.includes(:state_languages).each do |gs|
+    current_user.geo_states.joins(:state_languages).includes(:state_languages, state_languages: :language)
+        .where("state_languages.project" => true).each do |geo_state|
       languages = Array.new
-      gs.state_languages.in_project.each do |sl|
+      geo_state.state_languages.each do |state_language|
         languages << {
-            'id' => sl.id,
-            'language_name' => sl.language_name
+            'id' => state_language.id,
+            'language_name' => state_language.language_name
         }
       end
       user_data['geo_states'] << {
-          'id' => gs.id,
-          'name' => gs.name,
+          'id' => geo_state.id,
+          'name' => geo_state.name,
           'languages' => languages
       }
     end
