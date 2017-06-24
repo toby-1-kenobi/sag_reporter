@@ -79,37 +79,35 @@ class ReportsController < ApplicationController
     state_languages = StateLanguage.in_project
     Report.includes(:languages, :pictures).where.not(impact_report: nil).each do |report|
       next unless user_geo_states.include? report.geo_state_id
-      if report.impact_report
-        language_ids = Array.new
-        report.languages.each do |report_language|
-          language_ids << state_languages.find do |state_language|
-            state_language.geo_state_id == report.geo_state_id &&
-                state_language.language_id == report_language.id
-          end.id
-        end
-
-        pictures = Hash.new
-        report.pictures.each do |picture|
-          if picture.ref.file.exists?
-            picture_id = picture[:id]
-            file_content = Base64.encode64 picture.ref.read
-            pictures[picture_id] = file_content
-          end
-        end
-
-        report_data << {
-            'id' => report.id,
-            'geo_state_id' => report.geo_state_id,
-            'report_date' => report.report_date,
-            'content' => report.content,
-            'author_id' => report.reporter_id,
-            'impact_report' => 1,
-            'languages' => language_ids,
-            'pictures' => pictures,
-            'client' => report.client,
-            'version' => report.version
-        }
+      language_ids = Array.new
+      report.languages.each do |report_language|
+        language_ids << state_languages.find do |state_language|
+          state_language.geo_state_id == report.geo_state_id &&
+              state_language.language_id == report_language.id
+        end.id
       end
+
+      pictures = Hash.new
+      report.pictures.each do |picture|
+        if picture.ref.file.exists?
+          picture_id = picture[:id]
+          file_content = Base64.encode64 picture.ref.read
+          pictures[picture_id] = file_content
+        end
+      end
+
+      report_data << {
+          'id' => report.id,
+          'geo_state_id' => report.geo_state_id,
+          'report_date' => report.report_date,
+          'content' => report.content,
+          'author_id' => report.reporter_id,
+          'impact_report' => 1,
+          'languages' => language_ids,
+          'pictures' => pictures,
+          'client' => report.client,
+          'version' => report.version
+      }
     end
     render json: {'reports' => report_data}
   end
