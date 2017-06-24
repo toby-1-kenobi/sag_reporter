@@ -77,7 +77,7 @@ class ReportsController < ApplicationController
     report_data = Array.new
     user_geo_states = current_user.geo_states.ids
     state_languages = StateLanguage.in_project
-    Report.includes(:languages, :pictures).where(impact_report: true).each do |report|
+    Report.includes(:languages, :pictures).where.not(impact_report: nil).each do |report|
       next unless user_geo_states.include? report.geo_state_id
       if report.impact_report
         language_ids = Array.new
