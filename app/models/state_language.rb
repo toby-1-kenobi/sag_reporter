@@ -174,4 +174,14 @@ class StateLanguage < ActiveRecord::Base
         where('reports.report_date >= ?', duration.ago).distinct
   end
 
+  # return the date that progress levels were last set
+  def progress_last_set
+    if progress_updates.any?
+      pu = progress_updates.order(:year, :month).last
+      Date.new(pu.year, pu.month)
+    else
+      nil
+    end
+  end
+
 end

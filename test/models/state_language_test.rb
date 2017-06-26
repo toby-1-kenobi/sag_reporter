@@ -3,6 +3,8 @@ require 'test_helper'
 describe StateLanguage do
   let(:state_language) { StateLanguage.new geo_state: geo_states(:nb), language: languages(:toto) }
   let(:admin_user) { users(:andrew) }
+  let(:pm) { progress_markers(:skills_used) }
+  let(:lang_prog) { LanguageProgress.new state_language: state_language, progress_marker: pm }
 
   it 'must be valid' do
     value(state_language).must_be :valid?
@@ -73,6 +75,19 @@ describe StateLanguage do
     duration = 3.months
     report_count = languages(:toto).reports.active.where('report_date >= ?', duration.ago).count
     _(state_languages(:nb_toto).recent_impact_reports(duration).count).must_equal report_count
+  end
+
+  it 'returns nil for last progress update when there are none' do
+    _(state_language.progress_last_set).must_be_nil
+  end
+
+  it 'returns the date of the last progress update' do
+    lang_prog.save
+    lang_prog.progress_updates << ProgressUpdate.new(progress: 1, user: admin_user, year: 2016, month: 2)
+    _(state_language.progress_last_set).must_equal Date.new(2016, 2)
+    lang_prog.progress_updates << ProgressUpdate.new(progress: 1, user: admin_user, year: 2017, month: 1)
+    lang_prog.progress_updates << ProgressUpdate.new(progress: 1, user: admin_user, year: 2016, month: 6)
+    _(state_language.progress_last_set).must_equal Date.new(2017, 1)
   end
 
 end
