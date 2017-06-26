@@ -33,8 +33,17 @@ class User::Factory
     end
   end
 
-  def create_user(params)
+  # Only admin users can crete new users and we skip the email confirmation
+  # when the current user is admin, so it seems this branching logic is redundant
+  def create_user(params, skip_confirm_email = false)
     if build_user(params) and @instance.valid?
+      if skip_confirm_email
+        # if we skip sending the confirmation email, we must make the email confirmed if it's there
+        if @instance.email.present?
+          @instance.email_confirmed = true
+        end
+        User.skip_callback(:save, :after, :send_confirmation_email)
+      end
       return @instance.save
     else
       return false

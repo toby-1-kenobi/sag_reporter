@@ -207,35 +207,37 @@ class User < ActiveRecord::Base
     UserMailer.user_email_confirmation(self).deliver_now
   end
 
+  private
 
-      private
+  # Check if the email address has been updated and it is present
+  # if so send an email to confirm their email address.
+  def send_confirmation_email
+    if self.email_changed? && self.email.present?
+      self.update_columns(
+          confirm_token: SecureRandom.urlsafe_base64.to_s,
+          email_confirmed: false
+      )
+      logger.debug 'sending email verification email'
+      UserMailer.user_email_confirmation(self).deliver_now
+    end
+  end
 
-      def tokenize(string_to_split)
-        string_to_split.split(/_or_/)
-      end
+  def tokenize(string_to_split)
+    string_to_split.split(/_or_/)
+  end
 
-      def matches_dynamic_role_check?(method_id)
-        /\Ais_an?_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
-      end
+  def matches_dynamic_role_check?(method_id)
+    /\Ais_an?_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
+  end
 
-      def matches_dynamic_perm_check?(method_id)
-        /\Acan_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
-      end
+  def matches_dynamic_perm_check?(method_id)
+    /\Acan_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
+  end
 
-      def send_confirmation_email
-        if self.email_changed? && self.email.present?
-          self.update_columns(
-              confirm_token: SecureRandom.urlsafe_base64.to_s,
-              email_confirmed: false
-          )
-          logger.debug 'sending email verification email'
-          UserMailer.user_email_confirmation(self).deliver_now
-        end
-      end
+  def interface_language_must_have_locale_tag
+    if interface_language.present? and interface_language.locale_tag.blank?
+      errors.add(:interface_language, 'must be a user interface language.')
+    end
+  end
 
-      def interface_language_must_have_locale_tag
-        if interface_language.present? and interface_language.locale_tag.blank?
-          errors.add(:interface_language, 'must be a user interface language.')
-        end
-      end
 end

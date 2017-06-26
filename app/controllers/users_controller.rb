@@ -89,7 +89,7 @@ class UsersController < ApplicationController
 
   def create
     user_factory = User::Factory.new
-    if user_factory.create_user(user_params)
+    if user_factory.create_user(user_params, logged_in_user.admin?)
       flash['success'] = 'New User Created!'
       redirect_to user_factory.instance()
     else
@@ -112,7 +112,7 @@ class UsersController < ApplicationController
   def update
     updater = User::Updater.new(@user)
     message = 'Profile updated'
-    if updater.update_user(user_params)
+    if updater.update_user(user_params, logged_in_user.admin?)
       if updater.instance.confirm_token.present?
         message = 'Profile updated with email. Please check mail and confirm your email.'
       end
