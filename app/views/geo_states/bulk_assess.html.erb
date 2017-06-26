@@ -3,6 +3,8 @@
 
 <%= render 'shared/mdl_selectfield_assets' %>
 
+<form>
+
 <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
   <select id="assessment_date" name="assessment_date" class="mdl-selectfield__select">
     <% (6.months.ago.to_date..Date.today).select{ |d| d.day == 1 }.each do |date| %>
@@ -35,7 +37,13 @@
           </div>
           <div>
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sl-<%= state_lang.id %>">
-              <input type="checkbox" id="sl-<%= state_lang.id %>" tabindex="<%= index + 1 %>" class="mdl-switch__input language-switch">
+              <input type="checkbox"
+                     id="sl-<%= state_lang.id %>"
+                     tabindex="<%= index + 1 %>"
+                     value="<%= state_lang.id %>"
+                     class="mdl-switch__input language-switch filter-trigger"
+                     data-filter-trigger-label="state-language"
+              >
               <span class="mdl-switch__label"></span>
             </label>
           </div>
@@ -51,7 +59,10 @@
         <td><%= marker.number %></td>
         <% @geo_state.state_languages.in_project.each_with_index do |state_lang, col_index| %>
           <td id="level-<%= state_lang.id %>-<%= marker.id %>" class="mdl-data-table__cell--non-numeric">
-            <div class="bulk-assess-input mdl-textfield mdl-js-textfield">
+            <div class="bulk-assess-input filterable-item mdl-textfield mdl-js-textfield"
+                 data-filter-label="state-language"
+                 data-state-language="<%= state_lang.id %>"
+            >
               <% tab_index = col_total + (col_index * row_total) + marker.number.to_i + 1 %>
               <input class="mdl-textfield__input" tabindex="<%= tab_index %>" type="text" pattern="[0-3]" maxlength="1" id="level-<%= state_lang.id %>-<%= marker.id %>-input">
               <span class="mdl-textfield__error">Enter number in the range 0 to 3</span>
@@ -62,3 +73,7 @@
     <% end %>
   </tbody>
 </table>
+
+<button type="submit">Submit</button>
+
+</form>
