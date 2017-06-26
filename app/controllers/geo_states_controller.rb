@@ -2,6 +2,7 @@ class GeoStatesController < ApplicationController
 
   before_action :require_login
   before_action :find_state, except: [:get_autocomplete_items]
+  before_action :check_privaleges, only: [:bulk_assess, :bulk_progress_update]
 
   autocomplete :district, :name, full: true
 
@@ -35,10 +36,43 @@ class GeoStatesController < ApplicationController
     @markers = ProgressMarker.active.order(:number)
   end
 
+  def bulk_progress_update
+    date = params[:assessment_date].split('-')
+    # get only the values for languages where the switch is on
+    level_data = params['bulk-input'].select do |k, v|
+      params['language-switch'].keys.include? k
+    end
+    levels_set = parse_bulk_assess(date.first, date.second, level_data)
+    flash['success'] = "Set #{levels_set} transformation progress levels for #{@geo_state.name}"
+    redirect_to select_to_assess_path
+  end
+
   private
 
   def find_state
     @geo_state = GeoState.find(params[:id])
+  end
+
+  def check_privaleges
+    @geo_state ||= GeoState.find(params[:id])
+    redirect_to root_path unless logged_in_user.national? or @geo_state.users.include?(logged_in_user)
+  end
+
+  # bulk input is a hash where the keys are the ids of StateLanguage objects and the values are hashes
+  # the inner hashes have progress marker ids as keys and the progress levels as values.
+  # everything goes in as a string
+  # progress levels may be left blank (empty string) in which case skip them
+  # return the total number of levels set
+  def parse_bulk_assess(year, month, bulk_input)
+    levels_set = 0
+    bulk_input.each do |state_language_id, levels|
+      levels.select{ |k, v| v.present? }.each do |pm_id, progress|
+        lp = LanguageProgress.find_or_create_by(state_language_id: state_language_id, progress_marker_id: pm_id)
+        lp.progress_updates.create(progress: progress, user: logged_in_user, year: year, month: month)
+        levels_set += 1
+      end
+    end
+    levels_set
   end
 
 end

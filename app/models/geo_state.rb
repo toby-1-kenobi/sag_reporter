@@ -1,16 +1,16 @@
 class GeoState < ActiveRecord::Base
 
   belongs_to :zone
-  has_many :users
+  has_and_belongs_to_many :users
   has_many :state_languages, dependent: :destroy
   has_many :languages, through: :state_languages
-  has_many :reports
+  has_many :reports, dependent: :restrict_with_error
   has_many :impact_reports
-  has_many :mt_resources
+  has_many :mt_resources, dependent: :restrict_with_error
   has_many :events
-  has_many :people
+  has_and_belongs_to_many :people
   has_many :output_counts
-  has_many :progress_updates
+  has_many :progress_updates #this relationship seems unnecessary because it should go through state_languages
   has_many :districts, dependent: :destroy
   has_many :curatings, dependent: :destroy
   has_many :curators, through: :curatings, class_name: 'User', source: 'user', inverse_of: :curated_states
