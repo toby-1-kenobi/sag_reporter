@@ -9,7 +9,8 @@
   <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
     <select id="assessment_date" name="assessment_date" class="mdl-selectfield__select">
       <% (6.months.ago.to_date..Date.today).select{ |d| d.day == 1 }.each do |date| %>
-        <option value="<%= date.strftime('%Y-%m') %>"><%= date.strftime('%Y %B') %></option>
+          <% selected = date.month == Date.today.month and date.year == Date.today.year %>
+        <option value="<%= date.strftime('%Y-%m') %>" <%= 'selected' if selected %> ><%= date.strftime('%Y %B') %></option>
       <% end %>
     </select>
     <label for="assessment_date" class="mdl-selectfield__label">Assessment Date:</label>
@@ -18,7 +19,7 @@
   <%# lower z-index of switches so they don't overlap the selectbox dropdown %>
   <style>.mdl-switch { z-index: 0; }</style>
 
-  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+  <table class="bulk-assess mdl-data-table mdl-js-data-table mdl-shadow--2dp">
     <thead>
       <tr>
         <th>PM #</th>
@@ -83,6 +84,6 @@
     </tbody>
   </table>
 
-  <button class="mdl-button" type="submit">Submit</button>
+  <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit">Submit</button>
 
 <% end %>

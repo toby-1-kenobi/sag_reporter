@@ -8,7 +8,7 @@
     <div class="mdl-accordion <%= @geo_states.count == 1 ? 'mdl-accordion--opened' : '' %>">
       <div class="mdl-accordion__button">
         <i class="material-icons mdl-accordion__icon mdl-animation--default">expand_more</i>
-        <span><%= geo_state.name %></span>
+        <span><a><%= geo_state.name %></a> <em>(<%= link_to 'bulk assess', bulk_assess_geo_state_path(geo_state) %>)</em></span>
       </div>
       <div class="mdl-accordion__content-wrapper">
         <ul class="mdl-list mdl-accordion__content mdl-animation--default">

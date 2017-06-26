@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   end
 
   resources :geo_states, only: [:show] do
-    get :bulk_assess, on: :member
+    get :bulk_assess, on: :member, as: 'bulk_assess'
     post :bulk_progress_update, on: :member
   end
 
