@@ -32,7 +32,7 @@ class GeoStatesController < ApplicationController
   end
 
   def bulk_assess
-
+    @markers = ProgressMarker.active.order(:number)
   end
 
   private

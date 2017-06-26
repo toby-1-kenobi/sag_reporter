@@ -1,1 +1,46 @@
 <% provide(:title, "#{@geo_state.name} bulk assessment") %>
+
+<%= render 'shared/mdl_selectfield_assets' %>
+
+<h3>Enter transformation assessment levels for languages in <%= @geo_state.name %></h3>
+
+<div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+  <select id="assessment_date" name="assessment_date" class="mdl-selectfield__select">
+    <% (6.months.ago.to_date..Date.today).select{ |d| d.day == 1 }.each do |date| %>
+      <option value="<%= date.strftime('%Y-%m') %>"><%= date.strftime('%Y %B') %></option>
+    <% end %>
+  </select>
+  <label for="assessment_date" class="mdl-selectfield__label">Assessment Date:</label>
+</div>
+
+<%# lower z-index of switches so they don't overlap the selectbox dropdown %>
+<style>.mdl-switch { z-index: 0; }</style>
+
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+  <thead>
+    <tr>
+      <th>PM #</th>
+      <% @geo_state.state_languages.in_project.each do |state_lang| %>
+        <th class="mdl-data-table__cell--non-numeric">
+          <div><%= state_lang.language_name %></div>
+          <div>
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sl-<%= state_lang.id %>">
+              <input type="checkbox" id="sl-<%= state_lang.id %>" class="mdl-switch__input language-switch">
+              <span class="mdl-switch__label"></span>
+            </label>
+          </div>
+        </th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @markers.each do |marker| %>
+      <tr>
+        <td><%= marker.number %></td>
+        <% @geo_state.state_languages.in_project.each do |state_lang| %>
+            <td id="level-<%= state_lang.id %>-<% marker.id %>"></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
