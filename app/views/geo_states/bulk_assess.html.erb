@@ -19,7 +19,7 @@
   <thead>
     <tr>
       <th>PM #</th>
-      <% @geo_state.state_languages.in_project.each do |state_lang| %>
+      <% @geo_state.state_languages.in_project.each_with_index do |state_lang, index| %>
         <th class="mdl-data-table__cell--non-numeric">
           <div><%= state_lang.language_name %></div>
           <div id="last-set-date<%= state_lang.id %>" class="last-set-date">
@@ -35,7 +35,7 @@
           </div>
           <div>
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sl-<%= state_lang.id %>">
-              <input type="checkbox" id="sl-<%= state_lang.id %>" class="mdl-switch__input language-switch">
+              <input type="checkbox" id="sl-<%= state_lang.id %>" tabindex="<%= index + 1 %>" class="mdl-switch__input language-switch">
               <span class="mdl-switch__label"></span>
             </label>
           </div>
@@ -44,11 +44,19 @@
     </tr>
   </thead>
   <tbody>
+    <% row_total = @markers.count %>
+    <% col_total = @geo_state.state_languages.in_project.count %>
     <% @markers.each do |marker| %>
       <tr>
         <td><%= marker.number %></td>
-        <% @geo_state.state_languages.in_project.each do |state_lang| %>
-            <td id="level-<%= state_lang.id %>-<% marker.id %>"></td>
+        <% @geo_state.state_languages.in_project.each_with_index do |state_lang, col_index| %>
+          <td id="level-<%= state_lang.id %>-<%= marker.id %>" class="mdl-data-table__cell--non-numeric">
+            <div class="bulk-assess-input mdl-textfield mdl-js-textfield">
+              <% tab_index = col_total + (col_index * row_total) + marker.number.to_i + 1 %>
+              <input class="mdl-textfield__input" tabindex="<%= tab_index %>" type="text" pattern="[0-3]" maxlength="1" id="level-<%= state_lang.id %>-<%= marker.id %>-input">
+              <span class="mdl-textfield__error">Enter number in the range 0 to 3</span>
+            </div>
+          </td>
         <% end %>
       </tr>
     <% end %>
