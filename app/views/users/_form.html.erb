@@ -42,9 +42,6 @@
         <% end %>
       </div>
       <div class="mdl-cell mdl-cell--4-col">
-        <style>
-          #interface-language-select { max-height: 66px; }
-        </style>
         <div id="interface-language-select" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
           <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name, options = {}, html_options = {class: 'mdl-selectfield__select'}) %>
           <%= f.label :interface_language_id, 'Language for using Reporter', class: 'mdl-selectfield__label' %>
