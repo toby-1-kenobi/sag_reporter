@@ -1,5 +1,11 @@
   <li class="mdl-list__item">
-    <%= link_to outcomes_path + "/#{language.id}/3", class: 'waves-effect language-link' do %>
-      <%= language.language_name %>
-    <% end %>
+    <span class="mdl-list__item-primary-content">
+      <%= link_to outcomes_path + "/#{language.id}/3", class: 'waves-effect language-link' do %>
+        <%= language.language_name %>
+      <% end %>
+    </span>
+    <% last_assessment_date = language.progress_last_set %>
+    <span class="mdl-list__item-secondary-content">
+      Last assessed: <%= last_assessment_date ? last_assessment_date.strftime('%B %Y') : 'Never' %>
+    </span>
   </li>
