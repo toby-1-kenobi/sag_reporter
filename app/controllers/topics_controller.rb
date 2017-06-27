@@ -107,7 +107,15 @@ class TopicsController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = AssessProgressPdf.new(@state_language, params[:months], logged_in_user, @reports_by_pm)
+        @latest_progress = Hash.new
+        @state_language.language_progresses.each do |lp|
+          if lp.progress_updates.any?
+            @latest_progress[lp.progress_marker] = lp.progress_updates.order(:year, :month, :created_at).last.progress
+          else
+            @latest_progress[lp.progress_marker] = nil
+          end
+        end
+        pdf = AssessProgressPdf.new(@state_language, params[:months], logged_in_user, @reports_by_pm, @latest_progress)
         send_data pdf.render, filename: "#{@state_language.language_name}_outcomes.pdf", type: 'application/pdf'
       end
     end
