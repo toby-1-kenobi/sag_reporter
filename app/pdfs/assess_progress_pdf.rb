@@ -9,6 +9,22 @@ class AssessProgressPdf < Prawn::Document
     @user = user
     @reports = reports
     @latest_progress = latest_progress
+    font_families.update("NotoSerif" => {
+        :normal => "#{Rails.root}/app/assets/fonts/NotoSerif-Regular.ttf",
+        :bold => "#{Rails.root}/app/assets/fonts/NotoSerif-Bold.ttf",
+        :italic => "#{Rails.root}/app/assets/fonts/NotoSerif-Italic.ttf",
+        :bold_italic => "#{Rails.root}/app/assets/fonts/NotoSerif-BoldItalic.ttf"
+    })
+    font_families.update("NotoSerifDevanagari" => {
+        :normal => "#{Rails.root}/app/assets/fonts/NotoSerifDevanagari-Regular.ttf",
+        :bold => "#{Rails.root}/app/assets/fonts/NotoSerifDevanagari-Bold.ttf"
+    })
+    font_families.update("NotoSerifBengali" => {
+        :normal => "#{Rails.root}/app/assets/fonts/NotoSerifBengali-Regular.ttf",
+        :bold => "#{Rails.root}/app/assets/fonts/NotoSerifBengali-Bold.ttf"
+    })
+    font('NotoSerif')
+    fallback_fonts(['NotoSerifDevanagari', 'NotoSerifBengali'])
     header
     content
   end
