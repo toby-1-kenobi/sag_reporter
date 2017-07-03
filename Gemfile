@@ -66,6 +66,9 @@ gem 'fontcustom'
 # File upload
 gem 'carrierwave'
 
+# dates and times used for datepicker
+gem 'momentjs-rails', '~> 2.11', '>= 2.11.1'
+
 # image manipulation
 gem 'mini_magick'
 
