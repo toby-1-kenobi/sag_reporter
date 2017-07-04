@@ -13,21 +13,14 @@
       </div>
     </div>
 
-    <div class="mdl-cell mdl-cell--4-col">
+    <div class="report-pictures mdl-cell mdl-cell--4-col">
       <%= f.fields_for :pictures do |ff| %>
         <% if ff.object.persisted? %>
-          <div class="row">
-            <div class="col s6">
-              <%= image_tag ff.object.ref.thumb.url if ff.object.ref? %>
-            </div>
-            <div class="col s6">
-              <%= ff.check_box :_destroy %>
-              <%= ff.label :_destroy do %>
-                <i class="material-icons">delete</i>
-                Delete
-              <% end %>
-            </div>
-          </div>
+          <%= image_tag ff.object.ref.thumb.url if ff.object.ref? %>
+          <%= ff.label :_destroy, class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
+            <%= ff.check_box :_destroy, class: 'mdl-checkbox__input' %>
+            <span class="mdl-checkbox__label"><i class="material-icons">delete</i> Delete</span>
+          <% end %>
         <% else %>
           <div class="picture-input">
             <%= ff.file_field :ref, accept: 'image/jpeg,image/gif,image/png', class: 'hide' %>
@@ -114,7 +107,7 @@
   </div>
 
   <script>
-    $('.date-picker').bootstrapMaterialDatePicker({ weekStart : 0, time: false });
+    $('.date-picker').bootstrapMaterialDatePicker({ weekStart : 0, time: false, format: 'DD MMMM, Y' });
   </script>
 
 <% end %>

@@ -43,6 +43,16 @@ li.report {
   width: 100% !important;
 }
 
+.report-pictures {
+  img {
+    display: inline-block;
+    margin: 5px;
+  }
+  label {
+    width: auto !important;
+  }
+}
+
 .form-section-header {
   font-weight: bold;
   text-align: center;
