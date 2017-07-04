@@ -3,10 +3,12 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 addImageInput = ->
+  console.log "image added"
   $(this).off 'change', addImageInput
   imageListUpdate()
   $(this).on 'change', imageListUpdate
   new_input = $(this).clone()
+  $(this).removeClass('hide')
   new_name = new_input.attr('name').replace(/\[\d*\]/g, (x) ->
     '[' + (parseInt(x.slice(1, -1)) + 1) + ']'
   )

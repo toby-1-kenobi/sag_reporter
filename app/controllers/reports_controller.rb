@@ -43,7 +43,8 @@ class ReportsController < ApplicationController
   def new
   	@report = Report.new
     @report.pictures.build
-  	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
+    @geo_states = logged_in_user.geo_states
+  	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: @geo_states).order('languages.name')
     @topics = Topic.all
   end
 
@@ -113,6 +114,7 @@ class ReportsController < ApplicationController
       flash['error'] = report_factory.error ? report_factory.error.message : 'Unable to submit report!'
       @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
       @topics = Topic.all
+      @geo_states = @report.available_geo_states(logged_in_user)
       get_translations
       render 'new'
     end

@@ -1,133 +1,120 @@
-<%= form_for(@report, html: {multipart: true, class: 'col s12'}) do |f| %>
-    <%= render 'shared/error_messages', object: f.object %>
 
-    <div class="row">
 
-      <div class="col s12 m6 l6 <%= yield :show_location_class %>" id="show-location-data">
-        <div class="row">
-          <div class="col s8 m9 l10 input-field">
-            <i class="material-icons prefix">location_on</i>
-            <%= label_tag @translations['location'] %>
-            <% location_text = @report.full_location ? @report.full_location.gsub(/, /, ",\n") : '' %>
-            <%= text_area_tag 'full_location', location_text, disabled: 'disabled', class: 'materialize-textarea' %>
-          </div>
-          <div class="col s4 m3 l2">
-            <a class="btn right tooltipped" id="edit-location-button" data-tooltip="edit location">
-              <i class="material-icons">edit</i>
-            </a>
-          </div>
-        </div>
-      </div>
+<%= form_for(@report, html: {multipart: true}) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
 
-      <div class="col s12 m6 l6 <%= yield :edit_location_class %>" id="edit-location-data">
-        <%= label_tag @translations['location'] %>
-        <div class="input-field">
-          <%= render partial: 'shared/geo_state_input', locals: {form: f, input_class: 'filter-trigger'} %>
-        </div>
-        <div class="input-field" id="district-autocomplete">
-          <%= autocomplete_field_tag 'district_name', '', autocomplete_district_name_geo_state_path(0) %>
-          <%# 0 is a placeholder. It gets replaced by js with geo_state_id %>
-          <%= label_tag 'district_name', @translations['district'] %>
-        </div>
-        <div class="input-field" id="sub-district-autocomplete">
-          <%= autocomplete_field_tag 'sub_district_name', '', autocomplete_sub_district_name_district_path(0), :'data-autocomplete-label' => 'No sub-district match.' %>
-          <%# 0 is a placeholder. It gets replaced by js with district_id %>
-          <%= label_tag 'sub_district_name', @translations['sub_dist'] %>
-          <%= f.hidden_field :sub_district_id %>
-        </div>
-        <div class="input-field" id="location-input">
-          <i class="material-icons prefix">location_on</i>
-          <%= f.text_field :location %>
-          <%= f.label :location, @translations['village'] %>
-        </div>
-      </div>
+  <div class="mdl-grid">
 
-      <div class="input-field col s12 m6 l4 offset-l2 active">
-
-        <div>
-          <i class="material-icons prefix">today</i>
-          <%= f.date_field :report_date, value: f.object.report_date.to_s, class: 'datepicker' %>
-          <%= f.label :report_date, 'Report date', class: @report.report_date.present? ? 'active' : '' %>
-        </div>
-
-        <div>
-          <%= f.fields_for :observers do |ff| %>
-              <%= render partial: 'observer_fields', locals: { f: ff } %>
-          <% end %>
-          <%= new_child_fields_template f, :observers %>
-          <a class="btn waves-effect" id="add-source-person">
-            <i class="material-icons left">person_add</i>
-            Add Source Person
-          </a>
-        </div>
+    <div class="mdl-cell mdl-cell--8-col">
+      <div class="report-content mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <i class="material-icons mdl-textfield__icon">create</i>
+        <%= f.text_area :content, class: 'mdl-textfield__input' %>
+        <%= f.label :content, @translations['type_report'], class: 'mdl-textfield__label' %>
       </div>
     </div>
 
-    <div class="row">
-      <div class="input-field col s12">
-        <i class="material-icons prefix">create</i>
-        <%= f.text_area :content, class: 'materialize-textarea' %>
-        <%= f.label :content, @translations['type_report'] %>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col s12 m6 report-type <%= yield :report_type_class %>">
-        <%= render partial: 'report_type_fields', locals: {f: f} %>
-      </div>
-      <div class="col s12 m6">
-        <%= f.fields_for :pictures do |ff| %>
-          <% if ff.object.persisted? %>
-            <div class="row">
-              <div class="col s6">
-                <%= image_tag ff.object.ref.thumb.url if ff.object.ref? %>
-              </div>
-              <div class="col s6">
-                <%= ff.check_box :_destroy %>
-                <%= ff.label :_destroy do %>
+    <div class="mdl-cell mdl-cell--4-col">
+      <%= f.fields_for :pictures do |ff| %>
+        <% if ff.object.persisted? %>
+          <div class="row">
+            <div class="col s6">
+              <%= image_tag ff.object.ref.thumb.url if ff.object.ref? %>
+            </div>
+            <div class="col s6">
+              <%= ff.check_box :_destroy %>
+              <%= ff.label :_destroy do %>
                 <i class="material-icons">delete</i>
                 Delete
-                <% end %>
-              </div>
-            </div>
-          <% else %>
-            <div class="picture-input">
-              <%= ff.file_field :ref, accept: 'image/jpeg,image/gif,image/png', class: 'hide' %>
-              <%= ff.label :ref, class: 'btn white-text' do %>
-                  <i class="material-icons">insert_photo</i>
-                  <%= @translations['put_photo'] %>
               <% end %>
             </div>
-          <% end %>
+          </div>
+        <% else %>
+          <div class="picture-input">
+            <%= ff.file_field :ref, accept: 'image/jpeg,image/gif,image/png', class: 'hide' %>
+            <%= ff.label :ref, class: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect' do %>
+              <i class="material-icons">insert_photo</i>
+              <%= @translations['put_photo'] %>
+            <% end %>
+          </div>
         <% end %>
-        <ul id="file-list" class="collection">
-          
-        </ul>
+      <% end %>
+    </div>
+
+    <div class="mdl-cell mdl-cell--3-col">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <i class="material-icons mdl-textfield__icon">today</i>
+        <%= f.text_field :report_date, class: 'date-picker mdl-textfield__input' %>
+        <%= f.label :report_date, class: 'mdl-textfield__label' %>
+      </div>
+      <div>
+        <%= render partial: 'report_type_fields', locals: {f: f} %>
       </div>
     </div>
 
-    <div class="row">
-      <div class="input-field col s12 m6">
-        <%= render partial: 'shared/multiselect', locals: {
-              text: @translations['relates_languages'],
-              icon: 'language',
-              object: 'report',
-              attribute: 'languages',
-              display: :language_name,
-              id: :id,
-              element_class: 'filterable-item',
-              data: :geo_state_id,
-              collection: @project_languages,
-              selected: @report.languages.includes(:state_languages).where(state_languages: {geo_state: @report.geo_state}).to_a.collect{ |lang| lang.state_languages.first.id }
-        } %>
-      </div>
+    <div class="mdl-cell mdl-cell--3-col">
+      <div class="form-section-header">State</div>
+      <ul class="mdl-list">
+        <% @geo_states.each do |state| %>
+          <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+              <%= state.name %>
+            </span>
+            <span class="mdl-list__item-secondary-action">
+              <%= f.label "geo_state_#{state.id}", class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect' do %>
+                <%= f.radio_button :geo_state,
+                                   state.id,
+                                   class: 'filter-trigger mdl-radio__button',
+                                   'data-filter-trigger-label' => 'geo-state'
+                %>
+              <% end %>
+            </span>
+          </li>
+        <% end %>
+      </ul>
     </div>
 
-    <div class="row">
-      <div class="row s12">
-        <%= button_tag( :class => 'btn waves-effect waves-light right') do %>
-          <%= yield :button_text %> <i class="material-icons right">send</i>
-        <% end %>
-      </div>
+    <div class="mdl-cell mdl-cell--3-col">
+      <div class="form-section-header"><%= @translations['relates_languages'] %></div>
+      <ul class="mdl-list">
+      <% @project_languages.each do |language| %>
+        <li class="filterable-item hide mdl-list__item" data-filter-label="geo-state" data-geo-state="<%= language.geo_state_id %>">
+          <span class="mdl-list__item-primary-content">
+            <%= language.language_name %>
+          </span>
+          <span class="mdl-list__item-secondary-action">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="language-checkbox-<%= language.id %>">
+              <input
+              type="checkbox"
+              id="language-checkbox-<%= language.id %>"
+              name="report[language][<%= language.id %>]"
+              value="<%= language.id %>"
+              class="mdl-checkbox__input" <%= (@report.languages.include? language.language) ? 'checked' : '' %>
+              />
+            </label>
+          </span>
+        </li>
+      <% end %>
+      </ul>
     </div>
-  <% end %>
+
+    <div class="mdl-cell mdl-cell--3-col">
+      <%= f.fields_for :observers do |ff| %>
+          <%= render partial: 'observer_fields', locals: { f: ff } %>
+      <% end %>
+      <%= new_child_fields_template f, :observers %>
+      <a class="mdl-button mdl-js-button mdl-js-ripple-effect" id="add-source-person">
+        <i class="material-icons">person_add</i>
+        Add Source Person
+      </a>
+      <%= button_tag( class: 'mdl-button mdl-js-button mdl-button--raised mdl-button--colored', id: 'report-submit-button') do %>
+          <%= yield :button_text %> <i class="material-icons">send</i>
+      <% end %>
+    </div>
+
+  </div>
+
+  <script>
+    $('.date-picker').bootstrapMaterialDatePicker({ weekStart : 0, time: false });
+  </script>
+
+<% end %>

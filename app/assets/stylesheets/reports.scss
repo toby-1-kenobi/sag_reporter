@@ -38,3 +38,19 @@ li.report {
 		padding-right: 1em;
 	}
 }
+
+.report-content {
+  width: 100% !important;
+}
+
+.form-section-header {
+  font-weight: bold;
+  text-align: center;
+  color: grey;
+  font-size: large;
+  padding-top: 1ex;
+}
+
+#report-submit-button {
+  margin-top: 50px;
+}

@@ -1,4 +1,9 @@
-<%= f.check_box('impact_report?') %>
-<%= f.label('impact_report?', 'This is an impact report') %>
-<%= f.check_box('planning_report?') %>
-<%= f.label('planning_report?', 'This is a hope, challenge, or future planning report') %>
+<%= f.label('impact_report?', class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect') do %>
+    <%= f.check_box('impact_report?', class: 'mdl-checkbox__input') %>
+    <span class="mdl-checkbox__label">This is an impact report</span>
+<% end %>
+
+<%= f.label('planning_report?', class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect') do %>
+    <%= f.check_box('planning_report?', class: 'mdl-checkbox__input') %>
+    <span class="mdl-checkbox__label">This is a hope, challenge, or future planning report</span>
+<% end %>
