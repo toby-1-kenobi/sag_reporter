@@ -9,6 +9,7 @@ addImageInput = ->
   $(this).on 'change', imageListUpdate
   new_input = $(this).clone()
   $(this).removeClass('hide')
+  new_input.val('')
   new_name = new_input.attr('name').replace(/\[\d*\]/g, (x) ->
     '[' + (parseInt(x.slice(1, -1)) + 1) + ']'
   )
