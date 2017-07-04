@@ -14,6 +14,7 @@ checkRefilter = (refilter, element) ->
   return
 
 applyFilter = (filterValues, filterLabel) ->
+  console.log filterValues
   if filterLabel
     filterableItems = $('.filterable-item[data-filter-label*=' + filterLabel + ']')
     filterOut = 'filter-out-' + filterLabel
@@ -85,9 +86,9 @@ $(document).ready ->
   $('.filter-trigger').on 'change', ->
     label = $(this).attr 'data-filter-trigger-label'
     if label
-      allTriggers = $('.filter-trigger[data-filter-trigger-label="' + label + '"]').not('input:checkbox:not(:checked)')
+      allTriggers = $('.filter-trigger[data-filter-trigger-label="' + label + '"]').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
     else
-      allTriggers = $('.filter-trigger').not('input:checkbox:not(:checked)')
+      allTriggers = $('.filter-trigger').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
     valueArray = allTriggers.map ->
       return $(this).val()
     applyFilter valueArray, label
