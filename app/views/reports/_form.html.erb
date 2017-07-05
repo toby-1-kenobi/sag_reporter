@@ -53,8 +53,8 @@
               <%= state.name %>
             </span>
             <span class="mdl-list__item-secondary-action">
-              <%= f.label "geo_state_#{state.id}", class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect' do %>
-                <%= f.radio_button :geo_state,
+              <%= f.label "geo_state_id_#{state.id}", class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect' do %>
+                <%= f.radio_button :geo_state_id,
                                    state.id,
                                    class: 'filter-trigger mdl-radio__button',
                                    'data-filter-trigger-label' => 'geo-state'
@@ -79,7 +79,7 @@
               <input
               type="checkbox"
               id="language-checkbox-<%= language.id %>"
-              name="report[language][<%= language.id %>]"
+              name="report[languages][<%= language.id %>]"
               value="<%= language.id %>"
               class="mdl-checkbox__input" <%= (@report.languages.include? language.language) ? 'checked' : '' %>
               />
