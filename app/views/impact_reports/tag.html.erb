@@ -17,8 +17,8 @@
     </ul>
   </div>
   <% if logged_in_user.geo_states.count > 1 %>
-    <div class="col s12 m4 input field">
-      <select id="geo_state_id" name="geo_state_id" class="filter_trigger">
+    <div class="col s12 m4 input-field">
+      <select id="geo_state_id" name="geo_state_id" class="filter_trigger materialize-select">
         <%= options_from_collection_for_select(logged_in_user.geo_states, 'id', 'name') %>
       </select>
       <%= label_tag('geo_state_id', 'State') %>

@@ -122,7 +122,7 @@ $(document).ready ->
 
   $('.picture-input input').on 'change', addImageInput
     
-#  $('select').material_select
+  $('.materialize-select').material_select()
 
   $('.dropdown-button').dropdown
     inDuration: 300
