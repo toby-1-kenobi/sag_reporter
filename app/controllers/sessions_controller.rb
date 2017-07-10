@@ -33,16 +33,16 @@ class SessionsController < ApplicationController
       @user = User.find_by(phone: username)
     end
     if @user && @user.authenticate(params[:session][:password])
-      phone = params[:session][:phone]
       otp_code = @user.otp_code
       session[:temp_user] = @user.id
-      @ticket =  send_otp_on_phone("+91#{phone}", otp_code)
-      #   flash.now['info'] = "A short login code has been sent to your phone (#{phone})"
-      # elsif send_otp_via_mail(@user, otp_code)
-      #   flash.now['info'] = "A short login code has been sent to your email (#{@user.email})."
-      # else
-      #   flash.now['error'] = "We were not able to send the login code to #{phone} or email #{@user.email}!"
-      # end
+      if @user.phone.present? and not @user.email_confirmed?
+        @ticket =  send_otp_on_phone("+91#{@user.phone}", otp_code)
+        flash.now['info'] = "A short login code has been sent to your phone (#{@user.phone}). Please wait for it."
+      elsif @user.phone.blank? and send_otp_via_mail(@user, otp_code)
+        flash.now['info'] = "A short login code has been sent to your email (#{@user.email}). Check your inbox."
+      elsif @user.phone.present? and @user.email.present? and @user.email_confirmed?
+        flash.now['info'] = "Please choose to have the login code sent to your phone (#{@user.phone}) or email (#{@user.email})"
+      end
     else
       flash.now['error'] = 'username or password is not correct'
       render 'new'
