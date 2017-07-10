@@ -126,9 +126,16 @@ describe User do
     value(user).wont_be :valid?
   end
 
-  it 'wont be valid with a blank phone number' do
+  it 'wont be valid with a blank phone number and email' do
     user.phone = '     '
+    user.email = '   '
     value(user).wont_be :valid?
+  end
+
+  it 'can have no phone if email is present' do
+    user.phone = nil
+    user.email = 'me@example.com'
+    _(user).must_be :valid?
   end
 
   it 'wont be valid with a long name' do

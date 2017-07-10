@@ -26,7 +26,12 @@ class User < ActiveRecord::Base
   has_one_time_password
 
   validates :name, presence: true, length: { maximum: 50 }
-  validates :phone, presence: true, length: { is: 10 }, format: { with: /\A\d+\Z/ }, uniqueness: true
+  validates :phone,
+            presence: { if: -> { email.blank? } },
+            allow_nil: true,
+            length: { is: 10 },
+            format: { with: /\A\d+\Z/ },
+            uniqueness: true
   validates :password,
             presence: true,
             length: { minimum: 6 },
@@ -82,7 +87,11 @@ class User < ActiveRecord::Base
 
   # Pretty print phone number
   def pretty_phone
-    self.phone.slice(0..3) + ' ' + self.phone.slice(4..6) + ' ' + self.phone.slice(7..-1)
+    if phone.present?
+      self.phone.slice(0..3) + ' ' + self.phone.slice(4..6) + ' ' + self.phone.slice(7..-1)
+    else
+      ''
+    end
   end
 
   # Transitional method
