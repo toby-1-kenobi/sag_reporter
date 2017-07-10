@@ -24,7 +24,14 @@ class SessionsController < ApplicationController
   end
 
   def two_factor_auth
-    @user = User.find_by(phone: params[:session][:phone])
+    username = params[:session][:username]
+    if username.include? '@'
+      # if the user has put something with an '@' in it is must be their email address
+      @user = User.find_by(email: username)
+    else
+      # otherwise we'll assume it's their phone number
+      @user = User.find_by(phone: username)
+    end
     if @user && @user.authenticate(params[:session][:password])
       phone = params[:session][:phone]
       otp_code = @user.otp_code
@@ -37,7 +44,7 @@ class SessionsController < ApplicationController
       #   flash.now['error'] = "We were not able to send the login code to #{phone} or email #{@user.email}!"
       # end
     else
-      flash.now['error'] = 'Phone number or password is not correct'
+      flash.now['error'] = 'username or password is not correct'
       render 'new'
     end
   end
