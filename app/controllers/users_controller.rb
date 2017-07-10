@@ -2,6 +2,8 @@ class UsersController < ApplicationController
 
   include ParamsHelper
 
+  skip_before_action :verify_authenticity_token, only: [:show_external]
+
   before_action :require_login, except: [:show_external, :index_external, :confirm_email]
   before_action :authenticate, only: [:show_external, :index_external]
 
@@ -30,37 +32,45 @@ class UsersController < ApplicationController
   end
 
   def show_external
+    external_params = !params[:user].empty? && params.require(:user).permit(:last_updated)
     user_data = Hash.new
-    user_data['id'] = current_user.id
-    user_data['geo_states'] = Array.new
-    current_user.geo_states.joins(:state_languages).includes(:state_languages, state_languages: :language)
-        .where("state_languages.project" => true).each do |geo_state|
+    user_data[:id] = current_user.id
+    user_data[:geo_states] = Array.new
+    last_updated = [current_user.updated_at]
+    current_user.geo_states.includes(state_languages: :language).where(state_languages: {project: true}).each do |geo_state|
       languages = Array.new
       geo_state.state_languages.each do |state_language|
         languages << {
-            'id' => state_language.id,
-            'language_name' => state_language.language_name
+            language_id: state_language.id,
+            language_name: state_language.language_name
         }
       end
-      user_data['geo_states'] << {
-          'id' => geo_state.id,
-          'name' => geo_state.name,
-          'languages' => languages
+      user_data[:geo_states] << {
+          state_id: geo_state.id,
+          state_name: geo_state.name,
+          languages: languages
       }
+      last_updated << geo_state.updated_at
     end
-    render json: user_data
+    last_updated = last_updated.max
+    if !external_params || !external_params[:last_updated] ||
+        last_updated > external_params[:last_updated]
+      render json: {user: user_data}
+    else
+      render json: {user: "nothing changed"}
+    end
   end
 
   def index_external
     user_data = Array.new
     User.all.each do |user|
       user_specific_data = {
-          'id' => user.id,
-          'name' => user.name
+          id: user.id,
+          name: user.name
       }
       user_data << user_specific_data
     end
-    render json: {'users' => user_data}
+    render json: {users: user_data}
   end
 
   def new

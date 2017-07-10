@@ -78,7 +78,7 @@ Rails.application.routes.draw do
 
   resources :users do
     collection do
-      get :show_external
+      post :show_external
       get :index_external
     end
 

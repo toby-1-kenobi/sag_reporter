@@ -53,20 +53,21 @@ class ReportsController < ApplicationController
 
   # new report submitted by an external client
   def create_external
+    external_params = params.require(:reports).permit(:last_updated)
     full_params = report_params.merge({reporter: current_user})
     report_factory = Report::Factory.new
     response = Hash.new
     if report_factory.create_report(full_params)
-      response['success'] = true
-      response['report_id'] = report_factory.instance.id
+      response[:success] = true
+      response[:report_id] = report_factory.instance.id
     else
-      response['success'] = false
-      response['errors'] = Array.new
+      response[:success] = false
+      response[:errors] = Array.new
       if report_factory.instance
-        response['errors'].concat report_factory.instance.errors.full_messages
+        response[:errors].concat report_factory.instance.errors.full_messages
       end
       if report_factory.error
-        response['errors'] << report_factory.error.message
+        response[:errors] << report_factory.error.message
       end
     end
     puts response.to_json
@@ -74,6 +75,8 @@ class ReportsController < ApplicationController
   end
 
   def index_external
+    external_params = nil
+#    external_params = params.require(:reports).permit(:last_updated)
     report_data = Array.new
     user_geo_states = current_user.geo_states.ids
     state_languages = StateLanguage.in_project
@@ -96,20 +99,26 @@ class ReportsController < ApplicationController
         end
       end
 
-      report_data << {
-          'id' => report.id,
-          'geo_state_id' => report.geo_state_id,
-          'report_date' => report.report_date,
-          'content' => report.content,
-          'author_id' => report.reporter_id,
-          'impact_report' => 1,
-          'languages' => language_ids,
-          'pictures' => pictures,
-          'client' => report.client,
-          'version' => report.version
-      }
+      if !external_params || !external_params[:last_updated] ||
+          report.updated_at > external_params[:last_updated][report.id]
+        report_data << {
+            id: report.id,
+            state_id: report.geo_state_id,
+            date: report.report_date,
+            content: report.content,
+            reporter_id: report.reporter_id,
+            impact_report: 1,
+            languages: language_ids,
+            pictures: pictures,
+            client: report.client,
+            version: report.version,
+            updated_at: report.updated_at.to_i
+        }
+      else
+        report_data << {id: report.id, updated_at: 'nothing changed'}
+      end
     end
-    render json: {'reports' => report_data}
+    render json: {reports: report_data}
   end
 
   def create
