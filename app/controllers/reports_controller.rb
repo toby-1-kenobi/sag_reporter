@@ -75,8 +75,8 @@ class ReportsController < ApplicationController
   end
 
   def index_external
-    external_params = nil
-#    external_params = params.require(:reports).permit(:last_updated)
+    external_params = !params[:reports].nil? && !params[:reports].empty? &&
+      params.permit(reports: [:id, :updated_at])[:reports]
     report_data = Array.new
     user_geo_states = current_user.geo_states.ids
     state_languages = StateLanguage.in_project
@@ -99,12 +99,12 @@ class ReportsController < ApplicationController
         end
       end
 
-      if !external_params || !external_params[:last_updated] ||
-          report.updated_at > external_params[:last_updated][report.id]
+      if !external_params || external_params[report.id.to_s].nil? ||
+          report.updated_at.to_i > external_params[report.id.to_s][:updated_at]
         report_data << {
             id: report.id,
             state_id: report.geo_state_id,
-            date: report.report_date,
+            date: report.report_date.to_time(:utc).to_i,
             content: report.content,
             reporter_id: report.reporter_id,
             impact_report: 1,
@@ -115,7 +115,7 @@ class ReportsController < ApplicationController
             updated_at: report.updated_at.to_i
         }
       else
-        report_data << {id: report.id, updated_at: 'nothing changed'}
+        report_data << {id: report.id}
       end
     end
     render json: {reports: report_data}

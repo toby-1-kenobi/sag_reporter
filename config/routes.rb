@@ -65,7 +65,7 @@ Rails.application.routes.draw do
       get 'by_reporter'
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
       post 'create_external'
-      get 'index_external'
+      post 'index_external'
     end
     member do
       patch 'archive'

@@ -32,7 +32,8 @@ class UsersController < ApplicationController
   end
 
   def show_external
-    external_params = !params[:user].empty? && params.require(:user).permit(:last_updated)
+    external_params = params[:user] && params[:user][:updated_at] &&
+      params.require(:user).permit(:updated_at)[:updated_at]
     user_data = Hash.new
     user_data[:id] = current_user.id
     user_data[:geo_states] = Array.new
@@ -52,12 +53,12 @@ class UsersController < ApplicationController
       }
       last_updated << geo_state.updated_at
     end
-    last_updated = last_updated.max
-    if !external_params || !external_params[:last_updated] ||
-        last_updated > external_params[:last_updated]
+    last_updated = last_updated.max.to_i
+    user_data[:updated_at] = last_updated.to_i
+    if !external_params || last_updated > external_params
       render json: {user: user_data}
     else
-      render json: {user: "nothing changed"}
+      render json: {user: {}}
     end
   end
 
