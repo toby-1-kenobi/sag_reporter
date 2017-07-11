@@ -1,0 +1,14 @@
+<% if logged_in_user?(@user) %>
+    <% provide(:title, "Reports by #{@user.name}") %>
+    <% provide(:context_title, 'My Reports') %>
+<% elsif logged_in_user.trusted? %>
+    <% provide(:title, "Reports by #{@user.name}") %>
+    <% provide(:context_title, "Reports by #{@user.name}") %>
+<% else %>
+    <% provide(:title, "Reports by user ##{@user.id}") %>
+    <% provide(:context_title, "Reports by user ##{@user.id}") %>
+<% end %>
+
+<div class="reports-container">
+
+</div>

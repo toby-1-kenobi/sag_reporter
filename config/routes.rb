@@ -79,18 +79,18 @@ Rails.application.routes.draw do
   resources :topics
 
   resources :users do
-    get :me, on: :collection
-
+    collection do
+      get :me
+    end
     member do
       get :confirm_email
+      get :reports
     end
   end
 
   resources :zones, only: [:index, :show]
 
   get 're_send_to_confirm_email' => 'users#re_confirm_email'
-
-  get    'adduser' => 'users#new'
 
   get    'login'   => 'sessions#new'
   post   'login'   => 'sessions#create'
@@ -138,6 +138,8 @@ Rails.application.routes.draw do
 
   get 'nation' => 'zones#nation', as: 'nation'
 
+  # my_reports is for a single user, but user id param not needed - it's got from logged in user
+  get 'my_reports' => 'users#reports', as: 'my_reports'
   get 'whatsapp' => 'static_pages#whatsapp_link'
 
   # The priority is based upon order of creation: first created -> highest priority.

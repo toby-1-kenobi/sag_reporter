@@ -7,7 +7,6 @@ class UsersController < ApplicationController
 
   # A user's profile can only be edited or seen by
   #    themselves or
-  #    their supervisor or
   #    someone with permission
   before_action :authorised_user_edit, only: [:edit, :update]
   before_action :authorised_user_show, only: [:show]
@@ -164,6 +163,16 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
 
+  def reports
+    # admin users can see the reports of other users
+    if params[:id] and logged_in_user.admin?
+      get_param_user
+    else
+      # if no user id passed or current user is not admin then the user sees their own reports
+      @user = logged_in_user
+    end
+  end
+
   private
 
     def user_params
@@ -211,7 +220,6 @@ class UsersController < ApplicationController
       get_param_user
       redirect_to(root_url) unless
           logged_in_user?(@user) or logged_in_user.can_edit_user?
-      #    or @user.supervisor?(logged_in_user)
     end
 
     # Confirms authorised user for show.
@@ -219,7 +227,6 @@ class UsersController < ApplicationController
       get_param_user
       redirect_to(root_url) unless
           logged_in_user?(@user) or logged_in_user.can_view_all_users?
-      #    or @user.supervisor?(logged_in_user)
     end
 
     def get_param_user
