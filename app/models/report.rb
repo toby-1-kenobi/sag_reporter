@@ -27,11 +27,19 @@ class Report < ActiveRecord::Base
 	validates :reporter, presence: true, allow_nil: false
   validates :status, presence: true, allow_nil: false
   validates :report_date, presence: true
-  validates :client, presence: true
+  validates :client, presence: true # a string identifying by which application the report was submitted
   validate :at_least_one_subtype
   #validate :location_present_for_new_record
 
   before_validation :date_init
+
+  scope :reporter, -> user {
+    where(reporter: user)
+  }
+
+  scope :since, -> since_date {
+    where('report_date >= ?', since_date)
+  }
 
   def self.categories
     {

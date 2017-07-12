@@ -31,6 +31,22 @@ div.report {
   }
 }
 
+.mdl-card.report {
+  margin: 1ex;
+  background-color: #DCEDC8;
+  &.archived {
+    background-color: #E0E0F0;
+    .mdl-card__title {
+      color: #999999;
+      .mdl-card__subtitle-text {
+        display: block;
+        padding-left: 1em;
+        font-style: italic;
+      }
+    }
+  }
+}
+
 li.report {
 	.reporter-name, .report-date {
 		border-right: solid white 1px;

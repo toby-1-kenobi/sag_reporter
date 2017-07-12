@@ -147,7 +147,8 @@ class User < ActiveRecord::Base
       when 'view_all_users'
         admin?
       when 'view_roles', 'edit_role', 'create_role'
-        admin?
+        # not used any more
+        false
       when 'view_all_languages'
         national?
       when 'create_language'
@@ -159,9 +160,11 @@ class User < ActiveRecord::Base
       when 'view_all_topics'
         true
       when 'view_all_reports'
+        national?
+      when 'create_report', 'tag_report'
         true
-      when 'create_report', 'edit_report', 'archive_report', 'tag_report'
-        true
+      when 'edit_report', 'archive_report'
+        admin?
       when 'evaluate_progress', 'view_outcome_totals'
         true
       when 'create_tally', 'view_all_tallies', 'edit_tally', 'archive_tally', 'increase_tally'

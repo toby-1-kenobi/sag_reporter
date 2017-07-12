@@ -9,6 +9,8 @@
     <% provide(:context_title, "Reports by user ##{@user.id}") %>
 <% end %>
 
-<div class="reports-container">
-
+<div class="reports-container mdl-grid">
+  <% @reports.each do |report| %>
+    <%= render partial: 'reports/mdl_report', object: report %>
+  <% end %>
 </div>

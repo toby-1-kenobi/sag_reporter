@@ -171,6 +171,15 @@ class UsersController < ApplicationController
       # if no user id passed or current user is not admin then the user sees their own reports
       @user = logged_in_user
     end
+    # look for a date, fetching reports since then.
+    if params[:since]
+      # here we're trusting the parse function will be able to handle whatever format comes its way in this context
+      since_date = Date.parse(params[:since])
+    else
+      # if no date provided assume 3 months
+      since_date = 3.months.ago
+    end
+    @reports = Report.reporter(@user).since(since_date).order(report_date: :desc)
   end
 
   private

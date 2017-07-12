@@ -1,0 +1,48 @@
+<div class="report mdl-card mdl-shadow--2dp <%= 'archived' if mdl_report.archived? %>">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text"><%= mdl_report.report_type %> Report</h2>
+    <% if mdl_report.archived? %>
+      <span class="mdl-card__subtitle-text">archived</span>
+    <% end %>
+  </div>
+  <div class="mdl-card__supporting-text">
+    <p><%= mdl_report.geo_state.name %> &mdash; <%= mdl_report.report_date.strftime('%d %B, %Y') %></p>
+    <p><%= mdl_report.content %></p>
+    <%# Show pictures and the reporter name if the logged in user is trusted, or if it's them %>
+    <% if logged_in_user.trusted? or logged_in_user?(report.reporter) %>
+        <% mdl_report.pictures.each do |picture| %>
+            <%= link_to_if(picture.ref?, image_tag(picture.ref_url(:thumb)), picture.ref_url)  %>
+        <% end %>
+        <% if mdl_report.reporter.present? %>
+            <div class="reporter"><%= mdl_report.reporter.name %></div>
+        <% end %>
+    <% end %>
+    <% if mdl_report.languages.any? %>
+      <div class="report-languages">
+        <% mdl_report.languages.each do |language| %>
+          <span class="mdl-chip <%= colour_class(language.colour) %>">
+            <span class="mdl-chip__text"><%= language.name %></span>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <div class="mdl-card__actions mdl-card--border">
+    <% if logged_in_user.admin? %>
+        <% if mdl_report.archived? %>
+            <%= link_to unarchive_report_path(mdl_report), class: "mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect", method: :patch do %>
+                <i class="material-icons">unarchive</i> un-archive
+            <% end %>
+        <% else %>
+            <%= link_to archive_report_path(mdl_report), class: "mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect", method: :patch do %>
+                <i class="material-icons">archive</i> archive
+            <% end %>
+        <% end %>
+    <% end %>
+    <% if logged_in_user.admin? or logged_in_user?(mdl_report.reporter) %>
+        <%= link_to edit_report_path(mdl_report), class: "mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" do %>
+            <i class="material-icons">edit</i> edit
+        <% end %>
+    <% end %>
+  </div>
+</div>
