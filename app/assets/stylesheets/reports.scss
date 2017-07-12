@@ -80,3 +80,15 @@ li.report {
 #report-submit-button {
   margin-top: 50px;
 }
+
+.empty-state {
+  color: #999999;
+  p { font-size: large; }
+  width: 100%;
+  align-content: center;
+  text-align: center;
+  .empty-state-icon {
+    font-size: 175pt;
+    color: #B0B0B0;
+  }
+}

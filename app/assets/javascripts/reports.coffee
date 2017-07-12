@@ -132,4 +132,9 @@ $(document).ready ->
     gutter: 0
     belowOrigin: false
 
+  # when viewing reports changing a filter refretches the reports
+  $('.report-view-filter').on 'change', ->
+    $('#report-view-filters').submit()
+    return
+
   return

@@ -1,0 +1,10 @@
+$('.reports-container').empty();
+$('.reports-container').html(`
+  <% if @reports.any? %>
+    <% @reports.each do |report| %>
+      <%= j render partial: 'reports/mdl_report', object: report %>
+    <% end %>
+  <% else %>
+    <%= j render 'reports/empty_state' %>
+  <% end %>
+`);
