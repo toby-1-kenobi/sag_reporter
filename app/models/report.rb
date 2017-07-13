@@ -37,6 +37,10 @@ class Report < ActiveRecord::Base
     where(reporter: user)
   }
 
+  scope :language, -> lang {
+    joins(:languages).where(languages: {id: lang.id})
+  }
+
   scope :since, -> since_date {
     where('report_date >= ?', since_date)
   }

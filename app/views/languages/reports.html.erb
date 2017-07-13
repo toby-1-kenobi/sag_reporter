@@ -1,0 +1,35 @@
+<% provide(:title, "Reports for #{@language.name}") %>
+<% provide(:context_title, "Reports for #{@language.name}") %>
+
+
+<%= form_tag({controller: 'languages', action: 'reports'}, method: 'get', remote: true, id: 'report-view-filters') do %>
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <i class="material-icons mdl-textfield__icon">today</i>
+          <%= text_field_tag 'since', @since_date.strftime('%d %B, %Y'), class: 'report-view-filter date-picker mdl-textfield__input' %>
+          <%= label_tag 'since', 'Showing reports from', class: 'mdl-textfield__label' %>
+        </div>
+      </div>
+      <div class="mdl-cell mdl-cell--4-col">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="archived">
+          <%= check_box_tag 'archived', 'on', @archived, class: 'report-view-filter mdl-switch__input' %>
+          <span class="mdl-switch__label">Show archived reports</span>
+        </label>
+      </div>
+    </div>
+<% end %>
+
+<script>
+  $('.date-picker').bootstrapMaterialDatePicker({ weekStart : 0, time: false, format: 'DD MMMM, Y' });
+</script>
+
+<div class="reports-container mdl-grid">
+  <% if @reports.any? %>
+      <% @reports.each do |report| %>
+          <%= render partial: 'reports/mdl_report', object: report %>
+      <% end %>
+  <% else %>
+      <%= render 'reports/empty_state' %>
+  <% end %>
+</div>

@@ -10,7 +10,7 @@ class LanguagesController < ApplicationController
   end
 
   # can edit a language if the language is in one of the user's states, or if the user is national
-  before_action only: [:edit, :update] do
+  before_action only: [:edit, :update, :reports] do
     redirect_to root_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
   end
 
@@ -88,6 +88,25 @@ class LanguagesController < ApplicationController
     @editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language))
     # attributes with pending edits should be visually distinct in the form
     @pending_attributes = @user_pending_edits.pluck :attribute_name
+  end
+
+  def reports
+    @language = Language.find(params[:id])
+    # look for a date, fetching reports since then.
+    if params[:since]
+      # here we're trusting the parse function will be able to handle whatever format comes its way in this context
+      @since_date = Date.parse(params[:since])
+    else
+      # if no date provided assume 3 months
+      @since_date = 3.months.ago
+    end
+    @reports = Report.language(@language).since(@since_date).order(report_date: :desc)
+    @archived = params[:archived].present?
+    @reports = @reports.active unless @archived
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   # match a search query against language names

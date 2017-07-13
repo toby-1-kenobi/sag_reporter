@@ -47,6 +47,7 @@ Rails.application.routes.draw do
     end
     member do
       get 'show_details'
+      get 'reports'
       patch 'add_engaged_org/:org', to: 'languages#add_engaged_org', as: 'add_engaged_org_to'
       patch 'remove_engaged_org/:org', to: 'languages#remove_engaged_org', as: 'remove_engaged_org_from'
       patch 'add_translating_org/:org', to: 'languages#add_translating_org', as: 'add_translating_org_to'
