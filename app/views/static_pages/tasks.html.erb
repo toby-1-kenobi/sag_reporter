@@ -20,7 +20,7 @@
           <% links.each do |link_data| %>
             <li class="mdl-list__item">
               <span class="mdl-list__item-primary-content">
-                <%= link_to link_data[:path], class: 'collection-item waves-effect' do %>
+                <%= link_to link_data[:path], class: 'mdl-button mdl-js-button mdl-js-ripple-effect' do %>
                   <i class="material-icons"><%= link_data[:icon] %></i>
                   <%= link_data[:text] %>
                 <% end %>

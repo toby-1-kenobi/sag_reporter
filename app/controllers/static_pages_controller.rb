@@ -51,6 +51,13 @@ class StaticPagesController < ApplicationController
             colour: 'brown',
             category: 'report'
         },
+        {
+            condition: logged_in_user.reports.any?,
+            path: my_reports_path,
+            text: 'My reports',
+            icon: 'insert_drive_file',
+            category: 'report'
+        },
         # {
         #     condition: (logged_in_user.can? 'report_numbers'),
         #     path: report_numbers_path,
