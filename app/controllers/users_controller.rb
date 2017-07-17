@@ -17,15 +17,15 @@ class UsersController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_user?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   before_action only: [:destroy] do
-    redirect_to root_path unless logged_in_user.can_delete_user?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   before_action only: [:index] do
-    redirect_to root_path unless logged_in_user.can_view_all_users?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   def me
