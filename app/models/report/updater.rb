@@ -19,6 +19,7 @@ class Report::Updater
     planning = params.delete 'planning_report'
     challenge = params.delete 'challenge_report'
     begin
+      params[:pictures_attributes] = add_external_picture params[:pictures_attributes]
       result = @instance.update_attributes(params)
       @instance.languages.clear
       add_languages(state_language_ids, @instance.geo_state_id) if state_language_ids
@@ -40,10 +41,11 @@ class Report::Updater
       end
       @instance.save!
     rescue => e
-      error = e
-      return false
-    else
-      return result
+      @error = e
+      result = false
+    ensure
+      cleanup_external_picture
+      result
     end
   end
 

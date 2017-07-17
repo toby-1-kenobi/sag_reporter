@@ -53,13 +53,28 @@ class ReportsController < ApplicationController
 
   # new report submitted by an external client
   def create_external
-    external_params = params.require(:reports).permit(:last_updated)
     full_params = report_params.merge({reporter: current_user})
-    report_factory = Report::Factory.new
+    report_factory = nil
+    success = true
+    instance_id = -1
+    if full_params['external_id'].nil? || full_params['external_updated_at'].nil?
+      report_factory = Report::Factory.new
+      success = report_factory.create_report(full_params)
+      instance_id = report_factory.instance.id if success
+    else
+      updated_at = full_params.delete 'external_updated_at'
+      @report = Report.find full_params.delete('external_id')
+      if updated_at > @report.updated_at.to_i
+        report_factory = Report::Updater.new(@report)
+        success = report_factory.update_report(report_params)
+        instance_id = report_factory.instance.id if success
+      end
+    end
+
     response = Hash.new
-    if report_factory.create_report(full_params)
+    if success
       response[:success] = true
-      response[:report_id] = report_factory.instance.id
+      response[:report_id] = instance_id
     else
       response[:success] = false
       response[:errors] = Array.new
@@ -79,16 +94,11 @@ class ReportsController < ApplicationController
       params.permit(reports: [:id, :updated_at])[:reports]
     report_data = Array.new
     user_geo_states = current_user.geo_states.ids
-    state_languages = StateLanguage.in_project
     Report.includes(:languages, :pictures).where.not(impact_report: nil).each do |report|
+
       next unless user_geo_states.include? report.geo_state_id
-      language_ids = Array.new
-      report.languages.each do |report_language|
-        language_ids << state_languages.find do |state_language|
-          state_language.geo_state_id == report.geo_state_id &&
-              state_language.language_id == report_language.id
-        end.id
-      end
+
+      language_ids = report.languages.map {|language| language.id}
 
       pictures = Hash.new
       report.pictures.each do |picture|
@@ -114,6 +124,7 @@ class ReportsController < ApplicationController
             version: report.version,
             updated_at: report.updated_at.to_i
         }
+        puts report_data if report.id == 73
       else
         report_data << {id: report.id}
       end
@@ -288,7 +299,9 @@ class ReportsController < ApplicationController
       :location,
       :sub_district_id,
       :client,
-      :version
+      :version,
+      :external_id,
+      :external_updated_at
     ]
     safe_params.delete :status unless actual_user.can_archive_report?
     # if we have a date try to change it to db-friendly format

@@ -39,12 +39,9 @@ class UsersController < ApplicationController
     user_data[:geo_states] = Array.new
     last_updated = [current_user.updated_at]
     current_user.geo_states.includes(state_languages: :language).where(state_languages: {project: true}).each do |geo_state|
-      languages = Array.new
-      geo_state.state_languages.each do |state_language|
-        languages << {
-            language_id: state_language.id,
-            language_name: state_language.language_name
-        }
+      languages = geo_state.state_languages.map do |state_language|
+        {language_id: state_language.language.id,
+         language_name: state_language.language_name}
       end
       user_data[:geo_states] << {
           state_id: geo_state.id,
