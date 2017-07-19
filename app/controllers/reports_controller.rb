@@ -58,6 +58,8 @@ class ReportsController < ApplicationController
     success = true
     instance_id = -1
     if full_params['external_id'].nil? || full_params['external_updated_at'].nil?
+      full_params.delete 'external_updated_at'
+      full_params.delete('external_id')
       report_factory = Report::Factory.new
       success = report_factory.create_report(full_params)
       instance_id = report_factory.instance.id if success
@@ -66,7 +68,7 @@ class ReportsController < ApplicationController
       @report = Report.find full_params.delete('external_id')
       if updated_at > @report.updated_at.to_i
         report_factory = Report::Updater.new(@report)
-        success = report_factory.update_report(report_params)
+        success = report_factory.update_report(full_params)
         instance_id = report_factory.instance.id if success
       end
     end
@@ -85,7 +87,7 @@ class ReportsController < ApplicationController
         response[:errors] << report_factory.error.message
       end
     end
-    puts response.to_json
+    puts response.to_s
     render json: response
   end
 
@@ -124,7 +126,6 @@ class ReportsController < ApplicationController
             version: report.version,
             updated_at: report.updated_at.to_i
         }
-        puts report_data if report.id == 73
       else
         report_data << {id: report.id}
       end
