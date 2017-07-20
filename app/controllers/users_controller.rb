@@ -31,6 +31,7 @@ class UsersController < ApplicationController
     redirect_to root_path unless logged_in_user.can_view_all_users?
   end
 
+  # send user related data to an external client (=android app)
   def show_external
     external_params = params[:user] && params[:user][:updated_at] &&
       params.require(:user).permit(:updated_at)[:updated_at]
@@ -59,6 +60,7 @@ class UsersController < ApplicationController
     end
   end
 
+  # send data from all users to an external client (=android app)
   def index_external
     user_data = Array.new
     User.all.each do |user|

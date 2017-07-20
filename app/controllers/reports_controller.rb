@@ -51,12 +51,17 @@ class ReportsController < ApplicationController
     @topics = Topic.all
   end
 
-  # new report submitted by an external client
+  # new report submitted by an external client (=android app)
   def create_external
     full_params = report_params.merge({reporter: current_user})
     report_factory = nil
     success = true
     instance_id = -1
+    # use state-language IDs (for being converted back to language IDs by the report-factory)
+    language_ids = full_params['languages']
+    state_id = full_params['geo_state_id']
+    full_params['languages'] = StateLanguage.where(language_id: language_ids, geo_state_id: state_id).map{|sl| sl.id}
+    puts full_params['languages']
     if full_params['external_id'].nil? || full_params['external_updated_at'].nil?
       full_params.delete 'external_updated_at'
       full_params.delete('external_id')
@@ -67,6 +72,11 @@ class ReportsController < ApplicationController
       updated_at = full_params.delete 'external_updated_at'
       @report = Report.find full_params.delete('external_id')
       if updated_at > @report.updated_at.to_i
+        # delete all old image files (for just using new files)
+        @report.pictures.each do |picture|
+          picture.remove_ref!
+          picture.delete
+        end
         report_factory = Report::Updater.new(@report)
         success = report_factory.update_report(full_params)
         instance_id = report_factory.instance.id if success
@@ -91,6 +101,7 @@ class ReportsController < ApplicationController
     render json: response
   end
 
+  # send all reports to an external client (=android app)
   def index_external
     external_params = !params[:reports].nil? && !params[:reports].empty? &&
       params.permit(reports: [:id, :updated_at])[:reports]
