@@ -36,5 +36,7 @@
 /db/baseline_data/
 /db/seed_fixtures/
 /db/language_data.csv
+/db/language_data
 /db/losa_data.txt
+/db/losa_data
 /config/locales/

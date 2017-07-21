@@ -46,6 +46,6 @@ if User.where(role_id: Role.find_by_name('admin')).count == 0
   end
 end
 
-require_relative 'location_import'
+# require_relative 'location_import'
 require_relative 'language_data_import'
 require_relative 'losa_import'
