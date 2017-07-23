@@ -223,7 +223,6 @@ class UsersController < ApplicationController
     end
 
     def assign_for_user_form
-      @roles = Role.all
       @languages = Language.includes(:geo_states).order(:name)
       @interface_languages = Language.where.not(locale_tag: nil).order(:name)
       @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)

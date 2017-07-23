@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170509155000) do
+ActiveRecord::Schema.define(version: 20170723030109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -559,12 +559,6 @@ ActiveRecord::Schema.define(version: 20170509155000) do
 
   add_index "reports_topics", ["report_id", "topic_id"], name: "index_reports_topics_on_report_id_and_topic_id", unique: true, using: :btree
 
-  create_table "roles", force: :cascade do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "state_languages", force: :cascade do |t|
     t.integer  "geo_state_id"
     t.integer  "language_id"
@@ -657,7 +651,6 @@ ActiveRecord::Schema.define(version: 20170509155000) do
     t.datetime "updated_at",                            null: false
     t.string   "password_digest"
     t.string   "remember_digest"
-    t.integer  "role_id"
     t.integer  "mother_tongue_id",                      null: false
     t.integer  "interface_language_id"
     t.string   "otp_secret_key"
@@ -675,7 +668,6 @@ ActiveRecord::Schema.define(version: 20170509155000) do
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
-  add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
   create_table "zones", force: :cascade do |t|
     t.string   "name",                            null: false
