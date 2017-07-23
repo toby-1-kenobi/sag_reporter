@@ -8,7 +8,6 @@ class User < ActiveRecord::Base
   has_many :progress_updates, dependent: :restrict_with_error
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :spoken_languages, class_name: 'Language'
-  has_many :tally_updates
   has_and_belongs_to_many :geo_states
   delegate :zone, to: :geo_state, allow_nil: true
   has_many :output_counts, dependent: :restrict_with_error
