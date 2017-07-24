@@ -38,3 +38,6 @@
 /db/language_data.csv
 /db/losa_data.txt
 /config/locales/
+
+# Ignore test coverage data
+/coverage/

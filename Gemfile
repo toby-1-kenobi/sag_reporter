@@ -135,6 +135,9 @@ group :test do
   gem 'poltergeist'
   gem 'phantomjs', require: 'phantomjs/poltergeist'
 
+  # code coverage for tests
+  gem 'simplecov', require: false
+
 end
 
 group :production do
