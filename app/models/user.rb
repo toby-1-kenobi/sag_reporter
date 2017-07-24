@@ -174,10 +174,6 @@ class User < ActiveRecord::Base
     /\Ais_an?_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
   end
 
-  def matches_dynamic_perm_check?(method_id)
-    /\Acan_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
-  end
-
   def interface_language_must_have_locale_tag
     if interface_language.present? and interface_language.locale_tag.blank?
       errors.add(:interface_language, 'must be a user interface language.')
