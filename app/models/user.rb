@@ -92,12 +92,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Transitional method
-  #TODO: make sure nothing uses this, then remove it
-  def geo_state
-    geo_states.take
-  end
-
   # The locale string for this user
   def locale
     if interface_language.present?
