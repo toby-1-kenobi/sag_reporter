@@ -233,14 +233,14 @@ class UsersController < ApplicationController
     def authorised_user_edit
       get_param_user
       redirect_to(root_url) unless
-          logged_in_user?(@user) or logged_in_user.can_edit_user?
+          logged_in_user?(@user) or logged_in_user.admin?
     end
 
     # Confirms authorised user for show.
     def authorised_user_show
       get_param_user
       redirect_to(root_url) unless
-          logged_in_user?(@user) or logged_in_user.can_view_all_users?
+          logged_in_user?(@user) or logged_in_user.admin?
     end
 
     def get_param_user

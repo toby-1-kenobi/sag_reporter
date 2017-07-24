@@ -5,11 +5,6 @@ class TopicsController < ApplicationController
   before_action :require_login
 
     # Let only permitted users do some things
-
-  before_action only: [:assess_progress_select, :assess_progress, :update_progress] do
-    redirect_to root_path unless logged_in_user.can_evaluate_progress?
-  end
-
   before_action only: [:assess_progress_select, :assess_progress] do
     set_date_range
   end

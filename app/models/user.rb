@@ -131,64 +131,9 @@ class User < ActiveRecord::Base
     curated_states.where(id: language.geo_states.pluck(:id)).any?
   end
 
-  # This is a transitional method for moving from using roles and permissions
-  # to using the simplified fields on the user model for user level access.
-  # it maps the permission names to the right values of the fields
-  #TODO: stop using this transitional method
-  def can?(permission)
-    case permission
-      when 'create_user', 'delete_user'
-        admin?
-      when 'edit_user'
-        # not including self
-        admin?
-      when 'view_all_users'
-        admin?
-      when 'view_roles', 'edit_role', 'create_role'
-        # not used any more
-        false
-      when 'view_all_languages'
-        national?
-      when 'create_language'
-        national_curator?
-      when 'edit_language'
-        curator?
-      when 'create_topic', 'edit_topic'
-        admin?
-      when 'view_all_topics'
-        true
-      when 'view_all_reports'
-        national?
-      when 'create_report', 'tag_report'
-        true
-      when 'edit_report', 'archive_report'
-        admin?
-      when 'evaluate_progress', 'view_outcome_totals'
-        true
-      when 'create_tally', 'view_all_tallies', 'edit_tally', 'archive_tally', 'increase_tally'
-        # not used any more
-        false
-      when 'create_event', 'edit_event'
-        true
-      when 'view_all_people'
-        trusted?
-      when 'edit_person'
-        trusted?
-      when 'report_numbers', 'view_output_totals'
-        true
-      when 'add_resource', 'edit_resource','view_all_resources'
-        true
-      else
-        logger.error("unknown permission: #{permission}")
-        false
-    end
-  end
-
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles
-  # or can_PERM1_or_PERM2?
-  # where PERM1 and PERM2 are the names of a valid permissions
   def method_missing(method_id, *args)
     if match = matches_dynamic_role_check?(method_id)
       tokenize(match.captures.first).each do |role_name|
@@ -196,11 +141,6 @@ class User < ActiveRecord::Base
         return curator? if role_name == 'curator'
         return national_curator? if role_name == 'national_curator'
         return true if role_description.present? and role_name == role_description.parameterize('_')
-      end
-      return false
-    elsif match = matches_dynamic_perm_check?(method_id)
-      tokenize(match.captures.first).each do |perm_name|
-         return true if can?(perm_name)
       end
       return false
     else

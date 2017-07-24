@@ -8,12 +8,8 @@ class ReportsController < ApplicationController
   before_action :authenticate, only: [:create_external]
 
     # Let only permitted users do some things
-  before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_report?
-  end
-
   before_action only: [:index, :by_language, :by_topic, :by_reporter] do
-    redirect_to root_path unless logged_in_user.can_view_all_reports?
+    redirect_to root_path unless logged_in_user.national?
   end
 
   before_action only: [:by_reporter, :spreadsheet] do
@@ -22,15 +18,15 @@ class ReportsController < ApplicationController
 
   before_action only: [:show] do
   	# show shows single report only to reporter when report first created
-  	redirect_to root_path unless logged_in_user?(Report.find(params[:id]).reporter) or logged_in_user.can_view_all_reports?
+  	redirect_to root_path unless logged_in_user?(Report.find(params[:id]).reporter) or logged_in_user.national?
   end
 
   before_action only: [:edit, :update] do
-    redirect_to root_path unless logged_in_user.can_edit_report? or logged_in_user?(Report.find(params[:id]).reporter)
+    redirect_to root_path unless logged_in_user.admin? or logged_in_user?(Report.find(params[:id]).reporter)
   end
 
   before_action only: [:archive, :unarchive] do
-    redirect_to root_path unless logged_in_user.can_archive_report?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   before_action only: [:pictures] do
@@ -272,7 +268,7 @@ class ReportsController < ApplicationController
       :client,
       :version
     ]
-    safe_params.delete :status unless current_user.can_archive_report?
+    safe_params.delete :status unless current_user.admin?
     # if we have a date try to change it to db-friendly format
     # otherwise set it to nil
     if params[:report][:report_date]

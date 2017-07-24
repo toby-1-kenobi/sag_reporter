@@ -6,7 +6,7 @@
           <% user_name = "user ##{user.id}" %>
       <% end %>
       <%= link_to user_name, user %>
-      <% if logged_in_user.can_delete_user? && !logged_in_user?(user) %>
+      <% if logged_in_user.admin? && !logged_in_user?(user) %>
         <%= link_to user, method: :delete, class: "waves-effect waves-red btn-flat", data: { confirm: "Delete #{user_name}?" } do %>
         <i class="material-icons">delete</i>
         <% end %>

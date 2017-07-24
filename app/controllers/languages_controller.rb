@@ -6,7 +6,7 @@ class LanguagesController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_language?
+    redirect_to root_path unless logged_in_user.admin? or logged_in_user.national_curator?
   end
 
   # can edit a language if the language is in one of the user's states, or if the user is national

@@ -4,7 +4,7 @@ class PeopleController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:index] do
-    redirect_to root_path unless logged_in_user.can_view_all_people?
+    redirect_to root_path unless logged_in_user.national?
   end
 
   def index
