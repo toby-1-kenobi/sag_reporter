@@ -1,14 +1,15 @@
 <% provide(:title, 'Strategic Zones') %>
 
 <% provide(:context_title, 'Choose a Strategic Zone') %>
-
-<!--<ul class="zone-list mdl-list">-->
-  <!--<li class="mdl-list__item">-->
-    <!--<%= link_to nation_path do %>-->
-      <!--<span class="mdl-list__item-primary-content">All India</span>-->
-    <!--<% end %>-->
-  <!--</li>-->
-<!--</ul>-->
+<% if logged_in_user.national? %>
+  <ul class="zone-list mdl-list">
+    <li class="mdl-list__item">
+      <%= link_to nation_path do %>
+        <span class="mdl-list__item-primary-content">All India</span>
+      <% end %>
+    </li>
+  </ul>
+<% end %>
 
 <%= image_tag 'LCI_zonal_map.png', alt: 'Strategic Zones', usemap: '#zone-map', width: 1000 %>
 <map name="zone-map" id="zone-map">

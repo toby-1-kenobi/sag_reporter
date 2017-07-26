@@ -82,3 +82,13 @@ When(/^I (am|am not) an? (.*) user$/) do |am_or_not, attr|
     puts "set user \"#{@me.name}\" to not be #{attr}"
   end
 end
+
+And(/^I (see|do not see) a link to the (.*) page$/) do |see_or_not, page_name|
+  path_method_str = "#{page_name}_path"
+  path = eval path_method_str
+  if see_or_not == 'see'
+    page.assert_selector("a[href='#{path}']")
+  else
+    page.refute_selector("a[href='#{path}']")
+  end
+end

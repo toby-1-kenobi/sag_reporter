@@ -14,8 +14,10 @@ Feature: Clickable zone map
     When I am a national user
     And I go to the zones page
     Then I can click on any zone in the map
+    And I see a link to the nation page
 
   Scenario: I can only click on my zones when I am not a national user
     When I am not a national user
     And I go to the zones page
     Then I can click on only my zones in the map
+    And I do not see a link to the nation page
