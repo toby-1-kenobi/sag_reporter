@@ -1,4 +1,17 @@
 
+When(/^(.*) for my (.*)$/) do |other_step, object|
+  step 'I am a user' unless @me
+  if @me.respond_to? object
+    @object = @me.send object
+  elsif @me.respond_to? object.pluralize
+    objects = @me.send object.pluralize
+    @object = objects.first
+  else
+    raise "I don't understand 'for my #{object}''"
+  end
+  step other_step
+end
+
 Given(/^(.*) data is loaded into the database$/) do |fixture_file|
   case fixture_file
     when "seed", "all", "all seed"
@@ -33,16 +46,22 @@ Given(/^I login$/) do
   _(current_path).must_equal two_factor_auth_path
   page.find('#session_otp_code').set(@me.otp_code)
   click_on 'Log in'
-  _(current_path).must_equal root_path
+  _(current_path).wont_equal two_factor_auth_path
+  _(current_path).wont_equal login_path
 end
 
 When(/^I try to go to the (.*) page$/) do |page_name|
-  path = eval "#{page_name}_path"
+  path_method_str = "#{page_name}_path"
+  path_method_str += '(@object)' if @object
+  path = eval path_method_str
+  puts path
   visit path
 end
 
 Then(/^I am on the (.*) page$/) do |page_name|
-  path = eval "#{page_name}_path"
+  path_method_str = "#{page_name}_path"
+  path_method_str += '(@object)' if @object
+  path = eval path_method_str
   page.current_path.must_equal path
 end
 
@@ -57,7 +76,9 @@ When(/^I (am|am not) an? (.*) user$/) do |am_or_not, attr|
   @me.update_attribute(attr, i_am)
   if i_am
     _(@me).must_be "#{attr}?".to_sym
+    puts "set user \"#{@me.name}\" to be #{attr}"
   else
     _(@me).wont_be "#{attr}?".to_sym
+    puts "set user \"#{@me.name}\" to not be #{attr}"
   end
 end
