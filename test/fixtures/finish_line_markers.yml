@@ -15,3 +15,13 @@ flm_03:
   name: "Radio Program"
   number: 3
   description: "Radio program is available"
+
+flm_06:
+  name: "New Testament"
+  number: 6
+  description: "The whole New Testament has been published"
+
+flm_08:
+  name: "Basic Literacy"
+  number: 8
+  description: "Teachers have been trained in a basic literacy curriculum"

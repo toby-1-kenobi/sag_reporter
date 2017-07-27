@@ -2,7 +2,7 @@ class GeoStatesController < ApplicationController
 
   before_action :require_login
   before_action :find_state, except: [:get_autocomplete_items]
-  before_action :check_privaleges, only: [:bulk_assess, :bulk_progress_update]
+  before_action :check_privaleges, only: [:show, :bulk_assess, :bulk_progress_update]
 
   autocomplete :district, :name, full: true
 
@@ -55,7 +55,7 @@ class GeoStatesController < ApplicationController
 
   def check_privaleges
     @geo_state ||= GeoState.find(params[:id])
-    redirect_to root_path unless logged_in_user.national? or @geo_state.users.include?(logged_in_user)
+    redirect_to zones_path unless logged_in_user.national? or @geo_state.users.include?(logged_in_user)
   end
 
   # bulk input is a hash where the keys are the ids of StateLanguage objects and the values are hashes
