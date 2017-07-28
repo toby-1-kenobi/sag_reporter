@@ -66,6 +66,9 @@ gem 'fontcustom'
 # File upload
 gem 'carrierwave'
 
+# JWT for android-app authentication
+gem 'jwt'
+
 # image manipulation
 gem 'mini_magick'
 
