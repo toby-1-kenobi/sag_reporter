@@ -61,7 +61,6 @@ class ReportsController < ApplicationController
     language_ids = full_params['languages']
     state_id = full_params['geo_state_id']
     full_params['languages'] = StateLanguage.where(language_id: language_ids, geo_state_id: state_id).map{|sl| sl.id}
-    puts full_params['languages']
     if full_params['external_id'].nil? || full_params['external_updated_at'].nil?
       full_params.delete 'external_updated_at'
       full_params.delete('external_id')
@@ -97,7 +96,6 @@ class ReportsController < ApplicationController
         response[:errors] << report_factory.error.message
       end
     end
-    puts response.to_s
     render json: response
   end
 
@@ -122,24 +120,29 @@ class ReportsController < ApplicationController
         end
       end
 
-      if !external_params || external_params[report.id.to_s].nil? ||
-          report.updated_at.to_i > external_params[report.id.to_s][:updated_at]
-        report_data << {
-            id: report.id,
-            state_id: report.geo_state_id,
-            date: report.report_date.to_time(:utc).to_i,
-            content: report.content,
-            reporter_id: report.reporter_id,
-            impact_report: 1,
-            languages: language_ids,
-            pictures: pictures,
-            client: report.client,
-            version: report.version,
-            updated_at: report.updated_at.to_i
-        }
-      else
-        report_data << {id: report.id}
+      if external_params && external_params[report.id.to_s]
+        if report.updated_at.to_i == external_params[report.id.to_s][:updated_at]
+          report_data << {id: report.id, updated_at: 0}
+          next
+        end
+        if report.updated_at.to_i < external_params[report.id.to_s][:updated_at]
+          report_data << {id: report.id, updated_at: -1}
+          next
+        end
       end
+      report_data << {
+          id: report.id,
+          state_id: report.geo_state_id,
+          date: report.report_date.to_time(:utc).to_i,
+          content: report.content,
+          reporter_id: report.reporter_id,
+          impact_report: 1,
+          languages: language_ids,
+          pictures: pictures,
+          client: report.client,
+          version: report.version,
+          updated_at: report.updated_at.to_i
+      }
     end
     render json: {reports: report_data}
   end

@@ -21,7 +21,6 @@ class Report::Factory
     end
     begin
       params['pictures_attributes'] = add_external_picture params['pictures_attributes']
-      puts params
       @instance = Report.new(params)
       add_languages(state_language_ids, params['geo_state_id']) if state_language_ids
       add_topics(topic_ids) if topic_ids
