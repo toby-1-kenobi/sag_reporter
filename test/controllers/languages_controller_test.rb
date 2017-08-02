@@ -1,35 +1,33 @@
 require 'test_helper'
 
-class LanguagesControllerTest < ActionController::TestCase
+describe LanguagesController do
 
-  def setup
-    @lang = languages(:toto)
-    @admin_user = users(:andrew)
-    @national_curator = users(:nathan)
-  end
-  
-  test "should get index" do
-    log_in_as(@admin_user)
-    get :index
-    assert_response :success
+  before do
+    @national_user = users(:norman)
+    @normal_user = users(:emma)
   end
 
-  test "should get new" do
-    log_in_as(@national_curator)
-    get :new
-    assert_response :success
+  it 'redirects to login when not logged in user goes to language dashboard' do
+    get :show, id: languages(:toto)
+    assert_redirected_to login_path
   end
 
-  test "should get edit" do
-    log_in_as(@national_curator)
-    get :edit, id: @lang
-    assert_response :success
+  it 'lets a user go to the language dashboard of a language in their state' do
+    log_in_as(@normal_user)
+    get :show, id: languages(:toto)
+    _(response).must_be :success?
   end
 
-  test "should get show" do
-    log_in_as(@admin_user)
-    get :show, id: @lang
-    assert_response :success
+  it 'wont let a user go to the language dashboard of a language not in their state' do
+    log_in_as(@normal_user)
+    get :show, id: languages(:gujarati)
+    assert_redirected_to zones_path
+  end
+
+  it 'will let a national user go to the language dashboard of any language' do
+    log_in_as(@national_user)
+    get :show, id: languages(:gujarati)
+    _(response).must_be :success?
   end
 
 end

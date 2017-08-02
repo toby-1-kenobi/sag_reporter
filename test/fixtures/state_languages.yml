@@ -15,3 +15,7 @@ nb_toto:
   language: toto
   project: true
 
+gujarat_gujarati:
+  geo_state: gujarat
+  language: gujarati
+

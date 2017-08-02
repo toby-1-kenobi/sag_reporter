@@ -1,5 +1,5 @@
 
-When(/^(.*) for my (.*)$/) do |other_step, object|
+When(/^(.+) for my ([^\s]+)$/) do |other_step, object|
   step 'I am a user' unless @me
   if @me.respond_to? object
     @object = @me.send object
@@ -12,7 +12,7 @@ When(/^(.*) for my (.*)$/) do |other_step, object|
   step other_step
 end
 
-Given(/^(.*) data is loaded into the database$/) do |fixture_file|
+Given(/^(.+?) data is loaded into the database$/) do |fixture_file|
   case fixture_file
     when "seed", "all", "all seed"
       models = ['zones', 'geo_states', 'languages', 'language_families', 'state_languages', 'topics', 'organisations', 'finish_line_markers']
@@ -50,7 +50,7 @@ Given(/^I login$/) do
   _(current_path).wont_equal login_path
 end
 
-When(/^I try to go to the (.*) page$/) do |page_name|
+When(/^I try to go to the ([^\s]+) page$/) do |page_name|
   path_method_str = "#{page_name}_path"
   path_method_str += '(@object)' if @object
   path = eval path_method_str
@@ -58,19 +58,19 @@ When(/^I try to go to the (.*) page$/) do |page_name|
   visit path
 end
 
-Then(/^I am on the (.*) page$/) do |page_name|
+Then(/^I am on the ([^\s]+) page$/) do |page_name|
   path_method_str = "#{page_name}_path"
   path_method_str += '(@object)' if @object
   path = eval path_method_str
   page.current_path.must_equal path
 end
 
-Given(/^I go to the (.*) page$/) do |page_name|
+Given(/^I go to the ([^\s]+) page$/) do |page_name|
   step "I try to go to the #{page_name} page"
   step "I am on the #{page_name} page"
 end
 
-When(/^I (am|am not) an? (.*) user$/) do |am_or_not, attr|
+When(/^I (am|am not) an? ([^\s]+) user$/) do |am_or_not, attr|
   step 'I am a user' unless @me
   i_am = am_or_not == 'am'
   @me.update_attribute(attr, i_am)
@@ -83,7 +83,7 @@ When(/^I (am|am not) an? (.*) user$/) do |am_or_not, attr|
   end
 end
 
-And(/^I (see|do not see) a link to the (.*) page$/) do |see_or_not, page_name|
+And(/^I (see|do not see) a link to the ([^\s]+) page$/) do |see_or_not, page_name|
   path_method_str = "#{page_name}_path"
   path = eval path_method_str
   if see_or_not == 'see'

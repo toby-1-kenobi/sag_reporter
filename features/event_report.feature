@@ -1,4 +1,4 @@
-@javascript @wip
+@javascript @wiphero
 Feature: Reporting on an event
 
   Background:

@@ -31,3 +31,7 @@ hindi_t:
   colour: 'lime lighten-2'
   locale_tag: hi
 
+gujarati:
+  name: Gujarati
+  lwc: false
+
