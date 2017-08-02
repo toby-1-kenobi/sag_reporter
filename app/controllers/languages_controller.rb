@@ -74,6 +74,7 @@ class LanguagesController < ApplicationController
             {:state_languages => {:geo_state => :zone}}
         ).
         find(params[:id])
+    redirect_to zones_path unless Language.user_limited(logged_in_user).include? @language
     @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(model_klass_name: 'Language', record_id: @language.id)
     @user_pending_fl_edits = Edit.pending.where(model_klass_name: 'FinishLineProgress')
