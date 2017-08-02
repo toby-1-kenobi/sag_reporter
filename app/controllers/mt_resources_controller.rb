@@ -2,12 +2,8 @@ class MtResourcesController < ApplicationController
 
   before_action :require_login
 
-  before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_add_resource?
-  end
-
   before_action only: [:language_overview] do
-    redirect_to root_path unless logged_in_user.can_view_all_resources?
+    redirect_to root_path unless logged_in_user.national?
   end
 
   def new

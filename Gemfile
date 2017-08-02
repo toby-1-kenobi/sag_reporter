@@ -123,7 +123,7 @@ group :test do
   gem 'minitest-spec-rails'
 
   # Spec syntax with Capybara
-  gem 'capybara_minitest_spec'
+  gem 'capybara_minitest_spec', '1.0.6'
 
   # Open browser on page that is being tested whe test fails.
   gem 'launchy'
@@ -134,6 +134,9 @@ group :test do
   # Drives a headless browser (phantom js)
   gem 'poltergeist'
   gem 'phantomjs', require: 'phantomjs/poltergeist'
+
+  # code coverage for tests
+  gem 'simplecov', require: false
 
 end
 

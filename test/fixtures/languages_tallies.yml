@@ -1,9 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-<% [:books, :dictionaries, :storytelling].each do |tally| %>
-  <% [:toto, :rajbanshi, :bodo, :sadri, :santali].each do |language| %>
-<%= "#{language}-#{tally}:" %>
-  language: <%= language %>
-  tally: <%= tally %>
-  <% end %>
-<% end %>

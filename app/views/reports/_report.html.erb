@@ -7,10 +7,10 @@
       "data-status=\"#{report.status}\" ".html_safe +
       "data-report-type=\"#{report.report_type_a.join(',')}\"".html_safe
   if !local_assigns.key? :can_edit
-    can_edit = logged_in_user.can_edit_report?
+    can_edit = logged_in_user.admin?
   end
   if !local_assigns.key? :can_archive
-    can_archive = logged_in_user.can_archive_report?
+    can_archive = logged_in_user.admin?
   end
 %>
 <% if wrapper %>

@@ -6,7 +6,7 @@ class LanguagesController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_language?
+    redirect_to root_path unless logged_in_user.admin? or logged_in_user.national_curator?
   end
 
   # can edit a language if the language is in one of the user's states, or if the user is national
@@ -45,6 +45,7 @@ class LanguagesController < ApplicationController
             {:state_languages => {:geo_state => :zone}}
         ).
         find(params[:id])
+    redirect_to zones_path unless Language.user_limited(logged_in_user).include? @language
     @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(model_klass_name: 'Language', record_id: @language.id)
     @user_pending_fl_edits = Edit.pending.where(model_klass_name: 'FinishLineProgress')
@@ -73,6 +74,7 @@ class LanguagesController < ApplicationController
             {:state_languages => {:geo_state => :zone}}
         ).
         find(params[:id])
+    redirect_to zones_path unless Language.user_limited(logged_in_user).include? @language
     @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(model_klass_name: 'Language', record_id: @language.id)
     @user_pending_fl_edits = Edit.pending.where(model_klass_name: 'FinishLineProgress')

@@ -1,10 +1,15 @@
 ENV['RAILS_ENV'] ||= 'test'
+
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
-require "minitest/reporters"
-require "minitest/rails/capybara"
-require "mocha/mini_test"
-require "capybara/poltergeist"
+require 'simplecov'
+require 'minitest/reporters'
+require 'minitest/rails/capybara'
+require 'mocha/mini_test'
+require 'capybara/poltergeist'
+
+SimpleCov.start 'rails'
+
 Minitest::Reporters.use!(
   Minitest::Reporters::ProgressReporter.new,
   ENV,

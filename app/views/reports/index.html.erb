@@ -77,8 +77,8 @@
       </div>
     </div>
     <div class="row">
-      <% can_edit = logged_in_user.can_edit_report? %>
-      <% can_archive = logged_in_user.can_archive_report? %>
+      <% can_edit = logged_in_user.admin? %>
+      <% can_archive = logged_in_user.admin? %>
       <%= render partial: 'report', collection: @reports, locals: {time: true, languages: true, topics: true, can_edit: can_edit, can_archive: can_archive, wrapper: 'col s12 m6 l4'} %>
     </div>
 <% end %>

@@ -5,62 +5,8 @@ class TopicsController < ApplicationController
   before_action :require_login
 
     # Let only permitted users do some things
-  before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_topic?
-  end
-
-  before_action only: [:index] do
-    redirect_to root_path unless logged_in_user.can_view_all_topics?
-  end
-
-  before_action only: [:edit, :update] do
-    redirect_to root_path unless logged_in_user.can_edit_topic?
-  end
-
-  before_action only: [:assess_progress_select, :assess_progress, :update_progress] do
-    redirect_to root_path unless logged_in_user.can_evaluate_progress?
-  end
-
   before_action only: [:assess_progress_select, :assess_progress] do
     set_date_range
-  end
-
-  def new
-  	@topic = Topic.new
-  	@colour_columns = 3
-  end
-
-  def index
-  	@topics = Topic.all
-  end
-
-  def show
-  	@topic = Topic.find(params[:id])
-  end
-
-  def edit
-  	@topic = Topic.find(params[:id])
-  	@colour_columns = 3
-  end
-
-  def update
-    @topic = Topic.find(params[:id])
-    if @topic.update_attributes(combine_colour(topic_params))
-      flash['success'] = 'Topic updated'
-      redirect_to @topic
-    else
-      render 'edit'
-    end
-  end
-
-  def create
-    @topic = Topic.new(combine_colour(topic_params))
-    if @topic.save
-      flash['success'] = 'New topic added!'
-      redirect_to @topic
-    else
-      render 'new'
-    end
   end
 
   def assess_progress_select

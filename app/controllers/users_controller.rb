@@ -17,15 +17,15 @@ class UsersController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_user?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   before_action only: [:destroy] do
-    redirect_to root_path unless logged_in_user.can_delete_user?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   before_action only: [:index] do
-    redirect_to root_path unless logged_in_user.can_view_all_users?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   def me
@@ -223,7 +223,6 @@ class UsersController < ApplicationController
     end
 
     def assign_for_user_form
-      @roles = Role.all
       @languages = Language.includes(:geo_states).order(:name)
       @interface_languages = Language.where.not(locale_tag: nil).order(:name)
       @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
@@ -234,14 +233,14 @@ class UsersController < ApplicationController
     def authorised_user_edit
       get_param_user
       redirect_to(root_url) unless
-          logged_in_user?(@user) or logged_in_user.can_edit_user?
+          logged_in_user?(@user) or logged_in_user.admin?
     end
 
     # Confirms authorised user for show.
     def authorised_user_show
       get_param_user
       redirect_to(root_url) unless
-          logged_in_user?(@user) or logged_in_user.can_view_all_users?
+          logged_in_user?(@user) or logged_in_user.admin?
     end
 
     def get_param_user

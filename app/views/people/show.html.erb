@@ -2,7 +2,7 @@
 <h1><%= @person.name %></h1>
 <%= link_to "My Contacts", contacts_people_path, class: "btn waves-effect" %>
 
-<% if logged_in_user.can_view_all_people? %>
+<% if logged_in_user.national? %>
   <%= link_to "Show all people", people_path, class: "btn waves-effect" %>
 <% end %>
 

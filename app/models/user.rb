@@ -2,16 +2,13 @@ class User < ActiveRecord::Base
 
   include ContactDetails
 
-  belongs_to :role
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter, dependent: :restrict_with_error
   has_many :events, inverse_of: :record_creator, dependent: :restrict_with_error
   has_many :people, inverse_of: :record_creator, dependent: :restrict_with_error
   has_many :progress_updates, dependent: :restrict_with_error
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :spoken_languages, class_name: 'Language'
-  has_many :tally_updates
   has_and_belongs_to_many :geo_states
-  delegate :zone, to: :geo_state, allow_nil: true
   has_many :output_counts, dependent: :restrict_with_error
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :restrict_with_error
@@ -94,12 +91,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Transitional method
-  #TODO: make sure nothing uses this, then remove it
-  def geo_state
-    geo_states.take
-  end
-
   # The locale string for this user
   def locale
     if interface_language.present?
@@ -133,64 +124,9 @@ class User < ActiveRecord::Base
     curated_states.where(id: language.geo_states.pluck(:id)).any?
   end
 
-  # This is a transitional method for moving from using roles and permissions
-  # to using the simplified fields on the user model for user level access.
-  # it maps the permission names to the right values of the fields
-  #TODO: stop using this transitional method
-  def can?(permission)
-    case permission
-      when 'create_user', 'delete_user'
-        admin?
-      when 'edit_user'
-        # not including self
-        admin?
-      when 'view_all_users'
-        admin?
-      when 'view_roles', 'edit_role', 'create_role'
-        # not used any more
-        false
-      when 'view_all_languages'
-        national?
-      when 'create_language'
-        national_curator?
-      when 'edit_language'
-        curator?
-      when 'create_topic', 'edit_topic'
-        admin?
-      when 'view_all_topics'
-        true
-      when 'view_all_reports'
-        national?
-      when 'create_report', 'tag_report'
-        true
-      when 'edit_report', 'archive_report'
-        admin?
-      when 'evaluate_progress', 'view_outcome_totals'
-        true
-      when 'create_tally', 'view_all_tallies', 'edit_tally', 'archive_tally', 'increase_tally'
-        # not used any more
-        false
-      when 'create_event', 'edit_event'
-        true
-      when 'view_all_people'
-        trusted?
-      when 'edit_person'
-        trusted?
-      when 'report_numbers', 'view_output_totals'
-        true
-      when 'add_resource', 'edit_resource','view_all_resources'
-        true
-      else
-        logger.error("unknown permission: #{permission}")
-        false
-    end
-  end
-
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles
-  # or can_PERM1_or_PERM2?
-  # where PERM1 and PERM2 are the names of a valid permissions
   def method_missing(method_id, *args)
     if match = matches_dynamic_role_check?(method_id)
       tokenize(match.captures.first).each do |role_name|
@@ -198,11 +134,6 @@ class User < ActiveRecord::Base
         return curator? if role_name == 'curator'
         return national_curator? if role_name == 'national_curator'
         return true if role_description.present? and role_name == role_description.parameterize('_')
-      end
-      return false
-    elsif match = matches_dynamic_perm_check?(method_id)
-      tokenize(match.captures.first).each do |perm_name|
-         return true if can?(perm_name)
       end
       return false
     else
@@ -240,10 +171,6 @@ class User < ActiveRecord::Base
 
   def matches_dynamic_role_check?(method_id)
     /\Ais_an?_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
-  end
-
-  def matches_dynamic_perm_check?(method_id)
-    /\Acan_([a-zA-Z]\w*)\?\z/.match(method_id.to_s)
   end
 
   def interface_language_must_have_locale_tag

@@ -77,8 +77,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :topics
-
   resources :users do
     collection do
       get :me

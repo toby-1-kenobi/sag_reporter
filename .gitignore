@@ -40,3 +40,6 @@
 /db/losa_data.txt
 /db/losa_data
 /config/locales/
+
+# Ignore test coverage data
+/coverage/
