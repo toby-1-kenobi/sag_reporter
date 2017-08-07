@@ -5,11 +5,37 @@ When(/^(.+) for my ([^\s]+)$/) do |other_step, object|
     @object = @me.send object
   elsif @me.respond_to? object.pluralize
     objects = @me.send object.pluralize
+    if objects.empty?
+      raise "I don't have any #{object.pluralize}"
+    end
     @object = objects.first
   else
     raise "I don't understand 'for my #{object}''"
   end
   step other_step
+end
+
+When(/^(.+) for ([A-Z][a-z\s]* ?[A-Z]?[a-z]*)'s ([^\s]+)$/) do |other_step, user_name, object|
+  user = User.find_by_name user_name
+  if user.respond_to? object
+    @object = user.send object
+  elsif user.respond_to? object.pluralize
+    objects = user.send object.pluralize
+    if objects.empty?
+      raise "#{user_name} doesn't have any #{object.pluralize}"
+    end
+    @object = objects.first unless objects.include? @object
+  else
+    raise "I don't understand \"for #{user_names}'s #{object}\""
+  end
+  step other_step
+end
+
+When(/^(.+) (?:on|in) (the|a) ([^\s]+)$/) do |other_step, article, element|
+  selector_begin = (article == 'the') ? '#' : '.'
+  within("#{selector_begin}#{element}") do
+    step other_step
+  end
 end
 
 Given(/^(.+?) data is loaded into the database$/) do |fixture_file|
@@ -48,6 +74,7 @@ Given(/^I login$/) do
   click_on 'Log in'
   _(current_path).wont_equal two_factor_auth_path
   _(current_path).wont_equal login_path
+  puts "logged in as #{@me.name} in #{@me.geo_states.pluck(:name).to_sentence}"
 end
 
 When(/^I try to go to the ([^\s]+) page$/) do |page_name|
@@ -90,5 +117,38 @@ And(/^I (see|do not see) a link to the ([^\s]+) page$/) do |see_or_not, page_nam
     page.assert_selector("a[href='#{path}']")
   else
     page.refute_selector("a[href='#{path}']")
+  end
+end
+
+Then(/^I (see|do not see) an "([^"]*)" button$/) do |see_or_not, button_name|
+  if see_or_not == 'see'
+    page.assert_selector(:link_or_button, button_name)
+  else
+    page.refute_selector(:link_or_button, button_name)
+  end
+end
+
+Then(/^show me$/) do
+  save_and_open_page
+end
+
+Given(/^I am in the state for that$/) do
+  step 'I am a user' unless @me
+  if @object and @object.respond_to?(:geo_state)
+    state = @object.send(:geo_state)
+    unless @me.geo_states.include? state
+      @me.geo_states << state
+      puts "added #{state.name} to #{@me.name}"
+    end
+  elsif @object and  @object.respond_to?(:geo_states)
+    @object.send(:geo_states).each do |state|
+      unless @me.geo_states.include? state
+        @me.geo_states << state
+        puts "added #{state.name} to #{@me.name}"
+      end
+    end
+  else
+    puts 'no object' if @object.nil?
+    raise 'you are in the state for what?'
   end
 end

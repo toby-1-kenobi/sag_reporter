@@ -16,25 +16,24 @@ class ReportsController < ApplicationController
     redirect_to root_path unless logged_in_user.trusted?
   end
 
-  before_action only: [:show] do
-  	# show shows single report only to reporter when report first created
-  	redirect_to root_path unless logged_in_user?(Report.find(params[:id]).reporter) or logged_in_user.national?
-  end
-
-  before_action only: [:edit, :update] do
-    redirect_to root_path unless logged_in_user.admin? or logged_in_user?(Report.find(params[:id]).reporter)
-  end
-
   before_action only: [:archive, :unarchive] do
     redirect_to root_path unless logged_in_user.admin?
   end
 
-  before_action only: [:pictures] do
-    head :forbidden unless logged_in_user.trusted? or logged_in_user?(Report.find(params[:id]).reporter)
-  end
-
   before_action :get_translations, only: [:new, :edit]
   before_action :find_report, only: [:edit, :update, :show, :archive, :unarchive, :pictures]
+
+  before_action only: [:show] do
+    redirect_to root_path unless logged_in_user.national? or logged_in_user.geo_states.include? @report.geo_state
+  end
+
+  before_action only: [:edit, :update] do
+    redirect_to root_path unless logged_in_user.admin? or logged_in_user?(@report.reporter)
+  end
+
+  before_action only: [:pictures] do
+    head :forbidden unless logged_in_user.trusted? or logged_in_user?(@report.reporter)
+  end
 
   def new
   	@report = Report.new
