@@ -41,8 +41,9 @@ class UsersController < ApplicationController
     last_updated = [current_user.updated_at]
     current_user.geo_states.includes(state_languages: :language).where(state_languages: {project: true}).each do |geo_state|
       languages = geo_state.state_languages.map do |state_language|
-        {language_id: state_language.language.id,
-         language_name: state_language.language_name}
+          last_updated << state_language.updated_at
+          {language_id: state_language.language.id,
+           language_name: state_language.language_name}
       end
       user_data[:geo_states] << {
           state_id: geo_state.id,
@@ -52,6 +53,7 @@ class UsersController < ApplicationController
       last_updated << geo_state.updated_at
     end
     last_updated = last_updated.max.to_i
+    puts last_updated
     user_data[:updated_at] = last_updated.to_i
     if !external_params || last_updated > external_params
       render json: {user: user_data}

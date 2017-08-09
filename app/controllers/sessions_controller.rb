@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
 
   before_action :check_user, only: [:two_factor_auth, :new, :resend_otp_to_phone, :resend_otp_to_email]
-  skip_before_action :verify_authenticity_token, only: [:create_external]
+  skip_before_action :verify_authenticity_token, only: [:create_external, :show_external]
 
   def new
   end
@@ -18,12 +18,28 @@ class SessionsController < ApplicationController
       payload = {sub: user.id, iat: Time.now.to_i}
       token = JWT.encode payload, secret_key, 'HS256'
       if user.authenticate auth_params[:password]
-        render json: { jwt: token, user: user.id }, status: :created
+        database_key = (user.created_at.to_f * 1000000).to_i
+        render json: { jwt: token, user: user.id , key: database_key}, status: :created
       else
         head :not_found
       end
     rescue => e
       render json: { error: e, secret_key_found: !!secret_key, payload_found: !!payload, token_found: !!token}
+    end
+  end
+
+  def show_external
+    full_params = params.require(:session).permit :user_id, :device_id
+    begin
+    user = User.find(full_params['user_id']) if full_params['user_id'] != -1
+    if user.nil?# && user.devices.include?(full_params['device_id'])
+      head :not_found
+      return
+    end
+    database_key = (user.created_at.to_f * 1000000).to_i
+    render json: { key: database_key }
+    rescue => e
+    render json: { error: e }
     end
   end
 

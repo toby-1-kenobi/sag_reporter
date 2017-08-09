@@ -101,6 +101,7 @@ Rails.application.routes.draw do
   post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
   delete 'logout'  => 'sessions#destroy'
   post   'sessions/create_external'
+  post   'sessions/show_external'
 
 
   get  'tally_updates' => 'tally_updates#index'
