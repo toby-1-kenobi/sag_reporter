@@ -14,12 +14,24 @@ class SessionsController < ApplicationController
         head :not_found
         return
       end
-      secret_key = Rails.application.secrets.secret_key_base
-      payload = {sub: user.id, iat: Time.now.to_i}
-      token = JWT.encode payload, secret_key, 'HS256'
       if user.authenticate auth_params[:password]
-        database_key = (user.created_at.to_f * 1000000).to_i
-        render json: { jwt: token, user: user.id , key: database_key}, status: :created
+        users_device = user.external_devices.find{|d| d.device_id == auth_params[:device_id]}
+        if users_device && users_device.registered
+          secret_key = Rails.application.secrets.secret_key_base
+          payload = {sub: user.id, iat: Time.now.to_i, iss: users_device.device_id}
+          token = JWT.encode payload, secret_key, 'HS256'
+          database_key = (user.created_at.to_f * 1000000).to_i
+          render json: { jwt: token, user: user.id , key: database_key}, status: :created
+        else
+          unless users_device
+            new_device = ExternalDevice.new
+            new_device.device_id = auth_params[:device_id]
+            new_device.name = auth_params[:device_name]
+            new_device.user = user
+            new_device.save
+          end
+          render json: { user: user.id }
+        end
       else
         head :not_found
       end

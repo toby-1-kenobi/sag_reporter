@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170509155000) do
+ActiveRecord::Schema.define(version: 20170809110638) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -173,6 +173,17 @@ ActiveRecord::Schema.define(version: 20170509155000) do
   add_index "events_purposes", ["event_id", "purpose_id"], name: "index_events_purposes_on_event_id_and_purpose_id", unique: true, using: :btree
   add_index "events_purposes", ["event_id"], name: "index_events_purposes_on_event_id", using: :btree
   add_index "events_purposes", ["purpose_id"], name: "index_events_purposes_on_purpose_id", using: :btree
+
+  create_table "external_devices", force: :cascade do |t|
+    t.string   "device_id"
+    t.string   "name"
+    t.boolean  "registered", default: false, null: false
+    t.integer  "user_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "external_devices", ["user_id"], name: "index_external_devices_on_user_id", using: :btree
 
   create_table "finish_line_markers", force: :cascade do |t|
     t.string   "name",        null: false
@@ -342,16 +353,6 @@ ActiveRecord::Schema.define(version: 20170509155000) do
 
   add_index "languages_reports", ["report_id", "language_id"], name: "index_languages_reports_on_report_id_and_language_id", unique: true, using: :btree
 
-  create_table "languages_tallies", force: :cascade do |t|
-    t.integer  "language_id"
-    t.integer  "tally_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  add_index "languages_tallies", ["language_id"], name: "index_languages_tallies_on_language_id", using: :btree
-  add_index "languages_tallies", ["tally_id"], name: "index_languages_tallies_on_tally_id", using: :btree
-
   create_table "languages_users", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "language_id"
@@ -368,11 +369,11 @@ ActiveRecord::Schema.define(version: 20170509155000) do
     t.integer  "category",                       null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.integer  "geo_state_id",                   null: false
     t.integer  "status",         default: 0,     null: false
     t.integer  "publish_year"
     t.string   "url"
     t.text     "how_to_access"
-    t.integer  "geo_state_id"
   end
 
   add_index "mt_resources", ["category"], name: "index_mt_resources_on_category", using: :btree
@@ -559,12 +560,6 @@ ActiveRecord::Schema.define(version: 20170509155000) do
 
   add_index "reports_topics", ["report_id", "topic_id"], name: "index_reports_topics_on_report_id_and_topic_id", unique: true, using: :btree
 
-  create_table "roles", force: :cascade do |t|
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "state_languages", force: :cascade do |t|
     t.integer  "geo_state_id"
     t.integer  "language_id"
@@ -586,29 +581,6 @@ ActiveRecord::Schema.define(version: 20170509155000) do
 
   add_index "sub_districts", ["district_id"], name: "index_sub_districts_on_district_id", using: :btree
   add_index "sub_districts", ["name"], name: "index_sub_districts_on_name", using: :btree
-
-  create_table "tallies", force: :cascade do |t|
-    t.string   "name"
-    t.text     "description"
-    t.integer  "state",       default: 1, null: false
-    t.integer  "topic_id"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-  end
-
-  add_index "tallies", ["state"], name: "index_tallies_on_state", using: :btree
-  add_index "tallies", ["topic_id"], name: "index_tallies_on_topic_id", using: :btree
-
-  create_table "tally_updates", force: :cascade do |t|
-    t.integer  "languages_tally_id"
-    t.integer  "amount",             default: 0, null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
-    t.integer  "user_id"
-  end
-
-  add_index "tally_updates", ["languages_tally_id"], name: "index_tally_updates_on_languages_tally_id", using: :btree
-  add_index "tally_updates", ["user_id"], name: "index_tally_updates_on_user_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
     t.string   "name",                                               null: false
@@ -657,7 +629,6 @@ ActiveRecord::Schema.define(version: 20170509155000) do
     t.datetime "updated_at",                            null: false
     t.string   "password_digest"
     t.string   "remember_digest"
-    t.integer  "role_id"
     t.integer  "mother_tongue_id",                      null: false
     t.integer  "interface_language_id"
     t.string   "otp_secret_key"
@@ -675,7 +646,6 @@ ActiveRecord::Schema.define(version: 20170509155000) do
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
-  add_index "users", ["role_id"], name: "index_users_on_role_id", using: :btree
 
   create_table "zones", force: :cascade do |t|
     t.string   "name",                            null: false
@@ -704,6 +674,7 @@ ActiveRecord::Schema.define(version: 20170509155000) do
   add_foreign_key "events", "users"
   add_foreign_key "events_purposes", "events"
   add_foreign_key "events_purposes", "purposes"
+  add_foreign_key "external_devices", "users"
   add_foreign_key "finish_line_progresses", "finish_line_markers"
   add_foreign_key "finish_line_progresses", "languages"
   add_foreign_key "geo_states", "zones"
@@ -713,8 +684,6 @@ ActiveRecord::Schema.define(version: 20170509155000) do
   add_foreign_key "languages", "clusters"
   add_foreign_key "languages", "data_sources", column: "pop_source_id"
   add_foreign_key "languages", "language_families", column: "family_id"
-  add_foreign_key "languages_tallies", "languages"
-  add_foreign_key "languages_tallies", "tallies"
   add_foreign_key "mt_resources", "geo_states"
   add_foreign_key "mt_resources", "languages"
   add_foreign_key "mt_resources", "users"
@@ -746,9 +715,6 @@ ActiveRecord::Schema.define(version: 20170509155000) do
   add_foreign_key "state_languages", "geo_states"
   add_foreign_key "state_languages", "languages"
   add_foreign_key "sub_districts", "districts"
-  add_foreign_key "tallies", "topics"
-  add_foreign_key "tally_updates", "languages_tallies"
-  add_foreign_key "tally_updates", "users"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translatables"
   add_foreign_key "uploaded_files", "reports"
