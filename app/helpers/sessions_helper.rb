@@ -81,7 +81,7 @@ module SessionsHelper
       secret_key = Rails.application.secrets.secret_key_base
       payload, _ = JWT.decode token, secret_key, true, {algorithm: 'HS256'}
       user = User.find payload['sub']
-      device_is_registered = user.external_devices.map{|d| d.device_id if d.registered}.include?(payload[:iss])
+      device_is_registered = user.external_devices.map{|d| d.device_id if d.registered}.include?(payload['iss'])
       user if user.updated_at.to_i < payload['iat'] && device_is_registered
     rescue => error
       puts error

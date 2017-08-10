@@ -28,6 +28,7 @@ class SessionsController < ApplicationController
             new_device.device_id = auth_params[:device_id]
             new_device.name = auth_params[:device_name]
             new_device.user = user
+            new_device.registered = true #todo: replace this with a manual registration on users/edit
             new_device.save
           end
           render json: { user: user.id }
@@ -43,15 +44,15 @@ class SessionsController < ApplicationController
   def show_external
     full_params = params.require(:session).permit :user_id, :device_id
     begin
-    user = User.find(full_params['user_id']) if full_params['user_id'] != -1
-    if user.nil?# && user.devices.include?(full_params['device_id'])
-      head :not_found
-      return
-    end
-    database_key = (user.created_at.to_f * 1000000).to_i
-    render json: { key: database_key }
+      user = User.find(full_params['user_id']) if full_params['user_id'] != -1
+      unless user && user.external_devices.map{|d| d.device_id if d.registered}.include?(full_params[:device_id])
+        head :not_found
+        return
+      end
+      database_key = (user.created_at.to_f * 1000000).to_i
+      render json: { key: database_key }
     rescue => e
-    render json: { error: e }
+      render json: { error: e }
     end
   end
 
