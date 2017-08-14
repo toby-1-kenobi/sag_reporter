@@ -135,6 +135,9 @@ group :test do
   gem 'poltergeist'
   gem 'phantomjs', require: 'phantomjs/poltergeist'
 
+  # for js testing in capybara and cucumber
+  gem 'capybara-webkit'
+
   # code coverage for tests
   gem 'simplecov', require: false
 

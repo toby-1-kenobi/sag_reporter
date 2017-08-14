@@ -1,10 +1,19 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
+report-andrew:
+  reporter: andrew
+  content: <%= Faker::Lorem.paragraph %>
+  languages: toto
+  geo_state: nb
+  report_date: <%= 1.week.ago %>
+  impact_report: impact-report-andrew
+
 <%
 users = [:richard, :emma, :andrew]
 states = ["active", "active", "active", "active", "active", "active", "active", "archived"]
 languages = [:toto, :rajbanshi, :bodo, :sadri, :santali]
 %>
+
 <% (1..80).each do |index| %>
 report-<%= index %>:
   reporter: <%= users.sample %>

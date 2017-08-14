@@ -30,15 +30,15 @@
   <% if logged_in_user.admin? or logged_in_user?(mdl_report.reporter) %>
     <div class="mdl-card__actions mdl-card--border">
       <% if mdl_report.archived? %>
-        <%= link_to unarchive_report_path(mdl_report), class: "mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect", method: :patch do %>
+        <%= link_to unarchive_report_path(mdl_report), class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect', method: :patch, remote: true do %>
           <i class="material-icons">unarchive</i> un-archive
         <% end %>
       <% else %>
-        <%= link_to archive_report_path(mdl_report), class: "mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect", method: :patch do %>
+        <%= link_to archive_report_path(mdl_report), class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect', method: :patch, remote: true do %>
           <i class="material-icons">archive</i> archive
         <% end %>
       <% end %>
-      <%= link_to edit_report_path(mdl_report), class: "mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" do %>
+      <%= link_to edit_report_path(mdl_report), class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
         <i class="material-icons">edit</i> edit
       <% end %>
     </div>

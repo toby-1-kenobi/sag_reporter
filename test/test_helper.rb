@@ -45,3 +45,5 @@ module IntegrationHelper
 				 											  					otp_code:		   user.otp_code}
 	end
 end
+
+Capybara.asset_host = "http://local host:3000"

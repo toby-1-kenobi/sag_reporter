@@ -185,12 +185,22 @@ class ReportsController < ApplicationController
 
   def archive
     @report.archived!
-    redirect_to root_path
+    respond_to do |format|
+      format.js
+      format.html do
+        redirect_to @report
+      end
+    end
   end
 
   def unarchive
     @report.active!
-    redirect_to report
+    respond_to do |format|
+      format.js
+      format.html do
+        redirect_to @report
+      end
+    end
   end
 
   def pictures

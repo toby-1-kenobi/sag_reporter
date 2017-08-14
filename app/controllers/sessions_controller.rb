@@ -44,6 +44,11 @@ class SessionsController < ApplicationController
         flash.now['info'] = "Please choose to have the login code sent to your phone (#{@user.phone}) or email (#{@user.email})"
       end
     else
+      if @user
+        logger.debug "could not authenticate #{@user.phone} with '#{params[:session][:password]}'"
+      else
+        logger.debug "couldn't find user with  #{username}"
+      end
       flash.now['error'] = 'username or password is not correct'
       render 'new'
     end

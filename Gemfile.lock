@@ -73,6 +73,9 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    capybara-webkit (1.14.0)
+      capybara (>= 2.3.0, < 2.14.0)
+      json
     capybara_minitest_spec (1.0.6)
       capybara (>= 2)
       minitest (>= 4)
@@ -454,6 +457,7 @@ DEPENDENCIES
   active_model_otp
   bcrypt (~> 3.1.7)
   byebug
+  capybara-webkit
   capybara_minitest_spec (= 1.0.6)
   carrierwave
   chartkick
@@ -506,4 +510,4 @@ RUBY VERSION
    ruby 2.2.3p173
 
 BUNDLED WITH
-   1.13.7
+   1.15.3

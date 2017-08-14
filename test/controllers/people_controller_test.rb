@@ -7,7 +7,7 @@ describe PeopleController do
   let(:barney) { Person.find_or_create_by(name: "Barney") }
   let(:betty) { Person.find_or_create_by(name: "betty") }
 
-  let(:me) {
+  let(:admin_user) {
   	User.create(
   	  name: 'Toby',
   	  phone: '7777777777',

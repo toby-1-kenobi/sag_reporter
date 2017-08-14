@@ -152,3 +152,7 @@ Given(/^I am in the state for that$/) do
     raise 'you are in the state for what?'
   end
 end
+
+When(/^I click on "([^"]*)"$/) do |link_name|
+  click_on link_name
+end
