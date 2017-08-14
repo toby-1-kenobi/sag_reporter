@@ -9,9 +9,10 @@ class ImpactReport < ActiveRecord::Base
   delegate :pictures, to: :report
 
   validates :shareable, :inclusion => {:in => [true, false]}
+  validates :translation_impact, :inclusion => {:in => [true, false]}
 
   def report_type
-    "impact"
+    'impact'
   end
 
   def make_not_impact
