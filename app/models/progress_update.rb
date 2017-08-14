@@ -1,11 +1,10 @@
 class ProgressUpdate < ActiveRecord::Base
-
-  #TODO: Make this not state based. Delegate geo_state through language_progress to state_language
-  include StateBased
 	
   belongs_to :user
   belongs_to :language_progress
-  delegate :language, to: :language_progress
+  delegate :state_language, to: :language_progress
+  delegate :language, to: :state_language
+  delegate :geo_state, to: :state_language
 
   validates :progress, presence: true, inclusion: ProgressMarker.spread_text.keys
   validates :month, presence: true, inclusion: 1..12

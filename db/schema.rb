@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170723032054) do
+ActiveRecord::Schema.define(version: 20170814100422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -491,13 +491,11 @@ ActiveRecord::Schema.define(version: 20170723032054) do
     t.integer  "progress",             null: false
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
-    t.integer  "geo_state_id",         null: false
     t.integer  "month",                null: false
     t.integer  "year",                 null: false
   end
 
   add_index "progress_updates", ["created_at"], name: "index_progress_updates_on_created_at", using: :btree
-  add_index "progress_updates", ["geo_state_id"], name: "index_progress_updates_on_geo_state_id", using: :btree
   add_index "progress_updates", ["language_progress_id"], name: "index_progress_updates_on_language_progress_id", using: :btree
   add_index "progress_updates", ["month"], name: "index_progress_updates_on_month", using: :btree
   add_index "progress_updates", ["user_id"], name: "index_progress_updates_on_user_id", using: :btree
@@ -691,7 +689,6 @@ ActiveRecord::Schema.define(version: 20170723032054) do
   add_foreign_key "people", "languages"
   add_foreign_key "people", "users"
   add_foreign_key "progress_markers", "topics"
-  add_foreign_key "progress_updates", "geo_states"
   add_foreign_key "progress_updates", "language_progresses"
   add_foreign_key "progress_updates", "users"
   add_foreign_key "reports", "challenge_reports"
