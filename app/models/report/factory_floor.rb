@@ -6,10 +6,6 @@ module Report::FactoryFloor
     @instance.languages << Language.joins(:state_languages).where(:state_languages => { geo_state_id: geo_state_id, id: state_language_ids })
   end
 
-  def add_topics(topic_ids)
-    @instance.topics << Topic.where(id: topic_ids)
-  end
-
   def add_observers(observers, geo_state_id, reporter)
     observers.values.each do |person_attributes|
       if person_attributes['name'].present?

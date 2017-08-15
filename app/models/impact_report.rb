@@ -10,6 +10,7 @@ class ImpactReport < ActiveRecord::Base
 
   validates :shareable, :inclusion => {:in => [true, false]}
   validates :translation_impact, :inclusion => {:in => [true, false]}
+  validates_presence_of :report
 
   def report_type
     'impact'

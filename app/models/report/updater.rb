@@ -13,7 +13,6 @@ class Report::Updater
 
   def update_report(params)
     state_language_ids = params.delete 'languages'
-    topic_ids = params.delete 'topics'
     observers = params.delete 'observers_attributes'
     impact = params.delete 'impact_report'
     planning = params.delete 'planning_report'
@@ -23,12 +22,19 @@ class Report::Updater
       @instance.languages.clear
       add_languages(state_language_ids, @instance.geo_state_id) if state_language_ids
       @instance.topics.clear
-      add_topics(topic_ids) if topic_ids
       @instance.observers.clear
       add_observers(observers, @instance.geo_state_id, @instance.reporter) if observers
-      @instance.planning_report = nil if planning.to_i == 0
-      @instance.impact_report = nil if impact.to_i == 0
-      @instance.challenge_report = nil if challenge.to_i == 0
+
+      if @instance.planning_report.present? and planning.to_i == 0
+        @instance.planning_report.destroy
+      end
+      if @instance.impact_report.present? and impact.to_i == 0
+        @instance.impact_report.destroy
+      end
+      if @instance.challenge_report.present? and challenge.to_i == 0
+        @instance.challenge_report.destroy
+      end
+
       if @instance.planning_report.blank? and planning.to_i == 1
         @instance.planning_report = PlanningReport.new
       end
@@ -40,7 +46,7 @@ class Report::Updater
       end
       @instance.save!
     rescue => e
-      error = e
+      Rails.logger.error(e.message)
       return false
     else
       return result

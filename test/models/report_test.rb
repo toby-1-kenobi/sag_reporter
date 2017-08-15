@@ -52,4 +52,30 @@ describe Report do
   	_(found).must_equal report
   end
 
+  it 'wont make impact report orphans when changing report type' do
+    updater = Report::Updater.new(report)
+    params = {'challenge_report' => '1', 'impact_report' => '0'}
+    updater.update_report(params)
+    _(report.impact_report).must_be_nil
+    _(ImpactReport).wont_be :exists?, impact_report.id
+  end
+
+  it 'wont make challenge report orphans when changing report type' do
+    challenge = ChallengeReport.new
+    report.challenge_report = challenge
+    updater = Report::Updater.new(report)
+    params = {'challenge_report' => '0', 'impact_report' => '1'}
+    updater.update_report(params)
+    _(ChallengeReport).wont_be :exists?, challenge.id
+  end
+
+  it 'wont make planning report orphans when changing report type' do
+    planning = PlanningReport.new
+    report.planning_report = planning
+    updater = Report::Updater.new(report)
+    params = {'planning_report' => '0', 'impact_report' => '1'}
+    updater.update_report(params)
+    _(PlanningReport).wont_be :exists?, planning.id
+  end
+
 end
