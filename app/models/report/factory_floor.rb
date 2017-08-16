@@ -21,4 +21,8 @@ module Report::FactoryFloor
     end
   end
 
+  def add_impact_attr(attr)
+    @instance.impact_report.update_attribute('translation_impact', attr['translation_impact'])
+  end
+
 end

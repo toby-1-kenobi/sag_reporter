@@ -15,6 +15,7 @@ class Report::Updater
     state_language_ids = params.delete 'languages'
     observers = params.delete 'observers_attributes'
     impact = params.delete 'impact_report'
+    impact_attr = params.delete 'impact_report_attributes'
     planning = params.delete 'planning_report'
     challenge = params.delete 'challenge_report'
     begin
@@ -44,6 +45,7 @@ class Report::Updater
       if @instance.challenge_report.blank? and challenge.to_i == 1
         @instance.challenge_report = ChallengeReport.new
       end
+      add_impact_attr(impact_attr) if impact_attr and impact.to_i == 1
       @instance.save!
     rescue => e
       Rails.logger.error(e.message)

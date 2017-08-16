@@ -19,6 +19,7 @@ class Report < ActiveRecord::Base
                                 reject_if: :all_blank
   accepts_nested_attributes_for :observers,
                                 reject_if: :all_blank
+  accepts_nested_attributes_for :impact_report
 
   delegate :name, to: :sub_district, prefix: true
   delegate :name, to: :district, prefix: true
