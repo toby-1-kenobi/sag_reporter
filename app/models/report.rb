@@ -46,6 +46,10 @@ class Report < ActiveRecord::Base
     where('report_date >= ?', since_date)
   }
 
+  def translation_impact?
+    impact_report and impact_report.translation_impact?
+  end
+
   def self.categories
     {
       'mt_society' => Translatable.find_by_identifier('mt_in_society'),

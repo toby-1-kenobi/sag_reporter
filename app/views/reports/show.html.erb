@@ -1,7 +1,10 @@
 <% provide(:title, 'Report') %>
-<%= render partial: "report", object: @report, locals: {time: false, languages: true, topics: true, wrapper: false} %>
+<%= render partial: "mdl_report", object: @report, locals: {time: false, languages: true, topics: true, wrapper: false} %>
 
-<%= link_to new_report_path(@report), class: "waves-effect right btn" do %>
-  <i class="material-icons left">create</i>
-  Write another report
+<%= link_to new_report_path(@report), id: 'show-report-fab', class: 'new-report-fab mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored' do %>
+  <i class="material-icons">add</i>
 <% end %>
+
+<div class="mdl-tooltip" data-mdl-for="show-report-fab">
+  Write another report
+</div>
