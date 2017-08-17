@@ -13,6 +13,11 @@
 
 <%= f.fields_for :impact_report do |ir_field| %>
   <div id="impact_report_fields">
+    <style>
+      .mdl-radio__outer-circle {
+        display: none;
+      }
+    </style>
     <div>
       <%= ir_field.label(:translation_impact, value: 'true', class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect') do %>
         <%= ir_field.radio_button(:translation_impact, 'true') %>
