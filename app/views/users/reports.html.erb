@@ -12,17 +12,13 @@
 <%= form_tag({controller: 'users', action: 'reports'}, method: 'get', remote: true, id: 'report-view-filters') do %>
   <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--4-col">
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        <i class="material-icons mdl-textfield__icon">today</i>
-        <%= text_field_tag 'since', @since_date.strftime('%d %B, %Y'), class: 'report-view-filter date-picker mdl-textfield__input' %>
-        <%= label_tag 'since', 'Showing reports from', class: 'mdl-textfield__label' %>
-      </div>
+      <%= render 'reports/filter_since' %>
     </div>
     <div class="mdl-cell mdl-cell--4-col">
-      <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="archived">
-        <%= check_box_tag 'archived', 'on', @archived, class: 'report-view-filter mdl-switch__input' %>
-        <span class="mdl-switch__label">Show archived reports</span>
-      </label>
+      <%= render 'reports/filter_archived' %>
+    </div>
+    <div class="mdl-cell mdl-cell--4-col">
+      <%= render 'reports/filter_type' %>
     </div>
   </div>
 <% end %>

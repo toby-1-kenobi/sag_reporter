@@ -46,6 +46,17 @@ class Report < ActiveRecord::Base
     where('report_date >= ?', since_date)
   }
 
+  scope :types, -> types {
+    if types.empty?
+      none
+    elsif types.count == 1
+      where.not("#{types.first.to_s}_report_id" => nil)
+    else
+      query = types.map{ |t| "reports.#{t.to_s}_report_id IS NOT NULL"}.join ' OR '
+      where query
+    end
+  }
+
   def translation_impact?
     impact_report and impact_report.translation_impact?
   end
@@ -106,6 +117,21 @@ class Report < ActiveRecord::Base
       self.planning_report = PlanningReport.new
       self.save
     end
+  end
+
+  # Apply a set of filters to a collection of reports
+  # return the filtered collection
+  def self.filter(collection, filters)
+    # here we're trusting the Date.parse function will be able to handle whatever format comes its way in this context
+    collection = collection.since Date.parse(filters[:since]) if filters[:since]
+    collection = collection.active unless filters[:archived].present?
+    # before filtering for report types check that we are using this filter
+    if filters[:report_types].present?
+      # for an empty list of types the scope will return an empty collection
+      filters[:types] ||= []
+      collection = collection.types(filters[:types])
+    end
+    collection
   end
 
   private

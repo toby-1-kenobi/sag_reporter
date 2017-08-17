@@ -94,17 +94,11 @@ class LanguagesController < ApplicationController
 
   def reports
     @language = Language.find(params[:id])
-    # look for a date, fetching reports since then.
-    if params[:since]
-      # here we're trusting the parse function will be able to handle whatever format comes its way in this context
-      @since_date = Date.parse(params[:since])
-    else
-      # if no date provided assume 3 months
-      @since_date = 3.months.ago
-    end
-    @reports = Report.language(@language).since(@since_date).order(report_date: :desc)
-    @archived = params[:archived].present?
-    @reports = @reports.active unless @archived
+
+    # if no since date is provided assume 3 months
+    params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+    @filters = report_filter_params
+    @reports = Report.filter(Report.language(@language), @filters).order(report_date: :desc)
     respond_to do |format|
       format.html
       format.js
@@ -351,6 +345,15 @@ class LanguagesController < ApplicationController
         :translation_info,
         :translation_need,
         :translation_progress
+    )
+  end
+
+  def report_filter_params
+    params.permit(
+        :archived,
+        :since,
+        {:types => []},
+        :report_types
     )
   end
 
