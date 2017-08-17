@@ -2,4 +2,7 @@
   <p>No reports to show.</p>
   <p><i class="material-icons empty-state-icon">sentiment_dissatisfied</i></p>
   <p>Try adjusting the filters above.</p>
+  <%= link_to new_report_path(@report), class: 'mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored' do %>
+    <i class="material-icons">create</i> Write a report
+  <% end %>
 </div>
