@@ -37,7 +37,9 @@ class ReportsController < ApplicationController
 
   def new
   	@report = Report.new
+    # build some things for the nested forms to hang from
     @report.pictures.build
+    @report.impact_report = ImpactReport.new
     @geo_states = logged_in_user.geo_states
   	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: @geo_states).order('languages.name')
     @topics = Topic.all
@@ -271,6 +273,7 @@ class ReportsController < ApplicationController
       {:topics => []},
       {:pictures_attributes => [:ref, :_destroy, :id]},
       {:observers_attributes => [:id, :name]},
+      {:impact_report_attributes => [:translation_impact]},
       :status,
       :location,
       :sub_district_id,

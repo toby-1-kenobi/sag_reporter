@@ -68,8 +68,9 @@ class GeoStatesController < ApplicationController
     bulk_input.each do |state_language_id, levels|
       levels.select{ |k, v| v.present? }.each do |pm_id, progress|
         lp = LanguageProgress.find_or_create_by(state_language_id: state_language_id, progress_marker_id: pm_id)
+        init_count = lp.progress_updates.count
         lp.progress_updates.create(progress: progress, user: logged_in_user, year: year, month: month)
-        levels_set += 1
+        levels_set += (lp.progress_updates.count - init_count)
       end
     end
     levels_set

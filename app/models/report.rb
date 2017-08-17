@@ -19,6 +19,7 @@ class Report < ActiveRecord::Base
                                 reject_if: :all_blank
   accepts_nested_attributes_for :observers,
                                 reject_if: :all_blank
+  accepts_nested_attributes_for :impact_report
 
   delegate :name, to: :sub_district, prefix: true
   delegate :name, to: :district, prefix: true
@@ -44,6 +45,10 @@ class Report < ActiveRecord::Base
   scope :since, -> since_date {
     where('report_date >= ?', since_date)
   }
+
+  def translation_impact?
+    impact_report and impact_report.translation_impact?
+  end
 
   def self.categories
     {
