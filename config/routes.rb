@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   resources :geo_states, only: [:show] do
     get :bulk_assess, on: :member, as: 'bulk_assess'
     post :bulk_progress_update, on: :member
+    get 'reports', on: :member
   end
 
   resources :impact_reports, except: [:new, :create, :index] do

@@ -101,7 +101,7 @@ class LanguagesController < ApplicationController
     @reports = Report.filter(Report.language(@language), @filters).order(report_date: :desc)
     respond_to do |format|
       format.html
-      format.js
+      format.js { render 'reports/update_collection' }
     end
   end
 

@@ -179,7 +179,7 @@ class UsersController < ApplicationController
     @reports = Report.filter(Report.reporter(@user), @filters).order(report_date: :desc)
     respond_to do |format|
       format.html
-      format.js
+      format.js { render 'reports/update_collection' }
     end
   end
 

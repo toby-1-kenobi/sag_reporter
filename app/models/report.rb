@@ -38,6 +38,10 @@ class Report < ActiveRecord::Base
     where(reporter: user)
   }
 
+  scope :states, -> geo_states {
+    where(geo_state: geo_states)
+  }
+
   scope :language, -> lang {
     joins(:languages).where(languages: {id: lang.id})
   }
