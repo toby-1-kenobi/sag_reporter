@@ -41,9 +41,16 @@ module SessionsHelper
     if logged_in?
       remember(logged_in_user)
     else
-      store_location
-      flash["warning"] = "Please log in."
-      redirect_to login_url
+      flash['warning'] = 'Please log in.'
+      respond_to do |format|
+        format.html do
+          store_location
+          redirect_to login_url
+        end
+        format.js do
+          render js: "window.location.replace('#{login_url}');"
+        end
+      end
     end
   end
 
