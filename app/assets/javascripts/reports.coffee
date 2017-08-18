@@ -125,6 +125,8 @@ $(document).ready ->
   # Hide or show impact_report specific fields depending on whether impact report is selected
   $('#report_impact_report').on 'change', ->
     $('#impact_report_fields').toggle()
+  $('#types-impact').on 'change', ->
+    $('#impact-type-filters').toggle()
     
   $('.materialize-select').material_select()
 

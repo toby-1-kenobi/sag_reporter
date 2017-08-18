@@ -353,7 +353,8 @@ class LanguagesController < ApplicationController
         :archived,
         :since,
         {:types => []},
-        :report_types
+        :report_types,
+        :translation_impact
     )
   end
 

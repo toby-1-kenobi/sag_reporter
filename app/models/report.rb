@@ -61,6 +61,10 @@ class Report < ActiveRecord::Base
     end
   }
 
+  scope :translation_impact, -> {
+    joins(:impact_report).where(impact_reports: {translation_impact: true})
+  }
+
   def translation_impact?
     impact_report and impact_report.translation_impact?
   end
@@ -134,6 +138,10 @@ class Report < ActiveRecord::Base
       # for an empty list of types the scope will return an empty collection
       filters[:types] ||= []
       collection = collection.types(filters[:types])
+    end
+    # before filtering for type of impact check impact type is selected (if we are using type filter)
+    if filters[:report_types].blank? or filters[:types].include? 'impact'
+      collection = collection.translation_impact if filters[:translation_impact] == 'true'
     end
     collection
   end
