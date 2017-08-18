@@ -12,22 +12,19 @@
 
 <div id="impact-type-filters">
   <style>
-    .mdl-radio__outer-circle {
-      display: none;
-    }
     .mdl-radio {
       height: auto;
     }
   </style>
   <div>
     <%= label_tag(:translation_impact_true, class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect') do %>
-        <%= radio_button_tag(:translation_impact, 'true', false, class: 'report-view-filter') %>
+        <%= radio_button_tag(:translation_impact, 'true', false, class: 'report-view-filter mdl-radio__button') %>
         <span class="mdl-radio__label">Impact of translated scripture or Bible storying</span>
     <% end %>
   </div>
   <div>
     <%= label_tag(:translation_impact_false, value: 'false', class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect') do %>
-        <%= radio_button_tag(:translation_impact, 'false', true, class: 'report-view-filter') %>
+        <%= radio_button_tag(:translation_impact, 'false', true, class: 'report-view-filter mdl-radio__button') %>
         <span class="mdl-radio__label">Any kind of impact</span>
     <% end %>
   </div>

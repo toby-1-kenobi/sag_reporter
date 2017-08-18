@@ -88,7 +88,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :zones, only: [:index, :show]
+  resources :zones, only: [:index, :show] do
+    get 'reports', on: :member
+  end
 
   get 're_send_to_confirm_email' => 'users#re_confirm_email'
 
