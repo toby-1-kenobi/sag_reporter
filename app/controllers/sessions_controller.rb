@@ -30,6 +30,10 @@ class SessionsController < ApplicationController
             new_device.user = user
             new_device.registered = true #todo: replace this with a manual registration on users/edit
             new_device.save
+            #remove those following lines, if manual registration is implemented
+            database_key = (user.created_at.to_f * 1000000).to_i
+            render json: { jwt: token, user: user.id , key: database_key}, status: :created
+            return
           end
           render json: { user: user.id }
         end
