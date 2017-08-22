@@ -66,6 +66,7 @@ describe User do
     report = Report.new(
         reporter: user,
         content: 'hi',
+        geo_state: geo_states(:nb),
         impact_report: impact_reports(:'impact-report-1')
     )
     report.save!
@@ -77,6 +78,7 @@ describe User do
     event = Event.new(
         event_label: 'hi',
         event_date: Time.now,
+        geo_state: geo_states(:nb),
         participant_amount: 0,
         record_creator: user
     )
@@ -86,7 +88,7 @@ describe User do
   end
 
   it 'wont be destroyed with person' do
-    person = Person.new(name: 'joe', record_creator: user)
+    person = Person.new(name: 'joe', record_creator: user, geo_state: geo_states(:nb))
     person.save!
     user.destroy
     value(user).must_be :persisted?
@@ -98,6 +100,7 @@ describe User do
         month: 1,
         year: 2016,
         user: user,
+        geo_state: geo_states(:nb),
         language_progress: language_progresses(:aka_skills_used)
     )
     pu.save!
@@ -126,9 +129,16 @@ describe User do
     value(user).wont_be :valid?
   end
 
-  it 'wont be valid with a blank phone number' do
+  it 'wont be valid with a blank phone number and email' do
     user.phone = '     '
+    user.email = '   '
     value(user).wont_be :valid?
+  end
+
+  it 'can have no phone if email is present' do
+    user.phone = nil
+    user.email = 'me@example.com'
+    _(user).must_be :valid?
   end
 
   it 'wont be valid with a long name' do

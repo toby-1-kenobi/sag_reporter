@@ -1,5 +1,5 @@
 <li class="organisation mdl-list__item">
   <span class="mdl-list__item-primary-content">
-    <%= link_to organisation.name_with_abbr, organisation %>
+    <%= link_to organisation.name_with_abbr_or_not(logged_in_user), organisation %>
   </span>
 </li>

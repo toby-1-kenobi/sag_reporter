@@ -3,7 +3,7 @@ class StateLanguagesController < ApplicationController
   before_action :require_login
 
   before_action only: [:outcomes, :get_chart, :get_table, :outcomes_data] do
-    redirect_to root_path unless logged_in_user.can_view_outcome_totals?
+    redirect_to root_path unless logged_in_user.national?
   end
 
   def outcomes
@@ -120,6 +120,7 @@ class StateLanguagesController < ApplicationController
       end
     end
   end
+
 
   private
 

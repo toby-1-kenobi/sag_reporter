@@ -3,148 +3,100 @@ class ReportsController < ApplicationController
   helper ColoursHelper
   include ParamsHelper
 
-  skip_before_action :verify_authenticity_token, only: [:create_external, :index_external]
-  before_action :require_login, except: [:create_external, :index_external]
-  before_action :authenticate, only: [:create_external, :index_external]
+  skip_before_action :verify_authenticity_token, only: [:create_external]
+  before_action :require_login, except: [:create_external]
+  before_action :authenticate, only: [:create_external]
 
     # Let only permitted users do some things
-  before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_report?
-  end
-
   before_action only: [:index, :by_language, :by_topic, :by_reporter] do
-    redirect_to root_path unless logged_in_user.can_view_all_reports?
+    redirect_to root_path unless logged_in_user.national?
   end
 
   before_action only: [:by_reporter, :spreadsheet] do
     redirect_to root_path unless logged_in_user.trusted?
   end
 
-  before_action only: [:show] do
-  	# show shows single report only to reporter when report first created
-  	redirect_to root_path unless logged_in_user?(Report.find(params[:id]).reporter) or logged_in_user.can_view_all_reports?
-  end
-
-  before_action only: [:edit, :update] do
-    redirect_to root_path unless logged_in_user.can_edit_report? or logged_in_user?(Report.find(params[:id]).reporter)
-  end
-
   before_action only: [:archive, :unarchive] do
-    redirect_to root_path unless logged_in_user.can_archive_report?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   before_action :get_translations, only: [:new, :edit]
   before_action :find_report, only: [:edit, :update, :show, :archive, :unarchive, :pictures]
 
-  before_action only: [:create_external] do
-    render json: {success: false, errors: 'Permission denied'} unless current_user.can_create_report?
+  before_action only: [:show] do
+    redirect_to root_path unless logged_in_user.national? or logged_in_user.geo_states.include? @report.geo_state
   end
 
-  before_action only: [:index_external] do
-    render json: {errors: 'Permission denied'} unless current_user.can_view_all_reports?
+  before_action only: [:edit, :update] do
+    redirect_to root_path unless logged_in_user.admin? or logged_in_user?(@report.reporter)
+  end
+
+  before_action only: [:pictures] do
+    head :forbidden unless logged_in_user.trusted? or logged_in_user?(@report.reporter)
   end
 
   def new
   	@report = Report.new
+    # build some things for the nested forms to hang from
     @report.pictures.build
-  	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
+    @report.impact_report = ImpactReport.new
+    @geo_states = logged_in_user.geo_states
+  	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: @geo_states).order('languages.name')
     @topics = Topic.all
   end
 
-  # new report submitted by an external client (=android app)
+  # new report submitted by an external client
   def create_external
-    full_params = report_params.merge({reporter: current_user})
-    report_factory = nil
-    success = true
-    instance_id = -1
-    # use state-language IDs (for being converted back to language IDs by the report-factory)
-    language_ids = full_params['languages']
-    state_id = full_params['geo_state_id']
-    full_params['languages'] = StateLanguage.where(language_id: language_ids, geo_state_id: state_id).map{|sl| sl.id}
-    if full_params['external_id'].nil? || full_params['external_updated_at'].nil?
-      full_params.delete 'external_updated_at'
-      full_params.delete('external_id')
-      report_factory = Report::Factory.new
-      success = report_factory.create_report(full_params)
-      instance_id = report_factory.instance.id if success
-    else
-      updated_at = full_params.delete 'external_updated_at'
-      @report = Report.find full_params.delete('external_id')
-      if updated_at > @report.updated_at.to_i
-        # delete all old image files (for just using new files)
-        @report.pictures.each do |picture|
-          picture.remove_ref!
-          picture.delete
-        end
-        report_factory = Report::Updater.new(@report)
-        success = report_factory.update_report(full_params)
-        instance_id = report_factory.instance.id if success
-      end
-    end
+    # convert image-strings to image-files
+    base64_data = params['report']['pictures_attributes']
+    tempfile = []
+    base64_data.each do |image_number, image_data|
+      filename = "upload-image" + image_number
+      tempfile[image_number.to_i] = Tempfile.new(filename)
+      tempfile[image_number.to_i].binmode
+      tempfile[image_number.to_i].write Base64.decode64(image_data["data"])
+      tempfile[image_number.to_i].rewind
+      # for security we want the actual content type, not just what was passed in
+      content_type = `file --mime -b #{tempfile[image_number.to_i].path}`.split(";")[0]
 
+      # we will also add the extension ourselves based on the above
+      # if it's not gif/jpeg/png, it will fail the validation in the upload model
+      extension = content_type.match(/gif|jpeg|png/).to_s
+      filename += ".#{extension}" if extension
+      params['report']['pictures_attributes'][image_number]['ref'] = ActionDispatch::Http::UploadedFile.new({
+        tempfile: tempfile[image_number.to_i],
+        content_type: content_type,
+        filename: filename
+      })
+    end
+    # create report
+    full_params = report_params.merge({reporter: current_user})
+    puts full_params
+    report_factory = Report::Factory.new
     response = Hash.new
-    if success
-      response[:success] = true
-      response[:report_id] = instance_id
+    if report_factory.create_report(full_params)
+      response['success'] = true
+      response['report_id'] = report_factory.instance.id
     else
-      response[:success] = false
-      response[:errors] = Array.new
+      response['success'] = false
+      response['errors'] = Array.new
       if report_factory.instance
-        response[:errors].concat report_factory.instance.errors.full_messages
+        response['errors'].concat report_factory.instance.errors.full_messages
       end
       if report_factory.error
-        response[:errors] << report_factory.error.message
+        response['errors'] << report_factory.error.message
       end
     end
+    puts response.to_json
     render json: response
-  end
-
-  # send all reports to an external client (=android app)
-  def index_external
-    external_params = !params[:reports].nil? && !params[:reports].empty? &&
-      params.permit(reports: [:id, :updated_at])[:reports]
-    report_data = Array.new
-    user_geo_states = current_user.geo_states.ids
-    Report.includes(:languages, :pictures).where.not(impact_report: nil).each do |report|
-
-      next unless user_geo_states.include? report.geo_state_id
-
-      language_ids = report.languages.map {|language| language.id}
-
-      pictures = Hash.new
-      report.pictures.each do |picture|
-        if picture.ref.file.exists?
-          picture_id = picture[:id]
-          file_content = Base64.encode64 picture.ref.read
-          pictures[picture_id] = file_content
-        end
+    # delete tempfile[image_number.to_i] afterwards
+  ensure
+    tempfile.each do |tmp|
+      if tmp
+        tmp.close
+        tmp.unlink
       end
-
-      if external_params && external_params[report.id.to_s]
-        if report.updated_at.to_i == external_params[report.id.to_s][:updated_at]
-          report_data << {id: report.id, updated_at: 0}
-          next
-        end
-        if report.updated_at.to_i < external_params[report.id.to_s][:updated_at]
-          report_data << {id: report.id, updated_at: -1}
-          next
-        end
-      end
-      report_data << {
-          id: report.id,
-          state_id: report.geo_state_id,
-          date: report.report_date.to_time(:utc).to_i,
-          content: report.content,
-          reporter_id: report.reporter_id,
-          impact_report: 1,
-          languages: language_ids,
-          pictures: pictures,
-          client: report.client,
-          version: report.version,
-          updated_at: report.updated_at.to_i
-      }
     end
-    render json: {reports: report_data}
   end
 
   def create
@@ -159,6 +111,7 @@ class ReportsController < ApplicationController
       flash['error'] = report_factory.error ? report_factory.error.message : 'Unable to submit report!'
       @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
       @topics = Topic.all
+      @geo_states = @report.available_geo_states(logged_in_user)
       get_translations
       render 'new'
     end
@@ -234,12 +187,22 @@ class ReportsController < ApplicationController
 
   def archive
     @report.archived!
-    redirect_to root_path
+    respond_to do |format|
+      format.js
+      format.html do
+        redirect_to @report
+      end
+    end
   end
 
   def unarchive
     @report.active!
-    redirect_to report
+    respond_to do |format|
+      format.js
+      format.html do
+        redirect_to @report
+      end
+    end
   end
 
   def pictures
@@ -293,7 +256,7 @@ class ReportsController < ApplicationController
   private
 
   def report_params
-    actual_user = logged_in_user || current_user
+    current_user = logged_in_user || current_user
     # make hash options into arrays
     param_reduce(params['report'], %w(topics languages))
     safe_params = [
@@ -308,17 +271,16 @@ class ReportsController < ApplicationController
       :impact_report,
       {:languages => []},
       {:topics => []},
-      {:pictures_attributes => [:ref, :_destroy, :id, :created_external]},
+      {:pictures_attributes => [:ref, :_destroy, :id]},
       {:observers_attributes => [:id, :name]},
+      {:impact_report_attributes => [:translation_impact]},
       :status,
       :location,
       :sub_district_id,
       :client,
-      :version,
-      :external_id,
-      :external_updated_at
+      :version
     ]
-    safe_params.delete :status unless actual_user.can_archive_report?
+    safe_params.delete :status unless current_user.admin?
     # if we have a date try to change it to db-friendly format
     # otherwise set it to nil
     if params[:report][:report_date]

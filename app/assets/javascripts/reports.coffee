@@ -3,10 +3,13 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 addImageInput = ->
+  console.log "image added"
   $(this).off 'change', addImageInput
   imageListUpdate()
   $(this).on 'change', imageListUpdate
   new_input = $(this).clone()
+  $(this).removeClass('hide')
+  new_input.val('')
   new_name = new_input.attr('name').replace(/\[\d*\]/g, (x) ->
     '[' + (parseInt(x.slice(1, -1)) + 1) + ']'
   )
@@ -118,8 +121,14 @@ $(document).ready ->
     return
 
   $('.picture-input input').on 'change', addImageInput
+
+  # Hide or show impact_report specific fields depending on whether impact report is selected
+  $('#report_impact_report').on 'change', ->
+    $('#impact_report_fields').toggle()
+  $('#types-impact').on 'change', ->
+    $('#impact-type-filters').toggle()
     
-  $('select').material_select
+  $('.materialize-select').material_select()
 
   $('.dropdown-button').dropdown
     inDuration: 300
@@ -128,5 +137,10 @@ $(document).ready ->
     hover: true
     gutter: 0
     belowOrigin: false
+
+  # when viewing reports changing a filter refretches the reports
+  $('.report-view-filter').on 'change', ->
+    $('#report-view-filters').submit()
+    return
 
   return

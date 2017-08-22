@@ -13,23 +13,28 @@ class BcsSms
 
   # start a thread that sends the OTP and return the id of that thread
   def self.send_otp(phone_number, otp_code)
-    thr = Thread.new do
-      @requests_waiting[Thread.current.object_id] = :pending
-      begin
-        response = post '/send_otp', body: {
-            mobile_number: BcsSms.encrypt(phone_number),
-            otp: BcsSms.encrypt(otp_code),
-            secret_key: BcsSms.encrypt(Rails.application.secrets.sms_api_key),
-            secret_token: BcsSms.encrypt(Rails.application.secrets.sms_api_token)
-        }
-        @requests_waiting[Thread.current.object_id] = response.parsed_response
-      rescue => e
-        @requests_waiting[Thread.current.object_id] = {'status' => 'error', 'message' => e.message}
-      ensure
-        ActiveRecord::Base.connection.close
+    if Rails.env.production?
+      thr = Thread.new do
+        @requests_waiting[Thread.current.object_id] = :pending
+        begin
+          response = post '/send_otp', body: {
+              mobile_number: BcsSms.encrypt(phone_number),
+              otp: BcsSms.encrypt(otp_code),
+              secret_key: BcsSms.encrypt(Rails.application.secrets.sms_api_key),
+              secret_token: BcsSms.encrypt(Rails.application.secrets.sms_api_token)
+          }
+          @requests_waiting[Thread.current.object_id] = response.parsed_response
+        rescue => e
+          @requests_waiting[Thread.current.object_id] = {'status' => 'error', 'message' => e.message}
+        ensure
+          ActiveRecord::Base.connection.close
+        end
       end
+      return thr.object_id
+    else
+      puts "Login code: #{otp_code}"
+      return 0
     end
-    return thr.object_id
   end
 
   def self.poll(thread_id)

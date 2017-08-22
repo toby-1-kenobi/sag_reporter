@@ -66,8 +66,8 @@ gem 'fontcustom'
 # File upload
 gem 'carrierwave'
 
-# JWT for android-app authentication
-gem 'jwt'
+# dates and times used for datepicker
+gem 'momentjs-rails', '~> 2.11', '>= 2.11.1'
 
 # image manipulation
 gem 'mini_magick'
@@ -123,7 +123,7 @@ group :test do
   gem 'minitest-spec-rails'
 
   # Spec syntax with Capybara
-  gem 'capybara_minitest_spec'
+  gem 'capybara_minitest_spec', '1.0.6'
 
   # Open browser on page that is being tested whe test fails.
   gem 'launchy'
@@ -134,6 +134,12 @@ group :test do
   # Drives a headless browser (phantom js)
   gem 'poltergeist'
   gem 'phantomjs', require: 'phantomjs/poltergeist'
+
+  # for js testing in capybara and cucumber
+  gem 'capybara-webkit'
+
+  # code coverage for tests
+  gem 'simplecov', require: false
 
 end
 

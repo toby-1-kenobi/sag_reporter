@@ -5,11 +5,11 @@ module SessionsHelper
     session[:user_id] = user.id
   end
 
-  # Remembers a user in a persistent session.
+  # Remembers a user in session for 20 minutes.
   def remember(user)
     user.remember
-    cookies.permanent.signed[:user_id] = user.id
-    cookies.permanent[:remember_token] = user.remember_token
+    cookies.signed[:user_id] = { value: user.id, expires: 20.minutes.from_now }
+    cookies[:remember_token] = { value: user.remember_token, expires: 20.minutes.from_now }
   end
 
   # Returns the current logged-in user (if any).
@@ -36,12 +36,22 @@ module SessionsHelper
   end
 
   # Confirms a logged-in user.
-    def require_login
-      unless logged_in?
-        store_location
-        flash["warning"] = "Please log in."
-        redirect_to login_url
+  # and refreshes login timeout
+  def require_login
+    if logged_in?
+      remember(logged_in_user)
+    else
+      flash['warning'] = 'Please log in.'
+      respond_to do |format|
+        format.html do
+          store_location
+          redirect_to login_url
+        end
+        format.js do
+          render js: "window.location.replace('#{login_url}');"
+        end
       end
+    end
   end
 
   # Forgets a persistent session.

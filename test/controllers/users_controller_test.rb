@@ -171,7 +171,7 @@ class UsersControllerTest < ActionController::TestCase
 
   test 'get user data with token auth' do
     authenticate
-    get :me
+    get :admin_user
     response = ActiveSupport::JSON.decode @response.body
     assert_equal @admin_user.name, response['name']
     assert_equal @admin_user.phone, response['phone']

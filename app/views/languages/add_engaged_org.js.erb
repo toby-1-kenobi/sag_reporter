@@ -18,7 +18,7 @@ $('#edit-response')
   $('#add-engaged-org-dialog').find('.cancel').click();
   $('#add-engaged-org-dialog .org-<%= @edit.new_value %>').remove();
   let listItem = $('<li></li>').addClass('org-<%= @edit.new_value %> mdl-list__item');
-  listItem.append('<%= j link_to(@org.name_with_abbr, @org, class: 'org-name mdl-list__item-primary-content') %>');
+  listItem.append('<%= j link_to(@org.name_with_abbr_or_not(logged_in_user), @org, class: 'org-name mdl-list__item-primary-content') %>');
   <% if @edit.pending_single_approval? or @edit.pending_double_approval? %>
     $('#edit-response').slideUp('fast');
     $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render partial: 'edits/edit', object: @edit %></div>');

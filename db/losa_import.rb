@@ -1,4 +1,4 @@
-data_file = Rails.root.join('db', 'losa_data.txt')
+data_file = Rails.root.join('db', 'losa_data')
 puts data_file
 
 def parse_line(line)

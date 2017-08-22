@@ -1,4 +1,4 @@
-<tr>
+<tr id="attribute-row-<%= @language.id %>-<%= attribute_name %>">
   <th><%= title %></th>
   <%= render partial: 'text_value', locals: {
       html_tag: :td,
@@ -6,3 +6,6 @@
       object: @language
   }%>
 </tr>
+<% if defined? tooltip and tooltip.present? %>
+  <span class="mdl-tooltip" for="attribute-row-<%= @language.id %>-<%= attribute_name %>"><%= tooltip %></span>
+<% end %>

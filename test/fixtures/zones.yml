@@ -3,3 +3,6 @@
 north_east:
   name: North East
 
+west:
+  name: West
+

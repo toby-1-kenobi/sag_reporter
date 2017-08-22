@@ -8,9 +8,9 @@
 
       <li
         class="language-item filterable-item<%= ' extinct' if language.population == 0 %> mdl-list__item mdl-list__item--two-line"
-        data-filter-label="language-family zone <%= finish_line_status.keys.map{ |flm_num| "flm-#{flm_num}" }.join(' ') %>"
+        data-filter-label="language-family geo-state <%= finish_line_status.keys.map{ |flm_num| "flm-#{flm_num}" }.join(' ') %>"
         data-language-family="<%= language.family.present? ? language.family.id : 'family-unknown' %>"
-        data-zone="<%= language.geo_states.any? ? language.geo_states.map(&:zone_id).uniq.join(',') : 'zone-unknown' %>"
+        data-geo-state="<%= language.geo_states.any? ? language.geo_states.map(&:id).join(',') : 'state-unknown' %>"
         <% finish_line_status.each do |flm_num, fl_status| %>
           data-flm-<%= flm_num %>="<%= fl_status %>"
         <% end %>

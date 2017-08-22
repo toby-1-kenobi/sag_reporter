@@ -9,7 +9,7 @@ class StaticPagesController < ApplicationController
   def tasks
     @links = [
         {
-            condition: (logged_in_user.can? 'create_report'),
+            condition: true,
             path: new_report_path,
             text: 'Report impact stories',
             icon: 'create',
@@ -18,7 +18,7 @@ class StaticPagesController < ApplicationController
             category: 'report'
         },
         {
-            condition: (logged_in_user.can? 'create_report'),
+            condition: true,
             path: 'https://docs.google.com/forms/d/1NQHDwomtgh2kVmx1BZRzDuv1lv__SaVzAHfBOH_JlXU/viewform?c=0&w=1',
             text: 'Report on a workshop',
             icon: 'create',
@@ -27,7 +27,7 @@ class StaticPagesController < ApplicationController
             category: 'report'
         },
         {
-            condition: (logged_in_user.can? 'create_report'),
+            condition: true,
             path: 'https://www.surveymonkey.com/r/R989HM9',
             text: 'Report on movement building',
             icon: 'create',
@@ -36,7 +36,7 @@ class StaticPagesController < ApplicationController
             category: 'report'
         },
         # {
-        #     condition: (logged_in_user.can? 'create_event'),
+        #     condition: true,
         #     path: events_new_path,
         #     text: Translation.get_string('report_event', logged_in_user),
         #     icon: 'event',
@@ -44,15 +44,22 @@ class StaticPagesController < ApplicationController
         #     category: 'report'
         # },
         {
-            condition: (logged_in_user.can? 'add_resource'),
+            condition: true,
             path: new_mt_resource_path,
             text: 'Report on a completed resource',
             icon: 'build',
             colour: 'brown',
             category: 'report'
         },
+        {
+            condition: logged_in_user.reports.any?,
+            path: my_reports_path,
+            text: 'My reports',
+            icon: 'insert_drive_file',
+            category: 'report'
+        },
         # {
-        #     condition: (logged_in_user.can? 'report_numbers'),
+        #     condition: true,
         #     path: report_numbers_path,
         #     text: 'Report numbers for the month',
         #     icon: 'assessment',
@@ -60,7 +67,7 @@ class StaticPagesController < ApplicationController
         #     category: 'report'
         # },
         {
-            condition: (logged_in_user.can? 'tag_report'),
+            condition: true,
             path: tag_impact_reports_path,
             text: 'Tag impact reports',
             icon: 'label',
@@ -69,7 +76,7 @@ class StaticPagesController < ApplicationController
             category: 'progress'
         },
         {
-            condition: (logged_in_user.can? 'evaluate_progress'),
+            condition: true,
             path: select_to_assess_path,
             text: 'Assess progress marker levels',
             icon: 'check_circle',
@@ -77,7 +84,7 @@ class StaticPagesController < ApplicationController
             category: 'progress'
         },
         # {
-        #     condition: (logged_in_user.can? 'view_output_totals'),
+        #     condition: (logged_in_user.national?'),
         #     path: outputs_path,
         #     text: 'View output totals',
         #     icon: 'tab',
@@ -85,7 +92,7 @@ class StaticPagesController < ApplicationController
         #     category: 'progress'
         # },
         {
-            condition: (logged_in_user.can? 'view_outcome_totals'),
+            condition: (logged_in_user.national? or logged_in_user.admin?),
             path: outcomes_path,
             text: 'View outcome transformation progress',
             icon: 'tab',
@@ -93,7 +100,7 @@ class StaticPagesController < ApplicationController
             category: 'progress'
         },
         {
-            condition: (logged_in_user.can? 'view_all_reports'),
+            condition: (logged_in_user.national? or logged_in_user.admin?),
             path: reports_path,
             text: 'View all reports',
             icon: 'dashboard',
@@ -101,7 +108,7 @@ class StaticPagesController < ApplicationController
             category: 'progress'
         },
         {
-            condition: (logged_in_user.can? 'view_all_users'),
+            condition: (logged_in_user.admin?),
             path: users_path,
             text: 'View all users',
             icon: 'people',
@@ -109,7 +116,7 @@ class StaticPagesController < ApplicationController
             category: 'other'
         },
         # {
-        #     condition: (logged_in_user.can? 'view_all_languages'),
+        #     condition: (logged_in_user.national?),
         #     path: languages_path,
         #     text: 'View all languages',
         #     icon: 'language',
@@ -117,7 +124,7 @@ class StaticPagesController < ApplicationController
         #     category: 'other'
         # },
         # {
-        #     condition: (logged_in_user.can? 'view_all_topics'),
+        #     condition: (true),
         #     path: topics_path,
         #     text: 'View all outcome areas',
         #     icon: 'local_offer',
@@ -125,7 +132,7 @@ class StaticPagesController < ApplicationController
         #     category: 'other'
         # },
         {
-            condition: (logged_in_user.can? 'view_all_languages'),
+            condition: (logged_in_user.national?),
             path: overview_path,
             text: 'Overview',
             icon: 'pageview',
@@ -133,7 +140,7 @@ class StaticPagesController < ApplicationController
             category: 'other'
         },
         {
-            condition: (logged_in_user.can? 'view_all_languages'),
+            condition: (logged_in_user.national?),
             path: transformation_path,
             text: 'Transformation',
             icon: 'change_history',

@@ -10,14 +10,18 @@
 </ul>
 
 <div class="mdl-tabs mdl-js-tabs">
+
   <div class="mdl-tabs__tab-bar">
     <a href="#progress-tab" class="mdl-tabs__tab">Finish Line Status</a>
     <a href="#languages-tab" class="mdl-tabs__tab">Languages</a>
     <a href="#organisations-tab" class="mdl-tabs__tab">Organisations</a>
+    <a href="#reports-tab" class="mdl-tabs__tab" id="reports-tab-tab">Reports</a>
   </div>
+
   <div class="mdl-tabs__panel is-active" id="progress-tab">
     <%= render 'languages/finish_line_summary', languages: @geo_state.languages %>
   </div>
+
   <div class="mdl-tabs__panel" id="languages-tab">
     <h3>Languages tracked by LCI</h3>
     <ul class="project-languages mdl-list">
@@ -28,6 +32,7 @@
       <%= render partial: 'state_language', collection: @geo_state.state_languages.not_in_project.includes(language: :family).order('languages.name') %>
     </ul>
   </div>
+
   <div class="mdl-tabs__panel" id="organisations-tab">
     <div class="mdl-grid">
       <% if @geo_state.engaged_organisations.any? %>
@@ -48,4 +53,28 @@
       <% end %>
     </div>
   </div>
+
+  <div class="mdl-tabs__panel" id="reports-tab">
+    <%= form_tag({controller: 'geo_states', action: 'reports'}, method: 'get', remote: true, id: 'report-view-filters') do %>
+      <div class="mdl-grid">
+        <div class="mdl-cell mdl-cell--4-col">
+          <%= render 'reports/filter_since' %>
+        </div>
+        <div class="mdl-cell mdl-cell--4-col">
+          <%= render 'reports/filter_archived' %>
+        </div>
+        <div class="mdl-cell mdl-cell--4-col">
+          <%= render 'reports/filter_type' %>
+        </div>
+      </div>
+    <% end %>
+
+    <script>
+        $('.date-picker').bootstrapMaterialDatePicker({ weekStart : 0, time: false, format: 'DD MMMM, Y' });
+    </script>
+
+    <div class="reports-container mdl-grid">
+    </div>
+  </div>
+
 </div>

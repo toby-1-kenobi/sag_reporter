@@ -19,6 +19,7 @@ class Report < ActiveRecord::Base
                                 reject_if: :all_blank
   accepts_nested_attributes_for :observers,
                                 reject_if: :all_blank
+  accepts_nested_attributes_for :impact_report
 
   delegate :name, to: :sub_district, prefix: true
   delegate :name, to: :district, prefix: true
@@ -27,11 +28,46 @@ class Report < ActiveRecord::Base
 	validates :reporter, presence: true, allow_nil: false
   validates :status, presence: true, allow_nil: false
   validates :report_date, presence: true
-  validates :client, presence: true
+  validates :client, presence: true # a string identifying by which application the report was submitted
   validate :at_least_one_subtype
   #validate :location_present_for_new_record
 
   before_validation :date_init
+
+  scope :reporter, -> user {
+    where(reporter: user)
+  }
+
+  scope :states, -> geo_states {
+    where(geo_state: geo_states)
+  }
+
+  scope :language, -> lang {
+    joins(:languages).where(languages: {id: lang.id})
+  }
+
+  scope :since, -> since_date {
+    where('report_date >= ?', since_date)
+  }
+
+  scope :types, -> types {
+    if types.empty?
+      none
+    elsif types.count == 1
+      where.not("#{types.first.to_s}_report_id" => nil)
+    else
+      query = types.map{ |t| "reports.#{t.to_s}_report_id IS NOT NULL"}.join ' OR '
+      where query
+    end
+  }
+
+  scope :translation_impact, -> {
+    joins(:impact_report).where(impact_reports: {translation_impact: true})
+  }
+
+  def translation_impact?
+    impact_report and impact_report.translation_impact?
+  end
 
   def self.categories
     {
@@ -89,6 +125,25 @@ class Report < ActiveRecord::Base
       self.planning_report = PlanningReport.new
       self.save
     end
+  end
+
+  # Apply a set of filters to a collection of reports
+  # return the filtered collection
+  def self.filter(collection, filters)
+    # here we're trusting the Date.parse function will be able to handle whatever format comes its way in this context
+    collection = collection.since Date.parse(filters[:since]) if filters[:since]
+    collection = collection.active unless filters[:archived].present?
+    # before filtering for report types check that we are using this filter
+    if filters[:report_types].present?
+      # for an empty list of types the scope will return an empty collection
+      filters[:types] ||= []
+      collection = collection.types(filters[:types])
+    end
+    # before filtering for type of impact check impact type is selected (if we are using type filter)
+    if filters[:report_types].blank? or filters[:types].include? 'impact'
+      collection = collection.translation_impact if filters[:translation_impact] == 'true'
+    end
+    collection
   end
 
   private

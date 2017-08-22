@@ -19,4 +19,5 @@
 //= require autocomplete-rails
 //= require materialize-sprockets
 //= require material
+//= require moment
 //= require_tree .

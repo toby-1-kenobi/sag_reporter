@@ -1,0 +1,41 @@
+<%= hidden_field_tag 'report_types', 'on' %>
+
+<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="types-impact">
+  <%= check_box_tag 'types[]',
+      'impact',
+      (!@filters[:types] or @filters[:types].include?(:impact)),
+      id: 'types-impact',
+      class: 'report-view-filter mdl-checkbox__input'
+  %>
+  <span class="mdl-switch__label">Impact reports</span>
+</label>
+
+<div id="impact-type-filters">
+  <style>
+    .mdl-radio {
+      height: auto;
+    }
+  </style>
+  <div>
+    <%= label_tag(:translation_impact_true, class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect') do %>
+        <%= radio_button_tag(:translation_impact, 'true', false, class: 'report-view-filter mdl-radio__button') %>
+        <span class="mdl-radio__label">Impact of translated scripture or Bible storying</span>
+    <% end %>
+  </div>
+  <div>
+    <%= label_tag(:translation_impact_false, value: 'false', class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect') do %>
+        <%= radio_button_tag(:translation_impact, 'false', true, class: 'report-view-filter mdl-radio__button') %>
+        <span class="mdl-radio__label">Any kind of impact</span>
+    <% end %>
+  </div>
+</div>
+
+<label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="types-planning">
+  <%= check_box_tag 'types[]',
+      'planning',
+      (!@filters[:types] or @filters[:types].include?(:planning)),
+      id: 'types-planning',
+      class: 'report-view-filter mdl-checkbox__input'
+  %>
+  <span class="mdl-switch__label">Planning reports</span>
+</label>

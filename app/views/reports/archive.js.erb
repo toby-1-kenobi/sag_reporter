@@ -1,0 +1,2 @@
+console.log('archiving');
+$('#report-<%= @report.id %>').replaceWith("<%= j render partial: 'mdl_report', object: @report %>");

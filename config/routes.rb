@@ -20,7 +20,11 @@ Rails.application.routes.draw do
     get :autocomplete_person_name, :on => :collection
   end
 
-  resources :geo_states, only: [:show]
+  resources :geo_states, only: [:show] do
+    get :bulk_assess, on: :member, as: 'bulk_assess'
+    post :bulk_progress_update, on: :member
+    get 'reports', on: :member
+  end
 
   resources :impact_reports, except: [:new, :create, :index] do
     collection do
@@ -44,6 +48,7 @@ Rails.application.routes.draw do
     end
     member do
       get 'show_details'
+      get 'reports'
       patch 'add_engaged_org/:org', to: 'languages#add_engaged_org', as: 'add_engaged_org_to'
       patch 'remove_engaged_org/:org', to: 'languages#remove_engaged_org', as: 'remove_engaged_org_from'
       patch 'add_translating_org/:org', to: 'languages#add_translating_org', as: 'add_translating_org_to'
@@ -65,7 +70,6 @@ Rails.application.routes.draw do
       get 'by_reporter'
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
       post 'create_external'
-      post 'index_external'
     end
     member do
       patch 'archive'
@@ -74,24 +78,21 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :topics
-
   resources :users do
     collection do
-      post :show_external
-      get :index_external
+      get :me
     end
-
     member do
       get :confirm_email
+      get :reports
     end
   end
 
-  resources :zones, only: [:index, :show]
+  resources :zones, only: [:index, :show] do
+    get 'reports', on: :member
+  end
 
   get 're_send_to_confirm_email' => 'users#re_confirm_email'
-
-  get    'adduser' => 'users#new'
 
   get    'login'   => 'sessions#new'
   post   'login'   => 'sessions#create'
@@ -100,8 +101,7 @@ Rails.application.routes.draw do
   post 'resend_code_to_phone' => 'sessions#resend_otp_to_phone', as: 'resend_code_to_phone'
   post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
   delete 'logout'  => 'sessions#destroy'
-  post   'sessions/create_external'
-  post   'sessions/show_external'
+  post   'knock/auth_token' => 'sessions#create_external'
 
 
   get  'tally_updates' => 'tally_updates#index'
@@ -140,6 +140,8 @@ Rails.application.routes.draw do
 
   get 'nation' => 'zones#nation', as: 'nation'
 
+  # my_reports is for a single user, but user id param not needed - it's got from logged in user
+  get 'my_reports' => 'users#reports', as: 'my_reports'
   get 'whatsapp' => 'static_pages#whatsapp_link'
 
   # The priority is based upon order of creation: first created -> highest priority.

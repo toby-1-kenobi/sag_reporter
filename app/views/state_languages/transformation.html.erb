@@ -47,16 +47,21 @@
 </div>
 
 <% zone_aggregate = [Hash.new(), Hash.new()] %>
+<% zone_aggregate_total = [Hash.new(), Hash.new()] %>
 
 <table>
   <thead>
     <tr>
       <th rowspan="2">Zone</th><th rowspan="2">State</th><th rowspan="2">Language</th>
+      <th colspan="3">Transformation Average</th>
       <% outcome_areas.each do |outcome_area| %>
         <th colspan="3" class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= outcome_area %></th>
       <% end %>
     </tr>
     <tr>
+      <th><%= dates[0].strftime('%b %Y') %></th>
+      <th><%= dates[1].strftime('%b %Y') %></th>
+      <th>Change</th>
       <% outcome_areas.each do |outcome_area| %>
           <th class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[0].strftime('%b %Y') %></th>
           <th class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[1].strftime('%b %Y') %></th>
@@ -72,18 +77,40 @@
         <td><%= language.zone.name %></td>
         <td><%= language.state_name %></td>
         <td><%= language.language_name %></td>
+        <%
+          language_total = {dates[0] => 0, dates[1] => 0}
+          outcome_areas.each do |outcome_area|
+            value0 = @transformations[language][dates[0]][outcome_area]
+            language_total[dates[0]] += value0
+            zone_aggregate[0][language.zone.name] ||= Hash.new(0)
+            zone_aggregate[0][language.zone.name][outcome_area] += value0
+            zone_aggregate_total[0][language.zone.name] ||= 0
+            zone_aggregate_total[0][language.zone.name] += value0
+            value1 = @transformations[language][dates[1]][outcome_area]
+            language_total[dates[1]] += value1
+            zone_aggregate[1][language.zone.name] ||= Hash.new(0)
+            zone_aggregate[1][language.zone.name][outcome_area] += value1
+            zone_aggregate_total[1][language.zone.name] ||= 0
+            zone_aggregate_total[1][language.zone.name] += value1
+          end
+          language_avg0 = (language_total[dates[0]] / outcome_areas.count).round(1)
+          language_avg1 = (language_total[dates[1]] / outcome_areas.count).round(1)
+          language_avg_change = (language_avg1 - language_avg0).round(1)
+          change_colour = 'black'
+          if language_avg_change > 0 then change_colour = 'green' end
+          if language_avg_change < 0 then change_colour = 'red' end
+        %>
+        <td><%= language_avg0 %></td>
+        <td><%= language_avg1 %></td>
+        <td class="<%= change_colour %>-text text-darken-2"><%= language_avg_change %></td>
         <% outcome_areas.each do |outcome_area|
-          value0 = @transformations[language][dates[0]][outcome_area]
-          zone_aggregate[0][language.zone.name] ||= Hash.new(0)
-          zone_aggregate[0][language.zone.name][outcome_area] += value0
-          value1 = @transformations[language][dates[1]][outcome_area]
-          zone_aggregate[1][language.zone.name] ||= Hash.new(0)
-          zone_aggregate[1][language.zone.name][outcome_area] += value1
-          change = value1 - value0
-          change_colour = @outcome_area_colours[outcome_area]
-          if change > 0 then change_colour = 'green' end
-          if change < 0 then change_colour = 'red' end
-          %>
+            value0 = @transformations[language][dates[0]][outcome_area]
+            value1 = @transformations[language][dates[1]][outcome_area]
+            change = value1 - value0
+            change_colour = @outcome_area_colours[outcome_area]
+            if change > 0 then change_colour = 'green' end
+            if change < 0 then change_colour = 'red' end
+        %>
             <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value0.round %></td>
             <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value1.round %></td>
             <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3 <%= change_colour %>-text text-darken-2"><em><%= change.round %></em></td>
@@ -99,11 +126,15 @@
   <thead>
   <tr>
     <th rowspan="2">Zone</th><th rowspan="2">#LCs participating</th>
+    <th colspan="3">Transformation Average</th>
     <% outcome_areas.each do |outcome_area| %>
         <th colspan="3" class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= outcome_area %></th>
     <% end %>
   </tr>
   <tr>
+    <th><%= dates[0].strftime('%b %Y') %></th>
+    <th><%= dates[1].strftime('%b %Y') %></th>
+    <th>Change</th>
     <% outcome_areas.each do |outcome_area| %>
         <th class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[0].strftime('%b %Y') %></th>
         <th class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[1].strftime('%b %Y') %></th>
@@ -113,13 +144,29 @@
   </thead>
   <tbody>
     <% Zone.find_each do |zone|
-    lc_amount = zone.state_languages.in_project.count
-    zone_aggregate[0][zone.name] ||= Hash.new(0)
-    zone_aggregate[1][zone.name] ||= Hash.new(0)
+      lc_amount = zone.state_languages.in_project.count
+      zone_aggregate[0][zone.name] ||= Hash.new(0)
+      zone_aggregate[1][zone.name] ||= Hash.new(0)
+      zone_aggregate_total[0][zone.name] ||= 0
+      zone_aggregate_total[1][zone.name] ||= 0
+      if lc_amount > 0
+        zone_aggregate_avg0 = ((zone_aggregate_total[0][zone.name] / lc_amount) / outcome_areas.count).round(1)
+        zone_aggregate_avg1 = ((zone_aggregate_total[1][zone.name] / lc_amount) / outcome_areas.count).round(1)
+      else
+        zone_aggregate_avg0 = 0
+        zone_aggregate_avg1 = 0
+      end
+      zone_aggregate_change = (zone_aggregate_avg1 - zone_aggregate_avg0).round(1)
+      change_colour = 'black'
+      if zone_aggregate_change > 0 then change_colour = 'green' end
+      if zone_aggregate_change < 0 then change_colour = 'red' end
     %>
     <tr>
       <th><%= zone.name %></th>
       <td><%= lc_amount %></td>
+      <td><%= zone_aggregate_avg0 %></td>
+      <td><%= zone_aggregate_avg1 %></td>
+      <td class="<%= change_colour %>-text text-darken-2"><%= zone_aggregate_change %></td>
       <% outcome_areas.each do |outcome_area|
         value0 = lc_amount > 0 ? (zone_aggregate[0][zone.name][outcome_area] / lc_amount).round : 0
         value1 = lc_amount > 0 ? (zone_aggregate[1][zone.name][outcome_area] / lc_amount).round : 0 %>

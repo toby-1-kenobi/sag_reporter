@@ -5,6 +5,7 @@
 # files.
 
 require 'cucumber/rails'
+require 'capybara_minitest_spec/cucumber_rails'
 
 # Capybara defaults to CSS3 selectors rather than XPath.
 # If you'd prefer to use XPath, just uncomment this line and adjust any
@@ -56,10 +57,15 @@ end
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
 
-Capybara.register_driver :selenium do |app|
-  profile = Selenium::WebDriver::Firefox::Profile.new
-  profile.native_events = true
-  Capybara::Selenium::Driver.new(app, :browser => :firefox, profile: profile)
+# Capybara.register_driver :selenium do |app|
+#   profile = Selenium::WebDriver::Firefox::Profile.new
+#   profile.native_events = true
+#   Capybara::Selenium::Driver.new(app, :browser => :firefox, profile: profile)
+# end
+
+Capybara.javascript_driver = :webkit
+Capybara::Webkit.configure do |config|
+  config.block_unknown_urls
 end
 
 Before do

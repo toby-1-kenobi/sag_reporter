@@ -1,0 +1,89 @@
+<% provide(:title, "#{@geo_state.name} bulk assessment") %>
+<% provide(:context_title, "#{@geo_state.name} bulk assess transformation levels") %>
+
+<%= render 'shared/mdl_selectfield_assets' %>
+
+<%= form_tag({controller: 'geo_states', action: 'bulk_progress_update'}, method: :post) do %>
+  <%= hidden_field_tag name: 'id', value: @geo_state.id %>
+
+  <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+    <select id="assessment_date" name="assessment_date" class="mdl-selectfield__select">
+      <% (6.months.ago.to_date..Date.today).select{ |d| d.day == 1 }.each do |date| %>
+          <% selected = date.month == Date.today.month and date.year == Date.today.year %>
+        <option value="<%= date.strftime('%Y-%m') %>" <%= 'selected' if selected %> ><%= date.strftime('%Y %B') %></option>
+      <% end %>
+    </select>
+    <label for="assessment_date" class="mdl-selectfield__label">Assessment Date:</label>
+  </div>
+
+  <%# lower z-index of switches so they don't overlap the selectbox dropdown %>
+  <style>.mdl-switch { z-index: 0; }</style>
+
+  <table class="bulk-assess mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    <thead>
+      <tr>
+        <th>PM #</th>
+        <% @geo_state.state_languages.in_project.each_with_index do |state_lang, index| %>
+          <th class="mdl-data-table__cell--non-numeric">
+            <div><%= state_lang.language_name %></div>
+            <div id="last-set-date<%= state_lang.id %>" class="last-set-date">
+              <% last_assessment_date = state_lang.progress_last_set %>
+               <%= last_assessment_date ? last_assessment_date.strftime('%b %Y') : 'never' %>
+            </div>
+            <div class="mdl-tooltip" for="last-set-date<%= state_lang.id %>">
+              <% if last_assessment_date %>
+                Progress levels were last set for<br/><%= last_assessment_date.strftime('%B %Y') %>
+              <% else %>
+                Progress levels have not yet been set<br/>for <%= state_lang.language_name %>
+              <% end %>
+            </div>
+            <div>
+              <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sl-<%= state_lang.id %>">
+                <input type="checkbox"
+                       id="sl-<%= state_lang.id %>"
+                       tabindex="<%= index + 1 %>"
+                       name="language-switch[<%= state_lang.id %>]"
+                       value="<%= state_lang.id %>"
+                       class="mdl-switch__input language-switch filter-trigger"
+                       data-filter-trigger-label="state-language"
+                >
+                <span class="mdl-switch__label"></span>
+              </label>
+            </div>
+          </th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% row_total = @markers.count %>
+      <% col_total = @geo_state.state_languages.in_project.count %>
+      <% @markers.each do |marker| %>
+        <tr>
+          <td><%= marker.number %></td>
+          <% @geo_state.state_languages.in_project.each_with_index do |state_lang, col_index| %>
+            <td id="level-<%= state_lang.id %>-<%= marker.id %>" class="mdl-data-table__cell--non-numeric">
+              <div class="bulk-assess-input filterable-item mdl-textfield mdl-js-textfield"
+                   data-filter-label="state-language"
+                   data-state-language="<%= state_lang.id %>"
+              >
+                <% tab_index = col_total + (col_index * row_total) + marker.number.to_i + 1 %>
+                <input class="mdl-textfield__input"
+                       tabindex="<%= tab_index %>"
+                       type="text"
+                       name="bulk-input[<%= state_lang.id %>][<%= marker.id %>]"
+                       pattern="[0-3]"
+                       maxlength="1"
+                       id="level-<%= state_lang.id %>-<%= marker.id %>-input"
+                >
+                <span class="mdl-textfield__error">Enter number in the range 0 to 3</span>
+              </div>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="submit">Submit</button>
+
+<% end %>

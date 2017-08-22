@@ -1,4 +1,39 @@
-<%= f.check_box('impact_report?') %>
-<%= f.label('impact_report?', 'This is an impact report') %>
-<%= f.check_box('planning_report?') %>
-<%= f.label('planning_report?', 'This is a hope, challenge, or future planning report') %>
+
+<%# workaround an MDL bug that doesn't give enough room for overflowing checkbox and radio button label content %>
+<style>
+  .mdl-checkbox, .mdl-radio {
+    height: auto
+  }
+</style>
+
+<%= f.label('impact_report?', class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect') do %>
+    <%= f.check_box('impact_report?', class: 'mdl-checkbox__input') %>
+    <span class="mdl-checkbox__label">This is an impact report</span>
+<% end %>
+
+<%= f.fields_for :impact_report do |ir_field| %>
+  <div id="impact_report_fields">
+    <style>
+      .mdl-radio__outer-circle {
+        display: none;
+      }
+    </style>
+    <div>
+      <%= ir_field.label(:translation_impact, value: 'true', class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect') do %>
+        <%= ir_field.radio_button(:translation_impact, 'true') %>
+        <span class="mdl-radio__label">It shows the impact of translated scripture or Bible storying</span>
+      <% end %>
+    </div>
+    <div>
+      <%= ir_field.label(:translation_impact, value: 'false', class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect') do %>
+        <%= ir_field.radio_button(:translation_impact, 'false') %>
+        <span class="mdl-radio__label">It shows another kind of impact</span>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<%= f.label('planning_report?', class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect') do %>
+    <%= f.check_box('planning_report?', class: 'mdl-checkbox__input') %>
+    <span class="mdl-checkbox__label">This is a hope, challenge, or future planning report</span>
+<% end %>

@@ -9,7 +9,6 @@ class UsersController < ApplicationController
 
   # A user's profile can only be edited or seen by
   #    themselves or
-  #    their supervisor or
   #    someone with permission
   before_action :authorised_user_edit, only: [:edit, :update]
   before_action :authorised_user_show, only: [:show]
@@ -20,15 +19,15 @@ class UsersController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_user?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   before_action only: [:destroy] do
-    redirect_to root_path unless logged_in_user.can_delete_user?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   before_action only: [:index] do
-    redirect_to root_path unless logged_in_user.can_view_all_users?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   # send user related data to an external client (=android app)
@@ -89,7 +88,7 @@ class UsersController < ApplicationController
 
   def create
     user_factory = User::Factory.new
-    if user_factory.create_user(user_params)
+    if user_factory.create_user(user_params, logged_in_user.admin?)
       flash['success'] = 'New User Created!'
       redirect_to user_factory.instance()
     else
@@ -112,7 +111,7 @@ class UsersController < ApplicationController
   def update
     updater = User::Updater.new(@user)
     message = 'Profile updated'
-    if updater.update_user(user_params)
+    if updater.update_user(user_params, logged_in_user.admin?)
       if updater.instance.confirm_token.present?
         message = 'Profile updated with email. Please check mail and confirm your email.'
       end
@@ -164,66 +163,93 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
 
+  def reports
+
+    # admin users can see the reports of other users
+    if params[:id] and logged_in_user.admin?
+      get_param_user
+    else
+      # if no user id passed or current user is not admin then the user sees their own reports
+      @user = logged_in_user
+    end
+
+    # if no since date is provided assume 3 months
+    params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+    @filters = report_filter_params
+    @reports = Report.filter(Report.reporter(@user), @filters).order(report_date: :desc)
+    respond_to do |format|
+      format.html
+      format.js { render 'reports/update_collection' }
+    end
+  end
+
   private
 
-    def user_params
-      # make hash options into arrays
-      param_reduce(params['user'], ['geo_states', 'speaks', 'curated_states'])
-      safe_params = [
-        :name,
-        :phone,
-        :password,
-        :password_confirmation,
-        :email,
-        :email_confirmed,
-        :confirm_token,
-        :mother_tongue_id,
-        :interface_language_id,
-        :trusted,
-        :admin,
-        :national,
-        :role_description,
-        {:speaks => []},
-        {:geo_states => []},
-        {:curated_states => []}
-      ]
-      # current user cannot change own access level or state
-      if params[:id] and logged_in_user?(User.find(params[:id]))
-        safe_params.reject!{ |p| [:admin].include? p }
-        # but admin user can change his own state and curated states
-        safe_params.reject!{ |p|
-          p == {:geo_states => []} || p == {:curated_states => []} || [:trusted, :national].include?(p)
-        } unless logged_in_user.admin?
-      end
-      params.require(:user).permit(safe_params)
+  def user_params
+    # make hash options into arrays
+    param_reduce(params['user'], ['geo_states', 'speaks', 'curated_states'])
+    safe_params = [
+      :name,
+      :phone,
+      :password,
+      :password_confirmation,
+      :email,
+      :email_confirmed,
+      :confirm_token,
+      :mother_tongue_id,
+      :interface_language_id,
+      :trusted,
+      :admin,
+      :national,
+      :role_description,
+      {:speaks => []},
+      {:geo_states => []},
+      {:curated_states => []}
+    ]
+    # current user cannot change own access level or state
+    if params[:id] and logged_in_user?(User.find(params[:id]))
+      safe_params.reject!{ |p| [:admin].include? p }
+      # but admin user can change his own state and curated states
+      safe_params.reject!{ |p|
+        p == {:geo_states => []} || p == {:curated_states => []} || [:trusted, :national].include?(p)
+      } unless logged_in_user.admin?
     end
+    params.require(:user).permit(safe_params)
+  end
 
-    def assign_for_user_form
-      @roles = Role.all
-      @languages = Language.includes(:geo_states).order(:name)
-      @interface_languages = Language.where.not(locale_tag: nil).order(:name)
-      @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
-      @zones = Zone.order(:name)
-    end
+  def report_filter_params
+    params.permit(
+              :archived,
+              :since,
+              {:types => []},
+              :report_types,
+              :translation_impact
+    )
+  end
 
-    # Confirms authorised user for edit.
-    def authorised_user_edit
-      get_param_user
-      redirect_to(root_url) unless
-          logged_in_user?(@user) or logged_in_user.can_edit_user?
-      #    or @user.supervisor?(logged_in_user)
-    end
+  def assign_for_user_form
+    @languages = Language.includes(:geo_states).order(:name)
+    @interface_languages = Language.where.not(locale_tag: nil).order(:name)
+    @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
+    @zones = Zone.order(:name)
+  end
 
-    # Confirms authorised user for show.
-    def authorised_user_show
-      get_param_user
-      redirect_to(root_url) unless
-          logged_in_user?(@user) or logged_in_user.can_view_all_users?
-      #    or @user.supervisor?(logged_in_user)
-    end
+  # Confirms authorised user for edit.
+  def authorised_user_edit
+    get_param_user
+    redirect_to(root_url) unless
+        logged_in_user?(@user) or logged_in_user.admin?
+  end
 
-    def get_param_user
-      @user = User.find(params[:id])
-    end
+  # Confirms authorised user for show.
+  def authorised_user_show
+    get_param_user
+    redirect_to(root_url) unless
+        logged_in_user?(@user) or logged_in_user.admin?
+  end
+
+  def get_param_user
+    @user = User.find(params[:id])
+  end
 
 end

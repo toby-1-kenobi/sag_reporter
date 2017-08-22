@@ -7,3 +7,7 @@ assam:
 nb:
   name: (northern) West Bengal
   zone: north_east
+
+gujarat:
+  name: Gujarat
+  zone: west

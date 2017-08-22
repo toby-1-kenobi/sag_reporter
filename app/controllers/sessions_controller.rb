@@ -61,20 +61,32 @@ class SessionsController < ApplicationController
   end
 
   def two_factor_auth
-    @user = User.find_by(phone: params[:session][:phone])
+    username = params[:session][:username]
+    if username.include? '@'
+      # if the user has put something with an '@' in it is must be their email address
+      @user = User.find_by(email: username)
+    else
+      # otherwise we'll assume it's their phone number
+      @user = User.find_by(phone: username)
+    end
     if @user && @user.authenticate(params[:session][:password])
-      phone = params[:session][:phone]
       otp_code = @user.otp_code
       session[:temp_user] = @user.id
-      @ticket =  send_otp_on_phone("+91#{phone}", otp_code)
-      #   flash.now['info'] = "A short login code has been sent to your phone (#{phone})"
-      # elsif send_otp_via_mail(@user, otp_code)
-      #   flash.now['info'] = "A short login code has been sent to your email (#{@user.email})."
-      # else
-      #   flash.now['error'] = "We were not able to send the login code to #{phone} or email #{@user.email}!"
-      # end
+      if @user.phone.present? and not @user.email_confirmed?
+        @ticket =  send_otp_on_phone("+91#{@user.phone}", otp_code)
+        flash.now['info'] = "A short login code has been sent to your phone (#{@user.phone}). Please wait for it."
+      elsif @user.phone.blank? and send_otp_via_mail(@user, otp_code)
+        flash.now['info'] = "A short login code has been sent to your email (#{@user.email}). Check your inbox."
+      elsif @user.phone.present? and @user.email.present? and @user.email_confirmed?
+        flash.now['info'] = "Please choose to have the login code sent to your phone (#{@user.phone}) or email (#{@user.email})"
+      end
     else
-      flash.now['error'] = 'Phone number or password is not correct'
+      if @user
+        logger.debug "could not authenticate #{@user.phone} with '#{params[:session][:password]}'"
+      else
+        logger.debug "couldn't find user with  #{username}"
+      end
+      flash.now['error'] = 'username or password is not correct'
       render 'new'
     end
   end

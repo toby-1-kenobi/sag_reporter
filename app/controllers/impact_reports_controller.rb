@@ -5,28 +5,20 @@ class ImpactReportsController < ApplicationController
   before_action :require_login
 
   # Let only permitted users do some things
-  before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_report?
-  end
-
   before_action only: [:edit, :update] do
-    redirect_to root_path unless logged_in_user.can_edit_report? or logged_in_user?(Report.find(params[:id]).reporter)
+    redirect_to root_path unless logged_in_user.admin? or logged_in_user?(Report.find(params[:id]).reporter)
   end
 
   before_action only: [:show] do
-    redirect_to root_path unless logged_in_user?(ImpactReport.find(params[:id]).reporter) or logged_in_user.can_view_all_reports?
+    redirect_to root_path unless logged_in_user?(ImpactReport.find(params[:id]).reporter) or logged_in_user.national?
   end
 
   before_action only: [:index, :spreadsheet] do
-    redirect_to root_path unless logged_in_user.can_view_all_reports?
+    redirect_to root_path unless logged_in_user.national?
   end
 
   before_action only: [:archive, :unarchive] do
-    redirect_to root_path unless logged_in_user.can_archive_report?
-  end
-
-  before_action only: [:tag, :tag_update] do
-    redirect_to root_path unless logged_in_user.can_tag_report?
+    redirect_to root_path unless logged_in_user.admin?
   end
 
   def show
@@ -157,7 +149,7 @@ class ImpactReportsController < ApplicationController
         :report_date,
         :state
       ]
-      safe_params.reject! :state unless logged_in_user.can_archive_report?
+      safe_params.reject! :state unless logged_in_user.admin?
       if params[:impact_report][:report_date]
         params[:impact_report][:report_date] = DateParser.parse_to_db_str(params[:impact_report][:report_date])
       end

@@ -73,7 +73,10 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    capybara_minitest_spec (1.0.5)
+    capybara-webkit (1.14.0)
+      capybara (>= 2.3.0, < 2.14.0)
+      json
+    capybara_minitest_spec (1.0.6)
       capybara (>= 2)
       minitest (>= 4)
     carrierwave (0.10.0)
@@ -109,6 +112,7 @@ GEM
     database_cleaner (1.5.0)
     debug_inspector (0.0.2)
     diff-lcs (1.2.5)
+    docile (1.1.5)
     dotenv (2.1.1)
     dotenv-rails (2.1.1)
       dotenv (= 2.1.1)
@@ -308,6 +312,8 @@ GEM
       rails (~> 4.1)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
+    momentjs-rails (2.17.1)
+      railties (>= 3.1)
     multi_json (1.11.2)
     multi_test (0.1.2)
     multi_xml (0.5.5)
@@ -399,6 +405,11 @@ GEM
       faraday (~> 0.9)
       mimemagic
       smtpapi (~> 0.1)
+    simplecov (0.14.1)
+      docile (~> 1.1.0)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.1)
     smtpapi (0.1.0)
     spring (1.4.0)
     sprockets (3.4.0)
@@ -446,7 +457,8 @@ DEPENDENCIES
   active_model_otp
   bcrypt (~> 3.1.7)
   byebug
-  capybara_minitest_spec
+  capybara-webkit
+  capybara_minitest_spec (= 1.0.6)
   carrierwave
   chartkick
   coffee-rails (~> 4.1.0)
@@ -471,6 +483,7 @@ DEPENDENCIES
   minitest-reporters
   minitest-spec-rails
   mocha
+  momentjs-rails (~> 2.11, >= 2.11.1)
   pg
   phantomjs
   poltergeist
@@ -486,6 +499,7 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   selenium-webdriver
   sendgrid-actionmailer
+  simplecov
   spring
   turbolinks
   twilio-ruby (~> 4.11.1)
@@ -497,4 +511,4 @@ RUBY VERSION
    ruby 2.2.3p173
 
 BUNDLED WITH
-   1.13.7
+   1.15.3

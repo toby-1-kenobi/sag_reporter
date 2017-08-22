@@ -1,4 +1,4 @@
-
+  
 # when a state is selected the language collections on the page
 # should hide any that don't belong to the state.
 # filterable items in those collection have the class filterable-item
@@ -85,9 +85,9 @@ $(document).ready ->
   $('.filter-trigger').on 'change', ->
     label = $(this).attr 'data-filter-trigger-label'
     if label
-      allTriggers = $('.filter-trigger[data-filter-trigger-label="' + label + '"]').not('input:checkbox:not(:checked)')
+      allTriggers = $('.filter-trigger[data-filter-trigger-label="' + label + '"]').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
     else
-      allTriggers = $('.filter-trigger').not('input:checkbox:not(:checked)')
+      allTriggers = $('.filter-trigger').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
     valueArray = allTriggers.map ->
       return $(this).val()
     applyFilter valueArray, label

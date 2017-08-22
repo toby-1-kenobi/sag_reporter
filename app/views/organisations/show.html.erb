@@ -1,5 +1,12 @@
-<% provide(:title, "Organisation: #{@organisation.name}") %>
-<h1><%= @organisation.name_with_abbr %></h1>
+<%
+  if logged_in_user.trusted?
+    provide(:title, "Organisation: #{@organisation.name}")
+  else
+    provide(:title, "Organisation ##{@organisation.id}")
+  end
+%>
+
+<h1><%= @organisation.name_with_abbr_or_not(logged_in_user) %></h1>
 
 <style is="custom-style">
   .flex-equal-justified {

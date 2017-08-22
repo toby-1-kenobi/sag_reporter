@@ -1,0 +1,38 @@
+<% if logged_in_user?(@user) %>
+    <% provide(:title, "Reports by #{@user.name}") %>
+    <% provide(:context_title, 'My Reports') %>
+<% elsif logged_in_user.trusted? %>
+    <% provide(:title, "Reports by #{@user.name}") %>
+    <% provide(:context_title, "Reports by #{@user.name}") %>
+<% else %>
+    <% provide(:title, "Reports by user ##{@user.id}") %>
+    <% provide(:context_title, "Reports by user ##{@user.id}") %>
+<% end %>
+
+<%= form_tag({controller: 'users', action: 'reports'}, method: 'get', remote: true, id: 'report-view-filters') do %>
+  <div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--4-col">
+      <%= render 'reports/filter_since' %>
+    </div>
+    <div class="mdl-cell mdl-cell--4-col">
+      <%= render 'reports/filter_archived' %>
+    </div>
+    <div class="mdl-cell mdl-cell--4-col">
+      <%= render 'reports/filter_type' %>
+    </div>
+  </div>
+<% end %>
+
+<script>
+  $('.date-picker').bootstrapMaterialDatePicker({ weekStart : 0, time: false, format: 'DD MMMM, Y' });
+</script>
+
+<div class="reports-container mdl-grid">
+  <% if @reports.any? %>
+    <% @reports.each do |report| %>
+      <%= render partial: 'reports/mdl_report', object: report %>
+    <% end %>
+  <% else %>
+    <%= render 'reports/empty_state' %>
+  <% end %>
+</div>

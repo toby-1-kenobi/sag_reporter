@@ -19,7 +19,7 @@
   <%= link_to 'Overview', overview_languages_path %>
 </button>
 
-<% if logged_in_user.can_create_language? %>
+<% if logged_in_user.admin? or logged_in_user.national_curator? %>
 	<%= link_to new_language_path, :class => "btn waves-effect waves-light right" do %>
 		<i class="material-icons right">add</i>Add a Language
 	<% end %>

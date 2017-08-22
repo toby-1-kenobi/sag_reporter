@@ -1,14 +1,14 @@
 <% require 'csv' %>
-<%= CSV.generate_line(['Transformation', 'Exported from LCI Reporter', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe %>
+<%= CSV.generate_line(['Transformation', 'Exported from LCI App', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe %>
 <%
   dates = @transformations.values.first.keys
   headers1 = ['Zone', 'State', 'Language']
   @outcome_areas.each do |oa|
-    headers1.concat [oa, '']
+    headers1.concat [oa, '', '']
   end
   headers2 = ['', '', '']
   @outcome_areas.each do |oa|
-    headers2.concat [dates[0].strftime('%b %Y'), dates[1].strftime('%b %Y')]
+    headers2.concat [dates[0].strftime('%b %Y'), dates[1].strftime('%b %Y'), 'change']
   end
 %>
 <%= CSV.generate_line(headers1).html_safe -%>
@@ -23,20 +23,20 @@
       value1 = @transformations[language][dates[1]][outcome_area]
       zone_aggregate[1][language.zone.name] ||= Hash.new(0)
       zone_aggregate[1][language.zone.name][outcome_area] += value1
-      row.concat [value0.round, value1.round]
+      row.concat [value0.round, value1.round, (value1.round - value0.round)]
     end %>
     <%= CSV.generate_line(row).html_safe -%>
 <% end %>
 <%= CSV.generate_line([]).html_safe -%>
 <%= CSV.generate_line(['Average of Language Communities by Zone']).html_safe %>
 <%
-  headers1 = ['Zone', '# LCs participating']
+  headers1 = ['Zone', '# LCs participating', '']
   @outcome_areas.each do |oa|
-    headers1.concat [oa, '']
+    headers1.concat [oa, '', '']
   end
-  headers2 = ['', '']
+  headers2 = ['', '', '']
   @outcome_areas.each do |oa|
-    headers2.concat [dates[0].strftime('%b %Y'), dates[1].strftime('%b %Y')]
+    headers2.concat [dates[0].strftime('%b %Y'), dates[1].strftime('%b %Y'), 'change']
   end
 %>
 <%= CSV.generate_line(headers1).html_safe -%>
@@ -45,11 +45,11 @@
   lc_amount = zone.state_languages.in_project.count
   zone_aggregate[0][zone.name] ||= Hash.new(0)
   zone_aggregate[1][zone.name] ||= Hash.new(0)
-  row = [zone.name, lc_amount]
+  row = [zone.name, lc_amount, '']
   @outcome_areas.each do |outcome_area|
     value0 = lc_amount > 0 ? (zone_aggregate[0][zone.name][outcome_area] / lc_amount) : 0
     value1 = lc_amount > 0 ? (zone_aggregate[1][zone.name][outcome_area] / lc_amount) : 0
-    row.concat [value0.round, value1.round]
+    row.concat [value0.round, value1.round, (value1.round - value0.round)]
   end
 %>
     <%= CSV.generate_line(row).html_safe -%>

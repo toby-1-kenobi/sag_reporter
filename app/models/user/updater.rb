@@ -6,11 +6,20 @@ class User::Updater
     @instance = user
   end
 
-  def update_user(params)
+  def update_user(params, skip_confirm_email = false)
     speaks = params.delete(:speaks)
     geo_states = params.delete(:geo_states)
     curated_states = params.delete(:curated_states)
-    result = @instance.update_attributes(params)
+    if skip_confirm_email
+      # if we skip sending the confirmation email, we must make the email confirmed if it's there
+      if params[:email].present?
+        params[:email_confirmed] = true
+      end
+      User.skip_callback(:save, :after, :send_confirmation_email)
+      result = @instance.update_attributes(params)
+    else
+      result = @instance.update_attributes(params)
+    end
     if speaks
       @instance.spoken_languages.clear
       speaks.each do |lang_id|

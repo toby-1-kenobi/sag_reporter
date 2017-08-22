@@ -98,6 +98,12 @@
                 <span class="mdl-chip__text"><%= @language.translating_organisations.count %></span>
             <% end %>
           </li>
+          <li class="language-reports mdl-list__item">
+            <%= link_to 'Reports', reports_language_path(@language), class: 'mdl-list__item-primary-content' %>
+            <%= link_to reports_language_path(@language), class: 'mdl-list__item-secondary-content mdl-chip' do %>
+                <span class="mdl-chip__text"><%= Report.language(@language).count %></span>
+            <% end %>
+          </li>
         </ul>
       </div>
 

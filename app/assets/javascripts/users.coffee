@@ -53,7 +53,7 @@ setLanguageOptions = ->
   return
 
 $(document).ready ->
-  $('select').material_select()
+#  $('select').material_select()
 
   showStates()
   setLanguageOptions()

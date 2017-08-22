@@ -1,6 +1,6 @@
 require 'csv'
 
-data_file = Rails.root.join('db', 'language_data.csv')
+data_file = Rails.root.join('db', 'language_data')
 
 CSV::Converters[:blank_to_nil] = lambda do |field|
   field && field.empty? ? nil : field

@@ -119,23 +119,36 @@ class StateLanguage < ActiveRecord::Base
 
   # get percentage score for each outcome area at two dates
   def transformation(user, date_1, date_2)
-    transformation = { date_1 => Hash.new {0}, date_2 => Hash.new {0} }
+    # associate progress marker ids with Outcome Area names
+    pm_data = Rails.cache.fetch('pm_data', expires_in: 10.minutes) do
+      pm_oa_names = {}
+      hidden_pms = []
+      pm_weight = {}
+      ProgressMarker.includes(:topic).find_each do |pm|
+        pm_oa_names[pm.id] = pm.topic.name
+        hidden_pms << pm.id if pm.topic.hide_for?(user)
+        pm_weight[pm.id] = pm.weight
+      end
+      {pm_oa_names: pm_oa_names, hidden_pms: hidden_pms, pm_weight: pm_weight}
+    end
     # go through every language_progress for this state_language
     # (there's one for each progress marker used)
     # and get it's score at each of the dates
     # and total these scores by outcome area
-    language_progresses.includes({progress_marker: :topic}, :progress_updates).find_each do |lp|
+    transformation = { date_1 => Hash.new {0}, date_2 => Hash.new {0} }
+    language_progresses.includes(:progress_updates).find_each do |lp|
       # don't include outcome areas that should be invisible to the user
-      unless lp.progress_marker.topic.hide_for?(user)
-        oa_name = lp.progress_marker.topic.name
-        transformation[date_1][oa_name] += lp.month_score(date_1.year, date_1.month)
-        transformation[date_2][oa_name] += lp.month_score(date_2.year, date_2.month)
+      unless pm_data[:hidden_pms].include? lp.progress_marker_id
+        oa_name = pm_data[:pm_oa_names][lp.progress_marker_id]
+        scores = lp.double_month_score(date_1.year, date_1.month, date_2.year, date_2.month, pm_data[:pm_weight])
+        transformation[date_1][oa_name] += scores.first
+        transformation[date_2][oa_name] += scores.last
       end
     end
     # we need the max possible score for each outcome area to make our scores a percentage
     # this shouldn't change, but it's a bad idea to assume it wont,
     # but we don't want to have to calculate it every time we run this method so cache it.
-    max_scores = Rails.cache.fetch("max_scores", expires_in: 10.minutes) do
+    max_scores = Rails.cache.fetch('max_scores', expires_in: 10.minutes) do
       scores = {}
       Topic.find_each do |outcome_area|
         scores[outcome_area.name] = outcome_area.max_outcome_score
@@ -159,6 +172,16 @@ class StateLanguage < ActiveRecord::Base
             :languages => {id: language_id},
         ).
         where('reports.report_date >= ?', duration.ago).distinct
+  end
+
+  # return the date that progress levels were last set
+  def progress_last_set
+    if progress_updates.any?
+      pu = progress_updates.order(:year, :month).last
+      Date.new(pu.year, pu.month)
+    else
+      nil
+    end
   end
 
 end

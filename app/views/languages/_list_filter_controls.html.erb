@@ -1,7 +1,15 @@
+<%
+  if defined? zone
+    states = zone.geo_states
+  else
+    states = GeoState.all
+  end
+%>
+
 <div class="mdl-grid language-filter-controls">
 
   <div class="mdl-cell mdl-cell--4-col">
-    <div class="over mdl-shadow--4dp"><h4>Strategic Zone <i class="material-icons">arrow_drop_down</i></h4></div>
+    <div class="over mdl-shadow--4dp"><h4>State <i class="material-icons">arrow_drop_down</i></h4></div>
     <div class="under mdl-shadow--2dp">
       <div class="shadow-clipper"></div>
       <ul class="mdl-list">
@@ -15,41 +23,41 @@
               type="checkbox"
               id="strategic-zone-filter-select-all"
               class="mdl-checkbox__input select-all-trigger"
-              data-select-all-trigger="strategic-zone"
+              data-select-all-trigger="states"
               />
             </label>
           </span>
         </li>
-        <%# one list item to allow users to select languages where no zone is defined %>
+        <%# one list item to allow users to select languages where no state is defined %>
         <li class="mdl-list__item">
           <span class="mdl-list__item-primary-content">Unknown</span>
           <span class="mdl-list__item-secondary-action">
-            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="zone-unknown-check">
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="state-unknown-check">
               <input
               checked
               type="checkbox"
-              value="zone-unknown"
-              id="zone-unknown-check"
+              value="state-unknown"
+              id="state-unknown-check"
               class="mdl-checkbox__input filter-trigger select-all-target"
-              data-filter-trigger-label="zone"
-              data-select-all-target="strategic-zone"
+              data-filter-trigger-label="geo-state"
+              data-select-all-target="states"
               />
             </label>
           </span>
         </li>
-        <% Zone.all.order(:name).each do |zone| %>
+        <% states.order(:name).each do |state| %>
             <li class="mdl-list__item">
-              <span class="mdl-list__item-primary-content"><%= zone.name %></span>
+              <span class="mdl-list__item-primary-content"><%= state.name %></span>
             <span class="mdl-list__item-secondary-action">
-              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="zone-<%= zone.id %>-check">
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="geo-state-<%= state.id %>-check">
                 <input
                 checked
                 type="checkbox"
-                value="<%= zone.id %>"
-                id="zone-<%= zone.id %>-check"
+                value="<%= state.id %>"
+                id="geo-state-<%= state.id %>-check"
                 class="mdl-checkbox__input filter-trigger select-all-target"
-                data-filter-trigger-label="zone"
-                data-select-all-target="strategic-zone"
+                data-filter-trigger-label="geo-state"
+                data-select-all-target="states"
                 />
               </label>
             </span>

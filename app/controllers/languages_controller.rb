@@ -6,11 +6,11 @@ class LanguagesController < ApplicationController
 
   # Let only permitted users do some things
   before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.can_create_language?
+    redirect_to root_path unless logged_in_user.admin? or logged_in_user.national_curator?
   end
 
   # can edit a language if the language is in one of the user's states, or if the user is national
-  before_action only: [:edit, :update] do
+  before_action only: [:edit, :update, :reports] do
     redirect_to root_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
   end
 
@@ -45,6 +45,7 @@ class LanguagesController < ApplicationController
             {:state_languages => {:geo_state => :zone}}
         ).
         find(params[:id])
+    redirect_to zones_path unless Language.user_limited(logged_in_user).include? @language
     @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(model_klass_name: 'Language', record_id: @language.id)
     @user_pending_fl_edits = Edit.pending.where(model_klass_name: 'FinishLineProgress')
@@ -73,6 +74,7 @@ class LanguagesController < ApplicationController
             {:state_languages => {:geo_state => :zone}}
         ).
         find(params[:id])
+    redirect_to zones_path unless Language.user_limited(logged_in_user).include? @language
     @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(model_klass_name: 'Language', record_id: @language.id)
     @user_pending_fl_edits = Edit.pending.where(model_klass_name: 'FinishLineProgress')
@@ -88,6 +90,19 @@ class LanguagesController < ApplicationController
     @editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language))
     # attributes with pending edits should be visually distinct in the form
     @pending_attributes = @user_pending_edits.pluck :attribute_name
+  end
+
+  def reports
+    @language = Language.find(params[:id])
+
+    # if no since date is provided assume 3 months
+    params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+    @filters = report_filter_params
+    @reports = Report.filter(Report.language(@language), @filters).order(report_date: :desc)
+    respond_to do |format|
+      format.html
+      format.js { render 'reports/update_collection' }
+    end
   end
 
   # match a search query against language names
@@ -330,6 +345,16 @@ class LanguagesController < ApplicationController
         :translation_info,
         :translation_need,
         :translation_progress
+    )
+  end
+
+  def report_filter_params
+    params.permit(
+        :archived,
+        :since,
+        {:types => []},
+        :report_types,
+        :translation_impact
     )
   end
 
