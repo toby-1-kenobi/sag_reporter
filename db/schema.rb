@@ -174,6 +174,17 @@ ActiveRecord::Schema.define(version: 20170814105654) do
   add_index "events_purposes", ["event_id"], name: "index_events_purposes_on_event_id", using: :btree
   add_index "events_purposes", ["purpose_id"], name: "index_events_purposes_on_purpose_id", using: :btree
 
+  create_table "external_devices", force: :cascade do |t|
+    t.string   "device_id"
+    t.string   "name"
+    t.boolean  "registered", default: false, null: false
+    t.integer  "user_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "external_devices", ["user_id"], name: "index_external_devices_on_user_id", using: :btree
+
   create_table "finish_line_markers", force: :cascade do |t|
     t.string   "name",        null: false
     t.text     "description", null: false
@@ -662,6 +673,7 @@ ActiveRecord::Schema.define(version: 20170814105654) do
   add_foreign_key "events", "users"
   add_foreign_key "events_purposes", "events"
   add_foreign_key "events_purposes", "purposes"
+  add_foreign_key "external_devices", "users"
   add_foreign_key "finish_line_progresses", "finish_line_markers"
   add_foreign_key "finish_line_progresses", "languages"
   add_foreign_key "geo_states", "zones"

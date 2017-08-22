@@ -3,9 +3,9 @@ class ReportsController < ApplicationController
   helper ColoursHelper
   include ParamsHelper
 
-  skip_before_action :verify_authenticity_token, only: [:create_external]
-  before_action :require_login, except: [:create_external]
-  before_action :authenticate, only: [:create_external]
+  skip_before_action :verify_authenticity_token, only: [:create_external, :index_external]
+  before_action :require_login, except: [:create_external, :index_external]
+  before_action :authenticate, only: [:create_external, :index_external]
 
     # Let only permitted users do some things
   before_action only: [:index, :by_language, :by_topic, :by_reporter] do
@@ -27,6 +27,10 @@ class ReportsController < ApplicationController
     redirect_to root_path unless logged_in_user.national? or logged_in_user.geo_states.include? @report.geo_state
   end
 
+  before_action only: [:index_external] do
+    render json: {errors: 'Permission denied'} unless logged_in_user.national?
+  end
+
   before_action only: [:edit, :update] do
     redirect_to root_path unless logged_in_user.admin? or logged_in_user?(@report.reporter)
   end
@@ -45,58 +49,102 @@ class ReportsController < ApplicationController
     @topics = Topic.all
   end
 
-  # new report submitted by an external client
+  # new report submitted by an external client (=android app)
   def create_external
-    # convert image-strings to image-files
-    base64_data = params['report']['pictures_attributes']
-    tempfile = []
-    base64_data.each do |image_number, image_data|
-      filename = "upload-image" + image_number
-      tempfile[image_number.to_i] = Tempfile.new(filename)
-      tempfile[image_number.to_i].binmode
-      tempfile[image_number.to_i].write Base64.decode64(image_data["data"])
-      tempfile[image_number.to_i].rewind
-      # for security we want the actual content type, not just what was passed in
-      content_type = `file --mime -b #{tempfile[image_number.to_i].path}`.split(";")[0]
-
-      # we will also add the extension ourselves based on the above
-      # if it's not gif/jpeg/png, it will fail the validation in the upload model
-      extension = content_type.match(/gif|jpeg|png/).to_s
-      filename += ".#{extension}" if extension
-      params['report']['pictures_attributes'][image_number]['ref'] = ActionDispatch::Http::UploadedFile.new({
-        tempfile: tempfile[image_number.to_i],
-        content_type: content_type,
-        filename: filename
-      })
-    end
-    # create report
     full_params = report_params.merge({reporter: current_user})
-    puts full_params
-    report_factory = Report::Factory.new
-    response = Hash.new
-    if report_factory.create_report(full_params)
-      response['success'] = true
-      response['report_id'] = report_factory.instance.id
+    report_factory = nil
+    success = true
+    instance_id = -1
+    # use state-language IDs (for being converted back to language IDs by the report-factory)
+    language_ids = full_params['languages']
+    state_id = full_params['geo_state_id']
+    full_params['languages'] = StateLanguage.where(language_id: language_ids, geo_state_id: state_id).map{|sl| sl.id}
+    if full_params['external_id'].nil? || full_params['external_updated_at'].nil?
+      full_params.delete 'external_updated_at'
+      full_params.delete('external_id')
+      report_factory = Report::Factory.new
+      success = report_factory.create_report(full_params)
+      instance_id = report_factory.instance.id if success
     else
-      response['success'] = false
-      response['errors'] = Array.new
+      updated_at = full_params.delete 'external_updated_at'
+      @report = Report.find full_params.delete('external_id')
+      # just edit, if user has the right, to do so
+      if updated_at > @report.updated_at.to_i and
+          (current_user.admin? or current_user == @report.reporter)
+        # delete all old image files (for just using new files)
+        @report.pictures.each do |picture|
+          picture.remove_ref!
+          picture.delete
+        end
+        report_factory = Report::Updater.new(@report)
+        success = report_factory.update_report(full_params)
+        instance_id = report_factory.instance.id if success
+      end
+    end
+
+    response = Hash.new
+    if success
+      response[:success] = true
+      response[:report_id] = instance_id
+    else
+      response[:success] = false
+      response[:errors] = Array.new
       if report_factory.instance
-        response['errors'].concat report_factory.instance.errors.full_messages
+        response[:errors].concat report_factory.instance.errors.full_messages
       end
       if report_factory.error
-        response['errors'] << report_factory.error.message
+        response[:errors] << report_factory.error.message
       end
     end
-    puts response.to_json
     render json: response
-    # delete tempfile[image_number.to_i] afterwards
-  ensure
-    tempfile.each do |tmp|
-      if tmp
-        tmp.close
-        tmp.unlink
+  end
+
+  # send all reports to an external client (=android app)
+  def index_external
+    external_params = !params[:reports].nil? && !params[:reports].empty? &&
+        params.permit(reports: [:id, :updated_at])[:reports]
+    report_data = Array.new
+    user_geo_states = current_user.geo_states.ids
+    Report.includes(:languages, :pictures).where.not(impact_report: nil).each do |report|
+
+      next unless user_geo_states.include? report.geo_state_id
+
+      language_ids = report.languages.map {|language| language.id}
+
+      pictures = Hash.new
+      report.pictures.each do |picture|
+        if picture.ref.file.exists?
+          picture_id = picture[:id]
+          file_content = Base64.encode64 picture.ref.read
+          pictures[picture_id] = file_content
+        end
       end
+
+      if external_params && external_params[report.id.to_s]
+        if report.updated_at.to_i == external_params[report.id.to_s][:updated_at]
+          report_data << {id: report.id, updated_at: 0}
+          next
+        end
+        if report.updated_at.to_i < external_params[report.id.to_s][:updated_at]
+          report_data << {id: report.id, updated_at: -1}
+          next
+        end
+      end
+      report_data << {
+          id: report.id,
+          state_id: report.geo_state_id,
+          date: report.report_date.to_time(:utc).to_i,
+          content: report.content,
+          reporter_id: report.reporter_id,
+          impact_report: 1,
+          languages: language_ids,
+          pictures: pictures,
+          client: report.client,
+          version: report.version,
+          updated_at: report.updated_at.to_i
+      }
     end
+    render json: {reports: report_data}
   end
 
   def create
