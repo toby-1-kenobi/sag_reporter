@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<h1>Hi<%= " #{@recipient.name}" if defined? @recipient %></h1>
+<p>
+  <% if defined? @recipient and @recipient.trusted? %>
+      <%= @report.reporter.name %> entered this report into the LCI app <%= @report.date.strftime('%A, %d, %d') %>,
+  <% else %>
+      This report was entered into the LCI app on <%= @report.date.strftime('%A, %d, %d') %>,
+  <% end %>
+  and it was decided that you you know about it:
+</p>
+<p>
+  <%= @report.content %>
+</p>
+<% if @report.pictures.any? %>
+  <% if defined? @recipient %>
+    <% if @recipient.trusted? %>
+      <% @report.pictures.each do |picture| %>
+          <%= image_tag picture.ref_url if picture.ref? %>
+      <% end %>
+    <% else %>
+      <p>You are not permitted to see the pictures attached to this report.</p>
+    <% end %>
+  <% else %>
+    <p>Log in to the LCI app to see the <%= link_to 'report pictures', @report %></p>
+  <% end %>
+<% end %>
+</body>
+</html>

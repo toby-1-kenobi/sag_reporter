@@ -1,0 +1,20 @@
+Hi<%= " #{@recipient.name}" if defined? @recipient %>,
+
+<% if defined? @recipient and @recipient.trusted? %>
+<%= @report.reporter.name %> entered this report into the LCI app <%= @report.date.strftime('%A, %d, %d') %>,
+<% else %>
+This report was entered into the LCI app on <%= @report.date.strftime('%A, %d, %d') %>,
+<% end %>
+and it was decided that you you know about it:
+
+<%= @report.content %>
+
+<% if @report.pictures.any? %>
+  <% if defined? @recipient and not @recipient.trusted? %>
+    You are not permitted to see the pictures attached to this report.
+  <% else %>
+    Log in to the LCI app to see the report pictures.
+    Paste this URL into your browser to go to the report.
+    <%= report_url(@report) %>
+  <% end %>
+<% end %>
