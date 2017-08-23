@@ -2,9 +2,9 @@ class StateLanguagesController < ApplicationController
 
   before_action :require_login
 
-  before_action only: [:outcomes, :get_chart, :get_table, :outcomes_data] do
-    redirect_to root_path unless logged_in_user.national?
-  end
+  # before_action only: [:outcomes, :get_chart, :get_table, :outcomes_data] do
+  #   redirect_to root_path unless logged_in_user.national?
+  # end
 
   def outcomes
     @outcome_areas = Topic.all
