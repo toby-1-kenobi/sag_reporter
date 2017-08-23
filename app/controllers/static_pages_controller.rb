@@ -92,7 +92,7 @@ class StaticPagesController < ApplicationController
         #     category: 'progress'
         # },
         {
-            condition: (logged_in_user.national? or logged_in_user.admin?),
+            condition: true,
             path: outcomes_path,
             text: 'View outcome transformation progress',
             icon: 'tab',
