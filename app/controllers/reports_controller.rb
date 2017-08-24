@@ -275,6 +275,7 @@ class ReportsController < ApplicationController
       {:observers_attributes => [:id, :name]},
       {:impact_report_attributes => [:translation_impact]},
       :status,
+      :significant,
       :location,
       :sub_district_id,
       :client,
