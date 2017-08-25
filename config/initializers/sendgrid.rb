@@ -1,4 +1,4 @@
-require 'sendgrid-ruby'
-SEND_GRID = SendGrid::Client.new do |c|
-  c.api_key = ENV['SENDGRID_API_KEY']
+SendGridActionMailerAdapter.configure do |config|
+  config.api_key = ENV['SENDGRID_API_KEY']
+  config.version = 'v3'
 end
