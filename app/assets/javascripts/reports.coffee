@@ -124,9 +124,23 @@ $(document).ready ->
 
   # Hide or show impact_report specific fields depending on whether impact report is selected
   $('#report_impact_report').on 'change', ->
-    $('#impact_report_fields').toggle()
+    if (this.checked)
+      $('#impact_report_fields').slideDown()
+    else
+      $('#impact_report_fields').slideUp()
+
   $('#types-impact').on 'change', ->
-    $('#impact-type-filters').toggle()
+    if (this.checked)
+      $('#impact-type-filters').slideDown()
+    else
+      $('#impact-type-filters').slideUp()
+
+  # Hide or show supervisor email field depending on whether report is significant
+  $('#report_significant').on 'change', ->
+    if (this.checked)
+      $('#supervisor-email-input').slideDown()
+    else
+      $('#supervisor-email-input').slideUp()
     
   $('.materialize-select').material_select()
 

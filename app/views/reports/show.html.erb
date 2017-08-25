@@ -2,7 +2,7 @@
 <% provide(:context_title, "#{@report.report_type} Report") %>
 <%= render partial: 'mdl_report', object: @report %>
 
-<%= link_to new_report_path(@report), id: 'show-report-fab', class: 'new-report-fab mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored' do %>
+<%= link_to new_report_path, id: 'show-report-fab', class: 'new-report-fab mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored' do %>
   <i class="material-icons">add</i>
 <% end %>
 

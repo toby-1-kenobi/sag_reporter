@@ -1,11 +1,17 @@
-Hi<%= " #{@recipient.name}" if defined? @recipient %>,
+Hi <%= defined?(@recipient) ? @recipient.name : @recipient_name %>,
 
-<% if defined? @recipient and @recipient.trusted? %>
-<%= @report.reporter.name %> entered this report into the LCI app <%= @report.date.strftime('%A, %d, %d') %>,
+<% if defined?(@recipient) and @recipient == @report.reporter %>
+This is the email we sent to your supervisor:
+<% end %>
+
+<% if defined?(@recipient) and @recipient.trusted? %>
+<%= @report.reporter.name %> entered this report into the LCI app on <%= @report.report_date.strftime('%A, %d, %d') %>,
 <% else %>
-This report was entered into the LCI app on <%= @report.date.strftime('%A, %d, %d') %>,
+This report was entered into the LCI app on <%= @report.report_date.strftime('%A, %d %b') %>,
 <% end %>
 and it was decided that you you know about it:
+
+This report is for <%= @report.languages.pluck(:name).to_sentence %> in <%= @report.geo_state.name %>.
 
 <%= @report.content %>
 

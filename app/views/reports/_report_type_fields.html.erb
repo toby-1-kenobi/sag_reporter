@@ -37,3 +37,13 @@
     <%= f.check_box('planning_report?', class: 'mdl-checkbox__input') %>
     <span class="mdl-checkbox__label">This is a hope, challenge, or future planning report</span>
 <% end %>
+
+<%= f.label(:significant, class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect') do %>
+    <%= f.check_box(:significant, class: 'mdl-checkbox__input') %>
+    <span class="mdl-checkbox__label">This is a significant report. Send it to my supervisor now!</span>
+<% end %>
+<div id="supervisor-email-input" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label hide">
+  <i class="material-icons mdl-textfield__icon">email</i>
+  <%= text_field_tag :supervisor_email, nil, class: 'mdl-textfield__input' %>
+  <%= label_tag :supervisor_email, 'Supervisor email', class: 'mdl-textfield__label' %>
+</div>
