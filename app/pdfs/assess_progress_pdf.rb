@@ -64,7 +64,7 @@ class AssessProgressPdf < Prawn::Document
         if Rails.env.production?
           begin
             image open(picture.ref_url), fit: [500,500] if picture.ref?
-          rescue OpenURI::HTTPError e
+          rescue OpenURI::HTTPError => e
             text 'image missing'
           end
         else
