@@ -30,3 +30,11 @@
       <%= render 'reports/empty_state' %>
   <% end %>
 </div>
+
+<%= link_to new_report_path, id: 'show-report-fab', class: 'new-report-fab mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored' do %>
+    <i class="material-icons">add</i>
+<% end %>
+
+<div class="mdl-tooltip" data-mdl-for="show-report-fab">
+  Write a new report
+</div>
