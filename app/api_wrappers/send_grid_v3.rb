@@ -9,12 +9,22 @@ class SendGridV3
   headers 'Content-Type' => 'application/json'
 
   def self.enforce_tls
-    response = patch '/user/settings/enforced_tls', body: {require_tls: true}.to_json
+    begin
+      response = patch '/user/settings/enforced_tls', body: {require_tls: true}.to_json
+    rescue SocketError => e
+      Rails.logger.error e.message
+      return false
+    end
     response.success? and response['require_tls']
   end
 
   def self.dont_enforce_tls
-    response = patch '/user/settings/enforced_tls', body: {require_tls: false, require_valid_cert: false}.to_json
+    begin
+      response = patch '/user/settings/enforced_tls', body: {require_tls: false, require_valid_cert: false}.to_json
+    rescue SocketError => e
+      Rails.logger.error e.message
+      return false
+    end
     response.success? and !response['require_tls']
   end
 
