@@ -98,7 +98,8 @@ li.report {
 }
 
 .new-report-fab {
-  position: absolute !important;
+  position: fixed !important;
+  z-index: 1000;
   right: 2em;
-  bottom: 2em;
+  bottom: 3em;
 }

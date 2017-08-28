@@ -50,6 +50,10 @@ class Report < ActiveRecord::Base
     where('report_date >= ?', since_date)
   }
 
+  scope :significant, -> {
+    where(significant: true)
+  }
+
   scope :types, -> types {
     if types.empty?
       none
@@ -133,6 +137,7 @@ class Report < ActiveRecord::Base
     # here we're trusting the Date.parse function will be able to handle whatever format comes its way in this context
     collection = collection.since Date.parse(filters[:since]) if filters[:since]
     collection = collection.active unless filters[:archived].present?
+    collection = collection.significant if filters[:significant].present?
     # before filtering for report types check that we are using this filter
     if filters[:report_types].present?
       # for an empty list of types the scope will return an empty collection

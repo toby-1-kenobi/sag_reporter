@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170814105654) do
+ActiveRecord::Schema.define(version: 20170823154212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -529,6 +529,7 @@ ActiveRecord::Schema.define(version: 20170814105654) do
     t.string   "location"
     t.string   "client",              default: "LCR",     null: false
     t.string   "version",             default: "unknown", null: false
+    t.boolean  "significant",         default: false,     null: false
   end
 
   add_index "reports", ["challenge_report_id"], name: "index_reports_on_challenge_report_id", using: :btree

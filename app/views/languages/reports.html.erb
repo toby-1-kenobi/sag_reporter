@@ -9,6 +9,7 @@
       </div>
       <div class="mdl-cell mdl-cell--4-col">
         <%= render 'reports/filter_archived' %>
+        <%= render 'reports/filter_significant' %>
       </div>
       <div class="mdl-cell mdl-cell--4-col">
         <%= render 'reports/filter_type' %>
@@ -28,4 +29,12 @@
   <% else %>
       <%= render 'reports/empty_state' %>
   <% end %>
+</div>
+
+<%= link_to new_report_path, id: 'show-report-fab', class: 'new-report-fab mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored' do %>
+    <i class="material-icons">add</i>
+<% end %>
+
+<div class="mdl-tooltip" data-mdl-for="show-report-fab">
+  Write a new report
 </div>

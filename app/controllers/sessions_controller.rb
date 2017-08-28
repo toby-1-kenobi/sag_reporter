@@ -145,6 +145,18 @@ class SessionsController < ApplicationController
   end
 
   def send_otp_via_mail(user, otp_code)
+    # don't need to enforce TLS for sending the login code.
+    # if we can't turn off enforce_tls then send the code anyway
+    unless SendGridV3.dont_enforce_tls
+      begin
+        if SendGridV3.enforce_tls?
+            Rails.logger.error 'could not turn off enforce TLS with SendGrid for sending login code'
+        end
+      rescue SocketError => e
+        Rails.logger.error 'could not turn of enforce TLS and could not determine if it is already off.'
+        Rails.logger.error e.message
+      end
+    end
     if user.email.present? && user.email_confirmed?
       UserMailer.user_otp_code(user, otp_code).deliver_now
       return true

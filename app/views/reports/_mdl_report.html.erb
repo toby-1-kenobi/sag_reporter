@@ -7,8 +7,8 @@
   </div>
   <div class="mdl-card__supporting-text">
     <p><%= mdl_report.geo_state.name %> &mdash; <%= mdl_report.report_date.strftime('%d %B, %Y') %></p>
-    <% if mdl_report.translation_impact? %>
-      <p><em>Shows impact of Bible translation or storying.</em></p>
+    <% if report_qualities(mdl_report).any? %>
+      <p><em>This report <%= report_qualities(mdl_report).to_sentence %>.</em></p>
     <% end %>
     <p><%= mdl_report.content %></p>
     <%# Show pictures and the reporter name if the logged in user is trusted, or if it's them %>

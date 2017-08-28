@@ -351,6 +351,7 @@ class LanguagesController < ApplicationController
   def report_filter_params
     params.permit(
         :archived,
+        :significant,
         :since,
         {:types => []},
         :report_types,
