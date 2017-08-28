@@ -45,4 +45,11 @@ module ReportsHelper
 		end
 	end
 
+	def report_qualities(report)
+		qualities = []
+		qualities << 'shows impact of Bible translation or storying' if report.translation_impact?
+		qualities << 'is significant' if report.significant?
+		qualities
+	end
+
 end
