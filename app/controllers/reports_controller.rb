@@ -107,31 +107,37 @@ class ReportsController < ApplicationController
       # if the report has been marked as significant and an email entered
       # then send this report to that email (unless it's the reporter's email)
       if report_factory.instance.significant? and params[:supervisor_email].present? and params[:supervisor_email] != report_factory.instance.reporter.email
-        recipient = User.find_by_email params[:supervisor_email]
-        recipient ||= params[:supervisor_email]
-        delivery_success = false
-        begin
-          UserMailer.user_report(recipient, report_factory.instance).deliver_now
-          delivery_success = true
-          flash['success'] = 'Report Submitted and sent to your supervisor!'
-        rescue EOFError,
-              IOError,
-              TimeoutError,
-              Errno::ECONNRESET,
-              Errno::ECONNABORTED,
-              Errno::EPIPE,
-              Errno::ETIMEDOUT,
-              Net::SMTPAuthenticationError,
-              Net::SMTPServerBusy,
-              Net::SMTPSyntaxError,
-              Net::SMTPUnknownError,
-              OpenSSL::SSL::SSLError => e
-          flash['error'] = 'Failed to send the report to your supervisor'
-          Rails.logger.error e.message
-        end
-        if delivery_success
-          # also send it to the reporter
-          UserMailer.user_report(report_factory.instance.reporter, report_factory.instance).deliver_now
+        # make sure TLS gets used for delivering this email
+        if SendGridV3.enforce_tls
+          recipient = User.find_by_email params[:supervisor_email]
+          recipient ||= params[:supervisor_email]
+          delivery_success = false
+          begin
+            UserMailer.user_report(recipient, report_factory.instance).deliver_now
+            delivery_success = true
+            flash['success'] = 'Report Submitted and sent to your supervisor!'
+          rescue EOFError,
+                IOError,
+                TimeoutError,
+                Errno::ECONNRESET,
+                Errno::ECONNABORTED,
+                Errno::EPIPE,
+                Errno::ETIMEDOUT,
+                Net::SMTPAuthenticationError,
+                Net::SMTPServerBusy,
+                Net::SMTPSyntaxError,
+                Net::SMTPUnknownError,
+                OpenSSL::SSL::SSLError => e
+            flash['error'] = 'Failed to send the report to your supervisor'
+            Rails.logger.error e.message
+          end
+          if delivery_success
+            # also send it to the reporter
+            UserMailer.user_report(report_factory.instance.reporter, report_factory.instance).deliver_now
+          end
+        else
+          flash['error'] = 'Could not ensure email encryption so didn\'t send the report to your supervisor'
+          Rails.logger.error 'Could not enforce TLS with SendGrid'
         end
       end
       redirect_to report_factory.instance
