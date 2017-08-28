@@ -14,19 +14,19 @@
 <%= f.fields_for :impact_report do |ir_field| %>
   <div id="impact_report_fields">
     <style>
-      .mdl-radio__outer-circle {
-        display: none;
+      .mdl-radio {
+        height: auto;
       }
     </style>
     <div>
       <%= ir_field.label(:translation_impact, value: 'true', class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect') do %>
-        <%= ir_field.radio_button(:translation_impact, 'true') %>
+        <%= ir_field.radio_button(:translation_impact, 'true', class: 'mdl-radio__button') %>
         <span class="mdl-radio__label">It shows the impact of translated scripture or Bible storying</span>
       <% end %>
     </div>
     <div>
       <%= ir_field.label(:translation_impact, value: 'false', class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect') do %>
-        <%= ir_field.radio_button(:translation_impact, 'false') %>
+        <%= ir_field.radio_button(:translation_impact, 'false', class: 'mdl-radio__button') %>
         <span class="mdl-radio__label">It shows another kind of impact</span>
       <% end %>
     </div>
