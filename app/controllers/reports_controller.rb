@@ -187,10 +187,10 @@ class ReportsController < ApplicationController
       format.js { render 'reports/update_collection' }
       format.html {
         # html format means we are just going onto the page, not changing the filters yet
-        # if there are more than 100 reports ready, start with only significant reports
+        # if there are more than 100 reports ready, start with only more recent reports
         if @reports.count > 100
-          @filters[:significant] = 'on'
-          @reports = @reports.significant
+          @filters[:since] = 1.month.ago.strftime('%d %B, %Y')
+          @reports = @reports.since(1.month.ago)
         end
       }
     end
