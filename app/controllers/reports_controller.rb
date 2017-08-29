@@ -182,9 +182,17 @@ class ReportsController < ApplicationController
     @filters = report_filter_params
     reports = Report.user_limited(logged_in_user).includes(:pictures, :languages, :impact_report)
     @reports = Report.filter(reports, @filters).order(report_date: :desc)
+
     respond_to do |format|
       format.js { render 'reports/update_collection' }
-      format.html
+      format.html {
+        # html format means we are just going onto the page, not changing the filters yet
+        # if there are more than 100 reports ready, start with only significant reports
+        if @reports.count > 100
+          @filters[:significant] = 'on'
+          @reports = @reports.significant
+        end
+      }
     end
   end
 
