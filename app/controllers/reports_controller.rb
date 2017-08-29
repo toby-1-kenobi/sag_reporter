@@ -144,6 +144,7 @@ class ReportsController < ApplicationController
           updated_at: report.updated_at.to_i
       }
     end
+    puts report_data
     render json: {reports: report_data}
   end
 

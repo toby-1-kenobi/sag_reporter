@@ -55,8 +55,10 @@ class UsersController < ApplicationController
     puts last_updated
     user_data[:updated_at] = last_updated.to_i
     if !external_params || last_updated > external_params
+      puts user_data
       render json: {user: user_data}
     else
+      puts "User data not changed"
       render json: {user: {}}
     end
   end
@@ -71,6 +73,7 @@ class UsersController < ApplicationController
       }
       user_data << user_specific_data
     end
+    puts user_data
     render json: {users: user_data}
   end
 
