@@ -25,7 +25,8 @@ class ZonesController < ApplicationController
     zone = Zone.find params[:id]
     states = zone.geo_states
     states = states.where(id: logged_in_user.geo_states) unless logged_in_user.national?
-    @reports = Report.filter(Report.states(states), @filters).order(report_date: :desc)
+    reports = Report.states(states).includes(:pictures, :languages, :impact_report)
+    @reports = Report.filter(reports, @filters).order(report_date: :desc)
     respond_to do |format|
       format.js { render 'reports/update_collection' }
     end

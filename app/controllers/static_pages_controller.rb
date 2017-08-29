@@ -100,17 +100,17 @@ class StaticPagesController < ApplicationController
             category: 'progress'
         },
         {
-            condition: (logged_in_user.national? or logged_in_user.admin?),
+            condition: (true),
             path: reports_path,
-            text: 'View all reports',
+            text: 'All reports',
             icon: 'dashboard',
             colour: 'amber',
-            category: 'progress'
+            category: 'report'
         },
         {
             condition: (logged_in_user.admin?),
             path: users_path,
-            text: 'View all users',
+            text: 'All users',
             icon: 'people',
             colour: 'lime',
             category: 'other'

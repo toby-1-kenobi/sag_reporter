@@ -8,7 +8,7 @@ class ReportsController < ApplicationController
   before_action :authenticate, only: [:create_external]
 
     # Let only permitted users do some things
-  before_action only: [:index, :by_language, :by_topic, :by_reporter] do
+  before_action only: [:by_language, :by_topic, :by_reporter] do
     redirect_to root_path unless logged_in_user.national?
   end
 
@@ -184,9 +184,8 @@ class ReportsController < ApplicationController
     # if no since date is provided assume 3 months
     params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
     @filters = report_filter_params
-    Rails.logger.debug "filters: #{@filters}"
-    @reports = Report.filter(Report.user_limited(logged_in_user), @filters).order(report_date: :desc)
-    Rails.logger.debug "report count: #{@reports.count}"
+    reports = Report.user_limited(logged_in_user).includes(:pictures, :languages, :impact_report)
+    @reports = Report.filter(reports, @filters).order(report_date: :desc)
     respond_to do |format|
       format.js { render 'reports/update_collection' }
       format.html
