@@ -1,4 +1,5 @@
 require 'open-uri'
+require 'base64'
 
 class UserMailer < ActionMailer::Base
   require 'sendgrid-ruby'
@@ -30,14 +31,10 @@ class UserMailer < ActionMailer::Base
       @recipient = recipient
       to_address = "#{recipient.name} <#{recipient.email}>"
       if recipient.trusted? and @report.pictures.any?
+        # link the uri of each picture with the file name
+        @pictures = {}
         @report.pictures.each do |pic|
-          if Rails.env.production?
-            # attach the image from a url
-            attachments.inline[pic.ref_identifier] = open(pic.ref_url).read
-          else
-            # attach the image from local disk
-            attachments.inline[pic.ref_identifier] = File.read(Rails.root.join "public#{pic.ref_url}")
-          end
+          @pictures[pic.ref_url] = pic.ref_identifier if pic.ref?
         end
       end
     else

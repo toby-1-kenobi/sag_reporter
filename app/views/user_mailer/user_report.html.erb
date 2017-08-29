@@ -32,8 +32,8 @@
 <% if @report.pictures.any? %>
   <% if defined? @recipient %>
     <% if @recipient.trusted? %>
-      <% @report.pictures.each do |picture| %>
-        <%= image_tag attachments[picture.ref_identifier].url if picture.ref? %>
+      <% @pictures.each do |uri, file_name| %>
+        <%= link_to image_tag(uri, alt: "report photo: #{file_name}"), uri %>
       <% end %>
     <% else %>
       <p>You are not permitted to see the pictures attached to this report.</p>
