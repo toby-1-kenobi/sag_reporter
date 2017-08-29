@@ -28,7 +28,7 @@ class ReportsController < ApplicationController
   end
 
   before_action only: [:index_external] do
-    render json: {errors: 'Permission denied'} unless logged_in_user.national?
+    render json: {errors: 'Permission denied'} unless current_user && current_user.national?
   end
 
   before_action only: [:edit, :update] do
@@ -304,7 +304,7 @@ class ReportsController < ApplicationController
   private
 
   def report_params
-    current_user = logged_in_user || current_user
+    actual_user = logged_in_user || current_user
     # make hash options into arrays
     param_reduce(params['report'], %w(topics languages))
     safe_params = [
@@ -328,7 +328,7 @@ class ReportsController < ApplicationController
       :client,
       :version
     ]
-    safe_params.delete :status unless current_user.admin?
+    safe_params.delete :status unless actual_user.admin?
     # if we have a date try to change it to db-friendly format
     # otherwise set it to nil
     if params[:report][:report_date]
