@@ -154,6 +154,7 @@ $(document).ready ->
 
   # when viewing reports changing a filter refretches the reports
   $('.report-view-filter').on 'change', ->
+    $('#report-filter-spinner').addClass('is-active')
     $('#report-view-filters').submit()
     return
 

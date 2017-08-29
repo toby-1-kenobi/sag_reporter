@@ -32,6 +32,8 @@
   Showing <%= "#{@reports.count} #{'report'.pluralize(@reports.count)}" if @reports and @reports.any? %>
 </div>
 
+<div id="report-filter-spinner" class="mdl-spinner mdl-js-spinner"></div>
+
 <div class="reports-container mdl-grid">
   <% if @reports.any? %>
     <% @reports.each do |report| %>
