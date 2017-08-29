@@ -181,24 +181,16 @@ class ReportsController < ApplicationController
   end
 
   def index
-    @geo_states = logged_in_user.geo_states
-    @zones = Zone.of_states(@geo_states)
-    @languages = Language.minorities(@geo_states).order('LOWER(languages.name)')
-		@no_language_id = Language.order('id').last.try(:id).to_i + 1
-		@languages << Language.new(name:'<no language>', id: @no_language_id)
-    # limit reports to the last 6 months to keep things from slowing down too much
-    @reports = Report.
-        includes(
-            :languages,
-            :reporter,
-            :observers,
-            :pictures,
-            :topics,
-            :geo_state,
-            :impact_report => [:progress_markers => :topic]
-        ).where(geo_state: @geo_states).
-        where('reports.report_date > ?', 6.months.ago).
-        order(:report_date => :desc)
+    # if no since date is provided assume 3 months
+    params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+    @filters = report_filter_params
+    Rails.logger.debug "filters: #{@filters}"
+    @reports = Report.filter(Report.user_limited(logged_in_user), @filters).order(report_date: :desc)
+    Rails.logger.debug "report count: #{@reports.count}"
+    respond_to do |format|
+      format.js { render 'reports/update_collection' }
+      format.html
+    end
   end
 
   def by_language
@@ -328,6 +320,17 @@ class ReportsController < ApplicationController
       end
     end
     permitted = params.require(:report).permit(safe_params)
+  end
+
+  def report_filter_params
+    params.permit(
+        :archived,
+        :significant,
+        :since,
+        {:types => []},
+        :report_types,
+        :translation_impact
+    )
   end
 
   def find_report

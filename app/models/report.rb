@@ -69,6 +69,14 @@ class Report < ActiveRecord::Base
     joins(:impact_report).where(impact_reports: {translation_impact: true})
   }
 
+  scope :user_limited, -> user {
+    if user.national?
+      all
+    else
+      joins(:geo_states).where('geo_states.id' => user.geo_states)
+    end
+  }
+
   def translation_impact?
     impact_report and impact_report.translation_impact?
   end

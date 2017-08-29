@@ -1,4 +1,4 @@
-$('.reports-container').empty();
+$('.reports-count-container').html(`<div>Showing <%= j "#{@reports.count} #{'report'.pluralize(@reports.count)}" %></div>`);
 $('.reports-container').html(`
   <% if @reports.any? %>
     <% @reports.each do |report| %>

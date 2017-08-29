@@ -1,84 +1,42 @@
 <% provide(:title, 'Reports') %>
-<h1>Reports</h1>
-<%= form_tag spreadsheet_reports_path(format: :csv) do %>
-    <div class="row controls">
-      <div class="col l4 m6 s12 input-field">
-        <%= date_field_tag :from_date, 6.months.ago.strftime('%d %B, %Y'), class: 'datepicker active date-filter' %>
-        <%= label_tag :from_date, 'From', class: 'active' %>
+<% provide(:context_title, 'All Reports') %>
+
+<%= form_tag({controller: 'reports', action: 'index'}, method: 'get', remote: true, id: 'report-view-filters') do %>
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--4-col">
+        <%= render 'reports/filter_since' %>
       </div>
-      <div class="col l4 m6 s12 input-field">
-        <%= date_field_tag :to_date, Date.today.strftime('%d %B, %Y'), class: 'datepicker active date-filter' %>
-        <%= label_tag :to_date, 'To', class: 'active' %>
+      <div class="mdl-cell mdl-cell--4-col">
+        <%= render 'reports/filter_archived' %>
+        <%= render 'reports/filter_significant' %>
       </div>
-      <% if @zones.count > 1 %>
-          <div class="col l4 m6 s12 input-field">
-            <%= render partial: 'shared/multiselect', locals: {
-                text: 'zones…',
-                icon: 'language',
-                object: 'controls',
-                attribute: 'zone',
-                display: :name,
-                collection: @zones,
-                selected: @zones,
-                check_box_options: {class: 'filter-trigger', 'data-filter-trigger-label' => 'zone'}
-            } %>
-          </div>
-      <% end %>
-      <% if @geo_states.count > 1 %>
-          <div class="col l4 m6 s12 input-field">
-            <%= render partial: 'shared/multiselect', locals: {
-                text: 'states…',
-                icon: 'language',
-                object: 'controls',
-                attribute: 'geo_state',
-                display: :name,
-                data: 'zone_id',
-                element_options: {class: 'filterable-item', 'data-filter-label' => 'zone'},
-                collection: @geo_states,
-                selected: @geo_states,
-                check_box_options: {class: 'filter-trigger', 'data-filter-trigger-label' => 'geo_state'}
-            } %>
-          </div>
-      <% end %>
-      <div class="col l4 m6 s12 input-field">
-        <%= render partial: 'shared/multiselect', locals: {
-            text: 'languages…',
-            icon: 'language',
-            object: 'controls',
-            attribute: 'language',
-            display: :name,
-            data: :geo_state_ids_str,
-            element_options: {class: 'filterable-item', 'data-filter-label' => 'geo_state'},
-            collection: @languages,
-            selected: @languages,
-            check_box_options: {class: 'filter-trigger', 'data-filter-trigger-label' => 'language'}
-        } %>
+      <div class="mdl-cell mdl-cell--4-col">
+        <%= render 'reports/filter_type' %>
       </div>
-      <div class="col l4 m6 s12 input-field">
-        <div>
-          <%= check_box_tag :show_impact, 'impact', true, class: 'filter-trigger', 'data-filter-trigger-label' => 'report-type' %>
-          <%= label_tag :show_impact, 'Impact reports' %>
-        </div>
-        <div>
-          <%= check_box_tag :show_planning, 'planning', true, class: 'filter-trigger', 'data-filter-trigger-label' => 'report-type' %>
-          <%= label_tag :show_planning, 'Planning reports' %>
-        </div>
-        <div>
-          <%= check_box_tag :show_archived, 'archived', false, class: 'filter-trigger', 'data-filter-trigger-label' => 'status' %>
-          <%= label_tag :show_archived, 'Show archived reports' %>
-          <!-- hidden checkbox always selected so that active reports are not filtered out-->
-          <%= check_box_tag :show_active, 'active', true, class: 'filter-trigger hide', 'data-filter-trigger-label' => 'status', disable: true %>
-        </div>
-      </div>
-      <div class="col l4 m6 s12">
-        <%= button_tag( :class => "btn waves-effect waves-light") do %>
-            Download Spreadsheet <i class="material-icons right">file_download</i>
-        <% end %>
-      </div>
-    </div>
-    <div class="row">
-      <% can_edit = logged_in_user.admin? %>
-      <% can_archive = logged_in_user.admin? %>
-      <%= render partial: 'report', collection: @reports, locals: {time: true, languages: true, topics: true, can_edit: can_edit, can_archive: can_archive, wrapper: 'col s12 m6 l4'} %>
     </div>
 <% end %>
+
+<script>
+    $('.date-picker').bootstrapMaterialDatePicker({ weekStart : 0, time: false, format: 'DD MMMM, Y' });
+</script>
+
+<div class="reports-count-container">
+  Showing <%= "#{@reports.count} #{'report'.pluralize(@reports.count)}" if @reports and @reports.any? %>
+</div>
+
+<div class="reports-container mdl-grid">
+  <% if @reports.any? %>
+      <% @reports.each do |report| %>
+          <%= render partial: 'reports/mdl_report', object: report %>
+      <% end %>
+  <% else %>
+      <%= render 'reports/empty_state' %>
+  <% end %>
+</div>
+
+<%= link_to new_report_path, id: 'show-report-fab', class: 'new-report-fab mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored' do %>
+    <i class="material-icons">add</i>
+<% end %>
+<div class="mdl-tooltip" data-mdl-for="show-report-fab">
+  Write a new report
+</div>

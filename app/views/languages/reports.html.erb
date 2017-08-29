@@ -21,6 +21,10 @@
   $('.date-picker').bootstrapMaterialDatePicker({ weekStart : 0, time: false, format: 'DD MMMM, Y' });
 </script>
 
+<div class="reports-count-container">
+  Showing <%= "#{@reports.count} #{'report'.pluralize(@reports.count)}" if @reports and @reports.any? %>
+</div>
+
 <div class="reports-container mdl-grid">
   <% if @reports.any? %>
       <% @reports.each do |report| %>
