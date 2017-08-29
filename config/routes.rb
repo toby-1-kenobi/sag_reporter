@@ -65,9 +65,6 @@ Rails.application.routes.draw do
   end
   resources :reports do
     collection do
-      get 'by_language'
-      get 'by_topic'
-      get 'by_reporter'
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
       post 'create_external'
     end

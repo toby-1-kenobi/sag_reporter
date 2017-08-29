@@ -7,12 +7,8 @@ class ReportsController < ApplicationController
   before_action :require_login, except: [:create_external]
   before_action :authenticate, only: [:create_external]
 
-    # Let only permitted users do some things
-  before_action only: [:by_language, :by_topic, :by_reporter] do
-    redirect_to root_path unless logged_in_user.national?
-  end
 
-  before_action only: [:by_reporter, :spreadsheet] do
+  before_action only: [:spreadsheet] do
     redirect_to root_path unless logged_in_user.trusted?
   end
 
@@ -190,26 +186,6 @@ class ReportsController < ApplicationController
       format.js { render 'reports/update_collection' }
       format.html
     end
-  end
-
-  def by_language
-    @geo_states = logged_in_user.geo_states
-    @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
-    @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
-    @languages = Language.all.order('LOWER(languages.name)')
-  end
-
-  def by_topic
-    @geo_states = logged_in_user.geo_states
-    @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
-    @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
-    @topics = Topic.all
-  end
-
-  def by_reporter
-    @geo_states = logged_in_user.geo_states
-    @reports = Report.where(geo_state: @geo_states).order(:report_date => :desc)
-    @impact_reports = ImpactReport.where(geo_state: @geo_states).order(:report_date => :desc)
   end
 
   def archive
