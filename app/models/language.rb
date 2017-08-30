@@ -47,6 +47,7 @@ class Language < ActiveRecord::Base
   has_many :dialects, dependent: :destroy
   has_many :finish_line_progresses, dependent: :destroy
   has_many :finish_line_markers, through: :finish_line_progresses
+  belongs_to :champion, class_name: 'User', inverse_of: :championed_languages
 
   delegate :name, to: :family, prefix: true
   delegate :name, to: :cluster, prefix: true

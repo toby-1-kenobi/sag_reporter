@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170823154212) do
+ActiveRecord::Schema.define(version: 20170830064532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -326,8 +326,10 @@ ActiveRecord::Schema.define(version: 20170823154212) do
     t.text     "mt_literacy_programs"
     t.boolean  "poetry_print"
     t.boolean  "oral_traditions_print"
+    t.integer  "champion_id"
   end
 
+  add_index "languages", ["champion_id"], name: "index_languages_on_champion_id", using: :btree
   add_index "languages", ["cluster_id"], name: "index_languages_on_cluster_id", using: :btree
   add_index "languages", ["family_id"], name: "index_languages_on_family_id", using: :btree
   add_index "languages", ["iso"], name: "index_languages_on_iso", unique: true, using: :btree
@@ -672,6 +674,7 @@ ActiveRecord::Schema.define(version: 20170823154212) do
   add_foreign_key "languages", "clusters"
   add_foreign_key "languages", "data_sources", column: "pop_source_id"
   add_foreign_key "languages", "language_families", column: "family_id"
+  add_foreign_key "languages", "users", column: "champion_id"
   add_foreign_key "mt_resources", "geo_states"
   add_foreign_key "mt_resources", "languages"
   add_foreign_key "mt_resources", "users"
