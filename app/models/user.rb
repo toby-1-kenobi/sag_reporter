@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
   has_many :curated_states, through: :curatings, class_name: 'GeoState', source: 'geo_state', inverse_of: :curators
   has_many :edits, dependent: :destroy
   has_many :curated_edits, class_name: 'Edit', foreign_key: 'curated_by_id', inverse_of: :curated_by, dependent: :nullify
+  has_many :external_devices
 
   attr_accessor :remember_token
 
@@ -67,8 +68,13 @@ class User < ActiveRecord::Base
 
   # Remembers a user in the database for use in persistent sessions.
   def remember
-    self.remember_token = User.new_token
-    update_attribute(:remember_digest, User.digest(remember_token))
+    ActiveRecord::Base.record_timestamps = false
+    begin
+      self.remember_token = User.new_token
+      update_attribute(:remember_digest, User.digest(remember_token))
+    ensure
+      ActiveRecord::Base.record_timestamps = true
+    end
   end
 
   # Returns true if the given token matches the digest.
@@ -79,7 +85,12 @@ class User < ActiveRecord::Base
 
   # Forgets a user.
   def forget
-    update_attribute(:remember_digest, nil)
+    ActiveRecord::Base.record_timestamps = false
+    begin
+      update_attribute(:remember_digest, nil)
+    ensure
+      ActiveRecord::Base.record_timestamps = true
+    end
   end
 
   # Pretty print phone number

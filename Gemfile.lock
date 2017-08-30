@@ -469,6 +469,7 @@ DEPENDENCIES
   jquery-rails
   jquery-turbolinks
   jquery-ui-rails
+  jwt
   launchy
   material_design_lite-sass
   materialize-sass

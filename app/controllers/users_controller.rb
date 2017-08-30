@@ -2,8 +2,10 @@ class UsersController < ApplicationController
 
   include ParamsHelper
 
-  before_action :require_login, except: [:me, :confirm_email]
-  before_action :authenticate, only: [:me]
+  skip_before_action :verify_authenticity_token, only: [:show_external]
+
+  before_action :require_login, except: [:show_external, :index_external, :confirm_email]
+  before_action :authenticate, only: [:show_external, :index_external]
 
   # A user's profile can only be edited or seen by
   #    themselves or
@@ -28,50 +30,51 @@ class UsersController < ApplicationController
     redirect_to root_path unless logged_in_user.admin?
   end
 
-  def me
+  # send user related data to an external client (=android app)
+  def show_external
+    external_params = params[:user] && params[:user][:updated_at] &&
+      params.require(:user).permit(:updated_at)[:updated_at]
     user_data = Hash.new
-    user_data['id'] = current_user.id
-    user_data['name'] = current_user.name
-    user_data['phone'] = current_user.phone
-    user_data['geo_states'] = Array.new
-    current_user.geo_states.includes(:state_languages).each do |gs|
-      languages = Array.new
-      gs.state_languages.in_project.each do |sl|
-        languages << {
-            'id' => sl.id,
-            'language_name' => sl.language_name
-        }
+    user_data[:id] = current_user.id
+    user_data[:geo_states] = Array.new
+    last_updated = [current_user.updated_at]
+    current_user.geo_states.includes(state_languages: :language).where(state_languages: {project: true}).each do |geo_state|
+      languages = geo_state.state_languages.map do |state_language|
+          last_updated << state_language.updated_at
+          {language_id: state_language.language.id,
+           language_name: state_language.language_name}
       end
-      user_data['geo_states'] << {
-          'id' => gs.id,
-          'name' => gs.name,
-          'languages' => languages
+      user_data[:geo_states] << {
+          state_id: geo_state.id,
+          state_name: geo_state.name,
+          languages: languages
       }
+      last_updated << geo_state.updated_at
     end
-    user_data['reports'] = Array.new
-    current_user.reports.each do |report|
-      if report.impact_report
-        language_ids = Array.new
-        report.languages.each do |rl|
-          language_ids << StateLanguage.find_by(
-              geo_state_id: report.geo_state_id, 
-              language_id: rl.id, 
-              project: true
-          ).id
-        end
-        user_data['reports'] << {
-            'report_id' => report.id,
-            'geo_state_id' => report.geo_state.id,
-            'report_date' => report.report_date,
-            'content' => report.content,
-            'impact_report' => 1,
-            'languages' => language_ids,
-            'client' => report.client,
-            'version' => report.version
-        }
-      end
+    last_updated = last_updated.max.to_i
+    puts last_updated
+    user_data[:updated_at] = last_updated.to_i
+    if !external_params || last_updated > external_params
+      puts user_data
+      render json: {user: user_data}
+    else
+      puts "User data not changed"
+      render json: {user: {}}
     end
-    render json: user_data
+  end
+
+  # send data from all users to an external client (=android app)
+  def index_external
+    user_data = Array.new
+    User.all.each do |user|
+      user_specific_data = {
+          id: user.id,
+          name: user.name
+      }
+      user_data << user_specific_data
+    end
+    puts user_data
+    render json: {users: user_data}
   end
 
   def new
