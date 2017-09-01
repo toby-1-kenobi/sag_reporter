@@ -3,9 +3,9 @@ class ReportsController < ApplicationController
   helper ColoursHelper
   include ParamsHelper
 
-  skip_before_action :verify_authenticity_token, only: [:create_external, :index_external]
-  before_action :require_login, except: [:create_external, :index_external]
-  before_action :authenticate, only: [:create_external, :index_external]
+  skip_before_action :verify_authenticity_token, only: [:create_external, :update_external, :index_external]
+  before_action :require_login, except: [:create_external, :update_external, :index_external]
+  before_action :authenticate, only: [:create_external, :update_external, :index_external]
 
     # Let only permitted users do some things
   before_action only: [:index, :by_language, :by_topic, :by_reporter] do
@@ -49,6 +49,57 @@ class ReportsController < ApplicationController
     @topics = Topic.all
   end
 
+  # edited report submitted by an external client (=android app)
+  
+  def update_external
+    begin
+      additional_params = [:external_updated_at, :external_id]
+      external_params = params.require(:report).permit(additional_params)
+      updated_at = external_params.delete 'external_updated_at'
+      @report = Report.find external_params.delete('external_id')
+      
+      full_params = report_params.merge({reporter: current_user})
+      report_factory = nil
+      success = true
+      instance_id = -1
+      # use state-language IDs (for being converted back to language IDs by the report-factory)
+      language_ids = full_params['languages']
+      state_id = full_params['geo_state_id']
+      full_params['languages'] = StateLanguage.where(language_id: language_ids, geo_state_id: state_id).map{|sl| sl.id}
+      # just edit, if user has the right, to do so
+      if updated_at > @report.updated_at.to_i and
+          (current_user.admin? or current_user == @report.reporter)
+        # delete all old image files (for just using new files)
+        @report.pictures.each do |picture|
+          picture.remove_ref!
+          picture.delete
+        end
+        report_factory = Report::Updater.new(@report)
+        success = report_factory.update_report(full_params)
+        instance_id = report_factory.instance.id if success
+      end
+
+      response = Hash.new
+      if success
+        response[:success] = true
+        response[:report_id] = instance_id
+      else
+        response[:success] = false
+        response[:errors] = Array.new
+        if report_factory.instance
+          response[:errors].concat report_factory.instance.errors.full_messages
+        end
+        if report_factory.error
+          response[:errors] << report_factory.error.message
+        end
+      end
+      render json: response
+    rescue => e
+      puts e
+      render json: { error: e }
+    end
+  end
+  
   # new report submitted by an external client (=android app)
   def create_external
     begin
@@ -60,28 +111,10 @@ class ReportsController < ApplicationController
       language_ids = full_params['languages']
       state_id = full_params['geo_state_id']
       full_params['languages'] = StateLanguage.where(language_id: language_ids, geo_state_id: state_id).map{|sl| sl.id}
-      if full_params['external_id'].nil? || full_params['external_updated_at'].nil?
-        full_params.delete 'external_updated_at'
-        full_params.delete('external_id')
-        report_factory = Report::Factory.new
-        success = report_factory.create_report(full_params)
-        instance_id = report_factory.instance.id if success
-      else
-        updated_at = full_params.delete 'external_updated_at'
-        @report = Report.find full_params.delete('external_id')
-        # just edit, if user has the right, to do so
-        if updated_at > @report.updated_at.to_i and
-            (current_user.admin? or current_user == @report.reporter)
-          # delete all old image files (for just using new files)
-          @report.pictures.each do |picture|
-            picture.remove_ref!
-            picture.delete
-          end
-          report_factory = Report::Updater.new(@report)
-          success = report_factory.update_report(full_params)
-          instance_id = report_factory.instance.id if success
-        end
-      end
+      
+      report_factory = Report::Factory.new
+      success = report_factory.create_report(full_params)
+      instance_id = report_factory.instance.id if success
 
       response = Hash.new
       if success
@@ -330,7 +363,7 @@ class ReportsController < ApplicationController
       :impact_report,
       {:languages => []},
       {:topics => []},
-      {:pictures_attributes => [:ref, :_destroy, :id]},
+      {:pictures_attributes => [:ref, :_destroy, :id, :created_external]},
       {:observers_attributes => [:id, :name]},
       {:impact_report_attributes => [:translation_impact]},
       :status,
