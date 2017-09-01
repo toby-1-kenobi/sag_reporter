@@ -56,8 +56,8 @@ class SessionsController < ApplicationController
   end
 
   def show_external
-    full_params = params.require(:session).permit :user_id, :device_id
     begin
+      full_params = params.require(:session).permit :user_id, :device_id
       user = User.find(full_params['user_id']) if full_params['user_id'] != -1
       unless user && user.external_devices.map{|d| d.device_id if d.registered}.include?(full_params[:device_id])
         puts "Device not registered"

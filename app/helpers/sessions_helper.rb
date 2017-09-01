@@ -93,8 +93,8 @@ module SessionsHelper
       user = User.find payload['sub']
       device_is_registered = user.external_devices.map{|d| d.device_id if d.registered}.include?(payload['iss'])
       user if user.updated_at.to_i < payload['iat'] && device_is_registered
-    rescue => error
-      puts error
+    rescue => e
+      puts e
       nil
     end
   end

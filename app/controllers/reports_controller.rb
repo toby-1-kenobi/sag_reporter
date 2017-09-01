@@ -51,101 +51,111 @@ class ReportsController < ApplicationController
 
   # new report submitted by an external client (=android app)
   def create_external
-    full_params = report_params.merge({reporter: current_user})
-    report_factory = nil
-    success = true
-    instance_id = -1
-    # use state-language IDs (for being converted back to language IDs by the report-factory)
-    language_ids = full_params['languages']
-    state_id = full_params['geo_state_id']
-    full_params['languages'] = StateLanguage.where(language_id: language_ids, geo_state_id: state_id).map{|sl| sl.id}
-    if full_params['external_id'].nil? || full_params['external_updated_at'].nil?
-      full_params.delete 'external_updated_at'
-      full_params.delete('external_id')
-      report_factory = Report::Factory.new
-      success = report_factory.create_report(full_params)
-      instance_id = report_factory.instance.id if success
-    else
-      updated_at = full_params.delete 'external_updated_at'
-      @report = Report.find full_params.delete('external_id')
-      # just edit, if user has the right, to do so
-      if updated_at > @report.updated_at.to_i and
-          (current_user.admin? or current_user == @report.reporter)
-        # delete all old image files (for just using new files)
-        @report.pictures.each do |picture|
-          picture.remove_ref!
-          picture.delete
-        end
-        report_factory = Report::Updater.new(@report)
-        success = report_factory.update_report(full_params)
+    begin
+      full_params = report_params.merge({reporter: current_user})
+      report_factory = nil
+      success = true
+      instance_id = -1
+      # use state-language IDs (for being converted back to language IDs by the report-factory)
+      language_ids = full_params['languages']
+      state_id = full_params['geo_state_id']
+      full_params['languages'] = StateLanguage.where(language_id: language_ids, geo_state_id: state_id).map{|sl| sl.id}
+      if full_params['external_id'].nil? || full_params['external_updated_at'].nil?
+        full_params.delete 'external_updated_at'
+        full_params.delete('external_id')
+        report_factory = Report::Factory.new
+        success = report_factory.create_report(full_params)
         instance_id = report_factory.instance.id if success
+      else
+        updated_at = full_params.delete 'external_updated_at'
+        @report = Report.find full_params.delete('external_id')
+        # just edit, if user has the right, to do so
+        if updated_at > @report.updated_at.to_i and
+            (current_user.admin? or current_user == @report.reporter)
+          # delete all old image files (for just using new files)
+          @report.pictures.each do |picture|
+            picture.remove_ref!
+            picture.delete
+          end
+          report_factory = Report::Updater.new(@report)
+          success = report_factory.update_report(full_params)
+          instance_id = report_factory.instance.id if success
+        end
       end
-    end
 
-    response = Hash.new
-    if success
-      response[:success] = true
-      response[:report_id] = instance_id
-    else
-      response[:success] = false
-      response[:errors] = Array.new
-      if report_factory.instance
-        response[:errors].concat report_factory.instance.errors.full_messages
+      response = Hash.new
+      if success
+        response[:success] = true
+        response[:report_id] = instance_id
+      else
+        response[:success] = false
+        response[:errors] = Array.new
+        if report_factory.instance
+          response[:errors].concat report_factory.instance.errors.full_messages
+        end
+        if report_factory.error
+          response[:errors] << report_factory.error.message
+        end
       end
-      if report_factory.error
-        response[:errors] << report_factory.error.message
-      end
+      render json: response
+    rescue => e
+      puts e
+      render json: { error: e }
     end
-    render json: response
   end
 
   # send all reports to an external client (=android app)
   def index_external
-    external_params = !params[:reports].nil? && !params[:reports].empty? &&
-        params.permit(reports: [:id, :updated_at])[:reports]
-    report_data = Array.new
-    user_geo_states = current_user.geo_states.ids
-    Report.includes(:languages, :pictures).where.not(impact_report: nil).each do |report|
+    begin
+      external_params = !params[:reports].nil? && !params[:reports].empty? &&
+          params.permit(reports: [:id, :updated_at])[:reports]
+      report_data = Array.new
+      user_geo_states = current_user.geo_states.ids
+      Report.includes(:languages, :pictures).where.not(impact_report: nil).each do |report|
 
-      next unless user_geo_states.include? report.geo_state_id
+        next unless user_geo_states.include? report.geo_state_id
 
-      language_ids = report.languages.map {|language| language.id}
+        language_ids = report.languages.map {|language| language.id}
 
-      pictures = Hash.new
-      report.pictures.each do |picture|
-        if picture.ref.file.exists?
-          picture_id = picture[:id]
-          file_content = Base64.encode64 picture.ref.read
-          pictures[picture_id] = file_content
+        pictures = Hash.new
+        report.pictures.each do |picture|
+          if picture.ref.file.exists?
+            picture_id = picture[:id]
+            file_content = Base64.encode64 picture.ref.read
+            pictures[picture_id] = file_content
+          end
         end
+
+        if external_params && external_params[report.id.to_s]
+          if report.updated_at.to_i == external_params[report.id.to_s][:updated_at]
+            report_data << {id: report.id, updated_at: 0}
+            next
+          end
+          if report.updated_at.to_i < external_params[report.id.to_s][:updated_at]
+            report_data << {id: report.id, updated_at: -1}
+            next
+          end
+        end
+        report_data << {
+            id: report.id,
+            state_id: report.geo_state_id,
+            date: report.report_date.to_time(:utc).to_i,
+            content: report.content,
+            reporter_id: report.reporter_id,
+            impact_report: 1,
+            languages: language_ids,
+            pictures: pictures,
+            client: report.client,
+            version: report.version,
+            updated_at: report.updated_at.to_i
+        }
       end
-
-      if external_params && external_params[report.id.to_s]
-        if report.updated_at.to_i == external_params[report.id.to_s][:updated_at]
-          report_data << {id: report.id, updated_at: 0}
-          next
-        end
-        if report.updated_at.to_i < external_params[report.id.to_s][:updated_at]
-          report_data << {id: report.id, updated_at: -1}
-          next
-        end
-      end
-      report_data << {
-          id: report.id,
-          state_id: report.geo_state_id,
-          date: report.report_date.to_time(:utc).to_i,
-          content: report.content,
-          reporter_id: report.reporter_id,
-          impact_report: 1,
-          languages: language_ids,
-          pictures: pictures,
-          client: report.client,
-          version: report.version,
-          updated_at: report.updated_at.to_i
-      }
+      puts report_data
+      render json: {reports: report_data}
+    rescue => e
+      puts e
+      render json: { error: e }
     end
-    puts report_data
-    render json: {reports: report_data}
   end
 
   def create
