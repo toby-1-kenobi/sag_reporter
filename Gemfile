@@ -59,6 +59,7 @@ gem 'pg'
 # Output PDF files
 gem 'prawn'
 gem 'prawn-table'
+gem 'prawn-graph'
 
 # Custom icon fonts
 gem 'fontcustom'
