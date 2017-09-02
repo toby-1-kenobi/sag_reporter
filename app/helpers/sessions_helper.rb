@@ -50,6 +50,9 @@ module SessionsHelper
         format.js do
           render js: "window.location.replace('#{login_url}');"
         end
+        format.pdf do
+          redirect_to login_url
+        end
       end
     end
   end
