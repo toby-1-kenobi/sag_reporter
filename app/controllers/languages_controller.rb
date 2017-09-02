@@ -1,6 +1,7 @@
 class LanguagesController < ApplicationController
   
   helper ColoursHelper
+  include ReportFilter
 
   before_action :require_login
 
@@ -97,6 +98,7 @@ class LanguagesController < ApplicationController
 
     # if no since date is provided assume 3 months
     params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+    params[:until] ||= Date.today.strftime('%d %B, %Y')
     @filters = report_filter_params
     reports = Report.language(@language).includes(:pictures, :languages, :impact_report)
     @reports = Report.filter(reports, @filters).order(report_date: :desc)
@@ -346,17 +348,6 @@ class LanguagesController < ApplicationController
         :translation_info,
         :translation_need,
         :translation_progress
-    )
-  end
-
-  def report_filter_params
-    params.permit(
-        :archived,
-        :significant,
-        :since,
-        {:types => []},
-        :report_types,
-        :translation_impact
     )
   end
 

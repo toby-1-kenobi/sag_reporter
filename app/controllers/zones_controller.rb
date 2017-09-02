@@ -1,4 +1,5 @@
 class ZonesController < ApplicationController
+  include ReportFilter
 
   before_action :require_login
   before_action only: [:nation] do
@@ -21,6 +22,7 @@ class ZonesController < ApplicationController
   def reports
     # if no since date is provided assume 3 months
     params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+    params[:until] ||= Date.today.strftime('%d %B, %Y')
     @filters = report_filter_params
     zone = Zone.find params[:id]
     states = zone.geo_states
@@ -34,19 +36,6 @@ class ZonesController < ApplicationController
 
   def nation
     @languages = Language.includes(:family, {finish_line_progresses: :finish_line_marker}).all
-  end
-
-  private
-
-  def report_filter_params
-    params.permit(
-        :archived,
-        :significant,
-        :since,
-        {:types => []},
-        :report_types,
-        :translation_impact
-    )
   end
 
 end

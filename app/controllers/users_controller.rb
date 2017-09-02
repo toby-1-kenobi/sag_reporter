@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
 
   include ParamsHelper
+  include ReportFilter
 
   skip_before_action :verify_authenticity_token, only: [:show_external]
 
@@ -178,6 +179,7 @@ class UsersController < ApplicationController
 
     # if no since date is provided assume 3 months
     params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+    params[:until] ||= Date.today.strftime('%d %B, %Y')
     @filters = report_filter_params
     reports = Report.reporter(@user).includes(:pictures, :languages, :impact_report)
     @reports = Report.filter(reports, @filters).order(report_date: :desc)
@@ -219,16 +221,6 @@ class UsersController < ApplicationController
       } unless logged_in_user.admin?
     end
     params.require(:user).permit(safe_params)
-  end
-
-  def report_filter_params
-    params.permit(
-              :archived,
-              :since,
-              {:types => []},
-              :report_types,
-              :translation_impact
-    )
   end
 
   def assign_for_user_form

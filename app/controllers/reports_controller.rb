@@ -2,6 +2,7 @@ class ReportsController < ApplicationController
 
   helper ColoursHelper
   include ParamsHelper
+  include ReportFilter
 
   skip_before_action :verify_authenticity_token, only: [:create_external, :index_external]
   before_action :require_login, except: [:create_external, :index_external]
@@ -226,8 +227,9 @@ class ReportsController < ApplicationController
   end
 
   def index
-    # if no since date is provided assume 3 months
+    # if no dates are provided assume 3 months ago until today
     params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+    params[:until] ||= Date.today.strftime('%d %B, %Y')
     @filters = report_filter_params
     reports = Report.user_limited(logged_in_user).includes(:pictures, :languages, :impact_report)
     @reports = Report.filter(reports, @filters).order(report_date: :desc)
@@ -352,17 +354,6 @@ class ReportsController < ApplicationController
       end
     end
     permitted = params.require(:report).permit(safe_params)
-  end
-
-  def report_filter_params
-    params.permit(
-        :archived,
-        :significant,
-        :since,
-        {:types => []},
-        :report_types,
-        :translation_impact
-    )
   end
 
   def find_report

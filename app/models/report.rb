@@ -50,6 +50,10 @@ class Report < ActiveRecord::Base
     where('report_date >= ?', since_date)
   }
 
+  scope :until, -> until_date {
+    where('report_date <= ?', until_date)
+  }
+
   scope :significant, -> {
     where(significant: true)
   }
@@ -144,6 +148,7 @@ class Report < ActiveRecord::Base
   def self.filter(collection, filters)
     # here we're trusting the Date.parse function will be able to handle whatever format comes its way in this context
     collection = collection.since Date.parse(filters[:since]) if filters[:since]
+    collection = collection.until Date.parse(filters[:until]) if filters[:until]
     collection = collection.active unless filters[:archived].present?
     collection = collection.significant if filters[:significant].present?
     # before filtering for report types check that we are using this filter
