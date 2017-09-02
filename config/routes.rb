@@ -67,6 +67,7 @@ Rails.application.routes.draw do
     collection do
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
       post 'create_external'
+      post 'update_external'
       post 'index_external'
     end
     member do

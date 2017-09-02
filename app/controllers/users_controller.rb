@@ -33,49 +33,59 @@ class UsersController < ApplicationController
 
   # send user related data to an external client (=android app)
   def show_external
-    external_params = params[:user] && params[:user][:updated_at] &&
-      params.require(:user).permit(:updated_at)[:updated_at]
-    user_data = Hash.new
-    user_data[:id] = current_user.id
-    user_data[:geo_states] = Array.new
-    last_updated = [current_user.updated_at]
-    current_user.geo_states.includes(state_languages: :language).where(state_languages: {project: true}).each do |geo_state|
-      languages = geo_state.state_languages.map do |state_language|
-          last_updated << state_language.updated_at
-          {language_id: state_language.language.id,
-           language_name: state_language.language_name}
+    begin
+      external_params = params[:user] && params[:user][:updated_at] &&
+        params.require(:user).permit(:updated_at)[:updated_at]
+      user_data = Hash.new
+      user_data[:id] = current_user.id
+      user_data[:geo_states] = Array.new
+      last_updated = [current_user.updated_at]
+      current_user.geo_states.includes(state_languages: :language).where(state_languages: {project: true}).each do |geo_state|
+        languages = geo_state.state_languages.map do |state_language|
+            last_updated << state_language.updated_at
+            {language_id: state_language.language.id,
+             language_name: state_language.language_name}
+        end
+        user_data[:geo_states] << {
+            state_id: geo_state.id,
+            state_name: geo_state.name,
+            languages: languages
+        }
+        last_updated << geo_state.updated_at
       end
-      user_data[:geo_states] << {
-          state_id: geo_state.id,
-          state_name: geo_state.name,
-          languages: languages
-      }
-      last_updated << geo_state.updated_at
-    end
-    last_updated = last_updated.max.to_i
-    puts last_updated
-    user_data[:updated_at] = last_updated.to_i
-    if !external_params || last_updated > external_params
-      puts user_data
-      render json: {user: user_data}
-    else
-      puts "User data not changed"
-      render json: {user: {}}
+      last_updated = last_updated.max.to_i
+      puts last_updated
+      user_data[:updated_at] = last_updated.to_i
+      if !external_params || last_updated > external_params
+        puts user_data
+        render json: {user: user_data}
+      else
+        puts "User data not changed"
+        render json: {user: {}}
+      end
+    rescue => e
+      puts e
+      render json: { error: e }
     end
   end
 
   # send data from all users to an external client (=android app)
   def index_external
-    user_data = Array.new
-    User.all.each do |user|
-      user_specific_data = {
-          id: user.id,
-          name: user.name
-      }
-      user_data << user_specific_data
+    begin
+      user_data = Array.new
+      User.all.each do |user|
+        user_specific_data = {
+            id: user.id,
+            name: user.name
+        }
+        user_data << user_specific_data
+      end
+      puts user_data
+      render json: {users: user_data}
+    rescue => e
+      puts e
+      render json: { error: e }
     end
-    puts user_data
-    render json: {users: user_data}
   end
 
   def new
