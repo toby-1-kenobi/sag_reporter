@@ -157,6 +157,12 @@ class Report < ActiveRecord::Base
       filters[:types] ||= []
       collection = collection.types(filters[:types])
     end
+    # before filtering for states check that we are using this filter
+    if filters[:states_filter].present?
+      # for an empty list of types the scope will return an empty collection
+      filters[:states] ||= []
+      collection = collection.states(filters[:states])
+    end
     # before filtering for type of impact check impact type is selected (if we are using type filter)
     if filters[:report_types].blank? or filters[:types].include? 'impact'
       collection = collection.translation_impact if filters[:translation_impact] == 'true'

@@ -16,7 +16,7 @@ class ZonesController < ApplicationController
     @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user).where(geo_states: {zone: @zone})
     @geo_states = @zone.geo_states
     @geo_states = @geo_states.where(id: logged_in_user.geo_states) unless logged_in_user.national?
-    @filters = {since: 3.month.ago.strftime('%d %B, %Y')}
+    @filters = {since: 3.month.ago.strftime('%d %B, %Y'), until: Date.today.strftime('%d %B, %Y')}
   end
 
   def reports

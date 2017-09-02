@@ -135,6 +135,12 @@ $(document).ready ->
     else
       $('#impact-type-filters').slideUp()
 
+  $('#states_filter').on 'change', ->
+    if (this.checked)
+      $('#state-filters').slideDown()
+    else
+      $('#state-filters').slideUp()
+
   # Hide or show supervisor email field depending on whether report is significant
   $('#report_significant').on 'change', ->
     if (this.checked)

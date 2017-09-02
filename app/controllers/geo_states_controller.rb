@@ -8,7 +8,7 @@ class GeoStatesController < ApplicationController
   autocomplete :district, :name, full: true
 
   def show
-    @filters = {since: 3.month.ago.strftime('%d %B, %Y')}
+    @filters = {since: 3.month.ago.strftime('%d %B, %Y'), until: Date.today.strftime('%d %B, %Y')}
   end
 
   def get_autocomplete_items(parameters)
