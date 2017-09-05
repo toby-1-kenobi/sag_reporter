@@ -2,6 +2,8 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+# this is an ugly hack.
+#TODO: change the controls in the transformation page to be inside a form
 updateTransformationUpdateLink = ->
   ref = $('.update-transformation-data').prop('href')
   ref = ref.replace(/year_a=\d+/, 'year_a=' + $('#date_year_a').val())
@@ -12,5 +14,6 @@ updateTransformationUpdateLink = ->
   return
 
 $(document).ready ->
-  $('.transformation-dates select').on 'change', updateTransformationUpdateLink
+  $('#transformation-baseline-date').on 'change', updateTransformationUpdateLink
+  $('#transformation-end-date').on 'change', updateTransformationUpdateLink
   return
