@@ -3,11 +3,6 @@ class UsersController < ApplicationController
   include ParamsHelper
   include ReportFilter
 
-  skip_before_action :verify_authenticity_token, only: [:show_external]
-
-  before_action :require_login, except: [:show_external, :index_external, :confirm_email]
-  before_action :authenticate, only: [:show_external, :index_external]
-
   # A user's profile can only be edited or seen by
   #    themselves or
   #    someone with permission
@@ -31,7 +26,12 @@ class UsersController < ApplicationController
     redirect_to root_path unless logged_in_user.admin?
   end
 
-  # send user related data to an external client (=android app)
+  before_action :require_login, except: [:confirm_email, :show_external, :index_external]
+  # methods related to an external client (=android app)
+  skip_before_action :verify_authenticity_token, only: [:show_external]
+  before_action :authenticate, only: [:show_external, :index_external]
+
+  # sends user related data (inclusive related states and their languages)
   def show_external
     begin
       external_params = params[:user] && params[:user][:updated_at] &&
@@ -69,7 +69,7 @@ class UsersController < ApplicationController
     end
   end
 
-  # send data from all users to an external client (=android app)
+  # sends all user_names
   def index_external
     begin
       user_data = Array.new
@@ -87,6 +87,7 @@ class UsersController < ApplicationController
       render json: { error: e }
     end
   end
+  # until here methods were related to an external client (=android app)
 
   def new
   	@user = User.new
