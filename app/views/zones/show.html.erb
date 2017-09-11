@@ -60,10 +60,13 @@
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--4-col">
             <%= render 'reports/filter_since' %>
+            <%= render 'reports/filter_until' %>
           </div>
           <div class="mdl-cell mdl-cell--4-col">
             <%= render 'reports/filter_archived' %>
             <%= render 'reports/filter_significant' %>
+            <% states = logged_in_user.national? ? @zone.geo_states : @zone.geo_states.where(id: logged_in_user.geo_states) %>
+            <%= render partial: 'reports/filter_states', locals: {states: states.order(:name)} %>
           </div>
           <div class="mdl-cell mdl-cell--4-col">
             <%= render 'reports/filter_type' %>

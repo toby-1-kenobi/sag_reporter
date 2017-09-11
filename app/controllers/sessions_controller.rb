@@ -1,25 +1,75 @@
 class SessionsController < ApplicationController
 
   before_action :check_user, only: [:two_factor_auth, :new, :resend_otp_to_phone, :resend_otp_to_email]
-  skip_before_action :verify_authenticity_token, only: [:create_external]
+  skip_before_action :verify_authenticity_token, only: [:create_external, :show_external]
 
   def new
   end
 
   def create_external
-    auth_params = params.require(:auth).permit :phone, :password
-    user = User.find_by phone: auth_params[:phone]
-    if !user
-      head :not_found
-      return
+    begin
+      auth_params = params.require(:auth).permit :phone, :password, :device_id, :device_name
+      user = User.find_by phone: auth_params[:phone]
+      unless user
+        head :not_found
+        return
+      end
+      if user.authenticate auth_params[:password]
+        users_device = user.external_devices.find{|d| d.device_id == auth_params[:device_id]}
+        if users_device && users_device.registered
+          secret_key = Rails.application.secrets.secret_key_base
+          payload = {sub: user.id, iat: Time.now.to_i, iss: users_device.device_id}
+          token = JWT.encode payload, secret_key, 'HS256'
+          database_key = (user.created_at.to_f * 1000000).to_i
+          session_data = { jwt: token, user: user.id , key: database_key}
+          puts session_data
+          render json: session_data, status: :created
+        else
+          unless users_device
+            new_device = ExternalDevice.new
+            new_device.device_id = auth_params[:device_id]
+            new_device.name = auth_params[:device_name]
+            new_device.user = user
+            new_device.registered = true #todo: replace this with a manual registration on users/edit
+            new_device.save
+            #remove those following lines, if manual registration is implemented
+            secret_key = Rails.application.secrets.secret_key_base
+            payload = {sub: user.id, iat: Time.now.to_i, iss: new_device.device_id}
+            token = JWT.encode payload, secret_key, 'HS256'
+            database_key = (user.created_at.to_f * 1000000).to_i
+            session_data = { jwt: token, user: user.id , key: database_key}
+            puts session_data
+            render json: session_data, status: :created
+            return
+          end
+          puts "Device not registered"
+          render json: { user: user.id }
+        end
+      else
+        puts "Wrong password"
+        head :not_found
+      end
+    rescue => e
+      puts e
+      render json: { error: e, secret_key_found: !!secret_key, payload_found: !!payload, token_found: !!token}
     end
-    secret_key = Rails.application.secrets.secret_key_base
-    payload = {sub: user.id, iat: Time.now.to_i}
-    token = JWT.encode payload, secret_key, 'HS256'
-    if user.authenticate auth_params[:password]
-      render json: { jwt: token, user: user.id }, status: :created
-    else
-      head :not_found
+  end
+
+  def show_external
+    begin
+      full_params = params.require(:session).permit :user_id, :device_id
+      user = User.find(full_params['user_id']) if full_params['user_id'] != -1
+      unless user && user.external_devices.map{|d| d.device_id if d.registered}.include?(full_params[:device_id])
+        puts "Device not registered"
+        head :not_found
+        return
+      end
+      database_key = (user.created_at.to_f * 1000000).to_i
+      puts database_key
+      render json: { key: database_key }
+    rescue => e
+      puts e
+      render json: { error: e }
     end
   end
 

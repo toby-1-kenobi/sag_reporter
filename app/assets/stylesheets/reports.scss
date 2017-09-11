@@ -97,6 +97,11 @@ li.report {
   margin-left: 2em;
 }
 
+#state-filters {
+  max-height: 10em;
+  overflow: auto;
+}
+
 .new-report-fab {
   position: fixed !important;
   z-index: 1000;

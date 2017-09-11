@@ -21,6 +21,7 @@ class Report::Factory
       params['version'] ||= SagReporter::Application::VERSION
     end
     begin
+      params['pictures_attributes'] = add_external_picture params['pictures_attributes']
       @instance = Report.new(params)
       add_languages(state_language_ids, params['geo_state_id']) if state_language_ids
       add_observers(observers, params['geo_state_id'], params[:reporter]) if observers
@@ -30,11 +31,13 @@ class Report::Factory
       end
       @instance.planning_report = PlanningReport.new if planning.to_i == 1
       @instance.challenge_report = ChallengeReport.new if challenge.to_i == 1
+      success = true
     rescue => e
       @error = e
-      return false
-    else
-      return true
+      success = false
+    ensure
+      cleanup_external_picture
+      success
     end
   end
 

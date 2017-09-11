@@ -134,7 +134,8 @@ class StateLanguagesController < ApplicationController
     date_b = Date.new params[:year_b].to_i, params[:month_b].to_i
     # for each project language get the aggregated data for both dates
     @transformations = Hash.new
-    StateLanguage.in_project.includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).find_each do |state_language|
+    # join progress updates to only include languages that have had baseline set.
+    StateLanguage.in_project.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
       @transformations[state_language] = state_language.transformation(logged_in_user, date_a, date_b)
     end
   end

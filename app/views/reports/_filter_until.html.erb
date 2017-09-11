@@ -1,0 +1,5 @@
+<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+  <i class="material-icons mdl-textfield__icon">today</i>
+  <%= text_field_tag 'until', @filters[:until], class: 'report-view-filter date-picker mdl-textfield__input' %>
+  <%= label_tag 'until', 'Showing reports until', class: 'mdl-textfield__label' %>
+</div>

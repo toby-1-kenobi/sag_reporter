@@ -50,6 +50,9 @@ module SessionsHelper
         format.js do
           render js: "window.location.replace('#{login_url}');"
         end
+        format.pdf do
+          redirect_to login_url
+        end
       end
     end
   end
@@ -91,9 +94,10 @@ module SessionsHelper
       secret_key = Rails.application.secrets.secret_key_base
       payload, _ = JWT.decode token, secret_key, true, {algorithm: 'HS256'}
       user = User.find payload['sub']
-      user if user.updated_at.to_i < payload['iat']
-    rescue => error
-      puts error
+      device_is_registered = user.external_devices.map{|d| d.device_id if d.registered}.include?(payload['iss'])
+      user if user.updated_at.to_i < payload['iat'] && device_is_registered
+    rescue => e
+      puts e
       nil
     end
   end

@@ -59,12 +59,16 @@ gem 'pg'
 # Output PDF files
 gem 'prawn'
 gem 'prawn-table'
+gem 'prawn-graph'
 
 # Custom icon fonts
 gem 'fontcustom'
 
 # File upload
 gem 'carrierwave'
+
+# JWT for android-app authentication
+gem 'jwt'
 
 # dates and times used for datepicker
 gem 'momentjs-rails', '~> 2.11', '>= 2.11.1'

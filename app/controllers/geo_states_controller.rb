@@ -1,4 +1,5 @@
 class GeoStatesController < ApplicationController
+  include ReportFilter
 
   before_action :require_login
   before_action :find_state, except: [:get_autocomplete_items]
@@ -7,7 +8,7 @@ class GeoStatesController < ApplicationController
   autocomplete :district, :name, full: true
 
   def show
-    @filters = {since: 3.month.ago.strftime('%d %B, %Y')}
+    @filters = {since: 3.month.ago.strftime('%d %B, %Y'), until: Date.today.strftime('%d %B, %Y')}
   end
 
   def get_autocomplete_items(parameters)
@@ -51,6 +52,7 @@ class GeoStatesController < ApplicationController
   def reports
     # if no since date is provided assume 3 months
     params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+    params[:until] ||= Date.today.strftime('%d %B, %Y')
     @filters = report_filter_params
     reports = Report.states(@geo_state).includes(:pictures, :languages, :impact_report)
     @reports = Report.filter(reports, @filters).order(report_date: :desc)
@@ -68,17 +70,6 @@ class GeoStatesController < ApplicationController
   def check_privaleges
     @geo_state ||= GeoState.find(params[:id])
     redirect_to zones_path unless logged_in_user.national? or @geo_state.users.include?(logged_in_user)
-  end
-
-  def report_filter_params
-    params.permit(
-        :archived,
-        :significant,
-        :since,
-        {:types => []},
-        :report_types,
-        :translation_impact
-    )
   end
 
   # bulk input is a hash where the keys are the ids of StateLanguage objects and the values are hashes

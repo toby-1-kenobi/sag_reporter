@@ -9,3 +9,50 @@
 .card-content .oa-name {
   font-size: larger;
 }
+
+#transformation-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-row-gap: 1.5em;
+  grid-template-areas:
+          "start-date end-date buttons"
+          "main main main"
+          "aggregate aggregate aggregate";
+}
+
+#transformation-baseline-date {
+  grid-area: start-date;
+}
+#transformation-end-date {
+  grid-area: end-date;
+}
+#transformation-page-buttons {
+  grid-area: buttons;
+}
+#main-transformation-table {
+  grid-area: main;
+  th, td {
+    overflow: hidden;
+  }
+  .zone-name {
+    max-width: 90px;
+  }
+  .state-name {
+    max-width: 100px;
+  }
+  .language-name {
+    max-width: 120px;
+  }
+  .head-date {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+#aggregate-transformation-table {
+  grid-area: aggregate;
+  .head-date {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
