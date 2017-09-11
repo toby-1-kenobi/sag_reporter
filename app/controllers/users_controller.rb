@@ -203,7 +203,7 @@ class UsersController < ApplicationController
 
   def user_params
     # make hash options into arrays
-    param_reduce(params['user'], ['geo_states', 'speaks', 'curated_states'])
+    param_reduce(params['user'], ['geo_states', 'champion', 'speaks', 'curated_states'])
     safe_params = [
       :name,
       :phone,
@@ -218,6 +218,7 @@ class UsersController < ApplicationController
       :admin,
       :national,
       :role_description,
+      {:champion => []},
       {:speaks => []},
       {:geo_states => []},
       {:curated_states => []}

@@ -7,6 +7,7 @@ class User::Updater
   end
 
   def update_user(params, skip_confirm_email = false)
+    champion = params.delete(:champion)
     speaks = params.delete(:speaks)
     geo_states = params.delete(:geo_states)
     curated_states = params.delete(:curated_states)
@@ -19,6 +20,12 @@ class User::Updater
       result = @instance.update_attributes(params)
     else
       result = @instance.update_attributes(params)
+    end
+    if champion
+      @instance.championed_languages.clear
+      champion.each do |lang_id|
+        @instance.championed_languages << Language.find(lang_id)
+      end
     end
     if speaks
       @instance.spoken_languages.clear

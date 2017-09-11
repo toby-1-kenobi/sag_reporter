@@ -3,6 +3,7 @@ class User::Factory
   attr_reader :instance
 
   def build_user(params)
+    champion = params.delete(:champion)
     speaks = params.delete(:speaks)
     geo_states = params.delete(:geo_states)
     curated_states = params.delete(:curated_states)
@@ -11,6 +12,12 @@ class User::Factory
     rescue
       return false
     else
+      if champion
+        @instance.championed_languages.clear
+        champion.each do |lang_id|
+          @instance.championed_languages << Language.find(lang_id)
+        end
+      end
       if speaks
         speaks.each do |lang_id|
           @instance.spoken_languages << Language.find(lang_id)
