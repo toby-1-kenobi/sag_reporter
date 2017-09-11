@@ -14,30 +14,6 @@
   line-height: 1;
 }
 
-.see-information .mdl-card__supporting-text, .do-tasks .mdl-card__supporting-text {
-  height: 5em;
-}
-
-.see-information .mdl-card__title {
-  height: 200px;
-  background: image-url("language_information.png") no-repeat;
-  background-size: cover;
-  background-position: 0 -70px;
-}
-
-.do-tasks .mdl-card__title {
-  height: 200px;
-  background: image-url("reporter.png") no-repeat;
-  background-size: cover;
-  background-position: 0 -70px;
-}
-
-.lci-info .mdl-card__title {
-  height: 150px;
-  background: image-url("LCI_logo.png") no-repeat;
-  background-size: cover;
-}
-
 .outcome-area-cell {
   padding: 1em;
 }
@@ -48,4 +24,43 @@
 
 #lci-description {
   font-size: large;
+}
+
+#welcome-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-row-gap: 1.5em;
+  grid-template-areas:
+          "god-at-work down-to-zero"
+          "about forum"
+          "admin curators";
+  .mdl-card {
+    justify-self: center;
+    background-color: #c5cae9;
+    .mdl-card__title {
+      justify-content: center;
+      font-size: xx-large;
+    }
+    .mdl-card__supporting-text {
+      font-size: large;
+      line-height: 130%;
+    }
+  }
+}
+
+#god-at-work-card {
+  grid-area: god-at-work;
+}
+#down-to-zero-card {
+  grid-area: down-to-zero;
+}
+#about-card {
+  grid-area: about;
+}
+#admin-links {
+  grid-area: admin;
+}
+#curator-links {
+  grid-area: curator;
 }
