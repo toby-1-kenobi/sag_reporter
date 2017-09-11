@@ -8,9 +8,7 @@
     <span class="card-title"><i class="material-icons prefix">account_circle</i> <%= user_name %></span>
     <table class="bordered">
       <tbody>
-        <% language_names = user_card.spoken_languages.map { |e| e.name }
-           zone_names = user_card.zones.map { |e| e.name }
-           state_names = user_card.geo_states.map { |e| e.name }
+        <%
            privileges = Array.new
            privileges << 'Administrator' if user_card.admin?
            privileges << 'Can view sensitive data' if user_card.trusted?
@@ -27,16 +25,16 @@
           </tr>
         <% end %>
         <tr>
-          <th><%= "Zone".pluralize(zone_names.count) %>:</th>
-          <td><%= zone_names.join(', ') %></td>
-          <th><%= "State".pluralize(state_names.count) %>:</th>
-          <td><%= state_names.join(', ') %></td>
+          <th><%= 'Zone'.pluralize(user_card.zones.count) %>:</th>
+          <td><%= user_card.zones.map{ |z| z.name }.join(', ') %></td>
+          <th><%= 'State'.pluralize(user_card.geo_states.count) %>:</th>
+          <td><%= user_card.geo_states.pluck(:name).join(', ') %></td>
         </tr>
         <tr>
           <th>Mother tongue:</th>
           <td><%= user_card.mother_tongue.name %></td>
           <th>Can speak:</th>
-          <td><%= language_names.join(', ') %></td>
+          <td><%= user_card.spoken_languages.pluck(:name).join(', ') %></td>
         </tr>
         <tr>
           <th>Role:</th>
@@ -49,7 +47,11 @@
         <% if privileges.any? %>
           <tr>
             <th>Privileges:</th>
-            <td colspan="3"><%= privileges.join(', ') %></td>
+            <td <%= 'colspan="3"' if user_card.championed_languages.empty? %>><%= privileges.join(', ') %></td>
+            <% if user_card.championed_languages.any? %>
+              <th>Point <%= 'language'.pluralize(user_card.championed_languages.count) %>:</th>
+              <td><%= user_card.championed_languages.pluck(:name).join(', ') %></td>
+            <% end %>
           </tr>
         <% end %>
       </tbody>
