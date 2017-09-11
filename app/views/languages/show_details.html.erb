@@ -31,6 +31,17 @@
 
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--6-col">
+
+    <table class="language-data">
+      <tr><th>Point Person</th><td>
+        <% if @language.champion.present? %>
+          <%= user_link(@language.champion) %>
+        <% else %>
+          not assigned
+        <% end %>
+      </td></tr>
+    </table>
+
     <a name="church-engagement"><h3>Church Engagement</h3></a>
     <table class="language-data">
       <% church_engagement_marker = FinishLineMarker.find_by_number(0) %>
