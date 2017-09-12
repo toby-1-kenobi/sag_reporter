@@ -28,14 +28,13 @@ class UsersController < ApplicationController
 
   before_action :require_login, except: [:confirm_email, :show_external, :index_external]
   # methods related to an external client (=android app)
-  skip_before_action :verify_authenticity_token, only: [:show_external]
+  skip_before_action :verify_authenticity_token, only: [:show_external, :index_external]
   before_action :authenticate, only: [:show_external, :index_external]
 
   # sends user related data (inclusive related states and their languages)
   def show_external
     begin
-      external_params = params[:user] && params[:user][:updated_at] &&
-        params.require(:user).permit(:updated_at)[:updated_at]
+      last_external_update = params.require(:user).permit(:updated_at)[:updated_at]
       user_data = Hash.new
       user_data[:id] = current_user.id
       user_data[:geo_states] = Array.new
@@ -54,37 +53,45 @@ class UsersController < ApplicationController
         last_updated << geo_state.updated_at
       end
       last_updated = last_updated.max.to_i
-      puts last_updated
       user_data[:updated_at] = last_updated.to_i
-      if !external_params || last_updated > external_params
+      user_data[:status] = "newer"
+      if last_updated > last_external_update
         puts user_data
-        render json: {user: user_data}
+        render json: {user: user_data}, status: :ok
       else
         puts "User data not changed"
-        render json: {user: {}}
+        render json: {user: {status: "same"}}, status: :ok
       end
     rescue => e
       puts e
-      render json: { error: e }
+      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
     end
   end
 
   # sends all user_names
   def index_external
     begin
-      user_data = Array.new
+      last_external_update = params.require(:user).permit(:updated_at)[:updated_at]
+      user_data = Hash.new
+      last_updated = Array.new
       User.all.each do |user|
-        user_specific_data = {
-            id: user.id,
-            name: user.name
-        }
-        user_data << user_specific_data
+        user_data[user.id.to_s] = user.name
+        last_updated << user.updated_at
       end
+      last_updated = last_updated.max.to_i
+      user_data[:updated_at] = last_updated.to_i
+      user_data[:status] = "newer"
       puts user_data
-      render json: {users: user_data}
+      if last_updated > last_external_update
+        puts user_data
+        render json: {user: user_data}, status: :ok
+      else
+        puts "User data not changed"
+        render json: {user: {status: "same"}}, status: :ok
+      end
     rescue => e
       puts e
-      render json: { error: e }
+      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
     end
   end
   # until here methods were related to an external client (=android app)

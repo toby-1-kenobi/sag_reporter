@@ -5,17 +5,17 @@ class SessionsController < ApplicationController
   # methods related to an external client (=android app)
   skip_before_action :verify_authenticity_token, only: [:create_external, :show_external]
 
-  before_action only: [:update_external] do
+  before_action only: [:show_external] do
     begin
       full_params = params.require(:session).permit :user_id, :device_id
-      @user = User.find(full_params['user_id']) if full_params['user_id'] != -1
+      @user = User.find_by_id(full_params['user_id']) if full_params['user_id'] != -1
       unless @user && @user.external_devices.map{|d| d.device_id if d.registered}.include?(full_params[:device_id])
         puts "Device not registered"
         head :not_found
       end
     rescue => e
       puts e
-      render json: { error: e }
+      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
     end
   end
   
@@ -57,7 +57,7 @@ class SessionsController < ApplicationController
             return
           end
           puts "Device not registered"
-          render json: { user: @user.id }
+          render json: { user: @user.id, status: "not_registered" }, status: :unauthorized
         end
       else
         puts "Wrong password"
@@ -65,7 +65,7 @@ class SessionsController < ApplicationController
       end
     rescue => e
       puts e
-      render json: { error: e }
+      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
     end
   end
 
@@ -74,10 +74,10 @@ class SessionsController < ApplicationController
     begin
       database_key = (@user.created_at.to_f * 1000000).to_i
       puts database_key
-      render json: { key: database_key }
+      render json: { key: database_key }, status: :ok
     rescue => e
       puts e
-      render json: { error: e }
+      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
     end
   end
   # until here methods were related to an external client (=android app)

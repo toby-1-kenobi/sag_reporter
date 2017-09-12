@@ -80,7 +80,7 @@ Rails.application.routes.draw do
   resources :users do
     collection do
       post :show_external
-      get  :index_external
+      post  :index_external
     end
     member do
       get :confirm_email

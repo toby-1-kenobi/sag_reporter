@@ -33,7 +33,9 @@ class ReportsController < ApplicationController
   before_action :authenticate, only: [:create_external, :update_external, :index_external]
 
   before_action only: [:update_external] do
-    render json: {errors: 'Permission denied'} unless current_user.admin? or current_user == @report.reporter
+    unless current_user.admin? or current_user == @report.reporter
+      render json: {errors: 'Permission denied'}, status: :unauthorized
+    end
   end
 
   def create_external
@@ -65,10 +67,14 @@ class ReportsController < ApplicationController
           response[:errors] << report_factory.error.message
         end
       end
-      render json: response
+      if response[:success] == true
+        render json: response, status: :created
+      else
+        render json: response, status: :internal_server_error
+      end
     rescue => e
       puts e
-      render json: { error: e }
+      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
     end
   end
 
@@ -114,17 +120,20 @@ class ReportsController < ApplicationController
           response[:errors] << report_factory.error.message
         end
       end
-      render json: response
+      if response[:success] == true
+        render json: response, status: :created
+      else
+        render json: response, status: :internal_server_error
+      end
     rescue => e
       puts e
-      render json: { error: e }
+      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
     end
   end
 
   def index_external
     begin
-      external_params = !params[:reports].nil? && !params[:reports].empty? &&
-          params.permit(reports: [:id, :updated_at])[:reports]
+      external_params = params.permit(reports: [:updated_at])[:reports]
       report_data = Array.new
       user_geo_states = current_user.geo_states.ids
       Report.user_limited(current_user).includes(:languages, :pictures).
@@ -143,11 +152,11 @@ class ReportsController < ApplicationController
 
         if external_params && external_params[report.id.to_s]
           if report.updated_at.to_i == external_params[report.id.to_s][:updated_at]
-            report_data << {id: report.id, updated_at: 0}
+            report_data << {id: report.id, status: "same"}
             next
           end
           if report.updated_at.to_i < external_params[report.id.to_s][:updated_at]
-            report_data << {id: report.id, updated_at: -1}
+            report_data << {id: report.id, status: "older"}
             next
           end
         end
@@ -162,14 +171,15 @@ class ReportsController < ApplicationController
             pictures: pictures,
             client: report.client,
             version: report.version,
-            updated_at: report.updated_at.to_i
+            updated_at: report.updated_at.to_i,
+            status: "newer"
         }
       end
       puts report_data
-      render json: {reports: report_data}
+      render json: {reports: report_data}, status: :ok
     rescue => e
       puts e
-      render json: { error: e }
+      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
     end
   end
   # until here methods were related to an external client (=android app)
