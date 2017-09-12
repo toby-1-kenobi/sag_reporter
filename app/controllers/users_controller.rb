@@ -54,13 +54,13 @@ class UsersController < ApplicationController
       end
       last_updated = last_updated.max.to_i
       user_data[:updated_at] = last_updated.to_i
-      user_data[:status] = "newer"
+      user_data[:last_changed] = "online"
       if last_updated > last_external_update
         puts user_data
         render json: {user: user_data}, status: :ok
       else
         puts "User data not changed"
-        render json: {user: {status: "same"}}, status: :ok
+        render json: {user: {last_changed: "same"}}, status: :ok
       end
     rescue => e
       puts e
@@ -80,14 +80,14 @@ class UsersController < ApplicationController
       end
       last_updated = last_updated.max.to_i
       user_data[:updated_at] = last_updated.to_i
-      user_data[:status] = "newer"
+      user_data[:last_changed] = "online"
       puts user_data
       if last_updated > last_external_update
         puts user_data
         render json: {user: user_data}, status: :ok
       else
         puts "User data not changed"
-        render json: {user: {status: "same"}}, status: :ok
+        render json: {user: {last_changed: "same"}}, status: :ok
       end
     rescue => e
       puts e

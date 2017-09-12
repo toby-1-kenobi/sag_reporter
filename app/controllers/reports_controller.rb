@@ -152,11 +152,11 @@ class ReportsController < ApplicationController
 
         if external_params && external_params[report.id.to_s]
           if report.updated_at.to_i == external_params[report.id.to_s][:updated_at]
-            report_data << {id: report.id, status: "same"}
+            report_data << {id: report.id, last_changed: "same"}
             next
           end
           if report.updated_at.to_i < external_params[report.id.to_s][:updated_at]
-            report_data << {id: report.id, status: "older"}
+            report_data << {id: report.id, last_changed: "offline"}
             next
           end
         end
@@ -172,7 +172,7 @@ class ReportsController < ApplicationController
             client: report.client,
             version: report.version,
             updated_at: report.updated_at.to_i,
-            status: "newer"
+            last_changed: "online"
         }
       end
       puts report_data

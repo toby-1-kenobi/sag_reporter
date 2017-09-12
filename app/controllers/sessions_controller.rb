@@ -57,7 +57,7 @@ class SessionsController < ApplicationController
             return
           end
           puts "Device not registered"
-          render json: { user: @user.id, status: "not_registered" }, status: :unauthorized
+          render json: { user: @user.id, error: "not_registered" }, status: :unauthorized
         end
       else
         puts "Wrong password"
