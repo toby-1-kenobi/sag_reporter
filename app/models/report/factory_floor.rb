@@ -48,8 +48,10 @@ module Report::FactoryFloor
                                                    })
         @tempfiles.push tempfile
       end
+      result
+    else
+      pictures_attributes
     end
-    result
   end
 
   def cleanup_external_picture
