@@ -29,7 +29,7 @@ class UsersController < ApplicationController
   before_action :require_login, except: [:confirm_email, :show_external, :index_external]
   # methods related to an external client (=android app)
   skip_before_action :verify_authenticity_token, only: [:show_external, :index_external]
-  before_action :authenticate, only: [:show_external, :index_external]
+  before_action :authenticate_external, only: [:show_external, :index_external]
 
   # sends user related data (inclusive related states and their languages)
   def show_external

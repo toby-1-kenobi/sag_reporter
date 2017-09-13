@@ -30,7 +30,7 @@ class ReportsController < ApplicationController
   # methods related to an external client (=android app)
   skip_before_action :verify_authenticity_token, only: [:create_external, :update_external, :index_external]
   before_action :require_login, except: [:create_external, :update_external, :index_external]
-  before_action :authenticate, only: [:create_external, :update_external, :index_external]
+  before_action :authenticate_external, only: [:create_external, :update_external, :index_external]
 
   before_action only: [:update_external] do
     unless current_user.admin? or current_user == @report.reporter

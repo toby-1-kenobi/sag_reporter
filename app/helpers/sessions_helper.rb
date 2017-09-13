@@ -83,8 +83,8 @@ module SessionsHelper
   end
 
   # authenticates the jwt-token
-  def authenticate
-    head :unauthorized unless current_user
+  def authenticate_external
+    render json: { error: "JWT invalid" }, status: :unauthorized unless current_user
   end
 
   # gets the current user of the jwt-token-authorization

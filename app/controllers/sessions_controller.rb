@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
       @user = User.find_by_id(full_params['user_id']) if full_params['user_id'] != -1
       unless @user && @user.external_devices.map{|d| d.device_id if d.registered}.include?(full_params[:device_id])
         puts "Device not registered"
-        head :not_found
+        render json: { error: "Device not registered" }, status: :unauthorized 
       end
     rescue => e
       puts e
@@ -25,7 +25,8 @@ class SessionsController < ApplicationController
       auth_params = params.require(:auth).permit :phone, :password, :device_id, :device_name
       @user = User.find_by phone: auth_params[:phone]
       unless @user
-        head :not_found
+        puts "User not found"
+        render json: { error: "User not found" }, status: :unauthorized
         return
       end
       if @user.authenticate auth_params[:password]
@@ -60,8 +61,8 @@ class SessionsController < ApplicationController
           render json: { user: @user.id, error: "not_registered" }, status: :unauthorized
         end
       else
-        puts "Wrong password"
-        head :not_found
+        puts "Password wrong"
+        render json: { error: "Password wrong" }, status: :unauthorized
       end
     rescue => e
       puts e
