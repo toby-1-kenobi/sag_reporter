@@ -19,7 +19,9 @@ class Report::Updater
     planning = params.delete 'planning_report'
     challenge = params.delete 'challenge_report'
     begin
-      params['pictures_attributes'] = add_external_picture params['pictures_attributes']
+      if params['pictures_attributes']
+        params['pictures_attributes'] = add_external_picture params['pictures_attributes']
+      end
       result = @instance.update_attributes(params)
       @instance.languages.clear
       add_languages(state_language_ids, @instance.geo_state_id) if state_language_ids

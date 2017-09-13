@@ -60,7 +60,7 @@ module Report::FactoryFloor
         tempfile.close
         tempfile.unlink
       end
-    end
+    end if @tempfiles
   end
 
   def add_impact_attr(attr)
