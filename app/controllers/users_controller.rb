@@ -84,10 +84,10 @@ class UsersController < ApplicationController
       puts user_data
       if last_updated > last_external_update
         puts user_data
-        render json: {user: user_data}, status: :ok
+        render json: {users: user_data}, status: :ok
       else
         puts "User data not changed"
-        render json: {user: {last_changed: "same"}}, status: :ok
+        render json: {users: {last_changed: "same"}}, status: :ok
       end
     rescue => e
       puts e
