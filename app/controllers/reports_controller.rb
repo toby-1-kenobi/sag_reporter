@@ -135,7 +135,7 @@ class ReportsController < ApplicationController
 
   def index_external
     begin
-      external_params = params.require(:report).permit(all_reports: [:updated_at])[:reports]
+      external_params = params.require(:report).permit(all_reports: [:updated_at])[:all_reports]
       report_data = Array.new
       user_geo_states = current_user.geo_states.ids
       Report.user_limited(current_user).includes(:languages, :pictures).
