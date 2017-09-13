@@ -43,7 +43,7 @@ class ReportsController < ApplicationController
       full_params = report_params.merge({reporter: current_user})
       report_factory = nil
       success = true
-      instance_id = -1
+      instance = nil
       # use state-language IDs (for being converted back to language IDs by the report-factory)
       language_ids = full_params['languages']
       state_id = full_params['geo_state_id']
@@ -51,12 +51,13 @@ class ReportsController < ApplicationController
 
       report_factory = Report::Factory.new
       success = report_factory.create_report(full_params)
-      instance_id = report_factory.instance.id if success
+      instance = report_factory.instance if success
 
       response = Hash.new
-      if success
-        response[:success] = true
-        response[:report_id] = instance_id
+      report_data = Hash.new
+      if success && instance
+        report_data[:id] = instance.id
+        report_data[:updated_at] = instance.updated_at
       else
         response[:success] = false
         response[:errors] = Array.new
@@ -67,8 +68,8 @@ class ReportsController < ApplicationController
           response[:errors] << report_factory.error.message
         end
       end
-      if response[:success] == true
-        render json: response, status: :created
+      if success
+        render json: { report: report_data }, status: :created
       else
         render json: response, status: :internal_server_error
       end
@@ -88,7 +89,7 @@ class ReportsController < ApplicationController
       full_params = report_params.merge({reporter: current_user})
       report_factory = nil
       success = true
-      instance_id = -1
+      instance = nil
       # use state-language IDs (for being converted back to language IDs by the report-factory)
       language_ids = full_params['languages']
       state_id = full_params['geo_state_id']
@@ -103,13 +104,14 @@ class ReportsController < ApplicationController
         end
         report_factory = Report::Updater.new(@report)
         success = report_factory.update_report(full_params)
-        instance_id = report_factory.instance.id if success
+        instance = report_factory.instance if success
       end
 
       response = Hash.new
-      if success
-        response[:success] = true
-        response[:report_id] = instance_id
+      report_data = Hash.new
+      if success && instance
+        report_data[:id] = instance.id
+        report_data[:updated_at] = instance.updated_at
       else
         response[:success] = false
         response[:errors] = Array.new
@@ -120,8 +122,8 @@ class ReportsController < ApplicationController
           response[:errors] << report_factory.error.message
         end
       end
-      if response[:success] == true
-        render json: response, status: :created
+      if success
+        render json: { report: report_data }, status: :accepted
       else
         render json: response, status: :internal_server_error
       end
