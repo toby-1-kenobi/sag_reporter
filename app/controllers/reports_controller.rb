@@ -57,7 +57,7 @@ class ReportsController < ApplicationController
       report_data = Hash.new
       if success && instance
         report_data[:id] = instance.id
-        report_data[:updated_at] = instance.updated_at
+        report_data[:updated_at] = instance.updated_at.to_i
       else
         response[:success] = false
         response[:errors] = Array.new
@@ -111,7 +111,7 @@ class ReportsController < ApplicationController
       report_data = Hash.new
       if success && instance
         report_data[:id] = instance.id
-        report_data[:updated_at] = instance.updated_at
+        report_data[:updated_at] = instance.updated_at.to_i
       else
         response[:success] = false
         response[:errors] = Array.new
