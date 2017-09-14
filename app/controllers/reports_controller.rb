@@ -113,7 +113,6 @@ class ReportsController < ApplicationController
         report_data[:id] = instance.id
         report_data[:updated_at] = instance.updated_at.to_i
       else
-        response[:success] = false
         response[:errors] = Array.new
         if report_factory.instance
           response[:errors].concat report_factory.instance.errors.full_messages

@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
   # login
   def create_external
     begin
-      auth_params = params.require(:auth).permit :phone, :password, :device_id, :device_name
+      auth_params = params.require(:session).permit :phone, :password, :device_id, :device_name
       @user = User.find_by phone: auth_params[:phone]
       unless @user
         puts "User not found"
