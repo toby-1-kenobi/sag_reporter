@@ -223,6 +223,7 @@
     <% else %>
         <p>None recorded</p>
     <% end %>
+    <%= link_to 'Add resource', new_mt_resource_path(language: @language.id) %>
 
     <h3>Religion</h3>
     <table class="language-data">

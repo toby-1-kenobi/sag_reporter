@@ -13,7 +13,7 @@ class BcsSms
 
   # start a thread that sends the OTP and return the id of that thread
   def self.send_otp(phone_number, otp_code)
-    if Rails.env.production?
+    if Rails.environment.production?
       thr = Thread.new do
         @requests_waiting[Thread.current.object_id] = :pending
         begin

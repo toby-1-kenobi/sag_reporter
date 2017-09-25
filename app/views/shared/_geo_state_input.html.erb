@@ -18,6 +18,8 @@ if local_assigns[:input_class].presence
   html_options[:class] = input_class
 end
 
+label_class ||= ''
+
 # If there's only one state it should be a hidden field, the user has no option.
 if geo_states.length == 1
   if defined? form
@@ -29,9 +31,9 @@ if geo_states.length == 1
 else
   if defined? form %>
     <%= form.collection_select(:geo_state_id, geo_states, :id, :name, {}, html_options) %>
-    <%= form.label(:geo_state_id, "State") %>
+    <%= form.label(:geo_state_id, 'State', class: label_class) %>
   <% else %>
     <%= collection_select(object, :geo_state_id, geo_states, :id, :name, {}, html_options) %>
-    <%= label_tag(:geo_state_id, "State") %>
+    <%= label_tag(:geo_state_id, 'State', class: label_class) %>
   <% end %>
 <% end %>

@@ -1,82 +1,76 @@
-<%= form_for(@resource, html: {class: "col s12"}) do |f| %>
+<%= render 'shared/mdl_selectfield_assets' %>
+
+<%= form_for(@resource) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
-  <div class="row">
-    <div class="col s12 m6">
 
-      <div class="row">
-        <div class="col s12 m6 l4 offset-m6 offset-l8 input-field">
-          <%= render partial: "shared/geo_state_input", locals: {object: "mt_resource", input_class: "filter_trigger"} %>
-        </div>
+  <div id="mt-resource-form">
+    <div id="resource-description">
+
+      <div id="name-input" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <%= f.text_field(:name, class: 'mdl-textfield__input') %>
+        <%= f.label(:name, class: 'mdl-textfield__label') %>
       </div>
 
-      <div class="row">
-        <div class="col s12 input-field">
-          <%= f.select :category, MtResource.categories.to_a.map { |t| [t[0].humanize, t[0]] } %>
-          <%= f.label(:category) %>
-        </div>
+      <div id="description-input" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <%= f.text_area(:description, class: 'mdl-textfield__input') %>
+        <%= f.label(:description, class: 'mdl-textfield__label') %>
       </div>
 
-      <div class="row">
-        <div class="col s12 input-field">
-          <%= f.text_field(:name) %>
-          <%= f.label(:name) %>
-        </div>
+      <div id="url-input" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <%= f.text_field(:url, class: 'mdl-textfield__input') %>
+        <%= f.label(:url, class: 'mdl-textfield__label') %>
       </div>
 
-      <div class="row">
-        <div class="col s12 input-field">
-          <%= f.text_area(:description, class: "materialize-textarea") %>
-          <%= f.label(:description) %>
-        </div>
+      <div id="how-to-access-input" class="mdl-textfield mdl-js-textfield">
+        <%= f.text_area(:how_to_access, class: 'mdl-textfield__input') %>
+        <%= f.label(:how_to_access, 'Describe how this resource may be accessed', class: 'mdl-textfield__label') %>
       </div>
 
     </div>
-    <div class="col s12 m6 input-field contributers">
-      <i class="material-icons prefix">people</i>
-      <%= autocomplete_field_tag "person__0", '', autocomplete_person_name_events_path %>
-      <%= label_tag :person__0, "Contributers", {class: "tooltipped", "data-position" => "top", "data-delay" => "50", "data-tooltip" => Translation.get_string('one_name_row', logged_in_user)} %>
+
+    <div id="resource-meta-data">
+
+      <div id="state-input" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+        <%= render partial: 'shared/geo_state_input', locals: {object: 'mt_resource', input_class: 'filter_trigger mdl-selectfield__select', label_class: 'mdl-selectfield__label'} %>
+      </div>
+
+      <div id="language-input" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+        <%= f.collection_select(:language_id, @languages, :id, :name, {}, html_options = {class: 'mdl-selectfield__select'}) %>
+        <%= f.label(:language_id, class: 'mdl-selectfield__label') %>
+      </div>
+
+      <div id="category-input" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+        <%= f.select :category, MtResource.categories.to_a.map { |t| [t[0].humanize, t[0]] }, {}, html_options = {class: 'mdl-selectfield__select'} %>
+        <%= f.label(:category, class: 'mdl-selectfield__label') %>
+      </div>
+
+      <div id="status-input" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+        <%= f.select :status, MtResource.statuses.to_a.map { |t| [t[0].humanize, t[0]] }, {}, html_options = {class: 'mdl-selectfield__select'} %>
+        <%= f.label(:status, class: 'mdl-selectfield__label') %>
+      </div>
+
+      <div id="year-input" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <%= f.text_field :publish_year, class: 'mdl-textfield__input', pattern: '[1-2]\d{3}' %>
+        <%= f.label(:publish_year, 'Year published', class: 'mdl-textfield__label') %>
+        <span class="mdl-textfield__error">Enter a four digit year</span>
+      </div>
+
+      <%= f.label(:cc_share_alike, class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect', id: 'license-input') do %>
+          <%= f.check_box(:cc_share_alike, class: 'mdl-checkbox__input') %>
+          <span class="mdl-checkbox__label">Creative Commons Share-Alike licence</span>
+      <% end %>
+
     </div>
+
+    <div class="contributers">
+      <%= autocomplete_field_tag 'person__0', '', autocomplete_person_name_events_path %>
+      <%= label_tag :person__0, 'Contributers', {class: 'tooltipped', 'data-position' => 'top', 'data-delay' => '50', 'data-tooltip' => Translation.get_string('one_name_row', logged_in_user)} %>
+    </div>
+
   </div>
 
-  <div class="row">
-    <div class="col s12 m6 input-field" id="language-input">
-      <%= f.collection_select(:language_id, @languages, :id, :name) %>
-      <%= f.label(:language_id) %>
-    </div>
-    <div class="col s12 m6 input-field">
-      <%= f.check_box(:cc_share_alike) %>
-      <%= f.label(:cc_share_alike, "Creative Commons Share-Alike licence") %>
-    </div>
-  </div>
-
-    <div class="row">
-      <div class="col s12 m6 input-field">
-        <%= f.select :status, MtResource.statuses.to_a.map { |t| [t[0].humanize, t[0]] } %>
-        <%= f.label(:status) %>
-      </div>
-      <div class="col s12 m6 input-field">
-        <%= f.number_field :publish_year, min: 1000, max: 3000 %>
-        <%= f.label(:publish_year, 'Year published') %>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col s12 m6 input-field">
-        <%= f.text_field(:url) %>
-        <%= f.label(:url) %>
-      </div>
-      <div class="col s12 m6 input-field">
-        <%= f.text_area(:how_to_access, class: "materialize-textarea") %>
-        <%= f.label(:how_to_access, 'Describe how this resource may be accessed') %>
-      </div>
-    </div>
-
-  <div class="row">
-    <div class="col s12">
-      <%= button_tag( :class => "btn waves-effect waves-light right") do %>
-      <%= form_action == "new" ? "Add this resource" : "Update" %> <i class="material-icons right">done</i>
+    <%= button_tag(id: 'submit-button', class: 'mdl-button mdl-js-button mdl-button--raised mdl-button--colored') do %>
+        <i class="material-icons">done</i> <%= form_action == 'new' ? 'Add this resource' : 'Update' %>
     <% end %>
-    </div>
-  </div>
 
 <% end %>

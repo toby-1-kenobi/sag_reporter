@@ -10,6 +10,7 @@ addField = ->
   $(this).off 'keypress', addField
   newField.on 'keypress', addField
   newField.hide()
+  newField.addClass('contributer-input')
   $(this).after newField
   newField.slideDown()
   return

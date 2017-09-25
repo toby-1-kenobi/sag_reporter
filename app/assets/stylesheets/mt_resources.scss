@@ -1,3 +1,24 @@
 // Place all the styles related to the MTResources controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+#mt-resource-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+          "left-column middle-column right-column"
+}
+
+#resource-description {
+  grid-area: middle-column;
+}
+#resource-meta-data {
+  grid-area: left-column;
+}
+.contributers {
+  grid-area: right-column;
+}
+
+.contributer-input {
+  display: block;
+}
