@@ -1,36 +1,40 @@
-<% provide(:title, 'Outcome area transformation') %>
-
-<h1>Transformation by language and outcome area</h1>
+<% provide(:title, 'Transformation by language and outcome area') %>
+<% provide(:context_title, 'Transformation') %>
 
 <%
   dates = @transformations.values.first.keys
   outcome_areas = @outcome_area_colours.keys
 %>
-
-<div class="row transformation-dates">
-  <div class="col s12 m6 l4">
+<div id="transformation-content">
+  <div id="transformation-baseline-date">
     Baseline date:
-    <%= select_year dates[0].year, start_year: @start_year, end_year: Date.today.year, field_name: 'year_a' %>
-    <%= select_month dates[0].month, field_name: 'month_a' %>
-  </div>
-  <div class="col s12 m6 l4">
-    Final date:
-    <%= select_year dates[1].year, start_year: @start_year, end_year: Date.today.year, field_name: 'year_b' %>
-    <%= select_month dates[1].month, field_name: 'month_b' %>
-  </div>
-  <div class="col s12 m6 l4 offset-m6">
-    <div class="row">
-    <%= link_to transformation_path(
-                    year_a: dates[0].year,
-                    month_a: dates[0].month,
-                    year_b: dates[1].year,
-                    month_b: dates[1].month
-                ), class: 'btn update-transformation-data waves-effect' do %>
-      <i class="material-icons">refresh</i>
-      Refresh
-    <% end %>
+    <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+    <%= select_year(dates[0].year, options = {start_year: @start_year, end_year: Date.today.year, field_name: 'year_a'}, html_options = {class: 'mdl-selectfield__select'}) %>
+      <%# label_tag 'date_year_a', 'Baseline year', class: 'mdl-selectfield__label' %>
+      <%= select_month dates[0].month, options = {field_name: 'month_a'}, html_options = {class: 'mdl-selectfield__select'} %>
     </div>
-    <div class="row">
+  </div>
+  <div id="transformation-end-date">
+    Final date:
+    <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+      <%= select_year(dates[1].year, options = {start_year: @start_year, end_year: Date.today.year, field_name: 'year_b'}, html_options = {class: 'mdl-selectfield__select'}) %>
+      <%# label_tag 'date_year_a', 'Baseline year', class: 'mdl-selectfield__label' %>
+      <%= select_month dates[1].month, options = {field_name: 'month_b'}, html_options = {class: 'mdl-selectfield__select'} %>
+    </div>
+  </div>
+  <div id="transformation-page-buttons">
+    <div>
+      <%= link_to transformation_path(
+                      year_a: dates[0].year,
+                      month_a: dates[0].month,
+                      year_b: dates[1].year,
+                      month_b: dates[1].month
+                  ), class: 'update-transformation-data mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' do %>
+        <i class="material-icons">refresh</i>
+        Refresh
+      <% end %>
+    </div>
+    <div>
       <%=
         link_to transformation_spreadsheet_path(
                     format: :csv,
@@ -38,147 +42,148 @@
                     month_a: dates[0].month,
                     year_b: dates[1].year,
                     month_b: dates[1].month
-                ), class: 'btn download-transformation-spreadsheet waves-effect' do %>
+                ), class: 'download-transformation-spreadsheet mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent' do %>
         <i class="material-icons">file_download</i>
-      Get Spreadsheet
+        Get Spreadsheet
       <% end %>
     </div>
   </div>
-</div>
 
-<% zone_aggregate = [Hash.new(), Hash.new()] %>
-<% zone_aggregate_total = [Hash.new(), Hash.new()] %>
+  <% zone_aggregate = [Hash.new(), Hash.new()] %>
+  <% zone_aggregate_total = [Hash.new(), Hash.new()] %>
 
-<table>
-  <thead>
-    <tr>
-      <th rowspan="2">Zone</th><th rowspan="2">State</th><th rowspan="2">Language</th>
-      <th colspan="3">Transformation Average</th>
-      <% outcome_areas.each do |outcome_area| %>
-        <th colspan="3" class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= outcome_area %></th>
-      <% end %>
-    </tr>
-    <tr>
-      <th><%= dates[0].strftime('%b %Y') %></th>
-      <th><%= dates[1].strftime('%b %Y') %></th>
-      <th>Change</th>
-      <% outcome_areas.each do |outcome_area| %>
-          <th class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[0].strftime('%b %Y') %></th>
-          <th class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[1].strftime('%b %Y') %></th>
-          <th class="<%= @outcome_area_colours[outcome_area] %> lighten-3">Change</th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-  <%# @outcome_scores contains a hash for each of the two dates %>
-  <%# the keys in each of those hashes are StateLanguage objects %>
-    <% @transformations.each_key do |language| %>
+  <table id="main-transformation-table" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    <thead>
       <tr>
-        <td><%= language.zone.name %></td>
-        <td><%= language.state_name %></td>
-        <td><%= language.language_name %></td>
-        <%
-          language_total = {dates[0] => 0, dates[1] => 0}
-          outcome_areas.each do |outcome_area|
-            value0 = @transformations[language][dates[0]][outcome_area]
-            language_total[dates[0]] += value0
-            zone_aggregate[0][language.zone.name] ||= Hash.new(0)
-            zone_aggregate[0][language.zone.name][outcome_area] += value0
-            zone_aggregate_total[0][language.zone.name] ||= 0
-            zone_aggregate_total[0][language.zone.name] += value0
-            value1 = @transformations[language][dates[1]][outcome_area]
-            language_total[dates[1]] += value1
-            zone_aggregate[1][language.zone.name] ||= Hash.new(0)
-            zone_aggregate[1][language.zone.name][outcome_area] += value1
-            zone_aggregate_total[1][language.zone.name] ||= 0
-            zone_aggregate_total[1][language.zone.name] += value1
-          end
-          language_avg0 = (language_total[dates[0]] / outcome_areas.count).round(1)
-          language_avg1 = (language_total[dates[1]] / outcome_areas.count).round(1)
-          language_avg_change = (language_avg1 - language_avg0).round(1)
-          change_colour = 'black'
-          if language_avg_change > 0 then change_colour = 'green' end
-          if language_avg_change < 0 then change_colour = 'red' end
-        %>
-        <td><%= language_avg0 %></td>
-        <td><%= language_avg1 %></td>
-        <td class="<%= change_colour %>-text text-darken-2"><%= language_avg_change %></td>
-        <% outcome_areas.each do |outcome_area|
-            value0 = @transformations[language][dates[0]][outcome_area]
-            value1 = @transformations[language][dates[1]][outcome_area]
-            change = value1 - value0
-            change_colour = @outcome_area_colours[outcome_area]
-            if change > 0 then change_colour = 'green' end
-            if change < 0 then change_colour = 'red' end
-        %>
-            <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value0.round %></td>
-            <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value1.round %></td>
-            <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3 <%= change_colour %>-text text-darken-2"><em><%= change.round %></em></td>
+        <th rowspan="2" class="mdl-data-table__cell--non-numeric">Zone</th>
+        <th rowspan="2" class="mdl-data-table__cell--non-numeric">State</th>
+        <th rowspan="2" class="mdl-data-table__cell--non-numeric">Language</th>
+        <th colspan="3" class="mdl-data-table__cell--non-numeric">Transformation Average</th>
+        <% outcome_areas.each do |outcome_area| %>
+          <th colspan="3" class="mdl-data-table__cell--non-numeric <%= @outcome_area_colours[outcome_area] %> lighten-3"><%= outcome_area %></th>
         <% end %>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+      <tr>
+        <th class="head-date"><%= dates[0].strftime('%b %Y') %></th>
+        <th class="head-date"><%= dates[1].strftime('%b %Y') %></th>
+        <th class="head-date">Change</th>
+        <% outcome_areas.each do |outcome_area| %>
+            <th class="head-date <%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[0].strftime('%b %Y') %></th>
+            <th class="head-date <%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[1].strftime('%b %Y') %></th>
+            <th class="head-date <%= @outcome_area_colours[outcome_area] %> lighten-3">Change</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+    <%# @outcome_scores contains a hash for each of the two dates %>
+    <%# the keys in each of those hashes are StateLanguage objects %>
+      <% @transformations.each_key do |language| %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric zone-name"><%= language.zone.name %></td>
+          <td class="mdl-data-table__cell--non-numeric state-name"><%= language.state_name %></td>
+          <td class="mdl-data-table__cell--non-numeric language-name"><%= language.language_name %></td>
+          <%
+            language_total = {dates[0] => 0, dates[1] => 0}
+            outcome_areas.each do |outcome_area|
+              value0 = @transformations[language][dates[0]][outcome_area]
+              language_total[dates[0]] += value0
+              zone_aggregate[0][language.zone.name] ||= Hash.new(0)
+              zone_aggregate[0][language.zone.name][outcome_area] += value0
+              zone_aggregate_total[0][language.zone.name] ||= 0
+              zone_aggregate_total[0][language.zone.name] += value0
+              value1 = @transformations[language][dates[1]][outcome_area]
+              language_total[dates[1]] += value1
+              zone_aggregate[1][language.zone.name] ||= Hash.new(0)
+              zone_aggregate[1][language.zone.name][outcome_area] += value1
+              zone_aggregate_total[1][language.zone.name] ||= 0
+              zone_aggregate_total[1][language.zone.name] += value1
+            end
+            language_avg0 = (language_total[dates[0]] / outcome_areas.count).round(1)
+            language_avg1 = (language_total[dates[1]] / outcome_areas.count).round(1)
+            language_avg_change = (language_avg1 - language_avg0).round(1)
+            change_colour = 'black'
+            if language_avg_change > 0 then change_colour = 'green' end
+            if language_avg_change < 0 then change_colour = 'red' end
+          %>
+          <td><%= language_avg0 %></td>
+          <td><%= language_avg1 %></td>
+          <td class="<%= change_colour %>-text text-darken-2"><%= language_avg_change %></td>
+          <% outcome_areas.each do |outcome_area|
+              value0 = @transformations[language][dates[0]][outcome_area]
+              value1 = @transformations[language][dates[1]][outcome_area]
+              change = value1 - value0
+              change_colour = @outcome_area_colours[outcome_area]
+              if change > 0 then change_colour = 'green' end
+              if change < 0 then change_colour = 'red' end
+          %>
+              <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value0.round %></td>
+              <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value1.round %></td>
+              <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3 <%= change_colour %>-text text-darken-2"><em><%= change.round %></em></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<h2>Average of Language Communities by Zone</h2>
-
-<table>
-  <thead>
-  <tr>
-    <th rowspan="2">Zone</th><th rowspan="2">#LCs participating</th>
-    <th colspan="3">Transformation Average</th>
-    <% outcome_areas.each do |outcome_area| %>
-        <th colspan="3" class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= outcome_area %></th>
-    <% end %>
-  </tr>
-  <tr>
-    <th><%= dates[0].strftime('%b %Y') %></th>
-    <th><%= dates[1].strftime('%b %Y') %></th>
-    <th>Change</th>
-    <% outcome_areas.each do |outcome_area| %>
-        <th class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[0].strftime('%b %Y') %></th>
-        <th class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[1].strftime('%b %Y') %></th>
-        <th class="<%= @outcome_area_colours[outcome_area] %> lighten-3">Change</th>
-    <% end %>
-  </tr>
-  </thead>
-  <tbody>
-    <% Zone.find_each do |zone|
-      lc_amount = zone.state_languages.in_project.count
-      zone_aggregate[0][zone.name] ||= Hash.new(0)
-      zone_aggregate[1][zone.name] ||= Hash.new(0)
-      zone_aggregate_total[0][zone.name] ||= 0
-      zone_aggregate_total[1][zone.name] ||= 0
-      if lc_amount > 0
-        zone_aggregate_avg0 = ((zone_aggregate_total[0][zone.name] / lc_amount) / outcome_areas.count).round(1)
-        zone_aggregate_avg1 = ((zone_aggregate_total[1][zone.name] / lc_amount) / outcome_areas.count).round(1)
-      else
-        zone_aggregate_avg0 = 0
-        zone_aggregate_avg1 = 0
-      end
-      zone_aggregate_change = (zone_aggregate_avg1 - zone_aggregate_avg0).round(1)
-      change_colour = 'black'
-      if zone_aggregate_change > 0 then change_colour = 'green' end
-      if zone_aggregate_change < 0 then change_colour = 'red' end
-    %>
+  <table id="aggregate-transformation-table" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    <thead>
     <tr>
-      <th><%= zone.name %></th>
-      <td><%= lc_amount %></td>
-      <td><%= zone_aggregate_avg0 %></td>
-      <td><%= zone_aggregate_avg1 %></td>
-      <td class="<%= change_colour %>-text text-darken-2"><%= zone_aggregate_change %></td>
-      <% outcome_areas.each do |outcome_area|
-        value0 = lc_amount > 0 ? (zone_aggregate[0][zone.name][outcome_area] / lc_amount).round : 0
-        value1 = lc_amount > 0 ? (zone_aggregate[1][zone.name][outcome_area] / lc_amount).round : 0 %>
-        <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value0 %></td>
-        <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value1 %></td>
-          <% change = value1 - value0
-          change_colour = @outcome_area_colours[outcome_area]
-          if change > 0 then change_colour = 'green' end
-          if change < 0 then change_colour = 'red' end %>
-        <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3 <%= change_colour %>-text text-darken-2"><em><%= change %></em></td>
+      <th rowspan="2" class="mdl-data-table__cell--non-numeric">Zone</th>
+      <th rowspan="2">#LCs</th>
+      <th colspan="3" class="mdl-data-table__cell--non-numeric">Transformation Average</th>
+      <% outcome_areas.each do |outcome_area| %>
+          <th colspan="3" class="mdl-data-table__cell--non-numeric <%= @outcome_area_colours[outcome_area] %> lighten-3"><%= outcome_area %></th>
       <% end %>
     </tr>
-    <% end %>
-  </tbody>
-</table>
+    <tr>
+      <th class="head-date"><%= dates[0].strftime('%b %Y') %></th>
+      <th class="head-date"><%= dates[1].strftime('%b %Y') %></th>
+      <th class="head-date">Change</th>
+      <% outcome_areas.each do |outcome_area| %>
+          <th class="head-date <%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[0].strftime('%b %Y') %></th>
+          <th class="head-date <%= @outcome_area_colours[outcome_area] %> lighten-3"><%= dates[1].strftime('%b %Y') %></th>
+          <th class="head-date <%= @outcome_area_colours[outcome_area] %> lighten-3">Change</th>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+      <% Zone.find_each do |zone|
+        lc_amount = zone.state_languages.in_project.count
+        zone_aggregate[0][zone.name] ||= Hash.new(0)
+        zone_aggregate[1][zone.name] ||= Hash.new(0)
+        zone_aggregate_total[0][zone.name] ||= 0
+        zone_aggregate_total[1][zone.name] ||= 0
+        if lc_amount > 0
+          zone_aggregate_avg0 = ((zone_aggregate_total[0][zone.name] / lc_amount) / outcome_areas.count).round(1)
+          zone_aggregate_avg1 = ((zone_aggregate_total[1][zone.name] / lc_amount) / outcome_areas.count).round(1)
+        else
+          zone_aggregate_avg0 = 0
+          zone_aggregate_avg1 = 0
+        end
+        zone_aggregate_change = (zone_aggregate_avg1 - zone_aggregate_avg0).round(1)
+        change_colour = 'black'
+        if zone_aggregate_change > 0 then change_colour = 'green' end
+        if zone_aggregate_change < 0 then change_colour = 'red' end
+      %>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric"><%= zone.name %></th>
+        <td><%= lc_amount %></td>
+        <td><%= zone_aggregate_avg0 %></td>
+        <td><%= zone_aggregate_avg1 %></td>
+        <td class="<%= change_colour %>-text text-darken-2"><%= zone_aggregate_change %></td>
+        <% outcome_areas.each do |outcome_area|
+          value0 = lc_amount > 0 ? (zone_aggregate[0][zone.name][outcome_area] / lc_amount).round : 0
+          value1 = lc_amount > 0 ? (zone_aggregate[1][zone.name][outcome_area] / lc_amount).round : 0 %>
+          <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value0 %></td>
+          <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3"><%= value1 %></td>
+            <% change = value1 - value0
+            change_colour = @outcome_area_colours[outcome_area]
+            if change > 0 then change_colour = 'green' end
+            if change < 0 then change_colour = 'red' end %>
+          <td class="<%= @outcome_area_colours[outcome_area] %> lighten-3 <%= change_colour %>-text text-darken-2"><em><%= change %></em></td>
+        <% end %>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

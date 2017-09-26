@@ -1,8 +1,11 @@
 class StaticPagesController < ApplicationController
 
-  before_action :require_login, only: [:tasks, :home]
+  before_action :require_login, only: [:tasks, :home, :about]
 
   def home
+  end
+
+  def about
     @outcome_areas = Topic.all.order(:number)
   end
 

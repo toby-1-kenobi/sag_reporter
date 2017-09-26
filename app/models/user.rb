@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   has_many :edits, dependent: :destroy
   has_many :curated_edits, class_name: 'Edit', foreign_key: 'curated_by_id', inverse_of: :curated_by, dependent: :nullify
   has_many :external_devices
+  has_many :championed_languages, class_name: 'Language', inverse_of: :champion, foreign_key: 'champion_id', dependent: :nullify
 
   attr_accessor :remember_token
 

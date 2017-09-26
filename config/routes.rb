@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   root 'static_pages#home'
 
   get 'tasks' => 'static_pages#tasks'
+  get 'about' => 'static_pages#about'
 
   resources :edits, only: [:create, :destroy] do
     collection do

@@ -31,6 +31,17 @@
 
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--6-col">
+
+    <table class="language-data">
+      <tr><th>Point Person</th><td>
+        <% if @language.champion.present? %>
+          <%= user_link(@language.champion) %>
+        <% else %>
+          not assigned
+        <% end %>
+      </td></tr>
+    </table>
+
     <a name="church-engagement"><h3>Church Engagement</h3></a>
     <table class="language-data">
       <% church_engagement_marker = FinishLineMarker.find_by_number(0) %>
@@ -193,7 +204,7 @@
       <% end %>
     </table>
 
-    <a name="mt-resources"><h3>Mother Tongue Resources</h3></a>
+    <a name="mt-resources"><h3>Resources</h3></a>
     <% if @language.mt_resources.any? %>
         <ul class="mdl-list">
           <% @language.mt_resources.each do |resource| %>
@@ -212,6 +223,7 @@
     <% else %>
         <p>None recorded</p>
     <% end %>
+    <%= link_to 'Add resource', new_mt_resource_path(language: @language.id) %>
 
     <h3>Religion</h3>
     <table class="language-data">

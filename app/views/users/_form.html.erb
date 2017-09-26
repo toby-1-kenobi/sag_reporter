@@ -129,7 +129,7 @@
         </div>
         <div class="mdl-cell mdl-cell--4-col">
           <h3>Languages</h3>
-          <div class="checkbox-clarification-wrapper"><span class="checkbox-clarification">(can speak / mother tongue)</span></div>
+          <div class="checkbox-clarification-wrapper"><span class="checkbox-clarification">(can speak / mother tongue / champion)</span></div>
           <ul class="mdl-list">
             <% @languages.each do |language| %>
               <li class="filterable-item hide mdl-list__item" data-filter-label="geo-state" data-geo-state="<%= language.geo_state_ids_str.present? ? language.geo_state_ids_str : '-1' %>">
@@ -152,6 +152,17 @@
                     name="user[mother_tongue_id]"
                     value="<%= language.id %>"
                     class="mdl-radio__button" <%= (@user.mother_tongue == language) ? 'checked' : '' %>
+                    />
+                  </label><span class="control-divider">/</span><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="champion-checkbox-<%= language.id %>">
+                    <input
+                    type="checkbox"
+                    id="champion-checkbox-<%= language.id %>"
+                    name="user[champion][<%= language.id %>]"
+                    value="<%= language.id %>"
+                    class="mdl-checkbox__input"
+                    <% if language.champion.present? %>
+                      <%= (language.champion == @user) ? 'checked' : 'disabled' %>
+                    <% end %>
                     />
                   </label>
                 </span>
