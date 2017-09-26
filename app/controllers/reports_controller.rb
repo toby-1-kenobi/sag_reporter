@@ -161,6 +161,11 @@ class ReportsController < ApplicationController
             next
           end
         end
+        begin
+          markers = report.impact_report.progress_markers.map {|marker| marker.id}
+        rescue => e
+          markers = e
+        end
         report_data << {
             id: report.id,
             state_id: report.geo_state_id,
@@ -172,6 +177,7 @@ class ReportsController < ApplicationController
             pictures: pictures,
             client: report.client,
             version: report.version,
+            markers: markers,
             updated_at: report.updated_at.to_i,
             last_changed: "online"
         }

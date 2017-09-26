@@ -37,16 +37,19 @@ class UsersController < ApplicationController
       last_external_update = params.require(:user).permit(:updated_at)[:updated_at]
       user_data = Hash.new
       user_data[:id] = current_user.id
+      user_data[:updated_at] = current_user.updated_at
       user_data[:geo_states] = Array.new
       last_updated = [current_user.updated_at]
       current_user.geo_states.includes(state_languages: :language).where(state_languages: {project: true}).each do |geo_state|
         languages = geo_state.state_languages.map do |state_language|
             last_updated << state_language.updated_at
             {language_id: state_language.language.id,
+             updated_at: state_language.updated_at,
              language_name: state_language.language_name}
         end
         user_data[:geo_states] << {
             state_id: geo_state.id,
+            updated_at: geo_state.updated_at,
             state_name: geo_state.name,
             languages: languages
         }
@@ -54,13 +57,33 @@ class UsersController < ApplicationController
       end
       last_updated = last_updated.max.to_i
       user_data[:updated_at] = last_updated.to_i
-      user_data[:last_changed] = "online"
+      user_data[:last_changed] = 'online'
+      begin
+        tags = Hash.new
+        Topic.all.each do |topic|
+          markers[:id] = topic.id
+          markers[:updated_at] = topic.updated_at
+          tags[:name] = topic.name
+          tags[:description] = topic.description
+          tags[:colour] = topic.colour
+          markers = Hash.new
+          topic.progress_markers.each do |marker|
+            markers[:id] = marker.id
+            markers[:updated_at] = marker.updated_at
+            markers[:name] = marker.name
+            markers[:alternate_description] = marker.alternate_description
+            markers[:number] = marker.number
+          end
+        end
+      rescue => e
+        user_data[:tags] = e
+      end
       if last_updated > last_external_update
         puts user_data
         render json: {user: user_data}, status: :ok
       else
-        puts "User data not changed"
-        render json: {user: {last_changed: "same"}}, status: :ok
+        puts 'User data not changed'
+        render json: {user: {last_changed: 'same'}}, status: :ok
       end
     rescue => e
       puts e
