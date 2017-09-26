@@ -22,7 +22,7 @@
 <div class="mdl-grid">
   <div class="mdl-cell mdl-cell--6-col mdl-cell--2-col-phone">
     <h1>Language Overview</h1>
-    <%= link_to show_details_language_path(@language) do %>
+    <%= link_to show_details_language_path(@language), id: 'more-details-link' do %>
         <i class="material-icons">pageview</i> More details
     <% end %>
   </div>
@@ -37,9 +37,9 @@
   <!-- finish line markers -->
   <div class="finish-line-status mdl-cell mdl-cell--5-col">
 
-    <h3>Finish Line Status</h3>
-    <table class="finish-line-status mdl-data-table mdl-js-data-table">
+    <table class="finish-line-status mdl-data-table mdl-js-data-table" id="finish-line-status-table">
       <thead>
+        <tr><th class="mdl-data-table__cell--non-numeric" colspan="3" id="finish-line-status-title">Finish Line Status</th> </tr>
         <tr>
           <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
           <th class="mdl-data-table__cell--non-numeric">Category</th>
@@ -70,8 +70,8 @@
     <div class="mdl-grid language-dashboard-right">
 
       <div class="mdl-cell mdl-cell--7-col">
-        <h3>More Language Details</h3>
-        <ul class="mdl-list">
+        <div id="more-language-details-title">More Language Details</div>
+        <ul class="mdl-list" id="more-language-details-list">
           <li class="language-names mdl-list__item">
             <%= link_to 'Alternate Names', show_details_language_path(@language, anchor: 'language-names'), class: 'mdl-list__item-primary-content' %>
             <%= link_to show_details_language_path(@language, anchor: 'language-names'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
@@ -99,7 +99,7 @@
             <% end %>
           </li>
           <li class="language-reports mdl-list__item">
-            <%= link_to 'Reports', reports_language_path(@language), class: 'mdl-list__item-primary-content' %>
+            <%= link_to 'Impact and Planning Reports', reports_language_path(@language), class: 'mdl-list__item-primary-content' %>
             <%= link_to reports_language_path(@language), class: 'mdl-list__item-secondary-content mdl-chip' do %>
                 <span class="mdl-chip__text"><%= Report.language(@language).count %></span>
             <% end %>
@@ -118,7 +118,7 @@
       <!-- transformation -->
       <div class="mdl-cell mdl-cell--12-col">
         <% @language.state_languages.in_project.each do |state_language| %>
-            <h4>Transformation in <%= link_to state_language.state_name, state_language.geo_state %></h4>
+            <h4>Transformation for <%= @language.name %> in <%= link_to state_language.state_name, state_language.geo_state %></h4>
             <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
             <div class="chart-<%= state_language.id %>"></div>
         <% end %>
