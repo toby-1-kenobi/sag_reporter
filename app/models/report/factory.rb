@@ -21,7 +21,11 @@ class Report::Factory
       params['version'] ||= SagReporter::Application::VERSION
     end
     begin
-      params['pictures_attributes'] = add_external_picture params['pictures_attributes']
+      # if the picture attributes are coming from external source we need to process the pictures
+      # otherwise we rely on the carrierwave gem to process the uploads
+      if params['pictures_attributes'].try(:values).try(:first).try(:keys).try(:first) == 'created_external'
+        params['pictures_attributes'] = add_external_picture params['pictures_attributes']
+      end
       @instance = Report.new(params)
       add_languages(state_language_ids, params['geo_state_id']) if state_language_ids
       add_observers(observers, params['geo_state_id'], params[:reporter]) if observers
