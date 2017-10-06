@@ -77,7 +77,7 @@ class Report < ActiveRecord::Base
     if user.national?
       all
     else
-      joins(:geo_states).where('geo_states.id' => user.geo_states)
+      joins(:geo_state).where('geo_states.id' => user.geo_states)
     end
   }
 

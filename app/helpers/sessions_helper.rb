@@ -93,7 +93,6 @@ module SessionsHelper
   end
 
   def external_user
-    @external_user ||= User.first
     @external_user ||= begin
       token = request.headers['Authorization'].split.last
       secret_key = Rails.application.secrets.secret_key_base

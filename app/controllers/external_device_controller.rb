@@ -2,7 +2,7 @@ class ExternalDeviceController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-#  before_action :authenticate_external
+  before_action :authenticate_external
 
   def test_server
     head :ok
@@ -12,18 +12,29 @@ class ExternalDeviceController < ApplicationController
     begin
       @users, @geo_states, @languages, @reports, @external_files = Array.new(5) {Array.new}
       @all_updated_at = send_params
+      error = ""
       if @all_updated_at[:now] > Time.now.to_i || @all_updated_at[:now] + 60 < Time.now.to_i
-#        throw 'Timestamp is not the same for external device and server'
+        error = 'Timestamp is not the same for external device and server'
       end
       send_external_user
       User.all.each{|user| send_user user}
-      GeoState.all.each{|geo_state| send_geo_state geo_state}
-      Language.all.each{|language| send_language language}
-      Report.all.each{|report| send_report report}
+      if external_user.national?
+        user_geo_states = GeoState.all
+      else
+        user_geo_states = external_user.geo_states
+      end
+      user_geo_states.each do |geo_state|
+        send_geo_state geo_state
+        geo_state.languages.each do |language|
+          send_language language
+        end
+      end
+      Report.user_limited(external_user).each{|report| send_report report}
       render json: {
+          error: error,
           users: @users,
           geo_states: @geo_states,
-          language: @languages,
+          language: @languages.uniq,
           reports: @reports,
           external_files: @external_files
       }, status: :ok
