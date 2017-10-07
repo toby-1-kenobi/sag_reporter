@@ -79,14 +79,15 @@ class ExternalDeviceController < ApplicationController
 
   def send_request
     begin
-      @users, @geo_states, @languages, @reports, @uploaded_files = Array.new(5) {Array.new}
+      @users, @geo_states, @languages, @reports, @uploaded_files,
+      @topics, @progress_markers = Array.new(7) {Array.new}
       @all_updated_at = send_request_params
       error = ""
       if @all_updated_at[:now] > Time.now.to_i || @all_updated_at[:now] + 60 < Time.now.to_i
         error = 'Timestamp is not the same for external device and server'
       end
       send_external_user
-      User.all.each{|user| send_user user}
+      User.all.each{|user| send_user(user) if user != external_user}
       if external_user.national?
         user_geo_states = GeoState.all
       else
@@ -94,11 +95,14 @@ class ExternalDeviceController < ApplicationController
       end
       user_geo_states.each do |geo_state|
         send_geo_state geo_state
-        geo_state.languages.each do |language|
-          send_language language
-        end
+        geo_state.languages.each{|language| send_language language}
       end
-      Report.user_limited(external_user).each{|report| send_report report}
+      Topic.all.each{|topic| send_topic topic}
+      ProgressMarker.all.each{|progress_marker| send_progress_marker progress_marker}
+      Report.user_limited(external_user).each do |report|
+        send_report report
+        report.pictures.each{|picture| send_picture picture}
+      end
       render json: {
           error: error,
           users: @users,
@@ -155,6 +159,8 @@ class ExternalDeviceController < ApplicationController
       :users => [:updated_at],
       :languages => [:updated_at],
       :geo_states => [:updated_at],
+      :topics => [:updated_at],
+      :progress_markers => [:updated_at],
       :reports => [:updated_at],
       :uploaded_files => [:updated_at]
     ]
@@ -197,6 +203,17 @@ class ExternalDeviceController < ApplicationController
     end
   end
 
+  def send_user user
+    if check_send_data(@users, user, @all_updated_at[:users])
+      @users << {
+          id: user.id,
+          name: user.name,
+          updated_at: user.updated_at.to_i,
+          last_changed: 'online'
+      }
+    end
+  end
+
   def send_geo_state geo_state
     if check_send_data(@geo_states, geo_state, @all_updated_at[:geo_states])
       @geo_states << {
@@ -220,13 +237,28 @@ class ExternalDeviceController < ApplicationController
     end
   end
 
-  def send_user user
-    return if user == external_user
-    if check_send_data(@users, user, @all_updated_at[:users])
-      @users << {
-          id: user.id,
-          name: user.name,
-          updated_at: user.updated_at.to_i,
+  def send_topic topic
+    if check_send_data(@topics, topic, @all_updated_at[:topics])
+      @topics << {
+          id: topic.id,
+          name: topic.name,
+          description: topic.description,
+          colour: topic.colour,
+          updated_at: topic.updated_at.to_i,
+          last_changed: 'online'
+      }
+    end
+  end
+
+  def send_progress_marker progress_marker
+    if check_send_data(@progress_markers, progress_marker, @all_updated_at[:progress_markers])
+      @progress_markers << {
+          id: progress_marker.id,
+          name: progress_marker.name,
+          alternate_description: progress_marker.alternate_description,
+          topic_id: progress_marker.topic_id,
+          number: progress_marker.number,
+          updated_at: progress_marker.updated_at.to_i,
           last_changed: 'online'
       }
     end
@@ -234,7 +266,6 @@ class ExternalDeviceController < ApplicationController
 
   def send_report report
     if check_send_data(@reports, report, @all_updated_at[:reports])
-      report.pictures.each{|picture| send_picture picture}
       @reports << {
           id: report.id,
           state_id: report.geo_state_id,
@@ -253,19 +284,14 @@ class ExternalDeviceController < ApplicationController
     end
   end
 
-  def send_picture picture
-    if picture.ref.file.exists?
-      if check_send_data(@reports, report, @all_updated_at[:uploaded_files])
-        file_content = Base64.encode64 picture.ref.read
-        @uploaded_files << {
-            id: picture.id,
-            updated_at: picture.updated_at.to_i,
-            data: file_content
-        }
-     end
-    else
-      throw 'File doesn\'t exist'
-    end
+  def send_uploaded_file uploaded_file
+    if check_send_data(@uploaded_files, uploaded_file, @all_updated_at[:uploaded_files])
+      @uploaded_files << {
+          id: picture.id,
+          updated_at: picture.updated_at.to_i,
+          data: Base64.encode64(picture.ref.read)
+      }
+   end
   end
 
   def check_send_data array, object, offline_updated_at_reference
