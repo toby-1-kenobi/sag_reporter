@@ -108,6 +108,8 @@ class ExternalDeviceController < ApplicationController
           users: @users,
           geo_states: @geo_states,
           language: @languages.uniq,
+          topics: @topics,
+          progress_markers: @progress_markers,
           reports: @reports,
           uploaded_files: @uploaded_files
       }, status: :ok
@@ -296,7 +298,7 @@ class ExternalDeviceController < ApplicationController
 
   def check_send_data array, object, offline_updated_at_reference
     offline_updated_at = offline_updated_at_reference
-    offline_updated_at &&= offline_updated_at[object.id]
+    offline_updated_at &&= offline_updated_at[object.id.to_s]
     offline_updated_at &&= offline_updated_at[:updated_at]
     if offline_updated_at
       if object.updated_at.to_i == offline_updated_at
