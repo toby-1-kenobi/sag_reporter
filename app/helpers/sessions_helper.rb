@@ -82,8 +82,27 @@ module SessionsHelper
     session[:forwarding_url] = request.url if request.get?
   end
 
-  # gets the current user of the jwt-token-authorization
+  def authenticate_external
+    render json: { error: "JWT invalid" }, status: :unauthorized unless external_user
+  end
+
   def current_user
     @current_user ||= external_user
+  end
+
+  # gets the current user of the jwt-token-authorization
+  def external_user
+    @external_user ||= User.first
+    @external_user ||= begin
+      token = request.headers['Authorization'].split.last
+      secret_key = Rails.application.secrets.secret_key_base
+      payload, _ = JWT.decode token, secret_key, true, {algorithm: 'HS256'}
+      user = User.find_by_id payload['sub']
+      device_is_registered = user.external_devices.map{|d| d.device_id if d.registered}.include?(payload['iss'])
+      user if user.updated_at.to_i < payload['iat'] && device_is_registered
+    rescue => e
+      puts e
+      nil
+    end
   end
 end

@@ -3,7 +3,7 @@ class ExternalDeviceController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   before_action :authenticate_external, except: [:test_server, :login, :get_database_key]
-
+  
   def test_server
     head :ok
   end
@@ -31,9 +31,9 @@ class ExternalDeviceController < ApplicationController
           ExternalDevice.update user_device.id, name: full_params[:device_name]
         end
         render json: {
-            user: user.id
-            jwt: create_jwt user,
-            database_key: create_database_key user
+            user: user.id,
+            jwt: create_jwt(user),
+            database_key: create_database_key(user)
         }, status: :created
         return
       end
@@ -46,9 +46,9 @@ class ExternalDeviceController < ApplicationController
         new_device.registered = true # Remove this, if manual registration is implemented
         new_device.save
         render json: {
-            user: user.id
-            jwt: create_jwt user,
-            database_key: create_database_key user
+            user: user.id,
+            jwt: create_jwt(user),
+            database_key: create_database_key(user)
         }, status: :created # Remove this, if manual registration is implemented
         return # Remove this, if manual registration is implemented
       end
@@ -84,7 +84,7 @@ class ExternalDeviceController < ApplicationController
       @all_updated_at = send_request_params
       error = ""
       if @all_updated_at[:now] > Time.now.to_i || @all_updated_at[:now] + 60 < Time.now.to_i
-        error = 'Timestamp is not the same for external device and server'
+        error = 'Timestamp is not the same for external device and server: ' + @all_updated_at[:now].to_s + " " + Time.now.utc.to_i.to_s
       end
       send_external_user
       User.all.each{|user| send_user(user) if user != external_user}
@@ -93,13 +93,13 @@ class ExternalDeviceController < ApplicationController
       else
         user_geo_states = external_user.geo_states
       end
-      user_geo_states.each do |geo_state|
+      user_geo_states.includes(:languages).each do |geo_state|
         send_geo_state geo_state
         geo_state.languages.each{|language| send_language language}
       end
       Topic.all.each{|topic| send_topic topic}
       ProgressMarker.all.each{|progress_marker| send_progress_marker progress_marker}
-      Report.user_limited(external_user).each do |report|
+      Report.includes(:impact_report, :pictures).user_limited(external_user).each do |report|
         send_report report
         report.pictures.each{|picture| send_picture picture}
       end
@@ -295,7 +295,8 @@ class ExternalDeviceController < ApplicationController
   end
 
   def check_send_data array, object, offline_updated_at_reference
-    offline_updated_at = offline_updated_at_reference[object.id]
+    offline_updated_at = offline_updated_at_reference
+    offline_updated_at &&= offline_updated_at[object.id]
     offline_updated_at &&= offline_updated_at[:updated_at]
     if offline_updated_at
       if object.updated_at.to_i == offline_updated_at
@@ -317,8 +318,8 @@ class ExternalDeviceController < ApplicationController
       return nil
     end
     if status != 'new'
-      @errors << {uploaded_file_id => 'Unknown status'
-      return nils
+      @errors << {uploaded_file_id => 'Unknown status'}
+      return nil
     end
     # convert image-string to image-file
     begin
