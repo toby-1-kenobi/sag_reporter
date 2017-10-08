@@ -80,7 +80,7 @@ Rails.application.routes.draw do
 
   post 'external_device/send_request'
   post 'external_device/receive_request'
-  post 'external_device/test_server'
+  get 'external_device/test_server'
 
   resources :users do
     collection do

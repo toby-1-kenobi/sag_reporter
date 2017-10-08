@@ -30,11 +30,13 @@ class ExternalDeviceController < ApplicationController
         unless users_device.name == full_params[:device_name]
           ExternalDevice.update user_device.id, name: full_params[:device_name]
         end
-        render json: {
+        send_message = {
             user: user.id,
             jwt: create_jwt(user),
             database_key: create_database_key(user)
-        }, status: :created
+        }
+        puts send_message
+        render json: send_message, status: :created
         return
       end
       # create the (in future unregistered) device, if it doesn't exist
@@ -48,14 +50,17 @@ class ExternalDeviceController < ApplicationController
         render json: {
             user: user.id,
             jwt: create_jwt(user),
-            database_key: create_database_key(user)
+            database_key: create_database_key(user),
+            now: Time.now.to_i
         }, status: :created # Remove this, if manual registration is implemented
         return # Remove this, if manual registration is implemented
       end
       puts "Device not registered"
       render json: { user: @user.id, error: "Device not registered" }, status: :unauthorized
     rescue => e
-      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
+      send_message = { error: e.to_s, where: e.backtrace.to_s }
+      puts send_message
+      render json: send_message, status: :internal_server_error
     end
   end
 
@@ -73,7 +78,9 @@ class ExternalDeviceController < ApplicationController
       puts database_key
       render json: { key: database_key }, status: :ok
     rescue => e
-      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
+      send_message = { error: e.to_s, where: e.backtrace.to_s }
+      puts send_message
+      render json: send_message, status: :internal_server_error
     end
   end
 
@@ -82,10 +89,6 @@ class ExternalDeviceController < ApplicationController
       @users, @geo_states, @languages, @reports, @uploaded_files,
       @topics, @progress_markers = Array.new(7) {Array.new}
       @all_updated_at = send_request_params
-      error = ""
-      if @all_updated_at[:now] > Time.now.to_i || @all_updated_at[:now] + 60 < Time.now.to_i
-        error = 'Timestamp is not the same for external device and server: ' + @all_updated_at[:now].to_s + " " + Time.now.utc.to_i.to_s
-      end
       send_external_user
       User.all.each{|user| send_user(user) if user != external_user}
       if external_user.national?
@@ -101,20 +104,23 @@ class ExternalDeviceController < ApplicationController
       ProgressMarker.all.each{|progress_marker| send_progress_marker progress_marker}
       Report.includes(:impact_report, :pictures).user_limited(external_user).each do |report|
         send_report report
-        report.pictures.each{|picture| send_picture picture}
+        report.pictures.each{|picture| send_uploaded_file picture}
       end
-      render json: {
-          error: error,
+      send_message = {
           users: @users,
           geo_states: @geo_states,
-          language: @languages.uniq,
+          languages: @languages.uniq,
           topics: @topics,
           progress_markers: @progress_markers,
           reports: @reports,
           uploaded_files: @uploaded_files
-      }, status: :ok
+      }
+      puts send_message
+      render json: send_message, status: :ok
     rescue => e
-      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
+      send_message = { error: e.to_s, where: e.backtrace.to_s }
+      puts send_message
+      render json: send_message, status: :internal_server_error
     end
   end
 
@@ -122,16 +128,20 @@ class ExternalDeviceController < ApplicationController
     begin
       @uploaded_file_feedbacks, @report_feedbacks, @errors = Array.new(3) {Array.new}
       full_params = receive_request_params
-      full_params[:reports].each_with_index do |report_params, report_id|
+      full_params[:reports].each do |report_id, report_params|
         receive_report report_id, report_params, full_params[:uploaded_files]
       end
-      render json: {
+      send_message = {
           error: @errors,
-          uploaded_file_feedbacks: @uploaded_file_feedbacks,
-          report_feedbacks: @report_feedbacks
-      }, status: :ok
+          reports: @report_feedbacks,
+          uploaded_files: @uploaded_file_feedbacks
+      }
+      puts send_message
+      render json: send_message, status: :ok
     rescue => e
-      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
+      send_message = { error: e.to_s, where: e.backtrace.to_s }
+      puts send_message
+      render json: send_message, status: :internal_server_error
     end
   end
 
@@ -157,7 +167,6 @@ class ExternalDeviceController < ApplicationController
 
   def send_request_params
     safe_params = [
-      :now,
       :users => [:updated_at],
       :languages => [:updated_at],
       :geo_states => [:updated_at],
@@ -173,19 +182,18 @@ class ExternalDeviceController < ApplicationController
     safe_params = [
       :uploaded_files => [
         :status,
-        :id,
-        :data,
-        :report_id
+        :data
       ],
       :reports => [
         :status,
-        :id,
         :geo_state_id,
         {:language_ids => []},
         :report_date,
+        {:picture_ids => []},
         :content,
         :reporter_id,
         :impact_report,
+        {:progress_marker_ids => []},
         :client,
         :version
       ]
@@ -272,14 +280,14 @@ class ExternalDeviceController < ApplicationController
           id: report.id,
           state_id: report.geo_state_id,
           date: report.report_date.to_time(:utc).to_i,
+          picture_ids: report.picture_ids,
           content: report.content,
           reporter_id: report.reporter_id,
           impact_report: true,
-          languages: report.language_ids,
-          pictures: report.pictures,
+          language_ids: report.language_ids,
           client: report.client,
           version: report.version,
-          markers: report.impact_report.progress_marker_ids,
+          progress_marker_ids: report.impact_report.progress_marker_ids,
           updated_at: report.updated_at.to_i,
           last_changed: 'online'
       }
@@ -289,9 +297,11 @@ class ExternalDeviceController < ApplicationController
   def send_uploaded_file uploaded_file
     if check_send_data(@uploaded_files, uploaded_file, @all_updated_at[:uploaded_files])
       @uploaded_files << {
-          id: picture.id,
-          updated_at: picture.updated_at.to_i,
-          data: Base64.encode64(picture.ref.read)
+          id: uploaded_file.id,
+          data: Base64.encode64(uploaded_file.ref.read),
+          report_id: uploaded_file.report_id,
+          updated_at: uploaded_file.updated_at.to_i,
+          last_changed: 'online'
       }
    end
   end
@@ -305,7 +315,7 @@ class ExternalDeviceController < ApplicationController
         array << {id: object.id, last_changed: 'same'}
         return false
       end
-      if object.updated_at.to_i < offline_updated_at
+      if offline_updated_at > 0 # > object.updated_at.to_i
         array << {id: object.id, last_changed: 'offline'}
         return false
       end
@@ -314,7 +324,8 @@ class ExternalDeviceController < ApplicationController
   end
 
   def receive_uploaded_file uploaded_file_id, uploaded_file_data
-    status = uploaded_file_data[:status]
+    puts 'Save file ' + uploaded_file_id.to_s + uploaded_file_data.keys.to_s
+    status = uploaded_file_data.delete 'status'
     if status == 'delete'
       ExternalFile.delete uploaded_file_id
       return nil
@@ -328,21 +339,22 @@ class ExternalDeviceController < ApplicationController
       filename = 'external_uploaded_image'
       tempfile = Tempfile.new filename
       tempfile.binmode
-      tempfile.write Base64.decode64 uploaded_file_data.delete(:data)
+      tempfile.write Base64.decode64 uploaded_file_data.delete('data')
       tempfile.rewind
       content_type = `file --mime -b #{tempfile.path}`.split(';')[0]
       extension = content_type.match(/gif|jpg|jpeg|png/).to_s
       filename += ".#{extension}" if extension
-      uploaded_file_data[:ref] = UploadedFile.new({
+      uploaded_file_data[:ref] = ActionDispatch::Http::UploadedFile.new({
           tempfile: tempfile,
           type: content_type,
           filename: filename
       })
-      uploaded_file = UploadedFile.new(uploaded_file_data).save
-      uploaded_file_feedbacks << {id: uploaded_file_id, updated_at: uploaded_file.updated_at.to_i, new_id: uploaded_file.id}
+      uploaded_file = UploadedFile.new(uploaded_file_data)
+      uploaded_file.save
+      @uploaded_file_feedbacks << {id: uploaded_file_id, updated_at: uploaded_file.updated_at.to_i, new_id: uploaded_file.id, last_changed: 'uploaded'}
       return uploaded_file.id
     rescue => e
-      @errors << {uploaded_file_id => e}
+      @errors << {"report_" + uploaded_file_id.to_s => e}
       return nil
     ensure
       if tempfile
@@ -353,11 +365,14 @@ class ExternalDeviceController < ApplicationController
   end
 
   def receive_report report_id, report_data, uploaded_files_data
-    impact_report = data.delete :impact_report
-    status = data.delete :status
-    data[:picture_ids] && data[:picture_ids].map! do |picture_id|
+    puts 'Save report ' + report_id.to_s + report_data.to_s
+    return if report_data.nil?
+    impact_report = report_data.delete 'impact_report'
+    status = report_data.delete 'status'
+    report_data['report_date'] &&= Time.now
+    report_data['picture_ids'] && report_data['picture_ids'].map! do |picture_id|
       picture_id = picture_id.to_i
-      picture_data = uploaded_file_data[picture_id]
+      picture_data = uploaded_files_data[picture_id.to_s]
       if picture_data
         receive_uploaded_file picture_id, picture_data
       else
@@ -367,13 +382,13 @@ class ExternalDeviceController < ApplicationController
     if status == 'old'
       report = Report.find_by_id report_id
       if report
-        (report.picture_ids - data[:picture_ids]).each do |deleted_picture_id|
+        (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
           receive_uploaded_file deleted_picture_id, status: 'delete'
-        end
-        if report.update(data)
-          @report_feedbacks << {id: report_id, updated_at: report.updated_at.to_i}
+        end if report_data['picture_ids']
+        if report.update(report_data)
+          @report_feedbacks << {id: report_id, updated_at: report.updated_at.to_i, last_changed: 'uploaded'}
         else
-          @errors << {report_id => report.errors.messages}
+          @errors << {"report_" + report_id.to_s => report.errors.messages}
         end
         return
       else
@@ -381,15 +396,15 @@ class ExternalDeviceController < ApplicationController
       end
     end
     if status == 'new'
-      report = Report.new data
+      report = Report.new report_data
       report.impact_report = ImpactReport.new if impact_report
       if report.save
-        @report_feedbacks << {id: report_id, updated_at: report.updated_at.to_i, new_id: report.id}
+        @report_feedbacks << {id: report_id, updated_at: report.updated_at.to_i, new_id: report.id, last_changed: 'uploaded'}
       else
-        @errors << {report_id => report.errors.messages}
+        @errors << {"report_" + report_id.to_s => report.errors.messages.to_s}
       end
     else
-      @errors << {report_id => 'Unknown status'}
+      @errors << {"report_" + report_id.to_s => 'Unknown status'}
     end
   end
 end
