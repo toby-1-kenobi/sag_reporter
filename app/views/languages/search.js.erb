@@ -1,4 +1,8 @@
-<% if @languages.any? or @states.any? %>
+<% if @languages.count == 1 and @states.empty? %>
+  window.location.href = "<%= language_url(@languages.first) %>";
+<% elsif @states.count == 1 and @languages.empty? %>
+  window.location.href = "<%= geo_state_url(@states.first) %>";
+<% elsif @languages.any? or @states.any? %>
   let languageResultList = $('<ul>').addClass('mdl-list');
   <% @languages.find_each do |lang| %>
     let listItem<%= lang.id %> = $('<li>').addClass('mdl-list__item');

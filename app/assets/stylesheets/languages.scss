@@ -176,6 +176,43 @@ p.iso {
   background-color: #BBBBFF;
 }
 
+#more-details-link {
+  font-size: x-large;
+  i {
+    font-size: x-large;
+  }
+}
+
+#finish-line-status-table thead {
+  background-color: lightgrey;
+  #finish-line-status-title {
+    text-align: center;
+    font-size: x-large !important;
+  }
+}
+
+#more-language-details-title {
+  background-color: lightgrey;
+  font-size: x-large;
+  text-align: center;
+  padding: 24px;
+  font-weight: bold;
+  line-height: 130%;
+  color: rgba(0, 0, 0, 0.54);
+}
+#more-language-details-list {
+  margin-top: 0;
+  background-color: lavender;
+}
+
+.language-dashboard-right {
+  margin: 0;
+  padding-top: 0 !important;
+  .mdl-cell {
+    margin-top: 0;
+  }
+}
+
 .pending-field {
   background-color: cyan;
 }

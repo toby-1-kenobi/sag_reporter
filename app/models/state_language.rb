@@ -24,7 +24,7 @@ class StateLanguage < ActiveRecord::Base
   end
 
   def outcome_table_data(user, options = {})
-    options[:from_date] ||= 6.months.ago
+    options[:from_date] ||= 12.months.ago
     if options[:from_date] < BASE_DATE
       options[:from_date] = BASE_DATE
     end

@@ -43,7 +43,7 @@ class MtResourcesController < ApplicationController
       end
 			@resource.save
       flash['success'] = 'New resource entered'
-      redirect_to language_path(@resource.language)
+      redirect_to show_details_language_path(@resource.language)
     else
       @languages = Language.minorities(logged_in_user.geo_states).order('LOWER(languages.name)')
       render 'new'
