@@ -207,6 +207,8 @@ class ExternalDeviceController < ApplicationController
           id: external_user.id,
           name: external_user.name,
           geo_state_ids: external_user.geo_state_ids,
+          admin: external_user.admin,
+          national: external_user.national,
           updated_at: external_user.updated_at.to_i,
           last_changed: 'online'
       }
@@ -331,7 +333,7 @@ class ExternalDeviceController < ApplicationController
       return nil
     end
     if status != 'new'
-      @errors << {uploaded_file_id => 'Unknown status'}
+      @errors << {uploaded_file_id => 'Unknown status: ' + status}
       return nil
     end
     # convert image-string to image-file
@@ -351,7 +353,12 @@ class ExternalDeviceController < ApplicationController
       })
       uploaded_file = UploadedFile.new(uploaded_file_data)
       uploaded_file.save
-      @uploaded_file_feedbacks << {id: uploaded_file_id, updated_at: uploaded_file.updated_at.to_i, new_id: uploaded_file.id, last_changed: 'uploaded'}
+      @uploaded_file_feedbacks << {
+          id: uploaded_file_id, 
+          updated_at: uploaded_file.updated_at.to_i, 
+          new_id: uploaded_file.id, 
+          last_changed: 'uploaded'
+      }
       return uploaded_file.id
     rescue => e
       @errors << {"report_" + uploaded_file_id.to_s => e}
@@ -381,30 +388,37 @@ class ExternalDeviceController < ApplicationController
     end
     if status == 'old'
       report = Report.find_by_id report_id
-      if report
-        (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
-          receive_uploaded_file deleted_picture_id, status: 'delete'
-        end if report_data['picture_ids']
-        if report.update(report_data)
-          @report_feedbacks << {id: report_id, updated_at: report.updated_at.to_i, last_changed: 'uploaded'}
-        else
-          @errors << {"report_" + report_id.to_s => report.errors.messages}
-        end
+      unless report
+        @errors << { "report_" + report_id.to_s => 'Couldn\'t find report' }
         return
-      else
-        status = 'new'
       end
-    end
-    if status == 'new'
+      (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
+        receive_uploaded_file deleted_picture_id, status: 'delete'
+      end if report_data['picture_ids']
+      if report.update(report_data)
+        @report_feedbacks << {
+            id: report_id,
+            updated_at: report.updated_at.to_i,
+            last_changed: 'uploaded'
+        }
+      else
+        @errors << {"report_" + report_id.to_s => report.errors.messages.to_s}
+      end
+    elsif status == 'new'
       report = Report.new report_data
       report.impact_report = ImpactReport.new if impact_report
       if report.save
-        @report_feedbacks << {id: report_id, updated_at: report.updated_at.to_i, new_id: report.id, last_changed: 'uploaded'}
+        @report_feedbacks << {
+            id: report_id,
+            updated_at: report.updated_at.to_i,
+            new_id: report.id,
+            last_changed: 'uploaded'
+        }
       else
         @errors << {"report_" + report_id.to_s => report.errors.messages.to_s}
       end
     else
-      @errors << {"report_" + report_id.to_s => 'Unknown status'}
+      @errors << {"report_" + report_id.to_s => 'Unknown status: ' + status}
     end
   end
 end
