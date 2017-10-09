@@ -1,8 +1,8 @@
 module ExternalDeviceHelper
 
-  def create_jwt user
+  def create_jwt user, device_id
     secret_key = Rails.application.secrets.secret_key_base
-    payload = {sub: user.id, iat: Time.now.to_i, iss: new_device.device_id}
+    payload = {sub: user.id, iat: Time.now.to_i, iss: device_id}
     token = JWT.encode payload, secret_key, 'HS256'
   end
 
@@ -15,7 +15,6 @@ module ExternalDeviceHelper
   end
 
   def external_user
-    @external_user ||= User.first
     @external_user ||= begin
       token = request.headers['Authorization'].split.last
       secret_key = Rails.application.secrets.secret_key_base

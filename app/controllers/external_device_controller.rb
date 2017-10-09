@@ -1,5 +1,7 @@
 class ExternalDeviceController < ApplicationController
+
   include ParamsHelper
+  include ExternalDeviceHelper
 
   skip_before_action :verify_authenticity_token
   before_action :authenticate_external, except: [:test_server, :login, :get_database_key]
@@ -28,11 +30,11 @@ class ExternalDeviceController < ApplicationController
       users_device = user.external_devices.find{|d| d.device_id == full_params[:device_id]}
       if users_device && users_device.registered
         unless users_device.name == full_params[:device_name]
-          ExternalDevice.update user_device.id, name: full_params[:device_name]
+          ExternalDevice.update users_device.id, name: full_params[:device_name]
         end
         send_message = {
             user: user.id,
-            jwt: create_jwt(user),
+            jwt: create_jwt(user, users_device.device_id),
             database_key: create_database_key(user)
         }
         puts send_message
@@ -49,7 +51,7 @@ class ExternalDeviceController < ApplicationController
         new_device.save
         render json: {
             user: user.id,
-            jwt: create_jwt(user),
+            jwt: create_jwt(user, new_device.device_id),
             database_key: create_database_key(user),
             now: Time.now.to_i
         }, status: :created # Remove this, if manual registration is implemented
@@ -66,7 +68,7 @@ class ExternalDeviceController < ApplicationController
 
   def get_database_key
     begin
-      full_params = params.require(:session).permit :user_id, :device_id
+      full_params = get_database_key_params
       # Check, whether user exists and device is registered
       user = User.find_by_id(full_params['user_id'])
       users_device = user && user.external_devices.find{|d| d.device_id == full_params[:device_id]}
@@ -333,7 +335,7 @@ class ExternalDeviceController < ApplicationController
       return nil
     end
     if status != 'new'
-      @errors << {uploaded_file_id => 'Unknown status: ' + status}
+      @errors << { 'uploaded_file_' + uploaded_file_id.to_s => 'Unknown status: ' + status }
       return nil
     end
     # convert image-string to image-file
@@ -361,7 +363,7 @@ class ExternalDeviceController < ApplicationController
       }
       return uploaded_file.id
     rescue => e
-      @errors << {"report_" + uploaded_file_id.to_s => e}
+      @errors << { "uploaded_file_" + uploaded_file_id.to_s => e }
       return nil
     ensure
       if tempfile
@@ -389,7 +391,7 @@ class ExternalDeviceController < ApplicationController
     if status == 'old'
       report = Report.find_by_id report_id
       unless report
-        @errors << { "report_" + report_id.to_s => 'Couldn\'t find report' }
+        @errors << { 'report_' + report_id.to_s => 'Couldn\'t find report' }
         return
       end
       (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
@@ -402,7 +404,7 @@ class ExternalDeviceController < ApplicationController
             last_changed: 'uploaded'
         }
       else
-        @errors << {"report_" + report_id.to_s => report.errors.messages.to_s}
+        @errors << { 'report_' + report_id.to_s => report.errors.messages.to_s }
       end
     elsif status == 'new'
       report = Report.new report_data
@@ -415,10 +417,10 @@ class ExternalDeviceController < ApplicationController
             last_changed: 'uploaded'
         }
       else
-        @errors << {"report_" + report_id.to_s => report.errors.messages.to_s}
+        @errors << {'report_' + report_id.to_s => report.errors.messages.to_s}
       end
     else
-      @errors << {"report_" + report_id.to_s => 'Unknown status: ' + status}
+      @errors << {'report_' + report_id.to_s => 'Unknown status: ' + status}
     end
   end
 end

@@ -4,6 +4,8 @@ class ReportsController < ApplicationController
   include ParamsHelper
   include ReportFilter
 
+  before_action :require_login
+
   before_action only: [:spreadsheet] do
     redirect_to root_path unless logged_in_user.trusted?
   end
@@ -26,170 +28,6 @@ class ReportsController < ApplicationController
   before_action only: [:pictures] do
     head :forbidden unless logged_in_user.trusted? or logged_in_user?(@report.reporter)
   end
-
-  # methods related to an external client (=android app)
-  skip_before_action :verify_authenticity_token, only: [:create_external, :update_external, :index_external]
-  before_action :require_login, except: [:create_external, :update_external, :index_external]
-  before_action :authenticate_external, only: [:create_external, :update_external, :index_external]
-
-  before_action only: [:update_external] do
-    unless current_user.admin? or current_user == @report.reporter
-      render json: {errors: 'Permission denied'}, status: :unauthorized
-    end
-  end
-
-  def create_external
-    begin
-      full_params = report_params.merge({reporter: current_user})
-      report_factory = nil
-      success = true
-      instance = nil
-      # use state-language IDs (for being converted back to language IDs by the report-factory)
-      language_ids = full_params['languages']
-      state_id = full_params['geo_state_id']
-      full_params['languages'] = StateLanguage.where(language_id: language_ids, geo_state_id: state_id).map{|sl| sl.id}
-
-      report_factory = Report::Factory.new
-      success = report_factory.create_report(full_params)
-      instance = report_factory.instance if success
-
-      response = Hash.new
-      report_data = Hash.new
-      if success && instance
-        report_data[:id] = instance.id
-        report_data[:updated_at] = instance.updated_at.to_i
-      else
-        response[:success] = false
-        response[:errors] = Array.new
-        if report_factory.instance
-          response[:errors].concat report_factory.instance.errors.full_messages
-        end
-        if report_factory.error
-          response[:errors] << report_factory.error.message
-        end
-      end
-      if success
-        render json: { report: report_data }, status: :created
-      else
-        render json: response, status: :internal_server_error
-      end
-    rescue => e
-      puts e
-      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
-    end
-  end
-
-  def update_external
-    begin
-      additional_params = [:external_updated_at, :external_id]
-      external_params = params.require(:report).permit(additional_params)
-      updated_at = external_params.delete 'external_updated_at'
-      @report = Report.find external_params.delete('external_id')
-
-      full_params = report_params.merge({reporter: current_user})
-      report_factory = nil
-      success = true
-      instance = nil
-      # use state-language IDs (for being converted back to language IDs by the report-factory)
-      language_ids = full_params['languages']
-      state_id = full_params['geo_state_id']
-      full_params['languages'] = StateLanguage.where(language_id: language_ids, geo_state_id: state_id).map{|sl| sl.id}
-      # just edit, if user has the right, to do so
-      if updated_at > @report.updated_at.to_i and
-          (current_user.admin? or current_user == @report.reporter)
-        # delete all old image files (for just using new files)
-        @report.pictures.each do |picture|
-          picture.remove_ref!
-          picture.delete
-        end
-        report_factory = Report::Updater.new(@report)
-        success = report_factory.update_report(full_params)
-        instance = report_factory.instance if success
-      end
-
-      response = Hash.new
-      report_data = Hash.new
-      if success && instance
-        report_data[:id] = instance.id
-        report_data[:updated_at] = instance.updated_at.to_i
-      else
-        response[:errors] = Array.new
-        if report_factory.instance
-          response[:errors].concat report_factory.instance.errors.full_messages
-        end
-        if report_factory.error
-          response[:errors] << report_factory.error.message
-        end
-      end
-      if success
-        render json: { report: report_data }, status: :accepted
-      else
-        render json: response, status: :internal_server_error
-      end
-    rescue => e
-      puts e
-      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
-    end
-  end
-
-  def index_external
-    begin
-      external_params = params.require(:report).permit(all_reports: [:updated_at])[:all_reports]
-      report_data = Array.new
-      user_geo_states = current_user.geo_states.ids
-      Report.user_limited(current_user).includes(:languages, :pictures).
-          where.not(impact_report: nil).each do |report|
-
-        language_ids = report.languages.map {|language| language.id}
-
-        pictures = Hash.new
-        report.pictures.each do |picture|
-          if picture.ref.file.exists?
-            picture_id = picture[:id]
-            file_content = Base64.encode64 picture.ref.read
-            pictures[picture_id] = file_content
-          end
-        end
-
-        if external_params && external_params[report.id.to_s]
-          if report.updated_at.to_i == external_params[report.id.to_s][:updated_at]
-            report_data << {id: report.id, last_changed: "same"}
-            next
-          end
-          if report.updated_at.to_i < external_params[report.id.to_s][:updated_at]
-            report_data << {id: report.id, last_changed: "offline"}
-            next
-          end
-        end
-        begin
-          markers = report.impact_report.progress_markers.map {|marker| marker.id}
-        rescue => e
-          markers = e
-        end
-        report_data << {
-            id: report.id,
-            state_id: report.geo_state_id,
-            date: report.report_date.to_time(:utc).to_i,
-            content: report.content,
-            reporter_id: report.reporter_id,
-            impact_report: 1,
-            languages: language_ids,
-            pictures: pictures,
-            client: report.client,
-            version: report.version,
-            markers: markers,
-            updated_at: report.updated_at.to_i,
-            last_changed: "online"
-        }
-      end
-      puts report_data
-      render json: {reports: report_data}, status: :ok
-    rescue => e
-      puts e
-      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
-    end
-  end
-  # until here methods were related to an external client (=android app)
 
   def new
   	@report = Report.new
@@ -374,7 +212,6 @@ class ReportsController < ApplicationController
   private
 
   def report_params
-    actual_user = logged_in_user || current_user
     # make hash options into arrays
     param_reduce(params['report'], %w(topics languages))
     safe_params = [
@@ -389,7 +226,7 @@ class ReportsController < ApplicationController
       :impact_report,
       {:languages => []},
       {:topics => []},
-      {:pictures_attributes => [:ref, :_destroy, :id, :created_external]},
+      {:pictures_attributes => [:ref, :_destroy, :id]},
       {:observers_attributes => [:id, :name]},
       {:impact_report_attributes => [:translation_impact]},
       :status,
@@ -399,7 +236,7 @@ class ReportsController < ApplicationController
       :client,
       :version
     ]
-    safe_params.delete :status unless actual_user.admin?
+    safe_params.delete :status unless logged_in_user.admin?
     # if we have a date try to change it to db-friendly format
     # otherwise set it to nil
     if params[:report][:report_date]

@@ -19,9 +19,6 @@ class Report::Updater
     planning = params.delete 'planning_report'
     challenge = params.delete 'challenge_report'
     begin
-      if params['pictures_attributes']
-        params['pictures_attributes'] = add_external_picture params['pictures_attributes']
-      end
       result = @instance.update_attributes(params)
       @instance.languages.clear
       add_languages(state_language_ids, @instance.geo_state_id) if state_language_ids
@@ -50,12 +47,10 @@ class Report::Updater
       end
       add_impact_attr(impact_attr) if impact_attr and impact.to_i == 1
       @instance.save!
+      return result
     rescue => e
       Rails.logger.error(e.message)
-      result = false
-    ensure
-      cleanup_external_picture
-      return result
+      return false
     end
   end
 

@@ -3,6 +3,8 @@ class UsersController < ApplicationController
   include ParamsHelper
   include ReportFilter
 
+  before_action :require_login
+
   # A user's profile can only be edited or seen by
   #    themselves or
   #    someone with permission
@@ -25,99 +27,6 @@ class UsersController < ApplicationController
   before_action only: [:index] do
     redirect_to root_path unless logged_in_user.admin?
   end
-
-  before_action :require_login, except: [:confirm_email, :show_external, :index_external]
-  # methods related to an external client (=android app)
-  skip_before_action :verify_authenticity_token, only: [:show_external, :index_external]
-  before_action :authenticate_external, only: [:show_external, :index_external]
-
-  # sends user related data (inclusive related states and their languages)
-  def show_external
-    begin
-      last_external_update = params.require(:user).permit(:updated_at)[:updated_at]
-      user_data = Hash.new
-      user_data[:id] = current_user.id
-      user_data[:updated_at] = current_user.updated_at
-      user_data[:geo_states] = Array.new
-      last_updated = [current_user.updated_at]
-      current_user.geo_states.includes(state_languages: :language).where(state_languages: {project: true}).each do |geo_state|
-        languages = geo_state.state_languages.map do |state_language|
-            last_updated << state_language.updated_at
-            {language_id: state_language.language.id,
-             updated_at: state_language.updated_at,
-             language_name: state_language.language_name}
-        end
-        user_data[:geo_states] << {
-            state_id: geo_state.id,
-            updated_at: geo_state.updated_at,
-            state_name: geo_state.name,
-            languages: languages
-        }
-        last_updated << geo_state.updated_at
-      end
-      last_updated = last_updated.max.to_i
-      user_data[:updated_at] = last_updated.to_i
-      user_data[:last_changed] = 'online'
-      begin
-        tags = Hash.new
-        Topic.all.each do |topic|
-          markers[:id] = topic.id
-          markers[:updated_at] = topic.updated_at
-          tags[:name] = topic.name
-          tags[:description] = topic.description
-          tags[:colour] = topic.colour
-          markers = Hash.new
-          topic.progress_markers.each do |marker|
-            markers[:id] = marker.id
-            markers[:updated_at] = marker.updated_at
-            markers[:name] = marker.name
-            markers[:alternate_description] = marker.alternate_description
-            markers[:number] = marker.number
-          end
-        end
-      rescue => e
-        user_data[:tags] = e
-      end
-      if last_updated > last_external_update
-        puts user_data
-        render json: {user: user_data}, status: :ok
-      else
-        puts 'User data not changed'
-        render json: {user: {last_changed: 'same'}}, status: :ok
-      end
-    rescue => e
-      puts e
-      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
-    end
-  end
-
-  # sends all user_names
-  def index_external
-    begin
-      last_external_update = params.require(:user).permit(:updated_at)[:updated_at]
-      user_data = Hash.new
-      last_updated = Array.new
-      User.all.each do |user|
-        user_data[user.id.to_s] = user.name
-        last_updated << user.updated_at
-      end
-      last_updated = last_updated.max.to_i
-      user_data[:updated_at] = last_updated.to_i
-      user_data[:last_changed] = "online"
-      puts user_data
-      if last_updated > last_external_update
-        puts user_data
-        render json: {users: user_data}, status: :ok
-      else
-        puts "User data not changed"
-        render json: {users: {last_changed: "same"}}, status: :ok
-      end
-    rescue => e
-      puts e
-      render json: { error: e.to_s, where: e.backtrace.to_s }, status: :internal_server_error
-    end
-  end
-  # until here methods were related to an external client (=android app)
 
   def new
   	@user = User.new
