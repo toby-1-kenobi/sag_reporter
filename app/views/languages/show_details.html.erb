@@ -33,13 +33,27 @@
   <div class="mdl-cell mdl-cell--6-col">
 
     <table class="language-data">
-      <tr><th>Point Person</th><td>
-        <% if @language.champion.present? %>
-          <%= user_link(@language.champion) %>
-        <% else %>
-          not assigned
-        <% end %>
-      </td></tr>
+      <tr>
+        <th>Point Person</th>
+        <td>
+          <span id="champion-name">
+            <%= @language.champion.present? ? user_link(@language.champion) : 'not assigned' %>
+          </span>
+          <% if logged_in_user.admin? %>
+            <button id="champion-edit-button" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+              <i class="material-icons">edit</i>
+            </button>
+          <% end %>
+        </td>
+      </tr>
+      <% if logged_in_user.admin? %>
+        <tr id="champion-input-row" class="hide">
+          <td colspan="2" class="mdl-textfield mdl-js-textfield">
+            <%= autocomplete_field_tag :champion, '', autocomplete_user_name_languages_path, id: 'champion-input', class: 'mdl-textfield__input' %>
+            <%= label_tag :champion, 'Name', class: 'mdl-textfield__label' %>
+          </td>
+        </tr>
+      <% end %>
     </table>
 
     <a name="church-engagement"><h3>Church Engagement</h3></a>

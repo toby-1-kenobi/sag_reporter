@@ -1,6 +1,10 @@
-<% html_class = "#{'editable' if @editable} #{'pending-field' if @pending_attributes.include? attribute_name}" %>
+<%# This will show the value of a text attribute along with the attribute name.
+  # If the attribute can be edited it will apply the class that will enable the
+  # css and js for an editable attribute. %>
+<% field_editable ||= @editable %>
+<% html_class = "#{'editable' if field_editable} #{'pending-field' if @pending_attributes.include? attribute_name}" %>
 <% html_id = "#{object.class.name.underscore.dasherize}-#{attribute_name.dasherize}" %>
 <%= content_tag html_tag, {id: html_id, class: html_class} do %>
   <%= object.send(attribute_name) %>
-  <%= render 'shared/edit_icon' if @editable %>
+  <%= render 'shared/edit_icon' if field_editable %>
 <% end %>

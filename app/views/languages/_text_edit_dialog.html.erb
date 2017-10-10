@@ -10,8 +10,8 @@
         <%= hidden_field_tag 'edit[record_id]', @language.id %>
         <%= hidden_field_tag 'edit[attribute_name]', attribute_name %>
         <%= hidden_field_tag 'edit[old_value]', @language.send(attribute_name) %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', label %>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <%= label_tag 'edit[new_value]', label, class: 'mdl-textfield__label' %>
           <% if area %>
               <%= text_area_tag 'edit[new_value]', @language.send(attribute_name), class: 'mdl-textfield__input' %>
           <% else %>

@@ -15,6 +15,8 @@ class LanguagesController < ApplicationController
     redirect_to root_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
   end
 
+  autocomplete :user, :name, :full => true
+
   def index
   	@languages = Language.includes(:family, { geo_states: :zone }).order(:name)
   end

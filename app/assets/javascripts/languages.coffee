@@ -98,4 +98,12 @@ $(document).ready ->
     $("#finish-line-status-select-#{flmNum}").addClass('under').removeClass('hide')
     return
 
+  $('#champion-edit-button').on 'click', ->
+    $('#champion-input-row').slideDown()
+    return
+
+  $('#champion-input').on 'railsAutocomplete.select', (event, data) ->
+    $('#champion-input-row').slideUp()
+    return
+
   return
