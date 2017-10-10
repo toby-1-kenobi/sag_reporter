@@ -15,6 +15,11 @@ class LanguagesController < ApplicationController
     redirect_to root_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
   end
 
+  # only an admin user can set the language champion
+  before_action only: [:set_champion] do
+    head :forbidden unless logged_in_user.admin?
+  end
+
   autocomplete :user, :name, :full => true
 
   def index
@@ -143,6 +148,18 @@ class LanguagesController < ApplicationController
 
   def fetch_jp_data
     @iso = params[:iso]
+  end
+
+  def set_champion
+    @language = Language.find params[:id]
+    @champion = User.find_by_name params[:champion]
+    if @champion
+      @language.champion = @champion
+      @language.save
+      respond_to :js
+    else
+      return head :gone
+    end
   end
 
   def update

@@ -103,6 +103,7 @@ $(document).ready ->
     return
 
   $('#champion-input').on 'railsAutocomplete.select', (event, data) ->
+    $('#set-champion-form').submit()
     $('#champion-input-row').slideUp()
     return
 

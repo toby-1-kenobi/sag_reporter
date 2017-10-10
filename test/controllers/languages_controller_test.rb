@@ -5,6 +5,7 @@ describe LanguagesController do
   before do
     @national_user = users(:norman)
     @normal_user = users(:emma)
+    @admin_user = users(:andrew)
   end
 
   it 'redirects to login when not logged in user goes to language dashboard' do
@@ -52,6 +53,20 @@ describe LanguagesController do
     log_in_as(@national_user)
     get :show_details, id: languages(:gujarati)
     _(response).must_be :success?
+  end
+
+  it 'must let an admin user set the language champion' do
+    log_in_as(@admin_user)
+    champ = User.take
+    xhr :patch, :set_champion, id: languages(:toto), champion: champ.name
+    _(response).must_be :success?
+  end
+
+  it 'wont let a non admin user set the language champion' do
+    log_in_as(@normal_user)
+    champ = User.take
+    xhr :patch, :set_champion, id: languages(:toto), champion: champ.name
+    _(response).wont_be :success?
   end
 
 end

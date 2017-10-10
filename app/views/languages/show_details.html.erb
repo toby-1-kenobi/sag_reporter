@@ -48,10 +48,12 @@
       </tr>
       <% if logged_in_user.admin? %>
         <tr id="champion-input-row" class="hide">
-          <td colspan="2" class="mdl-textfield mdl-js-textfield">
-            <%= autocomplete_field_tag :champion, '', autocomplete_user_name_languages_path, id: 'champion-input', class: 'mdl-textfield__input' %>
-            <%= label_tag :champion, 'Name', class: 'mdl-textfield__label' %>
-          </td>
+          <%= form_tag set_champion_language_path(@language), remote: true, method: :patch, id: 'set-champion-form' do %>
+            <td colspan="2" class="mdl-textfield mdl-js-textfield">
+              <%= autocomplete_field_tag :champion, '', autocomplete_user_name_languages_path, id: 'champion-input', class: 'mdl-textfield__input' %>
+              <%= label_tag :champion, 'Name', class: 'mdl-textfield__label' %>
+            </td>
+          <% end %>
         </tr>
       <% end %>
     </table>
