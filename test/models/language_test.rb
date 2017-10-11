@@ -62,4 +62,26 @@ describe Language do
     _(language_count).wont_equal Language.all.count
     _(Language.user_limited(state_based_user).count).must_equal language_count
   end
+
+  it 'has modification date as latest change when there are no edits' do
+    _(language.last_changed.to_a).must_equal language.updated_at.to_a
+  end
+
+  it 'has latest edit date as latest change if more recent than modification date' do
+    language.save
+    edit = Edit.create(
+            user: users(:andrew),
+            model_klass_name: 'Language',
+            record_id: language.id,
+            attribute_name: 'iso',
+            old_value: '',
+            new_value: 'abc',
+            status: 1,
+            created_at: language.updated_at - 1.day
+    )
+    _(language.last_changed.to_a).must_equal language.updated_at.to_a
+    edit.created_at = language.updated_at + 1.day
+    edit.save
+    _(language.last_changed.to_a).must_equal edit.created_at.to_a
+  end
 end

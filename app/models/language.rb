@@ -93,6 +93,12 @@ class Language < ActiveRecord::Base
     geo_state_ids.join ','
   end
 
+  # latest date of a modification or suggested edit
+  def last_changed
+    edits = Edit.where(model_klass_name: 'Language', record_id: id).where('created_at > ?', updated_at).order(:created_at)
+    edits.any? ? edits.last.created_at : updated_at
+  end
+
   # should probably have a scope for each of these. It would help with the overview page
   def translation_status
     case
