@@ -35,7 +35,8 @@ class ExternalDeviceController < ApplicationController
         send_message = {
             user: user.id,
             jwt: create_jwt(user, users_device.device_id),
-            database_key: create_database_key(user)
+            database_key: create_database_key(user),
+            now: Time.now.to_i
         }
         puts send_message
         render json: send_message, status: :created
@@ -46,19 +47,21 @@ class ExternalDeviceController < ApplicationController
         new_device = ExternalDevice.new
         new_device.device_id = full_params[:device_id]
         new_device.name = full_params[:device_name]
-        new_device.user = @user
+        new_device.user = user
         new_device.registered = true # Remove this, if manual registration is implemented
-        new_device.save
-        render json: {
+        raise new_device.errors.messages.to_s unless new_device.save
+        send_message = {
             user: user.id,
             jwt: create_jwt(user, new_device.device_id),
             database_key: create_database_key(user),
             now: Time.now.to_i
-        }, status: :created # Remove this, if manual registration is implemented
+        }
+        puts send_message
+        render json: send_message, status: :created # Remove this, if manual registration is implemented
         return # Remove this, if manual registration is implemented
       end
       puts "Device not registered"
-      render json: { user: @user.id, error: "Device not registered" }, status: :unauthorized
+      render json: { user: user.id, error: "Device not registered" }, status: :unauthorized
     rescue => e
       send_message = { error: e.to_s, where: e.backtrace.to_s }
       puts send_message
@@ -74,7 +77,8 @@ class ExternalDeviceController < ApplicationController
       users_device = user && user.external_devices.find{|d| d.device_id == full_params[:device_id]}
       unless user && users_device && users_device.registered?
         puts "Device not registered"
-        render json: { error: "Device not registered" }, status: :unauthorized 
+        render json: { error: "Device not registered" }, status: :unauthorized
+        return
       end
       database_key = (user.created_at.to_f * 1000000).to_i
       puts database_key
@@ -92,6 +96,10 @@ class ExternalDeviceController < ApplicationController
       @topics, @progress_markers = Array.new(7) {Array.new}
       @all_updated_at = send_request_params
       send_external_user
+      send_language external_user.mother_tongue
+      external_user.spoken_languages.each{|language| send_language language}
+      send_language external_user.interface_language
+      external_user.championed_languages.each{|language| send_language language}
       User.all.each{|user| send_user(user) if user != external_user}
       if external_user.national?
         user_geo_states = GeoState.all
@@ -208,9 +216,18 @@ class ExternalDeviceController < ApplicationController
       @users << {
           id: external_user.id,
           name: external_user.name,
+          phone: external_user.phone,
+          email: external_user.email,
+          email_confirmed: external_user.email_confirmed,
           geo_state_ids: external_user.geo_state_ids,
-          admin: external_user.admin,
+          trusted: external_user.trusted,
           national: external_user.national,
+          admin: external_user.admin,
+          national_curator: external_user.national_curator,
+          mother_tongue_id: external_user.mother_tongue_id,
+          spoken_language_ids: external_user.spoken_language_ids,
+          interface_language_id: external_user.interface_language_id,
+          championed_language_ids: external_user.championed_language_ids,
           updated_at: external_user.updated_at.to_i,
           last_changed: 'online'
       }
@@ -245,6 +262,8 @@ class ExternalDeviceController < ApplicationController
       @languages << {
           id: language.id,
           name: language.name,
+          colour: language.colour,
+          iso: language.iso,
           updated_at: language.updated_at.to_i,
           last_changed: 'online'
       }
@@ -291,6 +310,7 @@ class ExternalDeviceController < ApplicationController
           language_ids: report.language_ids,
           client: report.client,
           version: report.version,
+          status: report.status,
           progress_marker_ids: report.impact_report.progress_marker_ids,
           updated_at: report.updated_at.to_i,
           last_changed: 'online'
@@ -354,7 +374,8 @@ class ExternalDeviceController < ApplicationController
           filename: filename
       })
       uploaded_file = UploadedFile.new(uploaded_file_data)
-      uploaded_file.save
+      raise uploaded_file.errors.messages.to_s unless uploaded_file.save
+      uploaded_file.touch
       @uploaded_file_feedbacks << {
           id: uploaded_file_id, 
           updated_at: uploaded_file.updated_at.to_i, 
@@ -398,6 +419,7 @@ class ExternalDeviceController < ApplicationController
         receive_uploaded_file deleted_picture_id, status: 'delete'
       end if report_data['picture_ids']
       if report.update(report_data)
+        report.touch
         @report_feedbacks << {
             id: report_id,
             updated_at: report.updated_at.to_i,
