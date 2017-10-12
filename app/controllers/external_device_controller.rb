@@ -331,6 +331,7 @@ class ExternalDeviceController < ApplicationController
   end
 
   def check_send_data array, object, offline_updated_at_reference
+    return false unless object
     offline_updated_at = offline_updated_at_reference
     offline_updated_at &&= offline_updated_at[object.id.to_s]
     offline_updated_at &&= offline_updated_at[:updated_at]
