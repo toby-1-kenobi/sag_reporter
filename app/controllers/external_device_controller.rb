@@ -93,7 +93,7 @@ class ExternalDeviceController < ApplicationController
   def send_request
     begin
       @users, @geo_states, @languages, @reports, @uploaded_files,
-      @topics, @progress_markers = Array.new(7) {Array.new}
+      @people, @topics, @progress_markers = Array.new(8) {Array.new}
       @all_updated_at = send_request_params
       send_external_user
       send_language external_user.mother_tongue
@@ -110,6 +110,7 @@ class ExternalDeviceController < ApplicationController
         send_geo_state geo_state
         geo_state.languages.each{|language| send_language language}
       end
+      Person.all.each{|person| send_person person}
       Topic.all.each{|topic| send_topic topic}
       ProgressMarker.all.each{|progress_marker| send_progress_marker progress_marker}
       Report.includes(:impact_report, :pictures).user_limited(external_user).each do |report|
@@ -120,6 +121,7 @@ class ExternalDeviceController < ApplicationController
           users: @users,
           geo_states: @geo_states,
           languages: @languages.uniq,
+          people: @people,
           topics: @topics,
           progress_markers: @progress_markers,
           reports: @reports,
@@ -204,6 +206,7 @@ class ExternalDeviceController < ApplicationController
         :reporter_id,
         :impact_report,
         {:progress_marker_ids => []},
+        {:observer_ids => []},
         :client,
         :version
       ]
@@ -270,6 +273,26 @@ class ExternalDeviceController < ApplicationController
     end
   end
 
+  def send_person person
+    if check_send_data(@people, person, @all_updated_at[:people])
+      @people << {
+          id: person.id,
+          name: person.name,
+          description: person.description,
+          phone: person.phone,
+          address: person.address,
+          intern: person.intern,
+          facilitator: person.facilitator,
+          pastor: person.pastor,
+          mother_tongue_id: person.language_id,
+          record_creator_id: person.user_id,
+          geo_state_id: person.geo_state_id,
+          updated_at: person.updated_at.to_i,
+          last_changed: 'online'
+      }
+    end
+  end
+
   def send_topic topic
     if check_send_data(@topics, topic, @all_updated_at[:topics])
       @topics << {
@@ -312,6 +335,7 @@ class ExternalDeviceController < ApplicationController
           version: report.version,
           status: report.status,
           progress_marker_ids: report.impact_report.progress_marker_ids,
+          observer_ids: report.observer_ids,
           updated_at: report.updated_at.to_i,
           last_changed: 'online'
       }
