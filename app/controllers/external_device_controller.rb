@@ -364,7 +364,7 @@ class ExternalDeviceController < ApplicationController
         array << {id: object.id, last_changed: 'same'}
         return false
       end
-      if offline_updated_at > 0 # > object.updated_at.to_i
+      if offline_updated_at > object.updated_at.to_i
         array << {id: object.id, last_changed: 'offline'}
         return false
       end
