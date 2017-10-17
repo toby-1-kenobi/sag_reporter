@@ -434,6 +434,8 @@ class ExternalDeviceController < ApplicationController
         picture_id
       end
     end
+    impact_report_data = Hash.new
+    impact_report_data['progress_marker_ids'] = report_data.delete 'progress_marker_ids'
     if status == 'old'
       report = Report.find_by_id report_id
       unless report
@@ -443,7 +445,7 @@ class ExternalDeviceController < ApplicationController
       (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
         receive_uploaded_file deleted_picture_id, status: 'delete'
       end if report_data['picture_ids']
-      if report.update(report_data)
+      if report.update(report_data) && report.impact_report.update(impact_report_data)
         report.touch
         @report_feedbacks << {
             id: report_id,
@@ -455,7 +457,7 @@ class ExternalDeviceController < ApplicationController
       end
     elsif status == 'new'
       report = Report.new report_data
-      report.impact_report = ImpactReport.new if impact_report
+      report.impact_report = ImpactReport.new(impact_report_data) if impact_report
       if report.save
         @report_feedbacks << {
             id: report_id,
