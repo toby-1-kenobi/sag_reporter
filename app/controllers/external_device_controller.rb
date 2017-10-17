@@ -112,7 +112,7 @@ class ExternalDeviceController < ApplicationController
       end
       Person.all.each{|person| send_person person}
       Topic.all.each{|topic| send_topic topic}
-      ProgressMarker.all.each{|progress_marker| send_progress_marker progress_marker}
+      ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
       Report.includes(:impact_report, :pictures).user_limited(external_user).each do |report|
         send_report report
         report.pictures.each{|picture| send_uploaded_file picture}
@@ -311,7 +311,7 @@ class ExternalDeviceController < ApplicationController
       @progress_markers << {
           id: progress_marker.id,
           name: progress_marker.name,
-          alternate_description: progress_marker.alternate_description,
+          description: progress_marker.description_for(external_user),
           topic_id: progress_marker.topic_id,
           number: progress_marker.number,
           updated_at: progress_marker.updated_at.to_i,
