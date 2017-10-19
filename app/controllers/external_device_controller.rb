@@ -100,7 +100,7 @@ class ExternalDeviceController < ApplicationController
       external_user.spoken_languages.each{|language| send_language language}
       send_language external_user.interface_language
       external_user.championed_languages.each{|language| send_language language}
-      User.all.each{|user| send_user(user) if user != external_user}
+      User.all.each{|user| send_user_name(user) if user != external_user}
       if external_user.national?
         user_geo_states = GeoState.all
       else
@@ -111,7 +111,7 @@ class ExternalDeviceController < ApplicationController
         geo_state.languages.each{|language| send_language language}
       end
       Person.all.each{|person| send_person person}
-      Topic.all.each{|topic| send_topic topic}
+      Topic.all.each{|topic| send_topic topic unless topic.hide_for?(external_user)}
       ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
       Report.includes(:impact_report, :pictures).user_limited(external_user).each do |report|
         send_report report
@@ -220,16 +220,18 @@ class ExternalDeviceController < ApplicationController
           id: external_user.id,
           name: external_user.name,
           phone: external_user.phone,
+          mother_tongue_id: external_user.mother_tongue_id,
+          interface_language_id: external_user.interface_language_id,
           email: external_user.email,
           email_confirmed: external_user.email_confirmed,
-          geo_state_ids: external_user.geo_state_ids,
           trusted: external_user.trusted,
           national: external_user.national,
           admin: external_user.admin,
           national_curator: external_user.national_curator,
-          mother_tongue_id: external_user.mother_tongue_id,
+          role_description: external_user.role_description,
+
+          geo_state_ids: external_user.geo_state_ids,
           spoken_language_ids: external_user.spoken_language_ids,
-          interface_language_id: external_user.interface_language_id,
           championed_language_ids: external_user.championed_language_ids,
           updated_at: external_user.updated_at.to_i,
           last_changed: 'online'
@@ -237,7 +239,7 @@ class ExternalDeviceController < ApplicationController
     end
   end
 
-  def send_user user
+  def send_user_name user
     if check_send_data(@users, user, @all_updated_at[:users])
       @users << {
           id: user.id,
@@ -253,6 +255,8 @@ class ExternalDeviceController < ApplicationController
       @geo_states << {
           id: geo_state.id,
           name: geo_state.name,
+          zone_id: geo_state.zone_id,
+
           language_ids: geo_state.language_ids,
           updated_at: geo_state.updated_at.to_i,
           last_changed: 'online'
@@ -265,8 +269,62 @@ class ExternalDeviceController < ApplicationController
       @languages << {
           id: language.id,
           name: language.name,
+          description: language.description,
+          lwc: language.lwc,
           colour: language.colour,
           iso: language.iso,
+          family_id: language.family_id,
+          population: language.population,
+          pop_source_id: language.pop_source_id,
+          location: language.location,
+          number_of_translations: language.number_of_translations,
+          cluster_id: language.cluster_id,
+          info: language.info,
+          translation_info: language.translation_info,
+          translation_need: language.translation_need,
+          translation_progress: language.translation_progress,
+          locale_tag: language.locale_tag,
+          population_all_countries: language.population_all_countries,
+          population_concentration: language.population_concentration,
+          age_distribution: language.age_distribution,
+          village_size: language.village_size,
+          mixed_marriages: language.mixed_marriages,
+          clans: language.clans,
+          castes: language.castes,
+          genetic_classification: language.genetic_classification,
+          location_access: language.location_access,
+          travel: language.travel,
+          ethnic_groups_in_area: language.ethnic_groups_in_area,
+          religion: language.religion,
+          believers: language.believers,
+          local_fellowship: language.local_fellowship,
+          literate_believers: language.literate_believers,
+          related_languages: language.related_languages,
+          subgroups: language.subgroups,
+          lexical_similarity: language.lexical_similarity,
+          attitude: language.attitude,
+          bible_first_published: language.bible_first_published,
+          bible_last_published: language.bible_last_published,
+          nt_first_published: language.nt_first_published,
+          nt_last_published: language.nt_last_published,
+          portions_first_published: language.portions_first_published,
+          portions_last_published: language.portions_last_published,
+          selections_published: language.selections_published,
+          nt_out_of_print: language.nt_out_of_print,
+          tr_committee_established: language.tr_committee_established,
+          translation_consultants: language.translation_consultants,
+          translation_interest: language.translation_interest,
+          translator_background: language.translator_background,
+          translation_local_support: language.translation_local_support,
+          mt_literacy: language.mt_literacy,
+          l2_literacy: language.l2_literacy,
+          script: language.script,
+          attitude_to_lang_dev: language.attitude_to_lang_dev,
+          mt_literacy_programs: language.mt_literacy_programs,
+          poetry_print: language.poetry_print,
+          oral_traditions_print: language.oral_traditions_print,
+          champion_id: language.champion_id,
+
           updated_at: language.updated_at.to_i,
           last_changed: 'online'
       }
@@ -284,9 +342,10 @@ class ExternalDeviceController < ApplicationController
           intern: person.intern,
           facilitator: person.facilitator,
           pastor: person.pastor,
-          mother_tongue_id: person.language_id,
-          record_creator_id: person.user_id,
+          language_id: person.language_id,
+          user_id: person.user_id,
           geo_state_id: person.geo_state_id,
+
           updated_at: person.updated_at.to_i,
           last_changed: 'online'
       }
@@ -300,6 +359,8 @@ class ExternalDeviceController < ApplicationController
           name: topic.name,
           description: topic.description,
           colour: topic.colour,
+          number: topic.number,
+
           updated_at: topic.updated_at.to_i,
           last_changed: 'online'
       }
@@ -311,10 +372,13 @@ class ExternalDeviceController < ApplicationController
       @progress_markers << {
           id: progress_marker.id,
           name: progress_marker.name,
-          description: progress_marker.description_for(external_user),
           topic_id: progress_marker.topic_id,
+          weight: progress_marker.weight,
+          status: progress_marker.status,
           number: progress_marker.number,
-          updated_at: progress_marker.updated_at.to_i,
+
+          description: progress_marker.description_for(external_user),
+          updated_at: report.updated_at.to_i,
           last_changed: 'online'
       }
     end
@@ -322,23 +386,39 @@ class ExternalDeviceController < ApplicationController
 
   def send_report report
     if check_send_data(@reports, report, @all_updated_at[:reports])
+      impact_report_data = Hash.new
+      impact_report_data = {
+          progress_marker_ids: report.impact_report.progress_marker_ids,
+          shareable: report.shareable,
+          translation_impact: report.translation_impact,
+      } if report.impact_report
       @reports << {
           id: report.id,
-          state_id: report.geo_state_id,
-          date: report.report_date.to_time(:utc).to_i,
-          picture_ids: report.picture_ids,
-          content: report.content,
           reporter_id: report.reporter_id,
-          impact_report: true,
-          language_ids: report.language_ids,
+          content: report.content,
+          mt_society: report.mt_society,
+          mt_church: report.mt_church,
+          needs_society: report.needs_society,
+          needs_church: report.needs_church,
+          event_id: report.event_id,
+          geo_state_id: report.geo_state_id,
+          planning_report_id: report.planning_report_id,
+          impact_report_id: report.impact_report_id,
+          challenge_report_id: report.challenge_report_id,
+          status: report.status,
+          sub_district_id: report.sub_district_id,
+          location: report.location,
           client: report.client,
           version: report.version,
-          status: report.status,
-          progress_marker_ids: report.impact_report.progress_marker_ids,
+          significant: report.significant,
+
+          report_date: report.report_date.report_date.to_time(:utc).to_i,
+          picture_ids: report.picture_ids,
+          language_ids: report.language_ids,
           observer_ids: report.observer_ids,
           updated_at: report.updated_at.to_i,
           last_changed: 'online'
-      }
+      }.merge(impact_report_data)
     end
   end
 
@@ -346,8 +426,9 @@ class ExternalDeviceController < ApplicationController
     if check_send_data(@uploaded_files, uploaded_file, @all_updated_at[:uploaded_files])
       @uploaded_files << {
           id: uploaded_file.id,
-          data: Base64.encode64(uploaded_file.ref.read),
           report_id: uploaded_file.report_id,
+
+          data: Base64.encode64(uploaded_file.ref.read),
           updated_at: uploaded_file.updated_at.to_i,
           last_changed: 'online'
       }
@@ -424,7 +505,7 @@ class ExternalDeviceController < ApplicationController
     return if report_data.nil?
     impact_report = report_data.delete 'impact_report'
     status = report_data.delete 'status'
-    report_data['report_date'] &&= Time.now
+    report_data['report_date'] &&= Time.at report_data['report_date']
     report_data['picture_ids'] && report_data['picture_ids'].map! do |picture_id|
       picture_id = picture_id.to_i
       picture_data = uploaded_files_data[picture_id.to_s]
