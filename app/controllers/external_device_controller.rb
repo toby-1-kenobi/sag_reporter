@@ -554,3 +554,5 @@ class ExternalDeviceController < ApplicationController
     end
   end
 end
+# for easily getting all attributes:
+# Language.new.attributes.except("created_at","updated_at").keys.each{|k|puts "          " + k.to_s + ": xxx." + k.to_s + ","}.nil?
