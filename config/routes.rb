@@ -69,9 +69,6 @@ Rails.application.routes.draw do
   resources :reports do
     collection do
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
-      post 'create_external'
-      post 'update_external'
-      post 'index_external'
     end
     member do
       patch 'archive'
@@ -80,11 +77,17 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :users do
+  resources :external_device do
     collection do
-      post :show_external
-      get  :index_external
+      get  'test_server'
+      post 'login'
+      post 'get_database_key'
+      post 'send_request'
+      post 'receive_request'
     end
+  end
+
+  resources :users do
     member do
       get :confirm_email
       get :reports
@@ -104,9 +107,7 @@ Rails.application.routes.draw do
   post 'resend_code_to_phone' => 'sessions#resend_otp_to_phone', as: 'resend_code_to_phone'
   post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
   delete 'logout'  => 'sessions#destroy'
-  post   'sessions/create_external'
-  post   'sessions/show_external'
-
+  
 
   get  'tally_updates' => 'tally_updates#index'
   post 'tally_updates' => 'tally_updates#create'

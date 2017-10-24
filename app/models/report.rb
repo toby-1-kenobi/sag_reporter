@@ -7,13 +7,13 @@ class Report < ActiveRecord::Base
 	belongs_to :reporter, class_name: 'User'
 	belongs_to :event
   belongs_to :planning_report, inverse_of: :report
-  belongs_to :impact_report, inverse_of: :report
+  belongs_to :impact_report, inverse_of: :report, touch: true
   belongs_to :challenge_report, inverse_of: :report
-	has_and_belongs_to_many :languages
+	has_and_belongs_to_many :languages, after_add: :update_self, after_remove: :update_self
 	has_and_belongs_to_many :topics
-  has_many :pictures, class_name: 'UploadedFile', dependent: :nullify
+  has_many :pictures, class_name: 'UploadedFile', dependent: :nullify, after_add: :update_self, after_remove: :update_self
   has_many :observations, inverse_of: :report, dependent: :destroy
-  has_many :observers, through: :observations, source: 'person'
+  has_many :observers, through: :observations, source: 'person', after_add: :update_self, after_remove: :update_self
   accepts_nested_attributes_for :pictures,
                                 allow_destroy: true,
                                 reject_if: :all_blank
@@ -77,7 +77,7 @@ class Report < ActiveRecord::Base
     if user.national?
       all
     else
-      joins(:geo_states).where('geo_states.id' => user.geo_states)
+      joins(:geo_state).where('geo_states.id' => user.geo_states)
     end
   }
 
@@ -168,6 +168,10 @@ class Report < ActiveRecord::Base
       collection = collection.translation_impact if filters[:translation_impact] == 'true'
     end
     collection
+  end
+
+  def update_self object
+    self.touch
   end
 
   private

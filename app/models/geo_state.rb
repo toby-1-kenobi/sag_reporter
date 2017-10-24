@@ -3,7 +3,7 @@ class GeoState < ActiveRecord::Base
   belongs_to :zone
   has_and_belongs_to_many :users
   has_many :state_languages, dependent: :destroy
-  has_many :languages, through: :state_languages
+  has_many :languages, through: :state_languages, after_add: :update_self, after_remove: :update_self
   has_many :reports, dependent: :restrict_with_error
   has_many :impact_reports
   has_many :mt_resources, dependent: :restrict_with_error
@@ -101,6 +101,10 @@ class GeoState < ActiveRecord::Base
       end
     end
     return chart_data
+  end
+
+  def update_self object
+    self.touch
   end
 
   private

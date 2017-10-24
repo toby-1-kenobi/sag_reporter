@@ -7,8 +7,8 @@ class User < ActiveRecord::Base
   has_many :people, inverse_of: :record_creator, dependent: :restrict_with_error
   has_many :progress_updates, dependent: :restrict_with_error
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
-  has_and_belongs_to_many :spoken_languages, class_name: 'Language'
-  has_and_belongs_to_many :geo_states
+  has_and_belongs_to_many :spoken_languages, class_name: 'Language', after_add: :update_self, after_remove: :update_self
+  has_and_belongs_to_many :geo_states, after_add: :update_self, after_remove: :update_self
   has_many :output_counts, dependent: :restrict_with_error
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :restrict_with_error
@@ -17,7 +17,8 @@ class User < ActiveRecord::Base
   has_many :edits, dependent: :destroy
   has_many :curated_edits, class_name: 'Edit', foreign_key: 'curated_by_id', inverse_of: :curated_by, dependent: :nullify
   has_many :external_devices
-  has_many :championed_languages, class_name: 'Language', inverse_of: :champion, foreign_key: 'champion_id', dependent: :nullify
+  has_many :championed_languages, class_name: 'Language', inverse_of: :champion, foreign_key: 'champion_id', dependent: :nullify,
+           after_add: :update_self, after_remove: :update_self
 
   attr_accessor :remember_token
 
@@ -160,6 +161,10 @@ class User < ActiveRecord::Base
   def resend_email_token
     logger.debug 'resending email verification email'
     UserMailer.user_email_confirmation(self).deliver_now
+  end
+
+  def update_self object
+    self.touch
   end
 
   private

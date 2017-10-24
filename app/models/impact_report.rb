@@ -3,7 +3,7 @@ class ImpactReport < ActiveRecord::Base
   include ReportType
 
   has_one :report, inverse_of: :impact_report, dependent: :nullify
-  has_and_belongs_to_many :progress_markers
+  has_and_belongs_to_many :progress_markers, after_add: :update_self, after_remove: :update_self
   has_many :topics, through: :progress_markers
   delegate :id, to: :report, prefix: true
   delegate :pictures, to: :report
@@ -18,6 +18,11 @@ class ImpactReport < ActiveRecord::Base
 
   def make_not_impact
     report.make_not_impact
+  end
+
+  def update_self object
+    self.touch
+    self.report.touch
   end
 
 end
