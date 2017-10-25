@@ -99,7 +99,7 @@ class ExternalDeviceController < ApplicationController
       send_language external_user.mother_tongue
       external_user.spoken_languages.each{|language| send_language language}
       send_language external_user.interface_language
-      external_user.championed_languages.each{|language| send_language language}
+#      external_user.championed_languages.each{|language| send_language language}
       User.all.each{|user| send_user_name(user) if user != external_user}
       if external_user.national?
         user_geo_states = GeoState.all
@@ -232,7 +232,7 @@ class ExternalDeviceController < ApplicationController
 
           geo_state_ids: external_user.geo_state_ids,
           spoken_language_ids: external_user.spoken_language_ids,
-          championed_language_ids: external_user.championed_language_ids,
+#          championed_language_ids: external_user.championed_language_ids,
           updated_at: external_user.updated_at.to_i,
           last_changed: 'online'
       }
@@ -323,7 +323,7 @@ class ExternalDeviceController < ApplicationController
           mt_literacy_programs: language.mt_literacy_programs,
           poetry_print: language.poetry_print,
           oral_traditions_print: language.oral_traditions_print,
-          champion_id: language.champion_id,
+#          champion_id: language.champion_id,
 
           updated_at: language.updated_at.to_i,
           last_changed: 'online'
