@@ -46,4 +46,9 @@ class UserMailer < ActionMailer::Base
     mail(to: to_address, subject: 'New LCI report')
   end
 
+  # Send a reminder to a language champion about any languages that he needs to check are up to date.
+  def prompt_champion(user, languages)
+
+  end
+
 end
