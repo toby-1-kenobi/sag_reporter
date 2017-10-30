@@ -409,7 +409,7 @@ class ExternalDeviceController < ApplicationController
             number: progress_marker.number,
 
             description: progress_marker.description_for(external_user),
-            updated_at: report.updated_at.to_i,
+            updated_at: progress_marker.updated_at.to_i,
             last_changed: 'online'
         }
       end
@@ -425,8 +425,8 @@ class ExternalDeviceController < ApplicationController
         impact_report_data = Hash.new
         impact_report_data = {
             progress_marker_ids: report.impact_report.progress_marker_ids,
-            shareable: report.shareable,
-            translation_impact: report.translation_impact,
+            shareable: report.impact_report.shareable,
+            translation_impact: report.impact_report.translation_impact,
         } if report.impact_report
         @reports << {
             id: report.id,
@@ -448,7 +448,7 @@ class ExternalDeviceController < ApplicationController
             version: report.version,
             significant: report.significant,
 
-            report_date: report.report_date.report_date.to_time(:utc).to_i,
+            report_date: report.report_date.to_time(:utc).to_i,
             picture_ids: report.picture_ids,
             language_ids: report.language_ids,
             observer_ids: report.observer_ids,
