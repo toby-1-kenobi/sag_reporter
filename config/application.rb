@@ -37,5 +37,7 @@ module SagReporter
 
     config.action_mailer.delivery_method = SendGridActionMailerAdapter::DeliveryMethod
 
+    config.action_mailer.default_url_options = { host: 'lcreporter.herokuapp.com' }
+
   end
 end

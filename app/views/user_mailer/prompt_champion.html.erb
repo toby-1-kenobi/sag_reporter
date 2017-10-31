@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<h1>Hi <%= @user.name %>,</h1>
+
+<% if @languages.count == 1 %>
+  <% lang = @languages.first.first %>
+  <% last_update = @languages.first.second %>
+    <p>You are the primary point person for the <span style="font-size: x-large"><%= lang.name %></span> language in LCI.
+    This language hasn't seen any updates for <%= time_ago_in_words(last_update) %>.</p>
+  <p>Please log into the <%= link_to 'LCI App', login_url %>
+    and go to the <%= link_to "#{lang.name} details page", show_details_language_url(lang.id) %></p>
+<% else %>
+  <p>You are the primary point person for each of the following languages.
+  These particular languages haven't seen an update in a while.</p>
+  <table>
+    <thead>
+      <tr><th>Language</th><th>Last updated</th></tr>
+    </thead>
+    <tbody>
+      <% @languages.each do |lang, last_updated| %>
+        <tr>
+          <td style="font-size: x-large"><%= link_to lang.name, show_details_language_url(lang.id) %></td>
+          <td>&nbsp;&nbsp;<%= time_ago_in_words(last_updated) %> ago</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <p>Please log into the <%= link_to 'LCI App', login_url %>
+    and go to the details page of each of these languages to check they are up to date.</p>
+<% end %>
+<p>If you find any information that needs to be changed you may make an edit on the language details page.</p>
+<p>This email was automatically generated from the LCI App.
+  If you feel you should not have received it please contact your LCI supervisor or replay to this email.</p>
+</body>
+</html>
