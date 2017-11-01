@@ -2,9 +2,12 @@ require 'open-uri'
 require 'base64'
 
 class UserMailer < ActionMailer::Base
+
+  include ActionView::Helpers::DateHelper
   require 'sendgrid-ruby'
   include SendGrid
   default :from => 'info@lci-india.org'
+
   def user_email_confirmation(user)
   	headers['X-SMTPAPI'] = {
       category: ['lciemailconfirm']
@@ -44,6 +47,20 @@ class UserMailer < ActionMailer::Base
       Rails.logger.debug "recipient: #{recipient}, recipient_name: #{@recipient_name}"
     end
     mail(to: to_address, subject: 'New LCI report')
+  end
+
+  # Send a reminder to a language champion about any languages that he needs to check are up to date.
+  def prompt_champion(user, languages)
+    if user and languages.any?
+      @user = user
+      @languages = languages
+      if languages.count > 1
+        language_names = languages.map{|l| l.first.name}.to_sentence
+        mail(to: user.email, subject: "Please check #{language_names} are up to date.")
+      else
+        mail(to: user.email, subject: "Please check #{languages.first.first.name} is up to date.")
+      end
+    end
   end
 
 end

@@ -77,6 +77,76 @@ class Language < ActiveRecord::Base
     name
   end
 
+  # This method is intended to be run daily
+  # It finds the languages that haven't been updated recently
+  # and for which the champions haven't been recently prompted
+  # and sends out email prompts for the champions to check they are up to date
+  def self.prompt_champions
+    # Some users may be champion of many languages. We don't want to overload
+    # their inboxes with lots of emails, so we combine into one email per user.
+    # One problem would be that a user with many languages may have their languages
+    # "mature" on different days so would still get lots of emails. To alleviate this,
+    # languages that will mature in the next 5 days whose champion also has languages
+    # that are already mature will be triggered early. Also champions with maturing
+    # languages that also has languages 5-10 days out from maturing will not have any of
+    # their languages trigger until those languages move out of that bracket, unless
+    # that user has languages more than 10 days past their mature date.
+    # Each user wont receive more than one prompt in a 10 day period.
+
+    # trigger is normally at least 30 days after most recent update and 30 days after most recent prompt.
+    most_recent = 20.days.ago
+    recent = 25.days.ago
+    standard = 30.days.ago
+    overdue = 40.days.ago
+    # Start by collecting languages 20 days old on both counts
+    languages = Language.
+        where.not(champion: nil).
+        where('champion_prompted <= ? OR champion_prompted IS NULL', most_recent).
+        where('updated_at <= ?', most_recent)
+
+    # group by champion and pair languages with their change date
+    # change date is refined to account for edits not approved.
+    # We can discard languages with change more recent than 20 days
+    # Group the other languages in brackets of when they should trigger
+    champions = {}
+    languages.each do |language|
+      change_date = language.last_changed
+      if change_date <= most_recent
+        champions[language.champion_id] ||= {
+            most_recent: [],
+            recent: [],
+            standard: [],
+            overdue: []
+        }
+        trigger_date = language.champion_prompted ? [change_date, language.champion_prompted].max : change_date
+        case
+          when trigger_date < overdue
+            champions[language.champion_id][:overdue] << [language, change_date]
+          when trigger_date <= standard
+            champions[language.champion_id][:standard] << [language, change_date]
+          when trigger_date <= recent
+            champions[language.champion_id][:recent] << [language, change_date]
+          else
+            champions[language.champion_id][:most_recent] << [language, change_date]
+        end
+      end
+    end
+
+    # Trigger on the correct languages
+    champions.each do |champion_id, languages|
+      # if no languages have reached the standard trigger date, then trigger none
+      # if languages are in the most_recent bracket and none are overdue, then trigger none
+      if (languages[:standard].empty? or languages[:most_recent].any?) and languages[:overdue].empty?
+        champions.delete champion_id
+      else
+        # otherwise good to go on all brackets except the most_recent
+        languages.delete :most_recent
+        UserMailer.prompt_champion(User.find(champion_id), languages.values.reduce([], :concat)).deliver_now
+      end
+    end
+
+  end
+
   def self.minorities(geo_states = nil)
     if geo_states
       includes(:geo_states).where(lwc: false, 'geo_states.id' => geo_states.map{ |s| s.id })
@@ -91,6 +161,12 @@ class Language < ActiveRecord::Base
 
   def geo_state_ids_str
     geo_state_ids.join ','
+  end
+
+  # latest date of a modification or suggested edit
+  def last_changed
+    edits = Edit.where(model_klass_name: 'Language', record_id: id).where('created_at > ?', updated_at).order(:created_at)
+    edits.any? ? edits.last.created_at : updated_at
   end
 
   # should probably have a scope for each of these. It would help with the overview page
