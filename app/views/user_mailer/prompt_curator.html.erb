@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+
+<h1>Hi <%= @user.name %>,</h1>
+
+<% edit_count = Edit.pending.for_curating(@user).count %>
+<p>The LCI App is holding <span style="font-size: x-large"><%= edit_count %> pending <%= 'edit'.pluralize(edit_count) %></span> waiting for your approval</p>
+
+<p>Please log into the <%= link_to 'LCI App', login_url %> at your earliest opportunity,
+  and attend to these at the <%= link_to 'Pending Edits page', curate_edits_url %></p>
+
+<p>This email was automatically generated from the LCI App.
+  If you feel you should not have received it please contact your LCI supervisor or replay to this email.</p>
+
+</body>
+</html>

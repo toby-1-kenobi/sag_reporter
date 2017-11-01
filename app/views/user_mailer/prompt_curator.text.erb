@@ -1,0 +1,10 @@
+Hi <%= @user.name %>,
+
+<% edit_count = Edit.pending.for_curating(@user).count %>
+The LCI App is holding <%= edit_count %> pending <%= 'edit'.pluralize(edit_count) %> waiting for your approval
+
+Please log into the LCI App (<%= login_url %>) at your earliest opportunity,
+  and attend to these at the Pending Edits page (<%= curate_edits_url %>)
+
+This email was automatically generated from the LCI App.
+  If you feel you should not have received it please contact your LCI supervisor or replay to this email.

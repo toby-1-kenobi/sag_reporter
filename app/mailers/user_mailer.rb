@@ -68,4 +68,10 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  # Send a reminder to the curator that they have pending edits for curation
+  def prompt_curator(curator)
+    @user = curator
+    mail(to: curator.email, subject: 'LCI language edits waiting for approval')
+  end
+
 end

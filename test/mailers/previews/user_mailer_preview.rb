@@ -11,4 +11,8 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.prompt_champion(User.first, [[language1, 32.days.ago]])
   end
 
+  def prompt_curator
+    UserMailer.prompt_curator(User.find 1)
+  end
+
 end
