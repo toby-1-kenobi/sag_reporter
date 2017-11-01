@@ -38,6 +38,7 @@ norman:
 emma:
   name: Emma Pleb
   phone: 0987654322
+  email: "emma@example.com"
   password_digest: <%= User.digest('test12345678') %>
   mother_tongue: hindi
   interface_language: hindi

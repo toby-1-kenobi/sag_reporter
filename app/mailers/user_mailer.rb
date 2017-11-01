@@ -51,7 +51,7 @@ class UserMailer < ActionMailer::Base
 
   # Send a reminder to a language champion about any languages that he needs to check are up to date.
   def prompt_champion(user, languages)
-    if user and languages.any?
+    if user and user.email.present? and languages.any?
       @user = user
       @languages = languages
       if languages.count > 1
@@ -59,6 +59,11 @@ class UserMailer < ActionMailer::Base
         mail(to: user.email, subject: "Please check #{language_names} are up to date.")
       else
         mail(to: user.email, subject: "Please check #{languages.first.first.name} is up to date.")
+      end
+      languages.each do |language, last_updated|
+        puts language.name
+        language.champion_prompted = DateTime.current
+        language.save
       end
     end
   end
