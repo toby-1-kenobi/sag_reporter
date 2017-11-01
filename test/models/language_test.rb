@@ -89,7 +89,7 @@ describe Language do
     _(language.last_changed.to_a).must_equal edit.created_at.to_a
   end
 
-  it 'prompts champions when there have been no edits for a while' do
+  it 'must prompt champions when there have been no edits for a while' do
     language_prompt_due.save
     mail = mock()
     mail.stubs(:deliver_now).returns(true)
@@ -100,13 +100,20 @@ describe Language do
     Language.prompt_champions
   end
 
-  it 'does not prompt champions when there have been edits in the last month' do
+  it 'wont prompt champions if they have been recently prompted' do
+    UserMailer.expects(:prompt_champion).never
+    language_prompt_due.champion_prompted = 10.days.ago
+    language_prompt_due.save
+    Language.prompt_champions
+  end
+
+  it 'wont prompt champions when there have been edits in the last month' do
     UserMailer.expects(:prompt_champion).never
     language_prompt_nearly_due.save
     Language.prompt_champions
   end
 
-  it 'does not prompt champions when there are pending edits in the last month' do
+  it 'wont prompt champions when there are pending edits in the last month' do
     UserMailer.expects(:prompt_champion).never
     language_prompt_due.save
     Edit.create(
@@ -122,7 +129,7 @@ describe Language do
     Language.prompt_champions
   end
 
-  it 'prompts champions for nearly due languages when the same champion has a due language' do
+  it 'must prompt champions for nearly due languages when the same champion has a due language' do
     language_prompt_due.save
     language_prompt_nearly_due.save
     mail = mock()
@@ -143,7 +150,7 @@ describe Language do
     Language.prompt_champions
   end
 
-  it 'will prompt a champion for an overdue even if theres also one due later' do
+  it 'must prompt a champion for an overdue language even if there is also one due later' do
     language_prompt_overdue.save
     language_prompt_due_later.save
     language_prompt_due.save
