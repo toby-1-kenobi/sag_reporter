@@ -3,6 +3,7 @@
 andrew:
   name: Andrew Admin
   phone: 0987654321
+  email: "andrew@example.com"
   password_digest: <%= User.digest('password') %>
   mother_tongue: english
   admin: true

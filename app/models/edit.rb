@@ -111,7 +111,11 @@ class Edit < ActiveRecord::Base
       success = object_under_edition.update_attributes(attribute_name => new_value)
     end
     unless success
-      update_attribute(:record_errors, object_under_edition.errors.full_messages.to_sentence)
+      if object_under_edition.errors.any?
+        update_attribute(:record_errors, object_under_edition.errors.full_messages.to_sentence)
+      else
+        update_attribute(:record_errors, 'An unknown error prevented this edit from being applied')
+      end
       rejected!
     end
     return success
@@ -120,6 +124,21 @@ class Edit < ActiveRecord::Base
   def reject(curator)
     update_attributes(curated_by: curator, curation_date: Time.now)
     rejected!
+  end
+
+  def self.prompt_curators
+    cutoff = 7.days.ago
+    # get all edits that have been waiting for approval for at least a week
+    edits = Edit.pending.where('created_at < ?', cutoff)
+    # for each edit mail the curators
+    edits.each do |edit|
+      curators = User.curating(edit).where('curator_prompted IS NULL OR curator_prompted < ?', cutoff).where.not(email: nil)
+      curators.each do |curator|
+        UserMailer.prompt_curator(curator).deliver_now
+        curator.curator_prompted = DateTime.current
+        curator.save
+      end
+    end
   end
 
   private
