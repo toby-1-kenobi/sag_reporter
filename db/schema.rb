@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171101054921) do
+ActiveRecord::Schema.define(version: 20171106222605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -484,6 +484,20 @@ ActiveRecord::Schema.define(version: 20171101054921) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "populations", force: :cascade do |t|
+    t.integer  "language_id",                   null: false
+    t.integer  "amount",                        null: false
+    t.string   "source"
+    t.integer  "year"
+    t.boolean  "international", default: false, null: false
+    t.text     "note"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "populations", ["language_id"], name: "index_populations_on_language_id", using: :btree
+  add_index "populations", ["year"], name: "index_populations_on_year", using: :btree
+
   create_table "progress_markers", force: :cascade do |t|
     t.string   "name"
     t.integer  "topic_id"
@@ -707,6 +721,7 @@ ActiveRecord::Schema.define(version: 20171101054921) do
   add_foreign_key "people", "geo_states"
   add_foreign_key "people", "languages"
   add_foreign_key "people", "users"
+  add_foreign_key "populations", "languages"
   add_foreign_key "progress_markers", "topics"
   add_foreign_key "progress_updates", "language_progresses"
   add_foreign_key "progress_updates", "users"

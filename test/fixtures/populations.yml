@@ -1,0 +1,16 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+toto2015:
+  language: toto
+  amount: 1600
+  source: ethnologue
+  year: 2015
+  international: false
+
+sadri2000:
+  language: sadri
+  amount: 30000
+  source: census
+  year: 2000
+  international: true
