@@ -26,6 +26,15 @@
   font-size: large;
 }
 
+#curator-card {
+  background-color: #ddaa00 !important;
+  .edit-count {
+    font-weight: bold;
+    font-size: larger;
+    color: darkred;
+  }
+}
+
 #welcome-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -33,8 +42,8 @@
   grid-row-gap: 1.5em;
   grid-template-areas:
           "god-at-work down-to-zero"
-          "about forum"
-          "admin curators";
+          "about curator"
+          "admin unused";
   .mdl-card {
     justify-self: center;
     background-color: #c5cae9;
@@ -61,6 +70,6 @@
 #admin-links {
   grid-area: admin;
 }
-#curator-links {
+#curator-card {
   grid-area: curator;
 }

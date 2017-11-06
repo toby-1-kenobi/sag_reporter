@@ -50,4 +50,27 @@
     </div>
   </div>
 
+  <% if logged_in_user.national_curator? %>
+      <% edit_count = Edit.pending_national_approval.count %>
+  <% else %>
+      <% edit_count = Edit.pending.for_curating(logged_in_user).count %>
+  <% end %>
+  <% if edit_count > 0 %>
+  <div id="curator-card" class="mdl-card mdl-shadow--2dp">
+    <div class="mdl-card__title">
+      Curate Edits
+    </div>
+    <div class="mdl-card__supporting-text">
+      You have <span class="edit-count"><%= edit_count %> <%= 'edit'.pluralize(edit_count) %></span> to curate.
+      Please attend to <%= edit_count == 1 ? 'this' : 'these' %> as soon as possible.
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
+      <%= link_to curate_edits_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
+          <i class="material-icons">done_all</i>
+          Curate Edits
+      <% end %>
+    </div>
+  </div>
+  <% end %>
+
 </div>
