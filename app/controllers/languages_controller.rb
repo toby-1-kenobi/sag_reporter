@@ -98,6 +98,11 @@ class LanguagesController < ApplicationController
     @editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language))
     # attributes with pending edits should be visually distinct in the form
     @pending_attributes = @user_pending_edits.pluck :attribute_name
+    @pending_flm_ids = []
+    @user_pending_fl_edits.each do |edit|
+      flp = FinishLineProgress.find edit.record_id
+      @pending_flm_ids << flp.finish_line_marker_id
+    end
   end
 
   def reports

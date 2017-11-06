@@ -1,5 +1,5 @@
 <tr id="attribute-row-<%= @language.id %>-<%= attribute_name %>">
-  <th><%= title %></th>
+  <th class="mdl-data-table__cell--non-numeric"><%= title %></th>
   <%= render partial: 'text_value', locals: {
       html_tag: :td,
       attribute_name: attribute_name,

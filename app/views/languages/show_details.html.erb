@@ -60,32 +60,88 @@
 
     <a name="church-engagement"><h3>Church Engagement</h3></a>
     <table class="language-data">
-      <% church_engagement_marker = FinishLineMarker.find_by_number(0) %>
-      <tr><th>Church Engagement Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: church_engagement_marker).human_status %></td></tr>
+      <% marker = FinishLineMarker.find_by_number(0) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
+        </th>
+        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
     </table>
 
     <a name="bible-materials"><h3>Bible Materials</h3></a>
     <table class="language-data">
-      <% jesus_film_marker = FinishLineMarker.find_by_number(1) %>
-      <tr><th>Jesus Film Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: jesus_film_marker).human_status %></td></tr>
-      <% obs_marker = FinishLineMarker.find_by_number(2) %>
-      <tr><th>Oral Bible Stories Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: obs_marker).human_status %></td></tr>
-      <% radio_marker = FinishLineMarker.find_by_number(3) %>
-      <tr><th>Radio Programs Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: radio_marker).human_status %></td></tr>
-      <% songs_marker = FinishLineMarker.find_by_number(4) %>
-      <tr><th>Songs Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: songs_marker).human_status %></td></tr>
+      <% marker = FinishLineMarker.find_by_number(1) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
+        </th>
+        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
+      <% marker = FinishLineMarker.find_by_number(2) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
+        </th>
+        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
+      <% marker = FinishLineMarker.find_by_number(3) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
+        </th>
+        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
+      <% marker = FinishLineMarker.find_by_number(4) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
+        </th>
+        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
     </table>
 
 
     <a name="bible-translation"><h3>Bible Translation</h3></a>
 
     <table class="language-data">
-      <% gospel_marker = FinishLineMarker.find_by_number(5) %>
-      <tr><th>Gospel Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: gospel_marker).human_status %></td></tr>
-      <% nt_marker = FinishLineMarker.find_by_number(6) %>
-      <tr><th>New Testament Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: nt_marker).human_status %></td></tr>
-      <% ot_marker = FinishLineMarker.find_by_number(7) %>
-      <tr><th>Old Testament Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: ot_marker).human_status %></td></tr>
+      <% marker = FinishLineMarker.find_by_number(5) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
+        </th>
+        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
+      <% marker = FinishLineMarker.find_by_number(6) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
+        </th>
+        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
+      <% marker = FinishLineMarker.find_by_number(7) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
+        </th>
+        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
       <% if (@language.number_of_translations && @language.number_of_translations > 0) or @editable %>
           <% tr_num = @language.number_of_translations || 0 %>
           <%= render 'attribute_table_row',
@@ -178,10 +234,24 @@
 
     <a name="literacy"><h3>Literacy</h3></a>
     <table class="language-data">
-      <% literacy_marker = FinishLineMarker.find_by_number(8) %>
-      <tr><th>Basic Literacy Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: literacy_marker).human_status %></td></tr>
-      <% dictionary_marker = FinishLineMarker.find_by_number(9) %>
-      <tr><th>Dictionary Status</th><td><%= FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: dictionary_marker).human_status %></td></tr>
+      <% marker = FinishLineMarker.find_by_number(8) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
+        </th>
+        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
+      <% marker = FinishLineMarker.find_by_number(9) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
+        </th>
+        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
       <% if @editable or @language.script.present? %>
           <%= render 'attribute_table_row',
                      title: 'Script',
@@ -321,7 +391,7 @@
     <a name="classification"><h4>Classification</h4></a>
         <table class="language-data">
           <% if @language.family_id.present? %>
-              <tr><th>Family</th><td id="language-family" class="<%= 'editable' if @editable %>"><%= @language.family_name %><%= render 'shared/edit_icon' if @editable %></td></tr>
+              <tr><th class="mdl-data-table__cell--non-numeric">Family</th><td id="language-family" class="<%= 'editable' if @editable %>"><%= @language.family_name %><%= render 'shared/edit_icon' if @editable %></td></tr>
           <% end %>
           <% if @language.genetic_classification.present? %>
               <%= render 'attribute_table_row',
