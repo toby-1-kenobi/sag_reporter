@@ -21,8 +21,8 @@ class ImpactReport < ActiveRecord::Base
   end
 
   def update_self object
-    self.touch
-    self.report.touch
+    self.touch if self.persisted?
+    self.report.touch if self.report.persisted?
   end
 
 end

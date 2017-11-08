@@ -171,7 +171,7 @@ class Report < ActiveRecord::Base
   end
 
   def update_self object
-    self.touch
+    self.touch if self.persisted?
   end
 
   private
