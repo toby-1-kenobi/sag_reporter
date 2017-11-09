@@ -48,7 +48,7 @@ class Language < ActiveRecord::Base
   has_many :finish_line_progresses, dependent: :destroy
   has_many :finish_line_markers, through: :finish_line_progresses
   belongs_to :champion, class_name: 'User', inverse_of: :championed_languages
-  has_many :populations, dependent: :destroy
+  has_many :populations, dependent: :destroy, inverse_of: :language
 
   delegate :name, to: :family, prefix: true
   delegate :name, to: :cluster, prefix: true
@@ -162,6 +162,12 @@ class Language < ActiveRecord::Base
 
   def geo_state_ids_str
     geo_state_ids.join ','
+  end
+
+  def best_current_pop
+    # This is Postgresql dependent
+    # to get the biggest non-null year
+    populations.order('year DESC NULLS LAST, created_at DESC').first
   end
 
   # latest date of a modification or suggested edit
