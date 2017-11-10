@@ -508,7 +508,7 @@ class ExternalDeviceController < ApplicationController
       file.open
       send_file.write ', ' unless send_file.length == 1
       send_file.write '"' + category.to_s + '": ['
-      while buffer = file.read(2048)
+      while buffer = file.read(512)
         send_file.write buffer.force_encoding(Encoding::CP1252).encode(Encoding::UTF_8)
       end
       send_file.write ']'
