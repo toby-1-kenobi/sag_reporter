@@ -115,7 +115,7 @@ class ExternalDeviceController < ApplicationController
       ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
       Report.includes(:impact_report, :pictures).user_limited(external_user).each do |report|
         send_report report
-        report.pictures.each{|picture| send_uploaded_file picture}
+#        report.pictures.each{|picture| send_uploaded_file picture}
       end
       send_message = {
           users: @users,
