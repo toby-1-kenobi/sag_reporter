@@ -93,7 +93,7 @@ class ExternalDeviceController < ApplicationController
   def send_request
     begin
       @users, @geo_states, @languages, @reports, @uploaded_files,
-      @people, @topics, @progress_markers = Array.new(8) {Array.new}
+      @people, @topics, @progress_markers = Array.new(8) {Tempfile.new}
       @all_updated_at = send_request_params
       send_external_user
       send_language external_user.mother_tongue
@@ -120,7 +120,7 @@ class ExternalDeviceController < ApplicationController
       send_message = {
           users: @users,
           geo_states: @geo_states,
-          languages: @languages.uniq,
+          languages: @languages,
           people: @people,
           topics: @topics,
           progress_markers: @progress_markers,
@@ -128,7 +128,7 @@ class ExternalDeviceController < ApplicationController
           uploaded_files: @uploaded_files
       }
       puts send_message
-      render json: send_message, status: :ok
+      send_hash_file send_message
     rescue => e
       send_message = { error: e.to_s, where: e.backtrace.to_s }
       puts send_message
@@ -213,11 +213,13 @@ class ExternalDeviceController < ApplicationController
     ]
     permitted = params.require(:external_device).permit(safe_params)
   end
+  
+  # send_request methods
 
   def send_external_user
     begin
       if check_send_data(@users, external_user, @all_updated_at[:users])
-        @users << {
+        @users.write({
             id: external_user.id,
             name: external_user.name,
             phone: external_user.phone,
@@ -236,34 +238,34 @@ class ExternalDeviceController < ApplicationController
   #          championed_language_ids: external_user.championed_language_ids,
             updated_at: external_user.updated_at.to_i,
             last_changed: 'online'
-        }
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users << error_message
+      @users.write error_message.to_json
     end
   end
 
   def send_user_name user
     begin
       if check_send_data(@users, user, @all_updated_at[:users])
-        @users << {
+        @users.write({
             id: user.id,
             name: user.name,
             updated_at: user.updated_at.to_i,
             last_changed: 'online'
-        }
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users << error_message
+      @users.write error_message.to_json
     end
   end
 
   def send_geo_state geo_state
     begin
       if check_send_data(@geo_states, geo_state, @all_updated_at[:geo_states])
-        @geo_states << {
+        @geo_states.write({
             id: geo_state.id,
             name: geo_state.name,
             zone_id: geo_state.zone_id,
@@ -271,18 +273,18 @@ class ExternalDeviceController < ApplicationController
             language_ids: geo_state.language_ids,
             updated_at: geo_state.updated_at.to_i,
             last_changed: 'online'
-        }
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users << error_message
+      @users.write error_message.to_json
     end
   end
     
   def send_language language
     begin
       if check_send_data(@languages, language, @all_updated_at[:languages])
-        @languages << {
+        @languages.write({
             id: language.id,
             name: language.name,
             description: language.description,
@@ -343,18 +345,18 @@ class ExternalDeviceController < ApplicationController
 
             updated_at: language.updated_at.to_i,
             last_changed: 'online'
-        }
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users << error_message
+      @users.write error_message.to_json
     end
   end
 
   def send_person person
     begin
       if check_send_data(@people, person, @all_updated_at[:people])
-        @people << {
+        @people.write({
             id: person.id,
             name: person.name,
             description: person.description,
@@ -369,18 +371,18 @@ class ExternalDeviceController < ApplicationController
 
             updated_at: person.updated_at.to_i,
             last_changed: 'online'
-        }
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users << error_message
+      @users.write error_message.to_json
     end
   end
 
   def send_topic topic
     begin
       if check_send_data(@topics, topic, @all_updated_at[:topics])
-        @topics << {
+        @topics.write({
             id: topic.id,
             name: topic.name,
             description: topic.description,
@@ -389,18 +391,18 @@ class ExternalDeviceController < ApplicationController
 
             updated_at: topic.updated_at.to_i,
             last_changed: 'online'
-        }
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users << error_message
+      @users.write error_message.to_json
     end
   end
 
   def send_progress_marker progress_marker
     begin
       if check_send_data(@progress_markers, progress_marker, @all_updated_at[:progress_markers])
-        @progress_markers << {
+        @progress_markers.write({
             id: progress_marker.id,
             name: progress_marker.name,
             topic_id: progress_marker.topic_id,
@@ -411,11 +413,11 @@ class ExternalDeviceController < ApplicationController
             description: progress_marker.description_for(external_user),
             updated_at: progress_marker.updated_at.to_i,
             last_changed: 'online'
-        }
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users << error_message
+      @users.write error_message.to_json
     end
   end
 
@@ -428,7 +430,7 @@ class ExternalDeviceController < ApplicationController
             shareable: report.impact_report.shareable,
             translation_impact: report.impact_report.translation_impact,
         } if report.impact_report
-        @reports << {
+        @reports.write({
             id: report.id,
             reporter_id: report.reporter_id,
             content: report.content,
@@ -454,49 +456,71 @@ class ExternalDeviceController < ApplicationController
             observer_ids: report.observer_ids,
             updated_at: report.updated_at.to_i,
             last_changed: 'online'
-        }.merge(impact_report_data)
+        }.merge(impact_report_data).to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users << error_message
+      @users.write error_message.to_json
     end
   end
 
   def send_uploaded_file uploaded_file
     begin
       if check_send_data(@uploaded_files, uploaded_file, @all_updated_at[:uploaded_files])
-        @uploaded_files << {
+        @uploaded_files.write({
             id: uploaded_file.id,
             report_id: uploaded_file.report_id,
 
             data: Base64.encode64(uploaded_file.ref.read),
             updated_at: uploaded_file.updated_at.to_i,
             last_changed: 'online'
-        }
+        }.to_json)
      end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users << error_message
+      @users.write error_message.to_json
     end
   end
 
-  def check_send_data array, object, offline_updated_at_reference
+  def check_send_data file, object, offline_updated_at_reference
     return false unless object
+    file.write(', ') unless file.length == 0
     offline_updated_at = offline_updated_at_reference
     offline_updated_at &&= offline_updated_at[object.id.to_s]
     offline_updated_at &&= offline_updated_at[:updated_at]
     if offline_updated_at
       if object.updated_at.to_i == offline_updated_at
-        array << {id: object.id, last_changed: 'same'}
         return false
       end
       if offline_updated_at > object.updated_at.to_i
-        array << {id: object.id, last_changed: 'offline'}
+        file.write({id: object.id, last_changed: 'offline'}.to_json)
         return false
       end
     end
     true
   end
+  
+  def send_hash_file send_message
+    send_file = Tempfile.new
+    send_file.write '{'
+    send_message.each do |category, file|
+      file.close
+      file.open
+      send_file.write ', ' unless send_file.length == 1
+      send_file.write '"' + category.to_s + '": ['
+      while buffer = file.read(2048)
+        send_file.write buffer.force_encoding(Encoding::CP1252).encode(Encoding::UTF_8)
+      end
+      send_file.write ']'
+      file.close
+      file.unlink
+    end
+    send_file.write '}'
+    send_file.close
+    send_file send_file.path, status: :ok
+  end
+  
+  # receive_request methods:
 
   def receive_uploaded_file uploaded_file_id, uploaded_file_data
     puts 'Save file ' + uploaded_file_id.to_s + uploaded_file_data.keys.to_s
