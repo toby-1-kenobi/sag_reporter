@@ -432,7 +432,16 @@
           <% if pop %>
               <tr>
                 <th>Population <%= pop.international? ? 'in all countries' : 'in India' %></th>
-                <td><%= pop %></td>
+                <td>
+                  <%= pop %>
+                  <% if @language.populations.count > 1 %>
+                    <%= link_to populations_language_path(@language) do %>
+                      <button class="mdl-button mdl-js-button mdl-button--primary">
+                        See more
+                      </button>
+                    <% end %>
+                  <% end %>
+                </td>
               </tr>
           <% end %>
           <% if @language.population_concentration.present? %>

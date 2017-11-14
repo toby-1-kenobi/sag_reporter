@@ -1,0 +1,31 @@
+<% provide(:title, "Populations for #{@language.name}") %>
+<% provide(:context_title, "Populations for #{@language.name}") %>
+
+
+<%= link_to @language do %>
+  <button class="mdl-button mdl-js-button mdl-button--primary">
+    <%= @language.name %> overview
+  </button>
+<% end %>
+
+<%= link_to show_details_language_path(@language) do %>
+  <button class="mdl-button mdl-js-button mdl-button--primary">
+    <%= @language.name %> details
+  </button>
+<% end %>
+
+<% if @language.populations.any? %>
+  <ul class="populations-list mdl-list">
+    <%= render @language.populations.order(:year, :created_at) %>
+  </ul>
+<% else %>
+  <p>There is no population data on record for <%= @language.name %>
+<% end %>
+
+<%= link_to @language, id: 'add-pop-fab', class: 'mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored' do %>
+    <i class="material-icons">add</i>
+<% end %>
+
+<div class="mdl-tooltip" data-mdl-for="add-pop-fab">
+  Add population data
+</div>

@@ -11,8 +11,8 @@ class LanguagesController < ApplicationController
   end
 
   # can edit a language if the language is in one of the user's states, or if the user is national
-  before_action only: [:edit, :update, :reports] do
-    redirect_to root_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
+  before_action only: [:edit, :update, :reports, :show, :show_details, :populations] do
+    redirect_to zones_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
   end
 
   # only an admin user can set the language champion
@@ -53,7 +53,6 @@ class LanguagesController < ApplicationController
             {:state_languages => {:geo_state => :zone}}
         ).
         find(params[:id])
-    redirect_to zones_path unless Language.user_limited(logged_in_user).include? @language
     @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(model_klass_name: 'Language', record_id: @language.id)
     @user_pending_fl_edits = Edit.pending.where(model_klass_name: 'FinishLineProgress')
@@ -63,8 +62,7 @@ class LanguagesController < ApplicationController
       @user_pending_fl_edits = @user_pending_fl_edits.where(user: logged_in_user)
     end
     @user_pending_fl_edits = @user_pending_fl_edits.to_a.select{ |edit| FinishLineProgress.find(edit.record_id).language == @language }
-    # if the user is national or the language is in at least one of the user's member states then the user can edit it
-    @editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language))
+    @editable = true # any user who can see a language can suggest edits TODO: remove this variable
     # attributes with pending edits should be visually distinct in the form
     @pending_attributes = @user_pending_edits.pluck :attribute_name
   end
@@ -82,7 +80,6 @@ class LanguagesController < ApplicationController
             {:state_languages => {:geo_state => :zone}}
         ).
         find(params[:id])
-    redirect_to zones_path unless Language.user_limited(logged_in_user).include? @language
     @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(model_klass_name: 'Language', record_id: @language.id)
     @user_pending_fl_edits = Edit.pending.where(model_klass_name: 'FinishLineProgress')
@@ -94,8 +91,7 @@ class LanguagesController < ApplicationController
     @user_pending_fl_edits = @user_pending_fl_edits.to_a.select{ |edit| FinishLineProgress.find(edit.record_id).language == @language }
     # get the latest impact report to show on the language details page
     @impact_report = @language.reports.where.not(impact_report: nil).order(:report_date).last
-    # if the user is national or the language is in at least one of the user's member states then the user can edit it
-    @editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language))
+    @editable = true # any user who can see a language can suggest edits TODO: remove this variable
     # attributes with pending edits should be visually distinct in the form
     @pending_attributes = @user_pending_edits.pluck :attribute_name
     @pending_flm_ids = []
@@ -347,6 +343,10 @@ class LanguagesController < ApplicationController
     respond_to do |format|
       format.js
     end
+  end
+
+  def populations
+    @language = Language.find params[:id]
   end
 
   private
