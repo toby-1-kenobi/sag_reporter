@@ -18,6 +18,16 @@ describe Population do
     _(population).wont_be :valid?
   end
 
+  it 'wont be valid with a year too early' do
+    population.year = 1200
+    _(population).wont_be :valid?
+  end
+
+  it 'wont be valid with a futuristic year' do
+    population.year = Date.today.year + 1
+    _(population).wont_be :valid?
+  end
+
   it 'represents as a string with year and source' do
     _(population.to_s).must_equal '1,600 (2015 ethnologue)'
   end
