@@ -167,4 +167,31 @@ describe Language do
     Language.prompt_champions
   end
 
+  it 'returns nil for best_current_pop if it has no population objects' do
+    _(language.best_current_pop).must_be_nil
+  end
+
+  it 'gives the population object as best current if theres only one' do
+    pop = Population.new(amount: 5000)
+    language.populations << pop
+    _(language.best_current_pop).must_equal pop
+  end
+
+  it 'gives the most recent population as best current' do
+    language.populations << Population.new(amount: 500)
+    pop = Population.new(amount: 1000, year: 2010)
+    language.populations << pop
+    language.populations << Population.new(amount: 3000, year: 1950)
+    language.save
+    _(language.best_current_pop).must_equal pop
+  end
+
+  it 'gives the most recently added population as best current if years are equal' do
+    language.populations << Population.new(amount: 500, created_at: 1.day.ago)
+    pop = Population.new(amount: 1000, created_at: 1.minute.ago)
+    language.populations << pop
+    language.save
+    _(language.best_current_pop).must_equal pop
+  end
+
 end

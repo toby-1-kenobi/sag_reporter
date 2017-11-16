@@ -1,0 +1,8 @@
+<% if @language.populations.any? %>
+    <ul class="populations-list mdl-list">
+      <!-- most current populations at the top of the list -->
+      <%= render @language.populations.order('year DESC NULLS LAST, created_at DESC') %>
+    </ul>
+<% else %>
+    <p id="populations-empty-state">There is no population data on record for <%= @language.name %>
+<% end %>

@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'population/create'
+
   root 'static_pages#home'
 
   get 'tasks' => 'static_pages#tasks'
@@ -59,13 +61,20 @@ Rails.application.routes.draw do
       patch 'set_finish_line_progress/:marker/:progress', to: 'languages#set_finish_line_progress', as: 'set_flp_for'
       # This is a hack to work around something I haven't worked out yet.
       get 'set_finish_line_progress/:marker/:progress', to: 'languages#show'
+      get 'populations'
     end
   end
+
   resources :mt_resources
+
   resources :organisations
+
   resources :people do
     get :contacts, on: :collection
   end
+
+  resources :populations, only: [:create]
+
   resources :reports do
     collection do
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'

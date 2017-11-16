@@ -428,16 +428,10 @@
 
         <h4>Population</h4>
         <table class="language-data">
-          <% if @language.population.present? %>
-              <tr><th>Population in India</th><td><%= number_with_delimiter(@language.population, :delimiter => ',') %>
-                <% if @language.pop_source %>
-                    (source: <%= @language.pop_source.name %>)
-                <% end %>
-              </td></tr>
-          <% end %>
-          <%# if @language.population_all_countries.present? %>
-          <!--tr><th>In all countries</th><td><%# number_with_delimiter(@language.population_all_countries, :delimiter => ',') %></td></tr-->
-          <%# end %>
+          <% population = @language.best_current_pop %>
+          <tr id="attribute-row-<%= @language.id %>-population">
+            <%= render partial: 'populations/best_current_pop', locals: { pop: population } %>
+          </tr>
           <% if @language.population_concentration.present? %>
               <tr><th>Population concentration</th><td><%= @language.population_concentration %></td></tr>
           <% end %>

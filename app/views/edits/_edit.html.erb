@@ -20,6 +20,8 @@
           end
           unless edit.new_value == Edit.removal_code
             begin
+              Rails.logger.debug "New value: #{edit.new_value}"
+              Rails.logger.debug edit.new_value.class
               new_thing = edit.related_object(edit.new_value)
             rescue ActiveRecord::RecordNotFound
               new_thing = "<em>Object not found! ID: #{edit.new_value}</em>".html_safe

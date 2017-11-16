@@ -55,10 +55,17 @@ class Edit < ActiveRecord::Base
     model_klass.find(record_id)
   end
 
-  def related_object(id)
+  def related_object(data)
     model_klass = model_klass_name.constantize
     assoc_klass = model_klass.reflect_on_association(attribute_name).klass
-    assoc_klass.find id
+    # data is a string, but we must determine whether the contents of the string are a number or a hash
+    if data.scan(/\D/).empty?
+      # we've got an id for an existing record
+      assoc_klass.find data
+    else
+      # we've got a hash of attributes for a new record
+      assoc_klass.new(eval(data))
+    end
   end
 
   def approve(curator)
@@ -88,16 +95,18 @@ class Edit < ActiveRecord::Base
         when new_value == Edit.removal_code
           success = object_under_edition.send(attribute_name).delete(old_value)
         when old_value == Edit.addition_code
-          if object_under_edition.send(attribute_name).include? related_object(new_value)
-            # we can't add this object to this association, because it's already there
-            # report success without doing anything
-            success = true
-          else
-            begin
-              success = object_under_edition.send(attribute_name).send(:<<, related_object(new_value))
-            rescue ActiveRecord::RecordNotFound
-              success = false
+          begin
+            object_to_add = related_object(new_value)
+            object_to_add.save unless object_to_add.persisted?
+            if object_under_edition.send(attribute_name).include? object_to_add
+              # we can't add this object to this association, because it's already there
+              # report success without doing anything
+              success = true
+            else
+              success = object_under_edition.send(attribute_name).send(:<<, object_to_add)
             end
+          rescue ActiveRecord::RecordNotFound
+            success = false
           end
         else
           # check the thing we're about to relate it to currently exists
@@ -165,7 +174,7 @@ class Edit < ActiveRecord::Base
   end
 
   def new_related_record_exists
-    if relationship? and new_value != Edit.removal_code
+    if relationship? and new_value != Edit.removal_code and new_value.is_a? Integer
       errors.add(:new_value, 'related object not found') unless related_object(new_value)
     end
   end
