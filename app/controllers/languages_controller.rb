@@ -347,6 +347,7 @@ class LanguagesController < ApplicationController
 
   def populations
     @language = Language.find params[:id]
+    @pending_pop_edits = Edit.pending.where(model_klass_name: 'Language', attribute_name: 'populations', record_id: @language.id)
   end
 
   private

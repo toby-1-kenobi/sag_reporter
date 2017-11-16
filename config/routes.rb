@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'population/create'
+
   root 'static_pages#home'
 
   get 'tasks' => 'static_pages#tasks'

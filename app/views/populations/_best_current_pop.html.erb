@@ -1,0 +1,14 @@
+<th class="mdl-data-table__cell--non-numeric">Population <%= pop.international? ? 'in all countries' : 'in India' %></th>
+<td>
+  <span class="editable <%= 'pending-field' if @pending_attributes.include? 'population' %>" id="language-population">
+    <%= pop %>
+    <%= render 'shared/edit_icon' %>
+  </span>
+  <% if @language.populations.count > 1 %>
+      <%= link_to populations_language_path(@language) do %>
+          <button class="mdl-button mdl-js-button mdl-button--primary">
+            See more
+          </button>
+      <% end %>
+  <% end %>
+</td>

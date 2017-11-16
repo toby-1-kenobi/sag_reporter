@@ -1,0 +1,33 @@
+<% if @edit.errors.any? %>
+$('#edit-response')
+    .slideUp('fast', function(){
+        $(this)
+            .addClass('error')
+            .html("<%= @edit.errors.full_messages.to_sentence %>")
+            .slideDown('fast');
+    });
+<% elsif @edit.record_errors.present? %>
+$('#edit-response')
+    .slideUp('fast', function() {
+        $(this)
+            .addClass('error')
+            .html("<%= @edit.record_errors %>")
+            .slideDown('fast');
+    });
+<% else %>
+  <% if @edit.pending_single_approval? or @edit.pending_double_approval? %>
+    $('#edit-response').slideUp('fast');
+    $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render partial: 'edits/edit', object: @edit %></div>');
+    let commentDialog = $("#edit-creator-comment-dialog");
+    commentDialog.find('.mdl-dialog__title').html('change <%= @edit.attribute_name.humanize %>');
+    commentDialog.find('.edit-id-field').val('<%= @edit.id %>');
+    commentDialog.find('.comment-field').val('');
+    commentDialog.get(0).showModal();
+  <% elsif @edit.auto_approved? %>
+    $('#all-popluations').html('<%= j render 'populations/populations_list' %>');
+    <% if @pending_attributes %>
+      <% population = @language.best_current_pop %>
+      $('#attribute-row-<%= @language.id %>-population').html('<%= j render partial: 'populations/best_current_pop', locals: { pop: population } %>')
+    <% end %>
+  <% end %>
+<% end %>

@@ -1,6 +1,14 @@
 <% provide(:title, "Populations for #{@language.name}") %>
 <% provide(:context_title, "Populations for #{@language.name}") %>
 
+<div id="edit-response"></div>
+<div id="pending-edits" class="mdl-grid">
+  <% @pending_pop_edits.each do |edit| %>
+      <div class="mdl-cell mdl-cell--4-col">
+        <%= render edit %>
+      </div>
+  <% end %>
+</div>
 
 <%= link_to @language do %>
   <button class="mdl-button mdl-js-button mdl-button--primary">
@@ -14,14 +22,9 @@
   </button>
 <% end %>
 
-<% if @language.populations.any? %>
-  <ul class="populations-list mdl-list">
-    <%= render @language.populations.order(:year, :created_at) %>
-  </ul>
-<% else %>
-  <p>There is no population data on record for <%= @language.name %>
-<% end %>
-
+<div id="all-populations">
+  <%= render 'populations/populations_list' %>
+</div>
 <button id="add-pop-fab" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
   <i class="material-icons">add</i>
 </button>
