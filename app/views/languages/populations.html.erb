@@ -22,10 +22,16 @@
   <p>There is no population data on record for <%= @language.name %>
 <% end %>
 
-<%= link_to @language, id: 'add-pop-fab', class: 'mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored' do %>
-    <i class="material-icons">add</i>
-<% end %>
+<button id="add-pop-fab" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+  <i class="material-icons">add</i>
+</button>
 
 <div class="mdl-tooltip" data-mdl-for="add-pop-fab">
   Add population data
 </div>
+
+<%= render 'populations/dialog_form' %>
+
+<%= render 'shared/edit_message_dialog' %>
+
+<%= render 'shared/dialog_activation' %>

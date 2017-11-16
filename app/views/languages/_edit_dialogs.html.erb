@@ -97,26 +97,7 @@
   </div>
 </dialog>
 
-<dialog id="edit-dialog-population" class="mdl-dialog" data-for="language-population">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-population' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'population' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.population %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Language population' %>
-          <%= text_field_tag 'edit[new_value]', @language.population, class: 'mdl-textfield__input', pattern: '-?[0-9]*(\.[0-9]+)?' %>
-          <span class="mdl-textfield__error">Numbers only please!</span>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
+<%= render 'populations/dialog_form' %>
 
 <dialog id="edit-dialog-family" class="mdl-dialog" data-for="language-family">
   <div class="mdl-dialog__content ">

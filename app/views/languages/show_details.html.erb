@@ -430,10 +430,13 @@
         <table class="language-data">
           <% pop = @language.best_current_pop %>
           <% if pop %>
-              <tr>
-                <th>Population <%= pop.international? ? 'in all countries' : 'in India' %></th>
+              <tr id="attribute-row-<%= @language.id %>-population">
+                <th class="mdl-data-table__cell--non-numeric">Population <%= pop.international? ? 'in all countries' : 'in India' %></th>
                 <td>
-                  <%= pop %>
+                  <span class="editable <%= 'pending-field' if @pending_attributes.include? 'population' %>" id="language-population">
+                    <%= pop %>
+                    <%= render 'shared/edit_icon' %>
+                  </span>
                   <% if @language.populations.count > 1 %>
                     <%= link_to populations_language_path(@language) do %>
                       <button class="mdl-button mdl-js-button mdl-button--primary">

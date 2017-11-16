@@ -62,11 +62,17 @@ Rails.application.routes.draw do
       get 'populations'
     end
   end
+
   resources :mt_resources
+
   resources :organisations
+
   resources :people do
     get :contacts, on: :collection
   end
+
+  resources :populations, only: [:create]
+
   resources :reports do
     collection do
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
