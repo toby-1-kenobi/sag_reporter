@@ -142,20 +142,22 @@
         <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
       </tr>
       <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
-      <% if (@language.number_of_translations && @language.number_of_translations > 0) or @editable %>
-          <% tr_num = @language.number_of_translations || 0 %>
+      <%= render 'attribute_table_row',
+                 title: 'Number of ongoing translation projects',
+                 attribute_name: 'number_of_translations',
+                 tooltip: 'Is there more than one organization working in the language for translation (this is to track duplication effort)?'
+      %>
+      <% if logged_in_user.trusted? %>
           <%= render 'attribute_table_row',
-                     title: 'Number of ongoing translation projects',
-                     attribute_name: 'number_of_translations',
-                     tooltip: 'Is there more than one organization working in the language for translation (this is to track duplication effort)?'
+                     title: 'Translation information',
+                     attribute_name: 'translation_info'
           %>
       <% end %>
-      <% if (@language.translation_info.present? or @editable) and logged_in_user.trusted? %>
-          <%= render 'attribute_table_row', title: 'Translation information', attribute_name: 'translation_info' %>
-      <% end %>
-      <% if @language.tr_committee_established.present? %>
-          <tr><th>Translation committee established</th><td><%= @language.tr_committee_established? ? 'Yes' : 'No' %></td></tr>
-      <% end %>
+      <%= render 'attribute_table_row',
+                 title: 'Translation committee established',
+                 attribute_name: 'tr_committee_established',
+                 boolean: true
+      %>
     </table>
 
     <h4>Publication dates</h4>

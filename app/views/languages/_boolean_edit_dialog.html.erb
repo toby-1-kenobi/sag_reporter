@@ -1,0 +1,20 @@
+<% element_id = "language-#{attribute_name.dasherize}" %>
+<dialog id="edit-dialog-<%= element_id %>" class="mdl-dialog" data-for="<%= element_id %>">
+  <div class="mdl-dialog__content ">
+    <%= form_tag edits_path, remote: true, method: :post do %>
+        <%= hidden_field_tag 'element_id', element_id, id: "#{attribute_name}-element-id" %>
+        <%= hidden_field_tag 'edit[model_klass_name]', 'Language', id: "#{attribute_name}-edit-model-klass-name" %>
+        <%= hidden_field_tag 'edit[record_id]', @language.id, id: "#{attribute_name}-edit-record-id" %>
+        <%= hidden_field_tag 'edit[attribute_name]', attribute_name, id: "#{attribute_name}-edit-attribute-name" %>
+        <%= hidden_field_tag 'edit[old_value]', @language.send(attribute_name), id: "#{attribute_name}-edit-old-value" %>
+        <%= label_tag "#{attribute_name}-edit-new-value", class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
+          <%= check_box_tag 'edit[new_value]', 1, @language.send(attribute_name), class: 'mdl-checkbox__input', id: "#{attribute_name}-edit-new-value" %>
+          <span class="mdl-checkbox__label"><%= label %></span>
+        <% end %>
+    <% end %>
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button submit">Submit</button>
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+</dialog>
