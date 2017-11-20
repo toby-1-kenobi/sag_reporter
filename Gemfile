@@ -133,7 +133,7 @@ group :test do
   gem 'launchy'
 
   # Drives a web browser for testing
-  gem 'selenium-webdriver'
+  #gem 'selenium-webdriver' #depends on an insecure version of rubyzip
 
   # Drives a headless browser (phantom js)
   gem 'poltergeist'
