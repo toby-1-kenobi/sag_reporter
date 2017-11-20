@@ -53,7 +53,7 @@ class Edit < ActiveRecord::Base
   def human_new_value
     column = model_klass_name.constantize.columns_hash[attribute_name]
     if column and column.type == :boolean
-      new_value == '0' or old_value == 'false' ? 'No' : 'Yes'
+      new_value == '0' or new_value == 'false' ? 'No' : 'Yes'
     else
       new_value.humanize
     end
