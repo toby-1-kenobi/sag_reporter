@@ -50,6 +50,24 @@ class Edit < ActiveRecord::Base
     approved? or auto_approved?
   end
 
+  def human_new_value
+    column = model_klass_name.constantize.columns_hash[attribute_name]
+    if column and column.type == :boolean
+      new_value == '0' or old_value == 'false' ? 'No' : 'Yes'
+    else
+      new_value.humanize
+    end
+  end
+
+  def human_old_value
+    column = model_klass_name.constantize.columns_hash[attribute_name]
+    if column and column.type == :boolean
+      old_value == '0' or old_value == 'false' ? 'No' : 'Yes'
+    else
+      old_value.humanize
+    end
+  end
+
   def object_under_edition
     model_klass = model_klass_name.constantize
     model_klass.find(record_id)

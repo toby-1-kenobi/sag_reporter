@@ -95,7 +95,7 @@ class EditsController < ApplicationController
   private
 
   def edit_params
-    params.require(:edit).permit(
+    e_params = params.require(:edit).permit(
         :model_klass_name,
         :record_id,
         :attribute_name,
@@ -103,6 +103,12 @@ class EditsController < ApplicationController
         :new_value,
         :relationship
     )
+    # for edits of boolean attributes we need to fill in missing values with '0'
+    if e_params[:model_klass_name].constantize.columns_hash[e_params[:attribute_name]].type == :boolean
+      e_params[:old_value] ||= '0'
+      e_params[:new_value] ||= '0'
+    end
+    e_params
   end
 
   def double_approve_fields

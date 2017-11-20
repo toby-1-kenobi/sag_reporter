@@ -20,8 +20,6 @@
           end
           unless edit.new_value == Edit.removal_code
             begin
-              Rails.logger.debug "New value: #{edit.new_value}"
-              Rails.logger.debug edit.new_value.class
               new_thing = edit.related_object(edit.new_value)
             rescue ActiveRecord::RecordNotFound
               new_thing = "<em>Object not found! ID: #{edit.new_value}</em>".html_safe
@@ -41,8 +39,8 @@
               <% old_thing = FinishLineProgress.human_of_status(edit.old_value, object.finish_line_marker.number) %>
               <% new_thing = FinishLineProgress.human_of_status(edit.new_value, object.finish_line_marker.number) %>
           <% else %>
-          <% old_thing = edit.old_value.humanize %>
-          <% new_thing = edit.new_value.humanize %>
+          <% old_thing = edit.human_old_value %>
+          <% new_thing = edit.human_new_value %>
           <% end %>
         Change the <%= edit.attribute_name.humanize.downcase %>
         from <span class="attribute_value"><%= old_thing %></span> to <span class="attribute_value"><%= new_thing %></span>

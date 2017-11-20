@@ -1,12 +1,11 @@
-<%# This will show the value of a text attribute along with the attribute name.
+<%# This will show the value of a text or boolean attribute along with the attribute name.
   # If the attribute can be edited it will apply the class that will enable the
   # css and js for an editable attribute. %>
 <% field_editable ||= @editable %>
-<% boolean ||= false %>
 <% html_class = "#{'editable' if field_editable} #{'pending-field' if @pending_attributes.include? attribute_name}" %>
 <% html_id = "#{object.class.name.underscore.dasherize}-#{attribute_name.dasherize}" %>
 <%= content_tag html_tag, {id: html_id, class: html_class} do %>
-  <% if boolean %>
+  <% if object.class.columns_hash[attribute_name].type == :boolean %>
     <%= object.send(attribute_name) ? 'Yes' : 'No' %>
   <% else %>
     <%= object.send(attribute_name) %>
