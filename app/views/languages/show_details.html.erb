@@ -426,9 +426,23 @@
         <h4>Population</h4>
         <table class="language-data">
           <% population = @language.best_current_pop %>
-          <tr id="attribute-row-<%= @language.id %>-population">
-            <%= render partial: 'populations/best_current_pop', locals: { pop: population } %>
-          </tr>
+          <% if population %>
+            <tr id="attribute-row-<%= @language.id %>-population">
+              <%= render partial: 'populations/best_current_pop', locals: { pop: population } %>
+            </tr>
+          <% else %>
+            <tr><td>No population set</td>
+              <td>
+                <button id="add-pop-fab" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+                  <i class="material-icons">add</i>
+                </button>
+              </td>
+            </tr>
+
+            <div class="mdl-tooltip" data-mdl-for="add-pop-fab">
+              Add population data
+            </div>
+          <% end %>
           <% if @editable or @language.population_concentration.present? %>
               <%= render 'attribute_table_row',
                          title: 'Population concentration',

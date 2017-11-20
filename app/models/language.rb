@@ -50,7 +50,7 @@ class Language < ActiveRecord::Base
   belongs_to :champion, class_name: 'User', inverse_of: :championed_languages
   has_many :populations, dependent: :destroy, inverse_of: :language
 
-  delegate :name, to: :family, prefix: true
+  delegate :name, to: :family, prefix: true, allow_nil: true
   delegate :name, to: :cluster, prefix: true
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
