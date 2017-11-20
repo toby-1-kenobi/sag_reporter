@@ -116,7 +116,7 @@ class ExternalDeviceController < ApplicationController
       Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers])
           .user_limited(external_user).each do |report|
         send_report report
-#        report.pictures.each{|picture| send_uploaded_file picture}
+        report.pictures.each{|picture| send_uploaded_file picture}
       end
       send_message = {
           users: @users,
