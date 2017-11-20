@@ -16,6 +16,29 @@
 } %>
 
 <%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'info',
+    label: 'Other language information',
+    area: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'number_of_translations',
+    label: 'Number of Bible translation projects',
+    number: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'translation_info',
+    label: 'Extra information about Bible translation in this language',
+    area: true
+} %>
+
+<%= render partial: 'boolean_edit_dialog', locals: {
+    attribute_name: 'tr_committee_established',
+    label: 'Translation Committee Established?'
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
     attribute_name: 'bible_first_published',
     label: 'Year the whole Bible was first published',
     number: true
@@ -57,52 +80,66 @@
 } %>
 
 <%= render partial: 'text_edit_dialog', locals: {
-    attribute_name: 'religion',
-    label: 'Religion'
+    attribute_name: 'translation_consultants',
+    label: 'Translation Consultants'
 } %>
 
 <%= render partial: 'text_edit_dialog', locals: {
-    attribute_name: 'genetic_classification',
-    label: 'Classification'
+    attribute_name: 'script',
+    label: 'Scripts used by this language'
 } %>
 
 <%= render partial: 'text_edit_dialog', locals: {
-    attribute_name: 'lexical_similarity',
-    label: 'Lexical similarity'
+    attribute_name: 'mt_literacy',
+    label: 'Mother Tongue literacy rate'
 } %>
 
 <%= render partial: 'text_edit_dialog', locals: {
-    attribute_name: 'related_languages',
-    label: 'Related languages',
+    attribute_name: 'l2_literacy',
+    label: 'Second Language literacy rate'
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'literate_believers',
+    label: 'Literate Believers'
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'mt_literacy_programs',
+    label: 'Mother-Tongue literacy programs',
+    area: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'attitude_to_lang_dev',
+    label: 'Community attitude to language development',
     area: true
 } %>
 
 <%= render partial: 'boolean_edit_dialog', locals: {
-    attribute_name: 'tr_committee_established',
-    label: 'Translation Committee Established?'
+    attribute_name: 'oral_traditions_print',
+    label: 'Oral traditions are in print?'
 } %>
 
-<dialog id="edit-dialog-location" class="mdl-dialog wide" data-for="language-location">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-location' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'location' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.location %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Language location' %>
-          <%= text_area_tag 'edit[new_value]', @language.location, class: 'mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
+<%= render partial: 'boolean_edit_dialog', locals: {
+    attribute_name: 'poetry_print',
+    label: 'Mother-Tongue poetry is in print?'
+} %>
 
-<%= render 'populations/dialog_form' %>
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'religion',
+    label: 'Religion'
+} %>
+
+<%= render partial: 'boolean_edit_dialog', locals: {
+    attribute_name: 'local_fellowship',
+    label: 'Local Fellowship exists?'
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'believers',
+    label: 'Number of believers'
+} %>
 
 <dialog id="edit-dialog-family" class="mdl-dialog" data-for="language-family">
   <div class="mdl-dialog__content ">
@@ -125,208 +162,58 @@
   </div>
 </dialog>
 
-<dialog id="edit-dialog-info" class="mdl-dialog" data-for="language-info">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-info' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'info' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.info %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Other language information' %>
-          <%= text_area_tag 'edit[new_value]', @language.info, class: 'mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'genetic_classification',
+    label: 'Classification'
+} %>
 
-<dialog id="edit-dialog-translation-number" class="mdl-dialog" data-for="language-number-of-translations">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-number-of-translations' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'number_of_translations' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.number_of_translations %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Number of Bible translation projects' %>
-          <%= text_field_tag 'edit[new_value]', @language.number_of_translations, class: 'mdl-textfield__input', pattern: '-?[0-9]*(\.[0-9]+)?' %>
-          <span class="mdl-textfield__error">Numbers only please!</span>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'lexical_similarity',
+    label: 'Lexical similarity'
+} %>
 
-<dialog id="edit-dialog-translation-consultants" class="mdl-dialog" data-for="language-translation-consultants">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-translation-consultants' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'translation_consultants' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.translation_consultants %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Translation Consultants' %>
-          <%= text_field_tag 'edit[new_value]', @language.translation_consultants, class: 'mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'related_languages',
+    label: 'Related languages',
+    area: true
+} %>
 
-<dialog id="edit-dialog-translation_info" class="mdl-dialog" data-for="language-translation-info">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-translation-info' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'translation_info' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.translation_info %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Extra information about Bible translation in this language' %>
-          <%= text_area_tag 'edit[new_value]', @language.translation_info, class: 'mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'location',
+    label: 'Language location',
+    area: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'location_access',
+    label: 'Physical Access',
+    area: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'travel',
+    label: 'Travel Habits',
+    area: true
+} %>
+
+<%= render 'populations/dialog_form' %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'population_concentration',
+    label: 'Population Concentration'
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'age_distribution',
+    label: 'Age Distribution'
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'village_size',
+    label: 'Average Village Size'
+} %>
 
 
-
-<dialog id="edit-dialog-script" class="mdl-dialog" data-for="language-script">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-script' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'script' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.script %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Scripts used by this language' %>
-          <%= text_field_tag 'edit[new_value]', @language.script, class: 'mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
-
-<dialog id="edit-dialog-mt-literacy" class="mdl-dialog" data-for="language-mt-literacy">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-mt-literacy' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'mt_literacy' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.mt_literacy %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Mother Tongue literacy rate' %>
-          <%= text_field_tag 'edit[new_value]', @language.mt_literacy, class: 'mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
-
-<dialog id="edit-dialog-l2-literacy" class="mdl-dialog" data-for="language-l2-literacy">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-l2-literacy' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'l2_literacy' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.l2_literacy %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Second Language literacy rate' %>
-          <%= text_field_tag 'edit[new_value]', @language.l2_literacy, class: 'mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
-
-<dialog id="edit-dialog-literate-believers" class="mdl-dialog" data-for="language-literate-believers">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-literate-believers' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'literate_believers' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.literate_believers %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Literate Believers' %>
-          <%= text_field_tag 'edit[new_value]', @language.literate_believers, class: 'mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
-
-<dialog id="edit-dialog-attitude-to-lang-dev" class="mdl-dialog" data-for="language-attitude-to-lang-dev">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-attitude-to-lang-dev' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'attitude_to_lang_dev' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.attitude_to_lang_dev %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Community attitude to language development' %>
-          <%= text_area_tag 'edit[new_value]', @language.attitude_to_lang_dev, class: 'mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
-
-<dialog id="edit-dialog-mt-literacy-programs" class="mdl-dialog" data-for="language-mt-literacy-programs">
-  <div class="mdl-dialog__content ">
-    <%= form_tag edits_path, remote: true, method: :post do %>
-        <%= hidden_field_tag 'element_id', 'language-mt-literacy-programs' %>
-        <%= hidden_field_tag 'edit[model_klass_name]', 'Language' %>
-        <%= hidden_field_tag 'edit[record_id]', @language.id %>
-        <%= hidden_field_tag 'edit[attribute_name]', 'mt_literacy_programs' %>
-        <%= hidden_field_tag 'edit[old_value]', @language.mt_literacy_programs %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= label_tag 'edit[new_value]', 'Mother-Tongue literacy programs' %>
-          <%= text_area_tag 'edit[new_value]', @language.mt_literacy_programs, class: 'mdl-textfield__input' %>
-        </div>
-    <% end %>
-  </div>
-  <div class="md-dialog__actions">
-    <button type="button" class="mdl-button submit">Submit</button>
-    <button type="button" class="mdl-button cancel">Cancel</button>
-  </div>
-</dialog>
 
 <dialog id="add-engaged-org-dialog" class="mdl-dialog">
   <h4 class="mdl-dialog__title">Which organisation is engaged with this language?</h4>

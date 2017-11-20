@@ -58,6 +58,23 @@
       <% end %>
     </table>
 
+    <h3>General</h3>
+    <table class="language-data">
+      <% if @language.description.present? or @editable %>
+          <%= render 'attribute_table_row',
+                     title: 'Description',
+                     attribute_name: 'description'
+          %>
+      <% end %>
+      <% if @language.info.present? or @editable %>
+          <%= render 'attribute_table_row',
+                     title: 'General information',
+                     attribute_name: 'info',
+                     tooltip: 'Any general remark about the people and the language'
+          %>
+      <% end %>
+    </table>
+
     <a name="church-engagement"><h3>Church Engagement</h3></a>
     <table class="language-data">
       <% marker = FinishLineMarker.find_by_number(0) %>
@@ -217,18 +234,10 @@
         </table>
     <% end %>
 
-    <% if logged_in_user.trusted? %>
+    <% if logged_in_user.trusted? and @editable or @language.translation_consultants.present? %>
         <h4>People involved</h4>
         <table class="language-data">
-          <% if @editable or @language.translation_consultants.present? %>
-              <tr>
-                <th>Translation consultants</th>
-                <td id="language-translation-consultants" class="<%= 'editable' if @editable %> <%= 'pending-field' if @pending_attributes.include? 'translation_consultants' %>">
-                  <%= @language.translation_consultants %>
-                  <%= render 'shared/edit_icon' if @editable %>
-                </td>
-              </tr>
-          <% end %>
+          <%= render 'attribute_table_row', title: 'Translation consultants', attribute_name: 'translation_consultants' %>
         </table>
     <% end %>
 
@@ -283,11 +292,11 @@
       <% if @editable or @language.attitude_to_lang_dev.present? %>
           <%= render 'attribute_table_row', title: 'Attitude towards development', attribute_name: 'attitude_to_lang_dev' %>
       <% end %>
-      <% if @language.oral_traditions_print.present? %>
-          <tr><th>Oral traditions are in print</th><td><%= @language.oral_traditions_print ? 'Yes' : 'No' %></td></tr>
+      <% if @editable or @language.oral_traditions_print.present? %>
+          <%= render 'attribute_table_row', title: 'Oral traditions are in print', attribute_name: 'oral_traditions_print' %>
       <% end %>
-      <% if @language.poetry_print.present? %>
-          <tr><th>Mother-Tongue poetry is in print</th><td><%= @language.poetry_print? ? 'Yes' : 'No' %></td></tr>
+      <% if @editable or @language.poetry_print.present? %>
+          <%= render 'attribute_table_row', title: 'Mother-Tongue poetry is in print', attribute_name: 'poetry_print' %>
       <% end %>
     </table>
 
@@ -314,20 +323,18 @@
 
     <h3>Religion</h3>
     <table class="language-data">
-      <% if @language.religion.present? %>
+      <% if @editable or @language.religion.present? %>
           <%= render 'attribute_table_row',
                      title: 'Religion',
                      attribute_name: 'religion',
                      tooltip: 'What religious affiliation do the people claim? What is the estimated percentage?'
           %>
       <% end %>
-      <% if @language.local_fellowship.present? and logged_in_user.sees_faith_based_data? %>
-          <tr><th>Local Fellowship exists</th><td><%= @language.local_fellowship? ? 'Yes' : 'No' %></td></tr>
+      <% if @editable or @language.local_fellowship.present? %>
+          <%= render 'attribute_table_row', title: 'Local Fellowship exists', attribute_name: 'local_fellowship' %>
       <% end %>
-      <% if @language.believers.present? and logged_in_user.sees_faith_based_data? %>
-          <tr><th>Believers</th><td><%= number_with_delimiter(@language.believers, :delimiter => ',') %>
-            (<%= (@language.believers * 100) / @language.population %>%)
-          </td></tr>
+      <% if @editable or @language.believers.present? %>
+          <%= render 'attribute_table_row', title: 'Number of believers', attribute_name: 'believers' %>
       <% end %>
     </table>
 
@@ -372,41 +379,24 @@
             <p>None</p>
         <% end %>
 
-    <h3>General</h3>
-    <table class="language-data">
-      <% if @language.description.present? or @editable %>
-          <%= render 'attribute_table_row',
-                     title: 'Description',
-                     attribute_name: 'description'
-          %>
-      <% end %>
-      <% if @language.info.present? %>
-          <%= render 'attribute_table_row',
-                     title: 'General information',
-                     attribute_name: 'info',
-                     tooltip: 'Any general remark about the people and the language'
-          %>
-      <% end %>
-    </table>
-
     <a name="classification"><h4>Classification</h4></a>
         <table class="language-data">
-          <% if @language.family_id.present? %>
+          <% if @language.family_id.present? or @editable %>
               <tr><th class="mdl-data-table__cell--non-numeric">Family</th><td id="language-family" class="<%= 'editable' if @editable %>"><%= @language.family_name %><%= render 'shared/edit_icon' if @editable %></td></tr>
           <% end %>
-          <% if @language.genetic_classification.present? %>
+          <% if @language.genetic_classification.present? or @editable %>
               <%= render 'attribute_table_row',
                          title: 'Classification',
                          attribute_name: 'genetic_classification'
               %>
           <% end %>
-          <% if @language.lexical_similarity.present? %>
+          <% if @language.lexical_similarity.present? or @editable %>
               <%= render 'attribute_table_row',
                          title: 'Lexical similarity',
                          attribute_name: 'lexical_similarity'
               %>
           <% end %>
-          <% if @language.related_languages.present? %>
+          <% if @language.related_languages.present? or @editable %>
               <%= render 'attribute_table_row',
                          title: 'Related languages',
                          attribute_name: 'related_languages'
@@ -419,11 +409,17 @@
       <% if @editable or @language.location.present? %>
           <tr><th>Location</th><td id="language-location" class="<%= 'editable' if @editable %>"><%= @language.location %><%= render 'shared/edit_icon' if @editable %></td></tr>
       <% end %>
-      <% if @language.location_access.present? %>
-          <tr><th>Physical Access</th><td><%= @language.location_access %></td></tr>
+      <% if @editable or @language.location_access.present? %>
+          <%= render 'attribute_table_row',
+                     title: 'Physical Access',
+                     attribute_name: 'location_access'
+          %>
       <% end %>
-      <% if @language.travel.present? %>
-          <tr><th>Travel Habits</th><td><%= @language.travel %></td></tr>
+      <% if @editable or @language.travel.present? %>
+          <%= render 'attribute_table_row',
+                     title: 'Travel Habits',
+                     attribute_name: 'travel'
+          %>
       <% end %>
     </table>
 
@@ -433,14 +429,23 @@
           <tr id="attribute-row-<%= @language.id %>-population">
             <%= render partial: 'populations/best_current_pop', locals: { pop: population } %>
           </tr>
-          <% if @language.population_concentration.present? %>
-              <tr><th>Population concentration</th><td><%= @language.population_concentration %></td></tr>
+          <% if @editable or @language.population_concentration.present? %>
+              <%= render 'attribute_table_row',
+                         title: 'Population concentration',
+                         attribute_name: 'population_concentration'
+              %>
           <% end %>
-          <% if @language.age_distribution.present? %>
-              <tr><th>Age distribution</th><td><%= @language.age_distribution %></td></tr>
+          <% if @editable or @language.age_distribution.present? %>
+              <%= render 'attribute_table_row',
+                         title: 'Age distribution',
+                         attribute_name: 'age_distribution'
+              %>
           <% end %>
-          <% if @language.village_size.present? %>
-              <tr><th>Average village size</th><td><%= @language.village_size %></td></tr>
+          <% if @editable or @language.village_size.present? %>
+              <%= render 'attribute_table_row',
+                         title: 'Average village size',
+                         attribute_name: 'village_size'
+              %>
           <% end %>
         </table>
 
