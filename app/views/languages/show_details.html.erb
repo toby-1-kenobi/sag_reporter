@@ -454,23 +454,41 @@
           <% if @language.dialects.any? %>
               <tr><th>Dialects</th><td><%= @language.dialects.pluck(:name).to_sentence %></td></tr>
           <% end %>
-          <% if @language.clans.present? %>
-              <tr><th>Clans</th><td><%= @language.clans %></td></tr>
+          <% if @editable or @language.clans.present? %>
+              <%= render 'attribute_table_row',
+                         title: 'Clans',
+                         attribute_name: 'clans'
+              %>
           <% end %>
-          <% if @language.castes.present? %>
-              <tr><th>Castes</th><td><%= @language.castes %></td></tr>
+          <% if @editable or @language.castes.present? %>
+              <%= render 'attribute_table_row',
+                         title: 'Castes',
+                         attribute_name: 'castes'
+              %>
           <% end %>
-          <% if @language.subgroups.present? %>
-              <tr><th>Subgroups</th><td><%= @language.subgroups %></td></tr>
+          <% if @editable or @language.subgroups.present? %>
+              <%= render 'attribute_table_row',
+                         title: 'Other subgroups',
+                         attribute_name: 'subgroups'
+              %>
           <% end %>
-          <% if @language.ethnic_groups_in_area.present? %>
-              <tr><th>Other ethnic groups in the same area</th><td><%= @language.ethnic_groups_in_area %></td></tr>
+          <% if @editable or @language.ethnic_groups_in_area.present? %>
+              <%= render 'attribute_table_row',
+                         title: 'Other ethnic groups in the same area',
+                         attribute_name: 'ethnic_groups_in_area'
+              %>
           <% end %>
-          <% if @language.mixed_marriages.present? %>
-              <tr><th>Mixed marriages</th><td><%= @language.mixed_marriages %></td></tr>
+          <% if @editable or @language.mixed_marriages.present? %>
+              <%= render 'attribute_table_row',
+                         title: 'Mixed marriages',
+                         attribute_name: 'mixed_marriages'
+              %>
           <% end %>
-          <% if @language.attitude.present? %>
-              <tr><th>Attitude to languages</th><td><%= @language.attitude %></td></tr>
+          <% if @editable or @language.attitude.present? %>
+              <%= render 'attribute_table_row',
+                         title: 'Attitude to languages',
+                         attribute_name: 'attitude'
+              %>
           <% end %>
         </table>
 

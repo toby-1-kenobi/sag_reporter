@@ -213,6 +213,38 @@
     label: 'Average Village Size'
 } %>
 
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'clans',
+    label: 'Clans'
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'castes',
+    label: 'Castes'
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'subgroups',
+    label: 'Other Subgroups'
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'ethnic_groups_in_area',
+    label: 'Other ethnic groups in the same area',
+    area: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'mixed_marriages',
+    label: 'Mixed Marriages',
+    area: true
+} %>
+
+<%= render partial: 'text_edit_dialog', locals: {
+    attribute_name: 'attitude',
+    label: 'Attitude to Languages',
+    area: true
+} %>
 
 
 <dialog id="add-engaged-org-dialog" class="mdl-dialog">
