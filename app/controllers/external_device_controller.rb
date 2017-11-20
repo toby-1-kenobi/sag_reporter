@@ -115,7 +115,7 @@ class ExternalDeviceController < ApplicationController
       ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
       Report.includes(:impact_report, :pictures).user_limited(external_user).each do |report|
         send_report report
-        report.pictures.each{|picture| send_uploaded_file picture}
+#        report.pictures.each{|picture| send_uploaded_file picture}
       end
       send_message = {
           users: @users,
@@ -508,7 +508,7 @@ class ExternalDeviceController < ApplicationController
       file.open
       send_file.write ', ' unless send_file.length == 1
       send_file.write '"' + category.to_s + '": ['
-      while buffer = file.read(2048)
+      while buffer = file.read(512)
         send_file.write buffer.force_encoding(Encoding::CP1252).encode(Encoding::UTF_8)
       end
       send_file.write ']'
