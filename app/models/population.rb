@@ -17,12 +17,14 @@ class Population < ActiveRecord::Base
   private
 
   def year_within_sensible_range
-    # we're not interested in anyone's opinion of populations in India before 1500
-    if year < 1500
-      errors.add(:year, 'too early')
-    end
-    if year > Date.today.year
-      errors.add(:year, 'too futuristic')
+    if year.present?
+      # we're not interested in anyone's opinion of populations in India before 1500
+      if year < 1500
+        errors.add(:year, 'too early')
+      end
+      if year > Date.today.year
+        errors.add(:year, 'too futuristic')
+      end
     end
   end
 end
