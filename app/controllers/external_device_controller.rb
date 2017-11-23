@@ -121,7 +121,7 @@ class ExternalDeviceController < ApplicationController
           report.pictures.each{|picture| send_uploaded_file picture}
         end
         send_geo_state report.geo_state
-        send_language report.languages
+        report.languages.each{|language| send_language language}
       end
       send_message = {
           users: @users,
