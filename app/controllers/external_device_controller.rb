@@ -94,6 +94,8 @@ class ExternalDeviceController < ApplicationController
     begin
       @users, @geo_states, @languages, @reports, @uploaded_files,
       @people, @topics, @progress_markers = Array.new(8) {Tempfile.new}
+      @user_ids, @geo_state_ids, @language_ids, @report_ids, @uploaded_file_ids,
+      @person_ids, @topic_ids, @progress_marker_ids = Array.new(8) {Set.new}
       @all_updated_at = send_request_params
       send_external_user
       send_language external_user.mother_tongue
@@ -255,7 +257,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_user_name user
     begin
-      if check_send_data(@users, user, @all_updated_at[:users])
+      if @user_ids.add?(user.id) && check_send_data(@users, user, @all_updated_at[:users])
         @users.write({
             id: user.id,
             name: user.name,
@@ -271,7 +273,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_geo_state geo_state
     begin
-      if check_send_data(@geo_states, geo_state, @all_updated_at[:geo_states])
+      if @geo_state_ids.add?(geo_state.id) && check_send_data(@geo_states, geo_state, @all_updated_at[:geo_states])
         @geo_states.write({
             id: geo_state.id,
             name: geo_state.name,
@@ -290,7 +292,7 @@ class ExternalDeviceController < ApplicationController
     
   def send_language language
     begin
-      if check_send_data(@languages, language, @all_updated_at[:languages])
+      if @language_ids.add?(language.id) && check_send_data(@languages, language, @all_updated_at[:languages])
         @languages.write({
             id: language.id,
             name: language.name,
@@ -362,7 +364,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_person person
     begin
-      if check_send_data(@people, person, @all_updated_at[:people])
+      if @person_ids.add?(person.id) && check_send_data(@people, person, @all_updated_at[:people])
         @people.write({
             id: person.id,
             name: person.name,
@@ -388,7 +390,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_topic topic
     begin
-      if check_send_data(@topics, topic, @all_updated_at[:topics])
+      if @topic_ids.add?(topic.id) && check_send_data(@topics, topic, @all_updated_at[:topics])
         @topics.write({
             id: topic.id,
             name: topic.name,
@@ -408,7 +410,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_progress_marker progress_marker
     begin
-      if check_send_data(@progress_markers, progress_marker, @all_updated_at[:progress_markers])
+      if @progress_marker_ids.add?(progress_marker.id) && check_send_data(@progress_markers, progress_marker, @all_updated_at[:progress_markers])
         @progress_markers.write({
             id: progress_marker.id,
             name: progress_marker.name,
@@ -430,7 +432,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_report report
     begin
-      if check_send_data(@reports, report, @all_updated_at[:reports])
+      if @report_ids.add?(report.id) && check_send_data(@reports, report, @all_updated_at[:reports])
         impact_report_data = Hash.new
         impact_report_data = {
             progress_marker_ids: report.impact_report.progress_marker_ids,
@@ -473,7 +475,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_uploaded_file uploaded_file
     begin
-      if check_send_data(@uploaded_files, uploaded_file, @all_updated_at[:uploaded_files])
+      if @uploaded_file_ids.add?(uploaded_file.id) && check_send_data(@uploaded_files, uploaded_file, @all_updated_at[:uploaded_files])
         @uploaded_files.write({
             id: uploaded_file.id,
             report_id: uploaded_file.report_id,
