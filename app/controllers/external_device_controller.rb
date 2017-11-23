@@ -115,8 +115,9 @@ class ExternalDeviceController < ApplicationController
       ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
       Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers])
           .user_limited(external_user).each do |report|
-        send_report report
-        report.pictures.each{|picture| send_uploaded_file picture}
+        if (send_report(report))
+          report.pictures.each{|picture| send_uploaded_file picture}
+        end
       end
       send_message = {
           users: @users,
@@ -143,6 +144,9 @@ class ExternalDeviceController < ApplicationController
       full_params = receive_request_params
       full_params[:reports].each do |report_id, report_params|
         receive_report report_id, report_params, full_params[:uploaded_files]
+      end
+      full_params[:uploaded_files].each do |uploaded_file_id, uploaded_file_params|
+        receive_uploaded_file uploaded_file_id, uploaded_file_params
       end
       send_message = {
           error: @errors,
@@ -485,19 +489,19 @@ class ExternalDeviceController < ApplicationController
 
   def check_send_data file, object, offline_updated_at_reference
     return false unless object
-    file.write(', ') unless file.length == 0
     offline_updated_at = offline_updated_at_reference
     offline_updated_at &&= offline_updated_at[object.id.to_s]
     offline_updated_at &&= offline_updated_at[:updated_at]
     if offline_updated_at
       if object.updated_at.to_i == offline_updated_at
         return false
-      end
-      if offline_updated_at > object.updated_at.to_i
+      elsif offline_updated_at > object.updated_at.to_i
+        file.write(', ') unless file.length == 0
         file.write({id: object.id, last_changed: 'offline'}.to_json)
         return false
       end
     end
+    file.write(', ') unless file.length == 0
     true
   end
   
@@ -527,7 +531,7 @@ class ExternalDeviceController < ApplicationController
     puts 'Save file ' + uploaded_file_id.to_s + uploaded_file_data.keys.to_s
     status = uploaded_file_data.delete 'status'
     if status == 'delete'
-      ExternalFile.delete uploaded_file_id
+      UploadedFile.delete uploaded_file_id
       return nil
     end
     if status != 'new'
@@ -575,10 +579,10 @@ class ExternalDeviceController < ApplicationController
     return if report_data.nil?
     impact_report = report_data.delete 'impact_report'
     status = report_data.delete 'status'
-    report_data['report_date'] &&= Time.at report_data['report_date']
+    report_data['report_date'] &&= Date.parse report_data['report_date']
     report_data['picture_ids'] && report_data['picture_ids'].map! do |picture_id|
       picture_id = picture_id.to_i
-      picture_data = uploaded_files_data[picture_id.to_s]
+      picture_data = uploaded_files_data.delete picture_id.to_s
       if picture_data
         receive_uploaded_file picture_id, picture_data
       else
@@ -594,7 +598,7 @@ class ExternalDeviceController < ApplicationController
         return
       end
       (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
-        receive_uploaded_file deleted_picture_id, status: 'delete'
+        receive_uploaded_file deleted_picture_id, 'status' => 'delete'
       end if report_data['picture_ids']
       if report.update(report_data) && report.impact_report.update(impact_report_data)
         report.touch
