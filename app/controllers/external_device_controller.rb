@@ -113,7 +113,7 @@ class ExternalDeviceController < ApplicationController
       Person.all.each{|person| send_person person}
       Topic.all.each{|topic| send_topic topic unless topic.hide_for?(external_user)}
       ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
-      Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers])
+      Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
           .user_limited(external_user).each do |report|
         if (send_report(report))
           report.pictures.each{|picture| send_uploaded_file picture}
