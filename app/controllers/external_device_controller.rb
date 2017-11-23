@@ -118,6 +118,8 @@ class ExternalDeviceController < ApplicationController
         if (send_report(report))
           report.pictures.each{|picture| send_uploaded_file picture}
         end
+        send_geo_state report.geo_state
+        send_language report.languages
       end
       send_message = {
           users: @users,
