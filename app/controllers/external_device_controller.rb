@@ -211,6 +211,8 @@ class ExternalDeviceController < ApplicationController
         :geo_state_id,
         {:language_ids => []},
         :report_date,
+        :translation_impact,
+        :significant,
         {:picture_ids => []},
         :content,
         :reporter_id,
@@ -596,6 +598,7 @@ class ExternalDeviceController < ApplicationController
     end
     impact_report_data = Hash.new
     impact_report_data['progress_marker_ids'] = report_data.delete 'progress_marker_ids'
+    impact_report_data['translation_impact'] = report_data.delete 'translation_impact'
     if status == 'old'
       report = Report.find_by_id report_id
       unless report
