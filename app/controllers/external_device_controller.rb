@@ -653,8 +653,11 @@ class ExternalDeviceController < ApplicationController
       recipient ||= mail
       delivery_success = false
       begin
-        UserMailer.user_report(recipient, report).deliver_now
-        delivery_success = true
+        if recipient
+          puts recipient
+          UserMailer.user_report(recipient, report).deliver_now 
+          delivery_success = true
+        end
       rescue EOFError,
             IOError,
             TimeoutError,
