@@ -599,6 +599,7 @@ class ExternalDeviceController < ApplicationController
     impact_report_data = Hash.new
     impact_report_data['progress_marker_ids'] = report_data.delete 'progress_marker_ids'
     impact_report_data['translation_impact'] = report_data.delete 'translation_impact'
+    supervisor_mail = report_data['significant']
     if status == 'old'
       report = Report.find_by_id report_id
       unless report
@@ -622,12 +623,21 @@ class ExternalDeviceController < ApplicationController
       report = Report.new report_data
       report.impact_report = ImpactReport.new(impact_report_data) if impact_report
       if report.save
+        if supervisor_mail
+          if send_mail(report, supervisor_mail)
+            mail_info = {mail: "send successful"}
+          else
+            mail_info = {mail: "send not successful"}
+          end
+        else
+          mail_info = {}
+        end
         @report_feedbacks << {
             id: report_id,
             updated_at: report.updated_at.to_i,
             new_id: report.id,
             last_changed: 'uploaded'
-        }
+        }.merge(mail_info)
       else
         @errors << {'report_' + report_id.to_s => report.errors.messages.to_s}
       end
@@ -635,6 +645,43 @@ class ExternalDeviceController < ApplicationController
       @errors << {'report_' + report_id.to_s => 'Unknown status: ' + status}
     end
   end
+  
+  def send_mail report, mail
+    # make sure TLS gets used for delivering this email
+    if SendGridV3.enforce_tls
+      recipient = User.find_by_email mail
+      recipient ||= mail
+      delivery_success = false
+      begin
+        UserMailer.user_report(recipient, report).deliver_now
+        delivery_success = true
+      rescue EOFError,
+            IOError,
+            TimeoutError,
+            Errno::ECONNRESET,
+            Errno::ECONNABORTED,
+            Errno::EPIPE,
+            Errno::ETIMEDOUT,
+            Net::SMTPAuthenticationError,
+            Net::SMTPServerBusy,
+            Net::SMTPSyntaxError,
+            Net::SMTPUnknownError,
+            OpenSSL::SSL::SSLError => e
+        @errors << 'Failed to send the report to the supervisor'
+        Rails.logger.error e.message
+      end
+      if delivery_success
+        # also send it to the reporter
+        UserMailer.user_report(report.reporter, report).deliver_now
+        return true
+      end
+    else
+      @errors << 'Could not ensure email encryption so didn\'t send the report to the supervisor'
+      Rails.logger.error 'Could not enforce TLS with SendGrid'
+    end
+    false
+  end
+  
 end
 # for easily getting all attributes:
 # Language.new.attributes.except("created_at","updated_at").keys.each{|k|puts "          " + k.to_s + ": xxx." + k.to_s + ","}.nil?
