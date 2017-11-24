@@ -622,16 +622,18 @@ class ExternalDeviceController < ApplicationController
     elsif status == 'new'
       report = Report.new report_data
       report.impact_report = ImpactReport.new(impact_report_data) if impact_report
-      if report.save
-        if supervisor_mail
-          if send_mail(report, supervisor_mail)
-            mail_info = {mail: "send successful"}
-          else
-            mail_info = {mail: "send not successful"}
-          end
+      error = false
+      if supervisor_mail
+        if send_mail(report, supervisor_mail)
+          mail_info = {mail: "send successful"}
         else
-          mail_info = {}
+          error = true
+          mail_info = {mail: "send not successful"}
         end
+      else
+        mail_info = {}
+      end
+      if report.save
         @report_feedbacks << {
             id: report_id,
             updated_at: report.updated_at.to_i,
@@ -650,7 +652,7 @@ class ExternalDeviceController < ApplicationController
     # make sure TLS gets used for delivering this email
     if SendGridV3.enforce_tls
       recipient = User.find_by_email mail
-      recipient ||= mail
+      recipient &&= mail
       delivery_success = false
       begin
         if recipient
