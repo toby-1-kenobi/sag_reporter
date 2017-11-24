@@ -194,7 +194,8 @@ class ExternalDeviceController < ApplicationController
       :topics => [:updated_at],
       :progress_markers => [:updated_at],
       :reports => [:updated_at],
-      :uploaded_files => [:updated_at]
+      :uploaded_files => [:updated_at],
+      :people => [:updated_at]
     ]
     permitted = params.require(:external_device).permit(safe_params)
   end
