@@ -600,6 +600,7 @@ class ExternalDeviceController < ApplicationController
     impact_report_data['progress_marker_ids'] = report_data.delete 'progress_marker_ids'
     impact_report_data['translation_impact'] = report_data.delete 'translation_impact'
     supervisor_mail = report_data['significant']
+    report_data['significant'] &&= true
     if status == 'old'
       report = Report.find_by_id report_id
       unless report
