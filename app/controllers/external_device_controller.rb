@@ -653,7 +653,7 @@ class ExternalDeviceController < ApplicationController
     # make sure TLS gets used for delivering this email
     if SendGridV3.enforce_tls
       recipient = User.find_by_email mail
-      recipient &&= mail
+      recipient ||= mail
       delivery_success = false
       begin
         if recipient
