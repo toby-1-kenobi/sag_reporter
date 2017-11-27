@@ -28,14 +28,14 @@ class ExternalDeviceController < ApplicationController
       end
       # check, whether user device exists and is registered (= succesful login)
       users_device = user.external_devices.find{|d| d.device_id == full_params[:device_id]}
-      if users_device && (users_device.registered || user.otp == full_params[:otp])
+      if users_device && (users_device.registered || user.otp_code == full_params[:otp])
         ExternalDevice.update users_device.id, registered: true unless users_device.registered
         if users_device.name != full_params[:device_name]
           ExternalDevice.update users_device.id, name: full_params[:device_name]
         end
         send_message = {
             user: user.id,
-            status: "logged_in",
+            status: "success",
             jwt: create_jwt(user, users_device.device_id),
             database_key: create_database_key(user),
             now: Time.now.to_i
@@ -145,7 +145,7 @@ class ExternalDeviceController < ApplicationController
           reports: @reports,
           uploaded_files: @uploaded_files
       }
-      puts send_message
+      puts send_message.except(:uploaded_files)
       render json: send_message, status: :ok
     rescue => e
       send_message = { error: e.to_s, where: e.backtrace.to_s }
