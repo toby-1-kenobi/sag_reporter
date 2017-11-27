@@ -83,6 +83,7 @@ class Language < ActiveRecord::Base
   # and for which the champions haven't been recently prompted
   # and sends out email prompts for the champions to check they are up to date
   def self.prompt_champions
+
     # Some users may be champion of many languages. We don't want to overload
     # their inboxes with lots of emails, so we combine into one email per user.
     # One problem would be that a user with many languages may have their languages
@@ -102,7 +103,7 @@ class Language < ActiveRecord::Base
     # Start by collecting languages 20 days old on both counts
     languages = Language.
         where.not(champion: nil).
-        where('champion_prompted <= ? OR champion_prompted IS NULL', most_recent).
+        where('champion_prompted <= ?', most_recent).
         where('updated_at <= ?', most_recent)
 
     # group by champion and pair languages with their change date
@@ -131,6 +132,21 @@ class Language < ActiveRecord::Base
             champions[language.champion_id][:most_recent] << [language, change_date]
         end
       end
+    end
+
+    # Champions assigned to a new language should be prompted
+    # regardless of when the language was last updated.
+    # we'll put these in the overdue category to make sure they trigger
+    languages = Language.where.not(champion: nil).where(champion_prompted: nil)
+    languages.each do |language|
+      champions[language.champion_id] ||= {
+          most_recent: [],
+          recent: [],
+          standard: [],
+          overdue: []
+      }
+      change_date = language.last_changed
+      champions[language.champion_id][:overdue] << [language, change_date]
     end
 
     # Trigger on the correct languages

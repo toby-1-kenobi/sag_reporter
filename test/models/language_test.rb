@@ -3,10 +3,22 @@ require 'test_helper'
 describe Language do
 
   let(:language) { Language.new name: 'Test language', lwc: false}
-  let(:language_prompt_due) { Language.new name: 'prompt due', updated_at: 31.days.ago, champion: users(:emma) }
-  let(:language_prompt_nearly_due) { Language.new name: 'prompt nearly due', updated_at: 26.days.ago, champion: users(:emma) }
-  let(:language_prompt_due_later) { Language.new name: 'prompt due later', updated_at: 24.days.ago, champion: users(:emma) }
-  let(:language_prompt_overdue) { Language.new name: 'prompt overdue', updated_at: 41.days.ago, champion: users(:emma) }
+  let(:language_prompt_due) { Language.new name: 'prompt due',
+                                           updated_at: 31.days.ago,
+                                           champion: users(:emma),
+                                           champion_prompted: 50.days.ago }
+  let(:language_prompt_nearly_due) { Language.new name: 'prompt nearly due',
+                                                  updated_at: 26.days.ago,
+                                                  champion: users(:emma),
+                                                  champion_prompted: 50.days.ago }
+  let(:language_prompt_due_later) { Language.new name: 'prompt due later',
+                                                 updated_at: 24.days.ago,
+                                                 champion: users(:emma),
+                                                 champion_prompted: 50.days.ago }
+  let(:language_prompt_overdue) { Language.new name: 'prompt overdue',
+                                               updated_at: 41.days.ago,
+                                               champion: users(:emma),
+                                               champion_prompted: 50.days.ago }
   let(:assam) { GeoState.new name: 'Assam' }
   let(:bihar) { GeoState.new name: 'bihar' }
   let(:national_user) { users(:nathan) }
@@ -167,6 +179,18 @@ describe Language do
     Language.prompt_champions
   end
 
+  it 'must prompt a new champion for a language even if it was recently updated' do
+    language_prompt_due_later.champion_prompted = nil
+    language_prompt_due_later.save
+    mail = mock()
+    mail.stubs(:deliver_now).returns(true)
+    UserMailer.expects(:prompt_champion).with do |user, languages|
+      _(user.id).must_equal language_prompt_due_later.champion_id
+      _(languages.first.first.id).must_equal language_prompt_due_later.id
+    end.once.returns(mail)
+    Language.prompt_champions
+  end
+
   it 'returns nil for best_current_pop if it has no population objects' do
     _(language.best_current_pop).must_be_nil
   end
@@ -174,6 +198,7 @@ describe Language do
   it 'gives the population object as best current if theres only one' do
     pop = Population.new(amount: 5000)
     language.populations << pop
+    language.save
     _(language.best_current_pop).must_equal pop
   end
 
