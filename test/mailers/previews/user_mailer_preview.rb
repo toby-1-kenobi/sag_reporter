@@ -7,7 +7,7 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def prompt_champion_single
-    language1 = Language.find_or_create_by(name: 'Test language')
+    language1 = Language.find_or_create_by(name: 'Toto')
     UserMailer.prompt_champion(User.first, [[language1, 32.days.ago]])
   end
 
