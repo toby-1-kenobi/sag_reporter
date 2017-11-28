@@ -21,7 +21,11 @@ module ExternalDeviceHelper
       payload, _ = JWT.decode token, secret_key, true, {algorithm: 'HS256'}
       user = User.find_by_id payload['sub']
       device_is_registered = user.external_devices.map{|d| d.device_id if d.registered}.include?(payload['iss'])
-      user if user.updated_at.to_i < payload['iat'] && device_is_registered
+      if user.updated_at.to_i < payload['iat']
+        user if device_is_registered
+      else
+        ExternalDevice.update users_device.id, registered: false if users_device.registered
+      end
     rescue => e
       puts e
       nil
