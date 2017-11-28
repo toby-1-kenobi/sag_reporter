@@ -28,7 +28,7 @@ class ExternalDeviceController < ApplicationController
       end
       # check, whether user device exists and is registered (= succesful login)
       users_device = user.external_devices.find{|d| d.device_id == full_params[:device_id]}
-      if users_device && (users_device.registered || user.otp_code == full_params[:otp])
+      if users_device && (users_device.registered || user.authenticate_otp(full_params[:otp], drift: 300))
         ExternalDevice.update users_device.id, registered: true unless users_device.registered
         if users_device.name != full_params[:device_name]
           ExternalDevice.update users_device.id, name: full_params[:device_name]
@@ -77,7 +77,7 @@ class ExternalDeviceController < ApplicationController
     else
       success = false
     end
-    render json: { error: "OTP code sending success: #{success}" }, status: :ok
+    render json: { status: "OTP code sending success: #{success}" }, status: :ok
   end
 
   def get_database_key
