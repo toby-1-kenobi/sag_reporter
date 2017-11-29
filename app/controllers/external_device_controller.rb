@@ -518,7 +518,7 @@ class ExternalDeviceController < ApplicationController
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users.write error_message
+      @errors.write error_message
     end
   end
 
@@ -528,7 +528,6 @@ class ExternalDeviceController < ApplicationController
         @uploaded_files.write({
             id: uploaded_file.id,
             report_id: uploaded_file.report_id,
-
             data: Base64.encode64(uploaded_file.ref.read),
             updated_at: uploaded_file.updated_at.to_i,
             last_changed: 'online'
@@ -536,7 +535,7 @@ class ExternalDeviceController < ApplicationController
      end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users.write error_message
+      @errors.write error_message
     end
   end
 
