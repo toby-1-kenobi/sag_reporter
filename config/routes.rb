@@ -90,6 +90,7 @@ Rails.application.routes.draw do
     collection do
       get  'test_server'
       post 'login'
+      post 'send_otp'
       post 'get_database_key'
       post 'send_request'
       post 'receive_request'
