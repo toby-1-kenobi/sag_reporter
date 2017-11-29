@@ -33,19 +33,21 @@
   <div class="mdl-cell mdl-cell--6-col">
 
     <table class="language-data">
-      <tr>
-        <th>Point Person</th>
-        <td>
-          <span id="champion-name">
-            <%= @language.champion.present? ? user_link(@language.champion) : 'not assigned' %>
-          </span>
-          <% if logged_in_user.admin? %>
-            <button id="champion-edit-button" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
-              <i class="material-icons">edit</i>
-            </button>
-          <% end %>
-        </td>
-      </tr>
+      <% if logged_in_user.trusted? %>
+        <tr>
+          <th>Point Person</th>
+          <td>
+            <span id="champion-name">
+              <%= @language.champion.present? ? user_link(@language.champion) : 'not assigned' %>
+            </span>
+            <% if logged_in_user.admin? %>
+              <button id="champion-edit-button" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                <i class="material-icons">edit</i>
+              </button>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
       <% if logged_in_user.admin? %>
         <tr id="champion-input-row" class="hide">
           <%= form_tag set_champion_language_path(@language), remote: true, method: :patch, id: 'set-champion-form' do %>
