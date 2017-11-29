@@ -103,11 +103,14 @@ class ExternalDeviceController < ApplicationController
 
   def send_request
     begin
+      @all_data = Tempfile.new
+      render json: { data: @all_data.path }, status: :ok
       @users, @geo_states, @languages, @reports, @uploaded_files,
-      @people, @topics, @progress_markers, @errors = Array.new(9) {Array.new}
+          @people, @topics, @progress_markers, @errors = Array.new(9) {Tempfile.new}
       @user_ids, @geo_state_ids, @language_ids, @report_ids, @uploaded_file_ids,
-      @person_ids, @topic_ids, @progress_marker_ids = Array.new(8) {Set.new}
+          @person_ids, @topic_ids, @progress_marker_ids = Array.new(8) {Set.new}
       @all_updated_at = send_request_params
+      first_upload = !@all_updated_at.find { |_, value| !value.empty? }
       send_external_user
       send_language external_user.mother_tongue
       external_user.spoken_languages.each{|language| send_language language}
@@ -146,7 +149,21 @@ class ExternalDeviceController < ApplicationController
           uploaded_files: @uploaded_files
       }
       puts send_message.except(:uploaded_files)
-      render json: send_message, status: :ok
+      save_data_in_file send_message
+    rescue => e
+      send_message = { error: e.to_s, where: e.backtrace.to_s }
+      puts send_message
+      @all_data.write send_message
+    ensure
+      @all_data.close
+      [@users, @geo_states, @languages, @reports, @uploaded_files,
+       @people, @topics, @progress_markers, @errors].each {|file| file.delete}
+    end
+  end
+
+  def get_file
+    begin
+      send_file get_file_params['file_path']
     rescue => e
       send_message = { error: e.to_s, where: e.backtrace.to_s }
       puts send_message
@@ -186,7 +203,7 @@ class ExternalDeviceController < ApplicationController
       :device_id,
       :target
     ]
-    permitted = params.require(:external_device).permit(safe_params)
+    params.require(:external_device).permit(safe_params)
   end
 
   def login_params
@@ -197,7 +214,7 @@ class ExternalDeviceController < ApplicationController
       :device_name,
       :otp
     ]
-    permitted = params.require(:external_device).permit(safe_params)
+    params.require(:external_device).permit(safe_params)
   end
 
   def get_database_key_params
@@ -205,7 +222,7 @@ class ExternalDeviceController < ApplicationController
       :user_id,
       :device_id
     ]
-    permitted = params.require(:external_device).permit(safe_params)
+    params.require(:external_device).permit(safe_params)
   end
 
   def send_request_params
@@ -219,7 +236,14 @@ class ExternalDeviceController < ApplicationController
       :uploaded_files => [:updated_at],
       :people => [:updated_at]
     ]
-    permitted = params.require(:external_device).permit(safe_params)
+    params.require(:external_device).permit(safe_params)
+  end
+
+  def get_file_params
+    safe_params = [
+        :file_path
+    ]
+    params.require(:external_device).permit(safe_params)
   end
 
   def receive_request_params
@@ -245,7 +269,7 @@ class ExternalDeviceController < ApplicationController
         :version
       ]
     ]
-    permitted = params.require(:external_device).permit(safe_params)
+    params.require(:external_device).permit(safe_params)
   end
   
   # send_request methods
@@ -253,7 +277,7 @@ class ExternalDeviceController < ApplicationController
   def send_external_user
     begin
       if check_send_data(@users, external_user, @all_updated_at[:users])
-        @users.push({
+        @users.write({
             id: external_user.id,
             name: external_user.name,
             phone: external_user.phone,
@@ -272,34 +296,34 @@ class ExternalDeviceController < ApplicationController
   #          championed_language_ids: external_user.championed_language_ids,
             updated_at: external_user.updated_at.to_i,
             last_changed: 'online'
-        })
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @errors.push error_message
+      @errors.write error_message
     end
   end
 
   def send_user_name user
     begin
       if @user_ids.add?(user.id) && check_send_data(@users, user, @all_updated_at[:users])
-        @users.push({
+        @users.write({
             id: user.id,
             name: user.name,
             updated_at: user.updated_at.to_i,
             last_changed: 'online'
-        })
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @errors.push error_message
+      @errors.write error_message
     end
   end
 
   def send_geo_state geo_state
     begin
       if @geo_state_ids.add?(geo_state.id) && check_send_data(@geo_states, geo_state, @all_updated_at[:geo_states])
-        @geo_states.push({
+        @geo_states.write({
             id: geo_state.id,
             name: geo_state.name,
             zone_id: geo_state.zone_id,
@@ -307,18 +331,18 @@ class ExternalDeviceController < ApplicationController
             language_ids: geo_state.language_ids,
             updated_at: geo_state.updated_at.to_i,
             last_changed: 'online'
-        })
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @errors.push error_message
+      @errors.write error_message
     end
   end
     
   def send_language language
     begin
       if @language_ids.add?(language.id) && check_send_data(@languages, language, @all_updated_at[:languages])
-        @languages.push({
+        @languages.write({
             id: language.id,
             name: language.name,
             description: language.description,
@@ -379,18 +403,18 @@ class ExternalDeviceController < ApplicationController
 
             updated_at: language.updated_at.to_i,
             last_changed: 'online'
-        })
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @errors.push error_message
+      @errors.write error_message
     end
   end
 
   def send_person person
     begin
       if @person_ids.add?(person.id) && check_send_data(@people, person, @all_updated_at[:people])
-        @people.push({
+        @people.write({
             id: person.id,
             name: person.name,
             description: person.description,
@@ -405,18 +429,18 @@ class ExternalDeviceController < ApplicationController
 
             updated_at: person.updated_at.to_i,
             last_changed: 'online'
-        })
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @errors.push error_message
+      @errors.write error_message
     end
   end
 
   def send_topic topic
     begin
       if @topic_ids.add?(topic.id) && check_send_data(@topics, topic, @all_updated_at[:topics])
-        @topics.push({
+        @topics.write({
             id: topic.id,
             name: topic.name,
             description: topic.description,
@@ -425,18 +449,18 @@ class ExternalDeviceController < ApplicationController
 
             updated_at: topic.updated_at.to_i,
             last_changed: 'online'
-        })
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @errors.push error_message
+      @errors.write error_message
     end
   end
 
   def send_progress_marker progress_marker
     begin
       if @progress_marker_ids.add?(progress_marker.id) && check_send_data(@progress_markers, progress_marker, @all_updated_at[:progress_markers])
-        @progress_markers.push({
+        @progress_markers.write({
             id: progress_marker.id,
             name: progress_marker.name,
             topic_id: progress_marker.topic_id,
@@ -447,11 +471,11 @@ class ExternalDeviceController < ApplicationController
             description: progress_marker.description_for(external_user),
             updated_at: progress_marker.updated_at.to_i,
             last_changed: 'online'
-        })
+        }.to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @errors.push error_message
+      @errors.write error_message
     end
   end
 
@@ -464,7 +488,7 @@ class ExternalDeviceController < ApplicationController
             shareable: report.impact_report.shareable,
             translation_impact: report.impact_report.translation_impact,
         } if report.impact_report
-        @reports.push({
+        @reports.write({
             id: report.id,
             reporter_id: report.reporter_id,
             content: report.content,
@@ -490,33 +514,33 @@ class ExternalDeviceController < ApplicationController
             observer_ids: report.observer_ids,
             updated_at: report.updated_at.to_i,
             last_changed: 'online'
-        }.merge(impact_report_data))
+        }.merge(impact_report_data).to_json)
       end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users.push error_message
+      @users.write error_message
     end
   end
 
   def send_uploaded_file uploaded_file
     begin
       if @uploaded_file_ids.add?(uploaded_file.id) && check_send_data(@uploaded_files, uploaded_file, @all_updated_at[:uploaded_files])
-        @uploaded_files.push({
+        @uploaded_files.write({
             id: uploaded_file.id,
             report_id: uploaded_file.report_id,
 
             data: Base64.encode64(uploaded_file.ref.read),
             updated_at: uploaded_file.updated_at.to_i,
             last_changed: 'online'
-        })
+        }.to_json)
      end
     rescue => e
       error_message = { error: e.to_s, where: e.backtrace.to_s }
-      @users.push error_message
+      @users.write error_message
     end
   end
 
-  def check_send_data array, object, offline_updated_at_reference
+  def check_send_data file, object, offline_updated_at_reference
     return false unless object
     offline_updated_at = offline_updated_at_reference
     offline_updated_at &&= offline_updated_at[object.id.to_s]
@@ -525,11 +549,31 @@ class ExternalDeviceController < ApplicationController
       if object.updated_at.to_i == offline_updated_at
         return false
       elsif offline_updated_at > object.updated_at.to_i
-        array.push({id: object.id, last_changed: 'offline'})
+        file.write(', ') unless file.length == 0
+        file.write({id: object.id, last_changed: 'offline'}.to_json)
         return false
       end
     end
+    file.write(', ') unless file.length == 0
     true
+  end
+
+  def save_data_in_file send_message
+    @all_data.write '{'
+    send_message.each do |category, file|
+      file.close
+      file.open
+      @all_data.write ', ' unless @all_data.length == 1
+      @all_data.write '"' + category.to_s + '": ['
+      while (buffer = file.read(512))
+        @all_data.write buffer.force_encoding(Encoding::CP1252).encode(Encoding::UTF_8)
+      end
+      @all_data.write ']'
+      file.close
+      file.unlink
+    end
+    @all_data.write '}'
+    @all_data.close
   end
 
   # receive_request methods:
@@ -542,7 +586,7 @@ class ExternalDeviceController < ApplicationController
       return nil
     end
     if status != 'new'
-      @errors.push({ "uploaded_file_#{uploaded_file_id.to_s}" => "Unknown status: #{status}" })
+      @errors << { "uploaded_file_#{uploaded_file_id.to_s}" => "Unknown status: #{status}" }
       return nil
     end
     # convert image-string to image-file
@@ -563,15 +607,15 @@ class ExternalDeviceController < ApplicationController
       uploaded_file = UploadedFile.new(uploaded_file_data)
       raise uploaded_file.errors.messages.to_s unless uploaded_file.save
       uploaded_file.touch
-      @uploaded_file_feedbacks.push({
+      @uploaded_file_feedbacks << {
           id: uploaded_file_id, 
           updated_at: uploaded_file.updated_at.to_i, 
           new_id: uploaded_file.id, 
           last_changed: 'uploaded'
-      })
+      }
       return uploaded_file.id
     rescue => e
-      @errors.push({ "uploaded_file_" + uploaded_file_id.to_s => e })
+      @errors << { "uploaded_file_" + uploaded_file_id.to_s => e }
       return nil
     ensure
       if tempfile
@@ -604,7 +648,7 @@ class ExternalDeviceController < ApplicationController
     if status == 'old'
       report = Report.find_by_id report_id
       unless report
-        @errors.push({ 'report_' + report_id.to_s => 'Couldn\'t find report' })
+        @errors << { 'report_' + report_id.to_s => 'Couldn\'t find report' }
         return
       end
       (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
@@ -612,13 +656,13 @@ class ExternalDeviceController < ApplicationController
       end if report_data['picture_ids']
       if report.update(report_data) && report.impact_report.update(impact_report_data)
         report.touch
-        @report_feedbacks.push({
+        @report_feedbacks << {
             id: report_id,
             updated_at: report.updated_at.to_i,
             last_changed: 'uploaded'
-        })
+        }
       else
-        @errors.push({ 'report_' + report_id.to_s => report.errors.messages.to_s })
+        @errors << { 'report_' + report_id.to_s => report.errors.messages.to_s }
       end
     elsif status == 'new'
       report = Report.new report_data
@@ -635,17 +679,17 @@ class ExternalDeviceController < ApplicationController
         mail_info = {}
       end
       if report.save
-        @report_feedbacks.push({
+        @report_feedbacks << {
             id: report_id,
             updated_at: report.updated_at.to_i,
             new_id: report.id,
             last_changed: 'uploaded'
-        }.merge(mail_info))
+        }.merge(mail_info)
       else
-        @errors.push({ 'report_' + report_id.to_s => report.errors.messages.to_s })
+        @errors << { 'report_' + report_id.to_s => report.errors.messages.to_s }
       end
     else
-      @errors.push({ 'report_' + report_id.to_s => 'Unknown status: ' + status })
+      @errors << { 'report_' + report_id.to_s => 'Unknown status: ' + status }
     end
   end
   
@@ -673,7 +717,7 @@ class ExternalDeviceController < ApplicationController
             Net::SMTPSyntaxError,
             Net::SMTPUnknownError,
             OpenSSL::SSL::SSLError => e
-        @errors.push 'Failed to send the report to the supervisor'
+        @errors << 'Failed to send the report to the supervisor'
         Rails.logger.error e.message
       end
       if delivery_success
@@ -682,7 +726,7 @@ class ExternalDeviceController < ApplicationController
         return true
       end
     else
-      @errors.push 'Could not ensure email encryption so didn\'t send the report to the supervisor'
+      @errors << 'Could not ensure email encryption so didn\'t send the report to the supervisor'
       Rails.logger.error 'Could not enforce TLS with SendGrid'
     end
     false
