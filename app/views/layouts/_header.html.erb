@@ -51,9 +51,17 @@
       <% else %>
           <% unless current_page?(login_path) %>
             <%= link_to login_path, class: 'mdl-navigation__link' do %>
-                Login
+                  <i class="material-icons">fingerprint</i> Login
             <% end %>
           <% end %>
+      <% end %>
+      <% unless current_page?(help_edit_language_path) %>
+          <%= link_to help_edit_language_path, class: 'mdl-navigation__link' do %>
+              <i id="header-help-icon" class="material-icons">help</i>
+          <% end %>
+          <div class="mdl-tooltip" data-mdl-for="header-hel-icon">
+            Help
+          </div>
       <% end %>
     </nav>
   </div>
@@ -91,9 +99,15 @@
         <%= link_to logout_path, method: 'delete', class: 'mdl-navigation__link' do %>
             <i class="material-icons">exit_to_app</i> Logout
         <% end %>
+        <%= link_to help_edit_language_path, class: 'mdl-navigation__link' do %>
+            <i class="material-icons">help</i> Help
+        <% end %>
     <% else %>
         <%= link_to login_path, class: 'mdl-navigation__link' do %>
-            Login
+            <i class="material-icons">fingerprint</i> Login
+        <% end %>
+        <%= link_to help_edit_language_path, class: 'mdl-navigation__link' do %>
+            <i class="material-icons">help</i> Help
         <% end %>
     <% end %>
   </nav>
