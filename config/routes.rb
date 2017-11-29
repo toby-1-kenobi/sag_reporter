@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'help/edit_language'
+
   get 'population/create'
 
   root 'static_pages#home'
@@ -27,6 +29,10 @@ Rails.application.routes.draw do
     get :bulk_assess, on: :member, as: 'bulk_assess'
     post :bulk_progress_update, on: :member
     get 'reports', on: :member
+  end
+
+  scope :help, controller: 'help' do
+    get 'edit_language'
   end
 
   resources :impact_reports, except: [:new, :create, :index] do
