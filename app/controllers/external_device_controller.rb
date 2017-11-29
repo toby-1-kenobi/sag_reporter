@@ -508,7 +508,7 @@ class ExternalDeviceController < ApplicationController
             version: report.version,
             significant: report.significant,
 
-            report_date: report.report_date.to_time(:utc).to_i,
+            report_date: report.report_date.strftime("%Y-%m-%d"),
             picture_ids: report.picture_ids,
             language_ids: report.language_ids,
             observer_ids: report.observer_ids,
