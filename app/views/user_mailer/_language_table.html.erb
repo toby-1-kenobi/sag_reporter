@@ -1,0 +1,23 @@
+<table>
+  <tbody>
+    <% FinishLineMarker.order(:number).each do |marker| %>
+      <% progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: marker) %>
+      <tr id="finish-line-marker-<%= marker.number %>-row">
+        <th id="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></th>
+        <td id="finish-line-progress-status-<%= marker.number %>"><%= progress.simple_human_status %></td>
+      </tr>
+    <% end %>
+    <% pop = language.best_current_pop %>
+  <tr><th>Population</th><td><%= pop ? pop.amount : 'unknown' %></td></tr>
+  <% attributes = Language.attribute_names - [
+      'id', 'lwc', 'created_at', 'updated_at', 'colour', 'family_id',
+      'population', 'pop_source_id', 'cluster_id', 'translation_need',
+      'translation_progress', 'locale_tag', 'population_all_countries',
+      'champion_id', 'champion_prompted', 'translation_interest',
+      'translator_background', 'translation_local_support'
+  ]%>
+  <% attributes.each do |attribute| %>
+    <tr><th><%= attribute.humanize %></th><td><%= language.send(attribute) %></td></tr>
+  <% end %>
+  </tbody>
+</table>
