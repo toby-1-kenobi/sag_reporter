@@ -102,62 +102,65 @@ class ExternalDeviceController < ApplicationController
   end
 
   def send_request
-    begin
-      @all_data = Tempfile.new
-      render json: { data: @all_data.path }, status: :ok
-      @users, @geo_states, @languages, @reports, @uploaded_files,
-          @people, @topics, @progress_markers, @errors = Array.new(9) {Tempfile.new}
-      @user_ids, @geo_state_ids, @language_ids, @report_ids, @uploaded_file_ids,
-          @person_ids, @topic_ids, @progress_marker_ids = Array.new(8) {Set.new}
-      @all_updated_at = send_request_params
-      first_upload = !@all_updated_at.find { |_, value| !value.empty? }
-      send_external_user
-      send_language external_user.mother_tongue
-      external_user.spoken_languages.each{|language| send_language language}
-      send_language external_user.interface_language
-#      external_user.championed_languages.each{|language| send_language language}
-      User.all.each{|user| send_user_name(user) if user != external_user}
-      if external_user.national?
-        user_geo_states = GeoState.all
-      else
-        user_geo_states = external_user.geo_states
-      end
-      user_geo_states.includes(:languages).each do |geo_state|
-        send_geo_state geo_state
-        geo_state.languages.each{|language| send_language language}
-      end
-      Person.all.each{|person| send_person person}
-      Topic.all.each{|topic| send_topic topic unless topic.hide_for?(external_user)}
-      ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
-      Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
-          .user_limited(external_user).each do |report|
-        if (send_report(report))
-          report.pictures.each{|picture| send_uploaded_file picture}
+    @all_data = Tempfile.new
+    render json: { data: @all_data.path }, status: :ok
+    Thread.new do
+      begin
+        @users, @geo_states, @languages, @reports, @uploaded_files,
+            @people, @topics, @progress_markers, @errors = Array.new(9) {Tempfile.new}
+        @user_ids, @geo_state_ids, @language_ids, @report_ids, @uploaded_file_ids,
+            @person_ids, @topic_ids, @progress_marker_ids = Array.new(8) {Set.new}
+        @all_updated_at = send_request_params
+        first_upload = !@all_updated_at.find { |_, value| !value.empty? }
+        send_external_user
+        send_language external_user.mother_tongue
+        external_user.spoken_languages.each{|language| send_language language}
+        send_language external_user.interface_language
+  #      external_user.championed_languages.each{|language| send_language language}
+        User.all.each{|user| send_user_name(user) if user != external_user}
+        if external_user.national?
+          user_geo_states = GeoState.all
+        else
+          user_geo_states = external_user.geo_states
         end
-        send_geo_state report.geo_state
-        report.languages.each{|language| send_language language}
+        user_geo_states.includes(:languages).each do |geo_state|
+          send_geo_state geo_state
+          geo_state.languages.each{|language| send_language language}
+        end
+        Person.all.each{|person| send_person person}
+        Topic.all.each{|topic| send_topic topic unless topic.hide_for?(external_user)}
+        ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
+        Report.includes( :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
+            .user_limited(external_user).each do |report|
+          if (send_report(report))
+            report.pictures.each{|picture| send_uploaded_file picture}
+          end
+          send_geo_state report.geo_state
+          report.languages.each{|language| send_language language}
+        end
+        send_message = {
+            errors: @errors,
+            users: @users,
+            geo_states: @geo_states,
+            languages: @languages,
+            people: @people,
+            topics: @topics,
+            progress_markers: @progress_markers,
+            reports: @reports,
+            uploaded_files: @uploaded_files
+        }
+        puts send_message.except(:uploaded_files)
+        save_data_in_file send_message
+      rescue => e
+        send_message = { error: e.to_s, where: e.backtrace.to_s }
+        puts send_message
+        @all_data.write send_message
+      ensure
+        @all_data.close
+        [@users, @geo_states, @languages, @reports, @uploaded_files,
+         @people, @topics, @progress_markers, @errors].each {|file| file.delete}
+        ActiveRecord::Base.connection.close
       end
-      send_message = {
-          errors: @errors,
-          users: @users,
-          geo_states: @geo_states,
-          languages: @languages,
-          people: @people,
-          topics: @topics,
-          progress_markers: @progress_markers,
-          reports: @reports,
-          uploaded_files: @uploaded_files
-      }
-      puts send_message.except(:uploaded_files)
-      save_data_in_file send_message
-    rescue => e
-      send_message = { error: e.to_s, where: e.backtrace.to_s }
-      puts send_message
-      @all_data.write send_message
-    ensure
-      @all_data.close
-      [@users, @geo_states, @languages, @reports, @uploaded_files,
-       @people, @topics, @progress_markers, @errors].each {|file| file.delete}
     end
   end
 
