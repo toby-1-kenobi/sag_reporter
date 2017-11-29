@@ -73,3 +73,12 @@
 #curator-card {
   grid-area: curator;
 }
+
+#nt-pie-chart {
+  position: absolute;
+  z-index: 100;
+  top: 20px;
+  right: 20px;
+  width: 200px;
+  height: 150px;
+}
