@@ -1,0 +1,6 @@
+$('#national-progress-chart').html(
+    '<%= j(line_chart Zone.national_outcome_chart_data,
+                  height: '200px',
+                  library: {backgroundColor: "transparent", legend: {position: 'none'}}
+          ) %>'
+);
