@@ -74,12 +74,23 @@
   <% end %>
 
   <div id="nt-pie-chart">
+    <div class="chart-title">NT Availability</div>
     <% nt_marker = FinishLineMarker.find_by_number 6 %>
     <% nt_data = build_finish_line_table(Language.all, [nt_marker])[nt_marker] %>
     <%= pie_chart nt_data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h,
                   width: '200px',
                   height: '150px',
-                  legend: 'false',
+                  library: {backgroundColor: "transparent", is3D: true, legend: {position: 'none'}},
+                  colors: colours_for_finish_line_data(nt_data.except(:nothing)) %>
+  </div>
+
+  <div id="progress-chart">
+    <div class="chart-title">Transformation</div>
+    <% nt_marker = FinishLineMarker.find_by_number 6 %>
+    <% nt_data = build_finish_line_table(Language.all, [nt_marker])[nt_marker] %>
+    <%= pie_chart nt_data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h,
+                  width: '200px',
+                  height: '150px',
                   library: {backgroundColor: "transparent", is3D: true, legend: {position: 'none'}},
                   colors: colours_for_finish_line_data(nt_data.except(:nothing)) %>
   </div>

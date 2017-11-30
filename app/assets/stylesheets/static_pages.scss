@@ -37,13 +37,12 @@
 
 #welcome-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 3fr 3fr 2fr;
   grid-template-rows: auto;
   grid-row-gap: 1.5em;
   grid-template-areas:
-          "god-at-work down-to-zero"
-          "about curator"
-          "admin unused";
+          "line-chart god-at-work down-to-zero pie-chart"
+          "unused about curator admin";
   .mdl-card {
     justify-self: center;
     background-color: #c5cae9;
@@ -75,10 +74,28 @@
 }
 
 #nt-pie-chart {
-  position: absolute;
+  grid-area: pie-chart;
+  position: relative;
   z-index: 100;
-  top: 20px;
-  right: 20px;
+  left: -50px;
   width: 200px;
   height: 150px;
+  .chart-title {
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+  }
+}
+
+#progress-chart {
+  grid-area: line-chart;
+  position: relative;
+  z-index: 100;
+  width: 200px;
+  height: 150px;
+  .chart-title {
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+  }
 }
