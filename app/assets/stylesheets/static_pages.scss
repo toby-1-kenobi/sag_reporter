@@ -72,6 +72,9 @@
 #curator-card {
   grid-area: curator;
 }
+#admin-card {
+  grid-area: admin;
+}
 
 #nt-pie-chart-panel {
   grid-area: pie-chart;
@@ -95,4 +98,8 @@
     font-size: large;
     font-weight: bold;
   }
+}
+
+#report-dialog, #progress-dialog {
+  width: 30em;
 }

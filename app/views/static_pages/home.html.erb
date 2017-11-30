@@ -12,14 +12,14 @@
       LCI wants to see lives and <strong>communities transformed</strong> in this generation
     </div>
     <div class="mdl-card__actions mdl-card--border">
-      <%= link_to tasks_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
-          <i class="material-icons">create</i>
-          Enter and view reports
-      <% end %>
-      <%= link_to tasks_path(anchor: 'progress'), class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
+      <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="report-tasks-trigger">
+        <i class="material-icons">create</i>
+        Enter and view reports
+      </button>
+      <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="progress-tasks-trigger">
         <i class="material-icons">show_chart</i>
         Update and assess progress
-      <% end %>
+      </button>
     </div>
   </div>
 
@@ -73,6 +73,20 @@
   </div>
   <% end %>
 
+  <% if logged_in_user.admin? %>
+  <div id="admin-card" class="mdl-card mdl-shadow--2dp">
+    <div class="mdl-card__title">
+      Admin tasks
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
+      <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="admin-tasks-trigger">
+        <i class="material-icons">settings</i>
+        Admin tasks
+      </button>
+    </div>
+  </div>
+  <% end %>
+
   <div id="nt-pie-chart-panel">
     <div class="chart-title">NT Availability</div>
     <% nt_marker = FinishLineMarker.find_by_number 6 %>
@@ -97,3 +111,27 @@
   </div>
 
 </div>
+
+<% grouped_links = @links.select{ |link| link[:condition] }.group_by{ |link| link[:category] } %>
+<% grouped_links.each do |category, links| %>
+    <dialog class="mdl-dialog" id="<%= category %>-dialog">
+      <h4 class="mdl-dialog__title"><%= dialog_titles[category] %></h4>
+      <div class="mdl-dialog__content">
+        <ul class="mdl-list">
+          <% links.each do |link_data| %>
+              <li class="mdl-list__item">
+              <span class="mdl-list__item-primary-content">
+                <%= link_to link_data[:path], class: 'mdl-button mdl-js-button mdl-js-ripple-effect' do %>
+                  <i class="material-icons"><%= link_data[:icon] %></i>
+                    <%= link_data[:text] %>
+                <% end %>
+              </span>
+              </li>
+          <% end %>
+        </ul>
+      </div>
+      <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button close">Cancel</button>
+      </div>
+    </dialog>
+<% end %>
