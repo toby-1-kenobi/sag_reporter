@@ -167,7 +167,7 @@ class ExternalDeviceController < ApplicationController
   def get_file
     begin
       file = File.new get_file_params['file_path']
-      while file.closed?
+      while file.size == 0
         sleep 1
       end
       send_file get_file_params['file_path']
