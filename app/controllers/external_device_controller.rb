@@ -88,7 +88,11 @@ class ExternalDeviceController < ApplicationController
       users_device = user && user.external_devices.find{|d| d.device_id == full_params[:device_id]}
       unless user && users_device && users_device.registered?
         puts "Device not registered"
-        render json: { error: "Device not found / not registered" }, status: :forbidden
+        if users_device.registered?
+          render json: { error: "Device not found" }, status: :forbidden
+        else
+          render json: { error: "Device not found" }, status: :unauthorized
+        end
         return
       end
       database_key = (user.created_at.to_f * 1000000).to_i
