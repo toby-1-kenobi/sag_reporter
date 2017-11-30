@@ -38,4 +38,10 @@ class ZonesController < ApplicationController
     @languages = Language.includes(:family, {finish_line_progresses: :finish_line_marker}).all
   end
 
+  def national_outcomes_chart
+    respond_to do |format|
+      format.js
+    end
+  end
+
 end

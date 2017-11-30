@@ -4,7 +4,9 @@
 
 $(document).ready ->
 
-  $(".button-collapse").sideNav()
+  $('.button-collapse').sideNav()
+
+  $('#get-national-chart-link').click()
 
   $('.home-link').on 'mouseover', ->
     $(this).removeClass('z-depth-2').addClass('z-depth-3 lighten-2')
