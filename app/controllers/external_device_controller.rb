@@ -111,9 +111,9 @@ class ExternalDeviceController < ApplicationController
     Thread.new do
       begin
         @users, @geo_states, @languages, @reports, @uploaded_files,
-            @people, @topics, @progress_markers, @errors = Array.new(9) {Tempfile.new}
+            @people, @topics, @progress_markers, @zones, @errors = Array.new(10) {Tempfile.new}
         @user_ids, @geo_state_ids, @language_ids, @report_ids, @uploaded_file_ids,
-            @person_ids, @topic_ids, @progress_marker_ids = Array.new(8) {Set.new}
+            @person_ids, @topic_ids, @progress_marker_ids, @zone_ids = Array.new(9) {Set.new}
         @all_updated_at = send_request_params
         first_upload = !@all_updated_at.find { |_, value| !value.empty? }
         send_external_user
@@ -129,6 +129,7 @@ class ExternalDeviceController < ApplicationController
         end
         user_geo_states.includes(:languages).each do |geo_state|
           send_geo_state geo_state
+          send_zone geo_state.zone
           geo_state.languages.each{|language| send_language language}
         end
         Person.all.each{|person| send_person person}
@@ -146,12 +147,13 @@ class ExternalDeviceController < ApplicationController
             errors: @errors,
             users: @users,
             geo_states: @geo_states,
+            zones: @zones,
             languages: @languages,
             people: @people,
             topics: @topics,
             progress_markers: @progress_markers,
-            reports: @reports,
-            uploaded_files: @uploaded_files
+            uploaded_files: @uploaded_files,
+            reports: @reports
         }
         puts send_message.except(:uploaded_files)
         save_data_in_file send_message
@@ -342,6 +344,24 @@ class ExternalDeviceController < ApplicationController
             language_ids: geo_state.language_ids,
             updated_at: geo_state.updated_at.to_i,
             last_changed: 'online'
+        }.to_json)
+      end
+    rescue => e
+      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      @errors.write error_message
+    end
+  end
+
+  def send_zone zone
+    begin
+      if @zone_ids.add?(zone.id) && check_send_data(@zones, zone, @all_updated_at[:zones])
+        @zones.write({
+              id: zone.id,
+              name: zone.name,
+              pm_description_type: zone.pm_description_type,
+
+              updated_at: zone.updated_at.to_i,
+              last_changed: 'online'
         }.to_json)
       end
     rescue => e
