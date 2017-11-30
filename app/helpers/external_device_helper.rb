@@ -22,7 +22,7 @@ module ExternalDeviceHelper
       user = User.find_by_id payload['sub']
       users_device = ExternalDevice.find_by device_id: payload['iss'], user_id: user.id
       puts "#{user.updated_at.to_i} #{payload['iat']}"
-      if user.updated_at.to_i != payload['iat']
+      if user.updated_at.to_i == payload['iat']
         user if users_device
       else
         users_device.update registered: false if users_device&.registered
