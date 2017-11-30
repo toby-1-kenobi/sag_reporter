@@ -17,7 +17,7 @@ class ExternalDeviceController < ApplicationController
       # check, whether user exists
       unless user
         puts "User not found"
-        render json: { error: "User not found" }, status: :not_found
+        render json: { error: "User not found" }, status: :forbidden
         return
       end
       # check, whether password is correct
@@ -65,7 +65,7 @@ class ExternalDeviceController < ApplicationController
     full_params = send_otp_params
     users_device = ExternalDevice.find_by user_id: full_params['user_id'], device_id: full_params['device_id']
     unless users_device && !users_device.registered
-      render json: { error: 'Device not found' }, status: :not_found
+      render json: { error: 'Device not found' }, status: :forbidden
       return
     end
     user = User.find_by_id full_params['user_id']
@@ -88,7 +88,7 @@ class ExternalDeviceController < ApplicationController
       users_device = user && user.external_devices.find{|d| d.device_id == full_params[:device_id]}
       unless user && users_device && users_device.registered?
         puts "Device not registered"
-        render json: { error: "Device not found / not registered" }, status: :not_found
+        render json: { error: "Device not found / not registered" }, status: :forbidden
         return
       end
       database_key = (user.created_at.to_f * 1000000).to_i
