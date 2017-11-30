@@ -20,11 +20,11 @@ module ExternalDeviceHelper
       secret_key = Rails.application.secrets.secret_key_base
       payload, _ = JWT.decode token, secret_key, true, {algorithm: 'HS256'}
       user = User.find_by_id payload['sub']
-      device_is_registered = user.external_devices.map{|d| d.device_id if d.registered}.include?(payload['iss'])
+      users_device = ExternalDevice.find_by device_id: payload['iss'], user_id: user.id
       if user.updated_at.to_i < payload['iat']
-        user if device_is_registered
+        user if users_device
       else
-        ExternalDevice.update users_device.id, registered: false if users_device.registered
+        users_device.update registered: false if users_device&.registered
       end
     rescue => e
       puts e
