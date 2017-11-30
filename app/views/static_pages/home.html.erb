@@ -73,25 +73,26 @@
   </div>
   <% end %>
 
-  <div id="nt-pie-chart">
+  <div id="nt-pie-chart-panel">
     <div class="chart-title">NT Availability</div>
     <% nt_marker = FinishLineMarker.find_by_number 6 %>
     <% nt_data = build_finish_line_table(Language.all, [nt_marker])[nt_marker] %>
     <%= pie_chart nt_data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h,
+                  id: 'nt-pie-chart',
                   width: '200px',
                   height: '150px',
                   library: {backgroundColor: "transparent", is3D: true, legend: {position: 'none'}},
                   colors: colours_for_finish_line_data(nt_data.except(:nothing)) %>
   </div>
 
-  <div id="progress-chart">
+  <div id="progress-chart-panel">
     <div class="chart-title">Transformation</div>
     <% nt_marker = FinishLineMarker.find_by_number 6 %>
     <% nt_data = build_finish_line_table(Language.all, [nt_marker])[nt_marker] %>
-    <%= pie_chart nt_data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h,
-                  width: '200px',
+    <%= line_chart Zone.national_outcome_chart_data,
+                  width: '400px',
                   height: '150px',
-                  library: {backgroundColor: "transparent", is3D: true, legend: {position: 'none'}},
+                  library: {backgroundColor: "transparent", legend: {position: 'none'}},
                   colors: colours_for_finish_line_data(nt_data.except(:nothing)) %>
   </div>
 

@@ -73,13 +73,11 @@
   grid-area: curator;
 }
 
-#nt-pie-chart {
+#nt-pie-chart-panel {
   grid-area: pie-chart;
   position: relative;
   z-index: 100;
   left: -50px;
-  width: 200px;
-  height: 150px;
   .chart-title {
     text-align: center;
     font-size: large;
@@ -87,12 +85,11 @@
   }
 }
 
-#progress-chart {
+#progress-chart-panel {
   grid-area: line-chart;
   position: relative;
   z-index: 100;
-  width: 200px;
-  height: 150px;
+  right: -50px;
   .chart-title {
     text-align: center;
     font-size: large;
