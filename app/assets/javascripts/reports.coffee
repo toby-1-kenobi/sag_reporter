@@ -166,4 +166,19 @@ $(document).ready ->
     $('#report-view-filters').submit()
     return
 
+  # selecting or deselecting all states listed in the report filter
+  $('#state-filters').find('input#all_states').on 'change', ->
+    new_value = $(this).prop('checked')
+    $('#state-filters').find('.mdl-checkbox').each ->
+      if new_value
+        $(this)[0].MaterialCheckbox.check()
+      else
+        $(this)[0].MaterialCheckbox.uncheck()
+      $('#report-filter-spinner').addClass('is-active')
+      $('.reports-container').empty()
+      $('.reports-count-container').empty()
+      $('#report-view-filters').submit()
+      return
+    return
+
   return
