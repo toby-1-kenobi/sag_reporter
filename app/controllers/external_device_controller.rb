@@ -133,7 +133,7 @@ class ExternalDeviceController < ApplicationController
           else
             user_geo_states = external_user.geo_states
           end
-          user_geo_states.includes(:languages).each do |geo_state|
+          user_geo_states.includes(:languages, :zones).each do |geo_state|
             send_geo_state geo_state
             send_zone geo_state.zone
             geo_state.languages.each {|language| send_language language}
