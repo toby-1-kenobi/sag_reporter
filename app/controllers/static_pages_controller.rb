@@ -2,14 +2,11 @@ class StaticPagesController < ApplicationController
 
   before_action :require_login, only: [:tasks, :home, :about]
 
-  def home
-  end
-
   def about
     @outcome_areas = Topic.all.order(:number)
   end
 
-  def tasks
+  def home
     @links = [
         {
             condition: true,
@@ -38,14 +35,6 @@ class StaticPagesController < ApplicationController
             colour: 'yellow',
             category: 'report'
         },
-        # {
-        #     condition: true,
-        #     path: events_new_path,
-        #     text: Translation.get_string('report_event', logged_in_user),
-        #     icon: 'event',
-        #     colour: 'cyan',
-        #     category: 'report'
-        # },
         {
             condition: true,
             path: new_mt_resource_path,
@@ -61,14 +50,6 @@ class StaticPagesController < ApplicationController
             icon: 'insert_drive_file',
             category: 'report'
         },
-        # {
-        #     condition: true,
-        #     path: report_numbers_path,
-        #     text: 'Report numbers for the month',
-        #     icon: 'assessment',
-        #     colour: 'green',
-        #     category: 'report'
-        # },
         {
             condition: true,
             path: tag_impact_reports_path,
@@ -86,18 +67,10 @@ class StaticPagesController < ApplicationController
             colour: 'purple',
             category: 'progress'
         },
-        # {
-        #     condition: (logged_in_user.national?'),
-        #     path: outputs_path,
-        #     text: 'View output totals',
-        #     icon: 'tab',
-        #     colour: 'pink',
-        #     category: 'progress'
-        # },
         {
             condition: true,
             path: outcomes_path,
-            text: 'View outcome transformation progress',
+            text: 'Outcome progress',
             icon: 'tab',
             colour: 'indigo',
             category: 'progress'
@@ -118,22 +91,14 @@ class StaticPagesController < ApplicationController
             colour: 'lime',
             category: 'other'
         },
-        # {
-        #     condition: (logged_in_user.national?),
-        #     path: languages_path,
-        #     text: 'View all languages',
-        #     icon: 'language',
-        #     colour: 'orange',
-        #     category: 'other'
-        # },
-        # {
-        #     condition: (true),
-        #     path: topics_path,
-        #     text: 'View all outcome areas',
-        #     icon: 'local_offer',
-        #     colour: 'light-green',
-        #     category: 'other'
-        # },
+        {
+            condition: (logged_in_user.admin?),
+            path: new_user_path,
+            text: 'New user',
+            icon: 'person_add',
+            colour: 'orange',
+            category: 'other'
+        },
         {
             condition: (logged_in_user.national?),
             path: overview_path,
@@ -148,23 +113,7 @@ class StaticPagesController < ApplicationController
             text: 'Transformation',
             icon: 'change_history',
             colour: 'light-blue',
-            category: 'other'
-        },
-        {
-            condition: (logged_in_user.curated_states.any? or logged_in_user.national_curator?),
-            path: curate_edits_path,
-            text: 'Curate',
-            icon: 'done_all',
-            colour: 'deep-orange',
-            category: 'other'
-        },
-        {
-            condition: logged_in_user.edits.any?,
-            path: my_edits_path,
-            text: 'My edits',
-            icon: 'comment',
-            colour: 'orange',
-            category: 'other'
+            category: 'progress'
         }
     ]
   end

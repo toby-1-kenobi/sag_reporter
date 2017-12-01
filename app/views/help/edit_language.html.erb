@@ -1,0 +1,85 @@
+<% provide(:title, 'Help - Edit a language') %>
+<% provide(:context_title, 'Help') %>
+
+<h1>How to edit language data</h1>
+<ul>
+  <li>Go to the <%= link_to 'main page', root_path %> of the app (https://reporter.lci-india.org)</li>
+  <li>
+    If you are not logged in the app will ask you to do that.
+    If you don't have an account ask your LCI supervisor or write to <span class="email">email hidden</span>
+    <ol>
+      <li>Use your mobile number (no spaces) as your user name.
+        Your password should have been provided to you when your account was created.</li>
+      <li>A login code will be sent to your phone. Enter it into the next screen.
+        If you did not get the login code, click on "send code to my phone".</li>
+    </ol>
+  </li>
+  <li>
+    The main page of the app has three or four panels with actions. One panel is called <strong>"Down to zero"</strong>
+    <ol>
+      <li>Click on "zoom in to my area" in the "down to zero" panel.</li>
+      <li>Click on the zone you work in.</li>
+      <li>Click on the languages tab.</li>
+      <li>Select a language community you know about in your zone or state.</li>
+    </ol>
+  </li>
+  <li>
+    The finish line markers show progress for this language.
+    In the Finish Line Status table, each row shows a marker
+    If they are not all up to date please edit them.
+    <ol>
+      <li>Hover your cursor over the status column. A pencil appears and a grey box explaining the marker.</li>
+      <li>Click in the status column on the row of the marker to begin editing it.</li>
+      <li>A dialog box will appear and show a list of options for the status of that marker.
+      Select the correct one for this language.</li>
+      <li>You will be asked "How do you know?" You need to write your <strong>source</strong>
+      for how you know this information to be true. Write 2 or 3 sentences including <strong>who</strong>
+      can verify your edit to be true and <strong>why</strong> they are a good source.</li>
+      <li>When you have made the edit it will not show in the Finish Line Status table yet.
+      First a curator must check and approve your edit. You can see the edit that is waiting
+        for approval at the top of the page. The curator will consider what you have written
+        in "how do you know?" before approving the edit.</li>
+    </ol>
+  </li>
+  <li>
+    Every language has a <strong>More Details</strong> page. You should go there next
+    to check that other details about the language are also up to date.
+    <ul>
+      <li>Click on the link to "More details" at the top left of the language page.</li>
+      <li>Read all the information given. Edit information that needs to be changed and give missing information.</li>
+      <li>Most information can be edited in the same way the finish line markers are edited.</li>
+      <li>Mother tongue resources can be added by clicking on the "add resource" link, and then
+      filling in a form about the resource.</li>
+      <li>Organisations can be added to a list of organisations by clicking on the '+' symbol,
+        or removed by clicking on the 'X'</li>
+      <li>All edits will appear in boxes at the top of the page until they are approved.</li>
+    </ul>
+  </li>
+  <li>If you change your mind about an edit you can cancel it before it is approved.
+    There is a "cancel" in the box of the edit.</li>
+  <li>If you are not a curator, you cannot approve you edits.
+    You must wait for the curator user to do this.
+    The curator will receive reminder emails about your edit if they delay too long.</li>
+  <li>
+    You can see all of the edits you have made, which have been approved, which have been rejected
+    and which are still waiting, by going to the <strong>"My Edits"</strong> page.
+    <ol>
+      <li>Click on the three horizontal lines in the left corner of the screen in the top header.
+      This will open the navigation menu.</li>
+      <li>Click on the "My Edits" link in the navigation menu to see all your edits.</li>
+    </ol>
+  </li>
+  <li>Please update and improve the LCI strategic information carefully and with concern
+    for the people groups represented here. Keeping the information in LCI App up to date
+  is extremely important to help others to plan and work effectively.</li>
+</ul>
+
+<%# email address obfuscation %>
+<script>
+    var e = ["g",
+        "r", "o", ".", "a", "i", "d", "n",
+        "i", "-", "i", "c", "l", "@", "o",
+        "f", "n", "i"];
+
+    $(".email").text( e.reverse().join("") );
+</script>

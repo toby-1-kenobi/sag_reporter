@@ -1,10 +1,11 @@
 Rails.application.routes.draw do
 
+  get 'help/edit_language'
+
   get 'population/create'
 
   root 'static_pages#home'
 
-  get 'tasks' => 'static_pages#tasks'
   get 'about' => 'static_pages#about'
 
   resources :edits, only: [:create, :destroy] do
@@ -19,14 +20,31 @@ Rails.application.routes.draw do
       patch 'reject'
     end
   end
+
   resources :events do
     get :autocomplete_person_name, :on => :collection
   end
 
+  resources :external_device do
+    collection do
+      get  'test_server'
+      post 'login'
+      post 'send_otp'
+      post 'get_database_key'
+      post 'send_request'
+      post 'receive_request'
+      post 'get_file'
+    end
+  end
+  
   resources :geo_states, only: [:show] do
     get :bulk_assess, on: :member, as: 'bulk_assess'
     post :bulk_progress_update, on: :member
     get 'reports', on: :member
+  end
+
+  scope :help, controller: 'help' do
+    get 'edit_language'
   end
 
   resources :impact_reports, except: [:new, :create, :index] do
@@ -85,19 +103,7 @@ Rails.application.routes.draw do
       get 'pictures'
     end
   end
-
-  resources :external_device do
-    collection do
-      get  'test_server'
-      post 'login'
-      post 'send_otp'
-      post 'get_database_key'
-      post 'send_request'
-      post 'receive_request'
-      post 'get_file'
-    end
-  end
-
+  
   resources :users do
     member do
       get :confirm_email
@@ -155,6 +161,7 @@ Rails.application.routes.draw do
   get 'states/autocomplete_sub_district_name/:district_id' => 'districts#autocomplete_sub_district_name', as: 'autocomplete_sub_district_name_district'
 
   get 'nation' => 'zones#nation', as: 'nation'
+  get 'national_outcomes_chart' => 'zones#national_outcomes_chart', as: 'national_outcomes_chart'
 
   # my_reports is for a single user, but user id param not needed - it's got from logged in user
   get 'my_reports' => 'users#reports', as: 'my_reports'
