@@ -33,9 +33,10 @@ Rails.application.routes.draw do
       post 'get_database_key'
       post 'send_request'
       post 'receive_request'
+      post 'get_file'
     end
   end
-
+  
   resources :geo_states, only: [:show] do
     get :bulk_assess, on: :member, as: 'bulk_assess'
     post :bulk_progress_update, on: :member
@@ -102,7 +103,7 @@ Rails.application.routes.draw do
       get 'pictures'
     end
   end
-
+  
   resources :users do
     member do
       get :confirm_email
