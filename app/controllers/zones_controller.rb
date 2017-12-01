@@ -17,6 +17,8 @@ class ZonesController < ApplicationController
     @geo_states = @zone.geo_states
     @geo_states = @geo_states.where(id: logged_in_user.geo_states) unless logged_in_user.national?
     @filters = {since: 3.month.ago.strftime('%d %B, %Y'), until: Date.today.strftime('%d %B, %Y')}
+    @tab = params[:tab]
+    @flm = params[:flm]
   end
 
   def reports

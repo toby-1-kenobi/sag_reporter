@@ -38,12 +38,12 @@
 #welcome-content {
   margin-top: 30px;
   display: grid;
-  grid-template-columns: 2fr 3fr 3fr 2fr;
+  grid-template-columns: 1fr 2fr 2fr 1fr;
   grid-template-rows: auto;
   grid-row-gap: 1.5em;
   grid-template-areas:
-          "line-chart god-at-work down-to-zero pie-chart"
-          "unused about curator admin";
+          "unused1 god-at-work down-to-zero unused2"
+          "admin about curator unused3";
   .mdl-card {
     justify-self: center;
     background-color: #c5cae9;
@@ -60,7 +60,24 @@
 
 #god-at-work-card {
   grid-area: god-at-work;
+  overflow: visible;
+  #progress-chart-panel {
+    width: 300px;
+    position: absolute;
+    z-index: 200;
+    left: -200px;
+    top: -50px;
+    .chart-title {
+      text-align: center;
+      font-weight: bold;
+    }
+    .chart-title {
+      position: relative;
+      bottom: -30px;
+    }
+  }
 }
+
 #down-to-zero-card {
   grid-area: down-to-zero;
   overflow: visible;
@@ -84,18 +101,6 @@
 }
 #admin-card {
   grid-area: admin;
-}
-
-#progress-chart-panel {
-  grid-area: line-chart;
-  position: relative;
-  z-index: 100;
-  right: -50px;
-  .chart-title {
-    text-align: center;
-    font-size: large;
-    font-weight: bold;
-  }
 }
 
 #get-national-chart-link {

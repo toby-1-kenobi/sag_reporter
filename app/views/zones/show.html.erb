@@ -9,20 +9,21 @@
   <li><%= link_to "#{@zone.name} Zone", zone_path(@zone) %></li>
 </ul>
 
+<% @tab ||= 'fls' %>
 <div class="mdl-tabs mdl-js-tabs">
   <div class="mdl-tabs__tab-bar">
-    <a href="#progress-tab" class="mdl-tabs__tab">Finish Line Status</a>
-    <a href="#states-tab" class="mdl-tabs__tab">States</a>
-    <a href="#languages-tab" class="mdl-tabs__tab">Languages</a>
-    <a href="#organisations-tab" class="mdl-tabs__tab">Organisations</a>
-    <a href="#reports-tab" class="mdl-tabs__tab" id="reports-tab-tab">Reports</a>
+    <a href="#progress-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'fls' %>">Finish Line Status</a>
+    <a href="#states-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'states' %>">States</a>
+    <a href="#languages-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'languages' %>">Languages</a>
+    <a href="#organisations-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'organisations' %>">Organisations</a>
+    <a href="#reports-tab" class="mdl-tabs__tab" id="reports-tab-tab <%= 'is-active' if @tab == 'reports' %>">Reports</a>
   </div>
 
-  <div class="mdl-tabs__panel is-active" id="progress-tab">
+  <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'fls' %>" id="progress-tab">
     <%= render 'languages/finish_line_summary', languages: @zone.languages %>
   </div>
 
-  <div class="mdl-tabs__panel" id="states-tab">
+  <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'states' %>" id="states-tab">
     <ul class="state-list mdl-list">
       <% @geo_states.each do |state| %>
           <li class="mdl-list__item">
@@ -34,7 +35,7 @@
     </ul>
   </div>
 
-  <div class="mdl-tabs__panel" id="languages-tab">
+  <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'languages' %>" id="languages-tab">
 
     <%= render partial: 'languages/list_filter_controls', locals: {zone: @zone} %>
 
@@ -44,7 +45,7 @@
 
   </div>
 
-  <div class="mdl-tabs__panel" id="organisations-tab">
+  <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'organisations' %>" id="organisations-tab">
     <h3>Working here</h3>
     <ul class="mdl-list">
       <%= render partial: 'organisations/organisation', collection: @zone.engaged_organisations.uniq %>
@@ -55,7 +56,7 @@
     </ul>
   </div>
 
-  <div class="mdl-tabs__panel" id="reports-tab">
+  <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'reports' %>" id="reports-tab">
     <%= form_tag({controller: 'zones', action: 'reports'}, method: 'get', remote: true, id: 'report-view-filters') do %>
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--4-col">
@@ -96,3 +97,10 @@
 
   </div>
 </div>
+<% if @flm %>
+    <script>
+        $(document).ready(function(){
+            $('.flm-option[data-flm-number="<%= @flm %>"]').trigger('click');
+        });
+    </script>
+<% end %>

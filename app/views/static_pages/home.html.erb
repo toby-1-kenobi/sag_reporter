@@ -5,6 +5,13 @@
 <div id="welcome-content">
 
   <div id="god-at-work-card" class="mdl-card mdl-shadow--2dp">
+    <div id="progress-chart-panel">
+      <div class="chart-title">Transformation</div>
+      <div id="national-progress-chart">
+        <div class="mdl-spinner mdl-js-spinner is-active"></div>
+        <%= link_to "progress chart", national_outcomes_chart_path, remote: true, method: 'GET', id: 'get-national-chart-link' %>
+      </div>
+    </div>
     <div class="mdl-card__title">
       God is at work
     </div>
@@ -46,7 +53,8 @@
         <i class="material-icons">search</i>
         Zoom in to my area
       <% end %>
-      <%= link_to nation_path({tab: 'languages', flm: 6}), class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
+      <% link_path = logged_in_user.national? ? nation_path({tab: 'languages', flm: 6}) : zone_path(logged_in_user.zones.first, {tab: 'languages', flm: 6}) %>
+      <%= link_to link_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
           <i class="material-icons">collections_bookmark</i>
           Zoom to NT statistics
       <% end %>
@@ -101,14 +109,6 @@
     </div>
   </div>
   <% end %>
-
-  <div id="progress-chart-panel">
-    <div class="chart-title">Transformation</div>
-    <div id="national-progress-chart">
-      <div class="mdl-spinner mdl-js-spinner is-active"></div>
-      <%= link_to "progress chart", national_outcomes_chart_path, remote: true, method: 'GET', id: 'get-national-chart-link' %>
-    </div>
-  </div>
 
 </div>
 
