@@ -115,33 +115,47 @@ class ExternalDeviceController < ApplicationController
         @user_ids, @geo_state_ids, @language_ids, @report_ids, @uploaded_file_ids,
             @person_ids, @topic_ids, @progress_marker_ids, @zone_ids = Array.new(9) {Set.new}
         @all_updated_at = send_request_params
-        first_upload = !@all_updated_at.find { |_, value| !value.empty? }
-        send_external_user
-        send_language external_user.mother_tongue
-        external_user.spoken_languages.each{|language| send_language language}
-        send_language external_user.interface_language
-  #      external_user.championed_languages.each{|language| send_language language}
-        User.all.each{|user| send_user_name(user) if user != external_user}
-        if external_user.national?
-          user_geo_states = GeoState.all
-        else
-          user_geo_states = external_user.geo_states
+        begin
+          send_external_user
+          send_language external_user.mother_tongue
+          external_user.spoken_languages.each{|language| send_language language}
+          send_language external_user.interface_language
+          external_user.championed_languages.each{|language| send_language language}
+          ActiveRecord::Base.connection.query_cache.clear
         end
-        user_geo_states.includes(:languages).each do |geo_state|
-          send_geo_state geo_state
-          send_zone geo_state.zone
-          geo_state.languages.each{|language| send_language language}
+        begin
+          User.select(:id, :name, :updated_at).collect.each{|user| send_user_name(user) if user.id != external_user.id}
+          ActiveRecord::Base.connection.query_cache.clear
         end
-        Person.all.each{|person| send_person person}
-        Topic.all.each{|topic| send_topic topic unless topic.hide_for?(external_user)}
-        ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
-        Report.includes( :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
-            .user_limited(external_user).each do |report|
-          if (send_report(report))
-            report.pictures.each{|picture| send_uploaded_file picture}
+        begin
+          if external_user.national?
+            user_geo_states = GeoState.all
+          else
+            user_geo_states = external_user.geo_states
           end
-          send_geo_state report.geo_state
-          report.languages.each{|language| send_language language}
+          user_geo_states.includes(:languages).each do |geo_state|
+            send_geo_state geo_state
+            send_zone geo_state.zone
+            geo_state.languages.each{|language| send_language language}
+            ActiveRecord::Base.connection.query_cache.clear
+          end
+        end
+        begin
+          Person.all.each{|person| send_person person}
+          Topic.all.each{|topic| send_topic topic unless topic.hide_for?(external_user)}
+          ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
+          ActiveRecord::Base.connection.query_cache.clear
+        end
+        begin
+          Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
+              .user_limited(external_user).each do |report|
+            if send_report(report)
+              report.pictures.each{|picture| send_uploaded_file picture}
+            end
+            send_geo_state report.geo_state
+            report.languages.each{|language| send_language language}
+          end
+          ActiveRecord::Base.connection.query_cache.clear
         end
         send_message = {
             errors: @errors,
@@ -155,7 +169,6 @@ class ExternalDeviceController < ApplicationController
             uploaded_files: @uploaded_files,
             reports: @reports
         }
-        puts send_message.except(:uploaded_files)
         save_data_in_file send_message
       rescue => e
         send_message = { error: e.to_s, where: e.backtrace.to_s }
@@ -306,7 +319,7 @@ class ExternalDeviceController < ApplicationController
 
             geo_state_ids: external_user.geo_state_ids,
             spoken_language_ids: external_user.spoken_language_ids,
-  #          championed_language_ids: external_user.championed_language_ids,
+            championed_language_ids: external_user.championed_language_ids,
             updated_at: external_user.updated_at.to_i,
             last_changed: 'online'
         }.to_json)
@@ -430,7 +443,6 @@ class ExternalDeviceController < ApplicationController
             mt_literacy_programs: language.mt_literacy_programs,
             poetry_print: language.poetry_print,
             oral_traditions_print: language.oral_traditions_print,
-  #          champion_id: language.champion_id,
 
             updated_at: language.updated_at.to_i,
             last_changed: 'online'
@@ -767,10 +779,10 @@ class ExternalDeviceController < ApplicationController
       logger.debug("sending otp to phone: #{phone_number}, otp: #{otp_code}")
       wait_ticket = BcsSms.send_otp(phone_number, otp_code)
       logger.debug("waiting #{wait_ticket}")
-      return wait_ticket
+      wait_ticket
     rescue => e
       logger.error("couldn't send OTP to phone: #{e.message}")
-      return false
+      false
     end
   end
 
@@ -789,9 +801,9 @@ class ExternalDeviceController < ApplicationController
     end
     if user.email.present? && user.email_confirmed?
       UserMailer.user_otp_code(user, otp_code).deliver_now
-      return true
+      true
     else
-      return false
+      false
     end
   end
   
