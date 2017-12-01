@@ -2,7 +2,7 @@ module ExternalDeviceHelper
 
   def create_jwt user, device_id
     secret_key = Rails.application.secrets.secret_key_base
-    payload = {sub: user.id, iat: Time.now.to_i, iss: device_id}
+    payload = {sub: user.id, iat: user.updated_at.to_i, iss: device_id}
     token = JWT.encode payload, secret_key, 'HS256'
   end
 
@@ -20,8 +20,14 @@ module ExternalDeviceHelper
       secret_key = Rails.application.secrets.secret_key_base
       payload, _ = JWT.decode token, secret_key, true, {algorithm: 'HS256'}
       user = User.find_by_id payload['sub']
-      device_is_registered = user.external_devices.map{|d| d.device_id if d.registered}.include?(payload['iss'])
-      user if user.updated_at.to_i < payload['iat'] && device_is_registered
+      users_device = ExternalDevice.find_by device_id: payload['iss'], user_id: user.id
+      puts "#{user.updated_at.to_i} #{payload['iat']}"
+      if user.updated_at.to_i == payload['iat']
+        user if users_device
+      else
+        users_device.update registered: false if users_device&.registered
+        false
+      end
     rescue => e
       puts e
       nil
