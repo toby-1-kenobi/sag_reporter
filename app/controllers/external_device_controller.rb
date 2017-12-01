@@ -5,33 +5,33 @@ class ExternalDeviceController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key]
-  
+
   def test_server
     head :ok
   end
-  
+
   def login
     begin
       full_params = login_params
       user = User.find_by phone: full_params[:phone]
       # check, whether user exists
       unless user
-        puts "User not found"
-        render json: { error: "User not found" }, status: :forbidden
+        logger.error "User not found"
+        render json: {error: "User not found"}, status: :forbidden
         return
       end
       # check, whether password is correct
-      if !user.authenticate full_params[:password]
-        puts "Password wrong"
-        render json: { error: "Password wrong" }, status: :unauthorized
+      unless user.authenticate full_params[:password]
+        logger.error "Password wrong"
+        render json: {error: "Password wrong"}, status: :unauthorized
         return
       end
       # check, whether user device exists and is registered (= succesful login)
-      users_device = user.external_devices.find{|d| d.device_id == full_params[:device_id]}
+      users_device = user.external_devices.find {|d| d.device_id == full_params[:device_id]}
       if users_device && (users_device.registered || user.authenticate_otp(full_params[:otp], drift: 300))
-        ExternalDevice.update users_device.id, registered: true unless users_device.registered
+        users_device.update registered: true unless users_device.registered
         if users_device.name != full_params[:device_name]
-          ExternalDevice.update users_device.id, name: full_params[:device_name]
+          users_device.update name: full_params[:device_name]
         end
         send_message = {
             user: user.id,
@@ -40,7 +40,7 @@ class ExternalDeviceController < ApplicationController
             database_key: create_database_key(user),
             now: Time.now.to_i
         }
-        puts send_message
+        logger.debug send_message
         render json: send_message, status: :ok
         return
       end
@@ -52,11 +52,11 @@ class ExternalDeviceController < ApplicationController
         new_device.user = user
         raise new_device.errors.messages.to_s unless new_device.save
       end
-      puts "Device not registered"
-      render json: { user: user.id, status: "OTP", error: "Device not registered, register with OTP" }, status: :created
+      logger.error "Device not registered"
+      render json: {user: user.id, status: "OTP", error: "Device not registered, register with OTP"}, status: :created
     rescue => e
-      send_message = { error: e.to_s, where: e.backtrace.to_s }
-      puts send_message
+      send_message = {error: e.to_s, where: e.backtrace.to_s}
+      logger.error send_message
       render json: send_message, status: :internal_server_error
     end
   end
@@ -65,19 +65,19 @@ class ExternalDeviceController < ApplicationController
     full_params = send_otp_params
     users_device = ExternalDevice.find_by user_id: full_params['user_id'], device_id: full_params['device_id']
     unless users_device && !users_device.registered
-      render json: { error: 'Device not found' }, status: :forbidden
+      render json: {error: 'Device not found'}, status: :forbidden
       return
     end
     user = User.find_by_id full_params['user_id']
     case full_params['target']
-    when 'phone'
-      success = send_otp_on_phone("+91#{user.phone}", user.otp_code)
-    when 'email'
-      success = send_otp_via_mail(user, user.otp_code)
-    else
-      success = false
+      when 'phone'
+        success = send_otp_on_phone("+91#{user.phone}", user.otp_code)
+      when 'email'
+        success = send_otp_via_mail(user, user.otp_code)
+      else
+        success = false
     end
-    render json: { status: "OTP code sending success: #{success}" }, status: :ok
+    render json: {status: "OTP code sending success: #{success}"}, status: :ok
   end
 
   def get_database_key
@@ -86,28 +86,28 @@ class ExternalDeviceController < ApplicationController
       # Check, whether user exists and device is registered
       users_device = ExternalDevice.find_by device_id: full_params['device_id'], user_id: full_params['user_id']
       unless users_device&.registered?
-        puts "Device not found / registered"
+        logger.error "Device not found / registered"
         if users_device
-          render json: { error: "Device not registered" }, status: :unauthorized
+          render json: {error: "Device not registered"}, status: :unauthorized
         else
-          render json: { error: "Device not found" }, status: :forbidden
+          render json: {error: "Device not found"}, status: :forbidden
         end
         return
       end
       user = User.find_by_id full_params['user_id']
       database_key = (user.created_at.to_f * 1000000).to_i
-      puts database_key
-      render json: { key: database_key }, status: :ok
+      logger.debug 'database key send'
+      render json: {key: database_key}, status: :ok
     rescue => e
-      send_message = { error: e.to_s, where: e.backtrace.to_s }
-      puts send_message
+      send_message = {error: e.to_s, where: e.backtrace.to_s}
+      logger.error send_message
       render json: send_message, status: :internal_server_error
     end
   end
 
   def send_request
     @all_data = Tempfile.new
-    render json: { data: @all_data.path }, status: :ok
+    render json: {data: @all_data.path}, status: :ok
     Thread.new do
       begin
         @users, @geo_states, @languages, @reports, @uploaded_files,
@@ -118,13 +118,13 @@ class ExternalDeviceController < ApplicationController
         begin
           send_external_user
           send_language external_user.mother_tongue
-          external_user.spoken_languages.each{|language| send_language language}
+          external_user.spoken_languages.each {|language| send_language language}
           send_language external_user.interface_language
-          external_user.championed_languages.each{|language| send_language language}
+          external_user.championed_languages.each {|language| send_language language}
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
-          User.select(:id, :name, :updated_at).collect.each{|user| send_user_name(user) if user.id != external_user.id}
+          User.select(:id, :name, :updated_at).collect.each {|user| send_user_name(user) if user.id != external_user.id}
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
@@ -136,24 +136,24 @@ class ExternalDeviceController < ApplicationController
           user_geo_states.includes(:languages).each do |geo_state|
             send_geo_state geo_state
             send_zone geo_state.zone
-            geo_state.languages.each{|language| send_language language}
+            geo_state.languages.each {|language| send_language language}
             ActiveRecord::Base.connection.query_cache.clear
           end
         end
         begin
-          Person.all.each{|person| send_person person}
-          Topic.all.each{|topic| send_topic topic unless topic.hide_for?(external_user)}
-          ProgressMarker.all.each{|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
+          Person.all.each {|person| send_person person}
+          Topic.all.each {|topic| send_topic topic unless topic.hide_for?(external_user)}
+          ProgressMarker.all.each {|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
           Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
               .user_limited(external_user).each do |report|
             if send_report(report)
-              report.pictures.each{|picture| send_uploaded_file picture}
+              report.pictures.each {|picture| send_uploaded_file picture}
             end
             send_geo_state report.geo_state
-            report.languages.each{|language| send_language language}
+            report.languages.each {|language| send_language language}
           end
           ActiveRecord::Base.connection.query_cache.clear
         end
@@ -171,8 +171,8 @@ class ExternalDeviceController < ApplicationController
         }
         save_data_in_file send_message
       rescue => e
-        send_message = { error: e.to_s, where: e.backtrace.to_s }
-        puts send_message
+        send_message = {error: e.to_s, where: e.backtrace.to_s}
+        logger.error send_message
         @all_data.write send_message
       ensure
         @all_data.close
@@ -191,8 +191,8 @@ class ExternalDeviceController < ApplicationController
       end
       send_file get_file_params['file_path']
     rescue => e
-      send_message = { error: e.to_s, where: e.backtrace.to_s }
-      puts send_message
+      send_message = {error: e.to_s, where: e.backtrace.to_s}
+      logger.error send_message
       render json: send_message, status: :internal_server_error
     end
   end
@@ -212,55 +212,55 @@ class ExternalDeviceController < ApplicationController
           reports: @report_feedbacks,
           uploaded_files: @uploaded_file_feedbacks
       }
-      puts send_message
+      logger.debug send_message
       render json: send_message, status: :created
     rescue => e
-      send_message = { error: e.to_s, where: e.backtrace.to_s }
-      puts send_message
+      send_message = {error: e.to_s, where: e.backtrace.to_s}
+      logger.error send_message
       render json: send_message, status: :internal_server_error
     end
   end
-  
+
   private
 
   def send_otp_params
     safe_params = [
-      :user_id,
-      :device_id,
-      :target
+        :user_id,
+        :device_id,
+        :target
     ]
     params.require(:external_device).permit(safe_params)
   end
 
   def login_params
     safe_params = [
-      :phone,
-      :password,
-      :device_id,
-      :device_name,
-      :otp
+        :phone,
+        :password,
+        :device_id,
+        :device_name,
+        :otp
     ]
     params.require(:external_device).permit(safe_params)
   end
 
   def get_database_key_params
     safe_params = [
-      :user_id,
-      :device_id
+        :user_id,
+        :device_id
     ]
     params.require(:external_device).permit(safe_params)
   end
 
   def send_request_params
     safe_params = [
-      :users => [:updated_at],
-      :languages => [:updated_at],
-      :geo_states => [:updated_at],
-      :topics => [:updated_at],
-      :progress_markers => [:updated_at],
-      :reports => [:updated_at],
-      :uploaded_files => [:updated_at],
-      :people => [:updated_at]
+        :users => [:updated_at],
+        :languages => [:updated_at],
+        :geo_states => [:updated_at],
+        :topics => [:updated_at],
+        :progress_markers => [:updated_at],
+        :reports => [:updated_at],
+        :uploaded_files => [:updated_at],
+        :people => [:updated_at]
     ]
     params.require(:external_device).permit(safe_params)
   end
@@ -274,255 +274,255 @@ class ExternalDeviceController < ApplicationController
 
   def receive_request_params
     safe_params = [
-      :uploaded_files => [
-        :status,
-        :data
-      ],
-      :reports => [
-        :status,
-        :geo_state_id,
-        {:language_ids => []},
-        :report_date,
-        :translation_impact,
-        :significant,
-        {:picture_ids => []},
-        :content,
-        :reporter_id,
-        :impact_report,
-        {:progress_marker_ids => []},
-        {:observer_ids => []},
-        :client,
-        :version
-      ]
+        :uploaded_files => [
+            :status,
+            :data
+        ],
+        :reports => [
+            :status,
+            :geo_state_id,
+            {:language_ids => []},
+            :report_date,
+            :translation_impact,
+            :significant,
+            {:picture_ids => []},
+            :content,
+            :reporter_id,
+            :impact_report,
+            {:progress_marker_ids => []},
+            {:observer_ids => []},
+            :client,
+            :version
+        ]
     ]
     params.require(:external_device).permit(safe_params)
   end
-  
+
   # send_request methods
 
   def send_external_user
     begin
       if check_send_data(@users, external_user, @all_updated_at[:users])
         @users.write({
-            id: external_user.id,
-            name: external_user.name,
-            phone: external_user.phone,
-            mother_tongue_id: external_user.mother_tongue_id,
-            interface_language_id: external_user.interface_language_id,
-            email: external_user.email,
-            email_confirmed: external_user.email_confirmed,
-            trusted: external_user.trusted,
-            national: external_user.national,
-            admin: external_user.admin,
-            national_curator: external_user.national_curator,
-            role_description: external_user.role_description,
+                         id: external_user.id,
+                         name: external_user.name,
+                         phone: external_user.phone,
+                         mother_tongue_id: external_user.mother_tongue_id,
+                         interface_language_id: external_user.interface_language_id,
+                         email: external_user.email,
+                         email_confirmed: external_user.email_confirmed,
+                         trusted: external_user.trusted,
+                         national: external_user.national,
+                         admin: external_user.admin,
+                         national_curator: external_user.national_curator,
+                         role_description: external_user.role_description,
 
-            geo_state_ids: external_user.geo_state_ids,
-            spoken_language_ids: external_user.spoken_language_ids,
-            championed_language_ids: external_user.championed_language_ids,
-            updated_at: external_user.updated_at.to_i,
-            last_changed: 'online'
-        }.to_json)
+                         geo_state_ids: external_user.geo_state_ids,
+                         spoken_language_ids: external_user.spoken_language_ids,
+                         championed_language_ids: external_user.championed_language_ids,
+                         updated_at: external_user.updated_at.to_i,
+                         last_changed: 'online'
+                     }.to_json)
       end
     rescue => e
-      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      error_message = {error: e.to_s, where: e.backtrace.to_s}
       @errors.write error_message
     end
   end
 
-  def send_user_name user
+  def send_user_name(user)
     begin
       if @user_ids.add?(user.id) && check_send_data(@users, user, @all_updated_at[:users])
         @users.write({
-            id: user.id,
-            name: user.name,
-            updated_at: user.updated_at.to_i,
-            last_changed: 'online'
-        }.to_json)
+                         id: user.id,
+                         name: user.name,
+                         updated_at: user.updated_at.to_i,
+                         last_changed: 'online'
+                     }.to_json)
       end
     rescue => e
-      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      error_message = {error: e.to_s, where: e.backtrace.to_s}
       @errors.write error_message
     end
   end
 
-  def send_geo_state geo_state
+  def send_geo_state(geo_state)
     begin
       if @geo_state_ids.add?(geo_state.id) && check_send_data(@geo_states, geo_state, @all_updated_at[:geo_states])
         @geo_states.write({
-            id: geo_state.id,
-            name: geo_state.name,
-            zone_id: geo_state.zone_id,
+                              id: geo_state.id,
+                              name: geo_state.name,
+                              zone_id: geo_state.zone_id,
 
-            language_ids: geo_state.language_ids,
-            updated_at: geo_state.updated_at.to_i,
-            last_changed: 'online'
-        }.to_json)
+                              language_ids: geo_state.language_ids,
+                              updated_at: geo_state.updated_at.to_i,
+                              last_changed: 'online'
+                          }.to_json)
       end
     rescue => e
-      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      error_message = {error: e.to_s, where: e.backtrace.to_s}
       @errors.write error_message
     end
   end
 
-  def send_zone zone
+  def send_zone(zone)
     begin
       if @zone_ids.add?(zone.id) && check_send_data(@zones, zone, @all_updated_at[:zones])
         @zones.write({
-              id: zone.id,
-              name: zone.name,
-              pm_description_type: zone.pm_description_type,
+                         id: zone.id,
+                         name: zone.name,
+                         pm_description_type: zone.pm_description_type,
 
-              updated_at: zone.updated_at.to_i,
-              last_changed: 'online'
-        }.to_json)
+                         updated_at: zone.updated_at.to_i,
+                         last_changed: 'online'
+                     }.to_json)
       end
     rescue => e
-      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      error_message = {error: e.to_s, where: e.backtrace.to_s}
       @errors.write error_message
     end
   end
-    
-  def send_language language
+
+  def send_language(language)
     begin
       if @language_ids.add?(language.id) && check_send_data(@languages, language, @all_updated_at[:languages])
         @languages.write({
-            id: language.id,
-            name: language.name,
-            description: language.description,
-            lwc: language.lwc,
-            colour: language.colour,
-            iso: language.iso,
-            family_id: language.family_id,
-            population: language.population,
-            pop_source_id: language.pop_source_id,
-            location: language.location,
-            number_of_translations: language.number_of_translations,
-            cluster_id: language.cluster_id,
-            info: language.info,
-            translation_info: language.translation_info,
-            translation_need: language.translation_need,
-            translation_progress: language.translation_progress,
-            locale_tag: language.locale_tag,
-            population_all_countries: language.population_all_countries,
-            population_concentration: language.population_concentration,
-            age_distribution: language.age_distribution,
-            village_size: language.village_size,
-            mixed_marriages: language.mixed_marriages,
-            clans: language.clans,
-            castes: language.castes,
-            genetic_classification: language.genetic_classification,
-            location_access: language.location_access,
-            travel: language.travel,
-            ethnic_groups_in_area: language.ethnic_groups_in_area,
-            religion: language.religion,
-            believers: language.believers,
-            local_fellowship: language.local_fellowship,
-            literate_believers: language.literate_believers,
-            related_languages: language.related_languages,
-            subgroups: language.subgroups,
-            lexical_similarity: language.lexical_similarity,
-            attitude: language.attitude,
-            bible_first_published: language.bible_first_published,
-            bible_last_published: language.bible_last_published,
-            nt_first_published: language.nt_first_published,
-            nt_last_published: language.nt_last_published,
-            portions_first_published: language.portions_first_published,
-            portions_last_published: language.portions_last_published,
-            selections_published: language.selections_published,
-            nt_out_of_print: language.nt_out_of_print,
-            tr_committee_established: language.tr_committee_established,
-            translation_consultants: language.translation_consultants,
-            translation_interest: language.translation_interest,
-            translator_background: language.translator_background,
-            translation_local_support: language.translation_local_support,
-            mt_literacy: language.mt_literacy,
-            l2_literacy: language.l2_literacy,
-            script: language.script,
-            attitude_to_lang_dev: language.attitude_to_lang_dev,
-            mt_literacy_programs: language.mt_literacy_programs,
-            poetry_print: language.poetry_print,
-            oral_traditions_print: language.oral_traditions_print,
+                             id: language.id,
+                             name: language.name,
+                             description: language.description,
+                             lwc: language.lwc,
+                             colour: language.colour,
+                             iso: language.iso,
+                             family_id: language.family_id,
+                             population: language.population,
+                             pop_source_id: language.pop_source_id,
+                             location: language.location,
+                             number_of_translations: language.number_of_translations,
+                             cluster_id: language.cluster_id,
+                             info: language.info,
+                             translation_info: language.translation_info,
+                             translation_need: language.translation_need,
+                             translation_progress: language.translation_progress,
+                             locale_tag: language.locale_tag,
+                             population_all_countries: language.population_all_countries,
+                             population_concentration: language.population_concentration,
+                             age_distribution: language.age_distribution,
+                             village_size: language.village_size,
+                             mixed_marriages: language.mixed_marriages,
+                             clans: language.clans,
+                             castes: language.castes,
+                             genetic_classification: language.genetic_classification,
+                             location_access: language.location_access,
+                             travel: language.travel,
+                             ethnic_groups_in_area: language.ethnic_groups_in_area,
+                             religion: language.religion,
+                             believers: language.believers,
+                             local_fellowship: language.local_fellowship,
+                             literate_believers: language.literate_believers,
+                             related_languages: language.related_languages,
+                             subgroups: language.subgroups,
+                             lexical_similarity: language.lexical_similarity,
+                             attitude: language.attitude,
+                             bible_first_published: language.bible_first_published,
+                             bible_last_published: language.bible_last_published,
+                             nt_first_published: language.nt_first_published,
+                             nt_last_published: language.nt_last_published,
+                             portions_first_published: language.portions_first_published,
+                             portions_last_published: language.portions_last_published,
+                             selections_published: language.selections_published,
+                             nt_out_of_print: language.nt_out_of_print,
+                             tr_committee_established: language.tr_committee_established,
+                             translation_consultants: language.translation_consultants,
+                             translation_interest: language.translation_interest,
+                             translator_background: language.translator_background,
+                             translation_local_support: language.translation_local_support,
+                             mt_literacy: language.mt_literacy,
+                             l2_literacy: language.l2_literacy,
+                             script: language.script,
+                             attitude_to_lang_dev: language.attitude_to_lang_dev,
+                             mt_literacy_programs: language.mt_literacy_programs,
+                             poetry_print: language.poetry_print,
+                             oral_traditions_print: language.oral_traditions_print,
 
-            updated_at: language.updated_at.to_i,
-            last_changed: 'online'
-        }.to_json)
+                             updated_at: language.updated_at.to_i,
+                             last_changed: 'online'
+                         }.to_json)
       end
     rescue => e
-      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      error_message = {error: e.to_s, where: e.backtrace.to_s}
       @errors.write error_message
     end
   end
 
-  def send_person person
+  def send_person(person)
     begin
       if @person_ids.add?(person.id) && check_send_data(@people, person, @all_updated_at[:people])
         @people.write({
-            id: person.id,
-            name: person.name,
-            description: person.description,
-            phone: person.phone,
-            address: person.address,
-            intern: person.intern,
-            facilitator: person.facilitator,
-            pastor: person.pastor,
-            language_id: person.language_id,
-            user_id: person.user_id,
-            geo_state_id: person.geo_state_id,
+                          id: person.id,
+                          name: person.name,
+                          description: person.description,
+                          phone: person.phone,
+                          address: person.address,
+                          intern: person.intern,
+                          facilitator: person.facilitator,
+                          pastor: person.pastor,
+                          language_id: person.language_id,
+                          user_id: person.user_id,
+                          geo_state_id: person.geo_state_id,
 
-            updated_at: person.updated_at.to_i,
-            last_changed: 'online'
-        }.to_json)
+                          updated_at: person.updated_at.to_i,
+                          last_changed: 'online'
+                      }.to_json)
       end
     rescue => e
-      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      error_message = {error: e.to_s, where: e.backtrace.to_s}
       @errors.write error_message
     end
   end
 
-  def send_topic topic
+  def send_topic(topic)
     begin
       if @topic_ids.add?(topic.id) && check_send_data(@topics, topic, @all_updated_at[:topics])
         @topics.write({
-            id: topic.id,
-            name: topic.name,
-            description: topic.description,
-            colour: topic.colour,
-            number: topic.number,
+                          id: topic.id,
+                          name: topic.name,
+                          description: topic.description,
+                          colour: topic.colour,
+                          number: topic.number,
 
-            updated_at: topic.updated_at.to_i,
-            last_changed: 'online'
-        }.to_json)
+                          updated_at: topic.updated_at.to_i,
+                          last_changed: 'online'
+                      }.to_json)
       end
     rescue => e
-      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      error_message = {error: e.to_s, where: e.backtrace.to_s}
       @errors.write error_message
     end
   end
 
-  def send_progress_marker progress_marker
+  def send_progress_marker(progress_marker)
     begin
       if @progress_marker_ids.add?(progress_marker.id) && check_send_data(@progress_markers, progress_marker, @all_updated_at[:progress_markers])
         @progress_markers.write({
-            id: progress_marker.id,
-            name: progress_marker.name,
-            topic_id: progress_marker.topic_id,
-            weight: progress_marker.weight,
-            status: progress_marker.status,
-            number: progress_marker.number,
+                                    id: progress_marker.id,
+                                    name: progress_marker.name,
+                                    topic_id: progress_marker.topic_id,
+                                    weight: progress_marker.weight,
+                                    status: progress_marker.status,
+                                    number: progress_marker.number,
 
-            description: progress_marker.description_for(external_user),
-            updated_at: progress_marker.updated_at.to_i,
-            last_changed: 'online'
-        }.to_json)
+                                    description: progress_marker.description_for(external_user),
+                                    updated_at: progress_marker.updated_at.to_i,
+                                    last_changed: 'online'
+                                }.to_json)
       end
     rescue => e
-      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      error_message = {error: e.to_s, where: e.backtrace.to_s}
       @errors.write error_message
     end
   end
 
-  def send_report report
+  def send_report(report)
     begin
       if @report_ids.add?(report.id) && check_send_data(@reports, report, @all_updated_at[:reports])
         impact_report_data = Hash.new
@@ -532,59 +532,59 @@ class ExternalDeviceController < ApplicationController
             translation_impact: report.impact_report.translation_impact,
         } if report.impact_report
         @reports.write({
-            id: report.id,
-            reporter_id: report.reporter_id,
-            content: report.content,
-            mt_society: report.mt_society,
-            mt_church: report.mt_church,
-            needs_society: report.needs_society,
-            needs_church: report.needs_church,
-            event_id: report.event_id,
-            geo_state_id: report.geo_state_id,
-            planning_report_id: report.planning_report_id,
-            impact_report_id: report.impact_report_id,
-            challenge_report_id: report.challenge_report_id,
-            status: report.status,
-            sub_district_id: report.sub_district_id,
-            location: report.location,
-            client: report.client,
-            version: report.version,
-            significant: report.significant,
+                           id: report.id,
+                           reporter_id: report.reporter_id,
+                           content: report.content,
+                           mt_society: report.mt_society,
+                           mt_church: report.mt_church,
+                           needs_society: report.needs_society,
+                           needs_church: report.needs_church,
+                           event_id: report.event_id,
+                           geo_state_id: report.geo_state_id,
+                           planning_report_id: report.planning_report_id,
+                           impact_report_id: report.impact_report_id,
+                           challenge_report_id: report.challenge_report_id,
+                           status: report.status,
+                           sub_district_id: report.sub_district_id,
+                           location: report.location,
+                           client: report.client,
+                           version: report.version,
+                           significant: report.significant,
 
-            report_date: report.report_date.strftime("%Y-%m-%d"),
-            picture_ids: report.picture_ids,
-            language_ids: report.language_ids,
-            observer_ids: report.observer_ids,
-            updated_at: report.updated_at.to_i,
-            last_changed: 'online'
-        }.merge(impact_report_data).to_json)
+                           report_date: report.report_date.strftime("%Y-%m-%d"),
+                           picture_ids: report.picture_ids,
+                           language_ids: report.language_ids,
+                           observer_ids: report.observer_ids,
+                           updated_at: report.updated_at.to_i,
+                           last_changed: 'online'
+                       }.merge(impact_report_data).to_json)
       end
     rescue => e
-      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      error_message = {error: e.to_s, where: e.backtrace.to_s}
       @errors.write error_message
     end
   end
 
-  def send_uploaded_file uploaded_file
+  def send_uploaded_file(uploaded_file)
     begin
       if @uploaded_file_ids.add?(uploaded_file.id) && check_send_data(@uploaded_files, uploaded_file, @all_updated_at[:uploaded_files])
         @uploaded_files.write({
-            id: uploaded_file.id,
-            report_id: uploaded_file.report_id,
-            data: Base64.encode64(uploaded_file.ref.read),
-            updated_at: uploaded_file.updated_at.to_i,
-            last_changed: 'online'
-        }.to_json)
-     end
+                                  id: uploaded_file.id,
+                                  report_id: uploaded_file.report_id,
+                                  data: Base64.encode64(uploaded_file.ref.read),
+                                  updated_at: uploaded_file.updated_at.to_i,
+                                  last_changed: 'online'
+                              }.to_json)
+      end
     rescue => e
-      error_message = { error: e.to_s, where: e.backtrace.to_s }
+      error_message = {error: e.to_s, where: e.backtrace.to_s}
       @errors.write error_message
     end
   end
 
-  def check_send_data file, object, offline_updated_at_reference
+  def check_send_data(file, object, send_params)
     return false unless object
-    offline_updated_at = offline_updated_at_reference
+    offline_updated_at = send_params
     offline_updated_at &&= offline_updated_at[object.id.to_s]
     offline_updated_at &&= offline_updated_at[:updated_at]
     if offline_updated_at
@@ -600,13 +600,13 @@ class ExternalDeviceController < ApplicationController
     true
   end
 
-  def save_data_in_file send_message
+  def save_data_in_file(send_message)
     @all_data.write '{'
     send_message.each do |category, file|
       file.close
       file.open
       @all_data.write ', ' unless @all_data.length == 1
-      @all_data.write '"' + category.to_s + '": ['
+      @all_data.write "\"#{category}\": ["
       while (buffer = file.read(512))
         @all_data.write buffer.force_encoding(Encoding::CP1252).encode(Encoding::UTF_8)
       end
@@ -620,15 +620,15 @@ class ExternalDeviceController < ApplicationController
 
   # receive_request methods:
 
-  def receive_uploaded_file uploaded_file_id, uploaded_file_data
-    puts 'Save file ' + uploaded_file_id.to_s + uploaded_file_data.keys.to_s
+  def receive_uploaded_file(uploaded_file_id, uploaded_file_data)
+    logger.debug "Save file: #{uploaded_file_id}"
     status = uploaded_file_data.delete 'status'
     if status == 'delete'
       UploadedFile.delete uploaded_file_id
       return nil
     end
     if status != 'new'
-      @errors << { "uploaded_file_#{uploaded_file_id.to_s}" => "Unknown status: #{status}" }
+      @errors << {"uploaded_file_#{uploaded_file_id}" => "Unknown status: #{status}"}
       return nil
     end
     # convert image-string to image-file
@@ -642,22 +642,22 @@ class ExternalDeviceController < ApplicationController
       extension = content_type.match(/gif|jpg|jpeg|png/).to_s
       filename += ".#{extension}" if extension
       uploaded_file_data[:ref] = ActionDispatch::Http::UploadedFile.new({
-          tempfile: tempfile,
-          type: content_type,
-          filename: filename
-      })
+                                                                            tempfile: tempfile,
+                                                                            type: content_type,
+                                                                            filename: filename
+                                                                        })
       uploaded_file = UploadedFile.new(uploaded_file_data)
       raise uploaded_file.errors.messages.to_s unless uploaded_file.save
       uploaded_file.touch
       @uploaded_file_feedbacks << {
-          id: uploaded_file_id, 
-          updated_at: uploaded_file.updated_at.to_i, 
-          new_id: uploaded_file.id, 
+          id: uploaded_file_id,
+          updated_at: uploaded_file.updated_at.to_i,
+          new_id: uploaded_file.id,
           last_changed: 'uploaded'
       }
       return uploaded_file.id
     rescue => e
-      @errors << { "uploaded_file_" + uploaded_file_id.to_s => e }
+      @errors << {"uploaded_file_#{uploaded_file_id}" => e}
       return nil
     ensure
       if tempfile
@@ -667,8 +667,8 @@ class ExternalDeviceController < ApplicationController
     end
   end
 
-  def receive_report report_id, report_data, uploaded_files_data
-    puts 'Save report ' + report_id.to_s + report_data.to_s
+  def receive_report(report_id, report_data, uploaded_files_data)
+    logger.debug "Save report: #{report_id}"
     return if report_data.nil?
     impact_report = report_data.delete 'impact_report'
     status = report_data.delete 'status'
@@ -690,7 +690,7 @@ class ExternalDeviceController < ApplicationController
     if status == 'old'
       report = Report.find_by_id report_id
       unless report
-        @errors << { 'report_' + report_id.to_s => 'Couldn\'t find report' }
+        @errors << {"report_#{report_id}" => "Couldn't find report"}
         return
       end
       (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
@@ -704,17 +704,15 @@ class ExternalDeviceController < ApplicationController
             last_changed: 'uploaded'
         }
       else
-        @errors << { 'report_' + report_id.to_s => report.errors.messages.to_s }
+        @errors << {"report_#{report_id}" => report.errors.messages.to_s}
       end
     elsif status == 'new'
       report = Report.new report_data
       report.impact_report = ImpactReport.new(impact_report_data) if impact_report
-      error = false
       if supervisor_mail
         if send_mail(report, supervisor_mail)
           mail_info = {mail: "send successful"}
         else
-          error = true
           mail_info = {mail: "send not successful"}
         end
       else
@@ -728,14 +726,14 @@ class ExternalDeviceController < ApplicationController
             last_changed: 'uploaded'
         }.merge(mail_info)
       else
-        @errors << { 'report_' + report_id.to_s => report.errors.messages.to_s }
+        @errors << {"report_#{report_id}" => report.errors.messages.to_s}
       end
     else
-      @errors << { 'report_' + report_id.to_s => 'Unknown status: ' + status }
+      @errors << {"report_#{report_id}" => "Unknown status: #{status}"}
     end
   end
-  
-  def send_mail report, mail
+
+  def send_mail(report, mail)
     # make sure TLS gets used for delivering this email
     if SendGridV3.enforce_tls
       recipient = User.find_by_email mail
@@ -743,24 +741,13 @@ class ExternalDeviceController < ApplicationController
       delivery_success = false
       begin
         if recipient
-          puts recipient
-          UserMailer.user_report(recipient, report).deliver_now 
+          logger.debug "sending report to: #{recipient}"
+          UserMailer.user_report(recipient, report).deliver_now
           delivery_success = true
         end
-      rescue EOFError,
-            IOError,
-            TimeoutError,
-            Errno::ECONNRESET,
-            Errno::ECONNABORTED,
-            Errno::EPIPE,
-            Errno::ETIMEDOUT,
-            Net::SMTPAuthenticationError,
-            Net::SMTPServerBusy,
-            Net::SMTPSyntaxError,
-            Net::SMTPUnknownError,
-            OpenSSL::SSL::SSLError => e
+      rescue => e
         @errors << 'Failed to send the report to the supervisor'
-        Rails.logger.error e.message
+        logger.error e.message
       end
       if delivery_success
         # also send it to the reporter
@@ -769,19 +756,19 @@ class ExternalDeviceController < ApplicationController
       end
     else
       @errors << 'Could not ensure email encryption so didn\'t send the report to the supervisor'
-      Rails.logger.error 'Could not enforce TLS with SendGrid'
+      logger.error 'Could not enforce TLS with SendGrid'
     end
     false
   end
-  
+
   def send_otp_on_phone(phone_number, otp_code)
     begin
-      logger.debug("sending otp to phone: #{phone_number}, otp: #{otp_code}")
+      logger.debug "sending otp to phone: #{phone_number}, otp: #{otp_code}"
       wait_ticket = BcsSms.send_otp(phone_number, otp_code)
-      logger.debug("waiting #{wait_ticket}")
+      logger.debug "waiting #{wait_ticket}"
       wait_ticket
     rescue => e
-      logger.error("couldn't send OTP to phone: #{e.message}")
+      logger.error "couldn't send OTP to phone: #{e.message}"
       false
     end
   end
@@ -792,21 +779,21 @@ class ExternalDeviceController < ApplicationController
     unless SendGridV3.dont_enforce_tls
       begin
         if SendGridV3.enforce_tls?
-            Rails.logger.error 'could not turn off enforce TLS with SendGrid for sending login code'
+          logger.error 'could not turn off enforce TLS with SendGrid for sending login code'
         end
       rescue SocketError => e
-        Rails.logger.error 'could not turn of enforce TLS and could not determine if it is already off.'
-        Rails.logger.error e.message
+        logger.error 'could not turn of enforce TLS and could not determine if it is already off.'
+        logger.error e.message
       end
     end
     if user.email.present? && user.email_confirmed?
+      logger.debug "sending otp to email: #{user.email}, otp: #{otp_code}"
       UserMailer.user_otp_code(user, otp_code).deliver_now
       true
     else
       false
     end
   end
-  
 end
 # for easily getting all attributes:
-# Language.new.attributes.except("created_at","updated_at").keys.each{|k|puts "          " + k.to_s + ": xxx." + k.to_s + ","}.nil?
+# Language.new.attributes.except("created_at","updated_at").keys.each{|k|puts "          #{k}: xxx.#{k},"}.nil?
