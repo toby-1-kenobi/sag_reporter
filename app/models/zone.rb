@@ -1,3 +1,5 @@
+require 'yaml'
+
 class Zone < ActiveRecord::Base
 
   enum pm_description_type: {
@@ -17,23 +19,26 @@ class Zone < ActiveRecord::Base
   end
 
   def self.national_outcome_chart_data
-    from_date = 12.months.ago
-    to_date = Date.today
-    table_data = Hash.new
-    all_lps = LanguageProgress.includes({:progress_marker => :topic}, :progress_updates).all
-    all_lps.find_each do |lp|
-      oa_name = lp.progress_marker.topic.name
-      table_data[oa_name] ||= Hash.new {0}
-      lp.outcome_scores(from_date, to_date).each do |date, score|
-        table_data[oa_name][date] += score
+    yaml_data = Rails.cache.fetch('national-outcome-chart-data', expires_in: 1.month) do
+      from_date = 12.months.ago
+      to_date = Date.today
+      table_data = Hash.new
+      all_lps = LanguageProgress.includes({:progress_marker => :topic}, :progress_updates).all
+      all_lps.find_each do |lp|
+        oa_name = lp.progress_marker.topic.name
+        table_data[oa_name] ||= Hash.new {0}
+        lp.outcome_scores(from_date, to_date).each do |date, score|
+          table_data[oa_name][date] += score
+        end
       end
+      chart_data = Array.new
+      table_data.each do |row_name, table_row|
+        chart_row = {name: row_name, data: table_row}
+        chart_data.push(chart_row)
+      end
+      YAML::dump(chart_data)
     end
-    chart_data = Array.new
-    table_data.each do |row_name, table_row|
-      chart_row = {name: row_name, data: table_row}
-      chart_data.push(chart_row)
-    end
-    chart_data
+    YAML::load(yaml_data)
   end
 
 end

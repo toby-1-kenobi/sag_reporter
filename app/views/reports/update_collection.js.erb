@@ -1,9 +1,7 @@
 $('.reports-count-container').html(`<div>Showing <%= j "#{@reports.count} #{'report'.pluralize(@reports.count)}" %></div>`);
 $('.reports-container').html(`
   <% if @reports.any? %>
-    <% @reports.each do |report| %>
-      <%= j render partial: 'reports/mdl_report', object: report %>
-    <% end %>
+    <%= j render partial: 'reports/mdl_report', collection: @reports, cached: true %>
   <% else %>
     <%= j render 'reports/empty_state' %>
   <% end %>
