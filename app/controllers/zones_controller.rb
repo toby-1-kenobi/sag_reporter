@@ -36,6 +36,8 @@ class ZonesController < ApplicationController
 
   def nation
     @languages = Language.includes(:family, {finish_line_progresses: :finish_line_marker}).all
+    @tab = params[:tab]
+    @flm = params[:flm]
   end
 
   def national_outcomes_chart

@@ -24,6 +24,17 @@
   </div>
 
   <div id="down-to-zero-card" class="mdl-card mdl-shadow--2dp">
+    <div id="nt-pie-chart-panel">
+      <% nt_marker = FinishLineMarker.find_by_number 6 %>
+      <% nt_data = build_finish_line_table(Language.all, [nt_marker])[nt_marker] %>
+      <%= pie_chart nt_data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h,
+                    id: 'nt-pie-chart',
+                    width: '100px',
+                    height: '100px',
+                    library: {backgroundColor: "transparent", is3D: true, legend: {position: 'none'}},
+                    colors: colours_for_finish_line_data(nt_data.except(:nothing)) %>
+      <div class="chart-title">NT Availability</div>
+    </div>
     <div class="mdl-card__title">
       Down to zero
     </div>
@@ -34,6 +45,10 @@
       <%= link_to zones_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
         <i class="material-icons">search</i>
         Zoom in to my area
+      <% end %>
+      <%= link_to nation_path({tab: 'languages', flm: 6}), class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
+          <i class="material-icons">collections_bookmark</i>
+          Zoom to NT statistics
       <% end %>
     </div>
   </div>
@@ -86,18 +101,6 @@
     </div>
   </div>
   <% end %>
-
-  <div id="nt-pie-chart-panel">
-    <div class="chart-title">NT Availability</div>
-    <% nt_marker = FinishLineMarker.find_by_number 6 %>
-    <% nt_data = build_finish_line_table(Language.all, [nt_marker])[nt_marker] %>
-    <%= pie_chart nt_data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h,
-                  id: 'nt-pie-chart',
-                  width: '200px',
-                  height: '150px',
-                  library: {backgroundColor: "transparent", is3D: true, legend: {position: 'none'}},
-                  colors: colours_for_finish_line_data(nt_data.except(:nothing)) %>
-  </div>
 
   <div id="progress-chart-panel">
     <div class="chart-title">Transformation</div>

@@ -36,6 +36,7 @@
 }
 
 #welcome-content {
+  margin-top: 30px;
   display: grid;
   grid-template-columns: 2fr 3fr 3fr 2fr;
   grid-template-rows: auto;
@@ -62,30 +63,27 @@
 }
 #down-to-zero-card {
   grid-area: down-to-zero;
+  overflow: visible;
+  #nt-pie-chart-panel {
+    width: 200px;
+    position: absolute;
+    z-index: 200;
+    right: -100px;
+    top: -50px;
+    .chart-title {
+      text-align: center;
+      font-weight: bold;
+    }
+  }
 }
 #about-card {
   grid-area: about;
-}
-#admin-links {
-  grid-area: admin;
 }
 #curator-card {
   grid-area: curator;
 }
 #admin-card {
   grid-area: admin;
-}
-
-#nt-pie-chart-panel {
-  grid-area: pie-chart;
-  position: relative;
-  z-index: 100;
-  left: -50px;
-  .chart-title {
-    text-align: center;
-    font-size: large;
-    font-weight: bold;
-  }
 }
 
 #progress-chart-panel {
