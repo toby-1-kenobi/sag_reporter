@@ -598,20 +598,22 @@ class ExternalDeviceController < ApplicationController
   end
 
   def save_data_in_file(send_message)
-    @all_data.write '{'
-    send_message.each do |category, file|
-      file.close
-      file.open
-      @all_data.write ', ' unless @all_data.length == 1
-      @all_data.write "\"#{category}\": ["
-      while (buffer = file.read(512))
-        @all_data.write buffer.force_encoding(Encoding::CP1252).encode(Encoding::UTF_8)
+    File.open(@all_data, "a") do |final_file|
+      final_file.puts '{'
+      first_entry = true
+      send_message.each do |category, file|
+        file.close
+        file.open
+        final_file.puts ', ' unless first_entry
+        final_file.puts "\"#{category}\": ["
+        final_file.puts file.read
+        final_file.puts ']'
+        file.close
+        file.unlink
+        first_entry &= false
       end
-      @all_data.write ']'
-      file.close
-      file.unlink
+      final_file.puts '}'
     end
-    @all_data.write '}'
     @all_data.close
   end
 
