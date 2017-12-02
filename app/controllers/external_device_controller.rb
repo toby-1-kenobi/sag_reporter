@@ -149,9 +149,7 @@ class ExternalDeviceController < ApplicationController
         begin
           Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
               .user_limited(external_user).each do |report|
-            if send_report(report)
-              report.pictures.each {|picture| send_uploaded_file picture}
-            end
+            send_report report
             send_geo_state report.geo_state
             report.languages.each {|language| send_language language}
           end
@@ -189,7 +187,22 @@ class ExternalDeviceController < ApplicationController
       while file.size == 0
         sleep 1
       end
-      send_file get_file_params['file_path']
+      send_file get_file_params['file_path'], status: :ok
+    rescue => e
+      send_message = {error: e.to_s, where: e.backtrace.to_s}
+      logger.error send_message
+      render json: send_message, status: :internal_server_error
+    end
+  end
+
+  def get_uploaded_file
+    begin
+      uploaded_file = UploadedFile.find_by_id get_picture_params['uploaded_file_id']
+      unless uploaded_file
+        render json: {error: "Uploaded file not found"}, status: :forbidden
+        return
+      end
+      send_file uploaded_file.ref.path, status: :ok
     rescue => e
       send_message = {error: e.to_s, where: e.backtrace.to_s}
       logger.error send_message
@@ -559,23 +572,6 @@ class ExternalDeviceController < ApplicationController
                            updated_at: report.updated_at.to_i,
                            last_changed: 'online'
                        }.merge(impact_report_data).to_json)
-      end
-    rescue => e
-      error_message = {error: e.to_s, where: e.backtrace.to_s}
-      @errors.write error_message
-    end
-  end
-
-  def send_uploaded_file(uploaded_file)
-    begin
-      if @uploaded_file_ids.add?(uploaded_file.id) && check_send_data(@uploaded_files, uploaded_file, @all_updated_at[:uploaded_files])
-        @uploaded_files.write({
-                                  id: uploaded_file.id,
-                                  report_id: uploaded_file.report_id,
-                                  data: Base64.encode64(uploaded_file.ref.read),
-                                  updated_at: uploaded_file.updated_at.to_i,
-                                  last_changed: 'online'
-                              }.to_json)
       end
     rescue => e
       error_message = {error: e.to_s, where: e.backtrace.to_s}
