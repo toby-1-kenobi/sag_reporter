@@ -208,7 +208,7 @@ class ExternalDeviceController < ApplicationController
         send_message << {
             id: uploaded_file.id,
             data: image_data,
-            updated_at: uploaded_file.updated_at
+            updated_at: uploaded_file.updated_at.to_i
         }
       end
       render json: send_message, status: :ok
