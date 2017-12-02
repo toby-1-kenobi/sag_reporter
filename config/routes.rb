@@ -32,8 +32,9 @@ Rails.application.routes.draw do
       post 'send_otp'
       post 'get_database_key'
       post 'send_request'
-      post 'receive_request'
       post 'get_file'
+      post 'get_uploaded_file'
+      post 'receive_request'
     end
   end
   
