@@ -598,21 +598,21 @@ class ExternalDeviceController < ApplicationController
   end
 
   def save_data_in_file(send_message)
-    File.open(@all_data, "a") do |final_file|
-      final_file.puts '{'
+    File.open(@all_data, "w") do |final_file|
+      final_file.write '{'
       first_entry = true
       send_message.each do |category, file|
         file.close
         file.open
-        final_file.puts ', ' unless first_entry
-        final_file.puts "\"#{category}\": ["
-        final_file.puts file.read
-        final_file.puts ']'
+        final_file.write ', ' unless first_entry
+        final_file.write "\"#{category}\": ["
+        final_file.write file.read
+        final_file.write ']'
         file.close
         file.unlink
         first_entry &= false
       end
-      final_file.puts '}'
+      final_file.write '}'
     end
     @all_data.close
   end
