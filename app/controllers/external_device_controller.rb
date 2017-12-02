@@ -198,7 +198,7 @@ class ExternalDeviceController < ApplicationController
   def get_uploaded_file
     begin
       uploaded_file = UploadedFile.find_by_id get_uploaded_file_params['uploaded_file_id']
-      unless uploaded_file
+      unless uploaded_file || !uploaded_file.ref.file.exists?
         render json: {error: "Uploaded file not found"}, status: :forbidden
         return
       end
