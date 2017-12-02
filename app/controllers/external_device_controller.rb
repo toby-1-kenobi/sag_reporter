@@ -148,7 +148,7 @@ class ExternalDeviceController < ApplicationController
         end
         begin
           Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
-              .user_limited(external_user).each do |report|
+              .order(:report_date).reverse_order.user_limited(external_user).each do |report|
             send_report report
             send_geo_state report.geo_state
             report.languages.each {|language| send_language language}
