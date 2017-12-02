@@ -197,7 +197,7 @@ class ExternalDeviceController < ApplicationController
 
   def get_uploaded_file
     begin
-      uploaded_file_ids = get_uploaded_file_params['uploaded_file'].map {|key, _| key.to_i}
+      uploaded_file_ids = get_uploaded_file_params['uploaded_files'].map {|key, _| key.to_i}
       send_message = []
       UploadedFile.find(uploaded_file_ids).each do |uploaded_file|
         image_data = if uploaded_file&.ref.file.exists?
