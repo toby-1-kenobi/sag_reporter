@@ -79,7 +79,11 @@
       <% edit_count = Edit.pending.for_curating(logged_in_user).count %>
   <% end %>
   <% if edit_count > 0 %>
-  <div id="curator-card" class="mdl-card mdl-shadow--2dp">
+  <div id="curator-card" class="mdl-card mdl-shadow--2dp"
+     <% if logged_in_user.admin? %>
+        style="grid-area: curator;"
+    <% end %>
+  >
     <div class="mdl-card__title">
       Curate Edits
     </div>
