@@ -197,12 +197,21 @@ class ExternalDeviceController < ApplicationController
 
   def get_uploaded_file
     begin
-      uploaded_file = UploadedFile.find_by_id get_uploaded_file_params['uploaded_file_id']
-      unless uploaded_file&.ref.file.exists?
-        render json: {error: "Uploaded file not found"}, status: :forbidden
-        return
+      uploaded_file_ids = get_uploaded_file_params['uploaded_file'].map {|key, _| key.to_i}
+      send_message = []
+      UploadedFile.find(uploaded_file_ids).each do |uploaded_file|
+        image_data = if uploaded_file&.ref.file.exists?
+                      Base64.encode64(uploaded_file.ref.read)
+                    else
+                      ""
+                    end
+        send_message << {
+            id: external_user.id,
+            data: image_data,
+            updated_at: external_user.phone
+        }
       end
-      render json: {data: Base64.encode64(uploaded_file.ref.read)}, status: :ok
+      render json: send_message, status: :ok
     rescue => e
       send_message = {error: e.to_s, where: e.backtrace.to_s}
       logger.error send_message
@@ -288,7 +297,7 @@ class ExternalDeviceController < ApplicationController
 
   def get_uploaded_file_params
     safe_params = [
-        :uploaded_file_id,
+        :uploaded_files => [:id],
     ]
     params.require(:external_device).permit(safe_params)
   end
