@@ -202,7 +202,7 @@ class ExternalDeviceController < ApplicationController
         render json: {error: "Uploaded file not found"}, status: :forbidden
         return
       end
-      redirect_to uploaded_file.ref.path
+      render json: {data: Base64.encode64(uploaded_file.ref.read)}, status: :ok
     rescue => e
       send_message = {error: e.to_s, where: e.backtrace.to_s}
       logger.error send_message
