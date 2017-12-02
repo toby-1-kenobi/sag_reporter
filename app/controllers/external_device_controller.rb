@@ -206,9 +206,9 @@ class ExternalDeviceController < ApplicationController
                       ""
                     end
         send_message << {
-            id: external_user.id,
+            id: uploaded_file.id,
             data: image_data,
-            updated_at: external_user.phone
+            updated_at: uploaded_file.updated_at
         }
       end
       render json: send_message, status: :ok
