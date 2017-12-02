@@ -197,7 +197,7 @@ class ExternalDeviceController < ApplicationController
 
   def get_uploaded_file
     begin
-      uploaded_file = UploadedFile.find_by_id get_picture_params['uploaded_file_id']
+      uploaded_file = UploadedFile.find_by_id get_uploaded_file_params['uploaded_file_id']
       unless uploaded_file
         render json: {error: "Uploaded file not found"}, status: :forbidden
         return
@@ -282,6 +282,13 @@ class ExternalDeviceController < ApplicationController
   def get_file_params
     safe_params = [
         :file_path
+    ]
+    params.require(:external_device).permit(safe_params)
+  end
+
+  def get_uploaded_file_params
+    safe_params = [
+        :uploaded_file_id,
     ]
     params.require(:external_device).permit(safe_params)
   end
