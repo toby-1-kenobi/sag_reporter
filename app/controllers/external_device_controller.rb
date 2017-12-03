@@ -133,7 +133,7 @@ class ExternalDeviceController < ApplicationController
           else
             user_geo_states = external_user.geo_states
           end
-          user_geo_states.includes(:languages, :zone).each do |geo_state|
+          user_geo_states.includes(:languages, :zone, :state_languages).each do |geo_state|
             send_geo_state geo_state
             send_zone geo_state.zone
             geo_state.languages.each {|language| send_language language}
@@ -379,12 +379,14 @@ class ExternalDeviceController < ApplicationController
   def send_geo_state(geo_state)
     begin
       if @geo_state_ids.add?(geo_state.id) && check_send_data(@geo_states, geo_state, @all_updated_at[:geo_states])
+        project_language_ids = geo_state.state_languages.select(&:project).map(&:id)
         @geo_states.write({
                               id: geo_state.id,
                               name: geo_state.name,
                               zone_id: geo_state.zone_id,
 
                               language_ids: geo_state.language_ids,
+                              project_language_ids: project_language_ids
                               updated_at: geo_state.updated_at.to_i,
                               last_changed: 'online'
                           }.to_json)
@@ -706,6 +708,10 @@ class ExternalDeviceController < ApplicationController
       report = Report.find_by_id report_id
       unless report
         @errors << {"report_#{report_id}" => "Couldn't find report"}
+        return
+      end
+      unless external_user.admin? || external_user.id == report.reporter_id
+        @errors << {"report_#{report_id}" => "No right to edit report"}
         return
       end
       (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
