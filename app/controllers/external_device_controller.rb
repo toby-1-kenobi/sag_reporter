@@ -386,7 +386,7 @@ class ExternalDeviceController < ApplicationController
                               zone_id: geo_state.zone_id,
 
                               language_ids: geo_state.language_ids,
-                              project_language_ids: project_language_ids
+                              project_language_ids: project_language_ids,
                               updated_at: geo_state.updated_at.to_i,
                               last_changed: 'online'
                           }.to_json)
