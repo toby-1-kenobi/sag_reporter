@@ -714,9 +714,10 @@ class ExternalDeviceController < ApplicationController
         @errors << {"report_#{report_id}" => "No right to edit report"}
         return
       end
+      report_data['picture_ids'] ||= []
       (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
         receive_uploaded_file deleted_picture_id, 'status' => 'delete'
-      end if report_data['picture_ids']
+      end
       if report.update(report_data) && report.impact_report.update(impact_report_data)
         report.touch
         @report_feedbacks << {
