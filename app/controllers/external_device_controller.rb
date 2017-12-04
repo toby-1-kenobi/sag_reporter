@@ -592,7 +592,7 @@ class ExternalDeviceController < ApplicationController
                            observer_ids: report.observer_ids,
                            updated_at: report.updated_at.to_i,
                            last_changed: 'online'
-                       }.merge(impact_report_data).to_json)
+                       }.to_json)
       end
     rescue => e
       error_message = {error: e.to_s, where: e.backtrace.to_s}
