@@ -110,9 +110,9 @@ class ExternalDeviceController < ApplicationController
     render json: {data: @all_data.path}, status: :ok
     Thread.new do
       begin
-        @users, @geo_states, @languages, @reports, @uploaded_files,
+        @users, @geo_states, @languages, @reports,
             @people, @topics, @progress_markers, @zones, @errors = Array.new(10) {Tempfile.new}
-        @user_ids, @geo_state_ids, @language_ids, @report_ids, @uploaded_file_ids,
+        @user_ids, @geo_state_ids, @language_ids, @report_ids,
             @person_ids, @topic_ids, @progress_marker_ids, @zone_ids = Array.new(9) {Set.new}
         @all_updated_at = send_request_params
         begin
@@ -165,7 +165,6 @@ class ExternalDeviceController < ApplicationController
             people: @people,
             topics: @topics,
             progress_markers: @progress_markers,
-            uploaded_files: @uploaded_files,
             reports: @reports
         }
         save_data_in_file send_message
@@ -175,7 +174,7 @@ class ExternalDeviceController < ApplicationController
         @all_data.write send_message
       ensure
         @all_data.close
-        [@users, @geo_states, @languages, @reports, @uploaded_files,
+        [@users, @geo_states, @languages, @reports,
          @people, @topics, @progress_markers, @errors].each {|file| file.delete}
         ActiveRecord::Base.connection.close
       end
@@ -351,6 +350,7 @@ class ExternalDeviceController < ApplicationController
                          admin: external_user.admin,
                          national_curator: external_user.national_curator,
                          role_description: external_user.role_description,
+                         curator_prompted: external_user.curator_prompted.to_i,
 
                          geo_state_ids: external_user.geo_state_ids,
                          spoken_language_ids: external_user.spoken_language_ids,
@@ -480,7 +480,7 @@ class ExternalDeviceController < ApplicationController
                              poetry_print: language.poetry_print,
                              oral_traditions_print: language.oral_traditions_print,
                              champion_id: language.champion_id,
-                             champion_prompted: language.champion_prompted,
+                             champion_prompted: language.champion_prompted.to_i,
 
                              updated_at: language.updated_at.to_i,
                              last_changed: 'online'
