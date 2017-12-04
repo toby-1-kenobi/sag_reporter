@@ -124,7 +124,8 @@ class ExternalDeviceController < ApplicationController
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
-          User.select(:id, :name, :updated_at).collect.each {|user| send_user_name(user) if user.id != external_user.id}
+          User.select(:id, :name, :updated_at).collect
+              .each {|user| send_user_name(user) if user.id != external_user.id} if external_user.trusted?
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
@@ -141,7 +142,7 @@ class ExternalDeviceController < ApplicationController
           end
         end
         begin
-          Person.all.each {|person| send_person person}
+          Person.all.each {|person| send_person person} if external_user.trusted?
           Topic.all.each {|topic| send_topic topic unless topic.hide_for?(external_user)}
           ProgressMarker.all.each {|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
           ActiveRecord::Base.connection.query_cache.clear
@@ -199,17 +200,21 @@ class ExternalDeviceController < ApplicationController
     begin
       uploaded_file_ids = get_uploaded_file_params['uploaded_files'].map {|key, _| key.to_i}
       send_message = []
-      UploadedFile.find(uploaded_file_ids).each do |uploaded_file|
+      UploadedFile.includes(:report).find(uploaded_file_ids).each do |uploaded_file|
         image_data = if uploaded_file&.ref.file.exists?
                       Base64.encode64(uploaded_file.ref.read)
                     else
                       ""
                     end
-        send_message << {
-            id: uploaded_file.id,
-            data: image_data,
-            updated_at: uploaded_file.updated_at.to_i
-        }
+        if external_user.trusted? || uploaded_file.report.reporter == external_user)
+          send_message << {
+              id: uploaded_file.id,
+              data: image_data,
+              updated_at: uploaded_file.updated_at.to_i
+          }
+        else
+          send_message << {"uploaded_file_#{uploaded_file.id}" => "permission denied"}
+        end
       end
       render json: send_message, status: :ok
     rescue => e
