@@ -354,7 +354,6 @@ class ExternalDeviceController < ApplicationController
 
                          geo_state_ids: external_user.geo_state_ids,
                          spoken_language_ids: external_user.spoken_language_ids,
-                         championed_language_ids: external_user.championed_language_ids,
                          updated_at: external_user.updated_at.to_i,
                          last_changed: 'online'
                      }.to_json)
@@ -480,6 +479,8 @@ class ExternalDeviceController < ApplicationController
                              mt_literacy_programs: language.mt_literacy_programs,
                              poetry_print: language.poetry_print,
                              oral_traditions_print: language.oral_traditions_print,
+                             champion_id: language.champion_id,
+                             champion_prompted: language.champion_prompted,
 
                              updated_at: language.updated_at.to_i,
                              last_changed: 'online'
@@ -562,12 +563,6 @@ class ExternalDeviceController < ApplicationController
   def send_report(report)
     begin
       if @report_ids.add?(report.id) && check_send_data(@reports, report, @all_updated_at[:reports])
-        impact_report_data = Hash.new
-        impact_report_data = {
-            progress_marker_ids: report.impact_report.progress_marker_ids,
-            shareable: report.impact_report.shareable,
-            translation_impact: report.impact_report.translation_impact,
-        } if report.impact_report
         @reports.write({
                            id: report.id,
                            reporter_id: report.reporter_id,
@@ -578,9 +573,6 @@ class ExternalDeviceController < ApplicationController
                            needs_church: report.needs_church,
                            event_id: report.event_id,
                            geo_state_id: report.geo_state_id,
-                           planning_report_id: report.planning_report_id,
-                           impact_report_id: report.impact_report_id,
-                           challenge_report_id: report.challenge_report_id,
                            status: report.status,
                            sub_district_id: report.sub_district_id,
                            location: report.location,
@@ -589,6 +581,12 @@ class ExternalDeviceController < ApplicationController
                            significant: report.significant,
 
                            report_date: report.report_date.strftime("%Y-%m-%d"),
+                           planning_report: !!report.planning_report_id,
+                           impact_report: !!report.impact_report_id,
+                           challenge_report: !!report.challenge_report_id,
+                           progress_marker_ids: report.impact_report&.progress_marker_ids,
+                           shareable: report.impact_report&.shareable,
+                           translation_impact: report.impact_report&.translation_impact,
                            picture_ids: report.picture_ids,
                            language_ids: report.language_ids,
                            observer_ids: report.observer_ids,
