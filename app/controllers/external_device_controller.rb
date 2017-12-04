@@ -407,7 +407,7 @@ class ExternalDeviceController < ApplicationController
         @zones.write({
                          id: zone.id,
                          name: zone.name,
-                         pm_description_type: zone.pm_description_type,
+                         pm_description_type: Zone.pm_description_types[zone.pm_description_type],
 
                          updated_at: zone.updated_at.to_i,
                          last_changed: 'online'
@@ -546,7 +546,7 @@ class ExternalDeviceController < ApplicationController
                                     name: progress_marker.name,
                                     topic_id: progress_marker.topic_id,
                                     weight: progress_marker.weight,
-                                    status: progress_marker.status,
+                                    status: ProgressMarker.statuses[progress_marker.status],
                                     number: progress_marker.number,
 
                                     description: progress_marker.description_for(external_user),
