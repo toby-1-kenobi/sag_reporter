@@ -47,7 +47,7 @@ module LanguagesHelper
       end
       if lang_check_list.any?
         lang_check_list.each do |marker_number|
-          marker = markers.find_by_number(marker_number)
+          marker = FinishLineMarker.find_by_number(marker_number)
           flp = lang.finish_line_progresses.find_or_create_by(finish_line_marker: marker)
           table[marker][flp.category] += 1
         end

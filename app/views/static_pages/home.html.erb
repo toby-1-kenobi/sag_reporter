@@ -58,6 +58,11 @@
           <i class="material-icons">collections_bookmark</i>
           Zoom to NT statistics
       <% end %>
+      <% link_path = logged_in_user.national? ? nation_path({tab: 'languages', flm: 6, flmfilter: 'needy'}) : zone_path(logged_in_user.zones.first, {tab: 'languages', flm: 6, flmfilter: 'needy'}) %>
+      <%= link_to link_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
+        <i class="material-icons">watch_later</i>
+        Countdown to Zero
+      <% end %>
     </div>
   </div>
 

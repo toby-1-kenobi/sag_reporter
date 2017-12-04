@@ -19,6 +19,7 @@ class ZonesController < ApplicationController
     @filters = {since: 3.month.ago.strftime('%d %B, %Y'), until: Date.today.strftime('%d %B, %Y')}
     @tab = params[:tab]
     @flm = params[:flm]
+    @flm_filter = params[:flmfilter]
   end
 
   def reports
@@ -40,6 +41,7 @@ class ZonesController < ApplicationController
     @languages = Language.includes(:family, {finish_line_progresses: :finish_line_marker}).all
     @tab = params[:tab]
     @flm = params[:flm]
+    @flm_filter = params[:flmfilter]
   end
 
   def national_outcomes_chart
