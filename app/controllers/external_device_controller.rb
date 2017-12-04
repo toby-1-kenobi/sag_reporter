@@ -573,7 +573,7 @@ class ExternalDeviceController < ApplicationController
                            needs_church: report.needs_church,
                            event_id: report.event_id,
                            geo_state_id: report.geo_state_id,
-                           status: report.status,
+                           status: Report.statuses[report.status],
                            sub_district_id: report.sub_district_id,
                            location: report.location,
                            client: report.client,
