@@ -55,7 +55,7 @@ class ExternalDeviceController < ApplicationController
       logger.error "Device not registered"
       render json: {user: user.id, status: "OTP", error: "Device not registered, register with OTP"}, status: :created
     rescue => e
-      send_message = {error: e.to_s, where: e.backtrace.to_s}
+      send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       logger.error send_message
       render json: send_message, status: :internal_server_error
     end
@@ -99,7 +99,7 @@ class ExternalDeviceController < ApplicationController
       logger.debug 'database key send'
       render json: {key: database_key}, status: :ok
     rescue => e
-      send_message = {error: e.to_s, where: e.backtrace.to_s}
+      send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       logger.error send_message
       render json: send_message, status: :internal_server_error
     end
@@ -124,7 +124,7 @@ class ExternalDeviceController < ApplicationController
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
-          User.select(:id, :name, :updated_at).collect
+          User.select(:id, :name, :mother_tongue_id, :updated_at).collect
               .each {|user| send_user_name(user) if user.id != external_user.id} if external_user.trusted?
           ActiveRecord::Base.connection.query_cache.clear
         end
@@ -169,7 +169,7 @@ class ExternalDeviceController < ApplicationController
         }
         save_data_in_file send_message
       rescue => e
-        send_message = {error: e.to_s, where: e.backtrace.to_s}
+        send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
         logger.error send_message
         @all_data.write send_message
       ensure
@@ -189,7 +189,7 @@ class ExternalDeviceController < ApplicationController
       end
       send_file get_file_params['file_path'], status: :ok
     rescue => e
-      send_message = {error: e.to_s, where: e.backtrace.to_s}
+      send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       logger.error send_message
       render json: send_message, status: :internal_server_error
     end
@@ -217,7 +217,7 @@ class ExternalDeviceController < ApplicationController
       end
       render json: send_message, status: :ok
     rescue => e
-      send_message = {error: e.to_s, where: e.backtrace.to_s}
+      send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       logger.error send_message
       render json: send_message, status: :internal_server_error
     end
@@ -241,7 +241,7 @@ class ExternalDeviceController < ApplicationController
       logger.debug send_message
       render json: send_message, status: :created
     rescue => e
-      send_message = {error: e.to_s, where: e.backtrace.to_s}
+      send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       logger.error send_message
       render json: send_message, status: :internal_server_error
     end
@@ -359,7 +359,7 @@ class ExternalDeviceController < ApplicationController
                      }.to_json)
       end
     rescue => e
-      error_message = {error: e.to_s, where: e.backtrace.to_s}
+      error_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       @errors.write error_message
     end
   end
@@ -377,7 +377,7 @@ class ExternalDeviceController < ApplicationController
                      }.to_json)
       end
     rescue => e
-      error_message = {error: e.to_s, where: e.backtrace.to_s}
+      error_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       @errors.write error_message
     end
   end
@@ -398,7 +398,7 @@ class ExternalDeviceController < ApplicationController
                           }.to_json)
       end
     rescue => e
-      error_message = {error: e.to_s, where: e.backtrace.to_s}
+      error_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       @errors.write error_message
     end
   end
@@ -416,7 +416,7 @@ class ExternalDeviceController < ApplicationController
                      }.to_json)
       end
     rescue => e
-      error_message = {error: e.to_s, where: e.backtrace.to_s}
+      error_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       @errors.write error_message
     end
   end
@@ -489,7 +489,7 @@ class ExternalDeviceController < ApplicationController
                          }.to_json)
       end
     rescue => e
-      error_message = {error: e.to_s, where: e.backtrace.to_s}
+      error_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       @errors.write error_message
     end
   end
@@ -515,7 +515,7 @@ class ExternalDeviceController < ApplicationController
                       }.to_json)
       end
     rescue => e
-      error_message = {error: e.to_s, where: e.backtrace.to_s}
+      error_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       @errors.write error_message
     end
   end
@@ -535,7 +535,7 @@ class ExternalDeviceController < ApplicationController
                       }.to_json)
       end
     rescue => e
-      error_message = {error: e.to_s, where: e.backtrace.to_s}
+      error_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       @errors.write error_message
     end
   end
@@ -557,7 +557,7 @@ class ExternalDeviceController < ApplicationController
                                 }.to_json)
       end
     rescue => e
-      error_message = {error: e.to_s, where: e.backtrace.to_s}
+      error_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       @errors.write error_message
     end
   end
@@ -597,7 +597,7 @@ class ExternalDeviceController < ApplicationController
                        }.to_json)
       end
     rescue => e
-      error_message = {error: e.to_s, where: e.backtrace.to_s}
+      error_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       @errors.write error_message
     end
   end
