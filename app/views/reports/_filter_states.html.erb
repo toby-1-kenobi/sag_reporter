@@ -3,6 +3,10 @@
   <span class="mdl-switch__label">Filter by state</span>
 </label>
 <div id="state-filters" <% if @filters[:states_filter].blank? %> class="hide" <% end %>>
+  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="all_states">
+    <%= check_box_tag "all_states", 'on', true, class: 'all_states_select mdl-checkbox__input' %>
+    <span class="mdl-switch__label">All</span>
+  </label>
   <% states.each do |state| %>
     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="states_<%= state.id %>">
       <%= check_box_tag "states[#{state.id}]", 'on', (!@filters[:states] or @filters[:states][state.id]), class: 'report-view-filter mdl-checkbox__input' %>

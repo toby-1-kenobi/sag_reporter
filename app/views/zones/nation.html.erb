@@ -7,17 +7,18 @@
   <li><%= link_to 'India', nation_path %></li>
 </ul>
 
+<% @tab ||= 'progress' %>
 <div class="mdl-tabs mdl-js-tabs">
   <div class="mdl-tabs__tab-bar">
-    <a href="#progress-tab" class="mdl-tabs__tab">Progress</a>
-    <a href="#zones-tab" class="mdl-tabs__tab">Zones</a>
-    <a href="#states-tab" class="mdl-tabs__tab">States</a>
-    <a href="#languages-tab" class="mdl-tabs__tab">Languages</a>
+    <a href="#progress-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'progress' %>">Progress</a>
+    <a href="#zones-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'zones' %>">Zones</a>
+    <a href="#states-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'states' %>">States</a>
+    <a href="#languages-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'languages' %>">Languages</a>
   </div>
-  <div class="mdl-tabs__panel is-active" id="progress-tab">
+  <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'progress' %>" id="progress-tab">
     <%= render 'languages/finish_line_summary', languages: Language.all %>
   </div>
-  <div class="mdl-tabs__panel" id="zones-tab">
+  <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'zones' %>" id="zones-tab">
     <ul class="zone-list mdl-list">
       <% Zone.find_each do |zone| %>
           <li class="mdl-list__item">
@@ -28,7 +29,7 @@
       <% end %>
     </ul>
   </div>
-  <div class="mdl-tabs__panel" id="states-tab">
+  <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'states' %>" id="states-tab">
     <ul class="state-list mdl-list">
       <% GeoState.find_each do |state| %>
           <li class="mdl-list__item">
@@ -39,7 +40,7 @@
       <% end %>
     </ul>
   </div>
-  <div class="mdl-tabs__panel" id="languages-tab">
+  <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'languages' %>" id="languages-tab">
 
     <%= render 'languages/list_filter_controls' %>
 
@@ -49,3 +50,32 @@
 
   </div>
 </div>
+
+<% if @flm %>
+    <script>
+      $(document).ready(function(){
+          $('.flm-option[data-flm-number="<%= @flm %>"]').trigger('click');
+      });
+    </script>
+<% end %>
+
+<% if @flm_filter == 'needy' %>
+  <script>
+      $(document).ready(function() {
+          $('.mdl-layout').on('mdl-componentupgraded', function (e) {
+              if ($(e.target).hasClass('mdl-layout')) {
+                  $('.mdl-checkbox[for*="flm-6-"]').each(function () {
+                      var checkbox = this;
+                      if (!checkbox.getAttribute('for').includes('select-all')) {
+                          if (checkbox.getAttribute('for').includes('possible_need') || checkbox.getAttribute('for').includes('expressed_need')) {
+                              checkbox.MaterialCheckbox.check();
+                          } else {
+                              checkbox.MaterialCheckbox.uncheck();
+                          }
+                      }
+                  });
+              }
+          });
+      });
+  </script>
+<% end %>

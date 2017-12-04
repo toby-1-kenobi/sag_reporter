@@ -5,6 +5,13 @@
 <div id="welcome-content">
 
   <div id="god-at-work-card" class="mdl-card mdl-shadow--2dp">
+    <div id="progress-chart-panel">
+      <div class="chart-title">Transformation</div>
+      <div id="national-progress-chart">
+        <div class="mdl-spinner mdl-js-spinner is-active"></div>
+        <%= link_to "progress chart", national_outcomes_chart_path, remote: true, method: 'GET', id: 'get-national-chart-link' %>
+      </div>
+    </div>
     <div class="mdl-card__title">
       God is at work
     </div>
@@ -24,6 +31,17 @@
   </div>
 
   <div id="down-to-zero-card" class="mdl-card mdl-shadow--2dp">
+    <div id="nt-pie-chart-panel">
+      <% nt_marker = FinishLineMarker.find_by_number 6 %>
+      <% nt_data = build_finish_line_table(Language.all, [nt_marker])[nt_marker] %>
+      <%= pie_chart nt_data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h,
+                    id: 'nt-pie-chart',
+                    width: '100px',
+                    height: '100px',
+                    library: {backgroundColor: "transparent", is3D: true, legend: {position: 'none'}},
+                    colors: colours_for_finish_line_data(nt_data.except(:nothing)) %>
+      <div class="chart-title">NT Availability</div>
+    </div>
     <div class="mdl-card__title">
       Down to zero
     </div>
@@ -34,6 +52,16 @@
       <%= link_to zones_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
         <i class="material-icons">search</i>
         Zoom in to my area
+      <% end %>
+      <% link_path = logged_in_user.national? ? nation_path({tab: 'languages', flm: 6}) : zone_path(logged_in_user.zones.first, {tab: 'languages', flm: 6}) %>
+      <%= link_to link_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
+          <i class="material-icons">collections_bookmark</i>
+          Zoom to NT statistics
+      <% end %>
+      <% link_path = logged_in_user.national? ? nation_path({tab: 'languages', flm: 6, flmfilter: 'needy'}) : zone_path(logged_in_user.zones.first, {tab: 'languages', flm: 6, flmfilter: 'needy'}) %>
+      <%= link_to link_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
+        <i class="material-icons">watch_later</i>
+        Countdown to Zero
       <% end %>
     </div>
   </div>
@@ -56,7 +84,11 @@
       <% edit_count = Edit.pending.for_curating(logged_in_user).count %>
   <% end %>
   <% if edit_count > 0 %>
-  <div id="curator-card" class="mdl-card mdl-shadow--2dp">
+  <div id="curator-card" class="mdl-card mdl-shadow--2dp"
+     <% if logged_in_user.admin? %>
+        style="grid-area: curator;"
+    <% end %>
+  >
     <div class="mdl-card__title">
       Curate Edits
     </div>
@@ -86,26 +118,6 @@
     </div>
   </div>
   <% end %>
-
-  <div id="nt-pie-chart-panel">
-    <div class="chart-title">NT Availability</div>
-    <% nt_marker = FinishLineMarker.find_by_number 6 %>
-    <% nt_data = build_finish_line_table(Language.all, [nt_marker])[nt_marker] %>
-    <%= pie_chart nt_data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h,
-                  id: 'nt-pie-chart',
-                  width: '200px',
-                  height: '150px',
-                  library: {backgroundColor: "transparent", is3D: true, legend: {position: 'none'}},
-                  colors: colours_for_finish_line_data(nt_data.except(:nothing)) %>
-  </div>
-
-  <div id="progress-chart-panel">
-    <div class="chart-title">Transformation</div>
-    <div id="national-progress-chart">
-      <div class="mdl-spinner mdl-js-spinner is-active"></div>
-      <%= link_to "progress chart", national_outcomes_chart_path, remote: true, method: 'GET', id: 'get-national-chart-link' %>
-    </div>
-  </div>
 
 </div>
 

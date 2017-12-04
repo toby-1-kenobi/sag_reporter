@@ -31,9 +31,7 @@
 
 <div class="reports-container mdl-grid">
   <% if @reports.any? %>
-      <% @reports.each do |report| %>
-          <%= render partial: 'reports/mdl_report', object: report %>
-      <% end %>
+      <%= render partial: 'reports/mdl_report', collection: @reports, cached: true %>
   <% else %>
       <%= render 'reports/empty_state' %>
   <% end %>

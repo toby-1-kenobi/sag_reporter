@@ -17,6 +17,9 @@ class ZonesController < ApplicationController
     @geo_states = @zone.geo_states
     @geo_states = @geo_states.where(id: logged_in_user.geo_states) unless logged_in_user.national?
     @filters = {since: 3.month.ago.strftime('%d %B, %Y'), until: Date.today.strftime('%d %B, %Y')}
+    @tab = params[:tab]
+    @flm = params[:flm]
+    @flm_filter = params[:flmfilter]
   end
 
   def reports
@@ -36,6 +39,9 @@ class ZonesController < ApplicationController
 
   def nation
     @languages = Language.includes(:family, {finish_line_progresses: :finish_line_marker}).all
+    @tab = params[:tab]
+    @flm = params[:flm]
+    @flm_filter = params[:flmfilter]
   end
 
   def national_outcomes_chart
