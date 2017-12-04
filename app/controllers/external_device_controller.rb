@@ -370,6 +370,8 @@ class ExternalDeviceController < ApplicationController
         @users.write({
                          id: user.id,
                          name: user.name,
+                         mother_tongue_id: user.mother_tongue_id,
+
                          updated_at: user.updated_at.to_i,
                          last_changed: 'online'
                      }.to_json)
