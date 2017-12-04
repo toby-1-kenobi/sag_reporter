@@ -205,7 +205,7 @@ class ExternalDeviceController < ApplicationController
                     else
                       ""
                     end
-        if external_user.trusted? || uploaded_file.report.reporter == external_user)
+        if external_user.trusted? || uploaded_file.report.reporter == external_user
           send_message << {
               id: uploaded_file.id,
               data: image_data,
