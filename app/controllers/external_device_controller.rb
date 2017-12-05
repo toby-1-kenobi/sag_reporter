@@ -385,7 +385,7 @@ class ExternalDeviceController < ApplicationController
   def send_geo_state(geo_state)
     begin
       if @geo_state_ids.add?(geo_state.id) && check_send_data(@geo_states, geo_state, @all_updated_at[:geo_states])
-        project_language_ids = geo_state.state_languages.select(&:project).map(&:id)
+        project_language_ids = geo_state.state_languages.select(&:project).map &:language_id
         @geo_states.write({
                               id: geo_state.id,
                               name: geo_state.name,
