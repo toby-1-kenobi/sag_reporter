@@ -210,12 +210,12 @@ class ExternalDeviceController < ApplicationController
                         ""
                       end
           if external_user.trusted? || uploaded_file.report.reporter == external_user
+            pictures_data.write(', ') unless pictures_data.length == 0
             pictures_data.write({
                 id: uploaded_file.id,
                 data: image_data,
                 updated_at: uploaded_file.updated_at.to_i
             }.to_json)
-            pictures_data.write(', ') unless pictures_data.length == 0
           else
             errors << {"uploaded_file_#{uploaded_file.id}" => "permission denied"}
           end
