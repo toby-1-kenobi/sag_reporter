@@ -173,9 +173,10 @@ class ExternalDeviceController < ApplicationController
         logger.error send_message
         @all_data.write send_message
       ensure
-        @all_data.close
+        [@all_data, @users, @geo_states, @languages, @reports,
+         @people, @topics, @progress_markers, @errors].each &:close
         [@users, @geo_states, @languages, @reports,
-         @people, @topics, @progress_markers, @errors].each {|file| file.delete}
+         @people, @topics, @progress_markers, @errors].each &:delete
         ActiveRecord::Base.connection.close
       end
     end
@@ -196,30 +197,41 @@ class ExternalDeviceController < ApplicationController
   end
 
   def get_uploaded_file
-    begin
-      uploaded_file_ids = get_uploaded_file_params['uploaded_files'].map {|key, _| key.to_i}
-      send_message = []
-      UploadedFile.includes(:report).find(uploaded_file_ids).each do |uploaded_file|
-        image_data = if uploaded_file&.ref.file.exists?
-                      Base64.encode64(uploaded_file.ref.read)
-                    else
-                      ""
-                    end
-        if external_user.trusted? || uploaded_file.report.reporter == external_user
-          send_message << {
-              id: uploaded_file.id,
-              data: image_data,
-              updated_at: uploaded_file.updated_at.to_i
-          }
-        else
-          send_message << {"uploaded_file_#{uploaded_file.id}" => "permission denied"}
+    @all_data = Tempfile.new
+    render json: {data: @all_data.path}, status: :ok
+    Thread.new do
+      begin
+        uploaded_file_ids = get_uploaded_file_params['uploaded_files'].map {|key, _| key.to_i}
+        pictures_data, errors = Array.new(2) {Tempfile.new}
+        UploadedFile.includes(:report).find(uploaded_file_ids).each do |uploaded_file|
+          image_data = if uploaded_file&.ref.file.exists?
+                        Base64.encode64(uploaded_file.ref.read)
+                      else
+                        ""
+                      end
+          if external_user.trusted? || uploaded_file.report.reporter == external_user
+            pictures_data.write({
+                id: uploaded_file.id,
+                data: image_data,
+                updated_at: uploaded_file.updated_at.to_i
+            }.to_json)
+          else
+            errors << {"uploaded_file_#{uploaded_file.id}" => "permission denied"}
+          end
         end
+        send_message = {
+            errors: errors,
+            pictures_data: pictures_data
+        }
+        save_data_in_file send_message
+      rescue => e
+        send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
+        logger.error send_message
+        @all_data.write send_message
+      ensure
+        [@all_data, pictures_data, errors].each &:close
+        [pictures_data, errors].each &:delete
       end
-      render json: send_message, status: :ok
-    rescue => e
-      send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
-      logger.error send_message
-      render json: send_message, status: :internal_server_error
     end
   end
 
