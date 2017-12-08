@@ -105,7 +105,7 @@ class StaticPagesController < ApplicationController
             text: 'Overview',
             icon: 'pageview',
             colour: 'grey',
-            category: 'other'
+            category: 'progress'
         },
         {
             condition: (logged_in_user.national?),
