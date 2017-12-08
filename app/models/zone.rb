@@ -22,6 +22,7 @@ class Zone < ActiveRecord::Base
     yaml_data = Rails.cache.fetch('national-outcome-chart-data', expires_in: 1.month) do
       from_date = 12.months.ago
       to_date = Date.today
+      tracked_language_count = StateLanguage.in_project.count
       table_data = Hash.new
       all_lps = LanguageProgress.includes({:progress_marker => :topic}, :progress_updates).all
       all_lps.find_each do |lp|
@@ -30,6 +31,10 @@ class Zone < ActiveRecord::Base
         lp.outcome_scores(from_date, to_date).each do |date, score|
           table_data[oa_name][date] += score
         end
+      end
+      # divide all the values in the table by the number of languages we are tracking
+      table_data.each do |oa, data|
+        data.each_key {|date| table_data[oa][date] /= tracked_language_count }
       end
       chart_data = Array.new
       table_data.each do |row_name, table_row|
