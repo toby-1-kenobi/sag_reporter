@@ -1,12 +1,13 @@
+<% chart_data = Zone.national_outcome_chart_data %>
 $('#national-progress-chart').html(
-    '<%= j(line_chart Zone.national_outcome_chart_data,
-                  height: '180px',
+    '<%= j(line_chart chart_data[:data],
+                  height: '200px',
                   legend: false,
                   library: {
                     backgroundColor: "transparent",
                     legend: {position: 'none'},
-                    hAxis: { textPosition: 'none' },
                     vAxis: { textPosition: 'none' }
                   }
           ) %>'
 );
+$('.language-count').html('<%= chart_data[:language_count] %>');

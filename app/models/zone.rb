@@ -41,7 +41,8 @@ class Zone < ActiveRecord::Base
         chart_row = {name: row_name, data: table_row}
         chart_data.push(chart_row)
       end
-      YAML::dump(chart_data)
+
+      YAML::dump({language_count: tracked_language_count, data: chart_data})
     end
     YAML::load(yaml_data)
   end
