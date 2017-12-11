@@ -51,7 +51,7 @@ class StaticPagesController < ApplicationController
             category: 'report'
         },
         {
-            condition: true,
+            condition: (logged_in_user.trusted?),
             path: tag_impact_reports_path,
             text: 'Tag impact reports',
             icon: 'label',
@@ -60,7 +60,7 @@ class StaticPagesController < ApplicationController
             category: 'progress'
         },
         {
-            condition: true,
+            condition: (logged_in_user.trusted?),
             path: select_to_assess_path,
             text: 'Assess progress marker levels',
             icon: 'check_circle',

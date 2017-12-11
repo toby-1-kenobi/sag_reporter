@@ -21,6 +21,10 @@ class ImpactReportsController < ApplicationController
     redirect_to root_path unless logged_in_user.admin?
   end
 
+  before_action only: [:tag] do
+    redirect_to root_path unless logged_in_user.trusted?
+  end
+
   def show
   	@report = ImpactReport.find(params[:id])
   end

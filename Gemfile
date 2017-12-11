@@ -136,8 +136,8 @@ group :test do
   #gem 'selenium-webdriver' #depends on an insecure version of rubyzip
 
   # Drives a headless browser (phantom js)
-  gem 'poltergeist'
-  gem 'phantomjs', require: 'phantomjs/poltergeist'
+  # gem 'poltergeist'
+  # gem 'phantomjs', require: 'phantomjs/poltergeist'
 
   # for js testing in capybara and cucumber
   #gem 'capybara-webkit'
