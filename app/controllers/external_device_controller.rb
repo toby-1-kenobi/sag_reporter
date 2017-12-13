@@ -63,12 +63,12 @@ class ExternalDeviceController < ApplicationController
 
   def send_otp
     full_params = send_otp_params
-    users_device = ExternalDevice.find_by user_id: full_params['user_id'], device_id: full_params['device_id']
+    user = User.find_by_phone full_params['user_phone']
+    users_device = ExternalDevice.find_by user_id: user&.id, device_id: full_params['device_id']
     unless users_device && !users_device.registered
       render json: {error: 'Device not found'}, status: :forbidden
       return
     end
-    user = User.find_by_id full_params['user_id']
     case full_params['target']
       when 'phone'
         success = send_otp_on_phone("+91#{user.phone}", user.otp_code)
@@ -264,7 +264,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_otp_params
     safe_params = [
-        :user_id,
+        :user_phone,
         :device_id,
         :target
     ]
