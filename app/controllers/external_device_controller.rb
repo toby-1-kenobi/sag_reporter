@@ -292,15 +292,15 @@ class ExternalDeviceController < ApplicationController
 
   def send_request_params
     safe_params = [
-        :users => [:updated_at],
-        :languages => [:updated_at],
-        :geo_states => [:updated_at],
-        :topics => [:updated_at],
-        :progress_markers => [:updated_at],
-        :reports => [:updated_at],
-        :uploaded_files => [:updated_at],
-        :people => [:updated_at],
-        :zones => [:updated_at]
+        :users => [:ua],
+        :languages => [:ua],
+        :geo_states => [:ua],
+        :topics => [:ua],
+        :progress_markers => [:ua],
+        :reports => [:ua],
+        :uploaded_files => [:ua],
+        :people => [:ua],
+        :zones => [:ua]
     ]
     params.require(:external_device).permit(safe_params)
   end
@@ -619,7 +619,7 @@ class ExternalDeviceController < ApplicationController
     return false unless object
     offline_updated_at = send_params
     offline_updated_at &&= offline_updated_at[object.id.to_s]
-    offline_updated_at &&= offline_updated_at[:updated_at]
+    offline_updated_at &&= offline_updated_at[:ua]
     if offline_updated_at
       if object.updated_at.to_i == offline_updated_at
         return false
