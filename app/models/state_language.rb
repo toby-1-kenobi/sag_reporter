@@ -30,47 +30,57 @@ class StateLanguage < ActiveRecord::Base
     end
     options[:to_date] ||= Date.today
 
-    # this hash for one less db query
-    outcome_area_ids = Hash.new
+    yaml_table_data = Rails.cache.fetch(
+        "outcome_table_data_#{id}_#{options[:from_date].year}-#{options[:from_date].month}_#{options[:to_date].year}-#{options[:to_date].month}",
+        expires_in: 2.weeks
+    ) do
 
-    table = Hash.new
-    table['content'] = Hash.new
-    table['Totals'] = Hash.new {0}
+      # this hash for one less db query
+      outcome_area_ids = Hash.new
 
-    all_lps = language_progresses.includes({:progress_marker => :topic}, :progress_updates)
-    all_lps.each do |lp|
-      unless lp.progress_marker.topic.hide_for?(user)
-        oa_name = lp.progress_marker.topic.name
-        outcome_area_ids[oa_name] ||= lp.progress_marker.topic_id
-        table['content'][oa_name] ||= Hash.new {0}
-        lp.outcome_scores(options[:from_date], options[:to_date]).each do |date, score|
-          table['content'][oa_name][date] += score
-          table['Totals'][date] += score
-        end
-      end
-    end
-    if table['content'].any?
-      # now express all scores as a percentage of the maximum attainable
-      total_divisor = 0
-      max_scores = max_outcome_scores
-      table['content'].each_key do |oa_name|
-        divisor = max_scores[outcome_area_ids[oa_name]]
-        if !(divisor > 0)
-          divisor = 1
-        end
-        total_divisor += divisor
-        if table['content'][oa_name]
-          table['content'][oa_name].each do |date, score|
-            table['content'][oa_name][date] = (score * 100).fdiv(divisor)
+      table = Hash.new
+      table['content'] = Hash.new
+      table['Totals'] = Hash.new {0}
+
+      all_lps = language_progresses.includes({:progress_marker => :topic}, :progress_updates)
+      all_lps.each do |lp|
+        unless lp.progress_marker.topic.hide_for?(user)
+          oa_name = lp.progress_marker.topic.name
+          outcome_area_ids[oa_name] ||= lp.progress_marker.topic_id
+          table['content'][oa_name] ||= Hash.new {0}
+          lp.outcome_scores(options[:from_date], options[:to_date]).each do |date, score|
+            table['content'][oa_name][date] += score
+            table['Totals'][date] += score
           end
         end
       end
-      table['Totals'].each do |date, score|
-        table['Totals'][date] = (score * 100).fdiv(total_divisor)
+      if table['content'].any?
+        # now express all scores as a percentage of the maximum attainable
+        total_divisor = 0
+        max_scores = max_outcome_scores
+        table['content'].each_key do |oa_name|
+          divisor = max_scores[outcome_area_ids[oa_name]]
+          if !(divisor > 0)
+            divisor = 1
+          end
+          total_divisor += divisor
+          if table['content'][oa_name]
+            table['content'][oa_name].each do |date, score|
+              table['content'][oa_name][date] = (score * 100).fdiv(divisor)
+            end
+          end
+        end
+        table['Totals'].each do |date, score|
+          table['Totals'][date] = (score * 100).fdiv(total_divisor)
+        end
       end
-      return table
+      YAML::dump(table)
+    end
+    table = YAML::load(yaml_table_data)
+    if table['content'].any?
+      table
     else
-      return nil
+      nil
     end
   end
 
