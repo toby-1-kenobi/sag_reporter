@@ -85,7 +85,7 @@ email_confirmed:
   email_confirmed: true
   email: "coolsandeepkr@gmail.com"
 
-<% 35.times do |i| %>
+<% 15.times do |i| %>
 user-<%= i %>:
   name: <%= Faker::Name.name %>
   phone: <%= Faker::Number.number(10) %>
