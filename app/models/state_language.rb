@@ -32,7 +32,8 @@ class StateLanguage < ActiveRecord::Base
 
     yaml_table_data = Rails.cache.fetch(
         "outcome_table_data_#{id}_#{options[:from_date].year}-#{options[:from_date].month}_#{options[:to_date].year}-#{options[:to_date].month}",
-        expires_in: 2.weeks
+        expires_in: 2.weeks,
+        backup: true
     ) do
 
       # this hash for one less db query
@@ -130,7 +131,7 @@ class StateLanguage < ActiveRecord::Base
   # get percentage score for each outcome area at two dates
   def transformation(user, date_1, date_2)
     # associate progress marker ids with Outcome Area names
-    pm_data = Rails.cache.fetch('pm_data', expires_in: 10.minutes) do
+    pm_data = Rails.cache.fetch('pm_data', expires_in: 1.day) do
       pm_oa_names = {}
       hidden_pms = []
       pm_weight = {}
@@ -158,7 +159,7 @@ class StateLanguage < ActiveRecord::Base
     # we need the max possible score for each outcome area to make our scores a percentage
     # this shouldn't change, but it's a bad idea to assume it wont,
     # but we don't want to have to calculate it every time we run this method so cache it.
-    max_scores = Rails.cache.fetch('max_scores', expires_in: 10.minutes) do
+    max_scores = Rails.cache.fetch('max_scores', expires_in: 1.day) do
       scores = {}
       Topic.find_each do |outcome_area|
         scores[outcome_area.name] = outcome_area.max_outcome_score

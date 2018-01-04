@@ -19,7 +19,7 @@ class Zone < ActiveRecord::Base
   end
 
   def self.national_outcome_chart_data
-    yaml_data = Rails.cache.fetch('national-outcome-chart-data', expires_in: 1.month) do
+    yaml_data = Rails.cache.fetch('national-outcome-chart-data', expires_in: 1.month, backup: true) do
       from_date = 12.months.ago
       to_date = Date.today
       tracked_language_count = StateLanguage.in_project.count
