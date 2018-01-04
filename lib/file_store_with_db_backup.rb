@@ -27,6 +27,7 @@ class FileStoreWithDbBackup < ActiveSupport::Cache::FileStore
   end
 
   # look for entries in the db and load them into the cache
+  # also clean up expired entries from the db
   def load_from_backup
     now = Time.now
     CacheBackup.where('expires > ? OR expires IS NULL', now).find_each do |entry|
@@ -37,6 +38,7 @@ class FileStoreWithDbBackup < ActiveSupport::Cache::FileStore
         write(entry.name, entry.value)
       end
     end
+    CacheBackup.where('expires <= ?', now).destroy_all
   end
 
 end
