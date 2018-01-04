@@ -22,4 +22,10 @@ describe FileStoreWithDbBackup do
     _(backup.expires).must_be_close_to 1.day.from_now, 0.01
   end
 
+  it 'deletes from the db' do
+    store.write(key, payload, backup: true)
+    store.delete(key)
+    _(CacheBackup).wont_be :exists?, {name: key}
+  end
+
 end
