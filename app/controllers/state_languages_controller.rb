@@ -9,7 +9,8 @@ class StateLanguagesController < ApplicationController
   def outcomes
     @outcome_areas = Topic.all
     @languages_by_state = Hash.new
-    logged_in_user.geo_states.each do |geo_state|
+    accessible_states = logged_in_user.national? ? GeoState.all.order(:name) : logged_in_user.geo_states
+    accessible_states.each do |geo_state|
       @languages_by_state[geo_state] = geo_state.state_languages.includes(:language).in_project.to_a.sort!
     end
   end
