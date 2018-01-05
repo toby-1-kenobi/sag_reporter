@@ -32,14 +32,19 @@
 
   <div id="down-to-zero-card" class="mdl-card mdl-shadow--2dp">
     <div id="nt-pie-chart-panel">
-      <% nt_marker = FinishLineMarker.find_by_number 6 %>
-      <% nt_data = build_finish_line_table(Language.all, [nt_marker])[nt_marker] %>
-      <%= pie_chart nt_data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h,
+      <%
+        nt_data = Rails.cache.fetch('NT finish line data', expires_in: 3.days, backup: true) do
+          nt_marker = FinishLineMarker.find_by_number 6
+          data = build_finish_line_table(Language.all, [nt_marker])[nt_marker]
+          data.except(:nothing)
+        end
+      %>
+      <%= pie_chart nt_data.map{ |k, v| [k.to_s.humanize, v]}.to_h,
                     id: 'nt-pie-chart',
                     width: '100px',
                     height: '100px',
                     library: {backgroundColor: "transparent", is3D: true, legend: {position: 'none'}},
-                    colors: colours_for_finish_line_data(nt_data.except(:nothing)) %>
+                    colors: colours_for_finish_line_data(nt_data) %>
       <div class="chart-title">NT Availability</div>
     </div>
     <div class="mdl-card__title">
