@@ -30,7 +30,7 @@ class StateLanguage < ActiveRecord::Base
     end
     options[:to_date] ||= Date.today
 
-    yaml_table_data = Rails.cache.fetch(
+    table = Rails.cache.fetch(
         "outcome_table_data_#{id}_#{options[:from_date].year}-#{options[:from_date].month}_#{options[:to_date].year}-#{options[:to_date].month}",
         expires_in: 2.weeks,
         backup: true
@@ -75,9 +75,8 @@ class StateLanguage < ActiveRecord::Base
           table['Totals'][date] = (score * 100).fdiv(total_divisor)
         end
       end
-      YAML::dump(table)
+      table
     end
-    table = YAML::load(yaml_table_data)
     if table['content'].any?
       table
     else

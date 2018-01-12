@@ -13,7 +13,7 @@ class FileStoreWithDbBackup < ActiveSupport::Cache::FileStore
     super(name, value, options)
     if options and options[:backup]
       backup = CacheBackup.find_or_create_by(name: name)
-      backup.value = value
+      backup.value = YAML::dump(value)
       if options[:expires_in]
         backup.expires = options[:expires_in].from_now
       end
@@ -33,9 +33,9 @@ class FileStoreWithDbBackup < ActiveSupport::Cache::FileStore
     CacheBackup.where('expires > ? OR expires IS NULL', now).find_each do |entry|
       if entry.expires.present?
         expires_in_seconds = entry.expires - now
-        write(entry.name, entry.value, epires_in: expires_in_seconds.seconds)
+        write(entry.name, YAML::load(entry.value), epires_in: expires_in_seconds.seconds)
       else
-        write(entry.name, entry.value)
+        write(entry.name, YAML::load(entry.value))
       end
     end
     CacheBackup.where('expires <= ?', now).destroy_all
