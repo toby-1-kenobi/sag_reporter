@@ -1,0 +1,25 @@
+<%#
+Display a table of languages that allow the user to edit
+any of the finish line markers on any language.
+    Assume languages to be displayed are held in @languages
+    Assume finish line markers to be used are held in @flms
+%>
+<table class="mdl-data-table mdl-js-data-table">
+  <colgroup>
+    <col id="language-column-name">
+    <% @flms.each do |flm| %>
+      <col id="language-column-flm-<%= flm.number %>">
+    <% end %>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Language name</th>
+      <% @flms.each do |flm| %>
+        <th><%= flm.name %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render partial: 'languages/flm_table_row', collection: @languages.order(:name) %>
+  </tbody>
+</table>

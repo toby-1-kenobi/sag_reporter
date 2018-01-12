@@ -37,11 +37,7 @@
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'languages' %>" id="languages-tab">
 
-    <%= render partial: 'languages/list_filter_controls', locals: {zone: @zone} %>
-
-    <ul class="languages mdl-list">
-      <%= render partial: 'languages/language', collection: @languages.order(:name) %>
-    </ul>
+    <%= render partial: 'languages/flm_table' %>
 
   </div>
 
