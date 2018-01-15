@@ -98,6 +98,9 @@ $(document).ready ->
     $("#finish-line-status-select-#{flmNum}").addClass('under').removeClass('hide')
     return
 
+  $('.filter-summary').on 'click', ->
+    $('.filter-choices').slideToggle()
+
   $('#champion-edit-button').on 'click', ->
     $('#champion-input-row').slideDown()
     return
