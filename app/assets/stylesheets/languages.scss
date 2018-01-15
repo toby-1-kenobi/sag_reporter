@@ -213,6 +213,15 @@ p.iso {
   }
 }
 
+.language-table {
+  .mdl-selectfield {
+    width: 200px;
+    .mdl-selectfield__list-option-box {
+      width: 300px;
+    }
+  }
+}
+
 .populations-list {
   max-width: 40em;
 }

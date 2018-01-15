@@ -1,10 +1,11 @@
+<%= render 'shared/mdl_selectfield_assets' %>
 <%#
 Display a table of languages that allow the user to edit
 any of the finish line markers on any language.
     Assume languages to be displayed are held in @languages
     Assume finish line markers to be used are held in @flms
 %>
-<table class="mdl-data-table mdl-js-data-table">
+<table class="language-table mdl-data-table mdl-js-data-table">
   <colgroup>
     <col id="language-column-name">
     <% @flms.each do |flm| %>
@@ -15,7 +16,7 @@ any of the finish line markers on any language.
     <tr>
       <th class="mdl-data-table__cell--non-numeric">Language name</th>
       <% @flms.each do |flm| %>
-        <th><%= flm.name %></th>
+        <th class="mdl-data-table__cell--non-numeric"><%= flm.name %></th>
       <% end %>
     </tr>
   </thead>
