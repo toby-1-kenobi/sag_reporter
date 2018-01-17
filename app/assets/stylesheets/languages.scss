@@ -218,6 +218,9 @@ p.iso {
 }
 
 .language-table {
+  tr.filters th {
+    vertical-align: top;
+  }
   .mdl-selectfield {
     width: 200px;
     .mdl-selectfield__list-option-box {

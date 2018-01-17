@@ -101,6 +101,17 @@ $(document).ready ->
   $('.filter-summary').on 'click', ->
     $('.filter-choices').slideToggle()
 
+  $('.filter-choices input').on 'change', ->
+    flmNum = $(this).attr('data-filter-trigger-label')
+    unchecked = $(this).closest('.filter-choices').find('input[type="checkbox"]:not(:checked)')
+    checked = $(this).closest('.filter-choices').find('input:checked[type="checkbox"]')
+    if unchecked.length == 0
+      $("##{flmNum}-filter-summary").text('Showing All')
+    else if checked.length == 0
+      $("##{flmNum}-filter-summary").text('Showing None')
+    else
+      $("##{flmNum}-filter-summary").text('Filtered')
+
   $('.language-row select').on 'change', ->
     newValue = $(this).val()
     flmNumber = $(this).attr('flm_number')
