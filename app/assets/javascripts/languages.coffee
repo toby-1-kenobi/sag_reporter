@@ -101,6 +101,13 @@ $(document).ready ->
   $('.filter-summary').on 'click', ->
     $('.filter-choices').slideToggle()
 
+  $('.language-row select').on 'change', ->
+    newValue = $(this).val()
+    flmNumber = $(this).attr('flm_number')
+    $(this).closest('.language-row').attr("data-flm-#{flmNumber}", newValue)
+    # force refiltering in case row should now be hidden
+    $("#flm-#{flmNumber}-filter-#{newValue}").trigger('change')
+
   $('#champion-edit-button').on 'click', ->
     $('#champion-input-row').slideDown()
     return

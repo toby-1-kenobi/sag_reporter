@@ -5,7 +5,7 @@
     #TODO: adjust for pending edits
   end
 %>
-<tr class="filterable-item"
+<tr class="language-row filterable-item"
     data-filter-label="<%= @flms.map{ |flm| "flm-#{flm.number}" }.join(' ') %>"
     <% finish_line_status.each do |flm_num, fl_status| %>
       data-flm-<%= flm_num %>="<%= fl_status %>"
@@ -20,7 +20,7 @@
         <% selectable_options = FinishLineProgress.statuses.to_a.map{ |t| [FinishLineProgress.human_of_status(t[0], flm.number), t[0]] }.select{ |x| x[0].present? } %>
         <%= select_tag "finish_line_status_#{flm_table_row.id}_#{flm.number}",
                        options_for_select(selectable_options, progress.status),
-                       {class: 'mdl-selectfield__select'} %>
+                       {class: 'mdl-selectfield__select', flm_number: flm.number} %>
       </div>
     </td>
   <% end %>
