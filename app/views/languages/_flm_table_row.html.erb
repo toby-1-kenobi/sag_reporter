@@ -1,4 +1,16 @@
-<tr>
+<%
+  finish_line_status = {}
+  flm_table_row.finish_line_progresses.each do |flp|
+    finish_line_status[flp.finish_line_marker.number] = flp.status
+    #TODO: adjust for pending edits
+  end
+%>
+<tr class="filterable-item"
+    data-filter-label="<%= @flms.map{ |flm| "flm-#{flm.number}" }.join(' ') %>"
+    <% finish_line_status.each do |flm_num, fl_status| %>
+      data-flm-<%= flm_num %>="<%= fl_status %>"
+    <% end %>
+>
   <td class="mdl-data-table__cell--non-numeric"><%= link_to "#{flm_table_row.name} [#{flm_table_row.iso}]", flm_table_row %></td>
   <% @flms.each do |flm| %>
     <% progress = flm_table_row.finish_line_progresses.find_by(finish_line_marker: flm) || FinishLineProgress.create_by(language: flm_table_row, finish_line_marker: flm) %>

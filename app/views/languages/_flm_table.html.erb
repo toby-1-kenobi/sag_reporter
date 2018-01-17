@@ -31,8 +31,9 @@ any of the finish line markers on any language.
               <li class="mdl-list__item filter-choice-<%= status %>">
                 <span class="mdl-list__item-primary-content"><%= human_status %></span>
                 <span class="mdl-list__item-secondary-action">
-                  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-switch-1">
-                    <input type="checkbox" id="flm-<% flm.number %>-filter-<%= status %>" class="mdl-checkbox__input" checked />
+                  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="flm-<%= flm.number %>-filter-<%= status %>">
+                    <input type="checkbox" id="flm-<%= flm.number %>-filter-<%= status %>" class="mdl-checkbox__input filter-trigger"
+                           data-filter-trigger-label="flm-<%= flm.number %>" value="<%= status %>" checked />
                   </label>
                 </span>
               </li>
