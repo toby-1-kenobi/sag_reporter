@@ -98,6 +98,15 @@ $(document).ready ->
     $("#finish-line-status-select-#{flmNum}").addClass('under').removeClass('hide')
     return
 
+  $('#flm-filter-reset').on 'click', ->
+    # gather one checkbox from each flm to trigger change for refilter
+    changedBoxes = {}
+    $('.language-table tr.filters .mdl-js-checkbox:not(.is-checked)').each ->
+      this.MaterialCheckbox.check()
+      changedBoxes[$(this).find('input').attr('data-filter-trigger-label')] = this
+    for flm, checkbox of changedBoxes
+      $(checkbox).find('input').trigger 'change'
+
   $('.filter-summary').on 'click', ->
     $('.filter-choices').slideToggle()
 
