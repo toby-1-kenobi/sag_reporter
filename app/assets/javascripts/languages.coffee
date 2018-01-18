@@ -98,6 +98,9 @@ $(document).ready ->
     $("#finish-line-status-select-#{flmNum}").addClass('under').removeClass('hide')
     return
 
+  $('#visible-flms-dialog-trigger').on 'click', ->
+    document.querySelector('#dialog-visible-flms').showModal()
+
   $('#flm-filter-reset').on 'click', ->
     # gather one checkbox from each flm to trigger change for refilter
     changedBoxes = {}

@@ -5,6 +5,7 @@ any of the finish line markers on any language.
     Assume languages to be displayed are held in @languages
     Assume finish line markers to be used are held in @flms
 %>
+<button id="visible-flms-dialog-trigger" class="mdl-button mdl-js-button">Visible markers</button>
 <button id="flm-filter-reset" class="mdl-button mdl-js-button">Reset all filters</button>
 <table class="language-table mdl-data-table mdl-js-data-table">
   <colgroup>
@@ -49,3 +50,21 @@ any of the finish line markers on any language.
     <%= render partial: 'languages/flm_table_row', collection: @languages.order(:name) %>
   </tbody>
 </table>
+
+<dialog id="dialog-visible-flms" class="mdl-dialog">
+  <h4 class="mdl-dialog__title">Visible Finish Line Markers</h4>
+  <div class="mdl-dialog__content">
+    <ul class="mdl-list">
+      <% @flms.each do |flm| %>
+        <li class="mdl-list__item">
+          <span class="mdl-list__item-primary-content"><%= flm.name %></span>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button type="button" class="mdl-button close">Done</button>
+  </div>
+</dialog>
+
+<%= render 'shared/dialog_activation' %>
