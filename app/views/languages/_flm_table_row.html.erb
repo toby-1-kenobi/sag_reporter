@@ -11,7 +11,7 @@
       data-flm-<%= flm_num %>="<%= fl_status %>"
     <% end %>
 >
-  <td class="mdl-data-table__cell--non-numeric"><%= link_to "#{flm_table_row.name} [#{flm_table_row.iso}]", flm_table_row %></td>
+  <td class="mdl-data-table__cell--non-numeric"><%= link_to "<span class=\"language-name\">#{flm_table_row.name}</span><br/><em>#{flm_table_row.iso}</em>".html_safe, flm_table_row %></td>
   <% @flms.each do |flm| %>
     <% progress = flm_table_row.finish_line_progresses.find_by(finish_line_marker: flm) || FinishLineProgress.create_by(language: flm_table_row, finish_line_marker: flm) %>
     <td class="mdl-data-table__cell--non-numeric filterable-item"
