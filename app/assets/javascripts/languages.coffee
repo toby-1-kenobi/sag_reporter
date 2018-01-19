@@ -111,7 +111,7 @@ $(document).ready ->
       $(checkbox).find('input').trigger 'change'
 
   $('.filter-summary').on 'click', ->
-    $('.filter-choices').slideToggle()
+    $(this).parent().find('.filter-choices').slideToggle()
 
   $('.filter-choices input').on 'change', ->
     flmNum = $(this).attr('data-filter-trigger-label')

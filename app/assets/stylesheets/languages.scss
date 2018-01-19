@@ -224,6 +224,12 @@ p.iso {
   tr.filters th {
     vertical-align: top;
   }
+  tr:nth-child(odd) {
+    background-color: #f0f0f0;
+  }
+  td {
+    padding: 0 18px !important;
+  }
   .mdl-selectfield {
     width: 200px;
     .mdl-selectfield__list-option-box {

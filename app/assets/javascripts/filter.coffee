@@ -14,7 +14,6 @@ checkRefilter = (refilter, element) ->
   return
 
 applyFilter = (filterValues, filterLabel) ->
-  console.log "#{filterLabel} #{filterValues.toArray()}"
   if filterLabel
     filterableItems = $('.filterable-item[data-filter-label*=' + filterLabel + ']')
     filterOut = 'filter-out-' + filterLabel
