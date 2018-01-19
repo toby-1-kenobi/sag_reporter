@@ -11,20 +11,28 @@ any of the finish line markers on any language.
   <colgroup>
     <col id="language-column-name">
     <% @flms.each do |flm| %>
-      <col id="language-column-flm-<%= flm.number %>">
+      <col id="language-column-flm-<%= flm.number %>"
+      >
     <% end %>
   </colgroup>
   <thead>
     <tr>
       <th class="mdl-data-table__cell--non-numeric">Language name</th>
       <% @flms.each do |flm| %>
-        <th class="mdl-data-table__cell--non-numeric"><%= flm.name %></th>
+        <th class="mdl-data-table__cell--non-numeric filterable-item"
+            data-filter-label="flm-visible"
+            data-flm-visible="<%= flm.number %>">
+          <%= flm.name %>
+        </th>
       <% end %>
     </tr>
   <tr class="filters">
     <th>Filters:</th>
     <% @flms.each do |flm| %>
-      <th id="flm-filter-<%= flm.number %>" class="mdl-data-table__cell--non-numeric">
+      <th id="flm-filter-<%= flm.number %>"
+          class="mdl-data-table__cell--non-numeric filterable-item filter-inverse"
+          data-filter-label="flm-visible"
+          data-flm-visible="<%= flm.number %>">
         <button id="flm-<%= flm.number %>-filter-summary" class="filter-summary mdl-button mdl-js-button mdl-button--accent">Showing all</button>
         <ul class="mdl-list filter-choices hide">
           <% FinishLineProgress.statuses.each_key do |status| %>
@@ -58,6 +66,12 @@ any of the finish line markers on any language.
       <% @flms.each do |flm| %>
         <li class="mdl-list__item">
           <span class="mdl-list__item-primary-content"><%= flm.name %></span>
+          <span class="mdl-list__item-secondary-action">
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="flm-<%= flm.number %>-column-visible">
+              <input type="checkbox" id="flm-<%= flm.number %>-column-visible" class="mdl-switch__input filter-trigger"
+                     data-filter-trigger-label="flm-visible" value="<%= flm.number %>" <%= 'checked' if @visible_flms.include? flm.number %> />
+            </label>
+          </span>
         </li>
       <% end %>
     </ul>

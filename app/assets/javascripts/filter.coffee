@@ -14,6 +14,7 @@ checkRefilter = (refilter, element) ->
   return
 
 applyFilter = (filterValues, filterLabel) ->
+  console.log "#{filterLabel} #{filterValues.toArray()}"
   if filterLabel
     filterableItems = $('.filterable-item[data-filter-label*=' + filterLabel + ']')
     filterOut = 'filter-out-' + filterLabel
@@ -54,9 +55,15 @@ applyFilter = (filterValues, filterLabel) ->
     $(this).addClass 'was-checked'
     checkRefilter refilter, $(this)
     return
-  $('.filterable-item.hide input:checkbox:checked').each ->
+  $('.filterable-item.hide:not(.filter-inverse) input:checkbox:checked').each ->
     $(this).prop 'checked', false
     $(this).addClass 'was-checked'
+    checkRefilter refilter, $(this)
+    return
+  # in some cases hidden checkbozxes should be checked
+  $('.filterable-item.hide.filter-inverse input:checkbox:not(:checked)').each ->
+    $(this).prop 'checked', true
+    $(this).addClass 'was-unchecked'
     checkRefilter refilter, $(this)
     return
 
@@ -70,6 +77,12 @@ applyFilter = (filterValues, filterLabel) ->
   $('.filterable-item:not(.hide) input:checkbox.was-checked').each ->
     $(this).prop 'checked', true
     $(this).removeClass 'was-checked'
+    checkRefilter refilter, $(this)
+    return
+  # and the ones that used to be unchecked should be checked again
+  $('.filterable-item:not(.hide) input:checkbox.was-unchecked').each ->
+    $(this).prop 'checked', false
+    $(this).removeClass 'was-unchecked'
     checkRefilter refilter, $(this)
     return
 
