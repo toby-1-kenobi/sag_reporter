@@ -19,12 +19,12 @@
     <td class="mdl-data-table__cell--non-numeric filterable-item"
         data-filter-label="flm-visible"
         data-flm-visible="<%= flm.number %>">
-      <div class="mdl-selectfield mdl-js-selectfield">
+      <div class="mdl-selectfield mdl-js-selectfield" data-finish-line-category="<%= progress.category.to_s %>">
         <%# generate options for each select box removing any nil options returned by human_of_status %>
         <% selectable_options = FinishLineProgress.statuses.to_a.map{ |t| [FinishLineProgress.human_of_status(t[0], flm.number), t[0]] }.select{ |x| x[0].present? } %>
         <%= select_tag "finish_line_status_#{flm_table_row.id}_#{flm.number}",
                        options_for_select(selectable_options, progress.status),
-                       {class: 'mdl-selectfield__select', flm_number: flm.number} %>
+                       {class: "mdl-selectfield__select", flm_number: flm.number} %>
       </div>
     </td>
   <% end %>

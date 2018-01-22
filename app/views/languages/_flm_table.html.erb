@@ -5,9 +5,16 @@ any of the finish line markers on any language.
     Assume languages to be displayed are held in @languages
     Assume finish line markers to be used are held in @flms
 %>
-<button id="visible-flms-dialog-trigger" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Visible markers</button>
-<button id="flm-filter-reset" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Reset all filters</button>
-<table class="language-table mdl-data-table mdl-js-data-table">
+<div class="language-table-controls">
+  <button id="visible-flms-dialog-trigger" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">Visible markers</button>
+  <button id="flm-filter-reset" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">Reset all filters</button>
+</div>
+
+<!-- include a mapping of finish line status to category here in the table tag -->
+<!-- this will help the js assign the right colour to each cell when the value changes -->
+<table class="language-table mdl-data-table mdl-js-data-table"
+  <%= FinishLineProgress.statuses.keys.map{ |t| "data-flm-category__#{t}=\"#{FinishLineProgress.category(t)}\"" }.join(' ').html_safe %>
+>
   <colgroup>
     <col id="language-column-name">
     <% @flms.each do |flm| %>

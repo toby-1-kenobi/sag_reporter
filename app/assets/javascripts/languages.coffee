@@ -126,7 +126,9 @@ $(document).ready ->
 
   $('.language-row select').on 'change', ->
     newValue = $(this).val()
+    newCategory = $('.language-table').attr("data-flm-category__#{newValue}")
     flmNumber = $(this).attr('flm_number')
+    $(this).closest('.mdl-js-selectfield').attr('data-finish-line-category', newCategory)
     $(this).closest('.language-row').attr("data-flm-#{flmNumber}", newValue)
     # force refiltering in case row should now be hidden
     $("#flm-#{flmNumber}-filter-#{newValue}").trigger('change')
