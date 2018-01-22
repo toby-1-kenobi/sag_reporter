@@ -239,10 +239,17 @@ p.iso {
     }
     tr:hover {
       background-color: #e0e0e0 !important;
+      .flm-name {
+        display: block;
+      }
     }
   }
   td {
     padding: 0 18px !important;
+  }
+  .flm-name{
+    position: absolute;
+    display: none;
   }
   .mdl-selectfield {
     width: 200px;
