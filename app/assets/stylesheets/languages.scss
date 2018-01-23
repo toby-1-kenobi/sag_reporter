@@ -245,16 +245,16 @@ p.iso {
     }
   }
   td {
-    padding: 0 18px !important;
+    padding: 0 14px !important;
   }
   .flm-name{
     position: absolute;
     display: none;
   }
   .mdl-selectfield {
-    width: 200px;
+    width: 10em;
     .mdl-selectfield__list-option-box {
-      width: 400px;
+      width: 13em;
       li[data-value="0"] {
         background-color: lightgrey;
         &:hover {
