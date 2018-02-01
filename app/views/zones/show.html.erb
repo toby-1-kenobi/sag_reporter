@@ -20,7 +20,7 @@
   </div>
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'fls' %>" id="progress-tab">
-    <%= render 'languages/finish_line_summary', languages: @zone.languages.uniq.includes(:finish_line_progresses) %>
+    <%= render 'languages/finish_line_summary', languages: @zone.languages.includes(:finish_line_progresses).uniq %>
   </div>
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'states' %>" id="states-tab">
