@@ -69,7 +69,7 @@
     <div class="mdl-cell mdl-cell--3-col">
       <div class="form-section-header"><%= @translations['relates_languages'] %></div>
       <ul class="mdl-list">
-      <% @project_languages.each do |language| %>
+      <% @state_languages.each do |language| %>
         <li class="filterable-item hide mdl-list__item" data-filter-label="geo-state" data-geo-state="<%= language.geo_state_id %>">
           <span class="mdl-list__item-primary-content">
             <%= language.language_name %>
