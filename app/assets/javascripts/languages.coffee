@@ -24,6 +24,9 @@ $(document).ready ->
       $("dialog[data-for=\"#{id}\"]").get(0).showModal()
     return
 
+  $('.language-table .flm-status-select select').on 'change', (event) ->
+    $(this).closest('form').submit()
+
   $('.finish-line-progress-icon').on 'click', ->
     id = this.id
     number = id.substring(id.lastIndexOf('-') + 1)

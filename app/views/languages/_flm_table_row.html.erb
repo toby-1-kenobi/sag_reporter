@@ -20,13 +20,15 @@
         data-filter-label="flm-visible"
         data-flm-visible="<%= flm.number %>">
       <div class="flm-name"><%= flm.name %></div>
-      <div class="mdl-selectfield mdl-js-selectfield" data-finish-line-category="<%= progress.category.to_s %>">
-        <%# generate options for each select box removing any nil options returned by simple_human_of_status %>
-        <% selectable_options = FinishLineProgress.statuses.to_a.map{ |t| [FinishLineProgress.simple_human_of_status(t[0], flm.number), t[0]] }.select{ |x| x[0].present? } %>
-        <%= select_tag "finish_line_status_#{flm_table_row.id}_#{flm.number}",
-                       options_for_select(selectable_options, progress.status),
-                       {class: "mdl-selectfield__select", flm_number: flm.number} %>
-      </div>
+      <%= form_tag set_flp_for_language_path(id: flm_table_row.id, marker: flm.number), method: 'patch', remote: true do %>
+        <div class="flm-status-select mdl-selectfield mdl-js-selectfield" data-finish-line-category="<%= progress.category.to_s %>">
+          <%# generate options for each select box removing any nil options returned by simple_human_of_status %>
+          <% selectable_options = FinishLineProgress.statuses.to_a.map{ |t| [FinishLineProgress.simple_human_of_status(t[0], flm.number), t[0]] }.select{ |x| x[0].present? } %>
+          <%= select_tag 'progress',
+                         options_for_select(selectable_options, progress.status),
+                         {class: "mdl-selectfield__select", flm_number: flm.number, id: "finish_line_status_#{flm_table_row.id}_#{flm.number}"} %>
+        </div>
+      <% end %>
     </td>
   <% end %>
 </tr>
