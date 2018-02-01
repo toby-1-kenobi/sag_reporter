@@ -15,6 +15,7 @@ class ZonesController < ApplicationController
     redirect_to zones_path unless logged_in_user.national? or logged_in_user.zones.include? @zone
     @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user).where(geo_states: {zone: @zone})
     @flms = FinishLineMarker.order(:number)
+    @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
     @visible_flms = [1, 2, 4, 5, 6, 7, 8, 9]
     @geo_states = @zone.geo_states
     @geo_states = @geo_states.where(id: logged_in_user.geo_states) unless logged_in_user.national?

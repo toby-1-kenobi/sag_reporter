@@ -1,8 +1,18 @@
 <%
-  finish_line_status = {}
-  flm_table_row.finish_line_progresses.each do |flp|
-    finish_line_status[flp.finish_line_marker.number] = flp.status
-    #TODO: adjust for pending edits
+  finish_line_status = {} # map finish line marker number to finish line progress status for this language
+  finish_line_category = {} # map finish line marker number to finish line progress category for this language
+  progresses = {}
+  flm_table_row.finish_line_progresses.each{ |prog| progresses[prog.finish_line_marker.number] = prog }
+  @flms.each do |flm|
+    flp = progresses[flm.number] || FinishLineProgress.create(language: flm_table_row, finish_line_marker: flm)
+    if @pending_flm_edits_flp_ids.include?(flp.id)
+      edit = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status', record_id: flp.id).order(:created_at).last
+      finish_line_status[flp.finish_line_marker.number] = edit.new_value
+      finish_line_category[flp.finish_line_marker.number] = FinishLineProgress.category(edit.new_value)
+    else
+      finish_line_status[flp.finish_line_marker.number] = flp.status
+      finish_line_category[flp.finish_line_marker.number] = flp.category
+    end
   end
 %>
 <tr class="language-row filterable-item"
@@ -12,21 +22,20 @@
     <% end %>
 >
   <td class="mdl-data-table__cell--non-numeric"><%= link_to "<span class=\"language-name\">#{flm_table_row.name}</span><br/><em>#{flm_table_row.iso}</em>".html_safe, flm_table_row %></td>
-  <% progresses = {} %>
-  <% flm_table_row.finish_line_progresses.each{ |prog| progresses[prog.finish_line_marker_id] = prog } %>
   <% @flms.each do |flm| %>
-    <% progress = progresses[flm.id] || FinishLineProgress.create_by(language: flm_table_row, finish_line_marker: flm) %>
     <td class="mdl-data-table__cell--non-numeric filterable-item"
         data-filter-label="flm-visible"
         data-flm-visible="<%= flm.number %>">
       <div class="flm-name"><%= flm.name %></div>
-      <div class="mdl-selectfield mdl-js-selectfield" data-finish-line-category="<%= progress.category.to_s %>">
-        <%# generate options for each select box removing any nil options returned by simple_human_of_status %>
-        <% selectable_options = FinishLineProgress.statuses.to_a.map{ |t| [FinishLineProgress.simple_human_of_status(t[0], flm.number), t[0]] }.select{ |x| x[0].present? } %>
-        <%= select_tag "finish_line_status_#{flm_table_row.id}_#{flm.number}",
-                       options_for_select(selectable_options, progress.status),
-                       {class: "mdl-selectfield__select", flm_number: flm.number} %>
-      </div>
+      <%= form_tag set_flp_for_language_path(id: flm_table_row.id, marker: flm.number), method: 'patch', remote: true do %>
+        <div class="flm-status-select mdl-selectfield mdl-js-selectfield" data-finish-line-category="<%= finish_line_category[flm.number].to_s %>">
+          <%# generate options for each select box removing any nil options returned by simple_human_of_status %>
+          <% selectable_options = FinishLineProgress.statuses.to_a.map{ |t| [FinishLineProgress.simple_human_of_status(t[0], flm.number), t[0]] }.select{ |x| x[0].present? } %>
+          <%= select_tag 'progress',
+                         options_for_select(selectable_options, finish_line_status[flm.number]),
+                         {class: "mdl-selectfield__select", flm_number: flm.number, id: "finish_line_status_#{flm_table_row.id}_#{flm.number}"} %>
+        </div>
+      <% end %>
     </td>
   <% end %>
 </tr>
