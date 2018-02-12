@@ -104,6 +104,14 @@ $(document).ready ->
   $('#visible-flms-dialog-trigger').on 'click', ->
     document.querySelector('#dialog-visible-flms').showModal()
 
+  $('.visible-flm-filter').on 'change', ->
+    visible = []
+    $('.visible-flm-filter:checked').each ->
+      visible.push($(this).val())
+    filterParams = '?visibleflms=' + visible.join()
+    if history.state != filterParams
+      history.pushState(filterParams, '', filterParams)
+
   $('#flm-filter-reset').on 'click', ->
     # gather one checkbox from each flm to trigger change for refilter
     changedBoxes = {}

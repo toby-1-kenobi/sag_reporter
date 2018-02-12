@@ -75,7 +75,7 @@ any of the finish line markers on any language.
           <span class="mdl-list__item-primary-content"><%= flm.name %></span>
           <span class="mdl-list__item-secondary-action">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="flm-<%= flm.number %>-column-visible">
-              <input type="checkbox" id="flm-<%= flm.number %>-column-visible" class="mdl-switch__input filter-trigger"
+              <input type="checkbox" id="flm-<%= flm.number %>-column-visible" class="mdl-switch__input filter-trigger visible-flm-filter"
                      data-filter-trigger-label="flm-visible" value="<%= flm.number %>" <%= 'checked' if @visible_flms.include? flm.number %> />
             </label>
           </span>
