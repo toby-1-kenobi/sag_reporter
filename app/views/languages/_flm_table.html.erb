@@ -42,7 +42,7 @@ any of the finish line markers on any language.
           data-flm-visible="<%= flm.number %>">
         <button id="flm-<%= flm.number %>-filter-summary" class="filter-summary mdl-button mdl-js-button mdl-button--accent">Showing all</button>
         <ul class="mdl-list filter-choices hide">
-          <% FinishLineProgress.statuses.each_key do |status| %>
+          <% FinishLineProgress.statuses.each do |status, status_id| %>
             <% human_status = FinishLineProgress.human_of_status(status, flm.number) %>
             <% if human_status %>
               <li class="mdl-list__item filter-choice-<%= status %>">
@@ -50,7 +50,7 @@ any of the finish line markers on any language.
                 <span class="mdl-list__item-secondary-action">
                   <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="flm-<%= flm.number %>-filter-<%= status %>">
                     <input type="checkbox" id="flm-<%= flm.number %>-filter-<%= status %>" class="mdl-checkbox__input filter-trigger"
-                           data-filter-trigger-label="flm-<%= flm.number %>" value="<%= status %>" checked />
+                           data-filter-trigger-label="flm-<%= flm.number %>" value="<%= status %>" data-status-id="<%= status_id %>" checked />
                   </label>
                 </span>
               </li>

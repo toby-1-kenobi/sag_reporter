@@ -2,6 +2,19 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+generateFilterParams = ->
+  visible = {}
+  $('.visible-flm-filter:checked').each ->
+    flmID = $(this).val()
+    visible[flmID] = []
+    $("#flm-filter-#{flmID} input:checkbox:checked").each ->
+      visible[flmID].push($(this).attr('data-status-id'))
+  flms = Object.keys(visible)
+  filterParams = "?filter=#{flms.join()}"
+  filterParams = "#{filterParams}-#{visible[flm].join('')}" for flm in flms
+  return filterParams
+
+
 $(document).ready ->
 
   $('.get-chart-button').click()
@@ -105,10 +118,7 @@ $(document).ready ->
     document.querySelector('#dialog-visible-flms').showModal()
 
   $('.visible-flm-filter').on 'change', ->
-    visible = []
-    $('.visible-flm-filter:checked').each ->
-      visible.push($(this).val())
-    filterParams = '?visibleflms=' + visible.join()
+    filterParams = generateFilterParams()
     if history.state != filterParams
       history.pushState(filterParams, '', filterParams)
 
@@ -134,6 +144,9 @@ $(document).ready ->
       $("##{flmNum}-filter-summary").text('Showing None')
     else
       $("##{flmNum}-filter-summary").text('Filtered')
+    filterParams = generateFilterParams()
+    if history.state != filterParams
+      history.pushState(filterParams, '', filterParams)
 
   $('.language-row select').on 'change', ->
     newValue = $(this).val()
