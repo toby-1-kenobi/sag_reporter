@@ -10,9 +10,15 @@ generateFilterParams = ->
     $("#flm-filter-#{flmID} input:checkbox:checked").each ->
       visible[flmID].push($(this).attr('data-status-id'))
   flms = Object.keys(visible)
-  filterParams = "?filter=#{flms.join()}"
+  filterParams = flms.join()
   filterParams = "#{filterParams}-#{visible[flm].join('')}" for flm in flms
   return filterParams
+
+getActiveTab = ->
+  if $('.mdl-tabs__panel.is-active').length > 0
+    $('.mdl-tabs__panel.is-active').first().attr('id').split('-')[0]
+  else
+    ''
 
 
 $(document).ready ->
@@ -20,6 +26,16 @@ $(document).ready ->
   $('.get-chart-button').click()
 
   $('#jp-fetch-trigger').click()
+
+  $('.dashboard-tabs a').on 'click', ->
+    if history.state != null
+      filterParam = history.state.filter
+    else
+      filterParam = generateFilterParams()
+    tabParam = $(this).attr('href').split('-')[0].substr(1)
+    newState = { filter: filterParam, tab: tabParam }
+    if history.state != newState
+      history.pushState(newState, '', "?filter=#{filterParam}&tab=#{tabParam}")
 
   $('.editable').hover (->
     $(this).find('.edit-icon').removeClass('hide')
@@ -118,9 +134,11 @@ $(document).ready ->
     document.querySelector('#dialog-visible-flms').showModal()
 
   $('.visible-flm-filter').on 'change', ->
-    filterParams = generateFilterParams()
-    if history.state != filterParams
-      history.pushState(filterParams, '', filterParams)
+    filterParam = generateFilterParams()
+    tabParam = getActiveTab()
+    newState = { filter: filterParam, tab: tabParam }
+    if history.state != newState
+      history.pushState(newState, '', "?filter=#{filterParam}&tab=#{tabParam}")
 
   $('#flm-filter-reset').on 'click', ->
     # gather one checkbox from each flm to trigger change for refilter
@@ -144,9 +162,11 @@ $(document).ready ->
       $("##{flmNum}-filter-summary").text('Showing None')
     else
       $("##{flmNum}-filter-summary").text('Filtered')
-    filterParams = generateFilterParams()
-    if history.state != filterParams
-      history.pushState(filterParams, '', filterParams)
+    filterParam = generateFilterParams()
+    tabParam = getActiveTab()
+    newState = { filter: filterParam, tab: tabParam }
+    if history.state != newState
+      history.pushState(newState, '', "?filter=#{filterParam}&tab=#{tabParam}")
 
   $('.language-row select').on 'change', ->
     newValue = $(this).val()

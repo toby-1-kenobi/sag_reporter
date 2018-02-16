@@ -10,7 +10,8 @@
 </ul>
 
 <% @tab ||= 'fls' %>
-<div class="mdl-tabs mdl-js-tabs">
+<script>console.log(<%= @tab %>);</script>
+<div class="mdl-tabs mdl-js-tabs dashboard-tabs">
   <div class="mdl-tabs__tab-bar">
     <a href="#progress-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'fls' %>">Finish Line Status</a>
     <a href="#states-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'states' %>">States</a>
