@@ -93,32 +93,3 @@
 
   </div>
 </div>
-
-<% if @flm %>
-    <script>
-        $(document).ready(function(){
-            $('.flm-option[data-flm-number="<%= @flm %>"]').trigger('click');
-        });
-    </script>
-<% end %>
-
-<% if @flm_filter == 'needy' %>
-  <script>
-      $(document).ready(function() {
-          $('.mdl-layout').on('mdl-componentupgraded', function (e) {
-              if ($(e.target).hasClass('mdl-layout')) {
-                  $('.mdl-checkbox[for*="flm-6-"]').each(function () {
-                      var checkbox = this;
-                      if (!checkbox.getAttribute('for').includes('select-all')) {
-                          if (checkbox.getAttribute('for').includes('possible_need') || checkbox.getAttribute('for').includes('expressed_need')) {
-                              checkbox.MaterialCheckbox.check();
-                          } else {
-                              checkbox.MaterialCheckbox.uncheck();
-                          }
-                      }
-                  });
-              }
-          });
-      });
-  </script>
-<% end %>
