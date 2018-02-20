@@ -20,6 +20,17 @@ getActiveTab = ->
   else
     ''
 
+setActiveTab = (tabName) ->
+  $('.dashboard-tabs .mdl-tabs__tab').removeClass('is-active')
+  $(".dashboard-tabs .mdl-tabs__tab[href=\"##{tabName}-tab\"").addClass('is-active')
+  $('.dashboard-tabs .mdl-tabs__panel').removeClass('is-active')
+  $("##{tabName}-tab").addClass('is-active')
+
+window.onpopstate = (event) ->
+  if event.state != null
+    if event.state.tab != null
+      setActiveTab(event.state.tab)
+
 
 $(document).ready ->
 
