@@ -1,6 +1,8 @@
 <div class="mdl-grid">
   <% language_amount = languages.count %>
-  <% finish_line_data = build_finish_line_table(languages, FinishLineMarker.all.order(:number)) %>
+  <% finish_line_data = build_finish_line_table(languages, FinishLineMarker.all.order(:number))
+  %>
+
   <div class="mdl-grid--6-col">
     <%= language_amount %> languages.
     <% if language_amount > 0 %>
@@ -44,4 +46,9 @@
         </div>
     <% end %>
   </div>
+
+
+  <%if (defined?(zone))%>
+    <%= render 'languages/finish_line_transformation', zone: zone%>
+  <% end %>
 </div>
