@@ -65,5 +65,9 @@ class LanguageProgress < ActiveRecord::Base
     return scores
   end
 
+  def current_month_score(pm_weight)
+    all_updates = progress_updates.to_a
+    [month_score(all_updates, pm_weight)]
+  end
 end
 

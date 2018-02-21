@@ -1,5 +1,4 @@
-  <%transformations = get_transformation()
-    dates = transformations.values.first.keys
+  <%transformations = get_transformation(zone)
     outcome_area_colours = get_outcome_area()
     outcome_areas = outcome_area_colours.keys
     spread_text = ProgressMarker.spread_text.values
@@ -22,7 +21,7 @@
       <% transformations.each_key do |language|
 
         outcome_areas.each do |outcome_area|
-           value0 = transformations[language][dates[0]][outcome_area]
+           value0 = transformations[language][outcome_area]
 
            zone_aggregate[language.zone.name] ||= Hash.new()
            zone_aggregate[language.zone.name][outcome_area] ||= Hash.new(0)
@@ -88,11 +87,11 @@
           overall_avg[:widespread] += zone_widespread
         %>
           <tr>
-            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %> lighten-3"><%= outcome_area %></td>
-            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %> lighten-3"><%= zone_aggregate[zone.name][outcome_area][:notseen]%>(<%= zone_notseen%>%)</td>
-            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %> lighten-3"><%= zone_aggregate[zone.name][outcome_area][:emerging] %>(<%= zone_emerging%>%)</td>
-            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %> lighten-3"><%= zone_aggregate[zone.name][outcome_area][:growingwell] %>(<%= zone_growingwell%>%)</td>
-            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %> lighten-3"><%= zone_aggregate[zone.name][outcome_area][:widespread] %>(<%= zone_widespread%>%)</td>
+            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %> "><%= outcome_area %></td>
+            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %> "><%= zone_aggregate[zone.name][outcome_area][:notseen]%>(<%= zone_notseen%>%)</td>
+            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %> "><%= zone_aggregate[zone.name][outcome_area][:emerging] %>(<%= zone_emerging%>%)</td>
+            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %> "><%= zone_aggregate[zone.name][outcome_area][:growingwell] %>(<%= zone_growingwell%>%)</td>
+            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %> "><%= zone_aggregate[zone.name][outcome_area][:widespread] %>(<%= zone_widespread%>%)</td>
             <td>
               <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-trans-<%= index %>">
                 <input type="checkbox" id="pie-toggle-trans-<%= index %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-trans-<%= index %>">
