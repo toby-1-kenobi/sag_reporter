@@ -62,7 +62,8 @@ class ZonesController < ApplicationController
     @flm_filters = {}
     tokens = params[:filter].split('-')
     tokens.shift.split(',').each do |flm_number|
-      @flm_filters[flm_number] = tokens.shift.split('')
+      next_token = tokens.shift
+      @flm_filters[flm_number] = next_token ? next_token.split('') : []
     end
   end
 

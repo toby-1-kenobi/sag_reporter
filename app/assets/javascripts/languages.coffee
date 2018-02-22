@@ -26,11 +26,31 @@ setActiveTab = (tabName) ->
   $('.dashboard-tabs .mdl-tabs__panel').removeClass('is-active')
   $("##{tabName}-tab").addClass('is-active')
 
+applyFilterParams = (filterParams) ->
+  tokens = filterParams.split('-')
+  visibleFLMs = tokens[0].split(',')
+  console.log visibleFLMs
+  $('#dialog-visible-flms .mdl-switch').each ->
+    if visibleFLMs.includes $(this).attr('id').split('-')[1]
+      $(this)[0].MaterialSwitch.on()
+    else
+      $(this)[0].MaterialSwitch.off()
+  $('#dialog-visible-flms .mdl-switch input').first().trigger('change')
+
+updateState = ->
+  filterParam = generateFilterParams()
+  tabParam = getActiveTab()
+  newState = { filter: filterParam, tab: tabParam }
+  if history.state != newState
+    history.pushState(newState, '', "?filter=#{filterParam}&tab=#{tabParam}")
+
+
 window.onpopstate = (event) ->
   if event.state != null
     if event.state.tab != null
       setActiveTab(event.state.tab)
-
+    if event.state.filter != null
+      applyFilterParams(event.state.filter)
 
 $(document).ready ->
 
@@ -144,12 +164,8 @@ $(document).ready ->
   $('#visible-flms-dialog-trigger').on 'click', ->
     document.querySelector('#dialog-visible-flms').showModal()
 
-  $('.visible-flm-filter').on 'change', ->
-    filterParam = generateFilterParams()
-    tabParam = getActiveTab()
-    newState = { filter: filterParam, tab: tabParam }
-    if history.state != newState
-      history.pushState(newState, '', "?filter=#{filterParam}&tab=#{tabParam}")
+  $('#dialog-visible-flms').on 'close', ->
+    updateState()
 
   $('#flm-filter-reset').on 'click', ->
     # gather one checkbox from each flm to trigger change for refilter
@@ -162,9 +178,11 @@ $(document).ready ->
 
   $('.filter-summary').on 'click', ->
     $(this).parent().find('.filter-choices').slideToggle()
+    updateState()
 
   $('.filter-choice-done').on 'click', ->
     $(this).closest('.filter-choices').slideUp()
+    updateState()
 
   $('.filter-choices input').on 'change', ->
     flmNum = $(this).attr('data-filter-trigger-label')
@@ -176,11 +194,6 @@ $(document).ready ->
       $("##{flmNum}-filter-summary").text('Showing None')
     else
       $("##{flmNum}-filter-summary").text('Filtered')
-    filterParam = generateFilterParams()
-    tabParam = getActiveTab()
-    newState = { filter: filterParam, tab: tabParam }
-    if history.state != newState
-      history.pushState(newState, '', "?filter=#{filterParam}&tab=#{tabParam}")
 
   $('.language-row select').on 'change', ->
     newValue = $(this).val()
