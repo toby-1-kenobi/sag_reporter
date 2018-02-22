@@ -163,6 +163,9 @@ $(document).ready ->
   $('.filter-summary').on 'click', ->
     $(this).parent().find('.filter-choices').slideToggle()
 
+  $('.filter-choice-done').on 'click', ->
+    $(this).closest('.filter-choices').slideUp()
+
   $('.filter-choices input').on 'change', ->
     flmNum = $(this).attr('data-filter-trigger-label')
     unchecked = $(this).closest('.filter-choices').find('input[type="checkbox"]:not(:checked)')
