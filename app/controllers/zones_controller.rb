@@ -39,10 +39,11 @@ class ZonesController < ApplicationController
   end
 
   def nation
-    @languages = Language.includes(:family, {finish_line_progresses: :finish_line_marker}).all
+    @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
+    @flms = FinishLineMarker.order(:number)
+    @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
+    params[:filter].present? ? parse_filter_param : use_default_filters
     @tab = params[:tab]
-    @flm = params[:flm]
-    @flm_filter = params[:flmfilter]
   end
 
   def national_outcomes_chart
