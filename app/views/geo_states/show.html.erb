@@ -9,7 +9,7 @@
   <li><%= link_to @geo_state.name, geo_state_path(@geo_state) %></li>
 </ul>
 
-<div class="mdl-tabs mdl-js-tabs">
+<div class="mdl-tabs mdl-js-tabs dashboard-tabs">
 
   <div class="mdl-tabs__tab-bar">
     <a href="#progress-tab" class="mdl-tabs__tab">Finish Line Status</a>
@@ -23,14 +23,7 @@
   </div>
 
   <div class="mdl-tabs__panel" id="languages-tab">
-    <h3>Languages tracked by LCI</h3>
-    <ul class="project-languages mdl-list">
-      <%= render partial: 'state_language', collection: @geo_state.state_languages.in_project.includes(language: :family).order('languages.name') %>
-    </ul>
-    <h3>Other languages</h3>
-    <ul class="project-languages mdl-list">
-      <%= render partial: 'state_language', collection: @geo_state.state_languages.not_in_project.includes(language: :family).order('languages.name') %>
-    </ul>
+    <%= render partial: 'languages/flm_table' %>
   </div>
 
   <div class="mdl-tabs__panel" id="organisations-tab">

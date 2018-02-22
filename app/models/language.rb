@@ -164,6 +164,30 @@ class Language < ActiveRecord::Base
 
   end
 
+  # the filter param is a string of tokens separated by '-'
+  # the first token is a comma separated list of finish line marker numbers representing visible columns in the table
+  # after that each token corresponds to a visible column and defines the selected filters on that column. No sperator is used
+  # the selected filters are indicated by the id of the flm status
+  def self.parse_filter_param
+    #TODO: what happens if an invalid string comes in?
+    flm_filters = {}
+    tokens = params[:filter].split('-')
+    tokens.shift.split(',').each do |flm_number|
+      next_token = tokens.shift
+      flm_filters[flm_number] = next_token ? next_token.split('') : []
+    end
+    return flm_filters
+  end
+
+  # this for when the filters are not not provided in the parameters
+  def self.use_default_filters
+    flm_filters = {}
+    ['1', '2', '4', '5', '6', '7', '8', '9'].each do |flm_number|
+      flm_filters[flm_number] = ['0', '1', '2', '3', '4', '5', '6']
+    end
+    return flm_filters
+  end
+
   def self.minorities(geo_states = nil)
     if geo_states
       includes(:geo_states).where(lwc: false, 'geo_states.id' => geo_states.map{ |s| s.id })
