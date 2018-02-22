@@ -51,7 +51,7 @@ any of the finish line markers on any language.
                   <span class="mdl-list__item-secondary-action">
                     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="flm-<%= flm.number %>-filter-<%= status %>">
                       <input type="checkbox" id="flm-<%= flm.number %>-filter-<%= status %>" class="mdl-checkbox__input filter-trigger"
-                             data-filter-trigger-label="flm-<%= flm.number %>" value="<%= status %>" data-status-id="<%= status_id %>" <%= 'checked' if @flm_filters[flm.number.to_s] and @flm_filters[flm.number.to_s].include? status_id.to_s %> />
+                             data-filter-trigger-label="flm-<%= flm.number %>" value="<%= status %>" data-status-id="<%= status_id %>" <%= 'checked' unless @flm_filters[flm.number.to_s] and not @flm_filters[flm.number.to_s].include? status_id.to_s %> />
                     </label>
                   </span>
                 </li>
