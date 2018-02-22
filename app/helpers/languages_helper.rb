@@ -83,7 +83,7 @@ module LanguagesHelper
     # for each project language get the aggregated data for both dates
     transformations = Hash.new
     # join progress updates to only include languages that have had baseline set.
-    StateLanguage.in_project.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
+    zone.state_languages.in_project.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
       transformations[state_language] = state_language.transformation_data(logged_in_user)
     end
     transformations
@@ -93,5 +93,15 @@ module LanguagesHelper
     @outcome_area_colours = Hash.new
     Topic.find_each{ |oa| @outcome_area_colours[oa.name] = oa.colour }
     @outcome_area_colours
+  end
+
+  def getScriptureEngageCount(finish_line_data)
+    count = 0
+    finish_line_data.each do |marker, data|
+      if marker.name == "Jesus Film"
+        count += data[:no_progress]
+      end
+    end
+    count
   end
 end
