@@ -11,7 +11,7 @@ class LanguagesController < ApplicationController
   end
 
   # can edit a language if the language is in one of the user's states, or if the user is national
-  before_action only: [:edit, :update, :reports, :show, :show_details, :populations] do
+  before_action only: [:reports, :show, :show_details, :populations] do
     redirect_to zones_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
   end
 
@@ -22,9 +22,6 @@ class LanguagesController < ApplicationController
 
   autocomplete :user, :name, :full => true
 
-  def index
-  	@languages = Language.includes(:family, { geo_states: :zone }).order(:name)
-  end
 
   def overview
     # convert to an array here and manage it in the view
@@ -37,10 +34,6 @@ class LanguagesController < ApplicationController
   	@colour_columns = 3
   end
 
-  def edit
-  	@language = Language.find(params[:id])
-  	@colour_columns = 3
-  end
 
   def show
   	@language = Language.
@@ -160,36 +153,6 @@ class LanguagesController < ApplicationController
       respond_to :js
     else
       return head :gone
-    end
-  end
-
-  def update
-    @language = Language.find(params[:id])
-    if @language.update_attributes(combine_colour(lang_params))
-      flash['success'] = 'Language updated'
-      respond_to do |format|
-        format.json {
-          logger.debug 'update request in json format'
-          flash.keep('success')
-          render json: {redirect: language_path(@language)}.to_json
-        }
-        format.html {
-          logger.debug 'update request in html format'
-          @all_orgs = Organisation.all.order(:name)
-          render 'show'
-        }
-      end
-    else
-      @colour_columns = 3
-      respond_to do |format|
-        format.json {
-          render json: {errors: @language.errors.full_messages}.to_json
-        }
-        format.html {
-          @all_orgs = Organisation.all.order(:name)
-          render 'show'
-        }
-      end
     end
   end
 
