@@ -233,6 +233,11 @@ p.iso {
   thead tr {
     background-color: #e0e0e0
   }
+  .filter-choices {
+    background-color: #e0e0e0;
+    position: absolute;
+    z-index: 10;
+  }
   tbody {
     tr:nth-child(odd) {
       background-color: #f0f0f0;

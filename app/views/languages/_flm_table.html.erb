@@ -41,22 +41,24 @@ any of the finish line markers on any language.
           data-filter-label="flm-visible"
           data-flm-visible="<%= flm.number %>">
         <button id="flm-<%= flm.number %>-filter-summary" class="filter-summary mdl-button mdl-js-button mdl-button--accent">Showing all</button>
-        <ul class="mdl-list filter-choices hide">
-          <% FinishLineProgress.statuses.each do |status, status_id| %>
-            <% human_status = FinishLineProgress.human_of_status(status, flm.number) %>
-            <% if human_status %>
-              <li class="mdl-list__item filter-choice-<%= status %>">
-                <span class="mdl-list__item-primary-content"><%= human_status %></span>
-                <span class="mdl-list__item-secondary-action">
-                  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="flm-<%= flm.number %>-filter-<%= status %>">
-                    <input type="checkbox" id="flm-<%= flm.number %>-filter-<%= status %>" class="mdl-checkbox__input filter-trigger"
-                           data-filter-trigger-label="flm-<%= flm.number %>" value="<%= status %>" data-status-id="<%= status_id %>" <%= 'checked' if @flm_filters[flm.number.to_s] and @flm_filters[flm.number.to_s].include? status_id.to_s %> />
-                  </label>
-                </span>
-              </li>
+        <div class="filter-choices hide">
+          <ul class="mdl-list">
+            <% FinishLineProgress.statuses.each do |status, status_id| %>
+              <% human_status = FinishLineProgress.human_of_status(status, flm.number) %>
+              <% if human_status %>
+                <li class="mdl-list__item filter-choice-<%= status %>">
+                  <span class="mdl-list__item-primary-content"><%= human_status %></span>
+                  <span class="mdl-list__item-secondary-action">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="flm-<%= flm.number %>-filter-<%= status %>">
+                      <input type="checkbox" id="flm-<%= flm.number %>-filter-<%= status %>" class="mdl-checkbox__input filter-trigger"
+                             data-filter-trigger-label="flm-<%= flm.number %>" value="<%= status %>" data-status-id="<%= status_id %>" <%= 'checked' if @flm_filters[flm.number.to_s] and @flm_filters[flm.number.to_s].include? status_id.to_s %> />
+                    </label>
+                  </span>
+                </li>
+              <% end %>
             <% end %>
-          <% end %>
-        </ul>
+          </ul>
+        </div>
       </th>
     <% end %>
   </tr>
@@ -74,7 +76,7 @@ any of the finish line markers on any language.
         <li class="mdl-list__item">
           <span class="mdl-list__item-primary-content"><%= flm.name %></span>
           <span class="mdl-list__item-secondary-action">
-            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="flm-<%= flm.number %>-column-visible">
+            <label id="flm-<%= flm.number %>-visible-switch" class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="flm-<%= flm.number %>-column-visible">
               <input type="checkbox" id="flm-<%= flm.number %>-column-visible" class="mdl-switch__input filter-trigger visible-flm-filter"
                      data-filter-trigger-label="flm-visible" value="<%= flm.number %>" <%= 'checked' if @flm_filters.keys.include? flm.number.to_s %> />
             </label>
