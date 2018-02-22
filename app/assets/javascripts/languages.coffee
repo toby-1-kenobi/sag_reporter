@@ -28,14 +28,25 @@ setActiveTab = (tabName) ->
 
 applyFilterParams = (filterParams) ->
   tokens = filterParams.split('-')
-  visibleFLMs = tokens[0].split(',')
-  console.log visibleFLMs
+  visibleFLMs = tokens.shift().split(',')
   $('#dialog-visible-flms .mdl-switch').each ->
     if visibleFLMs.includes $(this).attr('id').split('-')[1]
       $(this)[0].MaterialSwitch.on()
     else
       $(this)[0].MaterialSwitch.off()
   $('#dialog-visible-flms .mdl-switch input').first().trigger('change')
+  for flmNumber in visibleFLMs
+    if tokens.length > 0
+      filters = tokens.shift().split('')
+    else
+      filters = []
+    console.log filters
+    $("#flm-filter-#{flmNumber} .mdl-checkbox").each ->
+      if filters.includes $(this).find('input').attr('data-status-id')
+        $(this)[0].MaterialCheckbox.check()
+      else
+        $(this)[0].MaterialCheckbox.uncheck()
+    $("#flm-filter-#{flmNumber} .mdl-checkbox input").first().trigger('change')
 
 updateState = ->
   filterParam = generateFilterParams()
