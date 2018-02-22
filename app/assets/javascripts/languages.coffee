@@ -186,6 +186,7 @@ $(document).ready ->
       changedBoxes[$(this).find('input').attr('data-filter-trigger-label')] = this
     for flm, checkbox of changedBoxes
       $(checkbox).find('input').trigger 'change'
+    updateState()
 
   $('.filter-summary').on 'click', ->
     $(this).parent().find('.filter-choices').slideToggle()
