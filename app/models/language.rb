@@ -165,14 +165,14 @@ class Language < ActiveRecord::Base
   end
 
   # the filter param is a string of tokens separated by '-'
-  # the first token is a comma separated list of finish line marker numbers representing visible columns in the table
+  # the first token is an underscore separated list of finish line marker numbers representing visible columns in the table
   # after that each token corresponds to a visible column and defines the selected filters on that column. No sperator is used
   # the selected filters are indicated by the id of the flm status
-  def self.parse_filter_param
+  def self.parse_filter_param(param)
     #TODO: what happens if an invalid string comes in?
     flm_filters = {}
-    tokens = params[:filter].split('-')
-    tokens.shift.split(',').each do |flm_number|
+    tokens = param.split('-')
+    tokens.shift.split('_').each do |flm_number|
       next_token = tokens.shift
       flm_filters[flm_number] = next_token ? next_token.split('') : []
     end

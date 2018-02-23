@@ -10,7 +10,7 @@ generateFilterParams = ->
     $("#flm-filter-#{flmID} input:checkbox:checked").each ->
       visible[flmID].push($(this).attr('data-status-id'))
   flms = Object.keys(visible)
-  filterParams = flms.join()
+  filterParams = flms.join('_')
   filterParams = "#{filterParams}-#{visible[flm].join('')}" for flm in flms
   return filterParams
 
