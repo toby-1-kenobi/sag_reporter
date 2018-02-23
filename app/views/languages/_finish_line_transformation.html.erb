@@ -50,11 +50,7 @@
     end
   %>
 
-  <%
-    lc_amount = zone.state_languages.in_project.count
-    overall ||= Hash.new(0)
-    overall_avg ||= Hash.new(0)
-  %>
+  <% lc_amount = zone.state_languages.in_project.count %>
 
   <label>Tracking transformation in <%= lc_amount %> languages</label>
 
@@ -70,48 +66,28 @@
     </thead>
     <tbody>
       <%
-        outcome_areas.each_with_index  do |outcome_area, index|
-        total_value = zone_aggregate[zone.name][outcome_area][:total]
-        zone_aggregate[zone.name][outcome_area][:notseen] += lc_amount - total_value
-        percentages = {}
-        transformation_brackets.keys.each do |bracket|
-          percentages[bracket] = ((zone_aggregate[zone.name][outcome_area][bracket] * 100).to_f / lc_amount).round(1)
-          overall[bracket] += zone_aggregate[zone.name][outcome_area][bracket]
-          overall_avg[bracket] += percentages[bracket]
-        end
+        outcome_areas.each_with_index do |outcome_area, index|
+          total_value = zone_aggregate[zone.name][outcome_area][:total]
+          zone_aggregate[zone.name][outcome_area][:notseen] += lc_amount - total_value
+          percentages = {}
+          transformation_brackets.keys.each do |bracket|
+            percentages[bracket] = ((zone_aggregate[zone.name][outcome_area][bracket] * 100).to_f / lc_amount).round(1)
+          end
       %>
-      <tr>
-        <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= outcome_area %></td>
-        <% transformation_brackets.keys.each do |bracket| %>
-          <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= zone_aggregate[zone.name][outcome_area][bracket] %>(<%= percentages[bracket] %>%)</td>
-        <% end %>
-        <td>
-          <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-trans-<%= index %>">
-            <input type="checkbox" id="pie-toggle-trans-<%= index %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-trans-<%= index %>">
-            <i class="mdl-icon-toggle__label material-icons on hide">pie_chart</i>
-            <i class="mdl-icon-toggle__label material-icons off">pie_chart_outlined</i>
-          </label>
-        </td>
-      </tr>
-      <% end
-         transformation_brackets.keys.each do |bracket|
-          overall[bracket] = (overall[bracket].to_f)/5
-        end
-      %>
-      <tr>
-        <td class="mdl-data-table__cell--non-numeric lighten-3">Overall</td>
-        <td class="mdl-data-table__cell--non-numeric lighten-3"><%=overall[:notseen]  %>(<%=overall_avg[:notseen]/5 %>%)</td>
-        <td class="mdl-data-table__cell--non-numeric lighten-3"><%=overall[:emerging] %>(<%=overall_avg[:emerging]/5 %>%)</td>
-        <td class="mdl-data-table__cell--non-numeric lighten-3"><%=overall[:growingwell] %>(<%=overall_avg[:growingwell]/5 %>%)</td>
-        <td class="mdl-data-table__cell--non-numeric lighten-3"><%=overall[:widespread]%>(<%=overall_avg[:widespread]/5 %>%)</td>
-        <td>
-          <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-trans-over">
-            <input type="checkbox" id="pie-toggle-trans-over" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-trans-over">
-            <i class="mdl-icon-toggle__label material-icons on hide">pie_chart</i>
-            <i class="mdl-icon-toggle__label material-icons off">pie_chart_outlined</i>
-          </label>
-        </td>
-      </tr>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= outcome_area %></td>
+          <% transformation_brackets.keys.each do |bracket| %>
+            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= zone_aggregate[zone.name][outcome_area][bracket] %>(<%= percentages[bracket] %>%)</td>
+          <% end %>
+          <td>
+            <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-trans-<%= index %>">
+              <input type="checkbox" id="pie-toggle-trans-<%= index %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-trans-<%= index %>">
+              <i class="mdl-icon-toggle__label material-icons on hide">pie_chart</i>
+              <i class="mdl-icon-toggle__label material-icons off">pie_chart_outlined</i>
+            </label>
+          </td>
+        </tr>
+      <% end %>
     </tbody>
   </table>
 </div>
@@ -125,10 +101,4 @@
       <%= pie_chart zone_aggregate[zone.name][outcome_area].except(:total).map{ |k, v| [k.to_s.humanize, v]}.to_h, colors: colours_for_transformation_data(zone_aggregate[zone.name][outcome_area].except(:total)) %>
     </div>
   <% end %>
-  <div id="pie-chart-trans-over" class="chart-card mdl-card mdl-shadow--2dp hide">
-    <div class="mdl-card__title">
-      <h2 class="mdl-card__title-text">Overall</h2>
-    </div>
-    <%= pie_chart overall.map{ |k, v| [k.to_s.humanize, v]}.to_h, colors: colours_for_transformation_data(overall) %>
-  </div>
 </div>

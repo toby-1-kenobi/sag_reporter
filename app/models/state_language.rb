@@ -195,7 +195,7 @@ class StateLanguage < ActiveRecord::Base
   end
 
   # get percentage score for each outcome area at current date
-  def transformation_data(user)
+  def transformation_data(user, include_overall = false)
     # associate progress marker ids with Outcome Area names
     pm_data = Rails.cache.fetch('pm_data', expires_in: 1.day) do
       pm_oa_names = {}
@@ -219,6 +219,7 @@ class StateLanguage < ActiveRecord::Base
         oa_name = pm_data[:pm_oa_names][lp.progress_marker_id]
         scores = lp.current_month_score(pm_data[:pm_weight])
         transformation[oa_name] += scores.first
+        transformation['Overall'] += scores.first if include_overall
       end
     end
     # we need the max possible score for each outcome area to make our scores a percentage
@@ -230,6 +231,10 @@ class StateLanguage < ActiveRecord::Base
         scores[outcome_area.name] = outcome_area.max_outcome_score
       end
       scores
+    end
+    if include_overall and not max_scores['Overall']
+      max_overall_score = max_scores.values.sum
+      max_scores['Overall'] = max_overall_score
     end
     transformation.each do |oa_name, score|
         transformation[oa_name] = (score * 100).fdiv(max_scores[oa_name])

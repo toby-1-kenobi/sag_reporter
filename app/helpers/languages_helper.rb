@@ -96,7 +96,7 @@ module LanguagesHelper
     transformations = Hash.new
     # join progress updates to only include languages that have had baseline set.
     zone.state_languages.in_project.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
-      transformations[state_language] = state_language.transformation_data(logged_in_user)
+      transformations[state_language] = state_language.transformation_data(logged_in_user, true)
     end
     transformations
   end
@@ -104,6 +104,7 @@ module LanguagesHelper
   def get_outcome_area()
     @outcome_area_colours = Hash.new
     Topic.find_each{ |oa| @outcome_area_colours[oa.name] = oa.colour }
+    @outcome_area_colours['Overall'] = 'white'
     @outcome_area_colours
   end
 
