@@ -79,6 +79,18 @@ module LanguagesHelper
     end
   end
 
+  # for the finish line transformation table
+  # each language is categorized based on its transformation score
+  # the value in the hash represents the max value for that bracket
+  def transformation_brackets
+    {
+        notseen: 5,
+        emerging: 50,
+        growingwell: 70,
+        widespread: 100
+    }
+  end
+
   def get_transformation(zone)
     # for each project language get the aggregated data for both dates
     transformations = Hash.new
