@@ -9,13 +9,8 @@
 
   <%
     zone_aggregate = Hash.new()
-    zone_aggregate[zone.name] ||= Hash.new()
     outcome_areas.each do |outcome_area|
-      zone_aggregate[zone.name][outcome_area] ||= Hash.new(0)
-      transformation_brackets.keys.each do |bracket|
-        zone_aggregate[zone.name][outcome_area][bracket] ||= 0
-      end
-      zone_aggregate[zone.name][outcome_area][:total] ||= 0
+      zone_aggregate[outcome_area] ||= Hash.new(0)
     end
   %>
 
@@ -24,26 +19,17 @@
 
       outcome_areas.each do |outcome_area|
 
-        value0 = transformations[language][outcome_area]
+        value = transformations[language][outcome_area]
 
-        zone_aggregate[language.zone.name] ||= Hash.new()
-        zone_aggregate[language.zone.name][outcome_area] ||= Hash.new(0)
-
-        transformation_brackets.keys.each do |bracket|
-          zone_aggregate[language.zone.name][outcome_area][bracket] ||= 0
-        end
-        zone_aggregate[language.zone.name][outcome_area][:total] ||= 0
-
-        value0 =  value0.round
         all_brackets = transformation_brackets.keys
         # put this language in the first bracket
         language_bracket = all_brackets.shift
         # while its score is bigger than the bracket max value keep shifting it to the next bracket up.
-        while value0 > transformation_brackets[language_bracket]
+        while value > transformation_brackets[language_bracket]
           language_bracket = all_brackets.shift
         end
-        zone_aggregate[language.zone.name][outcome_area][language_bracket] += 1
-        zone_aggregate[language.zone.name][outcome_area][:total] += 1
+        zone_aggregate[outcome_area][language_bracket] += 1
+        zone_aggregate[outcome_area][:total] += 1
 
       end
 
@@ -67,17 +53,17 @@
     <tbody>
       <%
         outcome_areas.each_with_index do |outcome_area, index|
-          total_value = zone_aggregate[zone.name][outcome_area][:total]
-          zone_aggregate[zone.name][outcome_area][:notseen] += lc_amount - total_value
+          # any languages that somehow haven't been counted yet go into "not seen"
+          zone_aggregate[outcome_area][:notseen] += lc_amount - zone_aggregate[outcome_area][:total]
           percentages = {}
           transformation_brackets.keys.each do |bracket|
-            percentages[bracket] = ((zone_aggregate[zone.name][outcome_area][bracket] * 100).to_f / lc_amount).round(1)
+            percentages[bracket] = ((zone_aggregate[outcome_area][bracket] * 100).to_f / lc_amount).round(1)
           end
       %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= outcome_area %></td>
           <% transformation_brackets.keys.each do |bracket| %>
-            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= zone_aggregate[zone.name][outcome_area][bracket] %>(<%= percentages[bracket] %>%)</td>
+            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= zone_aggregate[outcome_area][bracket] %>(<%= percentages[bracket] %>%)</td>
           <% end %>
           <td>
             <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-trans-<%= index %>">
@@ -98,7 +84,7 @@
       <div class="mdl-card__title">
         <h2 class="mdl-card__title-text"><%= outcome_area %></h2>
       </div>
-      <%= pie_chart zone_aggregate[zone.name][outcome_area].except(:total).map{ |k, v| [k.to_s.humanize, v]}.to_h, colors: colours_for_transformation_data(zone_aggregate[zone.name][outcome_area].except(:total)) %>
+      <%= pie_chart zone_aggregate[outcome_area].except(:total).map{ |k, v| [k.to_s.humanize, v]}.to_h, colors: colours_for_transformation_data(zone_aggregate[outcome_area].except(:total)) %>
     </div>
   <% end %>
 </div>
