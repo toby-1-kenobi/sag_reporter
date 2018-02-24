@@ -59,4 +59,27 @@ describe ZonesController do
     _(response).must_be :success?
   end
 
+  it 'parses the filter parameter' do
+    log_in_as @normal_user
+    get :show, id: zones(:north_east), filter: '3,4,5-234-246-123'
+    parsed = {'3' => %w(2 3 4), '4' => %w(2 4 6), '5' => %w(1 2 3)}
+    assigns(:flm_filters).must_equal parsed
+  end
+
+  it 'uses default filters' do
+    log_in_as @normal_user
+    get :show, id: zones(:north_east)
+    default = {
+        '1' => %w(0 1 2 3 4 5 6),
+        '2' => %w(0 1 2 3 4 5 6),
+        '4' => %w(0 1 2 3 4 5 6),
+        '5' => %w(0 1 2 3 4 5 6),
+        '6' => %w(0 1 2 3 4 5 6),
+        '7' => %w(0 1 2 3 4 5 6),
+        '8' => %w(0 1 2 3 4 5 6),
+        '9' => %w(0 1 2 3 4 5 6)
+    }
+    assigns(:flm_filters).must_equal default
+  end
+
 end

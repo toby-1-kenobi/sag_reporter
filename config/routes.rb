@@ -63,7 +63,7 @@ Rails.application.routes.draw do
       patch 'not_shareable'
     end
   end
-  resources :languages do
+  resources :languages, except: [:index, :edit, :update] do
     collection do
       get :autocomplete_user_name
       get 'overview'

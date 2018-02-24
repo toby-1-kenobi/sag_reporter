@@ -16,13 +16,11 @@ class ZonesController < ApplicationController
     @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user).where(geo_states: {zone: @zone})
     @flms = FinishLineMarker.order(:number)
     @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
-    @visible_flms = [1, 2, 4, 5, 6, 7, 8, 9]
+    @flm_filters = params[:filter].present? ? Language.parse_filter_param(params[:filter]) : Language.use_default_filters
     @geo_states = @zone.geo_states
     @geo_states = @geo_states.where(id: logged_in_user.geo_states) unless logged_in_user.national?
     @filters = {since: 3.month.ago.strftime('%d %B, %Y'), until: Date.today.strftime('%d %B, %Y')}
     @tab = params[:tab]
-    @flm = params[:flm]
-    @flm_filter = params[:flmfilter]
   end
 
   def reports
@@ -41,10 +39,11 @@ class ZonesController < ApplicationController
   end
 
   def nation
-    @languages = Language.includes(:family, {finish_line_progresses: :finish_line_marker}).all
+    @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
+    @flms = FinishLineMarker.order(:number)
+    @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
+    @flm_filters = params[:filter].present? ? Language.parse_filter_param(params[:filter]) : Language.use_default_filters
     @tab = params[:tab]
-    @flm = params[:flm]
-    @flm_filter = params[:flmfilter]
   end
 
   def national_outcomes_chart

@@ -8,7 +8,7 @@
 </ul>
 
 <% @tab ||= 'progress' %>
-<div class="mdl-tabs mdl-js-tabs">
+<div class="mdl-tabs mdl-js-tabs dashboard-tabs">
   <div class="mdl-tabs__tab-bar">
     <a href="#progress-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'progress' %>">Progress</a>
     <a href="#zones-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'zones' %>">Zones</a>
@@ -42,11 +42,7 @@
   </div>
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'languages' %>" id="languages-tab">
 
-    <%= render 'languages/list_filter_controls' %>
-
-    <ul class="languages mdl-list">
-      <%= render partial: 'languages/language', collection: Language.all.includes({geo_states: :zone}, :family) %>
-    </ul>
+    <%= render partial: 'languages/flm_table' %>
 
   </div>
 </div>

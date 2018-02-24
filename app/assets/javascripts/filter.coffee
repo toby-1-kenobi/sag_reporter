@@ -92,17 +92,22 @@ applyFilter = (filterValues, filterLabel) ->
 
   return
 
+filterOnLabel = (label) ->
+  if label
+    allTriggers = $('.filter-trigger[data-filter-trigger-label="' + label + '"]').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
+  else
+    allTriggers = $('.filter-trigger').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
+  valueArray = allTriggers.map ->
+    return $(this).val()
+  applyFilter valueArray, label
+  return
+
+
 $(document).ready ->
 
+
   $('.filter-trigger').on 'change', ->
-    label = $(this).attr 'data-filter-trigger-label'
-    if label
-      allTriggers = $('.filter-trigger[data-filter-trigger-label="' + label + '"]').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
-    else
-      allTriggers = $('.filter-trigger').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
-    valueArray = allTriggers.map ->
-      return $(this).val()
-    applyFilter valueArray, label
+    filterOnLabel($(this).attr 'data-filter-trigger-label')
     return
 
   $('.filter-trigger').trigger 'change'
