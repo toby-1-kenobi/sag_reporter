@@ -56,3 +56,17 @@
     padding-right: 8px;
   }
 }
+
+.dashboard-tabs #progress-tab {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: auto;
+  grid-row-gap: 1.5em;
+  grid-template-areas:
+    "flm-table flm-chart"
+    "flt-table flt-chart";
+  #flm-table { grid-area: flm-table; }
+  #flm-charts { grid-area: flm-chart; }
+  #flt-table { grid-area: flt-table; }
+  #flt-charts { grid-area: flt-chart; }
+}

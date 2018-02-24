@@ -5,7 +5,7 @@
   spread_text = ProgressMarker.spread_text.values
 %>
 
-<div class="mdl-grid--6-col" style="margin-top: 20px">
+<div id="flt-table">
 
   <%
     zone_aggregate = Hash.new()
@@ -78,7 +78,7 @@
   </table>
 </div>
 
-<div class="mdl-grid--6-col" style="margin-top: 20px">
+<div id="flt-charts">
   <% outcome_areas.each_with_index do |outcome_area, index| %>
     <div id="pie-chart-trans-<%= index %>" class="chart-card mdl-card mdl-shadow--2dp hide">
       <div class="mdl-card__title">
