@@ -1,5 +1,11 @@
 <%
-  transformations = get_transformation(zone)
+  if (defined?(zone_or_state))
+    transformations = get_transformation(zone_or_state)
+    lc_amount = zone_or_state.state_languages.in_project.count
+  else
+    transformations = get_transformation("", true)
+    lc_amount = StateLanguage.in_project.count
+  end
   outcome_area_colours = get_outcome_area()
   outcome_areas = outcome_area_colours.keys
   spread_text = ProgressMarker.spread_text.values
@@ -36,7 +42,7 @@
     end
   %>
 
-  <% lc_amount = zone.state_languages.in_project.count %>
+  <% #lc_amount = zone.state_languages.in_project.count %>
 
   <label>Tracking transformation in <%= lc_amount %> languages</label>
 

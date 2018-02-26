@@ -1,12 +1,12 @@
 
 <% language_amount = languages.count %>
 <% finish_line_data = build_finish_line_table(languages, FinishLineMarker.all.order(:number))
-   scriptureCount = getScriptureEngageCount(finish_line_data)
+   scriptureCount = getScriptureEngageCount(languages)
 %>
 
 <div id="flm-table">
   <%= language_amount %> languages.<br>
-  <!--Scripture engagement not yet started in <%= scriptureCount%> languages.-->
+  Scripture engagement not yet started in <%= scriptureCount%> languages.
   <% if language_amount > 0 %>
     <table class="mdl-data-table mdl-js-data-table">
       <thead>

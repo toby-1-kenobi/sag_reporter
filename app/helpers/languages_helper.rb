@@ -91,12 +91,18 @@ module LanguagesHelper
     }
   end
 
-  def get_transformation(zone)
+  def get_transformation(zone_or_state, is_nation = false)
     # for each project language get the aggregated data for both dates
     transformations = Hash.new
     # join progress updates to only include languages that have had baseline set.
-    zone.state_languages.in_project.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
-      transformations[state_language] = state_language.transformation_data(logged_in_user, true)
+    if is_nation
+      StateLanguage.in_project.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
+        transformations[state_language] = state_language.transformation_data(logged_in_user, true)
+      end
+    else
+      zone_or_state.state_languages.in_project.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
+        transformations[state_language] = state_language.transformation_data(logged_in_user, true)
+      end
     end
     transformations
   end
@@ -108,11 +114,24 @@ module LanguagesHelper
     @outcome_area_colours
   end
 
-  def getScriptureEngageCount(finish_line_data)
+  def scripture_engage_list
+       se_list = ["New Testament", "Jesus Film", "Oral Bible Stories", "Gospel", "Old Testament"]
+  end
+
+  def getScriptureEngageCount(languages)
     count = 0
-    finish_line_data.each do |marker, data|
-      if marker.name == "Jesus Film"
-        count += data[:no_progress]
+    languages.each do |lang|
+      lang_count = 0
+      lang.finish_line_progresses.each do |flp|
+        marker = flp.finish_line_marker
+        scripture_engage_list.each do |se|
+          if marker.name == se and flp.category == :no_progress
+            lang_count += 1
+          end
+        end
+      end
+      if lang_count == scripture_engage_list.length
+        count += 1
       end
     end
     count
