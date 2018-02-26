@@ -2,9 +2,42 @@
 <% language_amount = languages.count %>
 <% finish_line_data = build_finish_line_table(languages, FinishLineMarker.all.order(:number))
    scriptureCount = getScriptureEngageCount(languages)
+
+   finish_marker_data = Hash.new()
+   finish_line_data.each do |marker, data|
+     finish_marker_data[marker.name] ||= Hash.new()
+     finish_marker_data[marker.name][:no_progress] = data[:no_progress]
+     finish_marker_data[marker.name][:progress] = data[:progress]
+     finish_marker_data[marker.name][:complete] = data[:complete]
+   end
+   zone_state_id = 0
+   lc_amount = 0
+
+   if (defined?(zone))
+     zone_state_id = zone.id
+     dash = :zone;
+   elsif (defined?(geo_state))
+     zone_state_id = geo_state.id
+     dash = :geo_state;
+   end
 %>
 
+
+
 <div id="flm-table">
+  <div style="float: right"><%=
+    link_to finish_line_marker_spreadsheet_path(
+                format: :csv,
+                language_amount: language_amount,
+                finish_line_data: finish_marker_data,
+                zone_state_id: zone_state_id,
+                dashboard: dash,
+                scriptureCount: scriptureCount
+            ), class: 'download-transformation-spreadsheet mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent' do %>
+    <i class="material-icons">file_download</i>
+    Get Spreadsheet
+  <% end %>
+  </div>
   <%= language_amount %> languages.<br>
   Scripture engagement not yet started in <%= scriptureCount%> languages.
   <% if language_amount > 0 %>

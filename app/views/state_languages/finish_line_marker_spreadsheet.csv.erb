@@ -1,0 +1,105 @@
+<% require 'csv' %>
+
+<%
+  if @dashboard == :zone
+    zone_or_state = Zone.find(@zone_state_id)
+    transformations = get_transformation(zone_or_state)
+    lc_amount = zone_or_state.state_languages.in_project.count
+    headData = "Zone : "+ zone_or_state.name
+  elsif @dashboard == :geo_state
+    zone_or_state = GeoState.find(@zone_state_id)
+    transformations = get_transformation(zone_or_state)
+    lc_amount = zone_or_state.state_languages.in_project.count
+    headData = "State : "+ zone_or_state.name
+  else
+    transformations = get_transformation("",true)
+    lc_amount = StateLanguage.in_project.count
+    headData = ""
+  end
+%>
+<%= CSV.generate_line(['Finish Line Marker', 'Exported from LCI App', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe %>
+
+<%= CSV.generate_line([headData]).html_safe %>
+<%= CSV.generate_line(['Total languages : ' + @language_amount]).html_safe %>
+<%= CSV.generate_line(['Scripture engagement not yet started in : '+@scriptureCount.to_s]).html_safe %>
+<%
+  headers1 = ['Finish Line Marker', 'No Progress yet', 'In Progress', 'Complete']
+
+%>
+<%= CSV.generate_line(headers1).html_safe -%>
+
+<% @finish_line_data.each do |marker, data|
+
+  no_progress = ((data[:no_progress]).to_f * 100).to_f / @language_amount.to_f
+  no_progress = (no_progress.to_i).to_s
+
+  progress = ((data[:progress]).to_f * 100).to_f / @language_amount.to_f
+  progress = (progress.to_i).to_s
+
+  complete = ((data[:complete]).to_f * 100).to_f / @language_amount.to_f
+  complete = (complete.to_i).to_s
+  row = [marker, data[:no_progress]+"("+ no_progress +"%)", data[:progress]+"("+ progress +"%)", data[:complete]+"("+ complete +"%)"]
+%>
+  <%= CSV.generate_line(row).html_safe -%>
+<% end %>
+
+
+  <%= CSV.generate_line([]).html_safe -%>
+  <%
+    outcome_area_colours = get_outcome_area()
+    outcome_areas = outcome_area_colours.keys
+    spread_text = ProgressMarker.spread_text.values
+  %>
+  <% zone_aggregate = Hash.new()
+     outcome_areas.each do |outcome_area|
+       zone_aggregate[outcome_area] ||= Hash.new(0)
+     end
+  %>
+  <%
+    transformations.each_key do |language|
+
+      outcome_areas.each do |outcome_area|
+
+        value = transformations[language][outcome_area]
+
+        all_brackets = transformation_brackets.keys
+        # put this language in the first bracket
+        language_bracket = all_brackets.shift
+        # while its score is bigger than the bracket max value keep shifting it to the next bracket up.
+        while value > transformation_brackets[language_bracket]
+          language_bracket = all_brackets.shift
+        end
+        zone_aggregate[outcome_area][language_bracket] += 1
+        zone_aggregate[outcome_area][:total] += 1
+
+      end
+    end
+  %>
+  <%= CSV.generate_line(['Tracking transformation in '+ lc_amount.to_s + ' languages']).html_safe -%>
+
+  <%
+    trans_header = ['Outcome Area']
+    spread_text.each do |spread|
+      trans_header.concat [spread]
+    end
+  %>
+  <%= CSV.generate_line(trans_header).html_safe -%>
+
+  <%
+    outcome_areas.each_with_index do |outcome_area, index|
+      # any languages that somehow haven't been counted yet go into "not seen"
+      zone_aggregate[outcome_area][:notseen] += lc_amount - zone_aggregate[outcome_area][:total]
+      percentages = {}
+      transformation_brackets.keys.each do |bracket|
+        percentages[bracket] = ((zone_aggregate[outcome_area][bracket] * 100).to_f / lc_amount).round(1)
+      end
+  %>
+    <%
+      trans_data = [outcome_area]
+      transformation_brackets.keys.each do |bracket|
+        trans_data.concat [(zone_aggregate[outcome_area][bracket]).to_s+'('+(percentages[bracket]).to_s+'%)']
+      end
+
+    %>
+    <%= CSV.generate_line(trans_data).html_safe -%>
+  <% end %>

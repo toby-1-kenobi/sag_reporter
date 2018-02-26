@@ -122,6 +122,20 @@ class StateLanguagesController < ApplicationController
     end
   end
 
+  def finish_line_marker_spreadsheet
+    @language_amount = params[:language_amount]
+    @finish_line_data = params[:finish_line_data]
+    @zone_state_id = params[:zone_state_id]
+    @lc_amount = params[:lc_amount].to_i
+    @dashboard = params[:dashboard]
+    @scriptureCount = params[:scriptureCount]
+    respond_to do |format|
+      format.csv do
+        headers['Content-Disposition'] = "attachment; filename=\"Finish_Line_Marker.csv\""
+        headers['Content-Type'] ||= 'text/csv; charset=utf-8'
+      end
+    end
+  end
 
   private
 

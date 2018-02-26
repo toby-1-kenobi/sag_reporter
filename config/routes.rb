@@ -168,6 +168,8 @@ Rails.application.routes.draw do
   get 'my_reports' => 'users#reports', as: 'my_reports'
   get 'whatsapp' => 'static_pages#whatsapp_link'
 
+  get 'finish_line_marker_spreadsheet' => 'state_languages#finish_line_marker_spreadsheet', as: 'finish_line_marker_spreadsheet'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
