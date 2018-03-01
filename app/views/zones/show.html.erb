@@ -1,9 +1,7 @@
 <% provide(:title, "#{@zone.name} Zone Dashboard") %>
-
 <% provide(:context_title, "#{@zone.name} Zone") %>
+<% provide(:container_class, 'compact') %>
 
-<!-- breadcrumbs will go here -->
-<!-- India | Current Zone | previously navigated state | previously navigated language -->
 <ul class="breadcrumbs">
   <li><%=	 link_to 'India', nation_path %></li>
   <li><%= link_to "#{@zone.name} Zone", zone_path(@zone) %></li>
