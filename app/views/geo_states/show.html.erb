@@ -19,8 +19,10 @@
   </div>
 
   <div class="mdl-tabs__panel is-active" id="progress-tab">
-    <%= render 'languages/finish_line_summary', languages: @geo_state.languages %>
-    <%= render 'languages/finish_line_transformation', state_languages: @geo_state.state_languages.in_project %>
+    <div class="grid-layout">
+      <%= render 'languages/finish_line_summary', languages: @geo_state.languages %>
+      <%= render 'languages/finish_line_transformation', state_languages: @geo_state.state_languages.in_project %>
+    </div>
   </div>
 
   <div class="mdl-tabs__panel" id="languages-tab">

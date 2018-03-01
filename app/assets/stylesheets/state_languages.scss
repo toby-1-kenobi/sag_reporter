@@ -57,7 +57,7 @@
   }
 }
 
-.dashboard-tabs #progress-tab {
+.dashboard-tabs #progress-tab .grid-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-auto-rows: auto;

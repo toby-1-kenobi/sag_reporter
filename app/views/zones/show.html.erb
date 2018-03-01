@@ -21,8 +21,10 @@
   </div>
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'fls' %>" id="progress-tab">
-    <%= render 'languages/finish_line_summary', languages: @zone.languages.includes(:finish_line_progresses).uniq, zone: @zone  %>
-    <%= render 'languages/finish_line_transformation', state_languages: @zone.state_languages.in_project %>
+    <div class="grid-layout">
+      <%= render 'languages/finish_line_summary', languages: @zone.languages.includes(:finish_line_progresses).uniq, zone: @zone  %>
+      <%= render 'languages/finish_line_transformation', state_languages: @zone.state_languages.in_project %>
+    </div>
   </div>
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'states' %>" id="states-tab">
