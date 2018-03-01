@@ -313,6 +313,22 @@ class LanguagesController < ApplicationController
     @pending_pop_edits = Edit.pending.where(model_klass_name: 'Language', attribute_name: 'populations', record_id: @language.id)
   end
 
+  # Export language tab information
+  def language_tab_spreadsheet
+    @zone = Zone.find params[:zone_id]
+    @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user).where(geo_states: {zone: @zone})
+    @languages = @languages.order(:name)
+    @flms = FinishLineMarker.order(:number)
+    @flm_filters = params[:flm_filters].present? ? Language.parse_filter_param(params[:flm_filters]) : Language.use_default_filters
+    @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
+    respond_to do |format|
+      format.csv do
+        headers['Content-Disposition'] = "attachment; filename=\"Language_flm_info.csv\""
+        headers['Content-Type'] ||= 'text/csv; charset=utf-8'
+      end
+    end
+  end
+
   private
 
   def lang_params

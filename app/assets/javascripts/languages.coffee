@@ -12,6 +12,8 @@ generateFilterParams = ->
   flms = Object.keys(visible)
   filterParams = flms.join('_')
   filterParams = "#{filterParams}-#{visible[flm].join('')}" for flm in flms
+  zoneId = $('#zone-id-for-language-tab').val()
+  $('#language_csv').attr("href", "/language_tab_spreadsheet.csv?flm_filters=#{filterParams}&zone_id=#{zoneId}");
   return filterParams
 
 getActiveTab = ->

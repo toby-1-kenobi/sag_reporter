@@ -1,0 +1,61 @@
+<% require 'csv' %>
+
+<%= CSV.generate_line(['Language Finish Line Marker Information', 'Exported from LCI App', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe %>
+
+
+<% # displaying header row
+  headers = ['Language Name']
+  @flms.each do |flm|
+    headers.concat [flm.name] if @flm_filters.keys.include? flm.number.to_s
+  end
+
+%>
+<%= CSV.generate_line(headers).html_safe -%>
+
+<%
+  @languages.each do |lang|
+    rowData = [lang.name]
+    finish_line_status = {} # map finish line marker number to finish line progress status for this language
+    progresses = {}
+    finish_line_selected = {} # map finish line progress status for this language
+    filter_check = true #boolean to check  display language row
+    flp_check = FinishLineProgress.statuses
+    # Used same logic/code as in flm_table_row
+    lang.finish_line_progresses.each{ |prog| progresses[prog.finish_line_marker.number] = prog }
+    @flms.each do |flm|
+      flp = progresses[flm.number] || FinishLineProgress.create(language: flm_table_row, finish_line_marker: flm)
+      if @pending_flm_edits_flp_ids.include?(flp.id)
+        edit = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status', record_id: flp.id).order(:created_at).last
+        finish_line_status[flp.finish_line_marker.number] = edit.new_value
+      else
+        finish_line_status[flp.finish_line_marker.number] = flp.status
+      end
+
+      selectable_options = FinishLineProgress.statuses.to_a.map{ |t| [FinishLineProgress.simple_human_of_status(t[0], flm.number), t[0]] }.select{ |x| x[0].present? }
+
+      selectable_options.map do |element|
+        if finish_line_status[flm.number] == element.last
+          finish_line_selected[flm.number] = element.first
+        end
+      end
+      #filter finish line markers columns
+      rowData.concat [finish_line_selected[flm.number]] if @flm_filters.keys.include? flm.number.to_s
+
+
+      #filtering language rows using by progress filters
+      if @flm_filters.keys.include? flm.number.to_s
+        flp_check.each do |status, status_id|
+          if finish_line_status[flm.number] == status and not @flm_filters[flm.number.to_s].include? status_id.to_s
+            filter_check = false #to skip the row
+          end
+        end
+      end
+
+    end
+%>
+  <% if filter_check %>
+    <%= CSV.generate_line(rowData).html_safe  -%>
+  <%end%>
+<%end%>
+
+

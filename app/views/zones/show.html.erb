@@ -39,7 +39,7 @@
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'languages' %>" id="languages-tab">
 
-    <%= render partial: 'languages/flm_table' %>
+    <%= render partial: 'languages/flm_table' , locals: {zone_id: @zone.id}%>
 
   </div>
 
