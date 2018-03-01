@@ -14,7 +14,7 @@ class ZonesController < ApplicationController
     @zone = Zone.find params[:id]
     redirect_to zones_path unless logged_in_user.national? or logged_in_user.zones.include? @zone
     @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user).where(geo_states: {zone: @zone})
-    @flms = FinishLineMarker.order(:number)
+    @flms = FinishLineMarker.dashboard_visible.order(:number)
     @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
     @flm_filters = params[:filter].present? ? Language.parse_filter_param(params[:filter]) : Language.use_default_filters
     @geo_states = @zone.geo_states
@@ -40,7 +40,7 @@ class ZonesController < ApplicationController
 
   def nation
     @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
-    @flms = FinishLineMarker.order(:number)
+    @flms = FinishLineMarker.dashboard_visible.order(:number)
     @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
     @flm_filters = params[:filter].present? ? Language.parse_filter_param(params[:filter]) : Language.use_default_filters
     @tab = params[:tab]

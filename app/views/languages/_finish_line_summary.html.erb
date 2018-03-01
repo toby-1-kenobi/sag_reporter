@@ -1,7 +1,7 @@
 
 <%
   language_amount = languages.count
-  finish_line_data = build_finish_line_table(languages, FinishLineMarker.all.order(:number))
+  finish_line_data = build_finish_line_table(languages, @flms)
   scripture_count = getScriptureEngageCount(languages)
 
   finish_marker_data = Hash.new()
