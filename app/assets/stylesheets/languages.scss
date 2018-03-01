@@ -213,6 +213,16 @@ p.iso {
   }
 }
 
+#flm-table tbody td {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#aggregate-transformation-table tbody td {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 #languages-tab {
   overflow-x: auto;
 }
