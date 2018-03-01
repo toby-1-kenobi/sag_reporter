@@ -91,18 +91,12 @@ module LanguagesHelper
     }
   end
 
-  def get_transformation(zone_or_state, is_nation = false)
+  def get_transformation(state_languages)
     # for each project language get the aggregated data for both dates
     transformations = Hash.new
     # join progress updates to only include languages that have had baseline set.
-    if is_nation
-      StateLanguage.in_project.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
-        transformations[state_language] = state_language.transformation_data(logged_in_user, true)
-      end
-    else
-      zone_or_state.state_languages.in_project.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
-        transformations[state_language] = state_language.transformation_data(logged_in_user, true)
-      end
+    state_languages.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
+      transformations[state_language] = state_language.transformation_data(logged_in_user, true)
     end
     transformations
   end
