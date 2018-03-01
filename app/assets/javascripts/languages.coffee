@@ -69,7 +69,7 @@ $(document).ready ->
 
   $('#jp-fetch-trigger').click()
 
-  $('.dashboard-tabs a').on 'click', ->
+  $('.dashboard-tabs .mdl-tabs__tab-bar a').on 'click', ->
     if history.state != null
       filterParam = history.state.filter
     else
