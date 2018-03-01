@@ -17,7 +17,7 @@
   </div>
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'progress' %>" id="progress-tab">
     <%= render 'languages/finish_line_summary', languages: Language.all %>
-    <%= render 'languages/finish_line_transformation' %>
+    <%= render 'languages/finish_line_transformation', state_languages: StateLanguage.in_project %>
   </div>
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'zones' %>" id="zones-tab">
     <ul class="zone-list mdl-list">
