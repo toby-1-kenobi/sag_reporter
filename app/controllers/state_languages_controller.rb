@@ -125,10 +125,23 @@ class StateLanguagesController < ApplicationController
   def finish_line_marker_spreadsheet
     @language_amount = params[:language_amount]
     @finish_line_data = params[:finish_line_data]
-    @zone_state_id = params[:zone_state_id]
-    @lc_amount = params[:lc_amount].to_i
-    @dashboard = params[:dashboard]
-    @scriptureCount = params[:scriptureCount]
+    @scripture_count = params[:scripture_count]
+    case params[:dashboard]
+    when 'zone'
+      Rails.logger.debug('zone')
+      zone = Zone.find params[:zone_id]
+      @state_languages = zone.state_languages.in_project
+      @head_data = "Zone: #{zone.name}"
+    when 'geo_state'
+      Rails.logger.debug('state')
+      geo_state = GeoState.find params[:state_id]
+      @state_languages = geo_state.state_languages.in_project
+      @head_data = "State: #{geo_state.name}"
+    else
+      Rails.logger.debug('nation')
+      @state_languages = StateLanguage.in_project
+      @head_data = "All India"
+    end
     respond_to do |format|
       format.csv do
         headers['Content-Disposition'] = "attachment; filename=\"Finish_Line_Marker.csv\""

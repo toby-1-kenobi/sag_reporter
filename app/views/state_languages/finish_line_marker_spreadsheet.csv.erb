@@ -1,27 +1,14 @@
 <% require 'csv' %>
 
 <%
-  if @dashboard == :zone
-    zone_or_state = Zone.find(@zone_state_id)
-    transformations = get_transformation(zone_or_state)
-    lc_amount = zone_or_state.state_languages.in_project.count
-    headData = "Zone : "+ zone_or_state.name
-  elsif @dashboard == :geo_state
-    zone_or_state = GeoState.find(@zone_state_id)
-    transformations = get_transformation(zone_or_state)
-    lc_amount = zone_or_state.state_languages.in_project.count
-    headData = "State : "+ zone_or_state.name
-  else
-    transformations = get_transformation("",true)
-    lc_amount = StateLanguage.in_project.count
-    headData = ""
-  end
+  transformations = get_transformation(@state_languages)
+  lc_amount = @state_languages.count
 %>
 <%= CSV.generate_line(['Finish Line Marker', 'Exported from LCI App', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe %>
 
-<%= CSV.generate_line([headData]).html_safe %>
+<%= CSV.generate_line([@head_data]).html_safe %>
 <%= CSV.generate_line(['Total languages : ' + @language_amount]).html_safe %>
-<%= CSV.generate_line(['Scripture engagement not yet started in : '+@scriptureCount.to_s]).html_safe %>
+<%= CSV.generate_line(['Scripture engagement not yet started in : '+@scripture_count.to_s]).html_safe %>
 <%
   headers1 = ['Finish Line Marker', 'No Progress yet', 'In Progress', 'Complete']
 
