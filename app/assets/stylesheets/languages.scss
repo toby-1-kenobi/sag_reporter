@@ -8,8 +8,26 @@ main.no-iso {
   background-color: lightgoldenrodyellow;
 }
 
-main.compact {
-  padding-top: 6px;
+.mdl-layout.compact {
+
+  .mdl-layout__header {
+    min-height: 50px;
+    .mdl-layout__drawer-button {
+      margin-top: 0;
+    }
+    .mdl-layout__header-row {
+      max-height: 50px;
+    }
+  }
+
+  main {
+    padding-top: 6px;
+  }
+
+  .breadcrumbs a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
 
   #flm-table {
     tbody td {
@@ -28,6 +46,16 @@ main.compact {
     }
     thead th {
       padding-bottom: 3px;
+    }
+  }
+
+  .language-table {
+    th, td {
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+    }
+    .language-name-cell {
+      max-width: 4em;
     }
   }
 }
@@ -286,7 +314,7 @@ p.iso {
     display: none;
   }
   .mdl-selectfield {
-    width: 10em;
+    width: 8em;
     .mdl-selectfield__list-option-box {
       width: 13em;
       li[data-value="0"] {

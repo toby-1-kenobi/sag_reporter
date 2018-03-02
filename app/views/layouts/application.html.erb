@@ -51,7 +51,7 @@
 
 <body>
 
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header <%= yield(:super_container_class) %>">
   <% if mdl %>
       <%= render 'layouts/header' unless @supress_header %>
   <% else %>
