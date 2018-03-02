@@ -315,8 +315,22 @@ class LanguagesController < ApplicationController
 
   # Export language tab information
   def language_tab_spreadsheet
-    @zone = Zone.find params[:zone_id]
-    @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user).where(geo_states: {zone: @zone})
+    case params[:dashboard]
+      when 'zone'
+        Rails.logger.debug('zone')
+        @zone = Zone.find params[:zone_id]
+        @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user).where(geo_states: {zone: @zone})
+        @head_data = "Zone: #{@zone.name}"
+      when 'state'
+        Rails.logger.debug('state')
+        @geo_state = GeoState.find params[:state_id]
+        @languages = @geo_state.languages.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
+        @head_data = "State: #{geo_state.name}"
+      else
+        Rails.logger.debug('nation')
+        @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
+        @head_data = "All India"
+    end
     @languages = @languages.order(:name)
     @flms = FinishLineMarker.order(:number)
     @flm_filters = params[:flm_filters].present? ? Language.parse_filter_param(params[:flm_filters]) : Language.use_default_filters

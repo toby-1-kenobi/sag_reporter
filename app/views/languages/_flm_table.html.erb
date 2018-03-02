@@ -9,21 +9,29 @@ any of the finish line markers on any language.
 <div class="language-table-controls">
   <button id="visible-flms-dialog-trigger" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">Visible markers</button>
   <button id="flm-filter-reset" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">Reset all filters</button>
-  <% if (defined?(zone_id))
-       spreadsheet_button_params = {
-           format: :csv,
-           flm_filters: params[:filter],
-           zone_id: zone_id
-       }
+  <% spreadsheet_button_params = {
+      format: :csv,
+      flm_filters: params[:filter],
+      dashboard: dashboard
+    }
+
+    if (defined?(zone_id))
+      spreadsheet_button_params[:zone_id]=  zone_id
   %>
+    <input type="hidden" id="zone-id-for-language-tab" value="<%= zone_id %>">
+  <%
+    elsif (defined?(state_id))
+      spreadsheet_button_params[:state_id] = state_id
+  %>
+    <input type="hidden" id="state-id-for-language-tab" value="<%= state_id %>">
+  <%end%>
     <%=
       link_to language_tab_spreadsheet_path(spreadsheet_button_params),
               class: 'download-language-spreadsheet mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent', id: 'language_csv' do %>
       <i class="material-icons">file_download</i>
       Get Spreadsheet
     <% end %>
-    <input type="hidden" id="zone-id-for-language-tab" value="<%= zone_id %>">
-  <% end %>
+  <input type="hidden" id="dashboard-for-language-tab" value="<%= dashboard %>">
 </div>
 
 <!-- include a mapping of finish line status to category here in the table tag -->

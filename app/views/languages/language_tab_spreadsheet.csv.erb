@@ -3,6 +3,8 @@
 <%= CSV.generate_line(['Language Finish Line Marker Information', 'Exported from LCI App', 'on ' + Date.today.strftime('%d %B, %Y')]).html_safe %>
 
 
+<%= CSV.generate_line([@head_data]).html_safe -%>
+
 <% # displaying header row
   headers = ['Language Name']
   @flms.each do |flm|

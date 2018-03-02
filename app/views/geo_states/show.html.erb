@@ -24,7 +24,7 @@
   </div>
 
   <div class="mdl-tabs__panel" id="languages-tab">
-    <%= render partial: 'languages/flm_table' %>
+    <%= render partial: 'languages/flm_table' , locals: {state_id: @geo_state.id, dashboard: "state"} %>
   </div>
 
   <div class="mdl-tabs__panel" id="organisations-tab">
