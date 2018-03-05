@@ -92,11 +92,15 @@ module LanguagesHelper
   end
 
   def get_transformation(state_languages)
+    # later we'll be putting progress updates into arrays by language progress so to save db hits
+    # get them all now and pass them down in parameters
+    all_updates = ProgressUpdate.joins(:language_progress).where(language_progresses: {state_language_id: state_languages}).to_a.group_by{ |pu| pu.language_progress_id }
+
     # for each project language get the aggregated data for both dates
     transformations = Hash.new
     # join progress updates to only include languages that have had baseline set.
     state_languages.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
-      transformations[state_language] = state_language.transformation_data(logged_in_user, true)
+      transformations[state_language] = state_language.transformation_data(logged_in_user, true, all_updates)
     end
     transformations
   end
