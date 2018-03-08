@@ -39,6 +39,21 @@ class ZonesController < ApplicationController
     end
   end
 
+  def load_flt_summary
+    @partial_locals = {}
+    # if there is an id parameter we are loading for a specific zone
+    if params[:id].present?
+      zone = Zone.find params[:id]
+      @partial_locals[:state_languages] = zone.state_languages.in_project
+    else
+      # otherwise we are loading for the whole nation
+      @partial_locals[:state_languages] = StateLanguage.in_project
+    end
+    respond_to do |format|
+      format.js { render 'languages/load_flt_summary' }
+    end
+  end
+
   def reports
     # if no since date is provided assume 3 months
     params[:since] ||= 3.months.ago.strftime('%d %B, %Y')

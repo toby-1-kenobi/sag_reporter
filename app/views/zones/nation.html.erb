@@ -21,7 +21,9 @@
       <div id="flm-table">
         <%= link_to 'get flm table', load_national_flm_summary_path, remote: true, class: 'content-fetch-trigger' %>
       </div>
-      <%= render 'languages/finish_line_transformation', state_languages: StateLanguage.in_project %>
+      <div id="flt-table">
+        <%= link_to 'get flt table', load_national_flt_summary_path, remote: true, class: 'content-fetch-trigger' %>
+      </div>
     </div>
   </div>
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'zones' %>" id="zones-tab">

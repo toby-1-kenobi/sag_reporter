@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       post :bulk_progress_update
       get :reports
       get :load_flm_summary
+      get :load_flt_summary
     end
   end
 
@@ -119,6 +120,7 @@ Rails.application.routes.draw do
     member do
       get :reports
       get :load_flm_summary
+      get :load_flt_summary
     end
   end
 
@@ -170,6 +172,7 @@ Rails.application.routes.draw do
   get 'nation' => 'zones#nation', as: 'nation'
   get 'national_outcomes_chart' => 'zones#national_outcomes_chart', as: 'national_outcomes_chart'
   get 'nation/load_flm_summary' => 'zones#load_flm_summary', as: 'load_national_flm_summary'
+  get 'nation/load_flt_summary' => 'zones#load_flt_summary', as: 'load_national_flt_summary'
 
   # my_reports is for a single user, but user id param not needed - it's got from logged in user
   get 'my_reports' => 'users#reports', as: 'my_reports'

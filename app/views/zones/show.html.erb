@@ -23,7 +23,9 @@
       <div id="flm-table">
         <%= link_to 'get flm table', load_flm_summary_zone_path(@zone), remote: true, class: 'content-fetch-trigger' %>
       </div>
-      <%= render 'languages/finish_line_transformation', state_languages: @zone.state_languages.in_project %>
+      <div id="flt-table">
+        <%= link_to 'get flt table', load_flt_summary_zone_path(@zone), remote: true, class: 'content-fetch-trigger' %>
+      </div>
     </div>
   </div>
 
