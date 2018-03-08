@@ -39,9 +39,12 @@ Rails.application.routes.draw do
   end
   
   resources :geo_states, only: [:show] do
-    get :bulk_assess, on: :member, as: 'bulk_assess'
-    post :bulk_progress_update, on: :member
-    get 'reports', on: :member
+    member do
+      get :bulk_assess, as: 'bulk_assess'
+      post :bulk_progress_update
+      get :reports
+      get :load_flm_summary
+    end
   end
 
   scope :help, controller: 'help' do
@@ -114,8 +117,8 @@ Rails.application.routes.draw do
 
   resources :zones, only: [:index, :show] do
     member do
-      get 'reports'
-      get 'load_flm_summary'
+      get :reports
+      get :load_flm_summary
     end
   end
 
