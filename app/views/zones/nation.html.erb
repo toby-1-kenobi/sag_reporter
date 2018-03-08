@@ -50,8 +50,9 @@
   </div>
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'languages' %>" id="languages-tab">
 
-    <%= render partial: 'languages/flm_table' %>
-
+    <div id="language-flm-table">
+      <%= link_to 'get language flm table', load_national_language_flm_table_path(filter: @language_flm_filters), remote: true, class: 'content-fetch-trigger' %>
+    </div>
   </div>
 </div>
 

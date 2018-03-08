@@ -48,7 +48,7 @@ applyFilterParams = (filterParams) ->
         $(this)[0].MaterialCheckbox.uncheck()
     $("#flm-filter-#{flmNumber} .mdl-checkbox input").first().trigger('change')
 
-updateState = ->
+window.updateState = ->
   filterParam = generateFilterParams()
   tabParam = getActiveTab()
   newState = { filter: filterParam, tab: tabParam }
@@ -99,9 +99,6 @@ $(document).ready ->
       $("dialog[data-for=\"#{id}\"]").get(0).showModal()
     return
 
-  $('.language-table .flm-status-select select').on 'change', (event) ->
-    $(this).closest('form').submit()
-
   $('.finish-line-progress-icon').on 'click', ->
     id = this.id
     number = id.substring(id.lastIndexOf('-') + 1)
@@ -132,51 +129,6 @@ $(document).ready ->
   	  $(this).parents('#colour_picker').find('td').addClass(colour_adjust)
   	prev_adjust = colour_adjust
   	return
-
-
-  $('#visible-flms-dialog-trigger').on 'click', ->
-    document.querySelector('#dialog-visible-flms').showModal()
-
-  $('#dialog-visible-flms').on 'close', ->
-    updateState()
-
-  $('#flm-filter-reset').on 'click', ->
-    # gather one checkbox from each flm to trigger change for refilter
-    changedBoxes = {}
-    $('.language-table tr.filters .mdl-js-checkbox:not(.is-checked)').each ->
-      this.MaterialCheckbox.check()
-      changedBoxes[$(this).find('input').attr('data-filter-trigger-label')] = this
-    for flm, checkbox of changedBoxes
-      $(checkbox).find('input').trigger 'change'
-    updateState()
-
-  $('.filter-summary').on 'click', ->
-    $(this).parent().find('.filter-choices').slideToggle()
-    updateState()
-
-  $('.filter-choice-done').on 'click', ->
-    $(this).closest('.filter-choices').slideUp()
-    updateState()
-
-  $('.filter-choices input').on 'change', ->
-    flmNum = $(this).attr('data-filter-trigger-label')
-    unchecked = $(this).closest('.filter-choices').find('input[type="checkbox"]:not(:checked)')
-    checked = $(this).closest('.filter-choices').find('input:checked[type="checkbox"]')
-    if unchecked.length == 0
-      $("##{flmNum}-filter-summary").text('Showing All')
-    else if checked.length == 0
-      $("##{flmNum}-filter-summary").text('Showing None')
-    else
-      $("##{flmNum}-filter-summary").text('Filtered')
-
-  $('.language-row select').on 'change', ->
-    newValue = $(this).val()
-    newCategory = $('.language-table').attr("data-flm-category__#{newValue}")
-    flmNumber = $(this).attr('flm_number')
-    $(this).closest('.mdl-js-selectfield').attr('data-finish-line-category', newCategory)
-    $(this).closest('.language-row').attr("data-flm-#{flmNumber}", newValue)
-    # force refiltering in case row should now be hidden
-    $("#flm-#{flmNumber}-filter-#{newValue}").trigger('change')
 
   $('#champion-edit-button').on 'click', ->
     $('#champion-input-row').slideDown()

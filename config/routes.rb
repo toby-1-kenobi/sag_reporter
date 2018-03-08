@@ -45,6 +45,7 @@ Rails.application.routes.draw do
       get :reports
       get :load_flm_summary
       get :load_flt_summary
+      get :load_language_flm_table
     end
   end
 
@@ -121,6 +122,7 @@ Rails.application.routes.draw do
       get :reports
       get :load_flm_summary
       get :load_flt_summary
+      get :load_language_flm_table
     end
   end
 
@@ -173,6 +175,7 @@ Rails.application.routes.draw do
   get 'national_outcomes_chart' => 'zones#national_outcomes_chart', as: 'national_outcomes_chart'
   get 'nation/load_flm_summary' => 'zones#load_flm_summary', as: 'load_national_flm_summary'
   get 'nation/load_flt_summary' => 'zones#load_flt_summary', as: 'load_national_flt_summary'
+  get 'nation/load_language_flm_table' => 'zones#load_language_flm_table', as: 'load_national_language_flm_table'
 
   # my_reports is for a single user, but user id param not needed - it's got from logged in user
   get 'my_reports' => 'users#reports', as: 'my_reports'

@@ -31,7 +31,9 @@
   </div>
 
   <div class="mdl-tabs__panel" id="languages-tab">
-    <%= render partial: 'languages/flm_table' %>
+    <div id="language-flm-table">
+      <%= link_to 'get language flm table', load_language_flm_table_geo_state_path(@geo_state, filter: @language_flm_filters), remote: true, class: 'content-fetch-trigger' %>
+    </div>
   </div>
 
   <div class="mdl-tabs__panel" id="organisations-tab">
