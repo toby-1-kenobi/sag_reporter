@@ -69,12 +69,16 @@ $(document).ready ->
 
   $('#jp-fetch-trigger').click()
 
+  $('.mdl-tabs__panel.is-active .content-fetch-trigger').click()
+
   $('.dashboard-tabs .mdl-tabs__tab-bar a').on 'click', ->
     if history.state != null
       filterParam = history.state.filter
     else
       filterParam = generateFilterParams()
-    tabParam = $(this).attr('href').split('-')[0].substr(1)
+    tabID = $(this).attr('href').substr(1)
+    tabParam = tabID.split('-')[0]
+    $("##{tabID} .content-fetch-trigger").click()
     newState = { filter: filterParam, tab: tabParam }
     if history.state != newState
       history.pushState(newState, '', "?filter=#{filterParam}&tab=#{tabParam}")

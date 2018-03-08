@@ -113,7 +113,10 @@ Rails.application.routes.draw do
   end
 
   resources :zones, only: [:index, :show] do
-    get 'reports', on: :member
+    member do
+      get 'reports'
+      get 'load_flm_summary'
+    end
   end
 
   get 're_send_to_confirm_email' => 'users#re_confirm_email'
@@ -163,6 +166,7 @@ Rails.application.routes.draw do
 
   get 'nation' => 'zones#nation', as: 'nation'
   get 'national_outcomes_chart' => 'zones#national_outcomes_chart', as: 'national_outcomes_chart'
+  get 'nation/load_flm_summary' => 'zones#load_flm_summary', as: 'load_national_flm_summary'
 
   # my_reports is for a single user, but user id param not needed - it's got from logged in user
   get 'my_reports' => 'users#reports', as: 'my_reports'

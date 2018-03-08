@@ -20,7 +20,9 @@
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'fls' %>" id="progress-tab">
     <div class="grid-layout">
-      <%= render 'languages/finish_line_summary', languages: @zone.languages.includes(:finish_line_progresses).uniq, zone: @zone  %>
+      <div id="flm-table">
+        <%= link_to 'get flm table', load_flm_summary_zone_path(@zone), remote: true, class: 'content-fetch-trigger' %>
+      </div>
       <%= render 'languages/finish_line_transformation', state_languages: @zone.state_languages.in_project %>
     </div>
   </div>
