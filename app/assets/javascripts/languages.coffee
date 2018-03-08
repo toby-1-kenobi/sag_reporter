@@ -69,6 +69,10 @@ $(document).ready ->
 
   $('#jp-fetch-trigger').click()
 
+  $('.content-fetch-trigger').on 'click', ->
+    $(this).parent().find('.mdl-spinner').addClass('is-active')
+    $(this).hide()
+
   $('.mdl-tabs__panel.is-active .content-fetch-trigger').click()
 
   $('.dashboard-tabs .mdl-tabs__tab-bar a').on 'click', ->
@@ -82,6 +86,7 @@ $(document).ready ->
     newState = { filter: filterParam, tab: tabParam }
     if history.state != newState
       history.pushState(newState, '', "?filter=#{filterParam}&tab=#{tabParam}")
+
 
   $('.editable').hover (->
     $(this).find('.edit-icon').removeClass('hide')

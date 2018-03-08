@@ -23,9 +23,11 @@
     <div class="grid-layout">
       <div id="flm-table">
         <%= link_to 'get flm table', load_flm_summary_geo_state_path(@geo_state), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
       </div>
       <div id="flt-table">
         <%= link_to 'get flt table', load_flt_summary_geo_state_path(@geo_state), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
       </div>
     </div>
   </div>
@@ -33,6 +35,7 @@
   <div class="mdl-tabs__panel" id="languages-tab">
     <div id="language-flm-table">
       <%= link_to 'get language flm table', load_language_flm_table_geo_state_path(@geo_state, filter: @language_flm_filters), remote: true, class: 'content-fetch-trigger' %>
+      <div class="mdl-spinner mdl-js-spinner"></div>
     </div>
   </div>
 

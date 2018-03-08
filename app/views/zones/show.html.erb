@@ -22,9 +22,11 @@
     <div class="grid-layout">
       <div id="flm-table">
         <%= link_to 'get flm table', load_flm_summary_zone_path(@zone), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
       </div>
       <div id="flt-table">
         <%= link_to 'get flt table', load_flt_summary_zone_path(@zone), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
       </div>
     </div>
   </div>
@@ -45,6 +47,7 @@
 
     <div id="language-flm-table">
       <%= link_to 'get language flm table', load_language_flm_table_zone_path(@zone, filter: @language_flm_filters), remote: true, class: 'content-fetch-trigger' %>
+      <div class="mdl-spinner mdl-js-spinner"></div>
     </div>
 
   </div>
