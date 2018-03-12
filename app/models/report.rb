@@ -45,6 +45,10 @@ class Report < ActiveRecord::Base
   scope :language, -> lang {
     joins(:languages).where(languages: {id: lang.id})
   }
+#added extra code for language
+  scope :langs, -> lang {
+    joins(geo_state: :state_languages).joins(languages).where(languages: {id: lang})
+  }
 
   scope :since, -> since_date {
     where('report_date >= ?', since_date)
@@ -166,6 +170,12 @@ class Report < ActiveRecord::Base
       # for an empty list of types the scope will return an empty collection
       filters[:states] ||= []
       collection = collection.states(filters[:states])
+    end
+    # before filtering for states check that we are using this filter
+    if filters[:languages_filter].present?
+      # for an empty list of types the scope will return an empty collection
+      filters[:languages] ||= []
+      collection = collection.langs(filters[:languages])
     end
     # before filtering for type of impact check impact type is selected (if we are using type filter)
     if filters[:report_types].blank? or filters[:types].include? 'impact'

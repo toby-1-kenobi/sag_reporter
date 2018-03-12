@@ -1,0 +1,16 @@
+<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="languages_filter">
+  <%= check_box_tag 'languages_filter', 'on', @filters[:languages_filter], class: 'report-view-filter mdl-switch__input' %>
+  <span class="mdl-switch__label">Filter by Language</span>
+</label>
+<div id="languages-filters"  <% if @filters[:languages_filter].blank? %> class="hide" <% end %>>
+  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="all_languages">
+    <%= check_box_tag "all_languages", 'on', true, class: 'all_languages_select mdl-checkbox__input' %>
+    <span class="mdl-switch__label">All</span>
+  </label>
+  <% languages.each do |lang| %>
+    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="languages_<%= lang.id %>">
+      <%= check_box_tag "languages[#{lang.id}]", 'on', (!@filters[:languages] or @filters[:languages][lang.id]), class: 'report-view-filter mdl-checkbox__input' %>
+      <span class="mdl-switch__label"><%= lang.language.name %></span>
+    </label>
+  <% end %>
+</div>

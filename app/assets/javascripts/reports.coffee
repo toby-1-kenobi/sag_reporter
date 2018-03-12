@@ -141,6 +141,13 @@ $(document).ready ->
     else
       $('#state-filters').slideUp()
 
+  #Hide or show language filter
+  $('#languages_filter').on 'change', ->
+    if (this.checked)
+      $('#languages-filters').slideDown()
+    else
+      $('#languages-filters').slideUp()
+
   # Hide or show supervisor email field depending on whether report is significant
   $('#report_significant').on 'change', ->
     if (this.checked)
@@ -181,4 +188,20 @@ $(document).ready ->
       return
     return
 
+  # selecting or deselecting all languages listed in the report filter
+  $('#languages-filters').find('input#all_languages').on 'change', ->
+    new_value = $(this).prop('checked')
+    $('#languages-filters').find('.mdl-checkbox').each ->
+      if new_value
+        $(this)[0].MaterialCheckbox.check()
+      else
+        $(this)[0].MaterialCheckbox.uncheck()
+      $('#report-filter-spinner').addClass('is-active')
+      $('.reports-container').empty()
+      $('.reports-count-container').empty()
+      $('#report-view-filters').submit()
+      return
+    return
+
   return
+
