@@ -10,7 +10,7 @@
   <% languages.each do |lang| %>
     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="languages_<%= lang.id %>">
       <%= check_box_tag "languages[#{lang.id}]", 'on', (!@filters[:languages] or @filters[:languages][lang.id]), class: 'report-view-filter mdl-checkbox__input' %>
-      <span class="mdl-switch__label"><%= lang.language.name %></span>
+      <span class="mdl-switch__label"><%= lang.name %></span>
     </label>
   <% end %>
 </div>

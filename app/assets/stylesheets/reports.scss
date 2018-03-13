@@ -97,7 +97,7 @@ li.report {
   margin-left: 2em;
 }
 
-#state-filters {
+#state-filters, #languages-filters {
   max-height: 10em;
   overflow: auto;
 }
@@ -107,9 +107,4 @@ li.report {
   z-index: 1000;
   right: 2em;
   bottom: 3em;
-}
-
-#languages-filters {
-  max-height: 10em;
-  overflow: auto;
 }
