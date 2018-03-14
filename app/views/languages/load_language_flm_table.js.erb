@@ -1,8 +1,18 @@
 
 
-
-
-$('#language-flm-table').replaceWith('<%= j render partial: 'languages/flm_table' %>');
+<%
+  locals = {}
+  if defined? @zone
+    locals[:dashboard] = 'zone'
+    locals[:zone_id] = @zone.id
+  elsif defined? @geo_state
+    locals[:dashboard] = 'state'
+    locals[:state_id] = @geo_state.id
+  else
+    locals[:dashboard] = 'nation'
+  end
+%>
+$('#language-flm-table').replaceWith('<%= j render partial: 'languages/flm_table', locals: locals %>');
 
 $('.mdl-checkbox').each(function(){
     componentHandler.upgradeElement(this);

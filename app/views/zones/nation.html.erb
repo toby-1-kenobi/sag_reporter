@@ -53,7 +53,7 @@
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'languages' %>" id="languages-tab">
 
     <div id="language-flm-table">
-      <%= link_to 'get language flm table', load_national_language_flm_table_path(filter: @language_flm_filters, dashboard: 'nation'), remote: true, class: 'content-fetch-trigger' %>
+      <%= link_to 'get language flm table', load_national_language_flm_table_path(filter: @language_flm_filters), remote: true, class: 'content-fetch-trigger' %>
       <div class="mdl-spinner mdl-js-spinner"></div>
     </div>
   </div>

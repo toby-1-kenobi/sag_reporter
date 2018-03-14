@@ -58,8 +58,8 @@ class ZonesController < ApplicationController
     @languages = Language.includes({geo_states: :zone}, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
     # if there is an id parameter we are loading for a specific zone
     if params[:id].present?
-      zone = Zone.find params[:id]
-      @languages = @languages.where(geo_states: {zone: zone})
+      @zone = Zone.find params[:id]
+      @languages = @languages.where(geo_states: {zone: @zone})
     end
     respond_to do |format|
       format.js { render 'languages/load_language_flm_table' }
