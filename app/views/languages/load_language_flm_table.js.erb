@@ -1,0 +1,78 @@
+
+
+
+
+$('#language-flm-table').replaceWith('<%= j render partial: 'languages/flm_table' %>');
+
+$('.mdl-checkbox').each(function(){
+    componentHandler.upgradeElement(this);
+});
+
+$('.mdl-selectfield').each(function(){
+    componentHandler.upgradeElement(this);
+});
+
+$('.language-table .flm-status-select select').on('change', function(){
+    $(this).closest('form').submit();
+});
+
+$('#visible-flms-dialog-trigger').on('click', function() {
+    return document.querySelector('#dialog-visible-flms').showModal();
+});
+
+$('#dialog-visible-flms').on('close', function() {
+    return window.updateState();
+});
+
+$('#flm-filter-reset').on('click', function() {
+    var changedBoxes, checkbox, flm;
+    changedBoxes = {};
+    $('.language-table tr.filters .mdl-js-checkbox:not(.is-checked)').each(function() {
+        this.MaterialCheckbox.check();
+        return changedBoxes[$(this).find('input').attr('data-filter-trigger-label')] = this;
+    });
+    for (flm in changedBoxes) {
+        checkbox = changedBoxes[flm];
+        $(checkbox).find('input').trigger('change');
+    }
+    return window.updateState();
+});
+
+$('.filter-summary').on('click', function() {
+    $(this).parent().find('.filter-choices').slideToggle();
+    return window.updateState();
+});
+
+$('.filter-choice-done').on('click', function() {
+    $(this).closest('.filter-choices').slideUp();
+    return window.updateState();
+});
+
+$('.filter-choices input').on('change', function() {
+    var checked, flmNum, unchecked;
+    flmNum = $(this).attr('data-filter-trigger-label');
+    unchecked = $(this).closest('.filter-choices').find('input[type="checkbox"]:not(:checked)');
+    checked = $(this).closest('.filter-choices').find('input:checked[type="checkbox"]');
+    if (unchecked.length === 0) {
+        return $("#" + flmNum + "-filter-summary").text('Showing All');
+    } else if (checked.length === 0) {
+        return $("#" + flmNum + "-filter-summary").text('Showing None');
+    } else {
+        return $("#" + flmNum + "-filter-summary").text('Filtered');
+    }
+});
+
+$('.language-row select').on('change', function() {
+    var flmNumber, newCategory, newValue;
+    newValue = $(this).val();
+    newCategory = $('.language-table').attr("data-flm-category__" + newValue);
+    flmNumber = $(this).attr('flm_number');
+    $(this).closest('.mdl-js-selectfield').attr('data-finish-line-category', newCategory);
+    $(this).closest('.language-row').attr("data-flm-" + flmNumber, newValue);
+    return $("#flm-" + flmNumber + "-filter-" + newValue).trigger('change');
+});
+
+window.bindFilters();
+$('.language-table-controls .filter-trigger').trigger('change');
+$('.language-table .filter-trigger').trigger('change');
+$('#dialog-visible-flms .filter-trigger').trigger('change');

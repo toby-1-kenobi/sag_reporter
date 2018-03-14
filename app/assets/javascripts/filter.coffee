@@ -102,13 +102,16 @@ filterOnLabel = (label) ->
   applyFilter valueArray, label
   return
 
-
-$(document).ready ->
-
-
+window.bindFilters = ->
   $('.filter-trigger').on 'change', ->
     filterOnLabel($(this).attr 'data-filter-trigger-label')
     return
+
+
+$(document).ready ->
+
+  window.bindFilters()
+
 
   $('.filter-trigger').trigger 'change'
 

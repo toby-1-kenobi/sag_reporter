@@ -1,5 +1,6 @@
 <% provide(:title, "#{@geo_state.name} Dashboard") %>
 <% provide(:context_title, @geo_state.name) %>
+<% provide(:super_container_class, 'compact') %>
 
 <!-- breadcrumbs will go here -->
 <!-- India | Zone | current state | previously navigated language -->
@@ -19,12 +20,23 @@
   </div>
 
   <div class="mdl-tabs__panel is-active" id="progress-tab">
-    <%= render 'languages/finish_line_summary', languages: @geo_state.languages %>
-    <%= render 'languages/finish_line_transformation', state_languages: @geo_state.state_languages.in_project %>
+    <div class="grid-layout">
+      <div id="flm-table">
+        <%= link_to 'get flm table', load_flm_summary_geo_state_path(@geo_state), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+      <div id="flt-table">
+        <%= link_to 'get flt table', load_flt_summary_geo_state_path(@geo_state), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+    </div>
   </div>
 
   <div class="mdl-tabs__panel" id="languages-tab">
-    <%= render partial: 'languages/flm_table' , locals: {state_id: @geo_state.id, dashboard: "state"} %>
+    <div id="language-flm-table">
+      <%= link_to 'get language flm table', load_language_flm_table_geo_state_path(@geo_state, filter: @language_flm_filters), remote: true, class: 'content-fetch-trigger' %>
+      <div class="mdl-spinner mdl-js-spinner"></div>
+    </div>
   </div>
 
   <div class="mdl-tabs__panel" id="organisations-tab">

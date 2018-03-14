@@ -8,12 +8,41 @@ class GeoStatesController < ApplicationController
   autocomplete :district, :name, full: true
 
   def show
-    @languages = @geo_state.languages.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
     @flms = FinishLineMarker.order(:number)
     @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
     @flm_filters = params[:filter].present? ? Language.parse_filter_param(params[:filter]) : Language.use_default_filters
     @tab = params[:tab]
     @filters = {since: 3.month.ago.strftime('%d %B, %Y'), until: Date.today.strftime('%d %B, %Y')}
+  end
+
+  def load_flm_summary
+    @partial_locals = {}
+    @partial_locals[:geo_state] = GeoState.find params[:id]
+    @partial_locals[:languages] = @partial_locals[:geo_state].languages.includes(:finish_line_progresses).uniq
+    @flms = FinishLineMarker.dashboard_visible.order(:number)
+    respond_to do |format|
+      format.js { render 'languages/load_flm_summary' }
+    end
+  end
+
+  def load_flt_summary
+    @partial_locals = {}
+    geo_state = GeoState.find params[:id]
+    @partial_locals[:state_languages] = geo_state.state_languages.in_project
+    respond_to do |format|
+      format.js { render 'languages/load_flt_summary' }
+    end
+  end
+
+  def load_language_flm_table
+    geo_state = GeoState.find params[:id]
+    @flms = FinishLineMarker.order(:number)
+    @flm_filters = params[:filter].present? ? Language.parse_filter_param(params[:filter]) : Language.use_default_filters
+    @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
+    @languages = geo_state.languages.includes({geo_states: :zone}, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
+    respond_to do |format|
+      format.js { render 'languages/load_language_flm_table' }
+    end
   end
 
   def get_autocomplete_items(parameters)

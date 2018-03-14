@@ -39,9 +39,14 @@ Rails.application.routes.draw do
   end
   
   resources :geo_states, only: [:show] do
-    get :bulk_assess, on: :member, as: 'bulk_assess'
-    post :bulk_progress_update, on: :member
-    get 'reports', on: :member
+    member do
+      get :bulk_assess, as: 'bulk_assess'
+      post :bulk_progress_update
+      get :reports
+      get :load_flm_summary
+      get :load_flt_summary
+      get :load_language_flm_table
+    end
   end
 
   scope :help, controller: 'help' do
@@ -113,7 +118,12 @@ Rails.application.routes.draw do
   end
 
   resources :zones, only: [:index, :show] do
-    get 'reports', on: :member
+    member do
+      get :reports
+      get :load_flm_summary
+      get :load_flt_summary
+      get :load_language_flm_table
+    end
   end
 
   get 're_send_to_confirm_email' => 'users#re_confirm_email'
@@ -163,6 +173,9 @@ Rails.application.routes.draw do
 
   get 'nation' => 'zones#nation', as: 'nation'
   get 'national_outcomes_chart' => 'zones#national_outcomes_chart', as: 'national_outcomes_chart'
+  get 'nation/load_flm_summary' => 'zones#load_flm_summary', as: 'load_national_flm_summary'
+  get 'nation/load_flt_summary' => 'zones#load_flt_summary', as: 'load_national_flt_summary'
+  get 'nation/load_language_flm_table' => 'zones#load_language_flm_table', as: 'load_national_language_flm_table'
 
   # my_reports is for a single user, but user id param not needed - it's got from logged in user
   get 'my_reports' => 'users#reports', as: 'my_reports'

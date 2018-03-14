@@ -1,9 +1,7 @@
 <% provide(:title, "#{@zone.name} Zone Dashboard") %>
-
 <% provide(:context_title, "#{@zone.name} Zone") %>
+<% provide(:super_container_class, 'compact') %>
 
-<!-- breadcrumbs will go here -->
-<!-- India | Current Zone | previously navigated state | previously navigated language -->
 <ul class="breadcrumbs">
   <li><%=	 link_to 'India', nation_path %></li>
   <li><%= link_to "#{@zone.name} Zone", zone_path(@zone) %></li>
@@ -21,8 +19,16 @@
   </div>
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'fls' %>" id="progress-tab">
-    <%= render 'languages/finish_line_summary', languages: @zone.languages.includes(:finish_line_progresses).uniq, zone: @zone  %>
-    <%= render 'languages/finish_line_transformation', state_languages: @zone.state_languages.in_project %>
+    <div class="grid-layout">
+      <div id="flm-table">
+        <%= link_to 'get flm table', load_flm_summary_zone_path(@zone), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+      <div id="flt-table">
+        <%= link_to 'get flt table', load_flt_summary_zone_path(@zone), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+    </div>
   </div>
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'states' %>" id="states-tab">
@@ -39,7 +45,10 @@
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'languages' %>" id="languages-tab">
 
-    <%= render partial: 'languages/flm_table' , locals: {zone_id: @zone.id, dashboard: "zone"}%>
+    <div id="language-flm-table">
+      <%= link_to 'get language flm table', load_language_flm_table_zone_path(@zone, filter: @language_flm_filters), remote: true, class: 'content-fetch-trigger' %>
+      <div class="mdl-spinner mdl-js-spinner"></div>
+    </div>
 
   </div>
 

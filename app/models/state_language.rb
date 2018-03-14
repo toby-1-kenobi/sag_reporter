@@ -195,7 +195,7 @@ class StateLanguage < ActiveRecord::Base
   end
 
   # get percentage score for each outcome area at current date
-  def transformation_data(user, include_overall = false)
+  def transformation_data(user, include_overall = false, progress_updates_hash = nil)
     # associate progress marker ids with Outcome Area names
     pm_data = Rails.cache.fetch('pm_data', expires_in: 1.day) do
       pm_oa_names = {}
@@ -213,11 +213,11 @@ class StateLanguage < ActiveRecord::Base
     # and get it's score at each of the dates
     # and total these scores by outcome area
     transformation = Hash.new {0}
-    language_progresses.includes(:progress_updates).find_each do |lp|
+    language_progresses.each do |lp|
       # don't include outcome areas that should be invisible to the user
       unless pm_data[:hidden_pms].include? lp.progress_marker_id
         oa_name = pm_data[:pm_oa_names][lp.progress_marker_id]
-        scores = lp.current_month_score(pm_data[:pm_weight])
+        scores = lp.current_month_score(pm_data[:pm_weight], progress_updates_hash)
         transformation[oa_name] += scores.first
         transformation['Overall'] += scores.first if include_overall
       end
