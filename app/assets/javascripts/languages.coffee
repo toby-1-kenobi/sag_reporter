@@ -12,11 +12,6 @@ generateFilterParams = ->
   flms = Object.keys(visible)
   filterParams = flms.join('_')
   filterParams = "#{filterParams}-#{visible[flm].join('')}" for flm in flms
-  zoneId = $('#zone-id-for-language-tab').val()
-  stateId = $('#state-id-for-language-tab').val()
-  dashboard = $('#dashboard-for-language-tab').val()
-  params = "dashboard=#{dashboard}&zone_id=#{zoneId}&state_id=#{stateId}"
-  $('#language_csv').attr("href", "/language_tab_spreadsheet.csv?flm_filters=#{filterParams}&#{params}");
   return filterParams
 
 getActiveTab = ->
@@ -45,16 +40,17 @@ applyFilterParams = (filterParams) ->
       filters = tokens.shift().split('')
     else
       filters = []
-    console.log filters
     $("#flm-filter-#{flmNumber} .mdl-checkbox").each ->
       if filters.includes $(this).find('input').attr('data-status-id')
         $(this)[0].MaterialCheckbox.check()
       else
         $(this)[0].MaterialCheckbox.uncheck()
     $("#flm-filter-#{flmNumber} .mdl-checkbox input").first().trigger('change')
+  $('#language_csv').attr("href", "/language_tab_spreadsheet.csv?flm_filters=#{filterParams}")
 
 updateState = ->
   filterParam = generateFilterParams()
+  $('#language_csv').attr("href", "/language_tab_spreadsheet.csv?flm_filters=#{filterParam}")
   tabParam = getActiveTab()
   newState = { filter: filterParam, tab: tabParam }
   if history.state != newState

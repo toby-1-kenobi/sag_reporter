@@ -14,24 +14,18 @@ any of the finish line markers on any language.
       flm_filters: params[:filter],
       dashboard: dashboard
     }
-
     if (defined?(zone_id))
       spreadsheet_button_params[:zone_id]=  zone_id
-  %>
-    <input type="hidden" id="zone-id-for-language-tab" value="<%= zone_id %>">
-  <%
     elsif (defined?(state_id))
       spreadsheet_button_params[:state_id] = state_id
+    end
   %>
-    <input type="hidden" id="state-id-for-language-tab" value="<%= state_id %>">
-  <%end%>
-    <%=
-      link_to language_tab_spreadsheet_path(spreadsheet_button_params),
-              class: 'download-language-spreadsheet mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent', id: 'language_csv' do %>
-      <i class="material-icons">file_download</i>
-      Get Spreadsheet
-    <% end %>
-  <input type="hidden" id="dashboard-for-language-tab" value="<%= dashboard %>">
+  <%=
+    link_to language_tab_spreadsheet_path(spreadsheet_button_params),
+            class: 'download-language-spreadsheet mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent', id: 'language_csv' do %>
+    <i class="material-icons">file_download</i>
+    Get Spreadsheet
+  <% end %>
 </div>
 
 <!-- include a mapping of finish line status to category here in the table tag -->

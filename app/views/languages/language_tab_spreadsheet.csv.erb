@@ -15,6 +15,7 @@
 <%= CSV.generate_line(headers).html_safe -%>
 
 <%
+  Rails.logger.debug @flm_filters
   @languages.each do |lang|
     rowData = [lang.name]
     finish_line_status = {} # map finish line marker number to finish line progress status for this language

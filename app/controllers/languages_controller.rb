@@ -325,7 +325,7 @@ class LanguagesController < ApplicationController
         Rails.logger.debug('state')
         @geo_state = GeoState.find params[:state_id]
         @languages = @geo_state.languages.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
-        @head_data = "State: #{geo_state.name}"
+        @head_data = "State: #{@geo_state.name}"
       else
         Rails.logger.debug('nation')
         @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
