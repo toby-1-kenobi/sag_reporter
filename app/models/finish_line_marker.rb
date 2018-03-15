@@ -7,6 +7,10 @@ class FinishLineMarker < ActiveRecord::Base
   validates :description, presence: true
   validates :number, presence: true
 
+  scope :dashboard_visible, -> {
+    where(number: [1, 2, 4, 5, 6, 7, 8, 9])
+  }
+
   def status_description(status)
     case number
       when 0

@@ -2,11 +2,92 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+generateFilterParams = ->
+  visible = {}
+  $('.visible-flm-filter:checked').each ->
+    flmID = $(this).val()
+    visible[flmID] = []
+    $("#flm-filter-#{flmID} input:checkbox:checked").each ->
+      visible[flmID].push($(this).attr('data-status-id'))
+  flms = Object.keys(visible)
+  filterParams = flms.join('_')
+  filterParams = "#{filterParams}-#{visible[flm].join('')}" for flm in flms
+  return filterParams
+
+getActiveTab = ->
+  if $('.mdl-tabs__panel.is-active').length > 0
+    $('.mdl-tabs__panel.is-active').first().attr('id').split('-')[0]
+  else
+    ''
+
+setActiveTab = (tabName) ->
+  $('.dashboard-tabs .mdl-tabs__tab').removeClass('is-active')
+  $(".dashboard-tabs .mdl-tabs__tab[href=\"##{tabName}-tab\"").addClass('is-active')
+  $('.dashboard-tabs .mdl-tabs__panel').removeClass('is-active')
+  $("##{tabName}-tab").addClass('is-active')
+
+applyFilterParams = (filterParams) ->
+  tokens = filterParams.split('-')
+  visibleFLMs = tokens.shift().split(',')
+  $('#dialog-visible-flms .mdl-switch').each ->
+    if visibleFLMs.includes $(this).attr('id').split('-')[1]
+      $(this)[0].MaterialSwitch.on()
+    else
+      $(this)[0].MaterialSwitch.off()
+  $('#dialog-visible-flms .mdl-switch input').first().trigger('change')
+  for flmNumber in visibleFLMs
+    if tokens.length > 0
+      filters = tokens.shift().split('')
+    else
+      filters = []
+    $("#flm-filter-#{flmNumber} .mdl-checkbox").each ->
+      if filters.includes $(this).find('input').attr('data-status-id')
+        $(this)[0].MaterialCheckbox.check()
+      else
+        $(this)[0].MaterialCheckbox.uncheck()
+    $("#flm-filter-#{flmNumber} .mdl-checkbox input").first().trigger('change')
+  $('#language_csv').attr("href", "/language_tab_spreadsheet.csv?flm_filters=#{filterParams}")
+
+window.updateState = ->
+  filterParam = generateFilterParams()
+  $('#language_csv').attr("href", "/language_tab_spreadsheet.csv?flm_filters=#{filterParam}")
+  tabParam = getActiveTab()
+  newState = { filter: filterParam, tab: tabParam }
+  if history.state != newState
+    history.pushState(newState, '', "?filter=#{filterParam}&tab=#{tabParam}")
+
+
+window.onpopstate = (event) ->
+  if event.state != null
+    if event.state.tab != null
+      setActiveTab(event.state.tab)
+    if event.state.filter != null
+      applyFilterParams(event.state.filter)
+
 $(document).ready ->
 
   $('.get-chart-button').click()
 
   $('#jp-fetch-trigger').click()
+
+  $('.content-fetch-trigger').on 'click', ->
+    $(this).parent().find('.mdl-spinner').addClass('is-active')
+    $(this).hide()
+
+  $('.mdl-tabs__panel.is-active .content-fetch-trigger').click()
+
+  $('.dashboard-tabs .mdl-tabs__tab-bar a').on 'click', ->
+    if history.state != null
+      filterParam = history.state.filter
+    else
+      filterParam = generateFilterParams()
+    tabID = $(this).attr('href').substr(1)
+    tabParam = tabID.split('-')[0]
+    $("##{tabID} .content-fetch-trigger").click()
+    newState = { filter: filterParam, tab: tabParam }
+    if history.state != newState
+      history.pushState(newState, '', "?filter=#{filterParam}&tab=#{tabParam}")
+
 
   $('.editable').hover (->
     $(this).find('.edit-icon').removeClass('hide')
@@ -54,49 +135,6 @@ $(document).ready ->
   	  $(this).parents('#colour_picker').find('td').addClass(colour_adjust)
   	prev_adjust = colour_adjust
   	return
-
-  $('.language-filter-controls .over').on 'click', ->
-    # get the thing that will slide out from under
-    under = $(this).nextAll('.under:first')
-    if ($(under).is(":visible"))
-      under.removeClass('mdl-shadow--4dp')
-      under.children('.shadow-clipper').fadeOut 200, ->
-        under.slideUp(300)
-    else
-      under.slideDown 300, ->
-        under.addClass('mdl-shadow--4dp')
-        under.children('.shadow-clipper').fadeIn(200)
-
-  $('#finish-line-marker-select').on 'click', (event) ->
-    event.stopPropagation()
-    return
-
-  $('.flm-option').on 'click', (event) ->
-    event.stopPropagation()
-    # hide any visible under panels
-    $('.finish-line-filter-panel:visible')
-      .removeClass('mdl-shadow--4dp')
-      .children('.shadow-clipper').fadeOut 200, ->
-        $('.finish-line-filter-panel:visible').slideUp(300)
-        return
-    # make all panels not 'under'
-    $('.under.finish-line-filter-panel').addClass('hide').removeClass('under')
-    # recheck every checkbox and refilter to remove finish line filter
-    $('.finish-line-filter-panel').find('input:checkbox:not(:checked)').each ->
-      console.log(this)
-      $(this).parent()[0].MaterialCheckbox.check()
-      $(this).trigger('change')
-      return
-    # set the name on the filter box to the selected finish line marker
-    $('#flm-filter-name').html($(this).find('.flm-name').html())
-    # hide all finish line chips in the language list
-    $('.language-flp-chip').addClass('hide')
-    # show the chips related to the selected marker
-    flmNum = $(this).attr('data-flm-number')
-    $(".language-flp-chip.flm-#{flmNum}").removeClass('hide')
-    # make the proper filter options the ones that will come up when the filter is clicked
-    $("#finish-line-status-select-#{flmNum}").addClass('under').removeClass('hide')
-    return
 
   $('#champion-edit-button').on 'click', ->
     $('#champion-input-row').slideDown()

@@ -19,7 +19,7 @@
 
 %>
 
-<% (1..50).each do |index| %>
+<% 0.times do |index| %>
 output_count_<%= index %>:
   output_tally: <%= output_tallies.sample %>
   user: <%= users.sample %>

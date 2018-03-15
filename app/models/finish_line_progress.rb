@@ -21,6 +21,10 @@ class FinishLineProgress < ActiveRecord::Base
     "#{finish_line_marker.name} for #{language.name}"
   end
 
+  def category
+    FinishLineProgress.category(status)
+  end
+
   def self.category(status)
     case status
       when 'no_need'
@@ -34,54 +38,8 @@ class FinishLineProgress < ActiveRecord::Base
     end
   end
 
-  def category
-    FinishLineProgress.category(status)
-  end
-
   def human_status
-    if finish_line_marker.number == 0
-      FinishLineProgress.church_engagement_status[status]
-    else
-      case status
-        when 'no_need'
-          'No need'
-        when 'possible_need', 'expressed_needs'
-          "#{status.humanize}, not started"
-        when 'in_progress'
-          'In progress, not completed'
-        when 'completed'
-          case finish_line_marker.number
-            when 2, 3, 4, 8, 9, 10
-              'Reached requirements'
-            else
-              'Completed'
-          end
-        else
-          case finish_line_marker.number
-            when 2, 3, 4, 8, 9, 10
-              "Reached requirements, #{status.humanize}"
-            else
-              "Completed, #{status.humanize}"
-          end
-      end
-    end
-  end
-
-  def simple_human_status
-    if finish_line_marker.number == 0
-      FinishLineProgress.church_engagement_status[status]
-    else
-      if status == 'completed'
-        case finish_line_marker.number
-          when 2, 3, 4, 8, 9, 10
-            'Reached requirements'
-          else
-            'Completed'
-        end
-      else
-        status.humanize
-      end
-    end
+    FinishLineProgress.human_of_status(status, finish_line_marker.number)
   end
 
   def self.human_of_status(status, marker_number)
@@ -113,6 +71,27 @@ class FinishLineProgress < ActiveRecord::Base
           end
         else
           false
+      end
+    end
+  end
+
+  def simple_human_status
+    FinishLineProgress.simple_human_of_status(status, finish_line_marker.number)
+  end
+
+  def self.simple_human_of_status(status, marker_number)
+    if marker_number == 0
+      FinishLineProgress.church_engagement_status[status]
+    else
+      if status == 'completed'
+        case marker_number
+          when 2, 3, 4, 8, 9, 10
+            'Reached requirements'
+          else
+            'Completed'
+        end
+      else
+        status.humanize
       end
     end
   end

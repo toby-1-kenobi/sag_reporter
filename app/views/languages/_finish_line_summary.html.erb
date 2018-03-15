@@ -1,47 +1,83 @@
-<div class="mdl-grid">
-  <% language_amount = languages.count %>
-  <% finish_line_data = build_finish_line_table(languages, FinishLineMarker.all.order(:number)) %>
-  <div class="mdl-grid--6-col">
-    <%= language_amount %> languages.
-    <% if language_amount > 0 %>
-      <table class="mdl-data-table mdl-js-data-table">
-        <thead>
-          <tr>
-            <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
-            <th>No Progress yet <i class="material-icons">star_border</i></th>
-            <th>In Progress <i class="material-icons">star_half</i></th>
-            <th>Complete <i class="material-icons">star</i></th>
-            <th><i class="material-icons">pie_chart</i></th>
-          </tr>
-        </thead>
-        <tbody>
-        <% finish_line_data.each do |marker, data| %>
-          <tr>
-            <td class="mdl-data-table__cell--non-numeric"><%= marker.name %></td>
-            <td><%= data[:no_progress] %> (<%= (data[:no_progress] *100) / language_amount %>%)</td>
-            <td><%= data[:progress] %> (<%= (data[:progress] *100) / language_amount %>%)</td>
-            <td><%= data[:complete] %> (<%= (data[:complete] *100) / language_amount %>%)</td>
-            <td>
-              <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-<%= marker.number %>">
-                <input type="checkbox" id="pie-toggle-<%= marker.number %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-<%= marker.number %>">
-                <i class="mdl-icon-toggle__label material-icons on hide">pie_chart</i>
-                <i class="mdl-icon-toggle__label material-icons off">pie_chart_outlined</i>
-              </label>
-            </td>
-          </tr>
-        <% end %>
-        </tbody>
-      </table>
-    <% end %>
+
+<%
+  language_amount = languages.count
+  finish_line_data = build_finish_line_table(languages, @flms)
+  scripture_count = getScriptureEngageCount(languages)
+
+  finish_marker_data = Hash.new()
+  finish_line_data.each do |marker, data|
+   finish_marker_data[marker.name] ||= Hash.new()
+   finish_marker_data[marker.name][:no_progress] = data[:no_progress]
+   finish_marker_data[marker.name][:progress] = data[:progress]
+   finish_marker_data[marker.name][:complete] = data[:complete]
+  end
+
+  spreadsheet_button_params = {
+      format: :csv,
+      language_amount: language_amount,
+      finish_line_data: finish_marker_data,
+      scripture_count: scripture_count
+  }
+
+  if (defined?(zone))
+    spreadsheet_button_params[:dashboard] = :zone
+    spreadsheet_button_params[:zone_id] = zone.id
+  elsif (defined?(geo_state))
+    spreadsheet_button_params[:dashboard] = :geo_state
+    spreadsheet_button_params[:state_id] = geo_state.id
+  end
+%>
+
+
+
+<div id="flm-table">
+  <div style="float: right"><%=
+    link_to finish_line_marker_spreadsheet_path(spreadsheet_button_params), class: 'download-transformation-spreadsheet mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent' do %>
+    <i class="material-icons">file_download</i>
+    Get Spreadsheet
+  <% end %>
   </div>
-  <div class="mdl-grid--6-col">
-    <% finish_line_data.each do |marker, data| %>
-        <div id="pie-chart-<%= marker.number %>" class="chart-card mdl-card mdl-shadow--2dp hide">
-          <div class="mdl-card__title">
-            <h2 class="mdl-card__title-text"><%= marker.name %></h2>
-          </div>
-          <%= pie_chart data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h, colors: colours_for_finish_line_data(data.except(:nothing)) %>
+  <%= language_amount %> languages.<br>
+  <%= scripture_count %> languages: Scripture engagement not yet started/reported.
+  <% if language_amount > 0 %>
+    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+      <thead>
+        <tr>
+          <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
+          <th>No Progress yet <i class="material-icons">star_border</i></th>
+          <th>In Progress <i class="material-icons">star_half</i></th>
+          <th>Complete <i class="material-icons">star</i></th>
+          <th><i class="material-icons">pie_chart</i></th>
+        </tr>
+      </thead>
+      <tbody>
+      <% finish_line_data.each do |marker, data| %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric"><%= marker.name %></td>
+          <td><%= data[:no_progress] %> (<%= (data[:no_progress] *100) / language_amount %>%)</td>
+          <td><%= data[:progress] %> (<%= (data[:progress] *100) / language_amount %>%)</td>
+          <td><%= data[:complete] %> (<%= (data[:complete] *100) / language_amount %>%)</td>
+          <td>
+            <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-<%= marker.number %>">
+              <input type="checkbox" id="pie-toggle-<%= marker.number %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-<%= marker.number %>">
+              <i class="mdl-icon-toggle__label material-icons on hide">pie_chart</i>
+              <i class="mdl-icon-toggle__label material-icons off">pie_chart_outlined</i>
+            </label>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+<div id="flm-charts">
+  <% finish_line_data.each do |marker, data| %>
+      <div id="pie-chart-<%= marker.number %>" class="chart-card mdl-card mdl-shadow--2dp hide">
+        <div class="mdl-card__title">
+          <h2 class="mdl-card__title-text"><%= marker.name %></h2>
         </div>
-    <% end %>
-  </div>
+        <%= pie_chart data.except(:nothing).map{ |k, v| [k.to_s.humanize, v]}.to_h, colors: colours_for_finish_line_data(data.except(:nothing)) %>
+      </div>
+  <% end %>
 </div>

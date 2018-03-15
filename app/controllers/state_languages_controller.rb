@@ -9,7 +9,8 @@ class StateLanguagesController < ApplicationController
   def outcomes
     @outcome_areas = Topic.all
     @languages_by_state = Hash.new
-    logged_in_user.geo_states.each do |geo_state|
+    accessible_states = logged_in_user.national? ? GeoState.all.order(:name) : logged_in_user.geo_states
+    accessible_states.each do |geo_state|
       @languages_by_state[geo_state] = geo_state.state_languages.includes(:language).in_project.to_a.sort!
     end
   end
@@ -121,6 +122,33 @@ class StateLanguagesController < ApplicationController
     end
   end
 
+  def finish_line_marker_spreadsheet
+    @language_amount = params[:language_amount]
+    @finish_line_data = params[:finish_line_data]
+    @scripture_count = params[:scripture_count]
+    case params[:dashboard]
+    when 'zone'
+      Rails.logger.debug('zone')
+      zone = Zone.find params[:zone_id]
+      @state_languages = zone.state_languages.in_project
+      @head_data = "Zone: #{zone.name}"
+    when 'geo_state'
+      Rails.logger.debug('state')
+      geo_state = GeoState.find params[:state_id]
+      @state_languages = geo_state.state_languages.in_project
+      @head_data = "State: #{geo_state.name}"
+    else
+      Rails.logger.debug('nation')
+      @state_languages = StateLanguage.in_project
+      @head_data = "All India"
+    end
+    respond_to do |format|
+      format.csv do
+        headers['Content-Disposition'] = "attachment; filename=\"Finish_Line_Marker.csv\""
+        headers['Content-Type'] ||= 'text/csv; charset=utf-8'
+      end
+    end
+  end
 
   private
 

@@ -74,10 +74,14 @@ class Report < ActiveRecord::Base
   }
 
   scope :user_limited, -> user {
-    if user.national?
-      all
+    if user.trusted?
+      if user.national?
+        all
+      else
+        joins(:geo_state).where('geo_states.id' => user.geo_states)
+      end
     else
-      joins(:geo_state).where('geo_states.id' => user.geo_states)
+      where(reporter: user)
     end
   }
 

@@ -65,5 +65,21 @@ class LanguageProgress < ActiveRecord::Base
     return scores
   end
 
+  def current_month_score(pm_weight, progress_updates_hash = nil)
+    if progress_updates_hash
+      if progress_updates_hash[id]
+        all_updates = progress_updates_hash[id]
+      else
+        # this LanguageProgress is not in the progress_updates_hash
+        # which must mean there are no progress updates for it,
+        # so the score is 0.
+        return [0]
+      end
+    else
+      Rails.logger.debug 'no'
+      all_updates = progress_updates.to_a
+    end
+    [month_score(all_updates, pm_weight)]
+  end
 end
 

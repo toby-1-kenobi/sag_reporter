@@ -61,6 +61,11 @@ module LanguagesHelper
     data.keys.map{ |status| colour_map[status] }
   end
 
+  def colours_for_transformation_data(data)
+    colour_map = {notseen: 'blue', emerging: 'gray', growingwell: 'orange', widespread: 'green'}
+    data.keys.map{ |status| colour_map[status] }
+  end
+
   def finish_line_progress_icon(category)
     case category
       when :no_progress
@@ -74,4 +79,59 @@ module LanguagesHelper
     end
   end
 
+  # for the finish line transformation table
+  # each language is categorized based on its transformation score
+  # the value in the hash represents the max value for that bracket
+  def transformation_brackets
+    {
+        notseen: 5,
+        emerging: 50,
+        growingwell: 70,
+        widespread: 100
+    }
+  end
+
+  def get_transformation(state_languages)
+    # later we'll be putting progress updates into arrays by language progress so to save db hits
+    # get them all now and pass them down in parameters
+    all_updates = ProgressUpdate.joins(:language_progress).where(language_progresses: {state_language_id: state_languages}).to_a.group_by{ |pu| pu.language_progress_id }
+
+    # for each project language get the aggregated data for both dates
+    transformations = Hash.new
+    # join progress updates to only include languages that have had baseline set.
+    state_languages.joins(:progress_updates).includes(:language, {geo_state: :zone}, {:language_progresses =>[{:progress_marker => :topic}, :progress_updates]}).uniq.find_each do |state_language|
+      transformations[state_language] = state_language.transformation_data(logged_in_user, true, all_updates)
+    end
+    transformations
+  end
+
+  def get_outcome_area()
+    @outcome_area_colours = Hash.new
+    Topic.find_each{ |oa| @outcome_area_colours[oa.name] = oa.colour }
+    @outcome_area_colours['Overall'] = 'white'
+    @outcome_area_colours
+  end
+
+  def scripture_engage_list
+       se_list = ["New Testament", "Jesus Film", "Oral Bible Stories", "Gospel", "Old Testament"]
+  end
+
+  def getScriptureEngageCount(languages)
+    count = 0
+    languages.each do |lang|
+      lang_count = 0
+      lang.finish_line_progresses.each do |flp|
+        marker = flp.finish_line_marker
+        scripture_engage_list.each do |se|
+          if marker.name == se and flp.category == :no_progress
+            lang_count += 1
+          end
+        end
+      end
+      if lang_count == scripture_engage_list.length
+        count += 1
+      end
+    end
+    count
+  end
 end

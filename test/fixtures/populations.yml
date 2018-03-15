@@ -8,8 +8,8 @@ toto2015:
   year: 2015
   international: false
 
-sadri2000:
-  language: sadri
+santali2000:
+  language: santali
   amount: 30000
   source: census
   year: 2000

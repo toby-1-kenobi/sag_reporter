@@ -11,7 +11,7 @@ class LanguagesController < ApplicationController
   end
 
   # can edit a language if the language is in one of the user's states, or if the user is national
-  before_action only: [:edit, :update, :reports, :show, :show_details, :populations] do
+  before_action only: [:reports, :show, :show_details, :populations] do
     redirect_to zones_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
   end
 
@@ -22,9 +22,6 @@ class LanguagesController < ApplicationController
 
   autocomplete :user, :name, :full => true
 
-  def index
-  	@languages = Language.includes(:family, { geo_states: :zone }).order(:name)
-  end
 
   def overview
     # convert to an array here and manage it in the view
@@ -37,10 +34,6 @@ class LanguagesController < ApplicationController
   	@colour_columns = 3
   end
 
-  def edit
-  	@language = Language.find(params[:id])
-  	@colour_columns = 3
-  end
 
   def show
   	@language = Language.
@@ -160,36 +153,6 @@ class LanguagesController < ApplicationController
       respond_to :js
     else
       return head :gone
-    end
-  end
-
-  def update
-    @language = Language.find(params[:id])
-    if @language.update_attributes(combine_colour(lang_params))
-      flash['success'] = 'Language updated'
-      respond_to do |format|
-        format.json {
-          logger.debug 'update request in json format'
-          flash.keep('success')
-          render json: {redirect: language_path(@language)}.to_json
-        }
-        format.html {
-          logger.debug 'update request in html format'
-          @all_orgs = Organisation.all.order(:name)
-          render 'show'
-        }
-      end
-    else
-      @colour_columns = 3
-      respond_to do |format|
-        format.json {
-          render json: {errors: @language.errors.full_messages}.to_json
-        }
-        format.html {
-          @all_orgs = Organisation.all.order(:name)
-          render 'show'
-        }
-      end
     end
   end
 
@@ -348,6 +311,36 @@ class LanguagesController < ApplicationController
   def populations
     @language = Language.find params[:id]
     @pending_pop_edits = Edit.pending.where(model_klass_name: 'Language', attribute_name: 'populations', record_id: @language.id)
+  end
+
+  # Export language tab information
+  def language_tab_spreadsheet
+    case params[:dashboard]
+      when 'zone'
+        Rails.logger.debug('zone')
+        @zone = Zone.find params[:zone_id]
+        @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user).where(geo_states: {zone: @zone})
+        @head_data = "Zone: #{@zone.name}"
+      when 'state'
+        Rails.logger.debug('state')
+        @geo_state = GeoState.find params[:state_id]
+        @languages = @geo_state.languages.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
+        @head_data = "State: #{@geo_state.name}"
+      else
+        Rails.logger.debug('nation')
+        @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
+        @head_data = "All India"
+    end
+    @languages = @languages.order(:name)
+    @flms = FinishLineMarker.order(:number)
+    @flm_filters = params[:flm_filters].present? ? Language.parse_filter_param(params[:flm_filters]) : Language.use_default_filters
+    @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
+    respond_to do |format|
+      format.csv do
+        headers['Content-Disposition'] = "attachment; filename=\"Language_flm_info.csv\""
+        headers['Content-Type'] ||= 'text/csv; charset=utf-8'
+      end
+    end
   end
 
   private

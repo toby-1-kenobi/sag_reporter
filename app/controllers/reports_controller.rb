@@ -18,7 +18,11 @@ class ReportsController < ApplicationController
   before_action :find_report, only: [:edit, :update, :show, :archive, :unarchive, :pictures]
 
   before_action only: [:show] do
-    redirect_to root_path unless logged_in_user.national? or logged_in_user.geo_states.include? @report.geo_state
+    if logged_in_user.trusted?
+      redirect_to root_path unless logged_in_user.national? or logged_in_user.geo_states.include? @report.geo_state
+    else
+      redirect_to root_path unless logged_in_user?(@report.reporter)
+    end
   end
 
   before_action only: [:edit, :update] do
@@ -35,7 +39,7 @@ class ReportsController < ApplicationController
     @report.pictures.build
     @report.impact_report = ImpactReport.new
     @geo_states = logged_in_user.geo_states
-  	@project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: @geo_states).order('languages.name')
+  	@state_languages = StateLanguage.includes(:language, :geo_state).where(geo_state: @geo_states).order('languages.name')
     @topics = Topic.all
   end
 
@@ -99,7 +103,7 @@ class ReportsController < ApplicationController
   def edit
     @report.pictures.build
     @geo_states = @report.available_geo_states(logged_in_user)
-    @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
+    @state_languages = StateLanguage.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
     @topics = Topic.all
   end
 

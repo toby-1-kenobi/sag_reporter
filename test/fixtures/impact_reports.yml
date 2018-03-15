@@ -2,6 +2,6 @@
 
 impact-report-andrew: {}
 
-<% (1..80).each do |index| %>
+<% 80.times do |index| %>
 impact-report-<%= index %>: {}
 <% end %>

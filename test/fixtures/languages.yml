@@ -14,6 +14,7 @@ assamese:
 
 toto:
   name: Toto
+  iso: txo
   description: "About 1500 speakers all located in one village near Bhutan. Most speakers also fluent in Nepali. Educated Totos literate in Bengali. Script developed in 2015 with new characters. More MT literacy required."
   lwc: false
   colour: 'blue-grey lighten-1'

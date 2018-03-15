@@ -6,6 +6,7 @@ class TopicsController < ApplicationController
 
     # Let only permitted users do some things
   before_action only: [:assess_progress_select, :assess_progress] do
+    redirect_to root_path unless logged_in_user.trusted?
     set_date_range
   end
 

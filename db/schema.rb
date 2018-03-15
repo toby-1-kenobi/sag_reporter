@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171106222605) do
+ActiveRecord::Schema.define(version: 20180103035917) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,17 @@ ActiveRecord::Schema.define(version: 20171106222605) do
   add_index "attendances", ["event_id", "person_id"], name: "index_attendances_on_event_id_and_person_id", unique: true, using: :btree
   add_index "attendances", ["event_id"], name: "index_attendances_on_event_id", using: :btree
   add_index "attendances", ["person_id"], name: "index_attendances_on_person_id", using: :btree
+
+  create_table "cache_backups", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.text     "value"
+    t.datetime "expires"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "cache_backups", ["expires"], name: "index_cache_backups_on_expires", using: :btree
+  add_index "cache_backups", ["name"], name: "index_cache_backups_on_name", using: :btree
 
   create_table "challenge_reports", force: :cascade do |t|
     t.datetime "created_at", null: false

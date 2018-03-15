@@ -39,9 +39,14 @@ Rails.application.routes.draw do
   end
   
   resources :geo_states, only: [:show] do
-    get :bulk_assess, on: :member, as: 'bulk_assess'
-    post :bulk_progress_update, on: :member
-    get 'reports', on: :member
+    member do
+      get :bulk_assess, as: 'bulk_assess'
+      post :bulk_progress_update
+      get :reports
+      get :load_flm_summary
+      get :load_flt_summary
+      get :load_language_flm_table
+    end
   end
 
   scope :help, controller: 'help' do
@@ -63,7 +68,7 @@ Rails.application.routes.draw do
       patch 'not_shareable'
     end
   end
-  resources :languages do
+  resources :languages, except: [:index, :edit, :update] do
     collection do
       get :autocomplete_user_name
       get 'overview'
@@ -77,7 +82,7 @@ Rails.application.routes.draw do
       patch 'remove_engaged_org/:org', to: 'languages#remove_engaged_org', as: 'remove_engaged_org_from'
       patch 'add_translating_org/:org', to: 'languages#add_translating_org', as: 'add_translating_org_to'
       patch 'remove_translating_org/:org', to: 'languages#remove_translating_org', as: 'remove_translating_org_from'
-      patch 'set_finish_line_progress/:marker/:progress', to: 'languages#set_finish_line_progress', as: 'set_flp_for'
+      patch 'set_finish_line_progress/:marker', to: 'languages#set_finish_line_progress', as: 'set_flp_for'
       # This is a hack to work around something I haven't worked out yet.
       get 'set_finish_line_progress/:marker/:progress', to: 'languages#show'
       get 'populations'
@@ -113,7 +118,12 @@ Rails.application.routes.draw do
   end
 
   resources :zones, only: [:index, :show] do
-    get 'reports', on: :member
+    member do
+      get :reports
+      get :load_flm_summary
+      get :load_flt_summary
+      get :load_language_flm_table
+    end
   end
 
   get 're_send_to_confirm_email' => 'users#re_confirm_email'
@@ -163,10 +173,16 @@ Rails.application.routes.draw do
 
   get 'nation' => 'zones#nation', as: 'nation'
   get 'national_outcomes_chart' => 'zones#national_outcomes_chart', as: 'national_outcomes_chart'
+  get 'nation/load_flm_summary' => 'zones#load_flm_summary', as: 'load_national_flm_summary'
+  get 'nation/load_flt_summary' => 'zones#load_flt_summary', as: 'load_national_flt_summary'
+  get 'nation/load_language_flm_table' => 'zones#load_language_flm_table', as: 'load_national_language_flm_table'
 
   # my_reports is for a single user, but user id param not needed - it's got from logged in user
   get 'my_reports' => 'users#reports', as: 'my_reports'
   get 'whatsapp' => 'static_pages#whatsapp_link'
+
+  get 'finish_line_marker_spreadsheet' => 'state_languages#finish_line_marker_spreadsheet', as: 'finish_line_marker_spreadsheet'
+  get 'language_tab_spreadsheet' => 'languages#language_tab_spreadsheet', as: 'language_tab_spreadsheet'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -54,9 +54,15 @@ applyFilter = (filterValues, filterLabel) ->
     $(this).addClass 'was-checked'
     checkRefilter refilter, $(this)
     return
-  $('.filterable-item.hide input:checkbox:checked').each ->
+  $('.filterable-item.hide:not(.filter-inverse) input:checkbox:checked').each ->
     $(this).prop 'checked', false
     $(this).addClass 'was-checked'
+    checkRefilter refilter, $(this)
+    return
+  # in some cases hidden checkbozxes should be checked
+  $('.filterable-item.hide.filter-inverse input:checkbox:not(:checked)').each ->
+    $(this).prop 'checked', true
+    $(this).addClass 'was-unchecked'
     checkRefilter refilter, $(this)
     return
 
@@ -72,6 +78,12 @@ applyFilter = (filterValues, filterLabel) ->
     $(this).removeClass 'was-checked'
     checkRefilter refilter, $(this)
     return
+  # and the ones that used to be unchecked should be checked again
+  $('.filterable-item:not(.hide) input:checkbox.was-unchecked').each ->
+    $(this).prop 'checked', false
+    $(this).removeClass 'was-unchecked'
+    checkRefilter refilter, $(this)
+    return
 
   for label of refilter
     # use hasOwnProperty to filter out keys from the Object.prototype
@@ -80,18 +92,26 @@ applyFilter = (filterValues, filterLabel) ->
 
   return
 
+filterOnLabel = (label) ->
+  if label
+    allTriggers = $('.filter-trigger[data-filter-trigger-label="' + label + '"]').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
+  else
+    allTriggers = $('.filter-trigger').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
+  valueArray = allTriggers.map ->
+    return $(this).val()
+  applyFilter valueArray, label
+  return
+
+window.bindFilters = ->
+  $('.filter-trigger').on 'change', ->
+    filterOnLabel($(this).attr 'data-filter-trigger-label')
+    return
+
+
 $(document).ready ->
 
-  $('.filter-trigger').on 'change', ->
-    label = $(this).attr 'data-filter-trigger-label'
-    if label
-      allTriggers = $('.filter-trigger[data-filter-trigger-label="' + label + '"]').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
-    else
-      allTriggers = $('.filter-trigger').not('input:checkbox:not(:checked)').not('input:radio:not(:checked)')
-    valueArray = allTriggers.map ->
-      return $(this).val()
-    applyFilter valueArray, label
-    return
+  window.bindFilters()
+
 
   $('.filter-trigger').trigger 'change'
 

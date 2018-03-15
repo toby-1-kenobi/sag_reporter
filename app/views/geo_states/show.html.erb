@@ -1,5 +1,6 @@
 <% provide(:title, "#{@geo_state.name} Dashboard") %>
 <% provide(:context_title, @geo_state.name) %>
+<% provide(:super_container_class, 'compact') %>
 
 <!-- breadcrumbs will go here -->
 <!-- India | Zone | current state | previously navigated language -->
@@ -9,28 +10,33 @@
   <li><%= link_to @geo_state.name, geo_state_path(@geo_state) %></li>
 </ul>
 
-<div class="mdl-tabs mdl-js-tabs">
+<div class="mdl-tabs mdl-js-tabs dashboard-tabs">
 
   <div class="mdl-tabs__tab-bar">
     <a href="#progress-tab" class="mdl-tabs__tab">Finish Line Status</a>
     <a href="#languages-tab" class="mdl-tabs__tab">Languages</a>
     <a href="#organisations-tab" class="mdl-tabs__tab">Organisations</a>
-    <a href="#reports-tab" class="mdl-tabs__tab" id="reports-tab-tab">Reports</a>
+    <a href="#reports-tab" class="mdl-tabs__tab" id="reports-tab-tab">Impact Stories</a>
   </div>
 
   <div class="mdl-tabs__panel is-active" id="progress-tab">
-    <%= render 'languages/finish_line_summary', languages: @geo_state.languages %>
+    <div class="grid-layout">
+      <div id="flm-table">
+        <%= link_to 'get flm table', load_flm_summary_geo_state_path(@geo_state), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+      <div id="flt-table">
+        <%= link_to 'get flt table', load_flt_summary_geo_state_path(@geo_state), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+    </div>
   </div>
 
   <div class="mdl-tabs__panel" id="languages-tab">
-    <h3>Languages tracked by LCI</h3>
-    <ul class="project-languages mdl-list">
-      <%= render partial: 'state_language', collection: @geo_state.state_languages.in_project.includes(language: :family).order('languages.name') %>
-    </ul>
-    <h3>Other languages</h3>
-    <ul class="project-languages mdl-list">
-      <%= render partial: 'state_language', collection: @geo_state.state_languages.not_in_project.includes(language: :family).order('languages.name') %>
-    </ul>
+    <div id="language-flm-table">
+      <%= link_to 'get language flm table', load_language_flm_table_geo_state_path(@geo_state, filter: @language_flm_filters), remote: true, class: 'content-fetch-trigger' %>
+      <div class="mdl-spinner mdl-js-spinner"></div>
+    </div>
   </div>
 
   <div class="mdl-tabs__panel" id="organisations-tab">

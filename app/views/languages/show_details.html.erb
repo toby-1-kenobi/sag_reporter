@@ -236,10 +236,15 @@
         </table>
     <% end %>
 
-    <% if logged_in_user.trusted? and @editable or @language.translation_consultants.present? %>
+    <% if logged_in_user.trusted? %>
         <h4>People involved</h4>
         <table class="language-data">
-          <%= render 'attribute_table_row', title: 'Translation consultants', attribute_name: 'translation_consultants' %>
+          <% if @editable or @language.translation_consultants.present? %>
+            <%= render 'attribute_table_row',
+                       title: 'Translation consultants',
+                       attribute_name: 'translation_consultants'
+            %>
+          <% end %>
         </table>
     <% end %>
 

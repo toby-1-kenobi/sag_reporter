@@ -1,0 +1,91 @@
+<%
+  transformations = get_transformation(state_languages)
+  lc_amount = state_languages.count
+  outcome_area_colours = get_outcome_area()
+  outcome_areas = outcome_area_colours.keys
+  spread_text = ProgressMarker.spread_text.values
+%>
+
+<div id="flt-table">
+
+  <%
+    zone_aggregate = Hash.new()
+    outcome_areas.each do |outcome_area|
+      zone_aggregate[outcome_area] ||= Hash.new(0)
+    end
+  %>
+
+  <%
+    transformations.each_key do |language|
+
+      outcome_areas.each do |outcome_area|
+
+        value = transformations[language][outcome_area]
+
+        all_brackets = transformation_brackets.keys
+        # put this language in the first bracket
+        language_bracket = all_brackets.shift
+        # while its score is bigger than the bracket max value keep shifting it to the next bracket up.
+        while value > transformation_brackets[language_bracket]
+          language_bracket = all_brackets.shift
+        end
+        zone_aggregate[outcome_area][language_bracket] += 1
+        zone_aggregate[outcome_area][:total] += 1
+
+      end
+
+    end
+  %>
+
+  <% #lc_amount = zone.state_languages.in_project.count %>
+
+  <label>Tracking transformation in <%= lc_amount %> languages</label>
+
+  <table id="aggregate-transformation-table" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    <thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Outcome Area</th>
+      <% spread_text.each do |spread| %>
+        <th class="mdl-data-table__cell--non-numeric"><%= spread %></th>
+      <% end %>
+      <th><i class="material-icons">pie_chart</i></th>
+    </tr>
+    </thead>
+    <tbody>
+      <%
+        outcome_areas.each_with_index do |outcome_area, index|
+          # any languages that somehow haven't been counted yet go into "not seen"
+          zone_aggregate[outcome_area][:notseen] += lc_amount - zone_aggregate[outcome_area][:total]
+          percentages = {}
+          transformation_brackets.keys.each do |bracket|
+            percentages[bracket] = ((zone_aggregate[outcome_area][bracket] * 100).to_f / lc_amount).round(1)
+          end
+      %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= outcome_area %></td>
+          <% transformation_brackets.keys.each do |bracket| %>
+            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= zone_aggregate[outcome_area][bracket] %>(<%= percentages[bracket] %>%)</td>
+          <% end %>
+          <td>
+            <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-trans-<%= index %>">
+              <input type="checkbox" id="pie-toggle-trans-<%= index %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-trans-<%= index %>">
+              <i class="mdl-icon-toggle__label material-icons on hide">pie_chart</i>
+              <i class="mdl-icon-toggle__label material-icons off">pie_chart_outlined</i>
+            </label>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div id="flt-charts">
+  <% outcome_areas.each_with_index do |outcome_area, index| %>
+    <div id="pie-chart-trans-<%= index %>" class="chart-card mdl-card mdl-shadow--2dp hide">
+      <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text"><%= outcome_area %></h2>
+      </div>
+      <%= pie_chart zone_aggregate[outcome_area].except(:total).map{ |k, v| [k.to_s.humanize, v]}.to_h, colors: colours_for_transformation_data(zone_aggregate[outcome_area].except(:total)) %>
+    </div>
+  <% end %>
+</div>

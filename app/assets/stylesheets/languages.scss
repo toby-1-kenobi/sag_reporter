@@ -8,6 +8,58 @@ main.no-iso {
   background-color: lightgoldenrodyellow;
 }
 
+.mdl-layout.compact {
+
+  .mdl-layout__header {
+    min-height: 50px;
+    .mdl-layout__drawer-button {
+      margin-top: 0;
+    }
+    .mdl-layout__header-row {
+      max-height: 50px;
+    }
+  }
+
+  main {
+    padding-top: 6px;
+  }
+
+  .breadcrumbs a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  #flm-table {
+    tbody td {
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+    thead th {
+      padding-bottom: 3px;
+    }
+  }
+
+  #aggregate-transformation-table {
+    tbody td {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+    thead th {
+      padding-bottom: 3px;
+    }
+  }
+
+  .language-table {
+    th, td {
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+    }
+    .language-name-cell {
+      max-width: 4em;
+    }
+  }
+}
+
 .language-filter-controls {
   $bg: white;
   background-color: $bg;
@@ -210,6 +262,98 @@ p.iso {
   padding-top: 0 !important;
   .mdl-cell {
     margin-top: 0;
+  }
+}
+
+#languages-tab {
+  overflow-x: auto;
+}
+
+.language-table-controls {
+  button {
+    margin: 5px;
+  }
+}
+
+.language-table {
+  .language-name {
+    font-size: large;
+  }
+  tr.filters th {
+    vertical-align: top;
+  }
+  thead tr {
+    background-color: #e0e0e0
+  }
+  .filter-choices {
+    background-color: #e0e0e0;
+    position: absolute;
+    z-index: 10;
+    .filter-choice-done {
+      float: right;
+      margin-bottom: 1em;
+      margin-right: 1em;
+    }
+  }
+  tbody {
+    tr:nth-child(odd) {
+      background-color: #f0f0f0;
+    }
+    tr:hover {
+      background-color: #e0e0e0 !important;
+      .flm-name {
+        display: block;
+      }
+    }
+  }
+  td {
+    padding: 0 14px !important;
+  }
+  .flm-name{
+    position: absolute;
+    display: none;
+  }
+  .mdl-selectfield {
+    width: 8em;
+    .mdl-selectfield__list-option-box {
+      width: 13em;
+      li[data-value="0"] {
+        background-color: lightgrey;
+        &:hover {
+          background-color: grey;
+        }
+      }
+      li[data-value="1"], li[data-value="2"] {
+        background-color: lightskyblue;
+        &:hover {
+          background-color: dodgerblue;
+        }
+      }
+      li[data-value="3"] {
+        background-color: palegoldenrod;
+        &:hover {
+          background-color: orangered;
+        }
+      }
+      li[data-value="4"], li[data-value="5"], li[data-value="6"] {
+        background-color: springgreen;
+        &:hover {
+          background-color: forestgreen;
+        }
+      }
+    }
+  }
+  [data-finish-line-category="nothing"] .mdl-selectfield__box {
+    background-color: lightgrey;
+  }
+  [data-finish-line-category="no_progress"] .mdl-selectfield__box {
+   background-color: lightskyblue;
+  }
+  [data-finish-line-category="progress"] .mdl-selectfield__box {
+   background-color: palegoldenrod;
+  }
+  [data-finish-line-category="complete"] .mdl-selectfield__box {
+   background-color: springgreen;
   }
 }
 
