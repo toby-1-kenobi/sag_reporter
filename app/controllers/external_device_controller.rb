@@ -110,22 +110,25 @@ class ExternalDeviceController < ApplicationController
     render json: {data: @all_data.path}, status: :ok
     Thread.new do
       begin
+        sync_time = 5.seconds.ago
+        last_updated_at = send_request_params[:updated_at]
+        return unless last_updated_at
+        needed = {:updated_at => last_updated_at .. sync_time}
         @users, @geo_states, @languages, @reports,
             @people, @topics, @progress_markers, @zones, @errors = Array.new(10) {Tempfile.new}
         @user_ids, @geo_state_ids, @language_ids, @report_ids,
             @person_ids, @topic_ids, @progress_marker_ids, @zone_ids = Array.new(9) {Set.new}
-        @all_updated_at = send_request_params
         begin
           send_external_user
           send_language external_user.mother_tongue
-          external_user.spoken_languages.each {|language| send_language language}
+          external_user.spoken_languages.where(needed).each {|language| send_language language}
           send_language external_user.interface_language
-          external_user.championed_languages.each {|language| send_language language}
+          external_user.championed_languages.where(needed).each {|language| send_language language}
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
           User.select(:id, :name, :mother_tongue_id, :updated_at).collect
-              .each {|user| send_user_name(user) if user.id != external_user.id} if external_user.trusted?
+              .where(needed).each {|user| send_user_name(user) if user.id != external_user.id} if external_user.trusted?
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
@@ -134,25 +137,25 @@ class ExternalDeviceController < ApplicationController
           else
             user_geo_states = external_user.geo_states
           end
-          user_geo_states.includes(:languages, :zone, :state_languages).each do |geo_state|
+          user_geo_states.includes(:languages, :zone, :state_languages).where(needed).each do |geo_state|
             send_geo_state geo_state
             send_zone geo_state.zone
-            geo_state.languages.each {|language| send_language language}
+            geo_state.languages.where(needed).each {|language| send_language language}
             ActiveRecord::Base.connection.query_cache.clear
           end
         end
         begin
-          Person.all.each {|person| send_person person} if external_user.trusted?
-          Topic.all.each {|topic| send_topic topic unless topic.hide_for?(external_user)}
-          ProgressMarker.all.each {|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
+          Person.all.where(needed).each {|person| send_person person} if external_user.trusted?
+          Topic.all.where(needed).each {|topic| send_topic topic unless topic.hide_for?(external_user)}
+          ProgressMarker.all.where(needed).each {|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
           Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
-              .order(:report_date).reverse_order.user_limited(external_user).each do |report|
+              .order(:report_date).reverse_order.user_limited(external_user).where(needed).each do |report|
             send_report report
             send_geo_state report.geo_state
-            report.languages.each {|language| send_language language}
+            report.languages.where(needed).each {|language| send_language language}
           end
           ActiveRecord::Base.connection.query_cache.clear
         end
@@ -292,15 +295,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_request_params
     safe_params = [
-        :users => [:ua],
-        :languages => [:ua],
-        :geo_states => [:ua],
-        :topics => [:ua],
-        :progress_markers => [:ua],
-        :reports => [:ua],
-        :uploaded_files => [:ua],
-        :people => [:ua],
-        :zones => [:ua]
+        :updated_at
     ]
     params.require(:external_device).permit(safe_params)
   end
