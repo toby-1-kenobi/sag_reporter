@@ -155,6 +155,9 @@ group :production do
   # Puma is a production server
   gem 'puma'
 
+  # enable rolling restart
+  gem 'puma_worker_killer'
+
   # link to cloud storage
   gem 'fog'
 
