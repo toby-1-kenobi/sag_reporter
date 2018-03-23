@@ -110,9 +110,9 @@ class ExternalDeviceController < ApplicationController
     render json: {data: @all_data.path}, status: :ok
     Thread.new do
       begin
-        sync_time = 5.seconds.ago
+        @sync_time = 5.seconds.ago
         last_updated_at = Time.at send_request_params[:updated_at]
-        needed = {:updated_at => last_updated_at .. sync_time}
+        needed = {:updated_at => last_updated_at .. @sync_time}
         @users, @geo_states, @languages, @reports,
             @people, @topics, @progress_markers, @zones, @errors = Array.new(10) {Tempfile.new}
         @user_ids, @geo_state_ids, @language_ids, @report_ids,
@@ -630,7 +630,7 @@ class ExternalDeviceController < ApplicationController
 
   def save_data_in_file(send_message)
     File.open(@all_data, "w") do |final_file|
-      final_file.write '{'
+      final_file.write "{\"updated_at\":#{@sync_time.to_i},"
       first_entry = true
       send_message.each do |category, file|
         file.close
