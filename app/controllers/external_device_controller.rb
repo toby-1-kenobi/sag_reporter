@@ -127,8 +127,8 @@ class ExternalDeviceController < ApplicationController
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
-          User.select(:id, :name, :mother_tongue_id, :updated_at).collect
-              .where(needed).each {|user| send_user_name(user) if user.id != external_user.id} if external_user.trusted?
+          User.where(needed).select(:id, :name, :mother_tongue_id, :updated_at).collect
+              .each {|user| send_user_name(user) if user.id != external_user.id} if external_user.trusted?
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
@@ -137,7 +137,7 @@ class ExternalDeviceController < ApplicationController
           else
             user_geo_states = external_user.geo_states
           end
-          user_geo_states.includes(:languages, :zone, :state_languages).where(needed).each do |geo_state|
+          user_geo_states.where(needed).includes(:languages, :zone, :state_languages).each do |geo_state|
             send_geo_state geo_state
             send_zone geo_state.zone
             geo_state.languages.where(needed).each {|language| send_language language}
@@ -145,14 +145,14 @@ class ExternalDeviceController < ApplicationController
           end
         end
         begin
-          Person.all.where(needed).each {|person| send_person person} if external_user.trusted?
-          Topic.all.where(needed).each {|topic| send_topic topic unless topic.hide_for?(external_user)}
-          ProgressMarker.all.where(needed).each {|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
+          Person.where(needed).each {|person| send_person person} if external_user.trusted?
+          Topic.where(needed).each {|topic| send_topic topic unless topic.hide_for?(external_user)}
+          ProgressMarker.where(needed).each {|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
-          Report.includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
-              .order(:report_date).reverse_order.user_limited(external_user).where(needed).each do |report|
+          Report.where(needed).includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
+              .order(:report_date).reverse_order.user_limited(external_user).each do |report|
             send_report report
             send_geo_state report.geo_state
             report.languages.where(needed).each {|language| send_language language}
