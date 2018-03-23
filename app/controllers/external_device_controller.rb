@@ -111,13 +111,13 @@ class ExternalDeviceController < ApplicationController
     Thread.new do
       begin
         sync_time = 5.seconds.ago
-        last_updated_at = send_request_params[:updated_at]
-        return unless last_updated_at
+        last_updated_at = Time.at send_request_params[:updated_at]
         needed = {:updated_at => last_updated_at .. sync_time}
         @users, @geo_states, @languages, @reports,
             @people, @topics, @progress_markers, @zones, @errors = Array.new(10) {Tempfile.new}
         @user_ids, @geo_state_ids, @language_ids, @report_ids,
             @person_ids, @topic_ids, @progress_marker_ids, @zone_ids = Array.new(9) {Set.new}
+        @all_updated_at = {}
         begin
           send_external_user
           send_language external_user.mother_tongue
@@ -431,7 +431,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_language(language)
     begin
-      if @language_ids.add?(language.id) && check_send_data(@languages, language, @all_updated_at[:languages])
+      if language && @language_ids.add?(language.id) && check_send_data(@languages, language, @all_updated_at[:languages])
         @languages.write({
                              id: language.id,
                              name: language.name,
