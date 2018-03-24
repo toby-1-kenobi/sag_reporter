@@ -623,7 +623,7 @@ class ExternalDeviceController < ApplicationController
       first_entry = true
       send_message.each do |category, file|
         file.close
-        next if file.length == 0
+        next if file.length.to_i == 0
         file.open
         final_file.write ', '
         final_file.write "\"#{category}\": ["
