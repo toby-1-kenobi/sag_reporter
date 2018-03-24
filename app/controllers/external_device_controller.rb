@@ -611,7 +611,7 @@ class ExternalDeviceController < ApplicationController
   end
 
   def check_send_data(file, object, send_params)
-    if @needed.cover? object?.updated_at
+    if @needed.cover? object&.updated_at
       file.write(', ') unless file.length == 0
       true
     end
