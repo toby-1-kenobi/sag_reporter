@@ -619,12 +619,13 @@ class ExternalDeviceController < ApplicationController
 
   def save_data_in_file(send_message)
     File.open(@all_data, "w") do |final_file|
-      final_file.write "{\"updated_at\":#{@sync_time.to_i},"
+      final_file.write "{\"updated_at\":#{@sync_time.to_i}"
       first_entry = true
       send_message.each do |category, file|
         file.close
+        next if file.lenght == 0
         file.open
-        final_file.write ', ' unless first_entry
+        final_file.write ', '
         final_file.write "\"#{category}\": ["
         final_file.write file.read
         final_file.write ']'
