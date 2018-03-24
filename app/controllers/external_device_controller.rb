@@ -112,7 +112,7 @@ class ExternalDeviceController < ApplicationController
       begin
         @sync_time = 5.seconds.ago
         last_updated_at = Time.at send_request_params[:updated_at]
-        needed = {:updated_at => last_updated_at .. @sync_time}
+        @needed = {:updated_at => last_updated_at .. @sync_time}
         @users, @geo_states, @languages, @reports,
             @people, @topics, @progress_markers, @zones, @errors = Array.new(10) {Tempfile.new}
         @user_ids, @geo_state_ids, @language_ids, @report_ids,
@@ -121,13 +121,13 @@ class ExternalDeviceController < ApplicationController
         begin
           send_external_user
           send_language external_user.mother_tongue
-          external_user.spoken_languages.where(needed).each {|language| send_language language}
+          external_user.spoken_languages.where(@needed).each {|language| send_language language}
           send_language external_user.interface_language
-          external_user.championed_languages.where(needed).each {|language| send_language language}
+          external_user.championed_languages.where(@needed).each {|language| send_language language}
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
-          User.where(needed).select(:id, :name, :mother_tongue_id, :updated_at).collect
+          User.where(@needed).select(:id, :name, :mother_tongue_id, :updated_at).collect
               .each {|user| send_user_name(user) if user.id != external_user.id} if external_user.trusted?
           ActiveRecord::Base.connection.query_cache.clear
         end
@@ -137,25 +137,25 @@ class ExternalDeviceController < ApplicationController
           else
             user_geo_states = external_user.geo_states
           end
-          user_geo_states.where(needed).includes(:languages, :zone, :state_languages).each do |geo_state|
+          user_geo_states.where(@needed).includes(:languages, :zone, :state_languages).each do |geo_state|
             send_geo_state geo_state
             send_zone geo_state.zone
-            geo_state.languages.where(needed).each {|language| send_language language}
+            geo_state.languages.where(@needed).each {|language| send_language language}
             ActiveRecord::Base.connection.query_cache.clear
           end
         end
         begin
-          Person.where(needed).each {|person| send_person person} if external_user.trusted?
-          Topic.where(needed).each {|topic| send_topic topic unless topic.hide_for?(external_user)}
-          ProgressMarker.where(needed).each {|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
+          Person.where(@needed).each {|person| send_person person} if external_user.trusted?
+          Topic.where(@needed).each {|topic| send_topic topic unless topic.hide_for?(external_user)}
+          ProgressMarker.where(@needed).each {|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
           ActiveRecord::Base.connection.query_cache.clear
         end
         begin
-          Report.where(needed).includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
+          Report.where(@needed).includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
               .order(:report_date).reverse_order.user_limited(external_user).each do |report|
             send_report report
             send_geo_state report.geo_state
-            report.languages.where(needed).each {|language| send_language language}
+            report.languages.where(@needed).each {|language| send_language language}
           end
           ActiveRecord::Base.connection.query_cache.clear
         end
@@ -611,21 +611,10 @@ class ExternalDeviceController < ApplicationController
   end
 
   def check_send_data(file, object, send_params)
-    return false unless object
-    offline_updated_at = send_params
-    offline_updated_at &&= offline_updated_at[object.id.to_s]
-    offline_updated_at &&= offline_updated_at[:ua]
-    if offline_updated_at
-      if object.updated_at.to_i == offline_updated_at
-        return false
-      elsif offline_updated_at > object.updated_at.to_i
-        file.write(', ') unless file.length == 0
-        file.write({id: object.id, last_changed: 'offline'}.to_json)
-        return false
-      end
+    if @needed.cover? object?.updated_at
+      file.write(', ') unless file.length == 0
+      true
     end
-    file.write(', ') unless file.length == 0
-    true
   end
 
   def save_data_in_file(send_message)
