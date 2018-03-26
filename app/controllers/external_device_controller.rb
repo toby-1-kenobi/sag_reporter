@@ -140,7 +140,7 @@ class ExternalDeviceController < ApplicationController
           user_geo_states.where(@needed).includes(:languages, :zone, :state_languages).each do |geo_state|
             send_geo_state geo_state
             send_zone geo_state.zone
-            geo_state.languages.where(@needed).each {|language| send_language language}
+            geo_state.languages.each {|language| send_language language}
             ActiveRecord::Base.connection.query_cache.clear
           end
         end
@@ -155,7 +155,7 @@ class ExternalDeviceController < ApplicationController
               .order(:report_date).reverse_order.user_limited(external_user).each do |report|
             send_report report
             send_geo_state report.geo_state
-            report.languages.where(@needed).each {|language| send_language language}
+            report.languages.each {|language| send_language language}
           end
           ActiveRecord::Base.connection.query_cache.clear
         end
