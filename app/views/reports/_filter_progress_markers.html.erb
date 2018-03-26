@@ -1,0 +1,17 @@
+<% outcome_areas = Topic.all %>
+<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="outcome_areas_filter">
+  <%= check_box_tag 'outcome_areas_filter', 'on', @filters[:outcome_areas_filter], class: 'report-view-filter mdl-switch__input' %>
+  <span class="mdl-switch__label">Filter by Outcome Area</span>
+</label>
+<div id="outcome_areas-filters"  <% if @filters[:outcome_areas_filter].blank? %> class="hide" <% end %>>
+  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="all_outcome_areas">
+    <%= check_box_tag "all_outcome_areas", 'on', true, class: 'all_outcome_areas_select mdl-checkbox__input' %>
+    <span class="mdl-switch__label">All</span>
+  </label>
+  <% outcome_areas.each do |outcome_area| %>
+    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="outcome_areas_<%= outcome_area.id %>">
+      <%= check_box_tag "outcome_areas[#{outcome_area.id}]", 'on', (!@filters[:outcome_areas] or @filters[:outcome_areas][outcome_area.id]), class: 'report-view-filter mdl-checkbox__input' %>
+      <span class="mdl-switch__label"><%= outcome_area.name %></span>
+    </label>
+  <% end %>
+</div>

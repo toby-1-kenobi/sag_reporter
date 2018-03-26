@@ -9,6 +9,7 @@ module ReportFilter
   def report_filter_params
     param_reduce(params, ['states'])
     param_reduce(params, ['languages'])
+    param_reduce(params, ['outcome_areas'])
     Rails.logger.debug params
     params.permit(
         :archived,
@@ -21,7 +22,9 @@ module ReportFilter
         :states_filter,
         {:states => []},
         :languages_filter,
-        {:languages => []}
+        {:languages => []},
+        :outcome_areas_filter,
+        {:outcome_areas => []}
     )
   end
 
