@@ -1,6 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 impact-report-andrew: {}
+impact-report-norman: {}
 
 <% 80.times do |index| %>
 impact-report-<%= index %>: {}
