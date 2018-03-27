@@ -1,5 +1,13 @@
 <li class="organisation mdl-list__item">
-  <span class="mdl-list__item-primary-content">
+  <span class="mdl-list__item-primary-content" style="width: 200px;">
     <%= link_to organisation.name_with_abbr_or_not(logged_in_user), organisation %>
+  </span>
+  <span class="mdl-list__item-primary-content">
+    <% if defined?(geo_state_id)%>
+        Serving <%= get_state_organisation_language_count(organisation, geo_state_id, type) %>
+    <% end %>
+    <% if defined?(zone_id)%>
+        Serving <%= get_zone_organisation_language_count(organisation, zone_id, type) %>
+    <% end %>
   </span>
 </li>

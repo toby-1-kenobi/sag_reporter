@@ -15,7 +15,7 @@
   <div class="mdl-tabs__tab-bar">
     <a href="#progress-tab" class="mdl-tabs__tab">Finish Line Status</a>
     <a href="#languages-tab" class="mdl-tabs__tab">Languages</a>
-    <a href="#organisations-tab" class="mdl-tabs__tab">Organisations</a>
+    <a href="#organisations-tab" class="mdl-tabs__tab">Agencies</a>
     <a href="#reports-tab" class="mdl-tabs__tab" id="reports-tab-tab">Impact Stories</a>
   </div>
 
@@ -40,24 +40,18 @@
   </div>
 
   <div class="mdl-tabs__panel" id="organisations-tab">
-    <div class="mdl-grid">
-      <% if @geo_state.engaged_organisations.any? %>
-        <div class="mdl--4-col">
-          <h3>Working here</h3>
-          <ul class="mdl-list">
-            <%= render partial: 'organisations/organisation', collection: @geo_state.engaged_organisations.uniq %>
-          </ul>
-        </div>
-      <% end %>
-      <% if @geo_state.translating_organisations.any? %>
-        <div class="mdl--4-col">
-          <h3>Translating here</h3>
-          <ul class="mdl-list">
-            <%= render partial: 'organisations/organisation', collection: @geo_state.translating_organisations.uniq %>
-          </ul>
-        </div>
-      <% end %>
-    </div>
+    <% if @geo_state.engaged_organisations.any? %>
+      <h4>Serving in development</h4>
+      <ul class="mdl-list">
+        <%= render partial: 'organisations/organisation', collection: @geo_state.engaged_organisations.uniq, locals: {type: :engaged, geo_state_id: @geo_state.id} %>
+      </ul>
+    <% end %>
+    <% if @geo_state.translating_organisations.any? %>
+      <h4>Serving in translation</h4>
+      <ul class="mdl-list">
+        <%= render partial: 'organisations/organisation', collection: @geo_state.translating_organisations.uniq, locals: {type: :translation, geo_state_id: @geo_state.id} %>
+      </ul>
+    <% end %>
   </div>
 
   <div class="mdl-tabs__panel" id="reports-tab">
