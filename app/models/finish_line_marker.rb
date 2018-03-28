@@ -17,6 +17,8 @@ class FinishLineMarker < ActiveRecord::Base
         case status
           when 'no_need'
             'There are no local churches'
+          when 'not_accessible'
+            'Language community is not accessible'
           when 'possible_need'
             'There are local churches but none are accepting and using the mother tongue materials for transformation'
           when 'in_progress'
@@ -32,6 +34,8 @@ class FinishLineMarker < ActiveRecord::Base
         case status
           when 'no_need'
             'Material is not available, but based on the available information there is no need'
+          when 'not_accessible'
+            'Language community is not accessible'
           when 'possible_need'
             'Material is not available, but could emerge as a potential need'
           when 'expressed_needs'
@@ -51,6 +55,8 @@ class FinishLineMarker < ActiveRecord::Base
         case status
           when 'no_need'
             'No radio program being broadcast, but based on the available information there is no need'
+          when 'not_accessible'
+            'Language community is not accessible'
           when 'possible_need'
             'No radio program being broadcast, but could emerge as a potential need'
           when 'expressed_needs'
@@ -70,6 +76,8 @@ class FinishLineMarker < ActiveRecord::Base
         case status
           when 'no_need'
             'Material is not available, but based on the available information there is no need'
+          when 'not_accessible'
+            'Language community is not accessible'
           when 'possible_need'
             'Material is not available, but could emerge as a potential need'
           when 'expressed_needs'

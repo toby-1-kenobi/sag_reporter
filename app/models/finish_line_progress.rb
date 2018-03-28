@@ -3,6 +3,7 @@ class FinishLineProgress < ActiveRecord::Base
   enum status: {
       # 0-3 are options for not done markers
       no_need: 0,
+      not_accessible: 7,
       possible_need: 1,
       expressed_needs: 2,
       in_progress: 3,
@@ -29,7 +30,7 @@ class FinishLineProgress < ActiveRecord::Base
     case status
       when 'no_need'
         :nothing
-      when 'possible_need', 'expressed_needs'
+      when 'possible_need', 'expressed_needs', 'not_accessible'
         :no_progress
       when 'in_progress'
         :progress
@@ -51,6 +52,8 @@ class FinishLineProgress < ActiveRecord::Base
       case status
         when 'no_need'
           'No need'
+        when 'not_accessible'
+          'Language not accessible'
         when 'possible_need', 'expressed_needs'
           "#{status.humanize}, not started"
         when 'in_progress'
@@ -99,6 +102,7 @@ class FinishLineProgress < ActiveRecord::Base
   def self.church_engagement_status
     {
         'no_need' => 'No churches',
+        'not_accessible' => 'Language not accessible',
         'possible_need' => 'No use',
         'in_progress' => 'Few churches using',
         'completed' => 'Many churches using',
