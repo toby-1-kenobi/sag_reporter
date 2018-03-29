@@ -25,8 +25,7 @@ describe Report::Updater do
       "mt_church"=>"0",
       "needs_society"=>"0",
       "needs_church"=>"0",
-      "languages"=>["#{state_languages(:assam_english).id}", "#{state_languages(:assam_hindi).id}"],
-      "topics"=>["#{topics(:social_development).id}"]
+      "languages"=>["#{state_languages(:assam_english).id}", "#{state_languages(:assam_assamese).id}"]
     }
     result = updater.update_report(report_params)
     _(result).must_equal true

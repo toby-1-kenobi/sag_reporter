@@ -41,16 +41,18 @@ class StateLanguage < ActiveRecord::Base
 
       table = Hash.new
       table['content'] = Hash.new
-      table['Totals'] = Hash.new {0}
+      table['Totals'] = Hash.new
 
       all_lps = language_progresses.includes({:progress_marker => :topic}, :progress_updates)
       all_lps.each do |lp|
         unless lp.progress_marker.topic.hide_for?(user)
           oa_name = lp.progress_marker.topic.name
           outcome_area_ids[oa_name] ||= lp.progress_marker.topic_id
-          table['content'][oa_name] ||= Hash.new {0}
+          table['content'][oa_name] ||= Hash.new
           lp.outcome_scores(options[:from_date], options[:to_date]).each do |date, score|
+            table['content'][oa_name][date] ||= 0
             table['content'][oa_name][date] += score
+            table['Totals'][date] ||= 0
             table['Totals'][date] += score
           end
         end

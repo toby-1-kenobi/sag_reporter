@@ -100,7 +100,6 @@ describe User do
         month: 1,
         year: 2016,
         user: user,
-        geo_state: geo_states(:nb),
         language_progress: language_progresses(:aka_skills_used)
     )
     pu.save!
@@ -108,13 +107,13 @@ describe User do
     value(user).must_be :persisted?
   end
 
-  it 'wont be destroyed with output count' do
-    oc = output_counts(:output_count_1)
-    oc.user = user
-    oc.save!
-    user.destroy
-    value(user).must_be :persisted?
-  end
+  # it 'wont be destroyed with output count' do
+  #   oc = output_counts(:output_count_1)
+  #   oc.user = user
+  #   oc.save!
+  #   user.destroy
+  #   value(user).must_be :persisted?
+  # end
 
   it 'wont be destroyed with mt resource' do
     resource = mt_resources(:'resource-1')

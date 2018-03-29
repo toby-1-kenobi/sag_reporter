@@ -81,7 +81,4 @@ test/helpers/help_helper_test.rb
 test/helpers/organisations_helper_test.rb
 test/helpers/populations_helper_test.rb
 test/helpers/zone_helper_test.rb
-test/models/dialect_test.rb
-test/models/finish_line_progress_test.rb
-test/models/language_name_test.rb
 work.csv

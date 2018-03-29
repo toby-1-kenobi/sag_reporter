@@ -2,8 +2,7 @@ require 'test_helper'
 
 describe ProgressUpdate do
 
-  let(:progress_update) { ProgressUpdate.new geo_state: geo_states(:nb),
-      progress: ProgressMarker.spread_text.keys.first,
+  let(:progress_update) { ProgressUpdate.new progress: ProgressMarker.spread_text.keys.first,
       year: 2015, month: 1,
       user: users(:andrew),
       language_progress: language_progress
@@ -14,6 +13,7 @@ describe ProgressUpdate do
     }
 
   it 'must be valid' do
+    puts progress_update.errors.full_messages unless progress_update.valid?
     value(progress_update).must_be :valid?
   end
 

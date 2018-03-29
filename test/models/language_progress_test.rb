@@ -8,13 +8,11 @@ describe LanguageProgress do
                                  year:2015,
                                  month: 8,
                                  language_progress: language_progress,
-                                 geo_state: geo_states(:nb),
                                  user: users(:andrew) }
   let(:pu2) { ProgressUpdate.new progress: 3,
                                  year:2015,
                                  month: 10,
                                  language_progress: language_progress,
-                                 geo_state: geo_states(:nb),
                                  user: users(:andrew) }
 
   it 'must be valid' do
