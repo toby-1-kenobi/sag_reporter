@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180103035917) do
+ActiveRecord::Schema.define(version: 20180327103712) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -350,6 +350,7 @@ ActiveRecord::Schema.define(version: 20180103035917) do
     t.boolean  "oral_traditions_print"
     t.integer  "champion_id"
     t.datetime "champion_prompted"
+    t.integer  "project_id"
   end
 
   add_index "languages", ["champion_id"], name: "index_languages_on_champion_id", using: :btree
@@ -540,6 +541,14 @@ ActiveRecord::Schema.define(version: 20180103035917) do
   add_index "progress_updates", ["month"], name: "index_progress_updates_on_month", using: :btree
   add_index "progress_updates", ["user_id"], name: "index_progress_updates_on_user_id", using: :btree
   add_index "progress_updates", ["year"], name: "index_progress_updates_on_year", using: :btree
+
+  create_table "projects", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "projects", ["name"], name: "index_projects_on_name", using: :btree
 
   create_table "purposes", force: :cascade do |t|
     t.string   "name",        null: false

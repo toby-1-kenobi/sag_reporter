@@ -92,6 +92,7 @@ class LanguagesController < ApplicationController
       flp = FinishLineProgress.find edit.record_id
       @pending_flm_ids << flp.finish_line_marker_id
     end
+    @projects = Project.all
   end
 
   def reports
@@ -150,6 +151,15 @@ class LanguagesController < ApplicationController
     if @champion
       @language.champion = @champion
       @language.save
+      respond_to :js
+    else
+      return head :gone
+    end
+  end
+
+  def assign_project
+    @language = Language.find(params[:id])
+    if @language.update_attributes(combine_colour(lang_params))
       respond_to :js
     else
       return head :gone
@@ -365,7 +375,8 @@ class LanguagesController < ApplicationController
         :info,
         :translation_info,
         :translation_need,
-        :translation_progress
+        :translation_progress,
+        :project_id
     )
   end
 
