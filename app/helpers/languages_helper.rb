@@ -148,11 +148,7 @@ module LanguagesHelper
       else
         # show nothing for nothing
     end
-    if count > 1
-      display_text = "#{count} languages"
-    else
-      display_text = "#{count} language"
-    end
+    display_text = pluralize(count, 'language')
     display_text
   end
 
@@ -168,11 +164,7 @@ module LanguagesHelper
       else
         # show nothing for nothing
     end
-    if count > 1
-      display_text = "#{count} languages"
-    else
-      display_text = "#{count} language"
-    end
+    display_text = pluralize(count, 'language')
     display_text
   end
 end
