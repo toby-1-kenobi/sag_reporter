@@ -89,6 +89,10 @@ class Report < ActiveRecord::Base
     joins(impact_report: :progress_markers).where(:progress_markers => {topic_id:  topic_id}).uniq
   }
 
+  scope :project_language, -> project_id {
+    joins(:languages).where(languages: {project_id: project_id})
+  }
+
   def translation_impact?
     impact_report and impact_report.translation_impact?
   end
@@ -182,6 +186,12 @@ class Report < ActiveRecord::Base
       # for an empty list of types the scope will return an empty collection
       filters[:outcome_areas] ||= []
       collection = collection.outcome_area(filters[:outcome_areas])
+    end
+    # before filtering for projects check that we are using this filter
+    if filters[:project_filter].present?
+      # for an empty list of types the scope will return an empty collection
+      filters[:projects] ||= []
+      collection = collection.project_language(filters[:projects])
     end
     # before filtering for type of impact check impact type is selected (if we are using type filter)
     if filters[:report_types].blank? or filters[:types].include? 'impact'

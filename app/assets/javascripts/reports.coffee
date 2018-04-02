@@ -155,6 +155,14 @@ $(document).ready ->
     else
       $('#outcome_areas-filters').slideUp()
 
+  #Hide or show project filter
+  $('#project_filter').on 'change', ->
+    if (this.checked)
+      $('#project-filters').slideDown()
+    else
+      $('#project-filters').slideUp()
+
+
   # Hide or show supervisor email field depending on whether report is significant
   $('#report_significant').on 'change', ->
     if (this.checked)
@@ -224,6 +232,22 @@ $(document).ready ->
       $('#report-view-filters').submit()
       return
     return
+
+  # selecting or deselecting all languages listed in the report filter
+  $('#project-filters').find('input#all_projects').on 'change', ->
+    new_value = $(this).prop('checked')
+    $('#project-filters').find('.mdl-checkbox').each ->
+      if new_value
+        $(this)[0].MaterialCheckbox.check()
+      else
+        $(this)[0].MaterialCheckbox.uncheck()
+      $('#report-filter-spinner').addClass('is-active')
+      $('.reports-container').empty()
+      $('.reports-count-container').empty()
+      $('#report-view-filters').submit()
+      return
+    return
+
 
   return
 
