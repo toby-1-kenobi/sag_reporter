@@ -22,7 +22,7 @@ class ImpactReportsController < ApplicationController
   end
 
   before_action only: [:tag] do
-    redirect_to root_path unless logged_in_user.trusted?
+    redirect_to root_path unless logged_in_user.trusted? or logged_in_user.reports.active.any?
   end
 
   def show
@@ -92,6 +92,10 @@ class ImpactReportsController < ApplicationController
         'reports.geo_state_id' => geo_state_ids,
         'reports.report_date' => date_range
       )
+    # low-sensitivity users see only their own reports.
+    if not logged_in_user.trusted?
+      @reports = @reports.where('reports.reporter_id' => logged_in_user.id)
+    end
   	@outcome_areas = Topic.all
   	@progress_markers_by_oa = ProgressMarker.active.includes(:topic).all.group_by{ |pm| pm.topic }
     #Todo: Switch to project languages instead of minority languages.

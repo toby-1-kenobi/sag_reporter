@@ -80,8 +80,11 @@ describe Report do
 
   it 'scopes to let non-sensitive users see only their own reports' do
     own_report = report.dup
-    own_report.report = users(:pleb)
-    reports = Report.user_limited(user(:pleb))
+    own_report.reporter = users(:emma)
+    own_report.impact_report = impact_report
+    report.save!
+    own_report.save!
+    reports = Report.user_limited(users(:emma))
     _(reports).must_include own_report
     _(reports).wont_include report
   end

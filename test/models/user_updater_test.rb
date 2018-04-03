@@ -9,7 +9,6 @@ describe User::Updater do
       name: "Test User", 
       phone: "9876543210", 
       password_digest: User.digest('password'),
-      role_id: 3,
       mother_tongue_id: 5,
       geo_states: [geo_states(:nb)]) }
 
@@ -19,7 +18,6 @@ describe User::Updater do
       phone: "9876543220", 
       password: "foobar", 
       password_confirmation: "foobar",
-      role_id: 3,
       mother_tongue_id: 5
     }
     _(updater.update_user(user_params)).must_equal true
@@ -33,7 +31,6 @@ describe User::Updater do
       phone: "9876543210", 
       password: "foobar", 
       password_confirmation: "foobar",
-      role_id: 3,
       mother_tongue: db_language
     }
     updater.update_user(user_params)

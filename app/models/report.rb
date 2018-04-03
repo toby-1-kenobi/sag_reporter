@@ -43,7 +43,7 @@ class Report < ActiveRecord::Base
   }
 
   scope :language, -> lang {
-    joins(:languages).where(languages: {id: lang.id})
+    joins(:languages).where(languages: {id: lang})
   }
 
   scope :since, -> since_date {
@@ -83,6 +83,10 @@ class Report < ActiveRecord::Base
     else
       where(reporter: user)
     end
+  }
+  
+  scope :outcome_area, -> topic_id {
+    joins(impact_report: :progress_markers).where(:progress_markers => {topic_id:  topic_id}).uniq
   }
 
   def translation_impact?
@@ -166,6 +170,18 @@ class Report < ActiveRecord::Base
       # for an empty list of types the scope will return an empty collection
       filters[:states] ||= []
       collection = collection.states(filters[:states])
+    end
+    # before filtering for languages check that we are using this filter
+    if filters[:languages_filter].present?
+      # for an empty list of types the scope will return an empty collection
+      filters[:languages] ||= []
+      collection = collection.language(filters[:languages])
+    end
+    # before filtering for outcome area check that we are using this filter
+    if filters[:outcome_areas_filter].present?
+      # for an empty list of types the scope will return an empty collection
+      filters[:outcome_areas] ||= []
+      collection = collection.outcome_area(filters[:outcome_areas])
     end
     # before filtering for type of impact check impact type is selected (if we are using type filter)
     if filters[:report_types].blank? or filters[:types].include? 'impact'

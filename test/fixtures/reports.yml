@@ -8,6 +8,14 @@ report-andrew:
   report_date: <%= 1.week.ago %>
   impact_report: impact-report-andrew
 
+report-norman:
+  reporter: norman
+  content: <%= Faker::Lorem.paragraph %>
+  languages: toto
+  geo_state: nb
+  report_date: <%= 1.week.ago %>
+  impact_report: impact-report-norman
+
 <%
 users = [:richard, :emma, :andrew]
 states = ["active", "active", "active", "active", "active", "active", "active", "archived"]

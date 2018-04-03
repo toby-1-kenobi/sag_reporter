@@ -51,7 +51,7 @@ class StaticPagesController < ApplicationController
             category: 'report'
         },
         {
-            condition: (logged_in_user.trusted?),
+            condition: (logged_in_user.trusted? or logged_in_user.reports.active.any?),
             path: tag_impact_reports_path,
             text: 'Tag impact reports',
             icon: 'label',

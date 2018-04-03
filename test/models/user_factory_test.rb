@@ -11,7 +11,6 @@ describe User::Factory do
       name: "Test User", 
       phone: "9876543210", 
       password_digest: User.digest('password'),
-      role_id: 3,
       mother_tongue_id: 5) }
 
   it "makes valid users" do
@@ -20,7 +19,6 @@ describe User::Factory do
       phone: "9876543210", 
       password: "foobar", 
       password_confirmation: "foobar",
-      role_id: 3,
       mother_tongue_id: 5,
       geo_states: [geo_states(:nb).id]
     }
@@ -34,7 +32,6 @@ describe User::Factory do
       phone: "9876543210",  
       password: "foobar", 
       password_confirmation: "foobar",
-      role: role,
       mother_tongue: language,
       speaks: [1],
       geo_states: [2, 3]
@@ -72,7 +69,6 @@ describe User::Factory do
       phone: "9876543210", 
       password: "foobar", 
       password_confirmation: "foobar",
-      role: role,
       mother_tongue: language
     }
     _(factory.build_user(user_params)).must_equal true
