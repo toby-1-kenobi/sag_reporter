@@ -1,1 +1,13 @@
 $('#flt-table').replaceWith('<%= j render('languages/finish_line_transformation', @partial_locals) %>');
+$('#flt-charts .chart-card').hide();
+
+$('.mdl-icon-toggle').each(function(){
+    componentHandler.upgradeElement(this);
+});
+
+$('.pie-toggle').off('click');
+$('.pie-toggle').on('click', function(){
+    $(this).siblings('i').toggle();
+    const pieID = '#' + $(this).attr('data-chart');
+    $(pieID).fadeToggle();
+});
