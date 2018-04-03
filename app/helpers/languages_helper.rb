@@ -134,4 +134,37 @@ module LanguagesHelper
     end
     count
   end
+
+  #for retrive engaged or translating language count of an organisation in a state
+  def get_state_organisation_language_count(organisation, geo_state_id, type)
+    count = 0
+    display_text = ""
+    case type
+      when :engaged
+        count = Language.joins([engaged_organisations: :engaged_languages], :state_languages).where(organisations: {id: organisation.id}, state_languages: {geo_state_id: geo_state_id}).uniq.length
+      when :translation
+        count = Language.joins([translating_organisations: :translating_languages] , :state_languages).where(organisations: {id: organisation.id}, state_languages: {geo_state_id: geo_state_id}).uniq.length
+
+      else
+        # show nothing for nothing
+    end
+    display_text = pluralize(count, 'language')
+    display_text
+  end
+
+  #for retrive engaged or translating language count of an organisation in a zone
+  def get_zone_organisation_language_count(organisation, zone_id, type)
+    count = 0
+    display_text = ""
+    case type
+      when :engaged
+        count = Language.joins([engaged_organisations: :engaged_languages], [state_languages: :geo_state]).where(organisations: {id: organisation.id}, geo_states: {zone_id: zone_id}).uniq.length
+      when :translation
+        count = Language.joins([translating_organisations: :translating_languages], [state_languages: :geo_state]).where(organisations: {id: organisation.id}, geo_states: {zone_id: zone_id}).uniq.length
+      else
+        # show nothing for nothing
+    end
+    display_text = pluralize(count, 'language')
+    display_text
+  end
 end
