@@ -159,7 +159,7 @@ class LanguagesController < ApplicationController
 
   def assign_project
     @language = Language.find(params[:id])
-    if @language.update_attributes(combine_colour(lang_params))
+    if @language.update_attributes(lang_params)
       respond_to :js
     else
       return head :gone
