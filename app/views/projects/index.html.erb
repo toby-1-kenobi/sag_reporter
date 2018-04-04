@@ -2,11 +2,13 @@
 <% provide(:context_title, 'Projects') %>
 
 <ul class="mdl-list">
-  <% @projects.each do |project| %>
-    <li class="mdl-list__item">
-      <span class="mdl-list__item-primary-content">
-        <%= project.name %>
-      </span>
-    </li>
-  <% end %>
+  <%= render @projects %>
+  <li id="new-project-list-item" class="mdl-list__item">
+    <%= form_for Project.new, remote: true do |f| -%>
+      <div class="mdl-list__item-primary-content mdl-textfield mdl-js-textfield">
+        <%= f.text_field :name, class: 'mdl-textfield__input' %>
+        <%= f.label :name, 'New project name', class: 'mdl-textfield__label' %>
+      </div>
+    <%- end -%>
+  </li>
 </ul>

@@ -1,0 +1,4 @@
+<% if @project.persisted? -%>
+  $('#new-project-list-item').before('<%= j render @project %>');
+  $('#new-project-list-item').find('form')[0].reset();
+<% end -%>
