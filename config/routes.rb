@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :projects
+
   get 'help/edit_language'
 
   get 'population/create'
@@ -77,6 +79,7 @@ Rails.application.routes.draw do
     member do
       get 'show_details'
       get 'reports'
+      patch 'assign_project', to: 'languages#assign_project'
       patch 'set_champion'
       patch 'add_engaged_org/:org', to: 'languages#add_engaged_org', as: 'add_engaged_org_to'
       patch 'remove_engaged_org/:org', to: 'languages#remove_engaged_org', as: 'remove_engaged_org_from'

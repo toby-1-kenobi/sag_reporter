@@ -1,0 +1,5 @@
+<% if @language.project.present? %>
+  $('#project-name').html('<%= @language.project.name %>');
+<% else %>
+  $('#project-name').html('not assigned');
+<% end %>

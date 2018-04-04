@@ -76,6 +76,7 @@ $(document).ready ->
 
   $('.mdl-tabs__panel.is-active .content-fetch-trigger').click()
 
+
   $('.dashboard-tabs .mdl-tabs__tab-bar a').on 'click', ->
     if history.state != null
       filterParam = history.state.filter
@@ -144,5 +145,13 @@ $(document).ready ->
     $('#set-champion-form').submit()
     $('#champion-input-row').slideUp()
     return
+
+  $('#project-edit-button').on 'click', ->
+    $('#project-input-row').slideDown()
+    return
+
+  $('#language-project-select').on 'change', ->
+    $(this).closest('form').submit()
+    $('#project-input-row').slideUp()
 
   return

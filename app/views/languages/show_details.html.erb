@@ -2,6 +2,8 @@
 <% provide(:context_title, "#{@language.name} details") %>
 <% provide(:container_class, 'no-iso') if @language.iso.blank? %>
 
+<%= render 'shared/mdl_selectfield_assets' %>
+
 <div id="edit-response"></div>
 <div id="pending-edits" class="mdl-grid">
   <% @user_pending_edits.each do |edit| %>
@@ -56,6 +58,34 @@
               <%= label_tag :champion, 'Name', class: 'mdl-textfield__label' %>
             </td>
           <% end %>
+        </tr>
+      <% end %>
+      <% if logged_in_user.trusted? %>
+        <tr>
+          <th>Assign project</th>
+          <td>
+            <span id="project-name">
+              <%= @language.project.present? ? @language.project.name : 'not assigned' %>
+            </span>
+            <% if logged_in_user.admin? %>
+              <button id="project-edit-button" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                <i class="material-icons">edit</i>
+              </button>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+      <% if logged_in_user.admin? %>
+        <tr id="project-input-row" class="hide">
+          <td colspan="2">
+            <%= form_for @language, url: assign_project_language_path, remote: true, method: :patch do |f| %>
+              <% project_array = @projects.map {|p| [p.name,p.id]} %>
+              <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+                <%= f.select(:project_id, options_for_select(project_array),{:include_blank => 'no project'}, {id: 'language-project-select', class: 'mdl-selectfield__select'}) %>
+                <%= f.label :project_id, 'Select a project', class: 'mdl-selectfield__label' %>
+              </div>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </table>
