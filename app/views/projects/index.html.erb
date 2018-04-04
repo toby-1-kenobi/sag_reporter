@@ -1,0 +1,12 @@
+<% provide(:title, 'Projects') %>
+<% provide(:context_title, 'Projects') %>
+
+<ul class="mdl-list">
+  <% @projects.each do |project| %>
+    <li class="mdl-list__item">
+      <span class="mdl-list__item-primary-content">
+        <%= project.name %>
+      </span>
+    </li>
+  <% end %>
+</ul>
