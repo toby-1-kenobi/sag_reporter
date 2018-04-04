@@ -1,8 +1,15 @@
-<li id="project-<%= project.id %>" class="mdl-list__item">
+<li id="project-<%= project.id %>" class="mdl-list__item<%= ' mdl-list__item--three-line' if project.languages.any? %>">
   <span class="mdl-list__item-primary-content">
     <i class="material-icons">group_work</i> <%= project.name %>
+    <% if project.languages.any? %>
+      <span class="mdl-list__item-text-body">
+        <%= project.languages.pluck(:name).to_sentence %>
+      </span>
+    <% end %>
   </span>
-  <%= link_to project, method: :delete, remote: true, class: 'mdl-list__item-secondary-action' do %>
-    <i class="material-icons">delete_forever</i>
-  <% end %>
+  <span class="mdl-list__item-secondary-content">
+    <%= link_to project, method: :delete, remote: true, class: 'mdl-list__item-secondary-action' do %>
+      <i class="material-icons">delete_forever</i>
+    <% end %>
+  </span>
 </li>
