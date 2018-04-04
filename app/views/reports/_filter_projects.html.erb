@@ -1,0 +1,17 @@
+<% projects_list = Project.all %>
+<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="project_filter">
+  <%= check_box_tag 'project_filter', 'on', @filters[:project_filter], class: 'report-view-filter mdl-switch__input' %>
+  <span class="mdl-switch__label">Filter by Project</span>
+</label>
+<div id="project-filters"  <% if @filters[:project_filter].blank? %> class="hide" <% end %>>
+  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="all_projects">
+    <%= check_box_tag "all_projects", 'on', true, class: 'all_projects_select mdl-checkbox__input' %>
+    <span class="mdl-switch__label">All</span>
+  </label>
+  <% projects_list.each do |p| %>
+    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="projects_<%= p.id %>">
+      <%= check_box_tag "projects[#{p.id}]", 'on', (!@filters[:projects] or @filters[:projects][p.id]), class: 'report-view-filter mdl-checkbox__input' %>
+      <span class="mdl-switch__label"><%= p.name %></span>
+    </label>
+  <% end %>
+</div>

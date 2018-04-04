@@ -66,6 +66,7 @@
           <%= render 'reports/filter_significant' %>
           <%= render partial: 'reports/filter_languages', locals: {languages: @geo_state.languages.order(:name).uniq} %>
           <%= render partial: 'reports/filter_progress_markers' %>
+          <%= render partial: 'reports/filter_projects' %>
         </div>
         <div class="mdl-cell mdl-cell--4-col">
           <%= render 'reports/filter_type' %>
