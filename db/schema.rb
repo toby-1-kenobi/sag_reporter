@@ -359,6 +359,7 @@ ActiveRecord::Schema.define(version: 20180327103712) do
   add_index "languages", ["iso"], name: "index_languages_on_iso", unique: true, using: :btree
   add_index "languages", ["name"], name: "index_languages_on_name", using: :btree
   add_index "languages", ["pop_source_id"], name: "index_languages_on_pop_source_id", using: :btree
+  add_index "languages", ["project_id"], name: "index_languages_on_project_id", using: :btree
   add_index "languages", ["translation_need"], name: "index_languages_on_translation_need", using: :btree
   add_index "languages", ["translation_progress"], name: "index_languages_on_translation_progress", using: :btree
 
@@ -722,6 +723,7 @@ ActiveRecord::Schema.define(version: 20180327103712) do
   add_foreign_key "languages", "clusters"
   add_foreign_key "languages", "data_sources", column: "pop_source_id"
   add_foreign_key "languages", "language_families", column: "family_id"
+  add_foreign_key "languages", "projects"
   add_foreign_key "languages", "users", column: "champion_id"
   add_foreign_key "mt_resources", "geo_states"
   add_foreign_key "mt_resources", "languages"
