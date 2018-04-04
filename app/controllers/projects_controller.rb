@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
 
   before_action :require_login
 
-  before_action only: [:create] do
+  before_action only: [:create, :destroy] do
     head :forbidden unless logged_in_user.admin?
   end
 
@@ -16,7 +16,14 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
-  def delete
+  def destroy
+    @project = Project.find(params[:id])
+    if @project
+      @project.destroy
+      respond_to :js
+    else
+      head :not_found
+    end
   end
 
   private

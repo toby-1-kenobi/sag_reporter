@@ -1,7 +1,7 @@
 <% provide(:title, 'Projects') %>
 <% provide(:context_title, 'Projects') %>
 
-<ul class="mdl-list">
+<ul id="project-index" class="mdl-list">
   <%= render @projects %>
   <li id="new-project-list-item" class="mdl-list__item">
     <%= form_for Project.new, remote: true do |f| -%>

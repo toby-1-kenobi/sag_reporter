@@ -1,0 +1,5 @@
+<% if @project.persisted? %>
+  $('#project-<%= @project.id -%>').fadeOut(150).fadeIn(200).fadeOut(150).fadeIn(200);
+<% else %>
+  $('#project-<%= @project.id -%>').remove();
+<% end %>

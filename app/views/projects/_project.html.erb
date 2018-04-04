@@ -1,5 +1,8 @@
-<li class="mdl-list__item">
+<li id="project-<%= project.id %>" class="mdl-list__item">
   <span class="mdl-list__item-primary-content">
-    <%= project.name %>
+    <i class="material-icons">group_work</i> <%= project.name %>
   </span>
+  <%= link_to project, method: :delete, remote: true, class: 'mdl-list__item-secondary-action' do %>
+    <i class="material-icons">delete_forever</i>
+  <% end %>
 </li>

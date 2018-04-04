@@ -100,6 +100,14 @@ class StaticPagesController < ApplicationController
             category: 'other'
         },
         {
+            condition: (logged_in_user.admin?),
+            path: projects_path,
+            text: 'Projects',
+            icon: 'group_work',
+            colour: 'orange',
+            category: 'other'
+        },
+        {
             condition: (logged_in_user.national?),
             path: overview_path,
             text: 'Overview',

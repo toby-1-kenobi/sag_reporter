@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :projects
-
   get 'help/edit_language'
 
   get 'population/create'
@@ -101,6 +99,8 @@ Rails.application.routes.draw do
   end
 
   resources :populations, only: [:create]
+
+  resources :projects, only: [:index, :create, :destroy]
 
   resources :reports do
     collection do
