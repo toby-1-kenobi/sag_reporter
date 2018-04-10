@@ -1,4 +1,3 @@
-<%= render 'shared/mdl_selectfield_assets' %>
 
 <%= form_for(@user, html: {class: 'col s12'}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
@@ -42,9 +41,9 @@
         <% end %>
       </div>
       <div class="mdl-cell mdl-cell--4-col">
-        <div id="interface-language-select" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-          <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name, options = {}, html_options = {class: 'mdl-selectfield__select'}) %>
-          <%= f.label :interface_language_id, 'Language for using Reporter', class: 'mdl-selectfield__label' %>
+        <div id="interface-language-select" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name, options = {}, html_options = {class: 'mdlext-selectfield__select'}) %>
+          <%= f.label :interface_language_id, 'Language for using Reporter', class: 'mdlext-selectfield__label' %>
         </div>
         <% if logged_in_user.admin? %>
           <div>

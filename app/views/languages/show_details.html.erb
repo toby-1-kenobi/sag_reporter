@@ -2,8 +2,6 @@
 <% provide(:context_title, "#{@language.name} details") %>
 <% provide(:container_class, 'no-iso') if @language.iso.blank? %>
 
-<%= render 'shared/mdl_selectfield_assets' %>
-
 <div id="edit-response"></div>
 <div id="pending-edits" class="mdl-grid">
   <% @user_pending_edits.each do |edit| %>
@@ -80,9 +78,9 @@
           <td colspan="2">
             <%= form_for @language, url: assign_project_language_path, remote: true, method: :patch do |f| %>
               <% project_array = @projects.map {|p| [p.name,p.id]} %>
-              <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-                <%= f.select(:project_id, options_for_select(project_array),{:include_blank => 'no project'}, {id: 'language-project-select', class: 'mdl-selectfield__select'}) %>
-                <%= f.label :project_id, 'Select a project', class: 'mdl-selectfield__label' %>
+              <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+                <%= f.select(:project_id, options_for_select(project_array),{:include_blank => 'no project'}, {id: 'language-project-select', class: 'mdlext-selectfield__select'}) %>
+                <%= f.label :project_id, 'Select a project', class: 'mdlext-selectfield__label' %>
               </div>
             <% end %>
           </td>

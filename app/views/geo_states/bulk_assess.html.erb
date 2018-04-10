@@ -1,19 +1,17 @@
 <% provide(:title, "#{@geo_state.name} bulk assessment") %>
 <% provide(:context_title, "#{@geo_state.name} bulk assess transformation levels") %>
 
-<%= render 'shared/mdl_selectfield_assets' %>
-
 <%= form_tag({controller: 'geo_states', action: 'bulk_progress_update'}, method: :post) do %>
   <%= hidden_field_tag name: 'id', value: @geo_state.id %>
 
-  <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-    <select id="assessment_date" name="assessment_date" class="mdl-selectfield__select">
+  <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+    <select id="assessment_date" name="assessment_date" class="mdlext-selectfield__select">
       <% (6.months.ago.to_date..Date.today).select{ |d| d.day == 1 }.each do |date| %>
           <% selected = date.month == Date.today.month and date.year == Date.today.year %>
         <option value="<%= date.strftime('%Y-%m') %>" <%= 'selected' if selected %> ><%= date.strftime('%Y %B') %></option>
       <% end %>
     </select>
-    <label for="assessment_date" class="mdl-selectfield__label">Assessment Date:</label>
+    <label for="assessment_date" class="mdlext-selectfield__label">Assessment Date:</label>
   </div>
 
   <%# lower z-index of switches so they don't overlap the selectbox dropdown %>
