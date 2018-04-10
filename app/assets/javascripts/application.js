@@ -20,4 +20,6 @@
 //= require materialize-sprockets
 //= require material
 //= require moment
+//= require eq
+//= require mdl-ext
 //= require_tree .
