@@ -22,4 +22,5 @@
 //= require moment
 //= require eq
 //= require mdl-ext
+//= require mdl-selectfield
 //= require_tree .
