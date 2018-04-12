@@ -161,7 +161,8 @@ class UsersController < ApplicationController
       {:champion => []},
       {:speaks => []},
       {:geo_states => []},
-      {:curated_states => []}
+      {:curated_states => []},
+      :reset_password
     ]
     # current user cannot change own access level or state
     if params[:id] and logged_in_user?(User.find(params[:id]))

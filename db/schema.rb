@@ -679,6 +679,7 @@ ActiveRecord::Schema.define(version: 20180327103712) do
     t.boolean  "national_curator",      default: false, null: false
     t.string   "role_description"
     t.datetime "curator_prompted"
+    t.boolean  "reset_password",        default: false
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree

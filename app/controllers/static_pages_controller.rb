@@ -1,5 +1,5 @@
 class StaticPagesController < ApplicationController
-
+  include UsersHelper
   before_action :require_login, only: [:tasks, :home, :about]
 
   def about
@@ -99,6 +99,12 @@ class StaticPagesController < ApplicationController
             colour: 'orange',
             category: 'other'
         },
+        {
+            condition: (logged_in_user.admin?),
+            category: 'resetpassword',
+            users: reset_pwd_users()
+        },
+
         {
             condition: (logged_in_user.admin?),
             path: projects_path,

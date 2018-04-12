@@ -184,6 +184,13 @@ Rails.application.routes.draw do
   get 'my_reports' => 'users#reports', as: 'my_reports'
   get 'whatsapp' => 'static_pages#whatsapp_link'
 
+  resources :password_resets,     only: [:new, :create, :edit, :update]
+
+  get 'update_reset' => 'password_resets#approve_user_request'
+  patch 'update_reset' => 'password_resets#reject_user_request'
+  get 'verify_otp'   => 'password_resets#verify'
+  post 'verify_otp'  => 'password_resets#verify_otp'
+
   get 'finish_line_marker_spreadsheet' => 'state_languages#finish_line_marker_spreadsheet', as: 'finish_line_marker_spreadsheet'
   get 'language_tab_spreadsheet' => 'languages#language_tab_spreadsheet', as: 'language_tab_spreadsheet'
 

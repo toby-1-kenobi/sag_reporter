@@ -44,4 +44,12 @@ $(document).ready ->
     $('#other-dialog')[0].close()
     return
 
+  $('#reset-password-trigger').on 'click', ->
+    $('#resetpassword-dialog')[0].showModal()
+    return
+
+  $('#resetpassword-dialog').find('.close').on 'click', ->
+    $('#resetpassword-dialog')[0].close()
+    return
+
   return
