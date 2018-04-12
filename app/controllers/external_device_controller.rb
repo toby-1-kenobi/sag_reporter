@@ -1,7 +1,7 @@
 class ExternalDeviceController < ApplicationController
 
+  include JwtConcern
   include ParamsHelper
-  include ExternalDeviceHelper
 
   skip_before_action :verify_authenticity_token
   before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key]
@@ -33,10 +33,11 @@ class ExternalDeviceController < ApplicationController
         if users_device.name != full_params[:device_name]
           users_device.update name: full_params[:device_name]
         end
+        payload = {sub: user.id, iat: user.updated_at.to_i, iss: users_device.device_id}
         send_message = {
             user: user.id,
             status: "success",
-            jwt: create_jwt(user, users_device.device_id),
+            jwt: encode_jwt(payload),
             database_key: create_database_key(user),
             now: Time.now.to_i
         }
@@ -791,6 +792,36 @@ class ExternalDeviceController < ApplicationController
       false
     end
   end
+
+  # other helpful methods
+
+  def create_database_key user
+    (user.created_at.to_f * 1000000).to_i
+  end
+
+  def authenticate_external
+    render json: { error: "JWT invalid" }, status: :unauthorized unless external_user
+  end
+
+  def external_user
+    @external_user ||= begin
+      token = request.headers['Authorization'].split.last
+      payload = decode_jwt(token)
+      user = User.find_by_id payload['sub']
+      users_device = ExternalDevice.find_by device_id: payload['iss'], user_id: user.id
+      puts "#{user.updated_at.to_i} #{payload['iat']}"
+      if user.updated_at.to_i == payload['iat']
+        user if users_device
+      else
+        users_device.update registered: false if users_device&.registered
+        false
+      end
+    rescue => e
+      puts e
+      nil
+    end
+  end
+
 end
 # for easily getting all attributes:
 # Language.new.attributes.except("created_at","updated_at").keys.each{|k|puts "          #{k}: xxx.#{k},"}.nil?
