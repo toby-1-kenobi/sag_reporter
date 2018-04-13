@@ -5,11 +5,6 @@ class LanguagesController < ApplicationController
 
   before_action :require_login
 
-  # Let only permitted users do some things
-  before_action only: [:new, :create] do
-    redirect_to root_path unless logged_in_user.admin? or logged_in_user.national_curator?
-  end
-
   # can edit a language if the language is in one of the user's states, or if the user is national
   before_action only: [:reports, :show, :show_details, :populations] do
     redirect_to zones_path unless logged_in_user.national? or Language.user_limited(logged_in_user).pluck(:id).include?(params[:id].to_i)
@@ -28,12 +23,6 @@ class LanguagesController < ApplicationController
     # this is for lack of scopes in the model for translation status
     @languages = Language.all.to_a
   end
-
-  def new
-  	@language = Language.new
-  	@colour_columns = 3
-  end
-
 
   def show
   	@language = Language.
@@ -163,16 +152,6 @@ class LanguagesController < ApplicationController
       respond_to :js
     else
       return head :gone
-    end
-  end
-
-  def create
-    @language = Language.new(combine_colour(lang_params))
-    if @language.save
-      flash['success'] = 'New language added!'
-      redirect_to @language
-    else
-      render 'new'
     end
   end
 
