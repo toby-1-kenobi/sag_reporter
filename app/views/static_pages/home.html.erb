@@ -160,12 +160,12 @@
                   <%= ul.name%>
                   <%= link_to update_reset_path(id: ul.id), remote: true, method: :get do%>
                                     <i class="now-ui-icons ui-1_lock-circle-open"></i>
-                                    <span class="sidebar-normal">Accept</span>
-                                    <% end %>
+                                    <span class="mdl-button close">Accept</span>
+                  <% end %>
                   <%= link_to update_reset_path(id: ul.id), remote: true, method: :patch do%>
                                     <i class="now-ui-icons ui-1_lock-circle-open"></i>
-                                    <span class="sidebar-normal">Reject</span>
-                                    <% end %>
+                                    <span class="mdl-button close">Reject</span>
+                  <% end %>
               </span>
               </li>
             <% end %>

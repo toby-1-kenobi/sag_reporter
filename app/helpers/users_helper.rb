@@ -16,22 +16,19 @@ module UsersHelper
 
   def send_otp_via_email(email)
     username = email
+    lci_protocal = request.protocol
+    lci_host = request.host
+    full_url = lci_protocal + lci_host + '/verify_otp'
 
     if username.include? '@'
       # if the user has put something with an '@' in it is must be their email address
       @user = User.find_by(email: username)
-    else
-      # otherwise we'll assume it's their phone number
-      @user = User.find_by(phone: username)
     end
 
     if @user.present?
-      otp_code = @user.otp_code
+       otp_code = @user.otp_code
 
-      if @user.phone.present? and not @user.email_confirmed?
-        @ticket =  send_otp_on_phone1("+91#{@user.phone}", otp_code)
-        flash.now['info'] = "A short login code has been sent to your phone (#{@user.phone}). Please wait for it."
-      elsif @user.phone.present? and send_otp_via_mail_forgot_pwd(@user, otp_code)
+       if @user.phone.present? and send_otp_via_mail_forgot_pwd(@user, otp_code, full_url)
         flash.now['info'] = "A short login code has been sent to your email (#{@user.email}). Check your inbox."
        end
     else
@@ -39,10 +36,10 @@ module UsersHelper
     end
   end
 
-  def send_otp_via_mail_forgot_pwd(user, otp_code)
+  def send_otp_via_mail_forgot_pwd(user, otp_code,full_url)
     if user.email.present? && user.email_confirmed?
       logger.debug "sending otp to email: #{user.email}, otp: #{otp_code}"
-      UserMailer.user_otp_code(user, otp_code).deliver_now
+      UserMailer.reset_password_otp_code(user, otp_code, full_url).deliver_now
       true
     else
       false

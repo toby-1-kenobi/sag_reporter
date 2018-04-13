@@ -190,6 +190,7 @@ Rails.application.routes.draw do
   patch 'update_reset' => 'password_resets#reject_user_request'
   get 'verify_otp'   => 'password_resets#verify'
   post 'verify_otp'  => 'password_resets#verify_otp'
+  post 'change_password' => 'password_resets#password_change'
 
   get 'finish_line_marker_spreadsheet' => 'state_languages#finish_line_marker_spreadsheet', as: 'finish_line_marker_spreadsheet'
   get 'language_tab_spreadsheet' => 'languages#language_tab_spreadsheet', as: 'language_tab_spreadsheet'

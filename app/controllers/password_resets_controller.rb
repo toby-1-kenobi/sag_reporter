@@ -34,28 +34,47 @@ class PasswordResetsController < ApplicationController
   end
 
   def reject_user_request
-    @user = User.find_by(id: params[:id])
-    if @user.update_attribute(:reset_password, false)
-      respond_to do |format|
-        format.js
+      @user = User.find_by(id: params[:id])
+      if @user.update_attribute(:reset_password, false)
+        respond_to do |format|
+          format.js
+        end
       end
-    end
 
   end
 
   def verify
-    render 'password_resets/verify_otp'
+     render 'password_resets/verify_otp'
   end
 
   def verify_otp
-    user = User.find_by(email: params[:verify_otp][:email])
-    user_otp = params[:verify_otp][:otp]
-    if user and user.authenticate_otp(user_otp, drift: 300)
-      flash.now['error'] = 'Successfully authenticated.'
-    else
-      @user = user
-      flash.now['error'] = 'Login code incorrect or expired.'
-    end
+      user = User.find_by(email: params[:verify_otp][:email])
+      user_otp = params[:verify_otp][:otp]
+      if user and user.authenticate_otp(user_otp, drift: 30000)
+        session[:temp_user] = user.id
+        render 'password_resets/change_password'
+      else
+        @user = user
+        flash.now['error'] = 'Login code incorrect or expired.'
+      end
+
+  end
+
+  def password_change
+
+      @user = User.find_by(id: session[:temp_user])
+      user_password = User.find_by(password_digest: params[:change_password][:password])
+      new_hashed_password = User.digest(user_password)
+
+      if @user
+        @user.update_attribute(:password_digest, new_hashed_password)
+        flash[:info] = "Your password successfully updated"
+        redirect_to login_url
+      else
+        flash.now[:danger] = "Your password update failed"
+        render 'password_resets/change_password'
+      end
+
   end
 
   private
