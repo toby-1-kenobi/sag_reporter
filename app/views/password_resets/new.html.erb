@@ -1,11 +1,13 @@
 <% provide(:title, 'Forgot password') %>
 <h1>Forgot password</h1>
 
-<div class="mdl-card login-card mdl-shadow--1dp">
+  <div class="mdl-card login-card mdl-shadow--1dp">
       <%= form_for(:password_reset, url: password_resets_path) do |f| %>
-          <%= f.label :email %>
-          <%= f.email_field :email, class: 'form-control' %>
-
-          <%= f.submit "Submit", class: "btn btn-primary" %>
-        <% end %>
-</div>
+        <div class="mdl-textfield mdl-js-textfield">
+          <i class="material-icons mdl-textfield__icon">email</i>
+          <%= f.email_field :email, class: 'mdl-textfield__input' %>
+          <%= f.label :email, class: 'mdl-textfield__label' %>
+        </div>
+      <%= f.submit "Submit", class: "mdl-button submit" %>
+      <% end %>
+  </div>

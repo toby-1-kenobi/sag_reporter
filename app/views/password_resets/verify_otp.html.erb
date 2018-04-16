@@ -1,12 +1,19 @@
 <% provide(:title, 'Enter the OTP') %>
-<h1>Enter otp code</h1>
+<h1>Enter OTP code</h1>
 
 <div class="mdl-card login-card mdl-shadow--1dp">
-      <%= form_for(:verify_otp, url: verify_otp_path) do |f| %>
-          <%= f.label :Email %>
-          <%= f.email_field :email, class: 'form-control' %></br></br>
-          <%= f.label :OTP %>
-          <%= f.text_field :otp, class: 'form-control' %>
-          <%= f.submit "Confirm", class: "btn btn-primary" %>
-        <% end %>
+   <%= form_for(:verify_otp, url: verify_otp_path) do |f| %>
+      <div class="mdl-textfield mdl-js-textfield">
+        <i class="material-icons mdl-textfield__icon">email</i>
+        <%= f.email_field :email, class: 'mdl-textfield__input' %>
+        <%= f.label :email, class: 'mdl-textfield__label' %>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield">
+        <i class="material-icons mdl-textfield__icon">otp</i>
+        <%= f.text_field :otp, class: 'mdl-textfield__input' %>
+        <%= f.label :OTP, class: 'mdl-textfield__label' %>
+      </div>
+
+   <%= f.submit "Confirm", class: "mdl-button submit" %>
+   <% end %>
 </div>

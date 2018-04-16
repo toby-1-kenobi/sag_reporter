@@ -50,7 +50,7 @@ class PasswordResetsController < ApplicationController
   def verify_otp
       user = User.find_by(email: params[:verify_otp][:email])
       user_otp = params[:verify_otp][:otp]
-      if user and user.authenticate_otp(user_otp, drift: 30000)
+      if user and user.authenticate_otp(user_otp, drift: 300)
         session[:temp_user] = user.id
         render 'password_resets/change_password'
       else
