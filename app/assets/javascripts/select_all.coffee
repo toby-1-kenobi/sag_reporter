@@ -1,4 +1,4 @@
-$(document).ready ->
+$(document).on "page:change", ->
 
   # This code assumes we're using MDL for the checkboxes
 
