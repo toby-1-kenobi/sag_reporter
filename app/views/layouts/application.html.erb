@@ -71,10 +71,6 @@
       <%= render 'layouts/materialize_header' unless @supress_header %>
   <% end %>
   <main class="mdl-layout__content <%= yield(:container_class) %>">
-
-
-  <%= render 'layouts/header' unless @supress_header %>
-  <main>
     <div class="container">
       <% if logged_in_user and logged_in_user.authenticate('password') %>
         <div class="<%= mdl ? 'flash-message' : 'card' %> orange" >
@@ -101,8 +97,9 @@
           <div class="<%= mdl ? 'flash-message' : 'card-panel' %> light-blue"><%= message %></div>
         <% end %>
       <% end %>
-    <div id="language-search-results"></div>
-    <%= yield %>
+      <div id="language-search-results"></div>
+      <%= yield %>
+    </div>
   </main>
   <% if mdl %>
       <%= render 'layouts/footer' unless @supress_footer %>
