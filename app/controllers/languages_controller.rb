@@ -17,13 +17,6 @@ class LanguagesController < ApplicationController
 
   autocomplete :user, :name, :full => true
 
-
-  def overview
-    # convert to an array here and manage it in the view
-    # this is for lack of scopes in the model for translation status
-    @languages = Language.all.to_a
-  end
-
   def show
   	@language = Language.
         includes(
