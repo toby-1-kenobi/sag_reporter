@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180327103712) do
+ActiveRecord::Schema.define(version: 20180418090948) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -212,10 +212,11 @@ ActiveRecord::Schema.define(version: 20180327103712) do
     t.integer  "status",                default: 1, null: false
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
+    t.integer  "year"
   end
 
   add_index "finish_line_progresses", ["finish_line_marker_id"], name: "index_finish_line_progresses_on_finish_line_marker_id", using: :btree
-  add_index "finish_line_progresses", ["language_id", "finish_line_marker_id"], name: "index_lang_finish_line", unique: true, using: :btree
+  add_index "finish_line_progresses", ["language_id", "finish_line_marker_id", "year"], name: "index_lang_finish_line", unique: true, using: :btree
   add_index "finish_line_progresses", ["language_id"], name: "index_finish_line_progresses_on_language_id", using: :btree
 
   create_table "geo_states", force: :cascade do |t|

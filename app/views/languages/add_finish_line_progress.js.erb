@@ -1,0 +1,49 @@
+<% if @flp.present? %>
+  $("#title_row_id").append("<th></th>")
+  $("#head_row_id").append("<th class='mdl-data-table__cell--non-numeric'><%= @max_year %></th>")
+  <% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
+
+  <% @flp.each do |each| %>
+    var row = '<td id="finish-line-progress-status-<%= each.finish_line_marker.number %><%= each.year %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric editable"><%= each.simple_human_status %><%= render "shared/edit_icon" if editable %></td>';
+    $("#finish-line-marker-<%= each.finish_line_marker.number %>-row").append(row)
+
+  <% end %>
+<% end %>
+
+$(".editable").hover(
+    function () {
+        $(this).find('.edit-icon').removeClass('hide')
+    },
+    function () {
+        $(this).find('.edit-icon').addClass('hide')
+    }
+);
+
+$(".editable").click(function(){
+    var id = this.id
+    if($(this).hasClass('finish-line-progress-status')) {
+        var number = id.substring(id.lastIndexOf('-') + 1)
+        $("dialog#finish-line-dialog-"+number).get(0).showModal()
+    }else {
+        $("dialog[data-for=\"#{id}\"]").get(0).showModal()
+    }
+});
+
+//render dialogs to change status
+var dialogs = "<%= escape_javascript render 'edit_future_dialogs', language: @language, year: @max_year %>";
+$("#future_year_dialogs").append(dialogs);
+
+
+$('dialog').each(function() {
+    let dialog = this;
+    if (! dialog.showModal) {
+        dialogPolyfill.registerDialog(dialog);
+    }
+    $(dialog).find('.submit').on('click', function() {
+        $(dialog).find('form').submit();
+        dialog.close();
+    });
+    $(dialog).find('.cancel,.close').on('click', function() {
+        dialog.close();
+    });
+});
