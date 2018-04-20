@@ -76,10 +76,6 @@ gem 'momentjs-rails', '~> 2.11', '>= 2.11.1'
 # image manipulation
 gem 'mini_magick'
 
-# Web components
-gem 'polymer-rails', github: 'alchaplinsky/polymer-rails'
-gem 'polymer-elements-rails', github: 'alchaplinsky/polymer-elements-rails'
-
 # simplify http requests
 gem 'httparty'
 gem 'active_model_otp'
