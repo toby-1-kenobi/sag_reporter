@@ -1,4 +1,4 @@
-  
+
 # when a state is selected the language collections on the page
 # should hide any that don't belong to the state.
 # filterable items in those collection have the class filterable-item
@@ -108,7 +108,7 @@ window.bindFilters = ->
     return
 
 
-$(document).ready ->
+$(document).on "page:change", ->
 
   window.bindFilters()
 

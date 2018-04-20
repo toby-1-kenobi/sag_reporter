@@ -23,7 +23,7 @@ filter_impact_reports = ->
 
   return
 
-$(document).ready ->
+$(document).on "page:change", ->
 
   filter_impact_reports()
 
