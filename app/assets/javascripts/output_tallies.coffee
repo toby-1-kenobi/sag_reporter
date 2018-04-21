@@ -19,6 +19,6 @@ addRow = ->
   newRow.delay(200).fadeIn 'slow'
   return
 
-$(document).on "page:change", ->
+$(document).on "ready page:change", ->
   $('.repeatable select').on 'change', addRow
   return

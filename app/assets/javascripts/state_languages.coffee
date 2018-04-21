@@ -13,7 +13,7 @@ updateTransformationUpdateLink = ->
   $('.update-transformation-data').prop('href', ref)
   return
 
-$(document).on "page:change", ->
+$(document).on "ready page:change", ->
   $('#transformation-baseline-date').on 'change', updateTransformationUpdateLink
   $('#transformation-end-date').on 'change', updateTransformationUpdateLink
   return

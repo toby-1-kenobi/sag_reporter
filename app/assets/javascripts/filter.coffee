@@ -108,7 +108,7 @@ window.bindFilters = ->
     return
 
 
-$(document).on "page:change", ->
+$(document).on "ready page:change", ->
 
   window.bindFilters()
 

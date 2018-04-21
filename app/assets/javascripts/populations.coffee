@@ -1,4 +1,4 @@
-$(document).on "page:change", ->
+$(document).on "ready page:change", ->
 
   $('#add-pop-fab').on 'click', ->
     console.log 'hi'

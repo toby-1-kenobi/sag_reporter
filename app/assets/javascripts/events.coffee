@@ -57,7 +57,7 @@ updateDistrictData = ->
     $('#district-autocomplete input').val('')
   return
 
-$(document).on "page:change", ->
+$(document).on "ready page:change", ->
 
   $('.datepicker').pickadate ->
     selectMonths: true, 
