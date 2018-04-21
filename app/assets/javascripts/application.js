@@ -11,7 +11,6 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery.turbolinks
 //= require jquery_ujs
 //= require jquery-ui
 //= require jsapi
@@ -28,3 +27,6 @@
 $(document).on('turbolinks:load', function (){ console.log('turbolinks load') });
 $(document).on('page:fetch', function (){ console.log('page fetch') });
 $(document).on('page:change', function (){ console.log('page change') });
+$(document).on('page:load', function (){ console.log('page load') });
+$(document).on('ready', function (){ console.log('ready') });
+$(document).on('page:load ready', function (){ console.log('page load or ready') });
