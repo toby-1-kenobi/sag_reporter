@@ -1,4 +1,4 @@
-$(document).ready ->
+$(document).on "ready page:change", ->
 
   $(document.body).on 'click', '.mdl-accordion__button', ->
     $(this).parent('.mdl-accordion').toggleClass('mdl-accordion--opened')
