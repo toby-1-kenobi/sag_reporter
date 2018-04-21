@@ -50,26 +50,17 @@
 
 <body>
 
-<div class="modal" id="page-spinner">
-  <div class="modal-content">
-    <h4>Loading...</h4>
-    <div class="spinner medium">
-      <div class="spinner-wrapper">
-        <div class="rotator">
-          <div class="inner-spin"></div>
-          <div class="inner-spin"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header <%= yield(:super_container_class) %>">
   <% if mdl %>
       <%= render 'layouts/header' unless @supress_header %>
   <% else %>
       <%= render 'layouts/materialize_header' unless @supress_header %>
   <% end %>
+
+  <div id="page-spinner" class="center">
+    <div class="mdl-spinner mdl-js-spinner"></div>
+  </div>
+
   <main class="mdl-layout__content <%= yield(:container_class) %>">
     <div class="container">
       <% if logged_in_user and logged_in_user.authenticate('password') %>
