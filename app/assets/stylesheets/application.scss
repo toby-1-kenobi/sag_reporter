@@ -32,11 +32,6 @@ $primary-color: color("cyan", "darken-2") !default;
   display: none;
 }
 
-#page-spinner {
-  position: absolute;
-  z-index: 1000;
-}
-
 .mdl-layout__content {
   padding: 24px;
 }
