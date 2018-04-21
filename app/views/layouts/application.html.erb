@@ -57,10 +57,6 @@
       <%= render 'layouts/materialize_header' unless @supress_header %>
   <% end %>
 
-  <div id="page-spinner" class="center">
-    <div class="mdl-spinner mdl-js-spinner"></div>
-  </div>
-
   <main class="mdl-layout__content <%= yield(:container_class) %>">
     <div class="container">
       <% if logged_in_user and logged_in_user.authenticate('password') %>
