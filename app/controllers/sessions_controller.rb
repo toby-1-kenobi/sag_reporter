@@ -14,11 +14,11 @@ class SessionsController < ApplicationController
       # otherwise we'll assume it's their phone number
       @user = User.find_by(phone: username)
     end
-    # if @user and Rails.env.development?
-    #   log_in @user
-    #   remember @user
-    #   redirect_back_or root_path and return
-    # end
+    if @user and Rails.env.development?
+      log_in @user
+      remember @user
+      redirect_back_or root_path and return
+    end
     if @user && @user.authenticate(params[:session][:password])
       otp_code = @user.otp_code
       session[:temp_user] = @user.id
