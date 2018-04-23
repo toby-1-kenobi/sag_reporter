@@ -1,0 +1,9 @@
+console.log('email send:' + <%= @success %>)
+if (<%= @success %>) {
+    $('.otp_msg').html('Login code resent to email address');
+} else {
+    $('.otp_msg').html('Could not resend the login code to your email!');
+}
+$('#resend-email-code-form .mdl-spinner').removeClass('is-active');
+$('#resend-email-code-form .resend_otp_to_email').removeAttr('disabled');
+$('.otp_msg').hide().fadeIn();

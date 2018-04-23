@@ -17,7 +17,7 @@
 </div>
 <div class="resend-controls">
   <% if @user.phone.present? %>
-    <%= form_tag(resend_code_to_phone_path, id: 'resend-phone-form', remote: true) do |f| %>
+    <%= form_tag(resend_code_to_phone_path, id: 'resend-phone-form', remote: true) do %>
       <button  type="submit" class="resend_otp_to_phone mdl-button mdl-js-button mdl-button--colored">Send Login Code to Phone</button>
         <div class="mdl-spinner mdl-js-spinner"></div>
     <% end %>
@@ -25,35 +25,15 @@
 
   <% if @user.email.present? and @user.email_confirmed? %>
       <script>
-        function submitResendEmailCodeForm() {
-          document.getElementById('resend-email-code-form').submit();
+        function spin() {
           $('#resend-email-code-form .mdl-spinner').addClass('is-active');
           $('#resend-email-code-form .resend_otp_to_email').attr('disabled', '');
+          return true;
         }
-        function resendEmailCodeResponseHandler(e) {
-          let response = e.detail.parseResponse();
-          console.log(response);
-          if (response.success) {
-            $('.otp_msg').html('Login code resent to email address');
-          } else {
-            $('.otp_msg').html('Could not resend the login code to your email!');
-          }
-          $('#resend-email-code-form .mdl-spinner').removeClass('is-active');
-          $('#resend-email-code-form .resend_otp_to_email').removeAttr('disabled');
-          $('.otp_msg').hide().fadeIn();
-        }
-        window.addEventListener('WebComponentsReady', function() {
-          document.getElementById('resend-email-code-form').addEventListener('iron-form-response', resendEmailCodeResponseHandler)
-        });
       </script>
-    <%= form_tag(resend_code_to_email_path, class: 'col s6', id: 'resend-email-code-form', is: 'iron-form', 'on-iron-form-response': 'resendEmailCodeResponseHandler') do |f| %>
-        <button onclick="submitResendEmailCodeForm()" class="resend_otp_to_email mdl-button mdl-js-button mdl-button--colored">Send Login Code to Email</button>
+    <%= form_tag(resend_code_to_email_path, id: 'resend-email-code-form', remote: true, onsubmit: 'spin();') do %>
+        <button type="submit" class="resend_otp_to_email mdl-button mdl-js-button mdl-button--colored">Send Login Code to Email</button>
           <div class="mdl-spinner mdl-js-spinner"></div>
     <% end %>
   <% end %>
-</div>
-<div class="row">
-  <div id="resend_link">
-      
-  </div>
 </div>
