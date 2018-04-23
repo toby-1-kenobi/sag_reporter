@@ -17,74 +17,12 @@
 </div>
 <div class="resend-controls">
   <% if @user.phone.present? %>
-    <script>
-      function submitResendPhoneForm() {
-        document.getElementById('resend-phone-form').submit();
-      }
-      function resendSmsResponseHandler(e) {
-        let response = e.detail.parseResponse();
-        poll(response.ticket);
-      }
-
-      function poll(ticket) {
-        console.log("polling <%= otp_poll_path('999') %>".replace('999', ticket));
-        $('#resend-phone-form .mdl-spinner').addClass('is-active');
-        $('#resend-phone-form .resend_otp_to_phone').attr('disabled', '');
-        let stillWaiting = true;
-        setTimeout(function() {
-          $.ajax(
-            {
-              url: "<%= otp_poll_path('999') %>".replace('999', ticket),
-              success: function(data) {
-                console.log("polling got: " + JSON.stringify(data));
-                if (data.status == "invalid ticket") {
-                  console.log("invalid ticket");
-                  stillWaiting = false;
-                  console.error("invalid polling ticket " + ticket);
-                }
-                else if (data.status == "pending") {
-                  console.log("still waiting");
-                  stillWaiting = true;
-                }
-                else if (data.status == true) {
-                  console.log("success");
-                  stillWaiting = false;
-                  $('.otp_msg').html('Login code sent to phone');
-                  $('.otp_msg').hide().fadeIn();
-                }
-                else {
-                  console.log("failure");
-                  stillWaiting = false;
-                  $('.otp_msg').html('Could not send the login code to your phone!');
-                  $('.otp_msg').hide().fadeIn();
-                }
-              },
-              dataType: "json",
-              complete: function() {
-                if (stillWaiting) {
-                  poll(ticket);
-                } else {
-                  $('#resend-phone-form .mdl-spinner').removeClass('is-active');
-                  $('#resend-phone-form .resend_otp_to_phone').removeAttr('disabled');
-                }
-              }
-            }
-          );
-        }, 30000);
-      }
-
-      window.addEventListener('WebComponentsReady', function() {
-        document.getElementById('resend-phone-form').addEventListener('iron-form-response', resendSmsResponseHandler);
-        <% if @ticket.present? %>
-          poll(<%= @ticket %>);
-        <% end %>
-      });
-    </script>
-    <%= form_tag(resend_code_to_phone_path, class: 'col s6', id: 'resend-phone-form', is: 'iron-form', 'on-iron-form-response': 'resendSmsResponseHandler') do |f| %>
-      <button onclick="submitResendPhoneForm()" class="resend_otp_to_phone mdl-button mdl-js-button mdl-button--colored">Send Login Code to Phone</button>
+    <%= form_tag(resend_code_to_phone_path, id: 'resend-phone-form', remote: true) do |f| %>
+      <button  type="submit" class="resend_otp_to_phone mdl-button mdl-js-button mdl-button--colored">Send Login Code to Phone</button>
         <div class="mdl-spinner mdl-js-spinner"></div>
     <% end %>
   <% end %>
+
   <% if @user.email.present? and @user.email_confirmed? %>
       <script>
         function submitResendEmailCodeForm() {

@@ -14,11 +14,11 @@ class SessionsController < ApplicationController
       # otherwise we'll assume it's their phone number
       @user = User.find_by(phone: username)
     end
-    if @user and Rails.env.development?
-      log_in @user
-      remember @user
-      redirect_back_or root_path and return
-    end
+    # if @user and Rails.env.development?
+    #   log_in @user
+    #   remember @user
+    #   redirect_back_or root_path and return
+    # end
     if @user && @user.authenticate(params[:session][:password])
       otp_code = @user.otp_code
       session[:temp_user] = @user.id
@@ -45,7 +45,7 @@ class SessionsController < ApplicationController
     logger.debug('resend otp')
     if session[:temp_user]
       if user = User.find_by(id: session[:temp_user])
-        render json: { ticket: send_otp_on_phone("+91#{user.phone}", user.otp_code) }
+        @ticket = send_otp_on_phone("+91#{user.phone}", user.otp_code)
       else
         # temp user doesn't exist so go back to square 1
         redirect_to login_path
