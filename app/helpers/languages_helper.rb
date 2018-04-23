@@ -38,7 +38,7 @@ module LanguagesHelper
     table = markers.map{ |marker| [marker, Hash.new(0)] }.to_h
     languages.each do |lang|
       lang_check_list = check_list.dup
-      lang.finish_line_progresses.each do |flp|
+      lang.finish_line_progresses.where(year: nil).each do |flp|
         marker = flp.finish_line_marker
         if table[marker]
           table[marker][flp.category] += 1
