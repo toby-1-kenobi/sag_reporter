@@ -19,11 +19,11 @@ $primary-color: color("cyan", "darken-2") !default;
 //@import 'materialize';
 
 @import 'material';
+@import 'mdl-selectfield';
 
 /*
  *= require jquery-ui/autocomplete
  *= require mdl-ext-eqjs
- *= require mdl-selectfield
  */
 
 @import 'common';

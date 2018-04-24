@@ -1,0 +1,48 @@
+function poll(ticket) {
+    console.log("polling <%= otp_poll_path('999') %>".replace('999', ticket));
+    $('#resend-phone-form .mdl-spinner').addClass('is-active');
+    $('#resend-phone-form .resend_otp_to_phone').attr('disabled', '');
+    let stillWaiting = true;
+    setTimeout(function() {
+        $.ajax(
+            {
+                url: "<%= otp_poll_path('999') %>".replace('999', ticket),
+                success: function(data) {
+                    console.log("polling got: " + JSON.stringify(data));
+                    if (data.status == "invalid ticket") {
+                        console.log("invalid ticket");
+                        stillWaiting = false;
+                        console.error("invalid polling ticket " + ticket);
+                    }
+                    else if (data.status == "pending") {
+                        console.log("still waiting");
+                        stillWaiting = true;
+                    }
+                    else if (data.status == true) {
+                        console.log("success");
+                        stillWaiting = false;
+                        $('.otp_msg').html('Login code sent to phone');
+                        $('.otp_msg').hide().fadeIn();
+                    }
+                    else {
+                        console.log("failure");
+                        stillWaiting = false;
+                        $('.otp_msg').html('Could not send the login code to your phone!');
+                        $('.otp_msg').hide().fadeIn();
+                    }
+                },
+                dataType: "json",
+                complete: function() {
+                    if (stillWaiting) {
+                        poll(ticket);
+                    } else {
+                        $('#resend-phone-form .mdl-spinner').removeClass('is-active');
+                        $('#resend-phone-form .resend_otp_to_phone').removeAttr('disabled');
+                    }
+                }
+            }
+        );
+    }, 3000);
+}
+
+poll(<%= @ticket %>);

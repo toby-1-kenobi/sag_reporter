@@ -639,7 +639,7 @@
 
     <% if @language.iso.present? %>
         <div class="jp-data">
-          <div class="center"><paper-spinner class="jp-fetch" active></paper-spinner></div>
+          <div class="center"><div class="jp-fetch mdl-spinner mdl-js-spinner is-active"></div></div>
           <%= link_to 'Fetch JP Data', fetch_jp_data_path(@language.iso), remote: true, class: 'hide', id: 'jp-fetch-trigger' %>
         </div>
     <% end %>

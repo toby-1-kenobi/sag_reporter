@@ -40,11 +40,14 @@ class BcsSms
   def self.poll(thread_id)
     if @requests_waiting[thread_id].present?
       if @requests_waiting[thread_id] == :pending
+        Rails.logger.debug('poll: pending')
         return { 'status' => 'pending' }
       else
+        Rails.logger.debug('poll: complete')
         return @requests_waiting.delete(thread_id)
       end
     else
+      Rails.logger.debug('poll: invalid')
       return { 'status' => 'invalid ticket' }
     end
   end

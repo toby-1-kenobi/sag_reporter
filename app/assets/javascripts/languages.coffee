@@ -64,7 +64,7 @@ window.onpopstate = (event) ->
     if event.state.filter != null
       applyFilterParams(event.state.filter)
 
-$(document).ready ->
+$(document).on "ready page:change", ->
 
   $('.get-chart-button').click()
 
