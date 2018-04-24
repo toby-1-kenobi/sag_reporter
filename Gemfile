@@ -27,9 +27,6 @@ gem 'jquery-ui-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 
-# Turbolinks also breaks jQuery('document').ready. This fixes it.
-gem 'jquery-turbolinks'
-
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
@@ -75,10 +72,6 @@ gem 'momentjs-rails', '~> 2.11', '>= 2.11.1'
 
 # image manipulation
 gem 'mini_magick'
-
-# Web components
-gem 'polymer-rails', github: 'alchaplinsky/polymer-rails'
-gem 'polymer-elements-rails', github: 'alchaplinsky/polymer-elements-rails'
 
 # simplify http requests
 gem 'httparty'

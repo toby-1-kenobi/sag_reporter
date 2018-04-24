@@ -30,11 +30,6 @@ module SagReporter
         generator.test_framework :minitest, spec: true
     end
 
-    # Use a custom form builder
-    config.after_initialize do
-      ActionView::Base.default_form_builder = PaperFormBuilder
-    end
-
     config.action_mailer.delivery_method = SendGridActionMailerAdapter::DeliveryMethod
 
     config.action_mailer.default_url_options = { host: 'lcreporter.herokuapp.com' }

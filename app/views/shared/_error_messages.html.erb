@@ -16,22 +16,3 @@
     </div>
   </div>
 <% end %>
-<style is="custom-style">
-  paper-card.form-errors {
-    --paper-card-background-color: <%= materialize_colours_hex['red accent-2'] %>;
-    width: 100%;
-  }
-</style>
-<paper-card heading="The form contains errors" class="hide form-errors">
-  <div class="card-content" role="listbox">
-  </div>
-</paper-card>
-<script>
-  function parseErrors(errors) {
-    let amount = errors.length;
-    $('paper-card.form-errors').removeClass('hide').attr('heading', 'The form contains ' + amount + ' error(s)');
-    for (var i = 0; i < amount; i++) {
-      $('paper-card.form-errors .card-content').append('<paper-item>' + errors[i] + '</paper-item>');
-    }
-  }
-</script>

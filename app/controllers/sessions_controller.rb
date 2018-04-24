@@ -45,7 +45,8 @@ class SessionsController < ApplicationController
     logger.debug('resend otp')
     if session[:temp_user]
       if user = User.find_by(id: session[:temp_user])
-        render json: { ticket: send_otp_on_phone("+91#{user.phone}", user.otp_code) }
+        @ticket = send_otp_on_phone("+91#{user.phone}", user.otp_code)
+        respond_to :js
       else
         # temp user doesn't exist so go back to square 1
         redirect_to login_path
@@ -61,12 +62,11 @@ class SessionsController < ApplicationController
     if session[:temp_user]
       user = User.find_by(id: session[:temp_user])
       if user and send_otp_via_mail(user, user.otp_code)
-        #success
-        render json: { success: true }
+        @success = true
       else
-        #fail
-        render json: { success: false }
+        @success = false
       end
+      respond_to :js
     else
       # no temp user so we need the login credentials
       redirect_to login_path

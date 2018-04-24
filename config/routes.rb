@@ -72,7 +72,6 @@ Rails.application.routes.draw do
   resources :languages, except: [:index, :edit, :update] do
     collection do
       get :autocomplete_user_name
-      get 'overview'
       get 'search'
     end
     member do
