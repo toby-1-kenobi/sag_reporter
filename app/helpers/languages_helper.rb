@@ -184,9 +184,11 @@ module LanguagesHelper
     future_years = []
     future_years.push(nil)
     years = FinishLineProgress.where(language: language).where.not(year: nil).where("year > #{cur_year}").distinct.pluck(:year)
-    years.each do |year|
-      future_years.push(year)
-    end
+    #if logged_in_user.admin == false && logged_in_user.lci_board_member == false && logged_in_user.lci_agency_leader == false
+      years.each do |year|
+        future_years.push(year)
+      end
+    #end
     future_years
   end
 
