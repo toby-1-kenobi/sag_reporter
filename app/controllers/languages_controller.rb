@@ -2,6 +2,7 @@ class LanguagesController < ApplicationController
   
   helper ColoursHelper
   include ReportFilter
+  include LanguagesHelper
 
   before_action :require_login
 
@@ -40,13 +41,7 @@ class LanguagesController < ApplicationController
     @editable = true # any user who can see a language can suggest edits TODO: remove this variable
     # attributes with pending edits should be visually distinct in the form
     @pending_attributes = @user_pending_edits.pluck :attribute_name
-    cur_year = Date.today.year
-    @future_years = []
-    @future_years.push(nil)
-    years = FinishLineProgress.where(language: @language).where.not(year: nil).where("year > #{cur_year}").distinct.pluck(:year)
-    years.each do |year|
-      @future_years.push(year)
-    end
+    @future_years = get_future_years(@language)
   end
 
   def show_details
@@ -341,7 +336,7 @@ class LanguagesController < ApplicationController
       @max_year += 1
     else
       finish_line = FinishLineProgress.where(language: @language, year: nil)
-      @max_year = Date.today.year
+      @max_year = get_current_year()
       @max_year += 1
     end
     @flp = []

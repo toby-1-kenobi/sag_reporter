@@ -167,4 +167,63 @@ module LanguagesHelper
     display_text = pluralize(count, 'language')
     display_text
   end
+
+  #get currect year
+  def get_current_year()
+    current_year = Date.today.year
+    if Date.today.month > 10 #year changed by october
+      current_year += 1
+    else
+      current_year
+    end
+    current_year
+  end
+
+  def get_future_years(language)
+    cur_year = get_current_year()
+    future_years = []
+    future_years.push(nil)
+    years = FinishLineProgress.where(language: language).where.not(year: nil).where("year > #{cur_year}").distinct.pluck(:year)
+    years.each do |year|
+      future_years.push(year)
+    end
+    future_years
+  end
+
+  def show_future_transformation(languages)
+    future_data = {}
+    max_year = 0
+    future_trans =  []
+    years = get_max_future_years()
+    languages.each do |lang|
+      years.each do |year|
+        lang.finish_line_progresses.where(year: year).each do |flp|
+          marker = flp.finish_line_marker.number
+          future_trans[marker] ||= []
+          future_trans[marker][year] ||= Hash.new(0)
+          future_trans[marker][year][flp.category] += 1
+          if max_year < year
+            max_year = year
+          end
+        end
+      end
+    end
+    future_data[:max_year] = max_year
+    future_data[:future_trans] = future_trans
+    future_data
+  end
+
+  def get_max_future_years()
+    max_future_year = FinishLineProgress.where.not(year: nil).maximum(:year)
+    max_future_years = []
+    current_year = get_current_year()
+    if(current_year < max_future_year)
+      current_year += 1
+      (current_year..max_future_year).each do |year|
+        max_future_years.push(year)
+      end
+    end
+    max_future_years
+  end
+
 end
