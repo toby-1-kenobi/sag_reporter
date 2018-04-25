@@ -2,7 +2,7 @@
   finish_line_status = {} # map finish line marker number to finish line progress status for this language
   finish_line_category = {} # map finish line marker number to finish line progress category for this language
   progresses = {}
-  flm_table_row.finish_line_progresses.each{ |prog| progresses[prog.finish_line_marker.number] = prog }
+  flm_table_row.finish_line_progresses.where(year: nil).each{ |prog| progresses[prog.finish_line_marker.number] = prog }
   @flms.each do |flm|
     flp = progresses[flm.number] || FinishLineProgress.create(language: flm_table_row, finish_line_marker: flm)
     if @pending_flm_edits_flp_ids.include?(flp.id)

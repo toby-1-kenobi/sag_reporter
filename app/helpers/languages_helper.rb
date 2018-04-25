@@ -219,7 +219,7 @@ module LanguagesHelper
     max_future_year = FinishLineProgress.where.not(year: nil).maximum(:year)
     max_future_years = []
     current_year = get_current_year()
-    if(current_year < max_future_year)
+    if(max_future_year != nil && current_year < max_future_year)
       current_year += 1
       (current_year..max_future_year).each do |year|
         max_future_years.push(year)

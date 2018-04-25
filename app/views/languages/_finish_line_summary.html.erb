@@ -78,38 +78,40 @@
        future_trans = future_data[:future_trans]
        max_year = future_data[:max_year]
     %>
-    <div class="flm-charts">
-    <b>Targets</b>
-    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-      <thead>
-      <tr>
-        <% max_future_years.each do |year| %>
-          <% if max_year >= year %>
-            <th class="mdl-data-table__cell--non-numeric"><%= year %></th>
-          <% end %>
-        <% end %>
-
-      </tr>
-      </thead>
-      <tbody>
-      <% @flms.each do |marker| %>
-        <tr>
-          <% max_future_years.each do |year| %>
-            <% if max_year >= year %>
-              <td class="mdl-data-table__cell--non-numeric">
-                <% if future_trans[marker.number].present? %>
-                  <%= future_trans[marker.number][year][:no_progress] %>/
-                  <%= future_trans[marker.number][year][:progress] %>/
-                  <%= future_trans[marker.number][year][:complete] %>
-                <% end %>
-              </td>
+    <% if max_year != nil && max_year > 0 %>
+      <div class="flm-target">
+        <b>Targets</b>
+        <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+          <thead>
+          <tr>
+            <% max_future_years.each do |year| %>
+              <% if max_year >= year %>
+                <th class="mdl-data-table__cell--non-numeric"><%= year %></th>
+              <% end %>
             <% end %>
+
+          </tr>
+          </thead>
+          <tbody>
+          <% @flms.each do |marker| %>
+            <tr>
+              <% max_future_years.each do |year| %>
+                <% if max_year >= year %>
+                  <td class="mdl-data-table__cell--non-numeric">
+                    <% if future_trans[marker.number].present? %>
+                      <%= future_trans[marker.number][year][:no_progress] %>/
+                      <%= future_trans[marker.number][year][:progress] %>/
+                      <%= future_trans[marker.number][year][:complete] %>
+                    <% end %>
+                  </td>
+                <% end %>
+              <% end %>
+            </tr>
           <% end %>
-        </tr>
-      <% end %>
-      </tbody>
-    </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
   <% end %>
 </div>
 
