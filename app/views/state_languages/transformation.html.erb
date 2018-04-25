@@ -8,18 +8,18 @@
 <div id="transformation-content">
   <div id="transformation-baseline-date">
     Baseline date:
-    <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-    <%= select_year(dates[0].year, options = {start_year: @start_year, end_year: Date.today.year, field_name: 'year_a'}, html_options = {class: 'mdl-selectfield__select'}) %>
-      <%# label_tag 'date_year_a', 'Baseline year', class: 'mdl-selectfield__label' %>
-      <%= select_month dates[0].month, options = {field_name: 'month_a'}, html_options = {class: 'mdl-selectfield__select'} %>
+    <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+    <%= select_year(dates[0].year, options = {start_year: @start_year, end_year: Date.today.year, field_name: 'year_a'}, html_options = {class: 'mdlext-selectfield__select'}) %>
+      <%# label_tag 'date_year_a', 'Baseline year', class: 'mdlext-selectfield__label' %>
+      <%= select_month dates[0].month, options = {field_name: 'month_a'}, html_options = {class: 'mdlext-selectfield__select'} %>
     </div>
   </div>
   <div id="transformation-end-date">
     Final date:
-    <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-      <%= select_year(dates[1].year, options = {start_year: @start_year, end_year: Date.today.year, field_name: 'year_b'}, html_options = {class: 'mdl-selectfield__select'}) %>
-      <%# label_tag 'date_year_a', 'Baseline year', class: 'mdl-selectfield__label' %>
-      <%= select_month dates[1].month, options = {field_name: 'month_b'}, html_options = {class: 'mdl-selectfield__select'} %>
+    <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+      <%= select_year(dates[1].year, options = {start_year: @start_year, end_year: Date.today.year, field_name: 'year_b'}, html_options = {class: 'mdlext-selectfield__select'}) %>
+      <%# label_tag 'date_year_a', 'Baseline year', class: 'mdlext-selectfield__label' %>
+      <%= select_month dates[1].month, options = {field_name: 'month_b'}, html_options = {class: 'mdlext-selectfield__select'} %>
     </div>
   </div>
   <div id="transformation-page-buttons">

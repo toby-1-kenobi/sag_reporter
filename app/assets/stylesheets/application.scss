@@ -10,8 +10,6 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require jquery-ui/autocomplete
- *= require mdl-ext-eqjs
  *= require_tree .
  *= require_self
  */
@@ -21,6 +19,12 @@ $primary-color: color("cyan", "darken-2") !default;
 //@import 'materialize';
 
 @import 'material';
+@import 'mdl-selectfield';
+
+/*
+ *= require jquery-ui/autocomplete
+ *= require mdl-ext-eqjs
+ */
 
 @import 'common';
 

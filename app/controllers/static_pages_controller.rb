@@ -115,14 +115,6 @@ class StaticPagesController < ApplicationController
         },
         {
             condition: (logged_in_user.national?),
-            path: overview_path,
-            text: 'Overview',
-            icon: 'pageview',
-            colour: 'grey',
-            category: 'progress'
-        },
-        {
-            condition: (logged_in_user.national?),
             path: transformation_path,
             text: 'Transformation',
             icon: 'change_history',

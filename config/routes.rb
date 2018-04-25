@@ -68,10 +68,10 @@ Rails.application.routes.draw do
       patch 'not_shareable'
     end
   end
+
   resources :languages, except: [:index, :edit, :update] do
     collection do
       get :autocomplete_user_name
-      get 'overview'
       get 'search'
     end
     member do
@@ -93,6 +93,11 @@ Rails.application.routes.draw do
   resources :mt_resources
 
   resources :organisations
+
+  scope :pb, controller: 'pb_api' do
+    post 'authenticate', action: :jwt
+    get 'language/:iso', action: :language_details
+  end
 
   resources :people do
     get :contacts, on: :collection

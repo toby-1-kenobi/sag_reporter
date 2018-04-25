@@ -10,7 +10,6 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require webcomponentsjs/webcomponents-lite
 //= require jquery
 //= require jquery_ujs
 //= require jquery-ui
@@ -22,4 +21,6 @@
 //= require moment
 //= require eq
 //= require mdl-ext
+//= require mdl-selectfield
+//= require turbolinks
 //= require_tree .

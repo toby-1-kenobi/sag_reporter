@@ -1,5 +1,3 @@
-<%= render 'shared/mdl_selectfield_assets' %>
-
 <%= form_for(@resource) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
 
@@ -30,23 +28,23 @@
 
     <div id="resource-meta-data">
 
-      <div id="state-input" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-        <%= render partial: 'shared/geo_state_input', locals: {object: 'mt_resource', input_class: 'filter_trigger mdl-selectfield__select', label_class: 'mdl-selectfield__label'} %>
+      <div id="state-input" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <%= render partial: 'shared/geo_state_input', locals: {object: 'mt_resource', input_class: 'filter_trigger mdlext-selectfield__select', label_class: 'mdlext-selectfield__label'} %>
       </div>
 
-      <div id="language-input" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-        <%= f.collection_select(:language_id, @languages, :id, :name, {}, html_options = {class: 'mdl-selectfield__select'}) %>
-        <%= f.label(:language_id, class: 'mdl-selectfield__label') %>
+      <div id="language-input" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <%= f.collection_select(:language_id, @languages, :id, :name, {}, html_options = {class: 'mdlext-selectfield__select'}) %>
+        <%= f.label(:language_id, class: 'mdlext-selectfield__label') %>
       </div>
 
-      <div id="category-input" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-        <%= f.select :category, MtResource.categories.to_a.map { |t| [t[0].humanize, t[0]] }, {}, html_options = {class: 'mdl-selectfield__select'} %>
-        <%= f.label(:category, class: 'mdl-selectfield__label') %>
+      <div id="category-input" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <%= f.select :category, MtResource.categories.to_a.map { |t| [t[0].humanize, t[0]] }, {}, html_options = {class: 'mdlext-selectfield__select'} %>
+        <%= f.label(:category, class: 'mdlext-selectfield__label') %>
       </div>
 
-      <div id="status-input" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-        <%= f.select :status, MtResource.statuses.to_a.map { |t| [t[0].humanize, t[0]] }, {}, html_options = {class: 'mdl-selectfield__select'} %>
-        <%= f.label(:status, class: 'mdl-selectfield__label') %>
+      <div id="status-input" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <%= f.select :status, MtResource.statuses.to_a.map { |t| [t[0].humanize, t[0]] }, {}, html_options = {class: 'mdlext-selectfield__select'} %>
+        <%= f.label(:status, class: 'mdlext-selectfield__label') %>
       </div>
 
       <div id="year-input" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
