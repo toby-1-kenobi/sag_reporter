@@ -6,38 +6,48 @@ class SessionsController < ApplicationController
   end
 
   def two_factor_auth
-    username = params[:session][:username]
-    if username.include? '@'
-      # if the user has put something with an '@' in it is must be their email address
-      @user = User.find_by(email: username)
-    else
-      # otherwise we'll assume it's their phone number
-      @user = User.find_by(phone: username)
-    end
-    if @user and Rails.env.development?
-      log_in @user
-      remember @user
-      redirect_back_or root_path and return
-    end
-    if @user && @user.authenticate(params[:session][:password])
-      otp_code = @user.otp_code
-      session[:temp_user] = @user.id
-      if @user.phone.present? and not @user.email_confirmed?
-        @ticket =  send_otp_on_phone("+91#{@user.phone}", otp_code)
-        flash.now['info'] = "A short login code has been sent to your phone (#{@user.phone}). Please wait for it."
-      elsif @user.phone.blank? and send_otp_via_mail(@user, otp_code)
-        flash.now['info'] = "A short login code has been sent to your email (#{@user.email}). Check your inbox."
-      elsif @user.phone.present? and @user.email.present? and @user.email_confirmed?
-        flash.now['info'] = "Please choose to have the login code sent to your phone (#{@user.phone}) or email (#{@user.email})"
-      end
-    else
-      if @user
-        logger.debug "could not authenticate #{@user.phone} with '#{params[:session][:password]}'"
+
+    # check if we are getting a user who is resetting their password
+    # if so, the passed parameters will include :id and :token
+    if params[:user_id] and params[:token]
+      @user = User.find params[:user_id]
+      redirect_to login_path unless @user
+      if @user.reset_password_token == params[:token]
+        session[:temp_user] = @user.id
+        send_otp(@user)
       else
-        logger.debug "couldn't find user with  #{username}"
+        flash['error'] = 'Incorrect reset password token'
+        redirect_to login_path
       end
-      flash.now['error'] = 'username or password is not correct'
-      render 'new'
+
+    # otherwise we need to find the user and authenticate them by username and password
+    else
+      username = params[:session][:username]
+      if username.include? '@'
+        # if the user has put something with an '@' in it is must be their email address
+        @user = User.find_by(email: username)
+      else
+        # otherwise we'll assume it's their phone number
+        @user = User.find_by(phone: username)
+      end
+      # skip authentication for the development environment
+      if @user and Rails.env.development?
+        log_in @user
+        remember @user
+        redirect_back_or root_path and return
+      end
+      if @user && @user.authenticate(params[:session][:password])
+        session[:temp_user] = @user.id
+        send_otp(@user)
+      else
+        if @user
+          logger.debug "could not authenticate #{@user.phone} with '#{params[:session][:password]}'"
+        else
+          logger.debug "couldn't find user with  #{username}"
+        end
+        flash.now['error'] = 'username or password is not correct'
+        render 'new'
+      end
     end
   end
 
@@ -96,8 +106,13 @@ class SessionsController < ApplicationController
         session[:temp_user] = nil
         log_in user
         remember user
+        # if the user has come through the forgot password track
+        if user.reset_password_token.present?
+          user.reset_password_token = nil;
+          user.save
+          render 'password_resets/change_password' and return
         # if the user's password is "password" they should change it
-        if user.authenticate('password')
+        elsif user.authenticate('password')
           flash['info'] = 'Welcome to Last Command Initiative Reporter.' +
               ' Please make a new password. It should be something another person could not guess.' +
               ' Type it here two times and click \'update\'.'
@@ -118,6 +133,18 @@ class SessionsController < ApplicationController
   end
 
   private
+
+  def send_otp(user)
+    otp_code = user.otp_code
+    if user.phone.present? and not user.email_confirmed?
+      @ticket = send_otp_on_phone("+91#{user.phone}", otp_code)
+      flash.now['info'] = "A short login code has been sent to your phone (#{user.phone}). Please wait for it."
+    elsif user.phone.blank? and send_otp_via_mail(@user, otp_code)
+      flash.now['info'] = "A short login code has been sent to your email (#{user.email}). Check your inbox."
+    elsif user.phone.present? and user.email.present? and user.email_confirmed?
+      flash.now['info'] = "Please choose to have the login code sent to your phone (#{user.phone}) or email (#{user.email})"
+    end
+  end
 
   def send_otp_on_phone(phone_number, otp_code)
     begin
