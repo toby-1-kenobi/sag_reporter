@@ -59,20 +59,16 @@ class PasswordResetsController < ApplicationController
   end
 
   def password_change
-
-      @user = User.find_by(id: session[:temp_user])
-      user_password = User.find_by(password_digest: params[:change_password][:password])
-      new_hashed_password = User.digest(user_password)
-
-      if @user
-        @user.update_attribute(:password_digest, new_hashed_password)
-        flash[:info] = "Your password successfully updated"
-        redirect_to login_url
+      if logged_in_user.update_attributes(
+                           password: params[:change_password][:password],
+                           password_confirmation: params[:change_password][:password_confirmation]
+      )
+        flash[:success] = 'Your password successfully updated'
+        redirect_to root_path
       else
-        flash.now[:danger] = "Your password update failed"
+        flash.now[:error] = 'Your password update failed'
         render 'password_resets/change_password'
       end
-
   end
 
   private
