@@ -25,14 +25,13 @@ class UserMailer < ActionMailer::Base
     mail(to: "#{user.name} <#{user.email}>", subject: 'OTP login code')
   end
 
-  def reset_password_otp_code(user, otp_code,full_url)
+  def reset_password_email(user)
     headers['X-SMTPAPI'] = {
-        category: ['lcilogincode']
+        category: ['lcipasswordreset']
     }.to_json
-    @otp_code = otp_code
     @user = user
-    @url = full_url
-    mail(to: "#{user.name} <#{user.email}>", subject: 'OTP login code')
+    @url = reset_password_url(user, user.reset_password_token)
+    mail(to: "#{user.name} <#{user.email}>", subject: 'LCI Password Reset')
   end
 
   def user_report(recipient, report)
