@@ -2,9 +2,9 @@
   finish_line_status = {} # map finish line marker number to finish line progress status for this language
   finish_line_category = {} # map finish line marker number to finish line progress category for this language
   progresses = {}
-  flm_table_row.finish_line_progresses.where(year: nil).each{ |prog| progresses[prog.finish_line_marker.number] = prog }
+  flm_table_row.finish_line_progresses.where(year: selected_year).each{ |prog| progresses[prog.finish_line_marker.number] = prog }
   @flms.each do |flm|
-    flp = progresses[flm.number] || FinishLineProgress.create(language: flm_table_row, finish_line_marker: flm)
+    flp = progresses[flm.number] || FinishLineProgress.create(language: flm_table_row, finish_line_marker: flm, year: selected_year)
     if @pending_flm_edits_flp_ids.include?(flp.id)
       edit = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status', record_id: flp.id).order(:created_at).last
       finish_line_status[flp.finish_line_marker.number] = edit.new_value
@@ -27,7 +27,7 @@
         data-filter-label="flm-visible"
         data-flm-visible="<%= flm.number %>">
       <div class="flm-name"><%= flm.name %></div>
-      <%= form_tag set_flp_for_language_path(id: flm_table_row.id, marker: flm.number), method: 'patch', remote: true do %>
+      <%= form_tag set_flp_for_language_path(id: flm_table_row.id, marker: flm.number, year: selected_year), method: 'patch', remote: true do %>
         <div class="flm-status-select mdl-selectfield mdl-js-selectfield" data-finish-line-category="<%= finish_line_category[flm.number].to_s %>">
           <%# generate options for each select box removing any nil options returned by simple_human_of_status %>
           <% selectable_options = FinishLineProgress.statuses.to_a.map{ |t| [FinishLineProgress.simple_human_of_status(t[0], flm.number), t[0]] }.select{ |x| x[0].present? } %>
