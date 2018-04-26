@@ -3,8 +3,7 @@ module StaticPagesHelper
     {
         'report' => 'Enter and View Reports',
         'progress' => 'Update and Assess Progress',
-        'other' => 'Admin Tasks',
-        'resetpassword' => 'Password Reset'
+        'other' => 'Admin Tasks'
     }
   end
 end

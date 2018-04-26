@@ -121,14 +121,10 @@
         <i class="material-icons">settings</i>
         Admin tasks
       </button>
-    </div>
-
-    <div class="mdl-card__actions mdl-card--border">
       <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="reset-password-trigger">
         <i class="material-icons">vpn_key</i>
         <%= user_count %> users asked for password reset
       </button>
-
     </div>
   </div>
   <% end %>
@@ -137,52 +133,53 @@
 
 <% grouped_links = @links.select{ |link| link[:condition] }.group_by{ |link| link[:category] } %>
 <% grouped_links.each do |category, links| %>
-    <dialog class="mdl-dialog" id="<%= category %>-dialog">
-      <h4 class="mdl-dialog__title"><%= dialog_titles[category] %></h4>
-      <div class="mdl-dialog__content">
-        <ul class="mdl-list">
-          <% links.each do |link_data| %>
-            <% if category != 'resetpassword' %>
-              <li class="mdl-list__item">
-              <span class="mdl-list__item-primary-content">
-                <%= link_to link_data[:path], class: 'mdl-button mdl-js-button mdl-js-ripple-effect' do %>
-                  <i class="material-icons"><%= link_data[:icon] %></i>
-                    <%= link_data[:text] %>
-                <% end %>
-              </span>
-              </li>
-            <% else %>
-            <% users_list = link_data[:users]%>
-            <%  if users_list.present? %>
-            <% users_list.each do |ul| %>
-              <li class="mdl-list__item">
-              <span class="mdl-list__item-primary-content">
-                  <%= ul.name%>
-                  <%= link_to update_reset_path(id: ul.id), remote: true, method: :get do%>
-                                    <i class="now-ui-icons ui-1_lock-circle-open"></i>
-                                    <span class="approve-edit mdl-button mdl-js-button mdl-button--primary">Accept</span>
-                  <% end %>
-                  <%= link_to update_reset_path(id: ul.id), remote: true, method: :patch do%>
-                                    <i class="now-ui-icons ui-1_lock-circle-open"></i>
-                                    <span class="reject-edit mdl-button mdl-js-button mdl-button--accent">Reject</span>
-                  <% end %>
-              </span>
-              </li>
-            <% end %>
-            <% end %>
-          <% end %>
-          <% end %>
-        </ul>
-      </div>
-      <% if category != 'resetpassword' %>
-        <div class="mdl-dialog__actions">
-          <button type="button" class="mdl-button close">Cancel</button>
-        </div>
-      <% else %>
-        <div class="mdl-dialog__actions">
-          <button type="button" class="mdl-button close">Close</button>
-        </div>
-      <% end %>
-    </dialog>
+  <dialog class="mdl-dialog" id="<%= category %>-dialog">
+    <h4 class="mdl-dialog__title"><%= dialog_titles[category] %></h4>
+    <div class="mdl-dialog__content">
+      <ul class="mdl-list">
+        <% links.each do |link_data| %>
+          <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+              <%= link_to link_data[:path], class: 'mdl-button mdl-js-button mdl-js-ripple-effect' do %>
+                <i class="material-icons"><%= link_data[:icon] %></i>
+                <%= link_data[:text] %>
+              <% end %>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+  </dialog>
 <% end %>
 
+<dialog class="mdl-dialog" id="resetpassword-dialog">
+  <h4 class="mdl-dialog__title">Password Resets</h4>
+  <div class="mdl-dialog__content">
+    <% users_list = reset_pwd_users %>
+    <% if users_list.any? %>
+      <ul class="mdl-list">
+        <% users_list.each do |ul| %>
+          <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+              <%= ul.name%>
+              <%= link_to update_reset_path(id: ul.id), remote: true, method: :get do %>
+                  <i class="now-ui-icons ui-1_lock-circle-open"></i>
+                  <span class="approve-edit mdl-button mdl-js-button mdl-button--primary">Accept</span>
+              <% end %>
+              <%= link_to update_reset_path(id: ul.id), remote: true, method: :patch do %>
+                  <i class="now-ui-icons ui-1_lock-circle-open"></i>
+                  <span class="reject-edit mdl-button mdl-js-button mdl-button--accent">Reject</span>
+              <% end %>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button type="button" class="mdl-button close">Close</button>
+  </div>
+</dialog>

@@ -10,8 +10,7 @@ module UsersHelper
   end
 
   def reset_pwd_users
-    @user_info = User.where(:reset_password => true)
-    @user_info
+    User.where(:reset_password => true)
   end
 
   def send_pwd_reset_instructions(user)

@@ -101,12 +101,6 @@ class StaticPagesController < ApplicationController
         },
         {
             condition: (logged_in_user.admin?),
-            category: 'resetpassword',
-            users: reset_pwd_users()
-        },
-
-        {
-            condition: (logged_in_user.admin?),
             path: projects_path,
             text: 'Projects',
             icon: 'group_work',
