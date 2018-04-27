@@ -1,0 +1,14 @@
+<% if @mail_sent %>
+  console.log('approved user <%= @user.id %>');
+  $('#reset-password-request-<%= @user.id %>').fadeOut();
+<% else %>
+  console.log('unable to approve user <%= @user.id %>');
+  <%# indicate a failed attempt to approve, by fade out and in but not removing the element %>
+  $('#reset-password-request-<%= @user.id %>').animate(
+      {opacity: 0.2},
+      150,
+      function() {
+          $('#reset-password-request-<%= @user.id %>').animate({opacity: 1}, 150);
+      }
+  );
+<% end %>

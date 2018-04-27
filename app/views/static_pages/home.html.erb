@@ -162,7 +162,7 @@
     <% if users_list.any? %>
       <ul class="mdl-list">
         <% users_list.each do |ul| %>
-          <li class="mdl-list__item">
+          <li id="reset-password-request-<%= ul.id %>" class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
               <%= ul.name%>
               <%= link_to update_reset_path(id: ul.id), remote: true, method: :get do %>

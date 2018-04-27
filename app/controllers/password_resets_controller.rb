@@ -33,12 +33,10 @@ class PasswordResetsController < ApplicationController
 
   def reject_user_request
       @user = User.find_by(id: params[:id])
-      if @user.update_attribute(:reset_password, false)
-        respond_to do |format|
-          format.js
-        end
+      if @user
+        @user.update_attribute(:reset_password, false)
       end
-
+      respond_to :js
   end
 
   def verify
