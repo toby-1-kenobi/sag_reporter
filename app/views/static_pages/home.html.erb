@@ -164,15 +164,25 @@
         <% users_list.each do |ul| %>
           <li id="reset-password-request-<%= ul.id %>" class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
-              <%= ul.name%>
-              <%= link_to update_reset_path(id: ul.id), remote: true, method: :get do %>
-                  <i class="now-ui-icons ui-1_lock-circle-open"></i>
-                  <span class="approve-edit mdl-button mdl-js-button mdl-button--primary">Accept</span>
+              <%= ul.name %>
+            </span>
+            <span class="mdl-list__item-secondary-action">
+              <%= button_to update_reset_path(id: ul.id),
+                            id: "pwd-reset-approve-#{ul.id}",
+                            class: 'mdl-button mdl-js-button mdl-button--icon mdl-button--colored',
+                            remote: true,
+                            method: :get do %>
+                <i class="material-icons">thumb_up</i>
               <% end %>
-              <%= link_to update_reset_path(id: ul.id), remote: true, method: :patch do %>
-                  <i class="now-ui-icons ui-1_lock-circle-open"></i>
-                  <span class="reject-edit mdl-button mdl-js-button mdl-button--accent">Reject</span>
+              <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="pwd-reset-approve-<%= ul.id %>">Approve</div>
+              <%= button_to update_reset_path(id: ul.id),
+                            id: "pwd-reset-reject-#{ul.id}",
+                            class: 'mdl-button mdl-js-button mdl-button--icon',
+                            remote: true,
+                            method: :patch do %>
+                <i class="material-icons">thumb_down</i>
               <% end %>
+              <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="pwd-reset-reject-<%= ul.id %>">Reject</div>
             </span>
           </li>
         <% end %>
