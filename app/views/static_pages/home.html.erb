@@ -1,7 +1,7 @@
 <% provide(:title, "LCI App Home") %>
 
 <% provide(:context_title, 'Welcome!') %>
-<% user_count = User.where(:reset_password => true).count %>
+<% pwd_reset_users = reset_pwd_users %>
 
 <div id="welcome-content">
 
@@ -121,10 +121,14 @@
         <i class="material-icons">settings</i>
         Admin tasks
       </button>
-      <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="reset-password-trigger">
-        <i class="material-icons">vpn_key</i>
-        <%= user_count %> users asked for password reset
-      </button>
+      <% if pwd_reset_users.any? %>
+        <span class="mdl-badge mdl-badge--overlap" data-badge="<%= pwd_reset_users.length %>">
+          <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" id="reset-password-trigger">
+            <i class="material-icons">vpn_key</i>
+            Password reset requests
+          </button>
+        </span>
+      <% end %>
     </div>
   </div>
   <% end %>
@@ -158,10 +162,9 @@
 <dialog class="mdl-dialog" id="resetpassword-dialog">
   <h4 class="mdl-dialog__title">Password Resets</h4>
   <div class="mdl-dialog__content">
-    <% users_list = reset_pwd_users %>
-    <% if users_list.any? %>
+    <% if pwd_reset_users.any? %>
       <ul class="mdl-list">
-        <% users_list.each do |ul| %>
+        <% pwd_reset_users.each do |ul| %>
           <li id="reset-password-request-<%= ul.id %>" class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
               <%= ul.name %>
