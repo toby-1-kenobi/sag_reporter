@@ -7,13 +7,28 @@ class PasswordResetsController < ApplicationController
   end
 
   def create
-    @user = User.find_by(email: params[:password_reset][:email])
-    if @user
-      @user.update_attribute(:reset_password, true)
-      flash[:info] = "Your request submitted admin will reach you shortly"
+    if params[:password_reset][:username].blank?
       render 'new'
+      return
+    end
+    username = params[:password_reset][:username]
+    if username.include? '@'
+      # if the user has put something with an '@' in it is must be their email address
+      @user = User.find_by(email: username)
     else
-      flash.now[:danger] = "Email address not found"
+      # otherwise we'll assume it's their phone number
+      @user = User.find_by(phone: username)
+    end
+    if @user
+      if @user.reset_password?
+        flash[:info] = 'Your password reset request is already awaiting approval'
+      else
+        @user.update_attribute(:reset_password, true)
+        flash[:success] = 'Password reset request submitted. If approved you will receive further instructions by email'
+      end
+      redirect_to login_path
+    else
+      flash.now[:error] = 'No matching account found'
       render 'new'
     end
   end
