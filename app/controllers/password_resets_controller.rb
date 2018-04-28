@@ -38,10 +38,19 @@ class PasswordResetsController < ApplicationController
 
   def approve_user_request
     @user = User.find_by(id: params[:id])
-    if @user and @user.update_attributes(reset_password: false, reset_password_token: SecureRandom.urlsafe_base64(nil, false))
-      @mail_sent = send_pwd_reset_instructions(@user)
+    if @user
+      if @user.email.blank? or @user.phone.blank?
+        flash[:info] = "#{@user.name} must have both an email address and a phone number to do self password reset"
+        @redirect_path = edit_user_path(@user)
+        return
+      end
+      if @user.update_attributes(reset_password: false, reset_password_token: SecureRandom.urlsafe_base64(nil, false))
+        @mail_sent = send_pwd_reset_instructions(@user)
+      else
+        Rails.logger.error ("failed to update attributes for #{@user.name} for password reset approval")
+      end
     else
-      Rails.logger.error ("failed to update attributes in user ##{params[:id]} for password reset approval")
+      Rails.logger.error ("User ##{params[:id]} not found for password reset approval")
     end
     respond_to :js
   end

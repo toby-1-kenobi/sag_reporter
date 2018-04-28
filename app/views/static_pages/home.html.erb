@@ -164,28 +164,28 @@
   <div class="mdl-dialog__content">
     <% if pwd_reset_users.any? %>
       <ul class="mdl-list">
-        <% pwd_reset_users.each do |ul| %>
-          <li id="reset-password-request-<%= ul.id %>" class="mdl-list__item">
+        <% pwd_reset_users.each do |pr_user| %>
+          <li id="reset-password-request-<%= pr_user.id %>" class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
-              <%= ul.name %>
+              <%= link_to pr_user.name, pr_user %>
             </span>
             <span class="mdl-list__item-secondary-action">
-              <%= button_to update_reset_path(id: ul.id),
-                            id: "pwd-reset-approve-#{ul.id}",
+              <%= button_to update_reset_path(id: pr_user.id),
+                            id: "pwd-reset-approve-#{pr_user.id}",
                             class: 'mdl-button mdl-js-button mdl-button--icon mdl-button--colored',
                             remote: true,
                             method: :get do %>
                 <i class="material-icons">thumb_up</i>
               <% end %>
-              <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="pwd-reset-approve-<%= ul.id %>">Approve</div>
-              <%= button_to update_reset_path(id: ul.id),
-                            id: "pwd-reset-reject-#{ul.id}",
+              <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="pwd-reset-approve-<%= pr_user.id %>">Approve</div>
+              <%= button_to update_reset_path(id: pr_user.id),
+                            id: "pwd-reset-reject-#{pr_user.id}",
                             class: 'mdl-button mdl-js-button mdl-button--icon',
                             remote: true,
                             method: :patch do %>
                 <i class="material-icons">thumb_down</i>
               <% end %>
-              <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="pwd-reset-reject-<%= ul.id %>">Reject</div>
+              <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="pwd-reset-reject-<%= pr_user.id %>">Reject</div>
             </span>
           </li>
         <% end %>

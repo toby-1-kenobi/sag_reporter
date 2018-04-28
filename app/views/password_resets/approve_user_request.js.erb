@@ -1,4 +1,6 @@
-<% if @mail_sent %>
+<% if @redirect_path %>
+  window.location.replace("<%= @redirect_path %>");
+<% elsif @mail_sent %>
   console.log('approved user <%= @user.id %>');
   $('#reset-password-request-<%= @user.id %>').fadeOut();
 <% else %>
