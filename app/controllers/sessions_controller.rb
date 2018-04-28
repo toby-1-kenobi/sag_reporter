@@ -14,7 +14,17 @@ class SessionsController < ApplicationController
       redirect_to login_path unless @user
       if @user.reset_password_token == params[:token]
         session[:temp_user] = @user.id
-        send_otp(@user)
+        # for this user we send the OTP only to their phone
+        # since we already know they have access to their email
+        # because of the password reset token
+        otp_code = @user.otp_code
+        if @user.phone.present?
+          @ticket = send_otp_on_phone("+91#{@user.phone}", otp_code)
+          flash.now['info'] = "A short login code has been sent to your phone (#{@user.phone}). Please wait for it."
+        else
+          flash['error'] = 'Your phone number is not on record. A phone number is necessary for password reset'
+          redirect_to login_path
+        end
       else
         flash['error'] = 'Incorrect reset password token'
         redirect_to login_path
@@ -70,9 +80,15 @@ class SessionsController < ApplicationController
   def resend_otp_to_email
     logger.debug('resend otp email')
     if session[:temp_user]
-      user = User.find_by(id: session[:temp_user])
-      if user and send_otp_via_mail(user, user.otp_code)
-        @success = true
+      if user = User.find_by(id: session[:temp_user])
+        # users who are getting their password reset shouldn't be able to get the otp by email
+        if user.reset_password_token.present?
+          @success = false
+        elsif send_otp_via_mail(user, user.otp_code)
+          @success = true
+        else
+          @success = false
+        end
       else
         @success = false
       end
