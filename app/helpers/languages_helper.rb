@@ -243,4 +243,22 @@ module LanguagesHelper
     finish_line_progress
   end
 
+  def get_cell_color(future_transformation, marker, language_amount, year, finish_line_data)
+    no_progress = future_transformation[marker.number][year][:no_progress]
+    progress = future_transformation[marker.number][year][:progress]
+    completed = future_transformation[marker.number][year][:complete]
+    current_year = get_current_year()
+
+    progress_status = ""
+    if no_progress == 0 && language_amount == (progress + completed)
+      progress_status = "yellow"
+    elsif ( no_progress == 0 && progress == 0 ) && (language_amount == completed )
+      progress_status = "green"
+    elsif finish_line_data[marker][:no_progress] <= future_transformation[marker.number][year][:no_progress] or
+          finish_line_data[marker][:complete] > future_transformation[marker.number][year][:complete]
+          progress_status = "red"
+    end
+    progress_status
+  end
+
 end

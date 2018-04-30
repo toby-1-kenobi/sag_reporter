@@ -97,7 +97,8 @@
             <tr>
               <% max_future_years.each do |year| %>
                 <% if max_year >= year %>
-                  <td class="mdl-data-table__cell--non-numeric">
+                  <td class="mdl-data-table__cell--non-numeric"
+                      style="background-color:<%= get_cell_color(future_trans, marker, language_amount, year, finish_line_data) %>">
                     <% if future_trans[marker.number].present? %>
                       <%= future_trans[marker.number][year][:no_progress] %>/
                       <%= future_trans[marker.number][year][:progress] %>/
