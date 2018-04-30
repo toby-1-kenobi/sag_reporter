@@ -228,4 +228,19 @@ module LanguagesHelper
     max_future_years
   end
 
+  def create_flp(language, flm, selected_year)
+    max_year = FinishLineProgress.where(language: language, finish_line_marker: flm).where.not(year: nil).maximum(:year)
+
+    if max_year.present?
+      finish_line = FinishLineProgress.where(language: language, finish_line_marker: flm, year: max_year)
+    else
+      finish_line = FinishLineProgress.where(language: language, finish_line_marker: flm, year: nil)
+    end
+    finish_line_progress = Hash.new()
+    finish_line.each do |fl|
+      finish_line_progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: flm, status: fl.status, year: selected_year)
+    end
+    finish_line_progress
+  end
+
 end
