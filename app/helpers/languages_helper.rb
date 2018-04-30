@@ -184,11 +184,11 @@ module LanguagesHelper
     future_years = []
     future_years.push(nil)
     years = FinishLineProgress.where(language: language).where.not(year: nil).where("year > #{cur_year}").distinct.pluck(:year)
-    #if logged_in_user.admin == false && logged_in_user.lci_board_member == false && logged_in_user.lci_agency_leader == false
+    if is_user_have_future_plan()
       years.each do |year|
         future_years.push(year)
       end
-    #end
+    end
     future_years
   end
 
@@ -259,6 +259,17 @@ module LanguagesHelper
           progress_status = "red"
     end
     progress_status
+  end
+
+  def is_user_have_future_plan
+    status = false
+    if logged_in_user.admin == false &&
+        logged_in_user.lci_board_member == false &&
+        logged_in_user.lci_agency_leader == false
+
+      status = true
+    end
+    status
   end
 
 end
