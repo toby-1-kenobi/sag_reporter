@@ -68,6 +68,16 @@ class User < ActiveRecord::Base
     SecureRandom.urlsafe_base64
   end
 
+  # Return a token for password reset process and store the hash of the token
+  def generate_pwd_reset_token
+    token = User.new_token
+    if update_attributes(reset_password_token: BCrypt::Password.create(token))
+      return token
+    else
+      return false
+    end
+  end
+
   # Remembers a user in the database for use in persistent sessions.
   def remember
     ActiveRecord::Base.record_timestamps = false

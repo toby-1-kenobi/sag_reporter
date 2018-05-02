@@ -12,7 +12,7 @@ class SessionsController < ApplicationController
     if params[:user_id] and params[:token]
       @user = User.find params[:user_id]
       redirect_to login_path unless @user
-      if @user.reset_password_token == params[:token]
+      if BCrypt::Password.new(@user.reset_password_token).is_password?(params[:token])
         session[:temp_user] = @user.id
         # for this user we send the OTP only to their phone
         # since we already know they have access to their email

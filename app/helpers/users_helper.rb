@@ -13,10 +13,10 @@ module UsersHelper
     User.where(:reset_password => true)
   end
 
-  def send_pwd_reset_instructions(user)
+  def send_pwd_reset_instructions(user, token)
     if user.email.present? and user.email_confirmed? and user.reset_password_token.present?
       logger.debug "sending password reset instructions to email: #{user.email}"
-      UserMailer.reset_password_email(user).deliver_now
+      UserMailer.reset_password_email(user, token).deliver_now
       true
     else
       logger.error "could not send password reset to: #{user.email}"
