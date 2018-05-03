@@ -153,7 +153,7 @@ table.language-data th {
   font-weight: normal;
 }
 
-.finish-line-status  {
+.finish-line-status , outcome-area  {
   .nothing {
     background-color: lightgrey;
   }
@@ -400,5 +400,13 @@ table td.check {
         }
       }
     }
+  }
+}
+
+.outcome-area-table thead {
+  background-color: lightgrey;
+  .outcome-area-title {
+    text-align: center;
+    font-size: x-large !important;
   }
 }
