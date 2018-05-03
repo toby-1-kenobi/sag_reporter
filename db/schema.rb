@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180424050900) do
+ActiveRecord::Schema.define(version: 20180502064436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -219,6 +219,17 @@ ActiveRecord::Schema.define(version: 20180424050900) do
   add_index "finish_line_progresses", ["language_id", "finish_line_marker_id", "year"], name: "index_lang_finish_line", unique: true, using: :btree
   add_index "finish_line_progresses", ["language_id"], name: "index_finish_line_progresses_on_language_id", using: :btree
 
+  create_table "forward_planning_targets", force: :cascade do |t|
+    t.integer  "topic_id",                      null: false
+    t.integer  "state_language_id",             null: false
+    t.integer  "year"
+    t.integer  "targets",           default: 0, null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "forward_planning_targets", ["topic_id", "state_language_id", "year"], name: "index_forward_planning_targets", unique: true, using: :btree
+
   create_table "geo_states", force: :cascade do |t|
     t.string   "name",       null: false
     t.integer  "zone_id",    null: false
@@ -360,7 +371,6 @@ ActiveRecord::Schema.define(version: 20180424050900) do
   add_index "languages", ["iso"], name: "index_languages_on_iso", unique: true, using: :btree
   add_index "languages", ["name"], name: "index_languages_on_name", using: :btree
   add_index "languages", ["pop_source_id"], name: "index_languages_on_pop_source_id", using: :btree
-  add_index "languages", ["project_id"], name: "index_languages_on_project_id", using: :btree
   add_index "languages", ["translation_need"], name: "index_languages_on_translation_need", using: :btree
   add_index "languages", ["translation_progress"], name: "index_languages_on_translation_progress", using: :btree
 
@@ -726,7 +736,6 @@ ActiveRecord::Schema.define(version: 20180424050900) do
   add_foreign_key "languages", "clusters"
   add_foreign_key "languages", "data_sources", column: "pop_source_id"
   add_foreign_key "languages", "language_families", column: "family_id"
-  add_foreign_key "languages", "projects"
   add_foreign_key "languages", "users", column: "champion_id"
   add_foreign_key "mt_resources", "geo_states"
   add_foreign_key "mt_resources", "languages"

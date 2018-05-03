@@ -1,0 +1,10 @@
+# Read about fixtures at
+# http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  state_language_id: 
+  targets: 1
+
+two:
+  state_language_id: 
+  targets: 1
