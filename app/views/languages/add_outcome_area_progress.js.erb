@@ -1,0 +1,11 @@
+<% if @foa.present? %>
+  $("#outcome-title-row-id-<%= @state_language.id%>").append("<th></th>")
+  $("#outcome-head-row-id-<%= @state_language.id%>").append("<th class='mdl-data-table__cell--non-numeric'><%= @max_year %></th>")
+
+
+  <% @foa.each do |each| %>
+  var row = '<td class="mdl-data-table__cell--non-numeric <%= each.topic.colour%>"><%= each.targets.round(1) %></td>';
+  $("#outcome-body-row-<%= @state_language.id%>_<%= each.topic_id%>").append(row)
+
+  <% end %>
+<% end %>

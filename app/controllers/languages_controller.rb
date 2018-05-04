@@ -375,6 +375,34 @@ class LanguagesController < ApplicationController
     end
   end
 
+  def add_outcome_area_progress
+    @state_language = StateLanguage.find(params[:state_language_id])
+    @max_year = ForwardPlanningTarget.where(state_language: @state_language).maximum(:year)
+    @foa = []
+    if @max_year.present?
+      future_outcome_areas = ForwardPlanningTarget.where(state_language: @state_language, year: @max_year)
+      @max_year += 1
+      future_outcome_areas.each do |foa| #replicate old info
+        future_outcome_area = ForwardPlanningTarget.find_or_create_by(state_language: @state_language, topic: foa.topic, targets: foa.targets, year: @max_year)
+        @foa.push(future_outcome_area)
+      end
+    else
+      topics = Topic.all
+      transformation = Hash.new(0)
+      if params[:transformation].present?
+        transformation = params[:transformation]
+      end
+      @max_year = get_current_year()
+      @max_year += 1
+      topics.each do |topic| #create new info
+        future_outcome_area = ForwardPlanningTarget.find_or_create_by(state_language: @state_language, topic: topic, targets: transformation[topic.name], year: @max_year)
+        @foa.push(future_outcome_area)
+      end
+    end
+
+    respond_to :js
+  end
+
   private
 
   def lang_params

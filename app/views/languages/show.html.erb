@@ -153,36 +153,48 @@
       </div>
 
       <!-- Outcome area -->
-      <% outcome_area_colours  = Hash.new
-         Topic.find_each{ |oa| outcome_area_colours[oa.name] = oa.colour }
-         outcome_areas = outcome_area_colours.keys %>
+      <% topics  = Topic.all
+         current_year = get_current_year()
+      %>
       <div class="mdl-cell mdl-cell--12-col">
         <% @language.state_languages.in_project.each do |state_language| %>
-          <% transformation = get_state_language_transformation(state_language) %>
+          <% transformation = get_state_language_transformation(state_language)
+             future_years = ForwardPlanningTarget.where(state_language: state_language).where("year > ?",current_year).pluck(:year).uniq
+          %>
           <h4>Outcome area for <%= @language.name %> in <%= link_to state_language.state_name, state_language.geo_state %></h4>
           <table class="outcome-area outcome-area-table mdl-data-table mdl-js-data-table">
             <thead>
-              <tr id="outcome_title_row_id<%= state_language.id%>">
+              <tr id="outcome-title-row-id-<%= state_language.id%>">
                 <th class="mdl-data-table__cell--non-numeric outcome-area-title" colspan="1">Outcome Areas</th>
 
                   <th>
-                    <%= link_to add_finish_line_progress_path(language_id: @language.id), method: :get, remote: true do %>
+                    <%= link_to add_outcome_area_progress_path(state_language_id: state_language.id, transformation: transformation), method: :get, remote: true do %>
                       <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
                         Add Year
                       </button>
                     <% end %>
                   </th>
+                  <% future_years.each do |fy| %>
+                    <th class="mdl-data-table__cell--non-numeric"></th>
+                  <% end %>
               </tr>
-              <tr id="outcome_head_row_id<%= state_language.id%>">
+              <tr id="outcome-head-row-id-<%= state_language.id%>">
                 <th class="mdl-data-table__cell--non-numeric">Outcome Area</th>
                 <th class="mdl-data-table__cell--non-numeric">Progress</th>
+                <% future_years.each do |fy| %>
+                  <th class="mdl-data-table__cell--non-numeric"><%= fy%></th>
+                <% end %>
               </tr>
             </thead>
             <tbody>
-              <% outcome_areas.each_with_index do |outcome_area, index| %>
-                <tr>
-                  <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= outcome_area %></td>
-                  <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= transformation[outcome_area].round(1) %></td>
+              <% topics.each do |outcome_area| %>
+                <tr id="outcome-body-row-<%= state_language.id%>_<%= outcome_area.id%>">
+                  <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>"><%= outcome_area.name %></td>
+                  <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>"><%= transformation[outcome_area.name].round(1) %></td>
+                  <% future_outcome_areas = ForwardPlanningTarget.where(state_language: state_language, topic: outcome_area).where("year > ?",current_year) %>
+                  <% future_outcome_areas.order(:year).each do |foa| %>
+                    <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>"><%= foa.targets.round(1) %></td>
+                  <% end %>
                 </tr>
               <% end %>
             </tbody>

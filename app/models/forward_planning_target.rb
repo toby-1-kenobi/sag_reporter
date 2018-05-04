@@ -1,4 +1,4 @@
 class ForwardPlanningTarget < ActiveRecord::Base
-  has_many :topic
-  has_many :language_progresses
+  belongs_to :topic
+  belongs_to :state_language
 end
