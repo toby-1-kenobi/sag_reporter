@@ -190,10 +190,12 @@
               <% topics.each do |outcome_area| %>
                 <tr id="outcome-body-row-<%= state_language.id%>_<%= outcome_area.id%>">
                   <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>"><%= outcome_area.name %></td>
-                  <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>"><%= transformation[outcome_area.name].round(1) %></td>
+                  <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>"><%= transformation[outcome_area.name].round() %></td>
                   <% future_outcome_areas = ForwardPlanningTarget.where(state_language: state_language, topic: outcome_area).where("year > ?",current_year) %>
                   <% future_outcome_areas.order(:year).each do |foa| %>
-                    <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>"><%= foa.targets.round(1) %></td>
+                    <td id="outcome-target-id-<%= foa.id%>" class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %> <%= 'outcome-editable' if editable %>">
+                      <div id="target-value-div-<%= foa.id%>"><%= foa.targets %></div><%= render 'shared/edit_icon' if editable %>
+                    </td>
                   <% end %>
                 </tr>
               <% end %>

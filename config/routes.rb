@@ -200,6 +200,8 @@ Rails.application.routes.draw do
   #adding finish line progress for future year
   get 'add_outcome_area_progress' => 'languages#add_outcome_area_progress', as: 'add_outcome_area_progress'
 
+  patch 'update_fp_target' => 'languages#update_fp_target'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

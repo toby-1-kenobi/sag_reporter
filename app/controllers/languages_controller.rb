@@ -403,6 +403,16 @@ class LanguagesController < ApplicationController
     respond_to :js
   end
 
+  def update_fp_target
+    if params[:target_id].present?
+      @forward_planning_target = ForwardPlanningTarget.find(params[:target_id])
+      if params[:target_value].present? && params[:target_value].to_i <= 100
+        @forward_planning_target.update_attribute(:targets,params[:target_value])
+      end
+    end
+    respond_to :js
+  end
+
   private
 
   def lang_params

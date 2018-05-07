@@ -1,0 +1,4 @@
+<% if @forward_planning_target.present? %>
+  $("#target-value-div-<%= @forward_planning_target.id%>").text("<%= @forward_planning_target.targets%>")
+<% end %>
+

@@ -2,10 +2,30 @@
   $("#outcome-title-row-id-<%= @state_language.id%>").append("<th></th>")
   $("#outcome-head-row-id-<%= @state_language.id%>").append("<th class='mdl-data-table__cell--non-numeric'><%= @max_year %></th>")
 
+  <% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
 
   <% @foa.each do |each| %>
-  var row = '<td class="mdl-data-table__cell--non-numeric <%= each.topic.colour%>"><%= each.targets.round(1) %></td>';
-  $("#outcome-body-row-<%= @state_language.id%>_<%= each.topic_id%>").append(row)
-
+    var row = '<td id="outcome-target-id-<%= each.id%>" class="mdl-data-table__cell--non-numeric <%= each.topic.colour%> '+
+        ' <%= "outcome-editable" if editable %> ">' +
+        ' <div id="target-value-div-<%= each.id%>"><%= each.targets %></div><%= render "shared/edit_icon" if editable %></td>';
+    $("#outcome-body-row-<%= @state_language.id%>_<%= each.topic_id%>").append(row)
   <% end %>
 <% end %>
+
+$(".outcome-editable").hover(
+    function () {
+        $(this).find('.edit-icon').removeClass('hide')
+    },
+    function () {
+        $(this).find('.edit-icon').addClass('hide')
+    }
+);
+
+$(".outcome-editable").click(function(){
+    id = this.id
+    number = id.substring(id.lastIndexOf('-') + 1)
+    target = $("#target-value-div-"+number).text()
+    $("#target_id").val(number)
+    $("#target_value").val(target)
+    $("dialog#update-outcome-area-dialog").get(0).showModal()
+});

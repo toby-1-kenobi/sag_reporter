@@ -306,6 +306,24 @@
 
 <% end %>
 
+<dialog id="update-outcome-area-dialog" class="mdl-dialog">
+  <h4 class="mdl-dialog__title">Update Outcome Area</h4>
+  <%= form_tag update_fp_target_path, remote: true, method: :patch do %>
+  <div class="mdl-dialog__content ">
+      <%= hidden_field_tag 'target_id', '' %>
+      <div>
+        <%= label_tag 'target_value', 'Update Target(0-100)' %>
+        <%= text_field_tag :target_value %>
+      </div>
+
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button submit" id="save-fp-target">Save</button>
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+    <% end %>
+</dialog>
+
 <%= render 'shared/edit_message_dialog' %>
 
 <%= render 'shared/dialog_activation' %>

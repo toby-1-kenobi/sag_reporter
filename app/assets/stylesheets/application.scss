@@ -131,3 +131,24 @@ ul.collapsible {
 .mdl-data-table th {
   font-size: 14px !important;
 }
+
+.outcome-editable {
+  min-width: 6em;
+  border: {
+    width: 2px;
+    radius: 6px;
+    style: solid;
+    color: transparent;
+  }
+  padding: 5px;
+  position: relative;
+  &:hover {
+    border-color: grey;
+  }
+  .edit-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: grey;
+  }
+}

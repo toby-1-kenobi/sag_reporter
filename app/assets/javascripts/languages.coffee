@@ -154,4 +154,20 @@ $(document).on "ready page:change", ->
     $(this).closest('form').submit()
     $('#project-input-row').slideUp()
 
+  $('.outcome-editable').hover (->
+    $(this).find('.edit-icon').removeClass('hide')
+    return
+  ), ->
+    $(this).find('.edit-icon').addClass('hide')
+    return
+
+  $('.outcome-editable').on 'click', ->
+    id = this.id
+    number = id.substring(id.lastIndexOf('-') + 1)
+    target = $("#target-value-div-#{number}").text()
+    $("#target_id").val("#{number}")
+    $("#target_value").val("#{target}")
+    $("dialog#update-outcome-area-dialog").get(0).showModal()
+    return
+
   return
