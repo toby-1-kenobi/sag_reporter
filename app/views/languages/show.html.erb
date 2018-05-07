@@ -42,10 +42,12 @@
         <tr id="title_row_id">
           <th class="mdl-data-table__cell--non-numeric" colspan="2" id="finish-line-status-title">Finish Line Status</th>
           <th>
+            <% if is_user_have_future_plan() %>
             <%= link_to add_finish_line_progress_path(language_id: @language.id), method: :get, remote: true do %>
               <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
                 Add Year
               </button>
+            <% end %>
             <% end %>
           </th>
           <% @future_years.each do |fy| %>

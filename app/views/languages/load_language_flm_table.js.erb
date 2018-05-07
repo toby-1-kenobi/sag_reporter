@@ -82,6 +82,12 @@ $('.language-row select').on('change', function() {
     return $("#flm-" + flmNumber + "-filter-" + newValue).trigger('change');
 });
 
+$('#change-year-select').on('change', function() {
+    $(this).closest('form').submit();
+    $('#flm-table-row-id').empty();
+    $('#flm-table-row-id').append('<tr><td><div class="mdl-spinner mdl-js-spinner is-active"></div></td></tr>');
+});
+
 window.bindFilters();
 $('.language-table-controls .filter-trigger').trigger('change');
 $('.language-table .filter-trigger').trigger('change');

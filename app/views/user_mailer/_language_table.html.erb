@@ -1,7 +1,7 @@
 <table>
   <tbody>
     <% FinishLineMarker.order(:number).each do |marker| %>
-      <% progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row">
         <th id="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></th>
         <td id="finish-line-progress-status-<%= marker.number %>"><%= progress.simple_human_status %></td>

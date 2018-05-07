@@ -108,7 +108,7 @@
     <a name="church-engagement"><h3>Church Engagement</h3></a>
     <table class="language-data">
       <% marker = FinishLineMarker.find_by_number(0) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
         <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
           <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
@@ -121,7 +121,7 @@
     <a name="bible-materials"><h3>Bible Materials</h3></a>
     <table class="language-data">
       <% marker = FinishLineMarker.find_by_number(1) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
         <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
           <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
@@ -130,7 +130,7 @@
       </tr>
       <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
       <% marker = FinishLineMarker.find_by_number(2) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
         <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
           <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
@@ -139,7 +139,7 @@
       </tr>
       <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
       <% marker = FinishLineMarker.find_by_number(3) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
         <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
           <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
@@ -148,7 +148,7 @@
       </tr>
       <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
       <% marker = FinishLineMarker.find_by_number(4) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
         <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
           <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
@@ -163,7 +163,7 @@
 
     <table class="language-data">
       <% marker = FinishLineMarker.find_by_number(5) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
         <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
           <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
@@ -172,7 +172,7 @@
       </tr>
       <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
       <% marker = FinishLineMarker.find_by_number(6) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
         <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
           <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
@@ -181,7 +181,7 @@
       </tr>
       <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
       <% marker = FinishLineMarker.find_by_number(7) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
         <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
           <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
@@ -280,7 +280,7 @@
     <a name="literacy"><h3>Literacy</h3></a>
     <table class="language-data">
       <% marker = FinishLineMarker.find_by_number(8) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
         <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
           <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
@@ -289,7 +289,7 @@
       </tr>
       <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
       <% marker = FinishLineMarker.find_by_number(9) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker) %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
       <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
         <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
           <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>

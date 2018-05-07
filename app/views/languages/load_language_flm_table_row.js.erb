@@ -1,0 +1,36 @@
+
+
+<%
+  locals = {}
+
+  if defined? @selected_year
+    locals[:selected_year] = @selected_year
+  else
+    locals[:selected_year] = nil
+  end
+%>
+$('#flm-table-row-id').empty();
+$('#flm-table-row-id').append('<%= j render partial: 'languages/flm_table_row', collection: @languages.order(:name), locals: locals %>');
+
+
+$('.mdl-selectfield').each(function(){
+    componentHandler.upgradeElement(this);
+});
+
+$('.language-table .flm-status-select select').on('change', function(){
+    $(this).closest('form').submit();
+});
+
+$('.language-row select').on('change', function() {
+    var flmNumber, newCategory, newValue;
+    newValue = $(this).val();
+    newCategory = $('.language-table').attr("data-flm-category__" + newValue);
+    flmNumber = $(this).attr('flm_number');
+    $(this).closest('.mdl-js-selectfield').attr('data-finish-line-category', newCategory);
+    $(this).closest('.language-row').attr("data-flm-" + flmNumber, newValue);
+    return $("#flm-" + flmNumber + "-filter-" + newValue).trigger('change');
+});
+
+
+window.bindFilters();
+$('#dialog-visible-flms .filter-trigger').trigger('change');
