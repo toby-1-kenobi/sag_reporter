@@ -284,4 +284,39 @@ module LanguagesHelper
     transformations
   end
 
+  def get_future_transformation(state_languages, outcome_areas)
+    future_years = []
+    transformation = Hash.new()
+    @future_transformation = Hash.new()
+    
+    outcome_areas.each do |outcome_area|
+      transformation[outcome_area] ||= Hash.new()
+    end
+
+    forward_planning_targets = ForwardPlanningTarget.where(state_language: state_languages)
+
+    forward_planning_targets.order(:year).each do |fpt|
+
+      transformation[fpt.topic.name][fpt.year] ||= Hash.new(0)
+      value = fpt.targets
+
+      all_brackets = transformation_brackets.keys
+      # put this language in the first bracket
+      language_bracket = all_brackets.shift
+      # while its score is bigger than the bracket max value keep shifting it to the next bracket up.
+      while value > transformation_brackets[language_bracket]
+        language_bracket = all_brackets.shift
+      end
+      transformation[fpt.topic.name][fpt.year][language_bracket] += 1
+
+      unless future_years.include?(fpt.year)
+        future_years.push(fpt.year)
+      end
+
+    end
+    @future_transformation[:future_years] = future_years
+    @future_transformation[:transformation] = transformation
+    @future_transformation
+  end
+
 end

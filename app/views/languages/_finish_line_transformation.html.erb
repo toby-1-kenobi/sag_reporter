@@ -77,6 +77,38 @@
       <% end %>
     </tbody>
   </table>
+  <% topics  = Topic.all
+     future_transformation = get_future_transformation(state_languages, outcome_areas)
+     future_years = future_transformation[:future_years]
+     transformation_values = future_transformation[:transformation]
+  %>
+  <% if future_years.present? %>
+    <div class="flt-target">
+      <b>Targets</b>
+      <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+        <thead>
+        <tr>
+          <% future_years.each do |fy| %>
+            <th class="mdl-data-table__cell--non-numeric"><%= fy %></th>
+          <% end %>
+        </tr>
+        </thead>
+        <tbody>
+        <% topics.each do |outcome_area| %>
+          <tr>
+            <% future_years.each do |fy| %>
+              <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>">
+                <%= transformation_values[outcome_area.name][fy][:emerging] %>/
+                <%= transformation_values[outcome_area.name][fy][:growingwell] %>/
+                <%= transformation_values[outcome_area.name][fy][:widespread] %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
 </div>
 
 <div id="flt-charts">
