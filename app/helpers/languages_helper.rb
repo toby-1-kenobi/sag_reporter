@@ -285,15 +285,16 @@ module LanguagesHelper
   end
 
   def get_future_transformation(state_languages, outcome_areas)
+    current_year = get_current_year()
     future_years = []
     transformation = Hash.new()
     @future_transformation = Hash.new()
-    
+
     outcome_areas.each do |outcome_area|
       transformation[outcome_area] ||= Hash.new()
     end
 
-    forward_planning_targets = ForwardPlanningTarget.where(state_language: state_languages)
+    forward_planning_targets = ForwardPlanningTarget.where(state_language: state_languages).where("year > ?", current_year)
 
     forward_planning_targets.order(:year).each do |fpt|
 
