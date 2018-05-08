@@ -3,9 +3,10 @@
   $("#head_row_id").append("<th class='mdl-data-table__cell--non-numeric'><%= @max_year %></th>")
   <% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
 
-  <% @flp.each do |each| %>
-    var row = '<td id="finish-line-progress-status-<%= each.finish_line_marker.number %><%= each.year %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric editable"><%= each.simple_human_status %><%= render "shared/edit_icon" if editable %></td>';
-    $("#finish-line-marker-<%= each.finish_line_marker.number %>-row").append(row)
+  <% @flp.each do |progress| %>
+    var row = '<td id="finish-line-progress-status-<%= progress.finish_line_marker.number %><%= progress.year %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric '+
+                '<%= "editable" if editable %> <%= "church-engagement" if progress.finish_line_marker.number == 0 %>"><%= progress.simple_human_status %><%= render "shared/edit_icon" if editable %></td>';
+    $("#finish-line-marker-<%= progress.finish_line_marker.number %>-row").append(row)
 
   <% end %>
 <% end %>
