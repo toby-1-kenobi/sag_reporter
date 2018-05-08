@@ -170,13 +170,16 @@ module LanguagesHelper
 
   #get currect year
   def get_current_year()
+    # year ticks over on October 1st
+    year_cutoff_month = 10
+    year_cutoff_day = 1
     current_year = Date.today.year
-    if Date.today.month > 10 #year changed by october
-      current_year += 1
+    cutoff_date = Date.new(current_year, year_cutoff_month, year_cutoff_day)
+    if Date.today >= cutoff_date
+      return current_year + 1
     else
-      current_year
+      return current_year
     end
-    current_year
   end
 
   def get_future_years(language)
