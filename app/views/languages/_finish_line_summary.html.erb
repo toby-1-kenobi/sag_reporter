@@ -3,6 +3,7 @@
   language_amount = languages.count
   finish_line_data = build_finish_line_table(languages, @flms)
   scripture_count = getScriptureEngageCount(languages)
+  future_editable = is_user_have_future_plan()
 
   finish_marker_data = Hash.new()
 
@@ -49,7 +50,9 @@
           <th>No Progress yet <i class="material-icons">star_border</i></th>
           <th>In Progress <i class="material-icons">star_half</i></th>
           <th>Complete <i class="material-icons">star</i></th>
-          <th style="background-color: blue">Cuurent Summary <i class="material-icons"></i></th>
+          <% if future_editable %>
+            <th style="background-color: blue">Current Summary</th>
+          <% end %>
           <th><i class="material-icons">pie_chart</i></th>
         </tr>
       </thead>
@@ -61,7 +64,9 @@
           <td><%= data[:no_progress] %> (<%= (data[:no_progress] *100) / language_amount %>%)</td>
           <td><%= data[:progress] %> (<%= (data[:progress] *100) / language_amount %>%)</td>
           <td><%= data[:complete] %> (<%= (data[:complete] *100) / language_amount %>%)</td>
-          <td style="background-color: blue"><%= data[:no_progress] %>/<%= data[:progress] %>/<%= data[:complete] %> </td>
+          <% if future_editable %>
+            <td style="background-color: blue"><%= data[:no_progress] %>/<%= data[:progress] %>/<%= data[:complete] %> </td>
+          <% end %>
           <td>
             <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-<%= marker.number %>">
               <input type="checkbox" id="pie-toggle-<%= marker.number %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-<%= marker.number %>">
@@ -73,45 +78,47 @@
       <% end %>
       </tbody>
     </table>
-    <% max_future_years = get_max_future_years()
-       future_data = show_future_transformation(languages)
-       future_trans = future_data[:future_trans]
-       max_year = future_data[:max_year]
-    %>
-    <% if max_year != nil && max_year > 0 %>
-      <div class="flm-target">
-        <b>Targets</b>
-        <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-          <thead>
-          <tr>
-            <% max_future_years.each do |year| %>
-              <% if max_year >= year %>
-                <th class="mdl-data-table__cell--non-numeric"><%= year %></th>
-              <% end %>
-            <% end %>
-
-          </tr>
-          </thead>
-          <tbody>
-          <% @flms.each do |marker| %>
+    <% if future_editable %>
+      <% max_future_years = get_max_future_years()
+         future_data = show_future_transformation(languages)
+         future_trans = future_data[:future_trans]
+         max_year = future_data[:max_year]
+      %>
+      <% if max_year != nil && max_year > 0 %>
+        <div class="flm-target">
+          <b>Targets</b>
+          <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+            <thead>
             <tr>
               <% max_future_years.each do |year| %>
                 <% if max_year >= year %>
-                  <td class="mdl-data-table__cell--non-numeric"
-                      style="background-color:<%= get_cell_color(future_trans, marker, language_amount, year, finish_line_data) %>">
-                    <% if future_trans[marker.number].present? %>
-                      <%= future_trans[marker.number][year][:no_progress] %>/
-                      <%= future_trans[marker.number][year][:progress] %>/
-                      <%= future_trans[marker.number][year][:complete] %>
-                    <% end %>
-                  </td>
+                  <th class="mdl-data-table__cell--non-numeric"><%= year %></th>
                 <% end %>
               <% end %>
+
             </tr>
-          <% end %>
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+            <% @flms.each do |marker| %>
+              <tr>
+                <% max_future_years.each do |year| %>
+                  <% if max_year >= year %>
+                    <td class="mdl-data-table__cell--non-numeric"
+                        style="background-color:<%= get_cell_color(future_trans, marker, language_amount, year, finish_line_data) %>">
+                      <% if future_trans[marker.number].present? %>
+                        <%= future_trans[marker.number][year][:no_progress] %>/
+                        <%= future_trans[marker.number][year][:progress] %>/
+                        <%= future_trans[marker.number][year][:complete] %>
+                      <% end %>
+                    </td>
+                  <% end %>
+                <% end %>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
     <% end %>
   <% end %>
 </div>

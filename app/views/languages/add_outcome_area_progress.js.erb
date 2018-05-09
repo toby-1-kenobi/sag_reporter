@@ -2,7 +2,7 @@
   $("#outcome-title-row-id-<%= @state_language.id%>").append("<th></th>")
   $("#outcome-head-row-id-<%= @state_language.id%>").append("<th class='mdl-data-table__cell--non-numeric'><%= @max_year %></th>")
 
-  <% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
+  <% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@state_language.language)) %>
 
   <% @foa.each do |each| %>
     var row = '<td id="outcome-target-id-<%= each.id%>" class="mdl-data-table__cell--non-numeric <%= each.topic.colour%> '+

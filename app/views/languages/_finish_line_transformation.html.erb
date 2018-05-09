@@ -4,8 +4,8 @@
   outcome_area_colours = get_outcome_area()
   outcome_areas = outcome_area_colours.keys
   spread_text = ProgressMarker.spread_text.values
+  future_editable = is_user_have_future_plan()
 %>
-
 <div id="flt-table">
 
   <%
@@ -48,6 +48,9 @@
       <% spread_text.each do |spread| %>
         <th class="mdl-data-table__cell--non-numeric"><%= spread %></th>
       <% end %>
+      <% if future_editable %>
+        <th style="background-color: blue">Current Summary</th>
+      <% end %>
       <th><i class="material-icons">pie_chart</i></th>
     </tr>
     </thead>
@@ -66,6 +69,9 @@
           <% transformation_brackets.keys.each do |bracket| %>
             <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= zone_aggregate[outcome_area][bracket] %>(<%= percentages[bracket] %>%)</td>
           <% end %>
+          <% if future_editable %>
+            <td style="background-color: blue"><%= zone_aggregate[outcome_area][:emerging] %>/<%=zone_aggregate[outcome_area][:growingwell]%>/<%=zone_aggregate[outcome_area][:widespread]%></td>
+          <% end %>
           <td>
             <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-trans-<%= index %>">
               <input type="checkbox" id="pie-toggle-trans-<%= index %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-trans-<%= index %>">
@@ -77,37 +83,39 @@
       <% end %>
     </tbody>
   </table>
-  <% topics  = Topic.all
-     future_transformation = get_future_transformation(state_languages, outcome_areas)
-     future_years = future_transformation[:future_years]
-     transformation_values = future_transformation[:transformation]
-  %>
-  <% if future_years.present? %>
-    <div class="flt-target">
-      <b>Targets</b>
-      <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-        <thead>
-        <tr>
-          <% future_years.each do |fy| %>
-            <th class="mdl-data-table__cell--non-numeric"><%= fy %></th>
-          <% end %>
-        </tr>
-        </thead>
-        <tbody>
-        <% topics.each do |outcome_area| %>
+  <% if future_editable %>
+    <% topics  = Topic.all
+       future_transformation = get_future_transformation(state_languages, outcome_areas)
+       future_years = future_transformation[:future_years]
+       transformation_values = future_transformation[:transformation]
+    %>
+    <% if future_years.present? %>
+      <div class="flt-target">
+        <b>Targets</b>
+        <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+          <thead>
           <tr>
             <% future_years.each do |fy| %>
-              <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>">
-                <%= transformation_values[outcome_area.name][fy][:emerging] %>/
-                <%= transformation_values[outcome_area.name][fy][:growingwell] %>/
-                <%= transformation_values[outcome_area.name][fy][:widespread] %>
-              </td>
+              <th class="mdl-data-table__cell--non-numeric"><%= fy %></th>
             <% end %>
           </tr>
-        <% end %>
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+          <% topics.each do |outcome_area| %>
+            <tr>
+              <% future_years.each do |fy| %>
+                <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>">
+                  <%= transformation_values[outcome_area.name][fy][:emerging] %>/
+                  <%= transformation_values[outcome_area.name][fy][:growingwell] %>/
+                  <%= transformation_values[outcome_area.name][fy][:widespread] %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
   <% end %>
 </div>
 

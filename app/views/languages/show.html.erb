@@ -4,7 +4,7 @@
 <% provide(:container_class, 'no-iso') if @language.iso.blank? %>
 
 <% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
-
+<% future_editable = is_user_have_future_plan() %>
 <div id="edit-response"></div>
 <div id="pending-edits" class="mdl-grid">
   <% @user_pending_edits.each do |edit| %>
@@ -42,7 +42,7 @@
         <tr id="title_row_id">
           <th class="mdl-data-table__cell--non-numeric" colspan="2" id="finish-line-status-title">Finish Line Status</th>
           <th>
-            <% if is_user_have_future_plan() %>
+            <% if future_editable %>
             <%= link_to add_finish_line_progress_path(language_id: @language.id), method: :get, remote: true do %>
               <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
                 Add Year
@@ -159,14 +159,16 @@
       <div class="mdl-cell mdl-cell--12-col">
         <% @language.state_languages.in_project.each do |state_language| %>
           <% transformation = get_state_language_transformation(state_language)
-             future_years = ForwardPlanningTarget.where(state_language: state_language).where("year > ?",current_year).pluck(:year).uniq
+             if future_editable
+               future_years = ForwardPlanningTarget.where(state_language: state_language).where("year > ?",current_year).pluck(:year).uniq
+             end
           %>
           <h4>Outcome area for <%= @language.name %> in <%= link_to state_language.state_name, state_language.geo_state %></h4>
           <table class="outcome-area outcome-area-table mdl-data-table mdl-js-data-table">
             <thead>
               <tr id="outcome-title-row-id-<%= state_language.id%>">
-                <th class="mdl-data-table__cell--non-numeric outcome-area-title" colspan="1">Outcome Areas</th>
-
+                <th class="mdl-data-table__cell--non-numeric outcome-area-title" <%= 'colspan=2' if !future_editable %>">Outcome Areas</th>
+                <% if future_editable %>
                   <th>
                     <%= link_to add_outcome_area_progress_path(state_language_id: state_language.id, transformation: transformation), method: :get, remote: true do %>
                       <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
@@ -177,12 +179,15 @@
                   <% future_years.each do |fy| %>
                     <th class="mdl-data-table__cell--non-numeric"></th>
                   <% end %>
+                <% end %>
               </tr>
               <tr id="outcome-head-row-id-<%= state_language.id%>">
                 <th class="mdl-data-table__cell--non-numeric">Outcome Area</th>
                 <th class="mdl-data-table__cell--non-numeric">Progress</th>
-                <% future_years.each do |fy| %>
-                  <th class="mdl-data-table__cell--non-numeric"><%= fy%></th>
+                <% if future_editable %>
+                  <% future_years.each do |fy| %>
+                    <th class="mdl-data-table__cell--non-numeric"><%= fy%></th>
+                  <% end %>
                 <% end %>
               </tr>
             </thead>
@@ -191,11 +196,13 @@
                 <tr id="outcome-body-row-<%= state_language.id%>_<%= outcome_area.id%>">
                   <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>"><%= outcome_area.name %></td>
                   <td class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %>"><%= transformation[outcome_area.name].round() %></td>
-                  <% future_outcome_areas = ForwardPlanningTarget.where(state_language: state_language, topic: outcome_area).where("year > ?",current_year) %>
-                  <% future_outcome_areas.order(:year).each do |foa| %>
-                    <td id="outcome-target-id-<%= foa.id%>" class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %> <%= 'outcome-editable' if editable %>">
-                      <div id="target-value-div-<%= foa.id%>"><%= foa.targets %></div><%= render 'shared/edit_icon' if editable %>
-                    </td>
+                  <% if future_editable %>
+                    <% future_outcome_areas = ForwardPlanningTarget.where(state_language: state_language, topic: outcome_area).where("year > ?",current_year) %>
+                    <% future_outcome_areas.order(:year).each do |foa| %>
+                      <td id="outcome-target-id-<%= foa.id%>" class="mdl-data-table__cell--non-numeric <%= outcome_area.colour %> <%= 'outcome-editable' if editable %>">
+                        <div id="target-value-div-<%= foa.id%>"><%= foa.targets %></div><%= render 'shared/edit_icon' if editable %>
+                      </td>
+                    <% end %>
                   <% end %>
                 </tr>
               <% end %>

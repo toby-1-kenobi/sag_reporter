@@ -232,23 +232,22 @@ module LanguagesHelper
     #create new flp for future year if its not yet created
     # If selected year is current year will return current year values, nil represents current year
     max_year = nil
+    finish_line_progress = Hash.new()
     if selected_year != nil
       max_year = FinishLineProgress.where(language: language, finish_line_marker: flm).where.not(year: nil).maximum(:year)
-    end
 
-    if max_year.present?
-      finish_line = FinishLineProgress.where(language: language, finish_line_marker: flm, year: max_year)
-    else
-      finish_line = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: flm, year: nil)
-    end
-    finish_line_progress = Hash.new()
+      if max_year.present?
+        finish_line = FinishLineProgress.where(language: language, finish_line_marker: flm, year: max_year)
+      else
+        finish_line = FinishLineProgress.where(language: language, finish_line_marker: flm, year: nil)
+      end
 
-    if selected_year != nil
       #here it will create future year data with previous year status
       finish_line.each do |fl|
         finish_line_progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: flm, status: fl.status, year: selected_year)
       end
     else
+      finish_line = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: flm, year: nil)
       finish_line_progress = finish_line
     end
 
