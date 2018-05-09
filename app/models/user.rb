@@ -132,6 +132,10 @@ class User < ActiveRecord::Base
     !sees_alternate_pm_descriptions?
   end
 
+  def can_future_plan?
+    admin? or lci_board_member? or lci_agency_leader?
+  end
+
   # find out if this user curates for a particular language
   def curates_for?(language)
     curated_states.where(id: language.geo_states.pluck(:id)).any?

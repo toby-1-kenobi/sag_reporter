@@ -26,7 +26,7 @@ any of the finish line markers on any language.
     <i class="material-icons">file_download</i>
     Get Spreadsheet
   <% end %>
-  <% if is_user_have_future_plan() %>
+  <% if logged_in_user.can_future_plan? %>
     <%= form_for :finish_line_progress, url: change_future_year_path, remote: true, method: :get do |f| %>
       <% future_years = get_max_future_years()
         fy_array = future_years.map {|fy| [fy,fy]} %>
