@@ -195,27 +195,41 @@ module LanguagesHelper
     future_years
   end
 
-  def show_future_transformation(languages)
-    future_data = {}
-    max_year = 0
-    future_trans =  []
-    years = get_max_future_years()
+  def forward_planning_finish_line_data(languages, markers)
+    max_year = FinishLineProgress.languages(languages).where.not(year: nil).maximum(:year)
+    return {} unless max_year
+    min_year = FinishLineProgress.languages(languages).where.not(year: nil).minimum(:year)
+    planning_data = {} # for the aggregate
+
+    # first collect all the required finish line statuses
     languages.each do |lang|
-      years.each do |year|
-        lang.finish_line_progresses.where(year: year).each do |flp|
-          marker = flp.finish_line_marker.number
-          future_trans[marker] ||= []
-          future_trans[marker][year] ||= Hash.new(0)
-          future_trans[marker][year][flp.category] += 1
-          if max_year < year
-            max_year = year
+      language_data = {} # for this language
+      (min_year .. max_year).each do |year|
+        language_data[year] = {}
+        planning_data[year] ||= {}
+        markers.each do |marker|
+          planning_data[year][marker.number] ||= Hash.new(0)
+          flp = lang.finish_line_progresses.find_by(year: year, finish_line_marker: marker)
+          if flp
+            # if we have the finish line progress for this language, year and marker
+            # then record its status
+            language_data[year][marker] = flp.status
+          elsif language_data[year - 1]
+            # otherwise if we found one for the year before use that for the status
+            language_data[year][marker] = language_data[year - 1][marker]
+          else
+            # otherwise use the one for current year (if necessary creating it with default status)
+            flp = FinishLineProgress.find_or_create_by(language: lang, year: nil, finish_line_marker: marker)
+            language_data[year][marker] = flp.status
           end
+          # aggregate as we go
+          status = language_data[year][marker]
+          planning_data[year][marker.number][FinishLineProgress.category(status)] += 1
         end
       end
     end
-    future_data[:max_year] = max_year
-    future_data[:future_trans] = future_trans
-    future_data
+    Rails.logger.debug(planning_data)
+    return planning_data
   end
 
   def get_max_future_years()

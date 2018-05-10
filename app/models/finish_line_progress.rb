@@ -18,6 +18,10 @@ class FinishLineProgress < ActiveRecord::Base
 
   validates :status, presence: true
 
+  scope :languages, -> languages {
+    where(language: languages)
+  }
+
   def to_s
     "#{finish_line_marker.name} for #{language.name}"
   end

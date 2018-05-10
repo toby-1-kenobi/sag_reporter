@@ -50,18 +50,12 @@
           <th class="in-progress-column"><i class="material-icons">star_half</i> In<br />Progress</th>
           <th class="complete-column"><i class="material-icons">star</i><br />Complete</th>
           <th><i class="material-icons">pie_chart</i></th>
-          <% if logged_in_user.can_future_plan?
-             max_future_years = get_max_future_years()
-             future_data = show_future_transformation(languages)
-             future_trans = future_data[:future_trans]
-             max_year = future_data[:max_year]
-          %>
-            <th class="current-summary-column">Current<br />Summary<i class="material-icons"></i></th>
-            <% if max_year and max_year > 0 %>
-              <% max_future_years.each do |year| %>
-                <% if max_year >= year %>
-                  <th class="mdl-data-table__cell--non-numeric"><%= year %></th>
-                <% end %>
+          <% if logged_in_user.can_future_plan? %>
+            <% planning_data = forward_planning_finish_line_data(languages, @flms) %>
+            <% if planning_data.any? %>
+              <th class="current-summary-column">Current<br />Summary<i class="material-icons"></i></th>
+              <% planning_data.keys.each do |year| %>
+                <th class="mdl-data-table__cell--non-numeric"><%= year %></th>
               <% end %>
             <% end %>
           <% end %>
@@ -82,19 +76,14 @@
               <i class="mdl-icon-toggle__label material-icons off">pie_chart_outlined</i>
             </label>
           </td>
-          <% if logged_in_user.can_future_plan? and max_year and max_year > 0 %>
+          <% if logged_in_user.can_future_plan? and planning_data.any? %>
             <td class="current-summary-column"><%= data[:no_progress] %> / <%= data[:progress] %> / <%= data[:complete] %> </td>
-            <% max_future_years.each do |year| %>
-              <% if max_year >= year %>
-                <td class="mdl-data-table__cell--non-numeric"
-                    style="background-color:<%= get_cell_color(future_trans, marker, language_amount, year, finish_line_data) %>">
-                  <% if future_trans[marker.number].present? %>
-                    <%= future_trans[marker.number][year][:no_progress] %> /
-                    <%= future_trans[marker.number][year][:progress] %> /
-                    <%= future_trans[marker.number][year][:complete] %>
-                  <% end %>
-                </td>
-              <% end %>
+            <% planning_data.keys.each do |year| %>
+              <td class="mdl-data-table__cell--non-numeric">
+                  <%= planning_data[year][marker.number][:no_progress] %> /
+                  <%= planning_data[year][marker.number][:progress] %> /
+                  <%= planning_data[year][marker.number][:complete] %>
+              </td>
             <% end %>
           <% end %>
         </tr>

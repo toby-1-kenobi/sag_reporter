@@ -28,7 +28,7 @@ class ZonesController < ApplicationController
       @partial_locals[:languages] = @partial_locals[:zone].languages.includes(:finish_line_progresses).uniq
     else
       # otherwise we are loading for the whole nation
-      @partial_locals[:languages] = Language.all
+      @partial_locals[:languages] = Language.all.includes(:finish_line_progresses)
     end
     @flms = FinishLineMarker.dashboard_visible.order(:number)
     respond_to do |format|
