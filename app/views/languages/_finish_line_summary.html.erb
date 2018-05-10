@@ -45,10 +45,10 @@
       <thead>
         <tr>
           <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
-          <th class="no-need-column">No Need<i class="material-icons"></i></th>
-          <th>No Progress yet <i class="material-icons">star_border</i></th>
-          <th>In Progress <i class="material-icons">star_half</i></th>
-          <th>Complete <i class="material-icons">star</i></th>
+          <th class="no-need-column">No<br />Need<i class="material-icons"></i></th>
+          <th><i class="material-icons">star_border</i> No<br />Progress</th>
+          <th><i class="material-icons">star_half</i> In<br />Progress</th>
+          <th><i class="material-icons">star</i><br />Complete</th>
           <th><i class="material-icons">pie_chart</i></th>
           <% if logged_in_user.can_future_plan?
              max_future_years = get_max_future_years()
