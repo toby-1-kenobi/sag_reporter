@@ -85,6 +85,7 @@ class LanguagesController < ApplicationController
 
     # if no since date is provided assume 3 months
     params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+
     params[:until] ||= Date.today.strftime('%d %B, %Y')
     @filters = report_filter_params
     reports = Report.language(@language).includes(:pictures, :languages, :impact_report)
