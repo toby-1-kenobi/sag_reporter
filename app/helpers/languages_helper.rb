@@ -168,22 +168,21 @@ module LanguagesHelper
     display_text
   end
 
-  #get currect year
-  def get_current_year()
+  def get_current_year
     # year ticks over on October 1st
     year_cutoff_month = 10
     year_cutoff_day = 1
     current_year = Date.today.year
     cutoff_date = Date.new(current_year, year_cutoff_month, year_cutoff_day)
     if Date.today >= cutoff_date
-      return current_year + 1
+      current_year + 1
     else
-      return current_year
+      current_year
     end
   end
 
   def get_future_years(language)
-    cur_year = get_current_year()
+    cur_year = get_current_year
     future_years = []
     future_years.push(nil)
     years = FinishLineProgress.where(language: language).where.not(year: nil).where("year > #{cur_year}").distinct.pluck(:year)
@@ -272,22 +271,24 @@ module LanguagesHelper
     finish_line_progress
   end
 
-  def get_cell_color(future_transformation, marker, language_amount, year, finish_line_data)
-    no_progress = future_transformation[marker.number][year][:no_progress]
-    progress = future_transformation[marker.number][year][:progress]
-    completed = future_transformation[marker.number][year][:complete]
-    current_year = get_current_year()
-
-    progress_status = ""
-    if no_progress == 0 && language_amount == (progress + completed)
-      progress_status = "yellow"
-    elsif ( no_progress == 0 && progress == 0 ) && (language_amount == completed )
-      progress_status = "green"
-    elsif finish_line_data[marker][:no_progress] <= future_transformation[marker.number][year][:no_progress] or
-          finish_line_data[marker][:complete] > future_transformation[marker.number][year][:complete]
-          progress_status = "red"
+  def target_met?(current_data, target_data)
+    if current_data[:complete] < target_data[:complete]
+      false
+    elsif current_data[:progress] < target_data[:progress] and current_data[:no_progress] > target_data[:no_progress]
+      false
+    else
+      true
     end
-    progress_status
+  end
+
+  def planning_cell_status(cell_data)
+    if cell_data[:no_progress] > 0
+      'data-not-all-started'
+    elsif cell_data[:progress] > 0
+      'data-all-started'
+    else
+      'data-all-complete'
+    end
   end
 
 end

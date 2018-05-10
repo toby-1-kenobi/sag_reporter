@@ -10,10 +10,13 @@
     background-color: rgb(63,81,181);
     color: white;
   }
-  .in-progress-column {
+  .in-progress-column, [data-all-started] {
     background-color: gold;
   }
-  .complete-column {
+  .complete-column, [data-all-complete] {
     background-color: mediumseagreen;
+  }
+  [data-target-missed] {
+    background-color: red;
   }
 }

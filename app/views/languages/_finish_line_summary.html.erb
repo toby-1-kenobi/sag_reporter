@@ -78,8 +78,14 @@
           </td>
           <% if logged_in_user.can_future_plan? and planning_data.any? %>
             <td class="current-summary-column"><%= data[:no_progress] %> / <%= data[:progress] %> / <%= data[:complete] %> </td>
+            <% current_year = get_current_year %>
             <% planning_data.keys.each do |year| %>
-              <td class="mdl-data-table__cell--non-numeric">
+              <% if year <= current_year %>
+                <% cell_data = target_met?(data, planning_data[year][marker.number]) ? 'data-target-met' : 'data-target-missed' %>
+              <% else %>
+                <% cell_data = planning_cell_status(planning_data[year][marker.number]) %>
+              <% end %>
+              <td class="mdl-data-table__cell--non-numeric" <%= cell_data %>>
                   <%= planning_data[year][marker.number][:no_progress] %> /
                   <%= planning_data[year][marker.number][:progress] %> /
                   <%= planning_data[year][marker.number][:complete] %>
