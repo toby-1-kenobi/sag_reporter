@@ -56,15 +56,11 @@
         outcome_areas.each_with_index do |outcome_area, index|
           # any languages that somehow haven't been counted yet go into "not seen"
           zone_aggregate[outcome_area][:notseen] += lc_amount - zone_aggregate[outcome_area][:total]
-          percentages = {}
-          transformation_brackets.keys.each do |bracket|
-            percentages[bracket] = ((zone_aggregate[outcome_area][bracket] * 100).to_f / lc_amount).round(1)
-          end
       %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= outcome_area %></td>
           <% transformation_brackets.keys.each do |bracket| %>
-            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= zone_aggregate[outcome_area][bracket] %>(<%= percentages[bracket] %>%)</td>
+            <td class="mdl-data-table__cell--non-numeric <%= outcome_area_colours[outcome_area] %>"><%= zone_aggregate[outcome_area][bracket] %></td>
           <% end %>
           <td>
             <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-trans-<%= index %>">

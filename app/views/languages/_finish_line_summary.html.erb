@@ -91,9 +91,9 @@
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><%= marker.name %></td>
           <td class="no-need-column"><%= data[:nothing] %></td>
-          <td><%= data[:no_progress] %> (<%= (data[:no_progress] *100) / language_amount %>%)</td>
-          <td class="in-progress-column"><%= data[:progress] %> (<%= (data[:progress] *100) / language_amount %>%)</td>
-          <td class="complete-column"><%= data[:complete] %> (<%= (data[:complete] *100) / language_amount %>%)</td>
+          <td class="no-progress-column"><%= data[:no_progress] %></td>
+          <td class="in-progress-column"><%= data[:progress] %></td>
+          <td class="complete-column"><%= data[:complete] %></td>
           <td>
             <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-<%= marker.number %>">
               <input type="checkbox" id="pie-toggle-<%= marker.number %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-<%= marker.number %>">
