@@ -7,8 +7,10 @@
     color: darkgrey;
   }
   .current-summary-column {
-    background-color: rgb(63,81,181);
-    color: white;
+    border: 1px solid rgb(63,81,181);
+  }
+  .no-progress-column, [data-not-all-started] {
+    background-color: deepskyblue;
   }
   .in-progress-column, [data-all-started] {
     background-color: gold;
@@ -18,5 +20,10 @@
   }
   [data-target-missed] {
     background-color: red;
+  }
+  #vision-finish-line-summary-row {
+    td {
+      font-weight: bold;
+    }
   }
 }
