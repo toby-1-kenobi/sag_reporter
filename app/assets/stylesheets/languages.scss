@@ -154,22 +154,22 @@ table.language-data th {
 }
 
 .finish-line-status  {
-  .nothing {
+  .nothing, [data-status-category="nothing"] {
     background-color: lightgrey;
   }
-  .no_progress {
+  .no_progress, [data-status-category="no_progress"] {
     background-color: lightskyblue;
     .finish-line-progress-icon {
       color: dodgerblue;
     }
   }
-  .progress {
+  .progress, [data-status-category="progress"] {
     background-color: palegoldenrod;
     .finish-line-progress-icon {
       color: orangered;
     }
   }
-  .complete {
+  .complete, [data-status-category="complete"] {
     background-color: springgreen;
     .finish-line-progress-icon {
       color: forestgreen;
