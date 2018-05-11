@@ -2,6 +2,7 @@ class LanguagesController < ApplicationController
   
   helper ColoursHelper
   include ReportFilter
+  include LanguagesHelper
 
   before_action :require_login
 
@@ -40,6 +41,7 @@ class LanguagesController < ApplicationController
     @editable = true # any user who can see a language can suggest edits TODO: remove this variable
     # attributes with pending edits should be visually distinct in the form
     @pending_attributes = @user_pending_edits.pluck :attribute_name
+    @future_years = get_future_years(@language)
   end
 
   def show_details
@@ -75,6 +77,7 @@ class LanguagesController < ApplicationController
       @pending_flm_ids << flp.finish_line_marker_id
     end
     @projects = Project.all
+    @future_years = get_future_years(@language)
   end
 
   def reports
@@ -82,6 +85,7 @@ class LanguagesController < ApplicationController
 
     # if no since date is provided assume 3 months
     params[:since] ||= 3.months.ago.strftime('%d %B, %Y')
+
     params[:until] ||= Date.today.strftime('%d %B, %Y')
     @filters = report_filter_params
     reports = Report.language(@language).includes(:pictures, :languages, :impact_report)
@@ -268,7 +272,7 @@ class LanguagesController < ApplicationController
   def set_finish_line_progress
     language = Language.find(params[:id])
     marker = FinishLineMarker.find_by_number(params[:marker])
-    progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: marker)
+    progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: marker, year: params[:year])
     @edit = Edit.new(
         user: logged_in_user,
         model_klass_name: 'FinishLineProgress',
@@ -322,6 +326,53 @@ class LanguagesController < ApplicationController
         headers['Content-Disposition'] = "attachment; filename=\"Language_flm_info.csv\""
         headers['Content-Type'] ||= 'text/csv; charset=utf-8'
       end
+    end
+  end
+
+  def add_finish_line_progress
+    @language = Language.find(params[:language_id])
+    @max_year = FinishLineProgress.where(language: @language).where.not(year: nil).maximum(:year)
+
+    if @max_year.present?
+      finish_line = FinishLineProgress.where(language: @language, year: @max_year)
+      @max_year += 1
+    else
+      finish_line = FinishLineProgress.where(language: @language, year: nil)
+      @max_year = get_current_year()
+      @max_year += 1
+    end
+    @flp = []
+    finish_line.order(:finish_line_marker_id).each do |fl|
+      finish_line_progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: fl.finish_line_marker, status: fl.status, year: @max_year)
+      @flp.push(finish_line_progress)
+    end
+
+    respond_to :js
+
+  end
+
+  def change_future_year
+    @flms = FinishLineMarker.order(:number)
+    @flm_filters = params[:filter].present? ? Language.parse_filter_param(params[:filter]) : Language.use_default_filters
+    @pending_flm_edits_flp_ids = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status').pluck :record_id
+    @languages = Language.includes({geo_states: :zone}, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
+    # if there is an id parameter we are loading for a specific zone
+    if params[:finish_line_progress][:year_id].present?
+      @selected_year = params[:finish_line_progress][:year_id]
+    else
+      @selected_year = nil
+    end
+
+    if params[:finish_line_progress][:zone_id].present?
+      @zone = Zone.find params[:finish_line_progress][:zone_id]
+      @languages = @languages.where(geo_states: {zone: @zone})
+    elsif params[:finish_line_progress][:state_id].present?
+      geo_state = GeoState.find params[:finish_line_progress][:state_id]
+      @languages = geo_state.languages.includes({geo_states: :zone}, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
+    end
+
+    respond_to do |format|
+      format.js { render 'languages/load_language_flm_table_row' }
     end
   end
 

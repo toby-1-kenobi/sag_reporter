@@ -51,7 +51,6 @@ app/assets/images/oldfavicon.ico
 app/assets/javascripts/edit.coffee
 app/assets/javascripts/help.coffee
 app/assets/javascripts/organisations.coffee
-app/assets/stylesheets/finish_line_progress.scss
 app/assets/stylesheets/help.scss
 app/assets/stylesheets/organisations.scss
 app/assets/stylesheets/populations.scss

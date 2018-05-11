@@ -38,7 +38,7 @@ module LanguagesHelper
     table = markers.map{ |marker| [marker, Hash.new(0)] }.to_h
     languages.each do |lang|
       lang_check_list = check_list.dup
-      lang.finish_line_progresses.each do |flp|
+      lang.finish_line_progresses.where(year: nil).each do |flp|
         marker = flp.finish_line_marker
         if table[marker]
           table[marker][flp.category] += 1
@@ -167,4 +167,128 @@ module LanguagesHelper
     display_text = pluralize(count, 'language')
     display_text
   end
+
+  def get_current_year
+    # year ticks over on October 1st
+    year_cutoff_month = 10
+    year_cutoff_day = 1
+    current_year = Date.today.year
+    cutoff_date = Date.new(current_year, year_cutoff_month, year_cutoff_day)
+    if Date.today >= cutoff_date
+      current_year + 1
+    else
+      current_year
+    end
+  end
+
+  def get_future_years(language)
+    cur_year = get_current_year
+    future_years = []
+    future_years.push(nil)
+    years = FinishLineProgress.where(language: language).where.not(year: nil).where("year > #{cur_year}").distinct.pluck(:year)
+    if logged_in_user.can_future_plan?
+      years.each do |year|
+        future_years.push(year)
+      end
+    end
+    future_years
+  end
+
+  def forward_planning_finish_line_data(languages, markers)
+    max_year = FinishLineProgress.languages(languages).where.not(year: nil).maximum(:year)
+    return {} unless max_year
+    min_year = FinishLineProgress.languages(languages).where.not(year: nil).minimum(:year)
+    planning_data = {} # for the aggregate
+
+    # first collect all the required finish line statuses
+    languages.each do |lang|
+      language_data = {} # for this language
+      (min_year .. max_year).each do |year|
+        language_data[year] = {}
+        planning_data[year] ||= {}
+        markers.each do |marker|
+          planning_data[year][marker.number] ||= Hash.new(0)
+          flp = lang.finish_line_progresses.find_by(year: year, finish_line_marker: marker)
+          if flp
+            # if we have the finish line progress for this language, year and marker
+            # then record its status
+            language_data[year][marker] = flp.status
+          elsif language_data[year - 1]
+            # otherwise if we found one for the year before use that for the status
+            language_data[year][marker] = language_data[year - 1][marker]
+          else
+            # otherwise use the one for current year (if necessary creating it with default status)
+            flp = FinishLineProgress.find_or_create_by(language: lang, year: nil, finish_line_marker: marker)
+            language_data[year][marker] = flp.status
+          end
+          # aggregate as we go
+          status = language_data[year][marker]
+          planning_data[year][marker.number][FinishLineProgress.category(status)] += 1
+        end
+      end
+    end
+    Rails.logger.debug(planning_data)
+    return planning_data
+  end
+
+  def get_max_future_years()
+    max_future_year = FinishLineProgress.where.not(year: nil).maximum(:year)
+    max_future_years = []
+    current_year = get_current_year()
+    if(max_future_year != nil && current_year < max_future_year)
+      current_year += 1
+      (current_year..max_future_year).each do |year|
+        max_future_years.push(year)
+      end
+    end
+    max_future_years
+  end
+
+  def create_flp(language, flm, selected_year)
+    #create new flp for future year if its not yet created
+    # If selected year is current year will return current year values, nil represents current year
+    max_year = nil
+    if selected_year != nil
+      max_year = FinishLineProgress.where(language: language, finish_line_marker: flm).where.not(year: nil).maximum(:year)
+    end
+
+    if max_year.present?
+      finish_line = FinishLineProgress.where(language: language, finish_line_marker: flm, year: max_year)
+    else
+      finish_line = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: flm, year: nil)
+    end
+    finish_line_progress = Hash.new()
+
+    if selected_year != nil
+      #here it will create future year data with previous year status
+      finish_line.each do |fl|
+        finish_line_progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: flm, status: fl.status, year: selected_year)
+      end
+    else
+      finish_line_progress = finish_line
+    end
+
+    finish_line_progress
+  end
+
+  def target_met?(current_data, target_data)
+    if current_data[:complete] < target_data[:complete]
+      false
+    elsif current_data[:progress] < target_data[:progress] and current_data[:no_progress] > target_data[:no_progress]
+      false
+    else
+      true
+    end
+  end
+
+  def planning_cell_status(cell_data)
+    if cell_data[:no_progress] > 0
+      'data-not-all-started'
+    elsif cell_data[:progress] > 0
+      'data-all-started'
+    else
+      'data-all-complete'
+    end
+  end
+
 end

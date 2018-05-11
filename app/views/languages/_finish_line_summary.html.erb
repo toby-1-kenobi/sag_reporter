@@ -5,6 +5,7 @@
   scripture_count = getScriptureEngageCount(languages)
 
   finish_marker_data = Hash.new()
+
   finish_line_data.each do |marker, data|
    finish_marker_data[marker.name] ||= Hash.new()
    finish_marker_data[marker.name][:no_progress] = data[:no_progress]
@@ -30,7 +31,7 @@
 
 
 
-<div id="flm-table">
+<div id="flm-table" style="width: 70em;">
   <div style="float: right"><%=
     link_to finish_line_marker_spreadsheet_path(spreadsheet_button_params), class: 'download-transformation-spreadsheet mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--accent' do %>
     <i class="material-icons">file_download</i>
@@ -44,19 +45,30 @@
       <thead>
         <tr>
           <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
-          <th>No Progress yet <i class="material-icons">star_border</i></th>
-          <th>In Progress <i class="material-icons">star_half</i></th>
-          <th>Complete <i class="material-icons">star</i></th>
+          <th class="no-need-column">No<br />Need<i class="material-icons"></i></th>
+          <th><i class="material-icons">star_border</i> No<br />Progress</th>
+          <th class="in-progress-column"><i class="material-icons">star_half</i> In<br />Progress</th>
+          <th class="complete-column"><i class="material-icons">star</i><br />Complete</th>
           <th><i class="material-icons">pie_chart</i></th>
+          <% if logged_in_user.can_future_plan? %>
+            <% planning_data = forward_planning_finish_line_data(languages, @flms) %>
+            <% if planning_data.any? %>
+              <th class="current-summary-column">Current<br />Summary<i class="material-icons"></i></th>
+              <% planning_data.keys.each do |year| %>
+                <th class="mdl-data-table__cell--non-numeric"><%= year %></th>
+              <% end %>
+            <% end %>
+          <% end %>
         </tr>
       </thead>
       <tbody>
       <% finish_line_data.each do |marker, data| %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><%= marker.name %></td>
+          <td class="no-need-column"><%= data[:nothing] %></td>
           <td><%= data[:no_progress] %> (<%= (data[:no_progress] *100) / language_amount %>%)</td>
-          <td><%= data[:progress] %> (<%= (data[:progress] *100) / language_amount %>%)</td>
-          <td><%= data[:complete] %> (<%= (data[:complete] *100) / language_amount %>%)</td>
+          <td class="in-progress-column"><%= data[:progress] %> (<%= (data[:progress] *100) / language_amount %>%)</td>
+          <td class="complete-column"><%= data[:complete] %> (<%= (data[:complete] *100) / language_amount %>%)</td>
           <td>
             <label class="mdl-icon-toggle mdl-js-icon-toggle mdl-js-ripple-effect" for="pie-toggle-<%= marker.number %>">
               <input type="checkbox" id="pie-toggle-<%= marker.number %>" class="pie-toggle mdl-icon-toggle__input", data-chart="pie-chart-<%= marker.number %>">
@@ -64,6 +76,22 @@
               <i class="mdl-icon-toggle__label material-icons off">pie_chart_outlined</i>
             </label>
           </td>
+          <% if logged_in_user.can_future_plan? and planning_data.any? %>
+            <td class="current-summary-column"><%= data[:no_progress] %> / <%= data[:progress] %> / <%= data[:complete] %> </td>
+            <% current_year = get_current_year %>
+            <% planning_data.keys.each do |year| %>
+              <% if year <= current_year %>
+                <% cell_data = target_met?(data, planning_data[year][marker.number]) ? 'data-target-met' : 'data-target-missed' %>
+              <% else %>
+                <% cell_data = planning_cell_status(planning_data[year][marker.number]) %>
+              <% end %>
+              <td class="mdl-data-table__cell--non-numeric" <%= cell_data %>>
+                  <%= planning_data[year][marker.number][:no_progress] %> /
+                  <%= planning_data[year][marker.number][:progress] %> /
+                  <%= planning_data[year][marker.number][:complete] %>
+              </td>
+            <% end %>
+          <% end %>
         </tr>
       <% end %>
       </tbody>
@@ -81,3 +109,4 @@
       </div>
   <% end %>
 </div>
+

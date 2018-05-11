@@ -63,7 +63,8 @@
   grid-auto-rows: auto;
   grid-row-gap: 0.4em;
   grid-template-areas:
-    "flm-table flm-chart"
+    "flm-table flm-table"
+    "flm-chart flm-chart"
     "flt-table flt-chart";
   #flm-table { grid-area: flm-table; }
   #flm-charts { grid-area: flm-chart; }

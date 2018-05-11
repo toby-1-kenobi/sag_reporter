@@ -1,0 +1,22 @@
+// Place all the styles related to the finish_line_progress controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+#flm-table {
+  .no-need-column {
+    background-color: #e5e5e5;
+    color: darkgrey;
+  }
+  .current-summary-column {
+    background-color: rgb(63,81,181);
+    color: white;
+  }
+  .in-progress-column, [data-all-started] {
+    background-color: gold;
+  }
+  .complete-column, [data-all-complete] {
+    background-color: mediumseagreen;
+  }
+  [data-target-missed] {
+    background-color: red;
+  }
+}

@@ -26,6 +26,21 @@ any of the finish line markers on any language.
     <i class="material-icons">file_download</i>
     Get Spreadsheet
   <% end %>
+  <% if logged_in_user.can_future_plan? %>
+    <%= form_for :finish_line_progress, url: change_future_year_path, remote: true, method: :get do |f| %>
+      <% future_years = get_max_future_years()
+        fy_array = future_years.map {|fy| [fy,fy]} %>
+      <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+        <% if (defined?(zone_id)) %>
+          <%= f.hidden_field :zone_id, :value => zone_id %>
+        <% elsif (defined?(state_id)) %>
+          <%= f.hidden_field :state_id, :value => state_id %>
+        <% end %>
+        <%= f.select(:year_id, options_for_select(fy_array),{:include_blank => 'Current year'}, {id: 'change-year-select', class: 'mdl-selectfield__select'}) %>
+
+      </div>
+    <% end %>
+  <% end %>
 </div>
 
 <!-- include a mapping of finish line status to category here in the table tag -->
@@ -82,8 +97,8 @@ any of the finish line markers on any language.
     <% end %>
   </tr>
   </thead>
-  <tbody>
-    <%= render partial: 'languages/flm_table_row', collection: @languages.order(:name) %>
+  <tbody id="flm-table-row-id">
+    <%= render partial: 'languages/flm_table_row', collection: @languages.order(:name), locals: {selected_year: nil} %>
   </tbody>
 </table>
 

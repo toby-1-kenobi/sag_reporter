@@ -201,6 +201,11 @@ Rails.application.routes.draw do
   get 'finish_line_marker_spreadsheet' => 'state_languages#finish_line_marker_spreadsheet', as: 'finish_line_marker_spreadsheet'
   get 'language_tab_spreadsheet' => 'languages#language_tab_spreadsheet', as: 'language_tab_spreadsheet'
 
+  #adding finish line progress for future year
+  get 'add_finish_line_progress' => 'languages#add_finish_line_progress', as: 'add_finish_line_progress'
+
+  get 'change_future_year' => 'languages#change_future_year'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

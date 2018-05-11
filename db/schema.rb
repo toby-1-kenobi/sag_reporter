@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180425062535) do
+ActiveRecord::Schema.define(version: 20180426050900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -212,10 +212,11 @@ ActiveRecord::Schema.define(version: 20180425062535) do
     t.integer  "status",                default: 1, null: false
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
+    t.integer  "year"
   end
 
   add_index "finish_line_progresses", ["finish_line_marker_id"], name: "index_finish_line_progresses_on_finish_line_marker_id", using: :btree
-  add_index "finish_line_progresses", ["language_id", "finish_line_marker_id"], name: "index_lang_finish_line", unique: true, using: :btree
+  add_index "finish_line_progresses", ["language_id", "finish_line_marker_id", "year"], name: "index_lang_finish_line", unique: true, using: :btree
   add_index "finish_line_progresses", ["language_id"], name: "index_finish_line_progresses_on_language_id", using: :btree
 
   create_table "geo_states", force: :cascade do |t|
@@ -681,6 +682,8 @@ ActiveRecord::Schema.define(version: 20180425062535) do
     t.datetime "curator_prompted"
     t.boolean  "reset_password",        default: false
     t.string   "reset_password_token"
+    t.boolean  "lci_board_member",      default: false, null: false
+    t.boolean  "lci_agency_leader",     default: false, null: false
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree

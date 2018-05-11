@@ -1,0 +1,25 @@
+
+<% FinishLineMarker.find_each do |marker| %>
+
+    <dialog id="finish-line-dialog-<%= marker.number %><%= year %>" class="mdl-dialog">
+      <h4 class="mdl-dialog__title"><%= marker.name %></h4>
+      <div class="mdl-dialog__content ">
+        <span class="description"><%= marker.description %></span>
+        <ul class="finish-line-progress-options-ce mdl-list">
+          <% FinishLineProgress.statuses.each do |status, status_id| %>
+            <% link_text = FinishLineProgress.human_of_status(status, marker.number) %>
+            <% if link_text %>
+              <li class="mdl-list__item">
+                <%= link_to link_text, set_flp_for_language_path(id: language, marker: marker.number, progress: status, year: year), class: "progress-link mdl-list__item-primary-content cancel", id: "flp-#{marker.number}-status-#{status}", method: :patch, remote: true %>
+                <span class="mdl-tooltip" for="flp-<%= marker.number %>-status-<%= status %>"><%= marker.status_description(status) %></span>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </div>
+      <div class="md-dialog__actions">
+        <button type="button" class="mdl-button cancel">Cancel</button>
+      </div>
+    </dialog>
+
+<% end %>
