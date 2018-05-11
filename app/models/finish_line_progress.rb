@@ -18,6 +18,8 @@ class FinishLineProgress < ActiveRecord::Base
 
   validates :status, presence: true
 
+  after_update :ripple_status_change, if: :status_changed?
+
   scope :languages, -> languages {
     where(language: languages)
   }
@@ -40,6 +42,30 @@ class FinishLineProgress < ActiveRecord::Base
         :progress
       else
         :complete
+    end
+  end
+
+  # give a progress level by status
+  # to define which statuses represents further progress or less.
+  # This is needed for future planning
+  # When setting a status in a year where later years exist
+  # then the same status should be set in later years as long as it's not a backwards step
+  def progress_level
+    case status
+    when 'possible_need', 'no_need', 'not_accessible'
+      1
+    when 'expressed_needs'
+      2
+    when 'in_progress'
+      3
+    when 'completed'
+      4
+    when 'further_needs_expressed'
+      5
+    when 'further_work_in_progress'
+      6
+    else
+      7
     end
   end
 
@@ -112,6 +138,23 @@ class FinishLineProgress < ActiveRecord::Base
         'completed' => 'Many churches using',
         'further_work_in_progress' => 'Church running project'
     }
+  end
+
+  private
+
+  def ripple_status_change
+    this_year = year || ApplicationController.helpers.get_current_year
+    # and there exists an flp in the following for the same language and marker
+    next_year = FinishLineProgress.find_by(
+        language_id: language_id,
+        finish_line_marker_id: finish_line_marker_id,
+        year: this_year + 1
+    )
+    # and that flp has an equal or lower progress level
+    if next_year and next_year.progress_level <= progress_level
+      # then ripple this status on to the next
+      next_year.update_attribute(:status, status)
+    end
   end
 
 end
