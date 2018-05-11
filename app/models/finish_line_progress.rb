@@ -80,30 +80,38 @@ class FinishLineProgress < ActiveRecord::Base
       church_engagement_status[status]
     else
       case status
-        when 'no_need'
-          'No need'
-        when 'not_accessible'
-          'Language not accessible'
-        when 'possible_need', 'expressed_needs'
-          "#{status.humanize}, not started"
-        when 'in_progress'
-          'In progress, not completed'
-        when 'completed'
-          case marker_number
-            when 2, 3, 4, 8, 9, 10
-              'Reached requirements'
-            else
-              'Completed'
-          end
-        when 'further_needs_expressed', 'further_work_in_progress'
-          case marker_number
-            when 2, 3, 4, 8, 9, 10
-              "Reached requirements, #{status.humanize}"
-            else
-              "Completed, #{status.humanize}"
+      when 'no_need'
+        'No action needed'
+      when 'not_accessible'
+        'Language not accessible'
+      when 'possible_need', 'expressed_needs'
+        if marker_number == 7 # OT
+          if status == 'possible_need'
+            'Possible need (not V2033)'
+          else
+            'Target is OT by 2033'
           end
         else
-          false
+          "#{status.humanize}, not started"
+        end
+      when 'in_progress'
+        'In progress, not completed'
+      when 'completed'
+        case marker_number
+        when 2, 3, 4, 8, 9, 10
+          'Reached requirements'
+        else
+          'Completed'
+        end
+      when 'further_needs_expressed', 'further_work_in_progress'
+        case marker_number
+        when 2, 3, 4, 8, 9, 10
+          "Reached requirements, #{status.humanize}"
+        else
+          "Completed, #{status.humanize}"
+        end
+      else
+        false
       end
     end
   end
@@ -116,12 +124,21 @@ class FinishLineProgress < ActiveRecord::Base
     if marker_number == 0
       FinishLineProgress.church_engagement_status[status]
     else
-      if status == 'completed'
+      case status
+      when 'completed'
         case marker_number
-          when 2, 3, 4, 8, 9, 10
-            'Reached requirements'
-          else
-            'Completed'
+        when 2, 3, 4, 8, 9, 10
+          'Reached requirements'
+        else
+          'Completed'
+        end
+      when 'no_need'
+        'No action needed'
+      when 'expressed_needs'
+        if marker_number == 7 # OT
+          'Target V2033'
+        else
+          status.humanize
         end
       else
         status.humanize
