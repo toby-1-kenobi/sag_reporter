@@ -208,16 +208,14 @@ module LanguagesHelper
 
     # first collect all the required finish line statuses
     languages.each do |lang|
-      Rails.logger.debug lang.name
       language_data = {} # fresh hash for this language
       # finish line progresses should already be fetched from the db
       # put them in array here
       flp_array = lang.finish_line_progresses.to_a
       (min_year .. max_year).each do |year|
-        Rails.logger.debug year
         language_data[year] = {}
         planning_data[year] ||= {}
-        planning_data[year][:vision] = Hash.new(0)
+        planning_data[year][:vision] ||= Hash.new(0)
         markers.each do |marker|
           planning_data[year][marker.number] ||= Hash.new(0)
           flp = flp_array.select{ |flp| flp.year == year and flp.finish_line_marker_id == marker.id }.first
@@ -239,10 +237,8 @@ module LanguagesHelper
         end
         # also calculate a row in the table for vision 2025 and vision 2033
         planning_data[year][:vision][vision_hit(language_data[year])] += 1
-        Rails.logger.debug 'hit'
       end
     end
-    Rails.logger.debug(planning_data)
     return planning_data
   end
 
