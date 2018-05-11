@@ -25,10 +25,10 @@ class ZonesController < ApplicationController
     # if there is an id parameter we are loading for a specific zone
     if params[:id].present?
       @partial_locals[:zone] = Zone.find params[:id]
-      @partial_locals[:languages] = @partial_locals[:zone].languages.includes(:finish_line_progresses).uniq
+      @partial_locals[:languages] = @partial_locals[:zone].languages.includes(finish_line_progresses: :finish_line_marker).uniq
     else
       # otherwise we are loading for the whole nation
-      @partial_locals[:languages] = Language.all.includes(:finish_line_progresses)
+      @partial_locals[:languages] = Language.all.includes(finish_line_progresses: :finish_line_marker)
     end
     @flms = FinishLineMarker.dashboard_visible.order(:number)
     respond_to do |format|

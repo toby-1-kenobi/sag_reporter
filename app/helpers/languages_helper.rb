@@ -38,7 +38,7 @@ module LanguagesHelper
     table = markers.map{ |marker| [marker, Hash.new(0)] }.to_h
     languages.each do |lang|
       lang_check_list = check_list.dup
-      lang.finish_line_progresses.where(year: nil).each do |flp|
+      lang.finish_line_progresses.to_a.select{ |flp| flp.year == nil }.each do |flp|
         marker = flp.finish_line_marker
         if table[marker]
           table[marker][flp.category] += 1
@@ -202,13 +202,16 @@ module LanguagesHelper
 
     # first collect all the required finish line statuses
     languages.each do |lang|
-      language_data = {} # for this language
+      language_data = {} # fresh hash for this language
+      # finish line progresses should already be fetched from the db
+      # put them in array here
+      flp_array = lang.finish_line_progresses.to_a
       (min_year .. max_year).each do |year|
         language_data[year] = {}
         planning_data[year] ||= {}
         markers.each do |marker|
           planning_data[year][marker.number] ||= Hash.new(0)
-          flp = lang.finish_line_progresses.find_by(year: year, finish_line_marker: marker)
+          flp = flp_array.select{ |flp| flp.year == year and flp.finish_line_marker_id == marker.id }.first
           if flp
             # if we have the finish line progress for this language, year and marker
             # then record its status

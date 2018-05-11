@@ -18,7 +18,7 @@ class GeoStatesController < ApplicationController
   def load_flm_summary
     @partial_locals = {}
     @partial_locals[:geo_state] = GeoState.find params[:id]
-    @partial_locals[:languages] = @partial_locals[:geo_state].languages.includes(:finish_line_progresses).uniq
+    @partial_locals[:languages] = @partial_locals[:geo_state].languages.includes(finish_line_progresses: :finish_line_marker).uniq
     @flms = FinishLineMarker.dashboard_visible.order(:number)
     respond_to do |format|
       format.js { render 'languages/load_flm_summary' }
