@@ -2,6 +2,7 @@
 <%
   language_amount = languages.count
   finish_line_data = build_finish_line_table(languages, @flms)
+  vision_line = finish_line_data.delete :vision
   scripture_count = getScriptureEngageCount(languages)
 
   finish_marker_data = Hash.new()
@@ -62,6 +63,30 @@
         </tr>
       </thead>
       <tbody>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">V2025 (yellow) / V2033 (green)</td>
+        <td class="no-need-column"><%= vision_line[:nothing] %></td>
+        <td><%= vision_line[:no_progress] %></td>
+        <td class="in-progress-column"><%= vision_line[:progress] %></td>
+        <td class="complete-column"><%= vision_line[:complete] %></td>
+        <td></td>
+        <% if logged_in_user.can_future_plan? and planning_data.any? %>
+          <td class="current-summary-column"><%= vision_line[:no_progress] %> / <%= vision_line[:progress] %> / <%= vision_line[:complete] %> </td>
+          <% current_year = get_current_year %>
+          <% planning_data.keys.each do |year| %>
+            <% if year <= current_year %>
+              <% cell_data = target_met?(data, planning_data[year][:vision]) ? 'data-target-met' : 'data-target-missed' %>
+            <% else %>
+              <% cell_data = planning_cell_status(planning_data[year][:vision]) %>
+            <% end %>
+            <td class="mdl-data-table__cell--non-numeric" <%= cell_data %>>
+              <%= planning_data[year][:vision][:no_progress] %> /
+              <%= planning_data[year][:vision][:progress] %> /
+              <%= planning_data[year][:vision][:complete] %>
+            </td>
+          <% end %>
+        <% end %>
+      </tr>
       <% finish_line_data.each do |marker, data| %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><%= marker.name %></td>

@@ -36,10 +36,14 @@ module LanguagesHelper
   def build_finish_line_table(languages, markers)
     check_list = markers.map{ |m| m.number }
     table = markers.map{ |marker| [marker, Hash.new(0)] }.to_h
+    table[:vision] = Hash.new(0)
     languages.each do |lang|
       lang_check_list = check_list.dup
-      lang.finish_line_progresses.to_a.select{ |flp| flp.year == nil }.each do |flp|
+      fl_status_data = {}
+      flp_array = lang.finish_line_progresses.to_a
+      flp_array.select{ |flp| flp.year == nil }.each do |flp|
         marker = flp.finish_line_marker
+        fl_status_data[marker.number] = flp.status
         if table[marker]
           table[marker][flp.category] += 1
           lang_check_list.delete(marker.number)
@@ -49,9 +53,11 @@ module LanguagesHelper
         lang_check_list.each do |marker_number|
           marker = FinishLineMarker.find_by_number(marker_number)
           flp = lang.finish_line_progresses.find_or_create_by(finish_line_marker: marker)
+          fl_status_data[marker.number] = flp.status
           table[marker][flp.category] += 1
         end
       end
+      table[:vision][vision_hit(fl_status_data)] += 1
     end
     table
   end
@@ -202,36 +208,59 @@ module LanguagesHelper
 
     # first collect all the required finish line statuses
     languages.each do |lang|
+      Rails.logger.debug lang.name
       language_data = {} # fresh hash for this language
       # finish line progresses should already be fetched from the db
       # put them in array here
       flp_array = lang.finish_line_progresses.to_a
       (min_year .. max_year).each do |year|
+        Rails.logger.debug year
         language_data[year] = {}
         planning_data[year] ||= {}
+        planning_data[year][:vision] = Hash.new(0)
         markers.each do |marker|
           planning_data[year][marker.number] ||= Hash.new(0)
           flp = flp_array.select{ |flp| flp.year == year and flp.finish_line_marker_id == marker.id }.first
           if flp
             # if we have the finish line progress for this language, year and marker
             # then record its status
-            language_data[year][marker] = flp.status
+            language_data[year][marker.number] = flp.status
           elsif language_data[year - 1]
             # otherwise if we found one for the year before use that for the status
-            language_data[year][marker] = language_data[year - 1][marker]
+            language_data[year][marker.number] = language_data[year - 1][marker.number]
           else
             # otherwise use the one for current year (if necessary creating it with default status)
             flp = FinishLineProgress.find_or_create_by(language: lang, year: nil, finish_line_marker: marker)
-            language_data[year][marker] = flp.status
+            language_data[year][marker.number] = flp.status
           end
           # aggregate as we go
-          status = language_data[year][marker]
+          status = language_data[year][marker.number]
           planning_data[year][marker.number][FinishLineProgress.category(status)] += 1
         end
+        # also calculate a row in the table for vision 2025 and vision 2033
+        planning_data[year][:vision][vision_hit(language_data[year])] += 1
+        Rails.logger.debug 'hit'
       end
     end
     Rails.logger.debug(planning_data)
     return planning_data
+  end
+
+  def vision_hit(finish_line_data)
+    ot_status = finish_line_data[7]
+    nt_category = FinishLineProgress.category(finish_line_data[6])
+    if (nt_category == :nothing or nt_category == :complete) and ot_status != 'in_progress' and ot_status != 'expressed_need'
+      :complete
+    elsif nt_category == :progress
+      :progress
+    else
+      storying_level = FinishLineProgress.progress_level(finish_line_data[2])
+      if storying_level >= 3 # at least in progress
+        :progress
+      else
+        :no_progress
+      end
+    end
   end
 
   def get_max_future_years()

@@ -50,7 +50,7 @@ class FinishLineProgress < ActiveRecord::Base
   # This is needed for future planning
   # When setting a status in a year where later years exist
   # then the same status should be set in later years as long as it's not a backwards step
-  def progress_level
+  def self.progress_level(status)
     case status
     when 'possible_need', 'no_need', 'not_accessible'
       1
@@ -67,6 +67,10 @@ class FinishLineProgress < ActiveRecord::Base
     else
       7
     end
+  end
+
+  def progress_level
+    FinishLineProgress.progress_level(status)
   end
 
   def human_status
