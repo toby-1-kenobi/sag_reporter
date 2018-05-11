@@ -47,7 +47,7 @@
         <tr>
           <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
           <th class="no-need-column">No Action<br />Needed<i class="material-icons"></i></th>
-          <th><i class="material-icons">star_border</i> No<br />Progress</th>
+          <th class="no-progress-column"><i class="material-icons">star_border</i> No<br />Progress</th>
           <th class="in-progress-column"><i class="material-icons">star_half</i> In<br />Progress</th>
           <th class="complete-column"><i class="material-icons">star</i><br />Complete</th>
           <th><i class="material-icons">pie_chart</i></th>
@@ -63,19 +63,19 @@
         </tr>
       </thead>
       <tbody>
-      <tr>
-        <td class="mdl-data-table__cell--non-numeric">V2025 (yellow) / V2033 (green)</td>
+      <tr id="vision-finish-line-summary-row">
+        <td class="mdl-data-table__cell--non-numeric">V2025 (yellow)<br />V2033 (green)</td>
         <td class="no-need-column"><%= vision_line[:nothing] %></td>
-        <td><%= vision_line[:no_progress] %></td>
+        <td class="no-progress-column"><%= vision_line[:no_progress] %></td>
         <td class="in-progress-column"><%= vision_line[:progress] %></td>
         <td class="complete-column"><%= vision_line[:complete] %></td>
         <td></td>
         <% if logged_in_user.can_future_plan? and planning_data.any? %>
-          <td class="current-summary-column"><%= vision_line[:no_progress] %> / <%= vision_line[:progress] %> / <%= vision_line[:complete] %> </td>
+          <td class="current-summary-column" <%= planning_cell_status(vision_line) %>><%= vision_line[:no_progress] %> / <%= vision_line[:progress] %> / <%= vision_line[:complete] %> </td>
           <% current_year = get_current_year %>
           <% planning_data.keys.each do |year| %>
-            <% if year <= current_year %>
-              <% cell_data = target_met?(data, planning_data[year][:vision]) ? 'data-target-met' : 'data-target-missed' %>
+            <% if year < current_year %>
+              <% cell_data = target_met?(vision_line, planning_data[year][:vision]) ? 'data-target-met' : 'data-target-missed' %>
             <% else %>
               <% cell_data = planning_cell_status(planning_data[year][:vision]) %>
             <% end %>
@@ -102,10 +102,10 @@
             </label>
           </td>
           <% if logged_in_user.can_future_plan? and planning_data.any? %>
-            <td class="current-summary-column"><%= data[:no_progress] %> / <%= data[:progress] %> / <%= data[:complete] %> </td>
+            <td class="current-summary-column" <%= planning_cell_status(data) %>><%= data[:no_progress] %> / <%= data[:progress] %> / <%= data[:complete] %> </td>
             <% current_year = get_current_year %>
             <% planning_data.keys.each do |year| %>
-              <% if year <= current_year %>
+              <% if year < current_year %>
                 <% cell_data = target_met?(data, planning_data[year][marker.number]) ? 'data-target-met' : 'data-target-missed' %>
               <% else %>
                 <% cell_data = planning_cell_status(planning_data[year][marker.number]) %>
