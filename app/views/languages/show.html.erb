@@ -85,7 +85,7 @@
             </td>
             <% @future_years.each do |fy| %>
               <% if logged_in_user.can_future_plan? or fy == nil %>
-                <% future_progress = FinishLineProgress.find_by(language: @language, finish_line_marker: marker, year: fy) %>
+                <% future_progress = FinishLineProgress.find_or_create_in_sequence(language: @language, finish_line_marker: marker, year: fy) %>
                 <% if future_progress %>
                   <td
                     id="finish-line-progress-status-<%= marker.number %><%= fy %>"

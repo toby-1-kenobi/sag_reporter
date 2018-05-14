@@ -17,6 +17,8 @@ class FinishLineProgress < ActiveRecord::Base
   belongs_to :finish_line_marker
 
   validates :status, presence: true
+  validates :language, presence: true
+  validates :finish_line_marker, presence: true
 
   after_update :ripple_status_change, if: :status_changed?
 
@@ -175,6 +177,62 @@ class FinishLineProgress < ActiveRecord::Base
     if next_year and next_year.progress_level <= progress_level
       # then ripple this status on to the next
       next_year.update_attribute(:status, status)
+    end
+  end
+
+  # find a finish line progress for a given language marker and year
+  # if that doesn't exist find the one that matches language and marker
+  # with maximum year less than the given year
+  # when no markers of any year match find the one for current year (year == nil)
+  def self.closest_to(language_id, flm_id, year)
+    flp = where(language_id: language_id, finish_line_marker_id: flm_id).
+        where('year <= ?', year ).
+        where.not(year: nil).
+        order(:year).last
+    flp ||= find_by(language_id: language_id, finish_line_marker_id: flm_id, year: nil)
+    flp
+  end
+
+  # find a finish line progress by the attributes
+  # if it doesn't exist create it and create one for each year
+  # leading up to the year in the attributes
+  # status continues from most recent
+  def self.find_or_create_in_sequence(attributes)
+    flp = find_by attributes
+    if flp
+      flp
+    else
+      year = attributes.delete(:year).to_i
+      return nil unless year # create in sequence requires 'year' attribute
+      closest_flp = where(attributes).where.not(year: nil).order(:year).last
+      if closest_flp
+        start_year = closest_flp.year + 1
+        status = closest_flp.status
+      else
+        start_year = get_current_year + 1
+        Rails.logger.debug("attributes: #{attributes.merge(year: nil)}")
+        current_flp = find_or_create_by(attributes.merge(year: nil))
+        status = current_flp.status
+      end
+      while start_year <= year
+        Rails.logger.debug "creating flp: #{start_year}"
+        flp = FinishLineProgress.create(attributes.merge(year: start_year, status: status))
+        start_year += 1
+      end
+    end
+    flp
+  end
+
+  def self.get_current_year
+    # year ticks over on October 1st
+    year_cutoff_month = 10
+    year_cutoff_day = 1
+    current_year = Date.today.year
+    cutoff_date = Date.new(current_year, year_cutoff_month, year_cutoff_day)
+    if Date.today >= cutoff_date
+      current_year + 1
+    else
+      current_year
     end
   end
 

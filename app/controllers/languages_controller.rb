@@ -272,7 +272,7 @@ class LanguagesController < ApplicationController
   def set_finish_line_progress
     language = Language.find(params[:id])
     marker = FinishLineMarker.find_by_number(params[:marker])
-    progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: marker, year: params[:year])
+    progress = FinishLineProgress.find_or_create_in_sequence(language: language, finish_line_marker: marker, year: params[:year])
     @edit = Edit.new(
         user: logged_in_user,
         model_klass_name: 'FinishLineProgress',
@@ -335,12 +335,11 @@ class LanguagesController < ApplicationController
 
     if @max_year.present?
       finish_line = FinishLineProgress.where(language: @language, year: @max_year)
-      @max_year += 1
     else
       finish_line = FinishLineProgress.where(language: @language, year: nil)
-      @max_year = get_current_year()
-      @max_year += 1
+      @max_year = FinishLineProgress.get_current_year
     end
+    @max_year += 1
     @flp = []
     finish_line.order(:finish_line_marker_id).each do |fl|
       finish_line_progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: fl.finish_line_marker, status: fl.status, year: @max_year)
