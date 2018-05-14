@@ -80,7 +80,7 @@
               </button>
             </td>
             <% @future_years.each do |fy| %>
-              <% future_progress = FinishLineProgress.find_by(language: @language, finish_line_marker: marker, year: fy)%>
+              <% future_progress = FinishLineProgress.find_or_create_in_sequence(language: @language, finish_line_marker: marker, year: fy)%>
               <td id="finish-line-progress-status-<%= marker.number %><%= fy %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if editable %> <%= 'church-engagement' if marker.number == 0 %>"><%= future_progress.simple_human_status %><%= render 'shared/edit_icon' if editable %></td>
             <% end %>
           </tr>
