@@ -166,7 +166,7 @@ class FinishLineProgress < ActiveRecord::Base
   private
 
   def ripple_status_change
-    this_year = year || ApplicationController.helpers.get_current_year
+    this_year = year || get_current_year
     # and there exists an flp in the following for the same language and marker
     next_year = FinishLineProgress.find_by(
         language_id: language_id,

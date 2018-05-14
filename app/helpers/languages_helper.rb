@@ -174,19 +174,6 @@ module LanguagesHelper
     display_text
   end
 
-  def get_current_year
-    # year ticks over on October 1st
-    year_cutoff_month = 10
-    year_cutoff_day = 1
-    current_year = Date.today.year
-    cutoff_date = Date.new(current_year, year_cutoff_month, year_cutoff_day)
-    if Date.today >= cutoff_date
-      current_year + 1
-    else
-      current_year
-    end
-  end
-
   def get_future_years(language)
     cur_year = FinishLineProgress.get_current_year
     future_years = []

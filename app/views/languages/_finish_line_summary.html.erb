@@ -72,7 +72,7 @@
         <td></td>
         <% if logged_in_user.can_future_plan? and planning_data.any? %>
           <td class="current-summary-column" <%= planning_cell_status(vision_line) %>><%= vision_line[:no_progress] %> / <%= vision_line[:progress] %> / <%= vision_line[:complete] %> </td>
-          <% current_year = get_current_year %>
+          <% current_year = FinishLineProgress.get_current_year %>
           <% planning_data.keys.each do |year| %>
             <% if year < current_year %>
               <% cell_data = target_met?(vision_line, planning_data[year][:vision]) ? 'data-target-met' : 'data-target-missed' %>
