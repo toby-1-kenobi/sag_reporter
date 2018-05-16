@@ -87,7 +87,6 @@
               <% if logged_in_user.can_future_plan? or fy == nil %>
                 <% future_progress = FinishLineProgress.find_or_create_in_sequence(language: @language, finish_line_marker: marker, year: fy) %>
                 <% if future_progress %>
-                  <% if future_progress %>
                   <td
                     id="finish-line-progress-status-<%= marker.number %><%= fy %>"
                     class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if editable %> <%= 'church-engagement' if marker.number == 0 %>"

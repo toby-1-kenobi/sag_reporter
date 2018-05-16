@@ -66,8 +66,15 @@
     "flm-table flm-table"
     "flm-chart flm-chart"
     "flt-table flt-chart";
-  #flm-table { grid-area: flm-table; }
-  #flm-charts { grid-area: flm-chart; }
+  #flm-table {
+    grid-area: flm-table;
+    overflow: auto;
+  }
+  #flm-charts {
+    grid-area: flm-chart;
+    display: flex;
+    flex-wrap: wrap;
+  }
   #flt-table { grid-area: flt-table; }
   #flt-charts { grid-area: flt-chart; }
 }
