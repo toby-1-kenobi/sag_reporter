@@ -232,9 +232,9 @@ module LanguagesHelper
   def vision_hit(finish_line_data)
     ot_status = finish_line_data[7]
     nt_category = FinishLineProgress.category(finish_line_data[6])
-    if (nt_category == :nothing or nt_category == :complete) and ot_status != 'in_progress' and ot_status != 'expressed_need'
+    if (nt_category == :nothing or nt_category == :complete) and ot_status != FinishLineProgress.statuses.key(3) and ot_status != FinishLineProgress.statuses.key(5)
       :complete
-    elsif nt_category == :progress
+    elsif nt_category == :progress or nt_category == :complete
       :progress
     else
       storying_level = FinishLineProgress.progress_level(finish_line_data[2])
