@@ -154,6 +154,7 @@ table.language-data th {
 }
 
 .finish-line-status  {
+  overflow: auto;
   .nothing, [data-status-category="nothing"] {
     background-color: lightgrey;
   }
