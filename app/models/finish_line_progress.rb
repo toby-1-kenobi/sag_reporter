@@ -212,12 +212,12 @@ class FinishLineProgress < ActiveRecord::Base
 
   def ripple_status_change
     this_year = year || get_current_year
-    # and there exists an flp in the following for the same language and marker
-    next_year = FinishLineProgress.find_by(
+    # and there exists an flp in the following year for the same language and marker
+    # # if there's not one in the following, but in later year - get that
+    next_year = FinishLineProgress.where(
         language_id: language_id,
         finish_line_marker_id: finish_line_marker_id,
-        year: this_year + 1
-    )
+    ).where('year > ?', this_year).order(:year).first
     # and that flp has an equal or lower progress level
     if next_year and next_year.progress_level <= progress_level
       # then ripple this status on to the next
