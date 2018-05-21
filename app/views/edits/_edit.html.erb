@@ -3,6 +3,10 @@
   <div class="mdl-card__title">
     <h2 class="mdl-card__title-text">
       Edit for <%= edit.model_klass_name.titleize %>&nbsp;
+      <% if edit.model_klass_name == 'FinishLineProgress' %>
+        <% year_under_edit = object.year || 'the current year' %>
+        (for <%= year_under_edit %>)
+      <% end %>
       <%= link_to object %>
     </h2>
     <h3 class="mdl-card__subtitle-text"></h3>
