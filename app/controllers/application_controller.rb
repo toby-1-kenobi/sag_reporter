@@ -13,7 +13,12 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     if logged_in?
-      I18n.locale = logged_in_user.locale
+      begin
+        I18n.locale = logged_in_user.locale
+      rescue I18n::InvalidLocaleData
+        Rails.logger.warn('locale error - setting to default')
+        I18n.locale = I18n.default_locale
+      end
     else
       I18n.locale = I18n.default_locale
     end
