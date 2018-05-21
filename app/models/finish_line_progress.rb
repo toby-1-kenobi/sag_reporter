@@ -21,6 +21,7 @@ class FinishLineProgress < ActiveRecord::Base
   validates :finish_line_marker, presence: true
 
   after_update :ripple_status_change, if: :status_changed?
+  after_create :fill_gaps
 
   scope :languages, -> languages {
     where(language: languages)
@@ -163,23 +164,6 @@ class FinishLineProgress < ActiveRecord::Base
     }
   end
 
-  private
-
-  def ripple_status_change
-    this_year = year || get_current_year
-    # and there exists an flp in the following for the same language and marker
-    next_year = FinishLineProgress.find_by(
-        language_id: language_id,
-        finish_line_marker_id: finish_line_marker_id,
-        year: this_year + 1
-    )
-    # and that flp has an equal or lower progress level
-    if next_year and next_year.progress_level <= progress_level
-      # then ripple this status on to the next
-      next_year.update_attribute(:status, status)
-    end
-  end
-
   # find a finish line progress for a given language marker and year
   # if that doesn't exist find the one that matches language and marker
   # with maximum year less than the given year
@@ -193,36 +177,6 @@ class FinishLineProgress < ActiveRecord::Base
     flp
   end
 
-  # find a finish line progress by the attributes
-  # if it doesn't exist create it and create one for each year
-  # leading up to the year in the attributes
-  # status continues from most recent
-  def self.find_or_create_in_sequence(attributes)
-    flp = find_by attributes
-    if flp
-      flp
-    else
-      year = attributes.delete(:year).to_i
-      return nil unless year # create in sequence requires 'year' attribute
-      closest_flp = where(attributes).where.not(year: nil).order(:year).last
-      if closest_flp
-        start_year = closest_flp.year + 1
-        status = closest_flp.status
-      else
-        start_year = get_current_year + 1
-        Rails.logger.debug("attributes: #{attributes.merge(year: nil)}")
-        current_flp = find_or_create_by(attributes.merge(year: nil))
-        status = current_flp.status
-      end
-      while start_year <= year
-        Rails.logger.debug "creating flp: #{start_year}"
-        flp = FinishLineProgress.create(attributes.merge(year: start_year, status: status))
-        start_year += 1
-      end
-    end
-    flp
-  end
-
   def self.get_current_year
     # year ticks over on October 1st
     year_cutoff_month = 10
@@ -233,6 +187,41 @@ class FinishLineProgress < ActiveRecord::Base
       current_year + 1
     else
       current_year
+    end
+  end
+
+  private
+
+  # If we've created a future FLP and there's years
+  # between current and the year for this FLP that don't have
+  # FLPs for this language and marker
+  # fill in those years
+  def fill_gaps
+    if year
+      attributes = { language_id: language_id, finish_line_marker_id: finish_line_marker_id, year: nil }
+      last = FinishLineProgress.find_or_create_by(attributes)
+      year_index = FinishLineProgress.get_current_year + 1
+      while (year_index < year)
+        Rails.logger.debug("year: #{year}, year_index: #{year_index}")
+        attributes[:year] = year_index
+        last = FinishLineProgress.create_with(status: last.status).find_or_create_by(attributes)
+        year_index += 1
+      end
+    end
+  end
+
+  def ripple_status_change
+    this_year = year || get_current_year
+    # and there exists an flp in the following for the same language and marker
+    next_year = FinishLineProgress.find_by(
+        language_id: language_id,
+        finish_line_marker_id: finish_line_marker_id,
+        year: this_year + 1
+    )
+    # and that flp has an equal or lower progress level
+    if next_year and next_year.progress_level <= progress_level
+      # then ripple this status on to the next
+      next_year.update_attribute(:status, status)
     end
   end
 

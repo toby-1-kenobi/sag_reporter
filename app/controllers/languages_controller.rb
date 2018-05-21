@@ -272,7 +272,7 @@ class LanguagesController < ApplicationController
   def set_finish_line_progress
     language = Language.find(params[:id])
     marker = FinishLineMarker.find_by_number(params[:marker])
-    progress = FinishLineProgress.find_or_create_in_sequence(language: language, finish_line_marker: marker, year: params[:year])
+    progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: marker, year: params[:year])
     @edit = Edit.new(
         user: logged_in_user,
         model_klass_name: 'FinishLineProgress',
