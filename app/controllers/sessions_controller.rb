@@ -17,17 +17,9 @@ class SessionsController < ApplicationController
         # for this user we can skip the otp process
         log_in @user
         remember @user
-        @user.reset_password_token = nil;
+        @user.reset_password_token = nil
         @user.save
         render 'password_resets/change_password' and return
-        otp_code = @user.otp_code
-        if @user.phone.present?
-          @ticket = send_otp_on_phone("+91#{@user.phone}", otp_code)
-          flash.now['info'] = "A short login code has been sent to your phone (#{@user.phone}). Please wait for it."
-        else
-          flash['error'] = 'Your phone number is not on record. A phone number is necessary for password reset'
-          redirect_to login_path
-        end
       else
         flash['error'] = 'Incorrect reset password token'
         redirect_to login_path
@@ -84,10 +76,7 @@ class SessionsController < ApplicationController
     logger.debug('resend otp email')
     if session[:temp_user]
       if user = User.find_by(id: session[:temp_user])
-        # users who are getting their password reset shouldn't be able to get the otp by email
-        if user.reset_password_token.present?
-          @success = false
-        elsif send_otp_via_mail(user, user.otp_code)
+        if send_otp_via_mail(user, user.otp_code)
           @success = true
         else
           @success = false
@@ -125,13 +114,8 @@ class SessionsController < ApplicationController
         session[:temp_user] = nil
         log_in user
         remember user
-        # if the user has come through the forgot password track
-        if user.reset_password_token.present?
-          user.reset_password_token = nil;
-          user.save
-          render 'password_resets/change_password' and return
         # if the user's password is "password" they should change it
-        elsif user.authenticate('password')
+        if user.authenticate('password')
           flash['info'] = 'Welcome to Last Command Initiative Reporter.' +
               ' Please make a new password. It should be something another person could not guess.' +
               ' Type it here two times and click \'update\'.'
