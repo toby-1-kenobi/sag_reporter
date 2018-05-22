@@ -14,9 +14,12 @@ class SessionsController < ApplicationController
       redirect_to login_path unless @user
       if BCrypt::Password.new(@user.reset_password_token).is_password?(params[:token])
         session[:temp_user] = @user.id
-        # for this user we send the OTP only to their phone
-        # since we already know they have access to their email
-        # because of the password reset token
+        # for this user we can skip the otp process
+        log_in @user
+        remember @user
+        @user.reset_password_token = nil;
+        @user.save
+        render 'password_resets/change_password' and return
         otp_code = @user.otp_code
         if @user.phone.present?
           @ticket = send_otp_on_phone("+91#{@user.phone}", otp_code)
