@@ -227,7 +227,19 @@ module LanguagesHelper
         planning_data[year][:vision][vision_hit(language_data[year])] += 1
       end
     end
-    return planning_data
+    planning_data
+  end
+
+  # find a finish line progress from a set for a given language marker and year
+  # if that doesn't exist find the one that matches language and marker
+  # with maximum year less than the given year
+  # when no markers of any year match find the one for current year (year == nil)
+  def flp_closest_to(flm_id, year, progresses)
+    flp = progresses.
+        select{ |prog| prog.finish_line_marker_id == flm_id and prog.year != nil and prog.year <= year.to_i }.
+        max_by{ |prog| prog.year }
+    flp ||= progresses.select{ |prog| prog.finish_line_marker_id == flm_id and prog.year == nil }.last
+    flp
   end
 
   def vision_hit(finish_line_data)

@@ -164,19 +164,6 @@ class FinishLineProgress < ActiveRecord::Base
     }
   end
 
-  # find a finish line progress for a given language marker and year
-  # if that doesn't exist find the one that matches language and marker
-  # with maximum year less than the given year
-  # when no markers of any year match find the one for current year (year == nil)
-  def self.closest_to(language_id, flm_id, year)
-    flp = where(language_id: language_id, finish_line_marker_id: flm_id).
-        where('year <= ?', year ).
-        where.not(year: nil).
-        order(:year).last
-    flp ||= find_by(language_id: language_id, finish_line_marker_id: flm_id, year: nil)
-    flp
-  end
-
   def self.get_current_year
     # year ticks over on October 1st
     year_cutoff_month = 10
