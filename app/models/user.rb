@@ -151,7 +151,7 @@ class User < ActiveRecord::Base
     curated_states.where(id: language.geo_states.pluck(:id)).any?
   end
 
-  def can_curate(edit)
+  def can_curate?(edit)
     national_curator? or
         curated_states.where(id: edit.geo_states).any? or
         (forward_planning_curator? and edit.pending_forward_planning_approval?)

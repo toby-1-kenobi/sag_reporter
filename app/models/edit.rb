@@ -29,6 +29,7 @@ class Edit < ActiveRecord::Base
   after_save :set_geo_states
 
   scope :pending, -> { where(status: [statuses[:pending_single_approval], statuses[:pending_double_approval]]) }
+  scope :pending_inc, -> { where(status: [statuses[:pending_single_approval], statuses[:pending_double_approval], statuses[:pending_forward_planning_approval]]) }
   scope :for_curating, ->(user) { joins(:geo_states).where('geo_states.id' => user.curated_states) }
 
 
@@ -45,6 +46,10 @@ class Edit < ActiveRecord::Base
   # not including pending for national level approval.
   def pending?
     pending_single_approval? or pending_double_approval?
+  end
+
+  def pending_any?
+    pending? or pending_national_approval? or pending_forward_planning_approval?
   end
 
   def applied?
@@ -109,8 +114,8 @@ class Edit < ActiveRecord::Base
           return approve(curator)
         end
         return true
-      when pending_single_approval?, pending_national_approval?
-        update_attributes(curated_by: curator, curation_date: Time.now) if pending_single_approval?
+      when pending_single_approval?, pending_national_approval?, pending_forward_planning_approval?
+        update_attributes(curated_by: curator, curation_date: Time.now) if pending_single_approval? or pending_forward_planning_approval?
         update_attributes(second_curation_date: Time.now) if pending_national_approval?
         approved!
         # if apply fails it will change status to rejected and populate record_errors field

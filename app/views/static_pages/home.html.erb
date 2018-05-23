@@ -84,11 +84,7 @@
     </div>
   </div>
 
-  <% if logged_in_user.national_curator? %>
-      <% edit_count = Edit.pending_national_approval.count %>
-  <% else %>
-      <% edit_count = Edit.pending.for_curating(logged_in_user).count %>
-  <% end %>
+  <% edit_count = get_edit_count %>
   <% if edit_count > 0 %>
   <div id="curator-card" class="mdl-card mdl-shadow--2dp"
      <% if logged_in_user.admin? %>

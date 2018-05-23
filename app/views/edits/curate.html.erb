@@ -17,7 +17,16 @@
       <% end %>
     </div>
 <% end %>
-<% unless @edits.any? or @national_edits %>
+<% if @forward_planning_edits %>
+  <div class="mdl-grid">
+    <% @forward_planning_edits.each do |edit| %>
+      <div class="mdl-cell mdl-cell--4-col">
+        <%= render edit %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+<% unless @edits.any? or @national_edits or @forward_planning_edits %>
     <p>There are no pending edits for you to curate.</p>
 <% end %>
 

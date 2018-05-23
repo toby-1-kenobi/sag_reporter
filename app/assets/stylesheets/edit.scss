@@ -5,7 +5,7 @@
 .edit.mdl-card {
   width: initial;
   max-width: 460px;
-  &.pending_single_approval, &.pending_double_approval, &.pending_national_approval {
+  &.pending-approval {
     background-color: cyan;
   }
   &.rejected {

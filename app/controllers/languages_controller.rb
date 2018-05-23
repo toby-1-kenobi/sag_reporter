@@ -31,7 +31,7 @@ class LanguagesController < ApplicationController
         find(params[:id])
     @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(model_klass_name: 'Language', record_id: @language.id)
-    @user_pending_fl_edits = Edit.pending.where(model_klass_name: 'FinishLineProgress')
+    @user_pending_fl_edits = Edit.pending_inc.where(model_klass_name: 'FinishLineProgress')
     unless logged_in_user.curates_for?(@language)
       logger.debug "limiting edits"
       @user_pending_edits = @user_pending_edits.where(user: logged_in_user)
@@ -286,7 +286,7 @@ class LanguagesController < ApplicationController
     )
     if @edit.save
       if (@edit.pending_double_approval? and @edit.user.national_curator?) or
-          (@edit.pending_forward_planning_approval and @edit.user.forward_planning_curator?)
+          (@edit.pending_forward_planning_approval? and @edit.user.forward_planning_curator?)
         @edit.auto_approved!
         @edit.apply
       end

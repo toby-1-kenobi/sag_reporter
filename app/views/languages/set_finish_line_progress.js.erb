@@ -14,7 +14,7 @@ $('#edit-response')
           .html("<%= @edit.record_errors %>")
           .slideDown('fast');
     });
-<% elsif @edit.pending_single_approval? or @edit.pending_double_approval? %>
+<% elsif @edit.pending_any? %>
 $('#edit-response').slideUp('fast');
 $('#pending-edits').append('<div class="mdl-cell mdl-cell--4-col"><%= j render partial: 'edits/edit', object: @edit %></div>');
 let commentDialog = $("#edit-creator-comment-dialog");

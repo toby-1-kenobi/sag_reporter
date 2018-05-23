@@ -9,7 +9,7 @@ class EditsController < ApplicationController
 
   before_action only: [:approve, :reject] do
     @edit = Edit.find params[:id]
-    head :forbidden unless logged_in_user.can_curate(@edit)
+    head :forbidden unless logged_in_user.can_curate?(@edit)
   end
 
   def create
@@ -44,6 +44,11 @@ class EditsController < ApplicationController
       @national_edits = Edit.pending_national_approval
     else
       @national_edits = false
+    end
+    if logged_in_user.forward_planning_curator?
+      @forward_planning_edits = Edit.pending_forward_planning_approval
+    else
+      @forward_planning_edits = false
     end
   end
 

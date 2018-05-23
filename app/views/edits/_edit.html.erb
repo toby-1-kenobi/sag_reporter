@@ -1,5 +1,5 @@
 <% object = edit.model_klass_name.constantize.find(edit.record_id) %>
-<div id="edit-<%= edit.id %>" class="edit <%= edit.status %> mdl-card mdl-shadow--2dp">
+<div id="edit-<%= edit.id %>" class="edit <%= edit.status %> <%= 'pending-approval' if edit.pending_any? %> mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
     <h2 class="mdl-card__title-text">
       Edit for <%= edit.model_klass_name.titleize %>&nbsp;
@@ -94,8 +94,7 @@
   </div>
   <%# only show the action panel if there are any actions available %>
   <% if (logged_in_user?(edit.user) and !edit.applied?) or
-      (edit.pending? and User.curating(edit).include? logged_in_user) or
-      (edit.pending_national_approval? and logged_in_user.national_curator?) %>
+      (logged_in_user.can_curate?(edit)) and edit.pending_any? %>
     <div class="mdl-card__actions mdl-card--border">
       <%# if the user made this edit and it hasn't already been applied give a cancel option %>
       <% if logged_in_user?(edit.user) and !edit.applied? %>
@@ -106,8 +105,7 @@
         <% end %>
       <% end %>
       <%# give curating options if the user has curating privileges over this edit and it is pending %>
-      <% if (edit.pending? and User.curating(edit).include? logged_in_user) or
-          (edit.pending_national_approval? and logged_in_user.national_curator?) %>
+      <% if (edit.pending_any? and logged_in_user.can_curate?(edit))%>
         <%= link_to reject_edit_path(edit), method: :patch, remote: true, data: {confirm: 'Reject it, are you sure?'} do %>
           <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
             <i class="material-icons">clear</i> Reject
