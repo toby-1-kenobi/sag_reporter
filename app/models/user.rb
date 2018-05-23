@@ -154,9 +154,7 @@ class User < ActiveRecord::Base
   def can_curate(edit)
     national_curator? or
         curated_states.where(id: edit.geo_states).any? or
-        (forward_planning_curator? and
-            edit.model_klass_name == 'FinishLineProgress' and
-            edit.object_under_edition.year != nil)
+        (forward_planning_curator? and edit.pending_forward_planning_approval?)
   end
 
 

@@ -273,6 +273,7 @@ class LanguagesController < ApplicationController
     language = Language.find(params[:id])
     marker = FinishLineMarker.find_by_number(params[:marker])
     progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: marker, year: params[:year])
+    edit_status = progress.year == nil ? :pending_double_approval : :pending_forward_planning_approval
     @edit = Edit.new(
         user: logged_in_user,
         model_klass_name: 'FinishLineProgress',
@@ -280,11 +281,12 @@ class LanguagesController < ApplicationController
         attribute_name: 'status',
         old_value: progress.status,
         new_value: params[:progress],
-        status: :pending_double_approval,
+        status: edit_status,
         relationship: false
     )
     if @edit.save
-      if @edit.user.national_curator?
+      if (@edit.pending_double_approval? and @edit.user.national_curator?) or
+          (@edit.pending_forward_planning_approval and @edit.user.forward_planning_curator?)
         @edit.auto_approved!
         @edit.apply
       end

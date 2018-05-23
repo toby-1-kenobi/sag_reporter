@@ -5,6 +5,7 @@ class Edit < ActiveRecord::Base
       pending_single_approval: 1,
       pending_double_approval: 2,
       pending_national_approval: 3,
+      pending_forward_planning_approval: 6,
       approved: 4,
       rejected: 5
   }
