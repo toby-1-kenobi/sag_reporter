@@ -2,6 +2,7 @@
   finish_line_status = {} # map finish line marker number to finish line progress status for this language
   finish_line_category = {} # map finish line marker number to finish line progress category for this language
   progresses = {}
+  Rails.logger.debug flm_table_row.name
   flm_table_row.finish_line_progresses.each{ |prog| progresses[prog.finish_line_marker.number] = prog if prog.year == selected_year }
   @flms.each do |flm|
     flp = progresses[flm.number] || flp_closest_to(flm.id, selected_year, flm_table_row.finish_line_progresses) # get closest if it isn't there

@@ -141,37 +141,30 @@ module LanguagesHelper
     count
   end
 
-  #for retrive engaged or translating language count of an organisation in a state
+  #for retrieve engaged or translating language count of an organisation in a state
   def get_state_organisation_language_count(organisation, geo_state_id, type)
-    count = 0
-    display_text = ""
     case type
       when :engaged
         count = Language.joins([engaged_organisations: :engaged_languages], :state_languages).where(organisations: {id: organisation.id}, state_languages: {geo_state_id: geo_state_id}).uniq.length
       when :translation
         count = Language.joins([translating_organisations: :translating_languages] , :state_languages).where(organisations: {id: organisation.id}, state_languages: {geo_state_id: geo_state_id}).uniq.length
-
       else
-        # show nothing for nothing
+        count = 0
     end
-    display_text = pluralize(count, 'language')
-    display_text
+    pluralize(count, 'language')
   end
 
-  #for retrive engaged or translating language count of an organisation in a zone
+  #for retrieve engaged or translating language count of an organisation in a zone
   def get_zone_organisation_language_count(organisation, zone_id, type)
-    count = 0
-    display_text = ""
     case type
       when :engaged
         count = Language.joins([engaged_organisations: :engaged_languages], [state_languages: :geo_state]).where(organisations: {id: organisation.id}, geo_states: {zone_id: zone_id}).uniq.length
       when :translation
         count = Language.joins([translating_organisations: :translating_languages], [state_languages: :geo_state]).where(organisations: {id: organisation.id}, geo_states: {zone_id: zone_id}).uniq.length
       else
-        # show nothing for nothing
+        count = 0
     end
-    display_text = pluralize(count, 'language')
-    display_text
+    pluralize(count, 'language')
   end
 
   def get_future_years(language)
@@ -230,6 +223,38 @@ module LanguagesHelper
     planning_data
   end
 
+  def vision_hit(finish_line_data)
+    # These "constants" pulled from database id of records
+    # and from enums in FinishLineMarker model
+    # if any of them changes this breaks
+    # TODO: make this less brittle
+    nt_marker_id = 6
+    ot_marker_id = 7
+    story_marker_id = 2
+    in_progress_status_index = 3
+    further_needs_status_index = 5
+    inaccessible_status_index = 7
+    in_progress_level = 3
+    # check if language not accessible. Check only against NT marker.
+    if finish_line_data[nt_marker_id] == FinishLineProgress.statuses.key(inaccessible_status_index)
+      return :not_accessible
+    end
+    ot_status = finish_line_data[ot_marker_id]
+    nt_category = FinishLineProgress.category(finish_line_data[nt_marker_id])
+    if (nt_category == :nothing or nt_category == :complete) and ot_status != FinishLineProgress.statuses.key(in_progress_status_index) and ot_status != FinishLineProgress.statuses.key(further_needs_status_index)
+      :complete
+    elsif nt_category == :progress or nt_category == :complete
+      :progress
+    else
+      storying_level = FinishLineProgress.progress_level(finish_line_data[story_marker_id])
+      if storying_level >= in_progress_level
+        :progress
+      else
+        :no_progress
+      end
+    end
+  end
+
   # find a finish line progress from a set for a given language marker and year
   # if that doesn't exist find the one that matches language and marker
   # with maximum year less than the given year
@@ -240,23 +265,6 @@ module LanguagesHelper
         max_by{ |prog| prog.year }
     flp ||= progresses.select{ |prog| prog.finish_line_marker_id == flm_id and prog.year == nil }.last
     flp
-  end
-
-  def vision_hit(finish_line_data)
-    ot_status = finish_line_data[7]
-    nt_category = FinishLineProgress.category(finish_line_data[6])
-    if (nt_category == :nothing or nt_category == :complete) and ot_status != FinishLineProgress.statuses.key(3) and ot_status != FinishLineProgress.statuses.key(5)
-      :complete
-    elsif nt_category == :progress or nt_category == :complete
-      :progress
-    else
-      storying_level = FinishLineProgress.progress_level(finish_line_data[2])
-      if storying_level >= 3 # at least in progress
-        :progress
-      else
-        :no_progress
-      end
-    end
   end
 
   def get_max_future_years()

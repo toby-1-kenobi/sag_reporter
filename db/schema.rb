@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180426050900) do
+ActiveRecord::Schema.define(version: 20180523150913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -664,26 +664,27 @@ ActiveRecord::Schema.define(version: 20180426050900) do
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "phone"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.string   "password_digest"
     t.string   "remember_digest"
-    t.integer  "mother_tongue_id",                      null: false
+    t.integer  "mother_tongue_id",                         null: false
     t.integer  "interface_language_id"
     t.string   "otp_secret_key"
     t.string   "email"
-    t.boolean  "email_confirmed",       default: false
+    t.boolean  "email_confirmed",          default: false
     t.string   "confirm_token"
-    t.boolean  "trusted",               default: false, null: false
-    t.boolean  "national",              default: false, null: false
-    t.boolean  "admin",                 default: false, null: false
-    t.boolean  "national_curator",      default: false, null: false
+    t.boolean  "trusted",                  default: false, null: false
+    t.boolean  "national",                 default: false, null: false
+    t.boolean  "admin",                    default: false, null: false
+    t.boolean  "national_curator",         default: false, null: false
     t.string   "role_description"
     t.datetime "curator_prompted"
-    t.boolean  "reset_password",        default: false
+    t.boolean  "lci_board_member",         default: false, null: false
+    t.boolean  "lci_agency_leader",        default: false, null: false
+    t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
-    t.boolean  "lci_board_member",      default: false, null: false
-    t.boolean  "lci_agency_leader",     default: false, null: false
+    t.boolean  "forward_planning_curator", default: false, null: false
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
