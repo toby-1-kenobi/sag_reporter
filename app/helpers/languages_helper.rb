@@ -215,7 +215,8 @@ module LanguagesHelper
             language_data[year][marker.number] = language_data[year - 1][marker.number]
           else
             # otherwise use the one for current year (if necessary creating it with default status)
-            flp = FinishLineProgress.find_or_create_by(language: lang, year: nil, finish_line_marker: marker)
+            flp = flp_array.select{ |flp| flp.year == nil and flp.finish_line_marker_id == marker.id }.first
+            flp ||= FinishLineProgress.find_or_create_by(language: lang, year: nil, finish_line_marker: marker)
             language_data[year][marker.number] = flp.status
           end
           # aggregate as we go
