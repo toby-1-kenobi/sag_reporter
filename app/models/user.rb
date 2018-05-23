@@ -151,6 +151,14 @@ class User < ActiveRecord::Base
     curated_states.where(id: language.geo_states.pluck(:id)).any?
   end
 
+  def can_curate(edit)
+    national_curator? or
+        curated_states.where(id: edit.geo_states).any? or
+        (forward_planning_curator? and
+            edit.model_klass_name == 'FinishLineProgress' and
+            edit.object_under_edition.year != nil)
+  end
+
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles

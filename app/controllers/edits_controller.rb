@@ -4,12 +4,12 @@ class EditsController < ApplicationController
 
   # Only users who are curators can curate edits
   before_action only: [:curate] do
-    redirect_to root_path unless logged_in_user.curated_states.any? or logged_in_user.national_curator?
+    redirect_to root_path unless logged_in_user.curated_states.any? or logged_in_user.national_curator? or logged_in_user.forward_planning_curator?
   end
 
   before_action only: [:approve, :reject] do
     @edit = Edit.find params[:id]
-    head :forbidden unless (logged_in_user.national_curator? or User.curating(@edit).include? logged_in_user)
+    head :forbidden unless logged_in_user.can_curate(@edit)
   end
 
   def create
