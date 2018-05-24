@@ -223,6 +223,9 @@ module LanguagesHelper
     planning_data
   end
 
+  # for a language that hasn't reached Vision 2025 goals returns :no_progress
+  # for a language that has reached V2025 but not V2033 returns :progress
+  # for a language that has reached Vision 2033 goals returns :complete
   def vision_hit(finish_line_data)
     # These "constants" pulled from database id of records
     # and from enums in FinishLineMarker model
@@ -231,17 +234,30 @@ module LanguagesHelper
     nt_marker_id = 6
     ot_marker_id = 7
     story_marker_id = 2
+    possible_need_status_index = 1
+    expressed_need_status_index = 2
     in_progress_status_index = 3
     further_needs_status_index = 5
     inaccessible_status_index = 7
     in_progress_level = 3
+
     # check if language not accessible. Check only against NT marker.
     if finish_line_data[nt_marker_id] == FinishLineProgress.statuses.key(inaccessible_status_index)
       return :not_accessible
     end
+
     ot_status = finish_line_data[ot_marker_id]
+    ot_no_need = ot_status != FinishLineProgress.statuses.key(in_progress_status_index) and
+        ot_status != FinishLineProgress.statuses.key(further_needs_status_index)
+    storying_status = finish_line_data[story_marker_id]
+    storying_no_need = storying_status != FinishLineProgress.statuses.key(possible_need_status_index) and
+        storying_status != FinishLineProgress.statuses.key(expressed_need_status_index) and
+        storying_status != FinishLineProgress.statuses.key(in_progress_status_index)
     nt_category = FinishLineProgress.category(finish_line_data[nt_marker_id])
-    if (nt_category == :nothing or nt_category == :complete) and ot_status != FinishLineProgress.statuses.key(in_progress_status_index) and ot_status != FinishLineProgress.statuses.key(further_needs_status_index)
+
+    if nt_category == :complete and ot_no_need
+      :complete
+    elsif nt_category == :nothing and ot_no_need and storying_no_need
       :complete
     elsif nt_category == :progress or nt_category == :complete
       :progress
