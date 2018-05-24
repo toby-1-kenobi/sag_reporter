@@ -171,8 +171,8 @@ module LanguagesHelper
     cur_year = FinishLineProgress.get_current_year
     future_years = []
     future_years.push(nil)
-    years = FinishLineProgress.where(language: language).where.not(year: nil).where("year > #{cur_year}").distinct.pluck(:year)
-    if logged_in_user.can_future_plan?
+    if logged_in_user.can_future_plan? or logged_in_user?(language.champion)
+      years = FinishLineProgress.where(language: language).where.not(year: nil).where("year > #{cur_year}").distinct.pluck(:year)
       years.each do |year|
         future_years.push(year)
       end

@@ -42,7 +42,7 @@
         <tr id="title_row_id">
           <th class="mdl-data-table__cell--non-numeric" colspan="2" id="finish-line-status-title">Finish Line Status</th>
           <th>
-            <% if logged_in_user.can_future_plan? %>
+            <% if logged_in_user.can_future_plan? or logged_in_user?(@language.champion) %>
               <%= link_to add_finish_line_progress_path(language_id: @language.id), method: :get, remote: true do %>
                 <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
                   Add Year
@@ -50,7 +50,7 @@
               <% end %>
             <% end %>
           </th>
-          <% if logged_in_user.can_future_plan? %>
+          <% if logged_in_user.can_future_plan? or logged_in_user?(@language.champion) %>
             <% @future_years.each do |fy| %>
               <% if fy != nil %>
                 <th></th>
@@ -62,7 +62,7 @@
           <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
           <th class="mdl-data-table__cell--non-numeric">Category</th>
           <th class="mdl-data-table__cell--non-numeric">Status</th>
-          <% if logged_in_user.can_future_plan? %>
+          <% if logged_in_user.can_future_plan? or logged_in_user?(@language.champion) %>
             <% @future_years.each do |fy| %>
               <% if fy != nil %>
                 <th class="mdl-data-table__cell--non-numeric"><%= fy %></th>
@@ -84,7 +84,7 @@
               </button>
             </td>
             <% @future_years.each do |fy| %>
-              <% if logged_in_user.can_future_plan? or fy == nil %>
+              <% if logged_in_user.can_future_plan? or fy == nil or logged_in_user?(@language.champion) %>
                 <% future_progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: fy) %>
                 <% if future_progress %>
                   <td

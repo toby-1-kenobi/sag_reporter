@@ -271,6 +271,9 @@ class LanguagesController < ApplicationController
 
   def set_finish_line_progress
     language = Language.find(params[:id])
+    if params[:year]
+      head :forbidden unless logged_in_user.can_future_plan? or logged_in_user?(language.champion)
+    end
     marker = FinishLineMarker.find_by_number(params[:marker])
     progress = FinishLineProgress.find_or_create_by(language: language, finish_line_marker: marker, year: params[:year])
     edit_status = progress.year == nil ? :pending_double_approval : :pending_forward_planning_approval
