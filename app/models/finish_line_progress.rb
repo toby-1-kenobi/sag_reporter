@@ -7,6 +7,7 @@ class FinishLineProgress < ActiveRecord::Base
       possible_need: 1,
       expressed_needs: 2,
       in_progress: 3,
+      outside_india_in_progress: 8,
       # 4-6 are options for done markers
       completed: 4,
       further_needs_expressed: 5,
@@ -41,7 +42,7 @@ class FinishLineProgress < ActiveRecord::Base
         :nothing
       when 'possible_need', 'expressed_needs', 'not_accessible'
         :no_progress
-      when 'in_progress'
+      when 'in_progress', 'outside_india_in_progress'
         :progress
       else
         :complete
@@ -59,7 +60,7 @@ class FinishLineProgress < ActiveRecord::Base
       1
     when 'expressed_needs'
       2
-    when 'in_progress'
+    when 'in_progress', 'outside_india_in_progress'
       3
     when 'completed'
       4
@@ -105,6 +106,8 @@ class FinishLineProgress < ActiveRecord::Base
         end
       when 'in_progress'
         'In progress, not completed'
+      when 'outside_india_in_progress'
+        'In progress outside India'
       when 'completed'
         case marker_number
         when 2, 3, 4, 8, 9, 10
