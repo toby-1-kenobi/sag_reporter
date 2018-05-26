@@ -91,13 +91,15 @@ class FinishLineProgress < ActiveRecord::Base
         'No action needed'
       when 'not_accessible'
         'Language not accessible'
-      when 'possible_need', 'expressed_needs'
+      when 'possible_need'
         if marker_number == 7 # OT
-          if status == 'possible_need'
-            'Possible need (not V2033)'
-          else
-            'Target is OT by 2033'
-          end
+          'Possible need (not V2033)'
+        else
+          'Survey needed'
+        end
+      when 'expressed_needs'
+        if marker_number == 7 # OT
+          'Target is OT by 2033'
         else
           "#{status.humanize}, not started"
         end
@@ -147,6 +149,8 @@ class FinishLineProgress < ActiveRecord::Base
         else
           status.humanize
         end
+      when 'possible_need'
+        'Survey needed'
       else
         status.humanize
       end
