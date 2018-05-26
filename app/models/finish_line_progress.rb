@@ -198,7 +198,7 @@ class FinishLineProgress < ActiveRecord::Base
   end
 
   def ripple_status_change
-    this_year = year || get_current_year
+    this_year = year || FinishLineProgress.get_current_year
     # and there exists an flp in the following year for the same language and marker
     # # if there's not one in the following, but in later year - get that
     next_year = FinishLineProgress.where(
