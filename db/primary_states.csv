@@ -1,0 +1,509 @@
+AR,Arunachal Pradesh,
+MP,Madhya Pradesh,
+MH,Maharashtra,
+AS,Assam,
+MN,Manipur,
+AN,Andaman and Nicobar Islands,
+KL,Kerala,
+BH,Bihar,
+JH,Jharkhand,
+ML,Meghalaya,
+UP,Uttar Pradesh,
+TN,Tamil Nadu,
+RJ,Rajasthan,
+PJ,Punjab,
+JK,Jammu and Kashmir,
+SK,Sikkim,
+KA,Karnataka,
+NB,(northern) West Bengal,
+SB,(southern) West Bengal,
+CH,Chhattisgarh,
+HP,Himachal Pradesh,
+OR,Odisha,
+MZ,Mizoram,
+UK,Uttarakhand,
+AP,Andhra Pradesh,
+GJ,Gujarat,
+TR,Tripura,
+NL,Nagaland
+GOA,Goa
+TA,Telangana
+***,,
+Adi,adi,AR
+"Adi, Galo",adl,AR
+Agariya,agi,MP
+Ahirani,ahr,MH
+Ahom,aho,AS
+Aimol,aim,MN
+Aiton ,aio,AS
+Aka-Bea,abj,AN
+Aka-Bo,akm,AN
+Aka-Cari,aci,AN
+Aka-Jeru,akj,AN
+Aka-Kede,akx,AN
+Aka-Kol,aky,AN
+Aka-Kora,ack,AN
+Akar-Bale,acl,AN
+Allar,all,KL
+Amri Karbi,ajz,AS
+Anal,anm,MN
+Andaman Creole Hindi,hca,AN
+Andh ,anr,MH
+Angika,anp,BH
+Apatani,apt,AR
+A-Pucikwar,apq,AN
+Aranadan,aaf,KL
+Assamese,asm,AS
+Asuri,asr,JH
+Atong ,aot,ML
+Awadhi,awa,UP
+Badaga,bfq,TN
+Bagheli,bfy,MP
+Bagri,bgq,RJ
+"Balochi, Eastern",bgp,PJ
+Balti,bft,JK
+Bantawa,bap,SK
+"Bareli, Palya",bpx,MP
+"Bareli, Pauri",bfb,MH
+"Bareli, Rathwi",bgd,MP
+Bateri ,btv,JK
+Bauria ,bge,PJ
+Bazigar ,bfr,PJ
+Bellari,brw,KA
+Bengali,ben,SB
+Bhadrawahi,bhd,JK
+Bhalay ,bhx,MH
+Bharia ,bha,MP
+Bhatri,bgw,CH
+Bhattiyali,bht,HP
+Bhilali,bhi,MP
+Bhili,bhb,MP
+Bhojpuri,bho,UP
+Bhunjia ,bhu,OR
+Biete,biu,MZ
+Bijori,bix,JH
+Bilaspuri,kfs,HP
+Birhor,biy,JH
+Bishnupriya,bpy,AS
+Bodo,brx,AS
+Bodo Parja,bdv,OR
+Bondo,bfw,OR
+Braj Bhasha,bra,UP
+Brokskat ,bkk,JK
+Bugun,bgg,AR
+Buksa ,tkb,UK
+Bundeli,bns,UP
+Byangsi,bee,UK
+Chakma,ccp,MZ
+Chamari ,cdg,MP
+Chambeali,cdh,HP
+Chamling,rab,SK
+Changthang,cna,JK
+Chaudangsi,cdn,UK
+Chaura ,crv,AN
+Chenchu ,cde,AP
+"Chetti, Wayanad",ctt,KL
+Chhattisgarhi,hne,CH
+"Chin, Bawm",bgr,MZ
+"Chin, Falam",cfm,AS
+"Chin, Haka",cnh,MZ
+"Chin, Khumi",cnk,MZ
+"Chin, Mara",mrh,MZ
+"Chin, Matu",hlt,MZ
+"Chin, Paite",pck,MN
+"Chin, Tedim",ctd,MZ
+"Chin, Thado",tcz,MN
+"Chin, Zyphe",zyp,MZ
+Chinali,cih,HP
+Chiru,cdf,MN
+Chodri,cdi,GJ
+Chug,cvg,AR
+Churahi,cdj,HP
+Darlong,dln,TR
+Darmiya,drd,UK
+Deccan ,dcc,MH
+Degaru ,dgu,JH
+Deori,der,AS
+Desiya,dso,OR
+Dhanki,dhn,GJ
+Dhatki,mki,RJ
+Dhimal,dhi,NB
+Dhodia,dho,GJ
+Dhundari,dhd,RJ
+Digaro Mishmi,mhu,AR
+Dimasa,dis,AS
+Dogri,dgo,JK
+Domari ,rmt,BH
+Dotyali,dty,UK
+Dubli,dub,GJ
+Dungra Bhil,duh,GJ
+Duruwa,pci,CH
+Dzongkha,dzo,SK
+English,eng,
+Eravallan,era,KL
+French,fra,PN
+"Gadaba, Bodo",gbj,OR
+"Gadaba, Mudhili",gau,AP
+"Gadaba, Ollar, Pottangi",gdb,OR
+Gaddi,gbk,HP
+Gahri,bfu,HP
+Gamit,gbl,GJ
+Gangte,gnb,MN
+"Garasia, Adiwasi",gas,GJ
+"Garasia, Rajput",gra,RJ
+Garhwali,gbm,UK
+Garo,grt,ML
+Gata',gaq,OR
+Godwari,gdx,RJ
+"Gondi, Adilabad",wsg,TA
+"Gondi, Aheri",esg,MH
+"Gondi, Northern",gno,MP
+Gowlan,goj,MH
+Gowli,gok,MH
+"Great Andamanese, Mixed",gac,AN
+Groma ,gro,SK
+Gujarati,guj,GJ
+Gujari,gju,JK
+"Gurung, Western",gvr,NB
+Hajong,haj,ML
+Halbi,hlb,CH
+Haroti,hoj,RJ
+Haryanvi,bgc,HR
+Hindi,hin,UP
+Hinduri,hii,HP
+Hmar,hmr,AS
+Ho,hoc,JH
+Holiya ,hoy,KA
+Hrangkhol,hra,AS
+Hruso,hru,AR
+Idu Mishmi,clk,AR
+Indian Sign Language,ins,TN
+Indo-Portuguese ,idb,DD
+Irula,iru,TN
+Jad,jda,UK
+Jangshung,jna,HP
+Jarawa,anq,AN
+Jaunsari,jns,UK
+Juang,jun,OR
+Juray ,juy,OR
+Kacchi,kfr,GJ
+Kachari,xac,AS
+Kadar,kej,KL
+Kaikadi ,kep,MH
+Kalanadi,wkl,KL
+Kamar,keq,CH
+Kamta,rkt,NB
+Kanashi ,xns,HP
+Kanauji,bjj,UP
+Kangri,xnr,HP
+Kanikkaran,kev,KL
+Kanjari,kft,UP
+Kannada,kan,KA
+Karbi,mjw,AS
+Kashmiri,kas,JK
+Katkari,kfu,MH
+Khaling,klr,SK
+Khamba ,kbg,AR
+Khamti,kht,AS
+Khamyang,ksu,AS
+Khandesi,khn,MH
+Kharia,khr,JH
+Kharia Thar,ksy,SB
+Khasi,kha,ML
+Khirwar ,kwx,CH
+Khowar,khw,JK
+Kinnauri,kfk,HP
+"Kinnauri, Bhoti",nes,HP
+"Kinnauri, Chitkuli",cik,HP
+"Kinnauri, Pahari",kjo,HP
+Kisan,xis,OR
+Koch,kdq,ML
+Koda,cdz,SB
+Kodaku,ksz,CH
+Kodava,kfa,KA
+Koireng,nkd,MN
+Kok Borok,trp,TR
+"Kolami, Northwestern",kfb,MH
+"Kolami, South Eastern",nit,TA
+"Koli, Kachi",gjk,GJ
+"Koli, Wadiyara ",kxp,GJ
+Kom,kmm,MN
+Konda-Dora,kfc,AP
+Konkani,knn,MH
+"Konkani, Goan",gom,MH
+"Koraga, Korra",kfd,KA
+"Koraga, Mudu",vmd,KL
+Korku,kfq,MP
+Korlai Creole Portuguese ,vkp,GOA
+Koro,jkr,AR
+Korwa,kfp,CH
+Kota,kfe,TN
+Koya,kff,AP
+Kudiya ,kfg,KL
+Kudmali,kyw,JH
+Kui,kxu,OR
+Kukna,kex,GJ
+Kulung,kle,SK
+Kumaoni,kfy,UK
+Kumarbhag Paharia,kmj,JH
+Kumbaran,wkb,KL
+Kunduvadi,wku,KL
+Kupia,key,AP
+Kurichiya,kfh,KL
+Kurmukar ,kfv,AS
+"Kurumba, Alu",xua,TN
+"Kurumba, Attapady",pkr,KL
+"Kurumba, Betta",xub,TN
+"Kurumba, Jennu",xuj,KA
+"Kurumba, Kannada",kfi,TN
+"Kurumba, Mullu",kpb,KL
+Kurux,kru,CH
+Kuvi,kxv,OR
+Ladakhi,lbj,JK
+Lambadi,lmn,TA
+Lamkang,lmk,MN
+Lepcha,lep,SK
+Lhomi,lhm,NB
+Limbu,lif,SK
+Lish,lsh,AR
+Lisu,lis,AR
+Lodha,lbm,OR
+"Lohar, Gade",gda,RJ
+"Lohar, Lahul",lhl,HP
+Lui,lba,AR
+Lyngngam ,lyg,ML
+Magahi,mag,BH
+"Magar, Eastern",mgp,SK
+Mahali,mjx,JH
+Maithili,mai,BH
+Majhi,mjz,JH
+Majhwar,mmj,CH
+Mal Paharia,mkb,JH
+Mala Malasar,ima,KL
+Malankuravan,mjo,TN
+Malapandaram,mjp,KL
+Malaryan,mjq,KL
+Malasar,ymr,KL
+Malavedan,mjr,KL
+Malayalam,mal,KL
+Maldivian,div,LA
+Malvi,mup,MP
+Manda ,mha,OR
+Mandeali,mjl,HP
+Manna-Dora ,mju,AP
+Mannan,mjv,KL
+Marathi,mar,MH
+Maria,mrr,MH
+"Maria, Dandami",daq,CH
+Marma,rmz,TR
+Marwari,rwr,RJ
+Mawchi,mke,MH
+Meitei,mni,MN
+Merwari,wry,RJ
+Mewari,mtr,RJ
+Mewati,wtm,RJ
+Miji,sjl,AR
+Miju Mishmi,mxj,AR
+Mina ,myi,MP
+Mirgan,zrg,OR
+Mising,mrg,AS
+Mizo,lus,MZ
+"Monpa, Kalaktang",kkf,AR
+"Monpa, Tawang",twm,AR
+Mru,mro,SB
+Muduga,udg,KL
+Mugom,muk,HP
+Mukha-Dora ,mmk,AP
+Munda,unx,OR
+Mundari,unr,JH
+"Muria, Eastern",emu,CH
+"Muria, Far Western",fmu,MH
+"Muria, Western",mut,CH
+Muthuvan,muv,KL
+Na ,nbt,AR
+Naga Pidgin ,nag,NL
+"Naga, Angami",njm,NL
+"Naga, Ao",njo,NL
+"Naga, Chang",nbc,NL
+"Naga, Chokri",nri,NL
+"Naga, Chothe",nct,MN
+"Naga, Inpui",nkf,MN
+"Naga, Kharam",kfw,MN
+"Naga, Khezha ",nkh,NL
+"Naga, Khiamniungan",kix,NL
+"Naga, Khoibu",nkb,MN
+"Naga, Konyak",nbe,AS
+"Naga, Liangmai",njn,NL
+"Naga, Lotha",njh,NL
+"Naga, Makuri",jmn,NL
+"Naga, Mao",nbi,MN
+"Naga, Maram",nma,MN
+"Naga, Maring",nng,MN
+"Naga, Monsang",nmh,MN
+"Naga, Moyon",nmo,MN
+"Naga, Mzieme",nme,NL
+"Naga, Nocte",njb,AR
+"Naga, Northern Rengma",nnl,NL
+"Naga, Phom",nph,NL
+"Naga, Pochuri",npo,NL
+"Naga, Poumei",pmx,MN
+"Naga, Puimei",npu,MN
+"Naga, Rongmei",nbu,MN
+"Naga, Sangtam",nsa,NL
+"Naga, Southern Rengma",nre,NL
+"Naga, Sumi",nsm,NL
+"Naga, Tangkhul",nmf,MN
+"Naga, Tarao",tro,MN
+"Naga, Tase",nst,AR
+"Naga, Thangal",nki,MN
+"Naga, Tutsa",tvt,AR
+"Naga, Wancho",nnp,AR
+"Naga, Yimchungru",yim,NL
+"Naga, Zeme",nzm,AS
+Nagarchal,nbg,MP
+Nahali,nlx,MH
+Nahari ,nhh,CH
+Nefamese,nef,AR
+Nepali,nep,NB
+Newar,new,SK
+"Nicobarese, Car",caq,AN
+"Nicobarese, Central",ncb,AN
+"Nicobarese, Southern ",nik,AN
+Nihali ,nll,MH
+Nimadi,noe,MP
+Noiri,noi,MH
+Nora,nrr,AR
+Nyishi,dap,AR
+Odia,ori,OR
+Oko-Juwoi,okj,AN
+Onge,okj,AN
+"Oriya, Adivasi",ort,AP
+"Pahari, Kullu",kfx,HP
+"Pahari, Mahasu",bfz,HP
+"Pahari, Potwari",phr,JK
+Pali,pli,BH
+Paliyan,pcf,KL
+Panchpargania,tdb,JH
+Pangwali,pgg,HP
+Paniya,pcg,KL
+"Panjabi, Eastern",pan,PJ
+"Panjabi, Western",pnb,JK
+Pankhu,pkh,MZ
+Pardhan,pch,MP
+Pardhi,pcl,MH
+Parenga,pcj,OR
+Parsi,prp,GJ
+Pathiya,pty,KL
+Pattani,lae,HP
+Pattapu,ptq,AP
+Pengo,peg,OR
+Phake ,phk,AS
+Phudagi,phd,MH
+Pnar,pbv,ML
+Portuguese,por,GOA
+Powari,pwr,MP
+Purik,prx,JK
+Puroik,suv,AR
+Purum,puz,MN
+Rabha,rah,AS
+Ralte ,ral,MZ
+Rangkas,rgk,UK
+Ranglong,rnl,TR
+Rathawi,rtw,GJ
+Ravula,yea,KL
+Rawang,raw,AR
+Rawat,jnl,UK
+Reli ,rei,AP
+Riang,ria,TR
+Rongpo,rnp,UK
+Ruga,ruh,ML
+Sadri,sck,JH
+Sakachep,sch,AS
+Sambalpuri,spv,OR
+Samvedi ,smv,MH
+Sansi,ssi,RJ
+Sanskrit,san,UP
+Santali,sat,JH
+Saraiki,skr,PJ
+Sartang,onp,AR
+Saurashtra,saz,TN
+Sauria Paharia,mjt,JH
+Sentinel,std,AN
+Shekhawati,swv,RJ
+Shendu,shl,MZ
+Sherdukpen,sdp,AR
+Sherpa,xsr,SK
+Shina,scl,JK
+Sholaga,sle,KA
+Shom peng ,sii,AN
+Shumcho,scu,HP
+Sikkimese,sip,SK
+Simte,smt,MN
+Sindhi,snd,GJ
+Singpho,sgp,AR
+Sirmauri,srx,HP
+Sora,srb,OR
+Spiti Bhoti,spt,HP
+Stod Bhoti,sbu,HP
+Sunam,ssk,HP
+Surgujia,sgj,CH
+Surjapuri,sjp,BH
+Sylheti,syl,AS
+Tagin,tgj,AR
+"Tamang, Eastern",taj,SK
+Tamil,tam,TN
+Telugu,tel,AP
+Teressa ,tef,AN
+Thachanadan,thn,KL
+Thangmi,thf,SK
+"Tharu, Chitwania",the,BH
+"Tharu, Dangaura",thl,UP
+"Tharu, Kathoriya",tkt,UP
+"Tharu, Kochila",thq,BH
+"Tharu, Rana",thr,UP
+Thulung,tdh,SK
+Tibetan,bod,HP
+Tinani,lbf,HP
+Tiwa,lax,AS
+Toda,tcx,TN
+Toto,txo,NB
+Tshangla,tsj,AR
+Tukpa,tpq,HP
+Tulu,tcy,KA
+Turi,trd,JH
+Turung,try,AS
+Ullatan,ull,KL
+Urali,url,KL
+Urdu,urd,JK
+Vaagri Booli,vaa,TN
+Vaiphei,vap,MN
+Varhadi-Nagpuri ,vah,MH
+Varli,vav,MH
+Vasavi,vas,GJ
+Vishavan,vis,KL
+Waddar,wbq,MH
+Wagdi,wbr,RJ
+Walungge,ola,SB
+War-Jaintia,aml,ML
+Yakha ,ybh,SK
+Yerukula,yeu,TA
+Zakhring ,zkr,AR
+Zangskari,zx ,JK
+Zou,zom,MN
+Chilomilo,xxx,TR
+Chorei,xxx,TR
+Kaipeng,xxx,TR
+Molsom,xxx,TR
+Bokar,xxx,AR
+Ranglong,xxx,TR
+Baiga,xxx,MH
+Khortha,xxx,JH
+Bagiliyani,xxx,HP
+Sapera,xxx,UP
+Vajjika,xxx,BH
+Baghlayani,xxx,HP
+Kulvi Inner Seraji,xxx,HP
+Kulvi Outer Seraji,xxx,HP
+Pahari Dogri,xxx,HP
+Soriyali,xxx,HP
+Pando,jpd,CH
