@@ -235,7 +235,7 @@ module LanguagesHelper
     ot_marker_id = 7
     story_marker_id = 2
     possible_need_status_index = 1
-    expressed_need_status_index = 2
+    confirmed_need_status_index = 2
     in_progress_status_index = 3
     further_need_status_index = 5
     inaccessible_status_index = 7
@@ -250,10 +250,10 @@ module LanguagesHelper
     ot_status = finish_line_data[ot_marker_id]
     ot_no_need = ot_status != FinishLineProgress.statuses.key(in_progress_status_index) and
         ot_status != FinishLineProgress.statuses.key(further_need_status_index) and
-        ot_status != FinishLineProgress.statuses.key(expressed_need_status_index)
+        ot_status != FinishLineProgress.statuses.key(confirmed_need_status_index)
     storying_status = finish_line_data[story_marker_id]
     storying_no_need = storying_status != FinishLineProgress.statuses.key(possible_need_status_index) and
-        storying_status != FinishLineProgress.statuses.key(expressed_need_status_index) and
+        storying_status != FinishLineProgress.statuses.key(confirmed_need_status_index) and
         storying_status != FinishLineProgress.statuses.key(in_progress_status_index)
     nt_category = FinishLineProgress.category(finish_line_data[nt_marker_id])
 

@@ -5,7 +5,7 @@ class FinishLineProgress < ActiveRecord::Base
       no_need: 0,
       not_accessible: 7,
       possible_need: 1,
-      expressed_needs: 2,
+      confirmed_need: 2,
       in_progress: 3,
       outside_india_in_progress: 8,
       # 4-6 are options for done markers
@@ -40,7 +40,7 @@ class FinishLineProgress < ActiveRecord::Base
     case status
       when 'no_need'
         :nothing
-      when 'possible_need', 'expressed_needs', 'not_accessible'
+      when 'possible_need', 'confirmed_need', 'not_accessible'
         :no_progress
       when 'in_progress', 'outside_india_in_progress'
         :progress
@@ -58,7 +58,7 @@ class FinishLineProgress < ActiveRecord::Base
     case status
     when 'possible_need', 'no_need', 'not_accessible'
       1
-    when 'expressed_needs'
+    when 'confirmed_need'
       2
     when 'in_progress', 'outside_india_in_progress'
       3
@@ -98,7 +98,7 @@ class FinishLineProgress < ActiveRecord::Base
         else
           'Survey needed'
         end
-      when 'expressed_needs'
+      when 'confirmed_need'
         if marker_number == 7 # OT
           'Target is OT by 2033'
         else
@@ -107,7 +107,7 @@ class FinishLineProgress < ActiveRecord::Base
       when 'in_progress'
         'In progress, not completed'
       when 'outside_india_in_progress'
-        'In progress outside India'
+        'Outside India in progress'
       when 'completed'
         case marker_number
         when 2, 3, 4, 8, 9, 10
@@ -146,7 +146,7 @@ class FinishLineProgress < ActiveRecord::Base
         end
       when 'no_need'
         'No action needed'
-      when 'expressed_needs'
+      when 'confirmed_need'
         if marker_number == 7 # OT
           'Target V2033'
         else

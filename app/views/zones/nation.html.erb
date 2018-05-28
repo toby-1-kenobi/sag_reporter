@@ -75,7 +75,7 @@
                   $('.mdl-checkbox[for*="flm-6-"]').each(function () {
                       var checkbox = this;
                       if (!checkbox.getAttribute('for').includes('select-all')) {
-                          if (checkbox.getAttribute('for').includes('possible_need') || checkbox.getAttribute('for').includes('expressed_need')) {
+                          if (checkbox.getAttribute('for').includes('possible_need') || checkbox.getAttribute('for').includes('confirmed_need')) {
                               checkbox.MaterialCheckbox.check();
                           } else {
                               checkbox.MaterialCheckbox.uncheck();
