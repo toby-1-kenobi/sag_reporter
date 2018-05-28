@@ -3,7 +3,6 @@
   language_amount = languages.count
   finish_line_data = build_finish_line_table(languages, @flms)
   vision_line = finish_line_data.delete :vision
-  scripture_count = getScriptureEngageCount(languages)
 
   finish_marker_data = Hash.new()
 
@@ -17,8 +16,7 @@
   spreadsheet_button_params = {
       format: :csv,
       language_amount: language_amount,
-      finish_line_data: finish_marker_data,
-      scripture_count: scripture_count
+      finish_line_data: finish_marker_data
   }
 
   if (defined?(zone))
@@ -39,8 +37,7 @@
     Get Spreadsheet
   <% end %>
   </div>
-  <%= language_amount %> languages.<br>
-  <%= scripture_count %> languages: Scripture engagement not yet started/reported.
+  <%= language_amount %> languages are primarily in this <%= defined?(zone) ? 'zone' : 'state' %>.<br>
   <% if language_amount > 0 %>
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
       <thead>

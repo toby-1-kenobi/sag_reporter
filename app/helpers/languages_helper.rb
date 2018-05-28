@@ -122,25 +122,6 @@ module LanguagesHelper
        se_list = ["New Testament", "Jesus Film", "Oral Bible Stories", "Gospel", "Old Testament"]
   end
 
-  def getScriptureEngageCount(languages)
-    count = 0
-    languages.each do |lang|
-      lang_count = 0
-      lang.finish_line_progresses.each do |flp|
-        marker = flp.finish_line_marker
-        scripture_engage_list.each do |se|
-          if marker.name == se and flp.category == :no_progress
-            lang_count += 1
-          end
-        end
-      end
-      if lang_count == scripture_engage_list.length
-        count += 1
-      end
-    end
-    count
-  end
-
   #for retrieve engaged or translating language count of an organisation in a state
   def get_state_organisation_language_count(organisation, geo_state_id, type)
     case type

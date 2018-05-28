@@ -8,7 +8,6 @@
 
 <%= CSV.generate_line([@head_data]).html_safe %>
 <%= CSV.generate_line(['Total languages : ' + @language_amount]).html_safe %>
-<%= CSV.generate_line(['Scripture engagement not yet started in : '+@scripture_count.to_s]).html_safe %>
 <%
   headers1 = ['Finish Line Marker', 'No Progress yet', 'In Progress', 'Complete']
 
