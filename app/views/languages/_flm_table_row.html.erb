@@ -6,6 +6,7 @@
   flm_table_row.finish_line_progresses.each{ |prog| progresses[prog.finish_line_marker.number] = prog if prog.year == selected_year }
   @flms.each do |flm|
     flp = progresses[flm.number] || flp_closest_to(flm.id, selected_year, flm_table_row.finish_line_progresses) # get closest if it isn't there
+    flp = FinishLineProgress.create(language: flm_table_row, finish_line_marker: flm, year: nil) # create default current year one if we still havn't got any
     if @pending_flm_edits_flp_ids.include?(flp.id)
       edit = Edit.pending.where(model_klass_name: 'FinishLineProgress', attribute_name: 'status', record_id: flp.id).order(:created_at).last
       finish_line_status[flp.finish_line_marker.number] = edit.new_value
