@@ -183,8 +183,8 @@ class Language < ActiveRecord::Base
   # this for when the filters are not not provided in the parameters
   def self.use_default_filters
     flm_filters = {}
-    ['1', '2', '4', '5', '6', '7', '8', '9'].each do |flm_number|
-      flm_filters[flm_number] = ['0', '1', '2', '3', '4', '5', '6', '7']
+    %w(1 2 4 5 6 7 8 9).each do |flm_number|
+      flm_filters[flm_number] = FinishLineProgress.statuses.values.map{ |v| v.to_s }
     end
     return flm_filters
   end
