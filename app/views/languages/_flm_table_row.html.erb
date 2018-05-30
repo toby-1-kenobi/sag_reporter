@@ -18,10 +18,11 @@
   end
 %>
 <tr class="language-row filterable-item"
-    data-filter-label="<%= @flms.map{ |flm| "flm-#{flm.number}" }.join(' ') %>"
+    data-filter-label="<%= @flms.map{ |flm| "flm-#{flm.number}" }.join(' ').concat(' primary-lang') %>"
     <% finish_line_status.each do |flm_num, fl_status| %>
       data-flm-<%= flm_num %>="<%= fl_status %>"
     <% end %>
+    data-primary-lang="<%= 'non-primary' unless @primary_languages.include?(flm_table_row.id) %>"
 >
   <td class="language-name-cell mdl-data-table__cell--non-numeric"><%= link_to "<span class=\"language-name\">#{flm_table_row.name}</span><br/><em>#{flm_table_row.iso}</em>".html_safe, flm_table_row %></td>
   <% @flms.each do |flm| %>
