@@ -271,8 +271,12 @@ p.iso {
 }
 
 .language-table-controls {
+  display: flex;
+  .mdl-switch {
+    flex-basis: 15em;
+  }
   button {
-    margin: 5px;
+    margin: 1ex 1em;
   }
 }
 

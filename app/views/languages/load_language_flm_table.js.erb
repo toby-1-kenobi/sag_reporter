@@ -14,11 +14,7 @@
 %>
 $('#language-flm-table').replaceWith('<%= j render partial: 'languages/flm_table', locals: locals %>');
 
-$('.mdl-checkbox').each(function(){
-    componentHandler.upgradeElement(this);
-});
-
-$('.mdl-selectfield').each(function(){
+$('.mdl-checkbox, .mdl-switch, .mdl-selectfield').each(function(){
     componentHandler.upgradeElement(this);
 });
 

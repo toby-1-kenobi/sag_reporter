@@ -9,6 +9,10 @@ any of the finish line markers on any language.
 <div class="language-table-controls">
   <button id="visible-flms-dialog-trigger" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">Visible markers</button>
   <button id="flm-filter-reset" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">Reset all filters</button>
+  <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="primary-switch">
+    <input type="checkbox" id="primary-switch" class="mdl-switch__input" checked>
+    <span class="mdl-switch__label">Primary languages only</span>
+  </label>
   <% spreadsheet_button_params = {
       format: :csv,
       flm_filters: params[:filter],
