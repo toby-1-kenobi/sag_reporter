@@ -60,6 +60,9 @@ class ZonesController < ApplicationController
     if params[:id].present?
       @zone = Zone.find params[:id]
       @languages = @languages.where(geo_states: {zone: @zone})
+      @primary_languages = @languages.where('state_languages.primary = ?', true).uniq.pluck :id
+    else
+      @primary_languages = false
     end
     respond_to do |format|
       format.js { render 'languages/load_language_flm_table' }
