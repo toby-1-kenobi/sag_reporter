@@ -2,7 +2,7 @@
   transformations = get_transformation(state_languages)
   lc_amount = state_languages.count
   outcome_area_colours = get_outcome_area()
-  outcome_areas = outcome_area_colours.keys
+  outcome_areas = Topic.order(:number).pluck :name
   spread_text = ProgressMarker.spread_text.values
 %>
 

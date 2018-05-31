@@ -33,7 +33,7 @@
   <%= CSV.generate_line([]).html_safe -%>
   <%
     outcome_area_colours = get_outcome_area()
-    outcome_areas = outcome_area_colours.keys
+    outcome_areas = Topic.order(:number).pluck :name
     spread_text = ProgressMarker.spread_text.values
   %>
   <% zone_aggregate = Hash.new()
