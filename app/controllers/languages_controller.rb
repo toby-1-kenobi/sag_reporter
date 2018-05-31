@@ -370,9 +370,11 @@ class LanguagesController < ApplicationController
     if params[:finish_line_progress][:zone_id].present?
       @zone = Zone.find params[:finish_line_progress][:zone_id]
       @languages = @languages.where(geo_states: {zone: @zone})
+      @primary_languages = @languages.where('state_languages.primary = ?', true).pluck :id
     elsif params[:finish_line_progress][:state_id].present?
       geo_state = GeoState.find params[:finish_line_progress][:state_id]
       @languages = geo_state.languages.includes({geo_states: :zone}, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
+      @primary_languages = @languages.where('state_languages.primary = ?', true).pluck :id
     end
 
     respond_to do |format|
