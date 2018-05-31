@@ -32,7 +32,7 @@ class PbApiController < ApplicationController
     render json: { status: 'fail', error: 'language not found', iso: params[:iso] } and return unless language
     language_details =  { iso: language.iso, name: language.name }
     markers_of_interest = [5, 6, 7, 2, 1]
-    finish_line_progresses = language.finish_line_progresses.includes(:finish_line_marker).where( finish_line_markers: { number: markers_of_interest})
+    finish_line_progresses = language.finish_line_progresses.includes(:finish_line_marker).where( finish_line_markers: { number: markers_of_interest}, year: nil)
     finish_line_progresses.each do |flp|
       language_details[flp.finish_line_marker.name] = flp.status
     end
