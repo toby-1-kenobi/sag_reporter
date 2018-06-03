@@ -46,6 +46,14 @@ class GeoStatesController < ApplicationController
     end
   end
 
+  def load_board_report
+    geo_state = GeoState.find params[:id]
+    @languages = geo_state.languages.where('state_languages.primary = ?', true)
+    respond_to do |format|
+      format.js { render 'languages/load_board_report' }
+    end
+  end
+
   def get_autocomplete_items(parameters)
     super(parameters).where(:geo_state_id => params[:geo_state_id])
   end

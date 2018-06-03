@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       get :load_flm_summary
       get :load_flt_summary
       get :load_language_flm_table
+      get :load_board_report
     end
   end
 
