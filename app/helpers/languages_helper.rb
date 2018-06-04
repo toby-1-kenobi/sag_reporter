@@ -302,6 +302,7 @@ module LanguagesHelper
   def board_report_figures(language_data)
     data = {}
 
+    #TODO: don't use finish line marker names directly here - it's too brittle
     nt_complete, rest = language_data.partition do |l|
       l['New Testament'] == 'completed' or
           l['New Testament'] == 'further_needs_expressed' or
@@ -365,10 +366,10 @@ module LanguagesHelper
     songs = language_data.select{ |l| l['Songs Set'] == 'confirmed_need' or l['Songs Set'] == 'in_progress' }
     data[:songs] = [songs.count, songs.sum{ |l| l[:pop] }]
 
-    literacy = language_data.select{ |l| l['Basic Literacy'] == 'confirmed_need' or l['Basic Literacy'] == 'in_progress' }
+    literacy = language_data.select{ |l| l['LCI Literacy Classes"'] == 'confirmed_need' or l['LCI Literacy Classes"'] == 'in_progress' }
     data[:literacy] = [literacy.count, literacy.sum{ |l| l[:pop] }]
 
-    parivartan = language_data.select{ |l| l['Social Development'] == 'confirmed_need' or l['Social Development'] == 'in_progress' }
+    parivartan = language_data.select{ |l| l['LCI Parivartan Groups'] == 'confirmed_need' or l['LCI Parivartan Groups'] == 'in_progress' }
     data[:parivartan] = [parivartan.count, parivartan.sum{ |l| l[:pop] }]
 
     dictionary = language_data.select{ |l| l['Dictionary'] == 'confirmed_need' or l['Dictionary'] == 'in_progress' }
