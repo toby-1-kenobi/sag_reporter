@@ -1,3 +1,6 @@
+<% Rails.logger.debug @language_data %>
+<% board_report_data = board_report_figures(@language_data) %>
+<% Rails.logger.debug board_report_data %>
 <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
   <thead>
     <tr>
@@ -10,8 +13,13 @@
     <tr>
       <td class="mdl-data-table__cell--non-numeric">Survey needed, with
         possible need for SE / Storying</td>
-      <td></td>
-      <td></td>
+      <td><%= board_report_data[:survey_needed][0] %></td>
+      <td><%= board_report_data[:survey_needed][1] %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Storying in progress (NT not in progress)</td>
+      <td><%= board_report_data[:obs_progress][0] %></td>
+      <td><%= board_report_data[:obs_progress][1] %></td>
     </tr>
   </tbody>
 </table>

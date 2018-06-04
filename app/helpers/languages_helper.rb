@@ -299,4 +299,22 @@ module LanguagesHelper
     end
   end
 
+  def board_report_figures(language_data)
+    data = {}
+
+    survey_needed = language_data.select do |l|
+      l['Oral Bible Stories'] == 'survey_needed' and
+          (l['Gospel'] == 'no_need' or l['Gospel'] == 'survey_needed')
+    end
+    data[:survey_needed] = [survey_needed.count, survey_needed.sum{ |l| l[:pop] }]
+
+    storying_in_progress = language_data.select do |l|
+      l['Oral Bible Stories'] == 'in_progress' and
+          l['New Testament'] != 'in_progress'
+    end
+    data[:obs_progress] = [storying_in_progress.count, storying_in_progress.sum{ |l| l[:pop] }]
+
+    data
+  end
+
 end
