@@ -1,6 +1,4 @@
-<% Rails.logger.debug @language_data %>
 <% board_report_data = board_report_figures(@language_data) %>
-<% Rails.logger.debug board_report_data %>
 <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
   <thead>
     <tr>
@@ -89,6 +87,83 @@
       <th class="mdl-data-table__cell--non-numeric">Total languages with these needs</th>
       <th><%= board_report_data[:misc_needs][0] %></th>
       <th><%= number_with_delimiter(board_report_data[:misc_needs][1], delimiter: ',') %></th>
+    </tr>
+    <tr class="divider"></tr>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Work done or not needed in India</th>
+      <th>No. of languages (of <%= @language_data.count %>)</th>
+      <th>Total Population</th>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Inaccessible</td>
+      <td><%= board_report_data[:inaccessible][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:inaccessible][1], delimiter: ',') %></td>
+    </tr>
+    <% running_total_lang = board_report_data[:inaccessible][0] %>
+    <% running_total_pop = board_report_data[:inaccessible][1] %>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">No mother tongue translation needed</td>
+      <td><%= board_report_data[:no_need][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:no_need][1], delimiter: ',') %></td>
+    </tr>
+    <% running_total_lang += board_report_data[:no_need][0] %>
+    <% running_total_pop += board_report_data[:no_need][1] %>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Being done outside India</td>
+      <td><%= board_report_data[:outside_india][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:outside_india][1], delimiter: ',') %></td>
+    </tr>
+    <% running_total_lang += board_report_data[:outside_india][0] %>
+    <% running_total_pop += board_report_data[:outside_india][1] %>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">NT available</td>
+      <td><%= board_report_data[:nt_available][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:nt_available][1], delimiter: ',') %></td>
+    </tr>
+    <% running_total_lang += board_report_data[:nt_available][0] %>
+    <% running_total_pop += board_report_data[:nt_available][1] %>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Whole Bible available</td>
+      <td><%= board_report_data[:bible_available][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:bible_available][1], delimiter: ',') %></td>
+    </tr>
+    <% running_total_lang += board_report_data[:bible_available][0] %>
+    <% running_total_pop += board_report_data[:bible_available][1] %>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Total scripture work done</th>
+      <th><%= running_total_lang %></th>
+      <th><%= number_with_delimiter(running_total_pop, delimiter: ',') %></th>
+    </tr>
+    <tr class="divider"></tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Jesus Film available</td>
+      <td><%= board_report_data[:jesus_film_done][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:jesus_film_done][1], delimiter: ',') %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Bible story-set available</td>
+      <td><%= board_report_data[:obs_done][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:obs_done][1], delimiter: ',') %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Bible songs set available</td>
+      <td><%= board_report_data[:songs_done][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:songs_done][1], delimiter: ',') %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Literacy classes running</td>
+      <td><%= board_report_data[:literacy_done][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:literacy_done][1], delimiter: ',') %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Parivartan groups running</td>
+      <td><%= board_report_data[:parivartan_done][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:parivartan_done][1], delimiter: ',') %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Dictionary available</td>
+      <td><%= board_report_data[:dictionary_done][0] %></td>
+      <td><%= number_with_delimiter(board_report_data[:dictionary_done][1], delimiter: ',') %></td>
     </tr>
   </tbody>
 </table>
