@@ -85,10 +85,15 @@ class ZonesController < ApplicationController
   end
 
   def load_board_report
-    zone = Zone.find params[:id]
-    languages = zone.languages.includes(:finish_line_progresses, :populations).where('state_languages.primary = ?', true)
+    # if there is an id parameter we are loading for a specific zone
+    if params[:id].present?
+      zone = Zone.find params[:id]
+      languages = zone.languages.includes(:finish_line_progresses, :populations).where('state_languages.primary = ?', true)
+    else
+      languages = Language.includes(:finish_line_progresses, :populations)
+    end
     @language_data = []
-    languages.each do |lang|
+    languages.find_each do |lang|
       lang_data = {}
       lang.finish_line_progresses.includes(:finish_line_marker).where(year: nil).each do |flp|
         lang_data[flp.finish_line_marker.name] = flp.status
