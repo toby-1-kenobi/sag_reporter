@@ -215,7 +215,7 @@ module LanguagesHelper
     nt_marker_id = 6
     ot_marker_id = 7
     story_marker_id = 2
-    possible_need_status_index = 1
+    survey_needed_status_index = 1
     confirmed_need_status_index = 2
     in_progress_status_index = 3
     further_need_status_index = 5
@@ -233,7 +233,7 @@ module LanguagesHelper
         ot_status != FinishLineProgress.statuses.key(further_need_status_index) and
         ot_status != FinishLineProgress.statuses.key(confirmed_need_status_index)
     storying_status = finish_line_data[story_marker_id]
-    storying_no_need = storying_status != FinishLineProgress.statuses.key(possible_need_status_index) and
+    storying_no_need = storying_status != FinishLineProgress.statuses.key(survey_needed_status_index) and
         storying_status != FinishLineProgress.statuses.key(confirmed_need_status_index) and
         storying_status != FinishLineProgress.statuses.key(in_progress_status_index)
     nt_category = FinishLineProgress.category(finish_line_data[nt_marker_id])
@@ -297,6 +297,137 @@ module LanguagesHelper
     else
       'data-all-complete'
     end
+  end
+
+  def board_report_figures(language_data)
+    data = {}
+
+    #TODO: don't use finish line marker names directly here - it's too brittle
+    nt_complete, rest = language_data.partition do |l|
+      l['New Testament'] == 'completed' or
+          l['New Testament'] == 'further_needs_expressed' or
+          l['New Testament'] == 'further_work_in_progress'
+    end
+
+    bible_available, nt_available = nt_complete.partition do |l|
+      l['Old Testament'] == 'completed' or
+          l['Old Testament'] == 'further_needs_expressed' or
+          l['Old Testament'] == 'further_work_in_progress'
+    end
+    data[:nt_available] = [nt_available.count, nt_available.sum{ |l| l[:pop] }]
+    data[:bible_available] = [bible_available.count, bible_available.sum{ |l| l[:pop] }]
+
+    inaccessible, rest = rest.partition do |l|
+      l['New Testament'] == 'not_accessible' or
+          l['Gospel'] == 'not_accessible' or
+          l['Oral Bible Stories'] == 'not_accessible'
+    end
+    data[:inaccessible] = [inaccessible.count, inaccessible.sum{ |l| l[:pop] }]
+
+    outside_india, rest = rest.partition do |l|
+      l['New Testament'] == 'outside_india_in_progress' or
+          l['Gospel'] == 'outside_india_in_progress' or
+          l['Oral Bible Stories'] == 'outside_india_in_progress'
+    end
+    data[:outside_india] = [outside_india.count, outside_india.sum{ |l| l[:pop] }]
+
+    nt_progress, rest = rest.partition do |l|
+      l['New Testament'] == 'in_progress' or
+          l['Gospel'] == 'in_progress'
+    end
+    data[:nt_progress] = [nt_progress.count, nt_progress.sum{ |l| l[:pop] }]
+
+    no_need, rest = rest.partition do |l|
+      l['New Testament'] == 'no_need' or
+          l['Gospel'] == 'no_need' or
+          l['Oral Bible Stories'] == 'no_need'
+    end
+    data[:no_need] = [no_need.count, no_need.sum{ |l| l[:pop] }]
+
+    survey_needed, rest = rest.partition do |l|
+      l['Oral Bible Stories'] == 'survey_needed' or
+          l['Oral Bible Stories'] == 'confirmed_need'
+    end
+    data[:survey_needed] = [survey_needed.count, survey_needed.sum{ |l| l[:pop] }]
+
+    storying_in_progress, rest = rest.partition do |l|
+      l['Oral Bible Stories'] == 'in_progress'
+    end
+    data[:obs_progress] = [storying_in_progress.count, storying_in_progress.sum{ |l| l[:pop] }]
+
+    data[:storying_complete] = [rest.count, rest.sum{ |l| l[:pop] }]
+
+    ot_planned = language_data.select do |l|
+      l['Old Testament'] == 'confirmed_need'
+    end
+    data[:ot_planned] = [ot_planned.count, ot_planned.sum{ |l| l[:pop] }]
+
+    ot_progress = language_data.select do |l|
+      l['Old Testament'] == 'in_progress'
+    end
+    data[:ot_progress] = [ot_progress.count, ot_progress.sum{ |l| l[:pop] }]
+
+    jesus_film = language_data.select{ |l| l['Jesus Film'] == 'confirmed_need' or l['Jesus Film'] == 'in_progress' }
+    data[:jesus_film] = [jesus_film.count, jesus_film.sum{ |l| l[:pop] }]
+
+    songs = language_data.select{ |l| l['Songs Set'] == 'confirmed_need' or l['Songs Set'] == 'in_progress' }
+    data[:songs] = [songs.count, songs.sum{ |l| l[:pop] }]
+
+    literacy = language_data.select{ |l| l['LCI Literacy Classes'] == 'confirmed_need' or l['LCI Literacy Classes'] == 'in_progress' }
+    data[:literacy] = [literacy.count, literacy.sum{ |l| l[:pop] }]
+
+    parivartan = language_data.select{ |l| l['LCI Parivartan Groups'] == 'confirmed_need' or l['LCI Parivartan Groups'] == 'in_progress' }
+    data[:parivartan] = [parivartan.count, parivartan.sum{ |l| l[:pop] }]
+
+    dictionary = language_data.select{ |l| l['Dictionary'] == 'confirmed_need' or l['Dictionary'] == 'in_progress' }
+    data[:dictionary] = [dictionary.count, dictionary.sum{ |l| l[:pop] }]
+
+    misc_needs = (jesus_film + songs + literacy + parivartan + dictionary).uniq
+    data[:misc_needs] = [misc_needs.count, misc_needs.sum{ |l| l[:pop] }]
+
+    jesus_film_done = language_data.select do |l|
+      l['Jesus Film'] == 'completed' or
+          l['Jesus Film'] == 'further_needs_expressed' or
+          l['Jesus Film'] == 'further_work_in_progress'
+    end
+    data[:jesus_film_done] = [jesus_film_done.count, jesus_film_done.sum{ |l| l[:pop] }]
+
+    obs_done = language_data.select do |l|
+      l['Oral Bible Stories'] == 'completed' or
+          l['Oral Bible Stories'] == 'further_needs_expressed' or
+          l['Oral Bible Stories'] == 'further_work_in_progress'
+    end
+    data[:obs_done] = [obs_done.count, obs_done.sum{ |l| l[:pop] }]
+
+    songs_done = language_data.select do |l|
+      l['Songs Set'] == 'completed' or
+          l['Songs Set'] == 'further_needs_expressed' or
+          l['Songs Set'] == 'further_work_in_progress'
+    end
+    data[:songs_done] = [songs_done.count, songs_done.sum{ |l| l[:pop] }]
+
+    literacy_done = language_data.select do |l|
+      l['LCI Literacy Classes'] == 'completed' or
+          l['LCI Literacy Classes'] == 'further_needs_expressed' or
+          l['LCI Literacy Classes'] == 'further_work_in_progress'
+    end
+    data[:literacy_done] = [literacy_done.count, literacy_done.sum{ |l| l[:pop] }]
+
+    parivartan_done = language_data.select do |l|
+      l['LCI Parivartan Groups'] == 'completed' or
+          l['LCI Parivartan Groups'] == 'further_needs_expressed' or
+          l['LCI Parivartan Groups'] == 'further_work_in_progress'
+    end
+    data[:parivartan_done] = [parivartan_done.count, parivartan_done.sum{ |l| l[:pop] }]
+
+    dictionary_done = language_data.select do |l|
+      l['Dictionary'] == 'completed' or
+          l['Dictionary'] == 'further_needs_expressed' or
+          l['Dictionary'] == 'further_work_in_progress'
+    end
+    data[:dictionary_done] = [dictionary_done.count, dictionary_done.sum{ |l| l[:pop] }]
+
+    data
   end
 
 end

@@ -390,6 +390,15 @@ table td.check {
   text-align: center !important;
 }
 
+#board-tab {
+  table {
+    margin: 0 auto;
+    tr.divider {
+      height: 25px !important;
+    }
+  }
+}
+
 .mdl-card.translation-status {
   width: initial;
   max-width: 400px;

@@ -15,6 +15,9 @@
     <a href="#zones-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'zones' %>">Zones</a>
     <a href="#states-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'states' %>">States</a>
     <a href="#languages-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'languages' %>">Languages</a>
+    <% if logged_in_user.can_future_plan? %>
+      <a href="#board-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'board' %>">LCI Board Report</a>
+    <% end %>
   </div>
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'progress' %>" id="progress-tab">
     <div class="grid-layout">
@@ -50,6 +53,7 @@
       <% end %>
     </ul>
   </div>
+
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'languages' %>" id="languages-tab">
 
     <div id="language-flm-table">
@@ -57,33 +61,13 @@
       <div class="mdl-spinner mdl-js-spinner"></div>
     </div>
   </div>
+
+  <% if logged_in_user.can_future_plan? %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'board' %>" id="board-tab">
+      <div id="board-report-container">
+        <%= link_to 'get CLI board report', load_national_board_report_path, remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+    </div>
+  <% end %>
 </div>
-
-<% if @flm %>
-    <script>
-      $(document).ready(function(){
-          $('.flm-option[data-flm-number="<%= @flm %>"]').trigger('click');
-      });
-    </script>
-<% end %>
-
-<% if @flm_filter == 'needy' %>
-  <script>
-      $(document).ready(function() {
-          $('.mdl-layout').on('mdl-componentupgraded', function (e) {
-              if ($(e.target).hasClass('mdl-layout')) {
-                  $('.mdl-checkbox[for*="flm-6-"]').each(function () {
-                      var checkbox = this;
-                      if (!checkbox.getAttribute('for').includes('select-all')) {
-                          if (checkbox.getAttribute('for').includes('possible_need') || checkbox.getAttribute('for').includes('confirmed_need')) {
-                              checkbox.MaterialCheckbox.check();
-                          } else {
-                              checkbox.MaterialCheckbox.uncheck();
-                          }
-                      }
-                  });
-              }
-          });
-      });
-  </script>
-<% end %>
