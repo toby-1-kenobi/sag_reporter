@@ -98,7 +98,8 @@ class ZonesController < ApplicationController
       lang.finish_line_progresses.includes(:finish_line_marker).where(year: nil).each do |flp|
         lang_data[flp.finish_line_marker.name] = flp.status
       end
-      lang_data[:pop] = lang.best_current_pop.amount || 0
+      pop = lang.best_current_pop
+      lang_data[:pop] = pop ? pop.amount : 0
       @language_data << lang_data
     end
     respond_to do |format|
