@@ -16,6 +16,9 @@
     <a href="#languages-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'languages' %>">Languages</a>
     <a href="#organisations-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == 'organisations' %>">Agencies</a>
     <a href="#reports-tab" class="mdl-tabs__tab" id="reports-tab-tab <%= 'is-active' if @tab == 'reports' %>">Impact Stories</a>
+    <% if logged_in_user.can_future_plan? %>
+      <a href="#board-tab" class="mdl-tabs__tab">LCI Board Report</a>
+    <% end %>
   </div>
 
   <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'fls' %>" id="progress-tab">
@@ -106,4 +109,14 @@
     </div>
 
   </div>
+
+  <% if logged_in_user.can_future_plan? %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'board' %>" id="board-tab">
+      <div id="board-report-container">
+        <%= link_to 'get CLI board report', load_board_report_zone_path(@zone), remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+    </div>
+  <% end %>
+
 </div>
