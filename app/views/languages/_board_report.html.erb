@@ -5,11 +5,12 @@
   <thead>
     <tr>
       <th class="mdl-data-table__cell--non-numeric">Work to do</th>
-      <th>No. of languages</th>
+      <th>No. of languages (of <%= @language_data.count %>)</th>
       <th>Total Population</th>
     </tr>
   </thead>
   <tbody>
+    <tr class="divider"></tr>
     <tr>
       <td class="mdl-data-table__cell--non-numeric">Survey needed, with
         possible need for SE / Storying</td>
@@ -20,6 +21,74 @@
       <td class="mdl-data-table__cell--non-numeric">Storying in progress (NT not in progress)</td>
       <td><%= board_report_data[:obs_progress][0] %></td>
       <td><%= board_report_data[:obs_progress][1] %></td>
+    </tr>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Total OBS priority work to be done</th>
+      <th><%= board_report_data[:survey_needed][0] + board_report_data[:obs_progress][0] %></th>
+      <th><%= board_report_data[:survey_needed][1] + board_report_data[:obs_progress][1] %></th>
+    </tr>
+    <tr class="divider"></tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Dialect Survey needed (then NT to start)</td>
+      <td><%= board_report_data[:storying_complete][0] %></td>
+      <td><%= board_report_data[:storying_complete][1] %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">NT in progress</td>
+      <td><%= board_report_data[:nt_progress][0] %></td>
+      <td><%= board_report_data[:nt_progress][1] %></td>
+    </tr>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Total NT priority work to be done</th>
+      <th><%= board_report_data[:storying_complete][0] + board_report_data[:nt_progress][0] %></th>
+      <th><%= board_report_data[:storying_complete][1] + board_report_data[:nt_progress][1] %></th>
+    </tr>
+    <tr class="divider"></tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Full OT planned</td>
+      <td><%= board_report_data[:ot_planned][0] %></td>
+      <td><%= board_report_data[:ot_planned][1] %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Full OT in progress</td>
+      <td><%= board_report_data[:ot_progress][0] %></td>
+      <td><%= board_report_data[:ot_progress][1] %></td>
+    </tr>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Total OT work to be done</th>
+      <th><%= board_report_data[:ot_planned][0] + board_report_data[:ot_progress][0] %></th>
+      <th><%= board_report_data[:ot_planned][1] + board_report_data[:ot_progress][1] %></th>
+    </tr>
+    <tr class="divider"></tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Jesus Film needed / in progress</td>
+      <td><%= board_report_data[:jesus_film][0] %></td>
+      <td><%= board_report_data[:jesus_film][1] %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">First Bible songs needed / in progress</td>
+      <td><%= board_report_data[:songs][0] %></td>
+      <td><%= board_report_data[:songs][1] %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Literacy products needed / in progress</td>
+      <td><%= board_report_data[:literacy][0] %></td>
+      <td><%= board_report_data[:literacy][1] %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Parivartan groups needed / in progress</td>
+      <td><%= board_report_data[:parivartan][0] %></td>
+      <td><%= board_report_data[:parivartan][1] %></td>
+    </tr>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">Dictionary needed / in progress</td>
+      <td><%= board_report_data[:dictionary][0] %></td>
+      <td><%= board_report_data[:dictionary][1] %></td>
+    </tr>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Total languages with these needs</th>
+      <th><%= board_report_data[:misc_needs][0] %></th>
+      <th><%= board_report_data[:misc_needs][1] %></th>
     </tr>
   </tbody>
 </table>
