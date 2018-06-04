@@ -338,8 +338,8 @@ module LanguagesHelper
     data[:nt_progress] = [nt_progress.count, nt_progress.sum{ |l| l[:pop] }]
 
     no_need, rest = rest.partition do |l|
-      l['New Testament'] == 'no_need' or
-          l['Gospel'] == 'no_need' or
+      l['New Testament'] == 'no_need' and
+          l['Gospel'] == 'no_need' and
           l['Oral Bible Stories'] == 'no_need'
     end
     data[:no_need] = [no_need.count, no_need.sum{ |l| l[:pop] }]
