@@ -366,7 +366,7 @@ module LanguagesHelper
     songs = language_data.select{ |l| l['Songs Set'] == 'confirmed_need' or l['Songs Set'] == 'in_progress' }
     data[:songs] = [songs.count, songs.sum{ |l| l[:pop] }]
 
-    literacy = language_data.select{ |l| l['LCI Literacy Classes"'] == 'confirmed_need' or l['LCI Literacy Classes"'] == 'in_progress' }
+    literacy = language_data.select{ |l| l['LCI Literacy Classes'] == 'confirmed_need' or l['LCI Literacy Classes'] == 'in_progress' }
     data[:literacy] = [literacy.count, literacy.sum{ |l| l[:pop] }]
 
     parivartan = language_data.select{ |l| l['LCI Parivartan Groups'] == 'confirmed_need' or l['LCI Parivartan Groups'] == 'in_progress' }
