@@ -145,6 +145,8 @@ Rails.application.routes.draw do
   post 'resend_code_to_phone' => 'sessions#resend_otp_to_phone', as: 'resend_code_to_phone'
   post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
   delete 'logout'  => 'sessions#destroy'
+
+  get 'session/change/:id' => 'sessions#change'
   
 
   get  'tally_updates' => 'tally_updates#index'
