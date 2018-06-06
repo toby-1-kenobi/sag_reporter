@@ -1,5 +1,5 @@
 <% board_report_data = board_report_figures(@language_data) %>
-<% total_pop = @language_data.sum{ |l| l[:pop] } %>
+<% total_pop = @language_data.sum{ |l| l[:pop] } + 1 %>
 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <thead>
     <tr>
@@ -7,7 +7,7 @@
       <th>No. of languages (of <%= @language_data.count %>)</th>
       <th>Total Population</th>
       <% if total_pop > 0 %>
-        <th>percentage of all (<%= number_with_delimiter(total_pop, delimiter: ',') %>)</th>
+        <th>percentage of national<br />population (<%= number_with_delimiter(total_pop, delimiter: ',') %>)</th>
       <% end %>
     </tr>
   </thead>
@@ -54,7 +54,7 @@
       <th><%= board_report_data[:misc_needs][0] %></th>
       <th><%= number_with_delimiter(board_report_data[:misc_needs][1], delimiter: ',') %></th>
       <% if total_pop > 0 %>
-        <th><%= board_report_data[:misc_needs][1].to_f / total_pop.to_f * 100.0 %>%</th>
+        <th><%= number_with_precision(board_report_data[:misc_needs][1].to_f / total_pop.to_f * 100.0, precision: 3, significant: true) %>%</th>
       <% end %>
     </tr>
     <tr class="divider"></tr>

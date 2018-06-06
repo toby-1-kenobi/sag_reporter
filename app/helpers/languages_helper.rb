@@ -438,7 +438,7 @@ module LanguagesHelper
       <td>#{number_with_delimiter(report_data[row_index][1], delimiter: ',')}</td>
     )
     if total_pop > 0
-      row += "\n<td>#{report_data[row_index][1].to_f / total_pop.to_f * 100.0}%</td>"
+      row += "\n<td>#{number_with_precision(report_data[row_index][1].to_f / total_pop.to_f * 100.0, precision: 3, significant: true)}%</td>"
     end
     row + "\n</tr>"
   end
@@ -461,7 +461,7 @@ module LanguagesHelper
       <th>#{number_with_delimiter(combined_total_pop, delimiter: ',')}</th>
     )
     if total_pop > 0
-      row += "\n<th>#{combined_total_pop.to_f / total_pop.to_f * 100.0}%</th>"
+      row += "\n<th>#{number_with_precision(combined_total_pop.to_f / total_pop.to_f * 100.0, precision: 3, significant: true)}%</th>"
     end
     row + "\n</tr>"
 
