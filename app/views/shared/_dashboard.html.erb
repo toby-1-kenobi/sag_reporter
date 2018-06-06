@@ -1,0 +1,192 @@
+
+<% Rails.logger.debug local_assigns %>
+<div class="mdl-tabs mdl-js-tabs dashboard-tabs">
+  <div class="mdl-tabs__tab-bar">
+    <% tabs.each do |tab| %>
+      <a href="#<%= tab.to_s %>-tab" class="mdl-tabs__tab <%= 'is-active' if @tab == tab.to_s %>"><%= tab_names[tab] %></a>
+    <% end %>
+  </div>
+
+  <% if tabs.include? :progress %>
+    <%
+      case dashboard_type
+      when :state
+        flm_summary_path = load_flm_summary_geo_state_path(@geo_state)
+        flt_summary_path = load_flt_summary_geo_state_path(@geo_state)
+      when :zone
+        flm_summary_path = load_flm_summary_zone_path(@zone)
+        flt_summary_path = load_flt_summary_zone_path(@zone)
+      else # nation
+        flm_summary_path = load_national_flm_summary_path
+        flt_summary_path = load_national_flt_summary_path
+      end
+    %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'progress' %>" id="progress-tab">
+      <div class="grid-layout">
+        <div id="flm-table">
+          <%= link_to 'get flm table', flm_summary_path, remote: true, class: 'content-fetch-trigger' %>
+          <div class="mdl-spinner mdl-js-spinner"></div>
+        </div>
+        <div id="flt-table">
+          <%= link_to 'get flt table', flt_summary_path, remote: true, class: 'content-fetch-trigger' %>
+          <div class="mdl-spinner mdl-js-spinner"></div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <% if tabs.include? :zones %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'zones' %>" id="zones-tab">
+      <ul class="zone-list mdl-list">
+        <% Zone.find_each do |zone| %>
+          <li class="mdl-list__item">
+            <%= link_to zone do %>
+              <span class="mdl-list__item-primary-content"><%= zone.name %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if tabs.include? :states %>
+    <% states = (dashboard_type == :zone) ? @geo_states : GeoState  %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'states' %>" id="states-tab">
+      <ul class="state-list mdl-list">
+        <% states.find_each do |state| %>
+          <li class="mdl-list__item">
+            <%= link_to state do %>
+              <span class="mdl-list__item-primary-content"><%= state.name %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if tabs.include? :languages %>
+    <% Rails.logger.debug 'languages tab' %>
+    <%
+      case dashboard_type
+      when :state
+        language_table_path = load_language_flm_table_geo_state_path(@geo_state, filter: @language_flm_filters)
+      when :zone
+        language_table_path = load_language_flm_table_zone_path(@zone, filter: @language_flm_filters)
+      else # nation
+        language_table_path = load_national_language_flm_table_path(filter: @language_flm_filters)
+      end
+    %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'languages' %>" id="languages-tab">
+      <div id="language-flm-table">
+        <%= link_to 'get language flm table', language_table_path, remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+    </div>
+  <% end %>
+
+  <% if tabs.include? :organisations %>
+    <% Rails.logger.debug 'org tab' %>
+    <%
+      case dashboard_type
+      when :state
+        local = {geo_state_id: @geo_state.id}
+      when :zone
+        local = {zone_id: @zone.id}
+      else
+        Rails.logger.warning "not expecting #{dashboard_type} to include agencies tab"
+        local = {}
+      end
+      if dashboard_object
+        engaged_orgs = dashboard_object.engaged_organisations.uniq
+        translating_orgs = dashboard_object.translating_organisations.uniq
+      else
+        engaged_orgs = Organisation.none
+        translating_orgs = Organisation.none
+      end
+    %>
+    <div class="mdl-tabs__panel" id="organisations-tab">
+      <% if engaged_orgs.any? %>
+        <h4>Serving in development</h4>
+        <ul class="mdl-list">
+          <%= render partial: 'organisations/organisation', collection: engaged_orgs, locals: {type: :engaged}.merge(local) %>
+        </ul>
+      <% end %>
+      <% if translating_orgs.any? %>
+        <h4>Serving in translation</h4>
+        <ul class="mdl-list">
+          <%= render partial: 'organisations/organisation', collection: translating_orgs, locals: {type: :translation}.merge(local) %>
+        </ul>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if tabs.include? :reports %>
+    <% Rails.logger.debug 'reports tab' %>
+    <div class="mdl-tabs__panel" id="reports-tab">
+      <%= form_tag({controller: dashboard_type == :state ? 'geo_states' : 'zones', action: 'reports'}, method: 'get', remote: true, id: 'report-view-filters') do %>
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--4-col">
+            <%= render 'reports/filter_since' %>
+            <%= render 'reports/filter_until' %>
+          </div>
+          <div class="mdl-cell mdl-cell--4-col">
+            <%= render 'reports/filter_archived' %>
+            <%= render 'reports/filter_significant' %>
+            <% if dashboard_type == :zone %>
+              <% states = logged_in_user.national? ? @zone.geo_states : @zone.geo_states.where(id: logged_in_user.geo_states) %>
+              <%= render partial: 'reports/filter_states', locals: {states: states.order(:name)} %>
+            <% end %>
+            <%= render partial: 'reports/filter_languages', locals: {languages: dashboard_object.languages.order(:name).uniq} %>
+            <%= render partial: 'reports/filter_progress_markers' %>
+            <%= render partial: 'reports/filter_projects' %>
+          </div>
+          <div class="mdl-cell mdl-cell--4-col">
+            <%= render 'reports/filter_type' %>
+          </div>
+        </div>
+      <% end %>
+
+      <script>
+          $('.date-picker').bootstrapMaterialDatePicker({ weekStart : 0, time: false, format: 'DD MMMM, Y' });
+      </script>
+
+      <div class="reports-count-container">
+        Showing <%= "#{@reports.count} #{'report'.pluralize(@reports.count)}" if @reports and @reports.any? %>
+      </div>
+
+      <div id="report-filter-spinner" class="mdl-spinner mdl-js-spinner"></div>
+
+      <div class="reports-container mdl-grid">
+      </div>
+
+      <%= link_to new_report_path, id: 'show-report-fab', class: 'new-report-fab mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored' do %>
+        <i class="material-icons">add</i>
+      <% end %>
+      <div class="mdl-tooltip" data-mdl-for="show-report-fab">
+        Write a new report
+      </div>
+
+    </div>
+  <% end %>
+
+  <% if tabs.include? :board %>
+    <% Rails.logger.debug 'board tab' %>
+    <%
+      case dashboard_type
+      when :state
+        report_path = load_board_report_geo_state_path(@geo_state)
+      when :zone
+        report_path = load_board_report_zone_path(@zone)
+      else # nation
+        report_path = load_national_board_report_path
+      end
+    %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'board' %>" id="board-tab">
+      <div id="board-report-container">
+        <%= link_to 'get CLI board report', report_path, remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+    </div>
+  <% end %>
+
+</div>

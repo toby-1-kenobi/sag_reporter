@@ -33,6 +33,18 @@ module ApplicationHelper
 	  	  text_colour: "grey-text text-lighten-2"
 	  	}
 	  }
+	end
+
+	def tab_names
+    {
+        progress: 'Finish Line Status',
+        zones: 'Zones',
+        states: 'States',
+        languages: 'Languages',
+        organisations: 'Agencies',
+        reports: 'Impact Stories',
+        board: 'LCI Board Report'
+    }
   end
 
 end
