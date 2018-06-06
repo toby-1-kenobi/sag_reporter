@@ -1,3 +1,4 @@
+require 'securerandom'
 module LanguagesHelper
 
 
@@ -430,41 +431,51 @@ module LanguagesHelper
     data
   end
 
-  def board_report_row(report_data, row_index, name, total_pop)
+  def board_report_row(report_data, row_index, name, total_lang, total_pop)
     row = %Q(
     <tr>
       <td class="mdl-data-table__cell--non-numeric">#{name}</td>
-      <td>#{report_data[row_index][0]}</td>
+      <td>#{report_data[row_index][0]}#{pie_chart_element(report_data[row_index][0].to_f / total_lang.to_f * 100.0)}</td>
       <td>#{number_with_delimiter(report_data[row_index][1], delimiter: ',')}</td>
     )
     if total_pop > 0
-      row += "\n<td>#{number_with_precision(report_data[row_index][1].to_f / total_pop.to_f * 100.0, precision: 3, significant: true)}%</td>"
+      percent = report_data[row_index][1].to_f / total_pop.to_f * 100.0
+      row += "\n<td>#{number_with_precision(percent, precision: 3, significant: true)}%#{pie_chart_element(percent)}</td>"
     end
     row + "\n</tr>"
   end
 
-  def board_report_rows(report_data, row_hash, total_pop)
+  def board_report_rows(report_data, row_hash, total_lang, total_pop)
     rows = ''
     row_hash.each do |row_index, name|
-      rows += "\n#{board_report_row(report_data, row_index, name, total_pop)}"
+      rows += "\n#{board_report_row(report_data, row_index, name, total_lang, total_pop)}"
     end
     rows
   end
 
-  def combined_board_report_row(report_data, row_indices, name, total_pop)
+  def combined_board_report_row(report_data, row_indices, name, total_lang, total_pop)
     combined_total_lang = report_data.select{ |key,_| row_indices.include? key }.sum{ |k,v| v[0] }
     combined_total_pop = report_data.select{ |key,_| row_indices.include? key }.sum{ |k,v| v[1] }
     row = %Q(
     <tr>
       <th class="mdl-data-table__cell--non-numeric">#{name}</th>
-      <th>#{combined_total_lang}</th>
+      <th>#{combined_total_lang}#{pie_chart_element(combined_total_lang.to_f / total_lang.to_f * 100.0)}</th>
       <th>#{number_with_delimiter(combined_total_pop, delimiter: ',')}</th>
     )
     if total_pop > 0
-      row += "\n<th>#{number_with_precision(combined_total_pop.to_f / total_pop.to_f * 100.0, precision: 3, significant: true)}%</th>"
+      percent = combined_total_pop.to_f / total_pop.to_f * 100.0
+      row += "\n<th>#{number_with_precision(percent, precision: 3, significant: true)}%#{pie_chart_element(percent)}</th>"
     end
     row + "\n</tr>"
+  end
 
+  def pie_chart_element(percent)
+    chart_type = (percent < 50) ? 'low' : 'high'
+    percent -= 50 if percent >= 50
+    pie_uid = SecureRandom.uuid
+    pie_style = "<style>#pie-#{pie_uid}:before{ transform: rotate(#{percent / 100.0}turn); }</style>"
+    pie_html = "<div id=\"pie-#{pie_uid}\" class=\"pie-chart #{chart_type} #{@chart_style_need ? 'need' : 'complete' }\"></div>"
+    "#{pie_style}#{pie_html}"
   end
 
 end

@@ -1,0 +1,28 @@
+.pie-chart {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: lightgrey;
+  &.need {
+    background-image: linear-gradient(to right, transparent 50%, rgb(255,64,129) 0);
+  }
+  &.complete {
+    background-image: linear-gradient(to right, transparent 50%, rgb(63,81,181) 0);
+  }
+  &:before {
+    content: '';
+    display: block;
+    margin-left: 50%;
+    height: 100%;
+    border-radius: 0 100% 100% 0 / 50%;
+    transform-origin: left;
+  }
+  &.low:before {
+    background-color: inherit;
+  }
+  &.high.need:before {
+    background: rgb(255,64,129);
+  }
+  &.high.complete:before {
+    background: rgb(63,81,181);
+  }
+}
