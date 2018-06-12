@@ -108,7 +108,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_request
     @all_data = Tempfile.new
-    render json: {data: @all_data.path}, status: :ok
+    render json: {data: "#{@all_data.path}.txt"}, status: :ok
     Thread.new do
       begin
         File.open(@all_data, "w") do |final_file|
@@ -162,6 +162,7 @@ class ExternalDeviceController < ApplicationController
         @all_data.write send_message
       ensure
         @all_data.close
+        File.rename(@all_data, "#{@all_data.path}.txt")
         ActiveRecord::Base.connection.close
       end
     end
@@ -170,11 +171,11 @@ class ExternalDeviceController < ApplicationController
   def get_file
     begin
       puts params
-      file = File.new get_file_params['file_path']
-      while file.size == 0
+      file_path = get_file_params['file_path']
+      while !file.exists?(file_path)
         sleep 1
       end
-      send_file get_file_params['file_path'], status: :ok
+      send_file file_path, status: :ok
     rescue => e
       send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       logger.error send_message
@@ -843,3 +844,4 @@ end
 # Language.reflect_on_all_associations(:has_many).map{|a|[a.name,a.options[:through],a.options[:source]]}
 # => [[:geo_states, :state_languages, nil],...]
 # Language.includes(a.options[:through]).map {|l|l.send(a.options[:through]).map &a.options[:source] || a.name}
+
