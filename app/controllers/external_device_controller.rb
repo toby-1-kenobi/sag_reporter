@@ -172,7 +172,7 @@ class ExternalDeviceController < ApplicationController
     begin
       puts params
       file_path = get_file_params['file_path']
-      while !file.exists?(file_path)
+      while !File.exists?(file_path)
         sleep 1
       end
       send_file file_path, status: :ok
