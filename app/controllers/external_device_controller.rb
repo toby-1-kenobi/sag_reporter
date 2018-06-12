@@ -4,7 +4,7 @@ class ExternalDeviceController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key]
+  before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key, :send_request, :get_file]
 
   def test_server
     head :ok
@@ -111,76 +111,58 @@ class ExternalDeviceController < ApplicationController
     render json: {data: @all_data.path}, status: :ok
     Thread.new do
       begin
-        @sync_time = 5.seconds.ago
-        last_updated_at = Time.at send_request_params[:updated_at]
-        @needed = {:updated_at => last_updated_at .. @sync_time}
-        @users, @geo_states, @languages, @reports,
-            @people, @topics, @progress_markers, @zones, @errors = Array.new(10) {Tempfile.new}
-        @user_ids, @geo_state_ids, @language_ids, @report_ids,
-            @person_ids, @topic_ids, @progress_marker_ids, @zone_ids = Array.new(9) {Set.new}
-        @all_updated_at = {}
-        begin
-          send_external_user
-          send_language external_user.mother_tongue
-          external_user.spoken_languages.where(@needed).each {|language| send_language language}
-          send_language external_user.interface_language
-          external_user.championed_languages.where(@needed).each {|language| send_language language}
-          ActiveRecord::Base.connection.query_cache.clear
-        end
-        begin
-          User.where(@needed).select(:id, :name, :mother_tongue_id, :updated_at).collect
-              .each {|user| send_user_name(user) if user.id != external_user.id} if external_user.trusted?
-          ActiveRecord::Base.connection.query_cache.clear
-        end
-        begin
-          if external_user.national?
-            user_geo_states = GeoState.all
-          else
-            user_geo_states = external_user.geo_states
-          end
-          user_geo_states.where(@needed).includes(:languages, :zone, :state_languages).each do |geo_state|
-            send_geo_state geo_state
-            send_zone geo_state.zone
-            geo_state.languages.each {|language| send_language language}
+        File.open(@all_data, "w") do |final_file|
+          final_file.write "{\"updated_at\":#{@sync_time.to_i}"
+          @sync_time = 5.seconds.ago
+          last_updated_at = Time.at send_request_params[:updated_at]
+          @needed = {:updated_at => last_updated_at .. @sync_time}
+          tables = [User, GeoState, LanguageProgress, Language, Report, Person, Topic, ProgressMarker, Zone]
+          tableNames = tables.map {|t|t.name.tableize.downcase}
+          finished_tables = ["people"]#Array.new
+          firstTable = true
+          tables.each do |table|
+            finished_tables << table.name.tableize.downcase
+            firstTable = !firstTable && final_file.write(',') && false
+            final_file.write "\"#{table.name}\":["
+            join_tables = table.reflect_on_all_associations(:has_and_belongs_to_many).map do |a|
+              puts a.name.to_s + finished_tables.include?(a.options[:class_name] || a.name.to_s).to_s
+              a.name unless finished_tables.include?(a.options[:class_name] || a.name.to_s)
+            end - [nil]
+            puts join_tables.to_s + "Join"
+            join_table_ids = join_tables.map{|a|a.to_s.singularize + "_ids"}
+
+            associations = table.reflect_on_all_associations(:has_many).map do |a|
+              if a.options[:through] and !finished_tables.include?((a.options[:source] || a.name).to_s.pluralize) and
+                  !tableNames.include?(a.options[:through].to_s.pluralize)
+                join_tables << a.options[:through]
+#                puts a.options[:through].to_s.singularize
+                [a.name.to_s.singularize.to_sym, a.options[:through], a.options[:source]]
+              end
+            end - [nil]
+            firstEntry = true
+            table.where(@needed).includes(join_tables).map do |entry|
+#              puts entry
+              entry_data = entry.attributes.except("created_at", "updated_at")
+#              puts entry.attributes
+              entry_data.merge(join_table_ids.map do |join_table_ids_name|
+                puts join_table_ids_name.to_s + " id_names " + entry.send(join_table_ids_name).to_s
+                [join_table_ids_name, entry.send(join_table_ids_name)]
+              end.to_h)
+              puts [table.name, join_table_ids, associations, finished_tables, tables.map(&:name)].to_s
+              associations.each{|a| entry_data.merge({a[0] => entry.send(a[1]).map(&(a[2]&.to_sym) || a[0])})}
+              firstEntry = !firstEntry && final_file.write(',') && false
+              final_file.write entry_data.to_s
+            end
+            final_file.write ']'
             ActiveRecord::Base.connection.query_cache.clear
           end
         end
-        begin
-          Person.where(@needed).each {|person| send_person person} if external_user.trusted?
-          Topic.where(@needed).each {|topic| send_topic topic unless topic.hide_for?(external_user)}
-          ProgressMarker.where(@needed).each {|progress_marker| send_progress_marker(progress_marker) if progress_marker.number}
-          ActiveRecord::Base.connection.query_cache.clear
-        end
-        begin
-          Report.where(@needed).includes(:languages, :observers, :pictures, :impact_report => [:progress_markers], :geo_state => [:languages])
-              .order(:report_date).reverse_order.user_limited(external_user).each do |report|
-            send_report report
-            send_geo_state report.geo_state
-            report.languages.each {|language| send_language language}
-          end
-          ActiveRecord::Base.connection.query_cache.clear
-        end
-        send_message = {
-            errors: @errors,
-            users: @users,
-            geo_states: @geo_states,
-            zones: @zones,
-            languages: @languages,
-            people: @people,
-            topics: @topics,
-            progress_markers: @progress_markers,
-            reports: @reports
-        }
-        save_data_in_file send_message
       rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
         logger.error send_message
         @all_data.write send_message
       ensure
-        [@all_data, @users, @geo_states, @languages, @reports,
-         @people, @topics, @progress_markers, @errors].each &:close
-        [@users, @geo_states, @languages, @reports,
-         @people, @topics, @progress_markers, @errors].each &:delete
+        @all_data.close
         ActiveRecord::Base.connection.close
       end
     end
@@ -188,6 +170,7 @@ class ExternalDeviceController < ApplicationController
 
   def get_file
     begin
+      puts params
       file = File.new get_file_params['file_path']
       while file.size == 0
         sleep 1
@@ -209,17 +192,17 @@ class ExternalDeviceController < ApplicationController
         pictures_data, errors = Array.new(2) {Tempfile.new}
         UploadedFile.includes(:report).find(uploaded_file_ids).each do |uploaded_file|
           image_data = if uploaded_file&.ref.file.exists?
-                        Base64.encode64(uploaded_file.ref.read)
-                      else
-                        ""
-                      end
+                         Base64.encode64(uploaded_file.ref.read)
+                       else
+                         ""
+                       end
           if external_user.trusted? || uploaded_file.report.reporter == external_user
             pictures_data.write(', ') unless pictures_data.length == 0
             pictures_data.write({
-                id: uploaded_file.id,
-                data: image_data,
-                updated_at: uploaded_file.updated_at.to_i
-            }.to_json)
+                                    id: uploaded_file.id,
+                                    data: image_data,
+                                    updated_at: uploaded_file.updated_at.to_i
+                                }.to_json)
           else
             errors << {"uploaded_file_#{uploaded_file.id}" => "permission denied"}
           end
@@ -853,3 +836,11 @@ class ExternalDeviceController < ApplicationController
 end
 # for easily getting all attributes:
 # Language.new.attributes.except("created_at","updated_at").keys.each{|k|puts "          #{k}: xxx.#{k},"}.nil?
+
+# hm=Person.reflect_on_all_associations(:has_many).map{|r|r.name}
+# hm2=hm.map{|h|h.to_s.singularize + "_ids"}
+# Person.includes(hm).map{|p| hm2.map{|h|[h,p.send(h)]}.to_h.merge(p.attributes.except("created_at", "updated_at"))}
+
+# Language.reflect_on_all_associations(:has_many).map{|a|[a.name,a.options[:through],a.options[:source]]}
+# => [[:geo_states, :state_languages, nil],...]
+# Language.includes(a.options[:through]).map {|l|l.send(a.options[:through]).map &a.options[:source] || a.name}
