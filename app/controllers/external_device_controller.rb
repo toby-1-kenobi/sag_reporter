@@ -4,7 +4,7 @@ class ExternalDeviceController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key, :send_request, :get_file]
+  before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key]
 
   def test_server
     head :ok
@@ -117,12 +117,11 @@ class ExternalDeviceController < ApplicationController
           last_updated_at = Time.at send_request_params[:updated_at]
           @needed = {:updated_at => last_updated_at .. @sync_time}
           tables = [User, GeoState, LanguageProgress, Language, Report, Person, Topic, ProgressMarker, Zone]
-          tableNames = tables.map {|t|t.name.tableize.downcase}
+          table_names = tables.map {|t|t.name.tableize.downcase}
           finished_tables = ["people"]#Array.new
-          firstTable = true
           tables.each do |table|
             finished_tables << table.name.tableize.downcase
-            firstTable = !firstTable && final_file.write(',') && false
+            final_file.write(',')
             final_file.write "\"#{table.name}\":["
             join_tables = table.reflect_on_all_associations(:has_and_belongs_to_many).map do |a|
               puts a.name.to_s + finished_tables.include?(a.options[:class_name] || a.name.to_s).to_s
@@ -133,13 +132,13 @@ class ExternalDeviceController < ApplicationController
 
             associations = table.reflect_on_all_associations(:has_many).map do |a|
               if a.options[:through] and !finished_tables.include?((a.options[:source] || a.name).to_s.pluralize) and
-                  !tableNames.include?(a.options[:through].to_s.pluralize)
+                  !table_names.include?(a.options[:through].to_s.pluralize)
                 join_tables << a.options[:through]
 #                puts a.options[:through].to_s.singularize
                 [a.name.to_s.singularize.to_sym, a.options[:through], a.options[:source]]
               end
             end - [nil]
-            firstEntry = true
+            first_entry = true
             table.where(@needed).includes(join_tables).map do |entry|
 #              puts entry
               entry_data = entry.attributes.except("created_at", "updated_at")
@@ -150,8 +149,8 @@ class ExternalDeviceController < ApplicationController
               end.to_h)
               puts [table.name, join_table_ids, associations, finished_tables, tables.map(&:name)].to_s
               associations.each{|a| entry_data.merge({a[0] => entry.send(a[1]).map(&(a[2]&.to_sym) || a[0])})}
-              firstEntry = !firstEntry && final_file.write(',') && false
-              final_file.write entry_data.to_s
+              first_entry = !first_entry && final_file.write(',') && false
+              final_file.write entry_data.to_json
             end
             final_file.write ']'
             ActiveRecord::Base.connection.query_cache.clear
