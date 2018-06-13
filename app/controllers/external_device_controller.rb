@@ -124,31 +124,26 @@ class ExternalDeviceController < ApplicationController
             final_file.write(',')
             final_file.write "\"#{table.name}\":["
             join_tables = table.reflect_on_all_associations(:has_and_belongs_to_many).map do |a|
-              puts a.name.to_s + finished_tables.include?(a.options[:class_name] || a.name.to_s).to_s
               a.name unless finished_tables.include?(a.options[:class_name] || a.name.to_s)
             end - [nil]
-            puts join_tables.to_s + "Join"
             join_table_ids = join_tables.map{|a|a.to_s.singularize + "_ids"}
-
             associations = table.reflect_on_all_associations(:has_many).map do |a|
               if a.options[:through] and !finished_tables.include?((a.options[:source] || a.name).to_s.pluralize) and
                   !table_names.include?(a.options[:through].to_s.pluralize)
                 join_tables << a.options[:through]
-#                puts a.options[:through].to_s.singularize
                 [a.name.to_s.singularize.to_sym, a.options[:through], a.options[:source]]
               end
             end - [nil]
             first_entry = true
             table.where(@needed).includes(join_tables).map do |entry|
-#              puts entry
               entry_data = entry.attributes.except("created_at", "updated_at")
-#              puts entry.attributes
-              entry_data.merge(join_table_ids.map do |join_table_ids_name|
-                puts join_table_ids_name.to_s + " id_names " + entry.send(join_table_ids_name).to_s
+              entry_data.merge!(join_table_ids.map do |join_table_ids_name|
                 [join_table_ids_name, entry.send(join_table_ids_name)]
               end.to_h)
-              puts [table.name, join_table_ids, associations, finished_tables, tables.map(&:name)].to_s
-              associations.each{|a| entry_data.merge({a[0] => entry.send(a[1]).map(&(a[2]&.to_sym) || a[0])})}
+              associations.each do |a|
+                id_column = "#{(a[2]&.to_sym || a[0]).to_s}_id".to_sym
+                entry_data.merge!({"#{a[0]}_ids" => entry.send(a[1]).map(&id_column)})
+              end
               first_entry = !first_entry && final_file.write(',') && false
               final_file.write entry_data.to_json
             end
