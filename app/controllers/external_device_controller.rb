@@ -4,7 +4,7 @@ class ExternalDeviceController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key]
+  before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key, :get_file, :send_request]
 
   def test_server
     head :ok
@@ -131,14 +131,15 @@ class ExternalDeviceController < ApplicationController
     ]
     send_request_params = params.require(:external_device).permit(safe_params)
 
-    tables = [User, GeoState, LanguageProgress, Language, Report, Person, Topic, ProgressMarker, Zone, ImpactReport]
+    tables = [User, GeoState, LanguageProgress, Language, Report, Person, Topic, ProgressMarker,
+              Zone, ImpactReport, UploadedFile]
     exclude_attributes = {
         User: %w(password_digest remember_digest otp_secret_key confirm_token reset_password reset_password_token)
     }
     join_tables = {
         User: %w(geo_states spoken_languages),
         GeoState: %w(languages),
-        Report: %w(languages observers pictures)
+        Report: %w(languages observers)
     }
     def additional_tables(entry)
       case entry.class
