@@ -4,7 +4,7 @@ class ExternalDeviceController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key, :get_file, :send_request]
+  before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key]
 
   def test_server
     head :ok
@@ -139,7 +139,8 @@ class ExternalDeviceController < ApplicationController
     join_tables = {
         User: %w(geo_states spoken_languages),
         GeoState: %w(languages),
-        Report: %w(languages observers)
+        Report: %w(languages observers),
+        ImpactReport: %w(progress_markers)
     }
     def additional_tables(entry)
       case entry.class
@@ -215,7 +216,7 @@ class ExternalDeviceController < ApplicationController
 
   def get_uploaded_file
     safe_params = [
-        :uploaded_files => [:id],
+        :uploaded_files => [],
     ]
     get_uploaded_file_params = params.require(:external_device).permit(safe_params)
 
@@ -242,10 +243,8 @@ class ExternalDeviceController < ApplicationController
             errors << {"uploaded_file_#{uploaded_file.id}" => "permission denied"}
           end
         end
-        send_message = {
-            errors: errors,
-            pictures_data: pictures_data
-        }
+        send_message = { pictures_data: pictures_data }
+        send_message.merge!({ errors: errors}) if errors
         save_data_in_file send_message
       rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
@@ -408,6 +407,27 @@ class ExternalDeviceController < ApplicationController
       end
     end
   end
+
+  def save_data_in_file(send_message)
+    File.open(@all_data, "w") do |final_file|
+      final_file.write "{\"updated_at\":#{@sync_time.to_i}"
+      first_entry = true
+      send_message.each do |category, file|
+        file.close
+        file.open
+        final_file.write ', '
+        final_file.write "\"#{category}\": ["
+        final_file.write file.read
+        final_file.write ']'
+        file.close
+        file.unlink
+        first_entry &= false
+      end
+      final_file.write '}'
+    end
+    @all_data.close
+  end
+
 
   def send_mail(report, mail)
     # make sure TLS gets used for delivering this email
