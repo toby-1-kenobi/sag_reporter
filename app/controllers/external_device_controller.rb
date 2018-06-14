@@ -236,15 +236,14 @@ class ExternalDeviceController < ApplicationController
             pictures_data.write(', ') unless pictures_data.length == 0
             pictures_data.write({
                                     id: uploaded_file.id,
-                                    data: image_data,
-                                    updated_at: uploaded_file.updated_at.to_i
+                                    data: image_data
                                 }.to_json)
           else
-            errors << {"uploaded_file_#{uploaded_file.id}" => "permission denied"}
+            errors << {"uploaded_file:#{uploaded_file.id}" => "permission denied"}
           end
         end
-        send_message = { pictures_data: pictures_data }
-        send_message.merge!({ errors: errors}) if errors
+        send_message = { UploadedFile: pictures_data }
+        send_message.merge!({ errors: errors}) unless errors.empty?
         save_data_in_file send_message
       rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
@@ -410,18 +409,16 @@ class ExternalDeviceController < ApplicationController
 
   def save_data_in_file(send_message)
     File.open(@all_data, "w") do |final_file|
-      final_file.write "{\"updated_at\":#{@sync_time.to_i}"
-      first_entry = true
-      send_message.each do |category, file|
+      final_file.write "{"
+      send_message.each_with_index do |category, file, index|
         file.close
         file.open
-        final_file.write ', '
+        final_file.write ', ' unless index == 0
         final_file.write "\"#{category}\": ["
         final_file.write file.read
         final_file.write ']'
         file.close
         file.unlink
-        first_entry &= false
       end
       final_file.write '}'
     end
