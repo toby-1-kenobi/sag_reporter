@@ -125,16 +125,6 @@ class ExternalDeviceController < ApplicationController
     end
   end
 
-  def additional_tables(entry)
-    case entry.class
-      when Report
-        {project_languages: entry.state_languages.in_project.map(&:language)}
-      when ProgressMarker
-        {description: progress_marker.description_for(@external_user)}
-      else
-        {}
-    end
-  end
   def send_request
     safe_params = [
         :updated_at
@@ -150,6 +140,16 @@ class ExternalDeviceController < ApplicationController
         GeoState: %w(languages),
         Report: %w(languages observers pictures)
     }
+    def additional_tables(entry)
+      case entry.class
+        when Report
+          {project_languages: entry.state_languages.in_project.map(&:language)}
+        when ProgressMarker
+          {description: progress_marker.description_for(@external_user)}
+        else
+          {}
+      end
+    end
     @final_file = Tempfile.new
     render json: {data: "#{@final_file.path}.txt"}, status: :ok
     Thread.new do
@@ -166,7 +166,7 @@ class ExternalDeviceController < ApplicationController
             table.where(@needed).includes(join_tables[table_name]).each_with_index do |entry, index|
               entry_data = entry.attributes.except("created_at", "updated_at", *exclude_attributes[table_name])
               join_tables[table_name]&.each do |join_table|
-                entry_data.merge!({join_table.camelize(:lower) => entry.send(join_table.singularize.foreign_key.pluralize)})
+                entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
               end
               entry_data.merge! additional_tables(entry)
               file.write(',') if index != 0
@@ -175,6 +175,7 @@ class ExternalDeviceController < ApplicationController
             file.write ']'
             ActiveRecord::Base.connection.query_cache.clear
           end
+          file.write '}'
         end
       rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
@@ -185,6 +186,7 @@ class ExternalDeviceController < ApplicationController
         @final_file.write send_message
       ensure
         @final_file.close
+        logger.debug "File writing finished. Size: #{@final_file.size}"
         File.rename(@final_file, "#{@final_file.path}.txt")
         ActiveRecord::Base.connection.close
       end
@@ -258,14 +260,15 @@ class ExternalDeviceController < ApplicationController
   def receive_request
     begin
       safe_params = [
-          :uploaded_files => [
-              :status,
-              :data
+          :UploadedFile => [
+              :id,
+              :data,
+              :old_id
           ],
-          :reports => [
-              :status,
+          :Report => [
+              :id,
               :geo_state_id,
-              {:language_ids => []},
+              {:language_ids => [:old_id]},
               :report_date,
               :translation_impact,
               :significant,
@@ -276,23 +279,36 @@ class ExternalDeviceController < ApplicationController
               {:progress_marker_ids => []},
               {:observer_ids => []},
               :client,
-              :version
+              :version,
+              :old_id,
+              :impact_report => [
+                  {:ImpactReport => [
+                      :id,
+                      :shareable,
+                      :translation_impact,
+                      :old_id
+                  ]}
+              ]
           ]
       ]
       receive_request_params = params.require(:external_device).permit(safe_params)
 
-      @uploaded_file_feedbacks, @report_feedbacks, @errors = Array.new(3) {Array.new}
-      receive_request_params[:reports].each do |report_id, report_params|
-        receive_report report_id, report_params, receive_request_params[:uploaded_files]
+      @errors = []
+      @id_changes = {}
+
+      [ImpactReport, Report, UploadedFile].each do |table|
+        puts "Params: " + receive_request_params[table.name].to_s + table.name.to_s
+        receive_request_params[table.name]&.each do |entry|
+          new_entry = build table, entry.to_h
+          raise new_entry.errors.messages.to_s unless !new_entry || new_entry.save
+        end
       end
-      receive_request_params[:uploaded_files].each do |uploaded_file_id, uploaded_file_params|
-        receive_uploaded_file uploaded_file_id, uploaded_file_params
-      end
-      send_message = {
-          error: @errors,
-          reports: @report_feedbacks,
-          uploaded_files: @uploaded_file_feedbacks
-      }
+
+      puts "Errors: #{@errors}"
+      # Send back all the ID changes (as only the whole entries were saved, the ID has to be retrieved here)
+      send_message = {}
+      @id_changes.each{|k,v| v.each{|k2,v2| send_message[k][k2] = v2.id}}
+      send_message.merge({error: @errors}) unless @errors.empty?
       logger.debug send_message
       render json: send_message, status: :created
     rescue => e
@@ -306,121 +322,89 @@ class ExternalDeviceController < ApplicationController
 
   # receive_request methods:
 
-  def receive_uploaded_file(uploaded_file_id, uploaded_file_data)
-    logger.debug "Save file: #{uploaded_file_id}"
-    status = uploaded_file_data.delete 'status'
-    if status == 'delete'
-      UploadedFile.delete uploaded_file_id
+  def build(table, hash)
+    puts "create table #{table.name}"
+    old_id = nil
+    begin
+      if table == Report && hash["reporter_id"] != @external_user && !@external_user.admin
+        Report.find(hash["id"]).touch if hash["id"]
+        raise "User is not allowed to edit report #{hash["id"]}"
+      end
+      # Go through all the entries to check, whether it has an ID from another uploaded entry
+      hash.each do |k, v|
+        puts "#{v} #{v.class} #{v.class == Hash}"
+        if v.class == Array
+          v.map! do |element|
+            # A hash inside an array means always, that the the ID has to be mapped according to the newly created ID
+            # An example would be {..., :observers => [20, {:old_id => "Person;100010"}]}
+            if element.class == Hash
+              table, old_id = element.values.first.split(';')
+              @id_changes[table.to_sym][old_id.to_i]
+            else
+              element
+            end
+          end
+        elsif v.class == Hash
+          intern_table = v.keys.first.constantize rescue nil
+          if intern_table && v.values.first.class == Hash
+            hash[k] = build intern_table, v.values.first
+          end
+        end
+      end
+      puts "Check for ID: #{hash["id"]}"
+      if table == UploadedFile
+        create_file(hash)
+      elsif hash["id"]
+        table.update hash["id"], hash
+      else
+        old_id = hash.delete "old_id"
+        puts "Old: #{old_id}"
+        new_entry = table.new hash
+        puts "New: #{new_entry.attributes} #{new_entry.valid?}"
+        @id_changes[table.name.to_sym] = {old_id => new_entry} if old_id
+        puts "Changes: #{@id_changes}"
+        new_entry
+      end
+    rescue => e
+      @errors << {"#{table.name}:#{old_id}" => e}
       return nil
     end
-    if status != 'new'
-      @errors << {"uploaded_file_#{uploaded_file_id}" => "Unknown status: #{status}"}
-      return nil
-    end
-    # convert image-string to image-file
+  end
+
+  def create_file(values)
+    old_id = nil
     begin
       filename = 'external_uploaded_image'
       tempfile = Tempfile.new filename
       tempfile.binmode
-      tempfile.write Base64.decode64 uploaded_file_data.delete('data')
+      tempfile.write Base64.decode64 values.delete('data')
       tempfile.rewind
       content_type = `file --mime -b #{tempfile.path}`.split(';')[0]
       extension = content_type.match(/gif|jpg|jpeg|png/).to_s
       filename += ".#{extension}" if extension
-      uploaded_file_data[:ref] = ActionDispatch::Http::UploadedFile.new({
-                                                                            tempfile: tempfile,
-                                                                            type: content_type,
-                                                                            filename: filename
-                                                                        })
-      uploaded_file = UploadedFile.new(uploaded_file_data)
-      raise uploaded_file.errors.messages.to_s unless uploaded_file.save
-      uploaded_file.touch
-      @uploaded_file_feedbacks << {
-          id: uploaded_file_id,
-          updated_at: uploaded_file.updated_at.to_i,
-          new_id: uploaded_file.id,
-          last_changed: 'uploaded'
-      }
-      return uploaded_file.id
+      values["ref"] = ActionDispatch::Http::UploadedFile
+                          .new({
+                                   tempfile: tempfile,
+                                   type: content_type,
+                                   filename: filename
+                               })
+      if values["id"]
+        table.update values["id"], values
+      else
+        old_id = values.delete :old_id
+        new_entry = UploadedFile.new values
+        raise new_entry.errors.messages.to_s unless uploaded_file.save
+        @id_changes[table_name.to_sym] = {old_id => new_entry.id} if old_id
+        new_entry
+      end
     rescue => e
-      @errors << {"uploaded_file_#{uploaded_file_id}" => e}
+      @errors << {"uploaded_file:#{old_id}" => e}
       return nil
     ensure
       if tempfile
         tempfile.close
         tempfile.unlink
       end
-    end
-  end
-
-  def receive_report(report_id, report_data, uploaded_files_data)
-    logger.debug "Save report: #{report_id}"
-    return if report_data.nil?
-    impact_report = report_data.delete 'impact_report'
-    status = report_data.delete 'status'
-    report_data['report_date'] &&= Date.parse report_data['report_date']
-    report_data['picture_ids'] && report_data['picture_ids'].map! do |picture_id|
-      picture_id = picture_id.to_i
-      picture_data = uploaded_files_data.delete picture_id.to_s
-      if picture_data
-        receive_uploaded_file picture_id, picture_data
-      else
-        picture_id
-      end
-    end
-    impact_report_data = Hash.new
-    impact_report_data['progress_marker_ids'] = report_data.delete 'progress_marker_ids'
-    impact_report_data['translation_impact'] = report_data.delete 'translation_impact'
-    supervisor_mail = report_data['significant']
-    report_data['significant'] &&= true
-    if status == 'old'
-      report = Report.find_by_id report_id
-      unless report
-        @errors << {"report_#{report_id}" => "Couldn't find report"}
-        return
-      end
-      unless external_user.admin? || external_user.id == report.reporter_id
-        @errors << {"report_#{report_id}" => "No right to edit report"}
-        return
-      end
-      report_data['picture_ids'] ||= []
-      (report.picture_ids - report_data['picture_ids']).each do |deleted_picture_id|
-        receive_uploaded_file deleted_picture_id, 'status' => 'delete'
-      end
-      if report.update(report_data) && report.impact_report.update(impact_report_data)
-        report.touch
-        @report_feedbacks << {
-            id: report_id,
-            updated_at: report.updated_at.to_i,
-            last_changed: 'uploaded'
-        }
-      else
-        @errors << {"report_#{report_id}" => report.errors.messages.to_s}
-      end
-    elsif status == 'new'
-      report = Report.new report_data
-      report.impact_report = ImpactReport.new(impact_report_data) if impact_report
-      if supervisor_mail
-        if send_mail(report, supervisor_mail)
-          mail_info = {mail: "send successful"}
-        else
-          mail_info = {mail: "send not successful"}
-        end
-      else
-        mail_info = {}
-      end
-      if report.save
-        @report_feedbacks << {
-            id: report_id,
-            updated_at: report.updated_at.to_i,
-            new_id: report.id,
-            last_changed: 'uploaded'
-        }.merge(mail_info)
-      else
-        @errors << {"report_#{report_id}" => report.errors.messages.to_s}
-      end
-    else
-      @errors << {"report_#{report_id}" => "Unknown status: #{status}"}
     end
   end
 
@@ -488,7 +472,7 @@ class ExternalDeviceController < ApplicationController
 
   # other helpful methods
 
-  def create_database_key user
+  def create_database_key(user)
     (user.created_at.to_f * 1000000).to_i
   end
 
