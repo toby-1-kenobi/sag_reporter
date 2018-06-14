@@ -148,7 +148,7 @@ class ExternalDeviceController < ApplicationController
     join_tables = {
         User: %w(geo_states spoken_languages),
         GeoState: %w(languages),
-        Report: %w(languages progress_markers observers pictures)
+        Report: %w(languages observers pictures)
     }
     @final_file = Tempfile.new
     render json: {data: "#{@final_file.path}.txt"}, status: :ok
@@ -166,7 +166,7 @@ class ExternalDeviceController < ApplicationController
             table.where(@needed).includes(join_tables[table_name]).each_with_index do |entry, index|
               entry_data = entry.attributes.except("created_at", "updated_at", *exclude_attributes[table_name])
               join_tables[table_name]&.each do |join_table|
-                entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
+                entry_data.merge!({join_table.camelize(:lower) => entry.send(join_table.singularize.foreign_key.pluralize)})
               end
               entry_data.merge! additional_tables(entry)
               file.write(',') if index != 0
