@@ -306,7 +306,7 @@ class ExternalDeviceController < ApplicationController
 
       puts "Errors: #{@errors}"
       # Send back all the ID changes (as only the whole entries were saved, the ID has to be retrieved here)
-      send_message = {}
+      send_message = @id_changes
       @id_changes.each{|k,v| v.each{|k2,v2| send_message[k][k2] = v2.id}}
       send_message.merge({error: @errors}) unless @errors.empty?
       logger.debug send_message
