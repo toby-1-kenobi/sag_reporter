@@ -259,6 +259,7 @@ class ExternalDeviceController < ApplicationController
   def receive_request
     begin
       safe_params = [
+          :is_only_test,
           :UploadedFile => [
               :id,
               :data,
@@ -299,14 +300,22 @@ class ExternalDeviceController < ApplicationController
         puts "Params: " + receive_request_params[table.name].to_s + table.name.to_s
         receive_request_params[table.name]&.each do |entry|
           new_entry = build table, entry.to_h
-          raise new_entry.errors.messages.to_s unless !new_entry || new_entry.save
+          if receive_request_params["is_only_test"]
+            raise new_entry.errors.messages.to_s unless !new_entry || new_entry.valid?
+          else
+            raise new_entry.errors.messages.to_s unless !new_entry || new_entry.save
+          end
         end
       end
 
       puts "Errors: #{@errors}"
       # Send back all the ID changes (as only the whole entries were saved, the ID has to be retrieved here)
-      send_message = @id_changes
-      @id_changes.each{|k,v| v.each{|k2,v2| send_message[k][k2] = v2.id}}
+      if receive_request_params["is_only_test"]
+        send_message = {}
+      else
+        send_message = @id_changes
+        @id_changes.each{|k,v| v.each{|k2,v2| send_message[k][k2] = v2.id}}
+      end
       send_message.merge({error: @errors}) unless @errors.empty?
       logger.debug send_message
       render json: send_message, status: :created
@@ -322,7 +331,6 @@ class ExternalDeviceController < ApplicationController
   # receive_request methods:
 
   def build(table, hash)
-    puts "create table #{table.name}"
     old_id = nil
     begin
       if table == Report && hash["reporter_id"] != @external_user && !@external_user.admin
@@ -331,14 +339,13 @@ class ExternalDeviceController < ApplicationController
       end
       # Go through all the entries to check, whether it has an ID from another uploaded entry
       hash.each do |k, v|
-        puts "#{v} #{v.class} #{v.class == Hash}"
         if v.class == Array
           v.map! do |element|
             # A hash inside an array means always, that the the ID has to be mapped according to the newly created ID
-            # An example would be {..., :observers => [20, {:old_id => "Person;100010"}]}
+            # An example would be {..., "observers" => [20, {"old_id" => "Person;100010"}]}
             if element.class == Hash
               table, old_id = element.values.first.split(';')
-              @id_changes[table.to_sym][old_id.to_i]
+              @id_changes[table][old_id.to_i]
             else
               element
             end
@@ -350,18 +357,14 @@ class ExternalDeviceController < ApplicationController
           end
         end
       end
-      puts "Check for ID: #{hash["id"]}"
       if table == UploadedFile
         create_file(hash)
       elsif hash["id"]
         table.update hash["id"], hash
       else
         old_id = hash.delete "old_id"
-        puts "Old: #{old_id}"
         new_entry = table.new hash
-        puts "New: #{new_entry.attributes} #{new_entry.valid?}"
-        @id_changes[table.name.to_sym] = {old_id => new_entry} if old_id
-        puts "Changes: #{@id_changes}"
+        @id_changes[table.name] = {old_id => new_entry} if old_id
         new_entry
       end
     rescue => e
@@ -387,13 +390,14 @@ class ExternalDeviceController < ApplicationController
                                    type: content_type,
                                    filename: filename
                                })
+      table = UploadedFile
       if values["id"]
         table.update values["id"], values
       else
-        old_id = values.delete :old_id
-        new_entry = UploadedFile.new values
+        old_id = values.delete "old_id"
+        new_entry = table.new values
         raise new_entry.errors.messages.to_s unless uploaded_file.save
-        @id_changes[table_name.to_sym] = {old_id => new_entry.id} if old_id
+        @id_changes[table.name] = {old_id => new_entry.id} if old_id
         new_entry
       end
     rescue => e
@@ -505,7 +509,6 @@ class ExternalDeviceController < ApplicationController
       payload = decode_jwt(token)
       user = User.find_by_id payload['sub']
       users_device = ExternalDevice.find_by device_id: payload['iss'], user_id: user.id
-      puts "#{user.updated_at.to_i} #{payload['iat']}"
       if user.updated_at.to_i == payload['iat']
         user if users_device
       else
@@ -513,7 +516,7 @@ class ExternalDeviceController < ApplicationController
         false
       end
     rescue => e
-      puts e
+      logger.error e
       nil
     end
   end
