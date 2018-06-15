@@ -31,10 +31,10 @@ class ExternalDeviceController < ApplicationController
       # check, whether password is correct
       unless user.authenticate login_params[:password]
         logger.error "Password wrong"
-        render json: {error: "Password wrong"}, status: :unauthorized
+        render json: {error: "Password wrong", user: user.id}, status: :unauthorized
         return
       end
-      # check, whether user device exists and is registered (= succesful login)
+      # check, whether user device exists and is registered (= successful login)
       users_device = user.external_devices.find {|d| d.device_id == login_params[:device_id]}
       if users_device && (users_device.registered || user.authenticate_otp(login_params[:otp], drift: 300))
         users_device.update registered: true unless users_device.registered
