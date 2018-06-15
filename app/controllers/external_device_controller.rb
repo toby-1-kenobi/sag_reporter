@@ -243,7 +243,7 @@ class ExternalDeviceController < ApplicationController
           end
         end
         send_message = { UploadedFile: pictures_data }
-        send_message.merge!({ errors: errors}) unless errors.empty?
+        send_message.merge!({ errors: errors}) unless errors.size == 0
         save_data_in_file send_message
       rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
