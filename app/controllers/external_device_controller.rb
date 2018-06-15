@@ -320,7 +320,7 @@ class ExternalDeviceController < ApplicationController
         send_message = @id_changes
         @id_changes.each{|k,v| v.each{|k2,v2| send_message[k][k2] = v2.id}}
       end
-      send_message.merge({error: @errors}) unless @errors.empty?
+      send_message.merge!({error: @errors}) unless @errors.empty?
       logger.debug send_message
       render json: send_message, status: :created
     rescue => e
@@ -341,6 +341,7 @@ class ExternalDeviceController < ApplicationController
         Report.find(hash["id"]).touch if hash["id"]
         raise "User is not allowed to edit report #{hash["id"]}"
       end
+      hash.deep_transform_keys!{|k|k.underscore}
       # Go through all the entries to check, whether it has an ID from another uploaded entry
       hash.each do |k, v|
         if v.class == Array
@@ -355,7 +356,7 @@ class ExternalDeviceController < ApplicationController
             end
           end
         elsif v.class == Hash
-          intern_table = v.keys.first.constantize rescue nil
+          intern_table = v.keys.first.camelcase.constantize rescue nil
           if intern_table && v.values.first.class == Hash
             hash[k] = build intern_table, v.values.first
           end
@@ -372,7 +373,7 @@ class ExternalDeviceController < ApplicationController
         new_entry
       end
     rescue => e
-      @errors << {"#{table.name}:#{old_id}" => e}
+      @errors << {"#{table.name}:#{old_id}" => e.message}
       return nil
     end
   end
