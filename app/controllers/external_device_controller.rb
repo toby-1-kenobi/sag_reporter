@@ -272,16 +272,20 @@ class ExternalDeviceController < ApplicationController
           :report => [
               :id,
               :geo_state_id,
-              {:language_ids => [:old_id]},
+              {:language_ids => []},
+              :language_ids,
               :report_date,
               :translation_impact,
               :significant,
               {:picture_ids => []},
+              :picture_ids,
               :content,
               :reporter_id,
               :impact_report,
               {:progress_marker_ids => []},
+              :progress_marker_ids,
               {:observer_ids => []},
+              :observer_ids,
               :client,
               :version,
               :old_id,
@@ -297,13 +301,14 @@ class ExternalDeviceController < ApplicationController
       ]
       receive_request_params = params.deep_transform_keys!{|k|k.underscore}.require(:external_device).permit(safe_params)
 
+      @is_only_test = receive_request_params["is_only_test"]
       @errors = []
       @id_changes = {}
 
       [ImpactReport, Report, UploadedFile].each do |table|
         receive_request_params[table.name.underscore]&.each do |entry|
           new_entry = build table, entry.to_h
-          if receive_request_params["is_only_test"]
+          if @is_only_test
             raise new_entry.errors.messages.to_s unless !new_entry || new_entry.valid?
           else
             raise new_entry.errors.messages.to_s unless !new_entry || new_entry.save
@@ -312,7 +317,7 @@ class ExternalDeviceController < ApplicationController
       end
 
       # Send back all the ID changes (as only the whole entries were saved, the ID has to be retrieved here)
-      if receive_request_params["is_only_test"]
+      if @is_only_test
         send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.valid?] }.to_h] }.to_h
       else
         send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.id] }.to_h] }.to_h
@@ -356,17 +361,22 @@ class ExternalDeviceController < ApplicationController
           if intern_table && v.values.first.class == Hash
             hash[k] = build intern_table, v.values.first
           end
+        elsif v == nil
+          hash[k] = [] if k[-4..-1] == "_ids"
         end
       end
+      logger.debug "#{table}: #{hash}"
       if table == UploadedFile
         create_file(hash)
-      elsif hash["id"]
-        table.update hash["id"], hash
-      else
-        old_id = hash.delete "old_id"
+      elsif (id = hash["id"])
+        table.update id, hash unless @is_only_test
+        @id_changes[table.name] = {id => id}
+      elsif (old_id = hash.delete "old_id")
         new_entry = table.new hash
-        @id_changes[table.name] = {old_id => new_entry} if old_id
+        @id_changes[table.name] = {old_id => new_entry}
         new_entry
+      else
+        raise "Entry needs either an ID value or an 'old ID' value"
       end
     rescue => e
       @errors << {"#{table.name}:#{old_id}" => e.message}
