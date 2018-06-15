@@ -55,10 +55,11 @@ class ExternalDeviceController < ApplicationController
       end
       # create the (in future unregistered) device, if it doesn't exist
       unless users_device
-        new_device = ExternalDevice.new
-        new_device.device_id = login_params["device_id"]
-        new_device.name = login_params["device_name"]
-        new_device.user = user
+        new_device = ExternalDevice.new({
+                                            device_id: login_params["device_id"],
+                                            name: login_params["device_name"],
+                                            user: user
+                                        })
         raise new_device.errors.messages.to_s unless new_device.save
       end
       logger.error "Device not registered"
@@ -159,6 +160,7 @@ class ExternalDeviceController < ApplicationController
         File.open(@final_file, "w") do |file|
           @sync_time = 5.seconds.ago
           file.write "{\"last_sync\":#{@sync_time.to_i}"
+          raise "No last sync variable" unless send_request_params["last_sync"]
           last_sync = Time.at send_request_params["last_sync"]
           @needed = {:updated_at => last_sync .. @sync_time}
           tables.each do |table|
@@ -187,8 +189,8 @@ class ExternalDeviceController < ApplicationController
         @final_file = File.new file_path, "w"
         @final_file.write send_message
       ensure
-        @final_file.close
-        logger.debug "File writing finished. Size: #{@final_file.size}"
+        @final_file.close unless @final_file.closed?
+        logger.debug "File writing finished"
         File.rename(@final_file, "#{@final_file.path}.txt")
         ActiveRecord::Base.connection.close
       end
@@ -203,8 +205,10 @@ class ExternalDeviceController < ApplicationController
       get_file_params = params.require(:external_device).permit(safe_params)
 
       file_path = get_file_params["file_path"]
+      deadline = Time.now + 1.minute
       until File.exists?(file_path)
         sleep 1
+        raise "Creating of the file took to long" if Time.now > deadline
       end
       send_file file_path, status: :ok
     rescue => e
@@ -453,7 +457,7 @@ class ExternalDeviceController < ApplicationController
         return true
       end
     else
-      @errors << "Could not ensure email encryption so didn\"t send the report to the supervisor"
+      @errors << "Could not ensure email encryption so didn't send the report to the supervisor"
       logger.error "Could not enforce TLS with SendGrid"
     end
     false
