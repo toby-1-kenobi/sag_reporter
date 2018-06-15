@@ -369,8 +369,9 @@ class ExternalDeviceController < ApplicationController
       if table == UploadedFile
         create_file(hash)
       elsif (id = hash["id"])
-        table.update id, hash unless @is_only_test
-        @id_changes[table.name] = {id => id}
+        entry = @is_only_test? table.find(id) : table.update(id, hash)
+        @id_changes[table.name] = {id => entry}
+        entry
       elsif (old_id = hash.delete "old_id")
         new_entry = table.new hash
         @id_changes[table.name] = {old_id => new_entry}
