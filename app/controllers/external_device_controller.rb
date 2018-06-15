@@ -269,7 +269,7 @@ class ExternalDeviceController < ApplicationController
               :data,
               :old_id
           ],
-          :Report => [
+          :report => [
               :id,
               :geo_state_id,
               {:language_ids => [:old_id]},
@@ -286,7 +286,7 @@ class ExternalDeviceController < ApplicationController
               :version,
               :old_id,
               :impact_report => [
-                  {:ImpactReport => [
+                  {:impact_report => [
                       :id,
                       :shareable,
                       :translation_impact,
@@ -295,14 +295,13 @@ class ExternalDeviceController < ApplicationController
               ]
           ]
       ]
-      receive_request_params = params.require(:external_device).permit(safe_params)
+      receive_request_params = params.deep_transform_keys!{|k|k.underscore}.require(:external_device).permit(safe_params)
 
       @errors = []
       @id_changes = {}
 
       [ImpactReport, Report, UploadedFile].each do |table|
-        puts "Params: " + receive_request_params[table.name].to_s + table.name.to_s
-        receive_request_params[table.name]&.each do |entry|
+        receive_request_params[table.name.underscore]&.each do |entry|
           new_entry = build table, entry.to_h
           if receive_request_params["is_only_test"]
             raise new_entry.errors.messages.to_s unless !new_entry || new_entry.valid?
@@ -312,13 +311,11 @@ class ExternalDeviceController < ApplicationController
         end
       end
 
-      puts "Errors: #{@errors}"
       # Send back all the ID changes (as only the whole entries were saved, the ID has to be retrieved here)
       if receive_request_params["is_only_test"]
-        send_message = {}
+        send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.valid?] }.to_h] }.to_h
       else
-        send_message = @id_changes
-        @id_changes.each{|k,v| v.each{|k2,v2| send_message[k][k2] = v2.id}}
+        send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.id] }.to_h] }.to_h
       end
       send_message.merge!({error: @errors}) unless @errors.empty?
       logger.debug send_message
@@ -341,7 +338,6 @@ class ExternalDeviceController < ApplicationController
         Report.find(hash["id"]).touch if hash["id"]
         raise "User is not allowed to edit report #{hash["id"]}"
       end
-      hash.deep_transform_keys!{|k|k.underscore}
       # Go through all the entries to check, whether it has an ID from another uploaded entry
       hash.each do |k, v|
         if v.class == Array
