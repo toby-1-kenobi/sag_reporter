@@ -158,7 +158,7 @@ class ExternalDeviceController < ApplicationController
       begin
         File.open(@final_file, "w") do |file|
           @sync_time = 5.seconds.ago
-          file.write "{\"updated_at\":#{@sync_time.to_i}"
+          file.write "{\"last_sync\":#{@sync_time.to_i}"
           last_updated_at = Time.at send_request_params[:updated_at]
           @needed = {:updated_at => last_updated_at .. @sync_time}
           tables.each do |table|
