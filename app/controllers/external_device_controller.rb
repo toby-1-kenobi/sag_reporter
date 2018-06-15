@@ -410,7 +410,8 @@ class ExternalDeviceController < ApplicationController
   def save_data_in_file(send_message)
     File.open(@all_data, "w") do |final_file|
       final_file.write "{"
-      send_message.each_with_index do |category, file, index|
+      send_message.each_with_index do |pair, index|
+        category, file = pair
         file.close
         file.open
         final_file.write ', ' unless index == 0
