@@ -78,16 +78,16 @@ class ExternalDeviceController < ApplicationController
     ]
     send_otp_params = params.require(:external_device).permit(safe_params)
 
-    user = User.find_by_phone send_otp_params['user_phone']
-    users_device = ExternalDevice.find_by user_id: user&.id, device_id: send_otp_params['device_id']
+    user = User.find_by_phone send_otp_params["user_phone"]
+    users_device = ExternalDevice.find_by user_id: user&.id, device_id: send_otp_params["device_id"]
     unless users_device && !users_device.registered
-      render json: {error: 'Device not found'}, status: :forbidden
+      render json: {error: "Device not found"}, status: :forbidden
       return
     end
-    case send_otp_params['target']
-      when 'phone'
+    case send_otp_params["target"]
+      when "phone"
         success = send_otp_on_phone("+91#{user.phone}", user.otp_code)
-      when 'email'
+      when "email"
         success = send_otp_via_mail(user, user.otp_code)
       else
         success = false
@@ -104,7 +104,7 @@ class ExternalDeviceController < ApplicationController
       get_database_key_params = params.require(:external_device).permit(safe_params)
 
       # Check, whether user exists and device is registered
-      users_device = ExternalDevice.find_by device_id: get_database_key_params['device_id'], user_id: get_database_key_params['user_id']
+      users_device = ExternalDevice.find_by device_id: get_database_key_params["device_id"], user_id: get_database_key_params["user_id"]
       unless users_device&.registered?
         logger.error "Device not found / registered"
         if users_device
@@ -114,9 +114,9 @@ class ExternalDeviceController < ApplicationController
         end
         return
       end
-      user = User.find_by_id get_database_key_params['user_id']
+      user = User.find_by_id get_database_key_params["user_id"]
       database_key = (user.created_at.to_f * 1000000).to_i
-      logger.debug 'database key send'
+      logger.debug "Database key send"
       render json: {key: database_key}, status: :ok
     rescue => e
       send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
@@ -163,7 +163,7 @@ class ExternalDeviceController < ApplicationController
           @needed = {:updated_at => last_sync .. @sync_time}
           tables.each do |table|
             table_name = table.name.to_sym
-            file.write(',')
+            file.write(",")
             file.write "\"#{table_name}\":["
             table.where(@needed).includes(join_tables[table_name]).each_with_index do |entry, index|
               entry_data = entry.attributes.except("created_at", "updated_at", *exclude_attributes[table_name])
@@ -171,13 +171,13 @@ class ExternalDeviceController < ApplicationController
                 entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
               end
               entry_data.merge! additional_tables(entry)
-              file.write(',') if index != 0
+              file.write(",") if index != 0
               file.write entry_data.to_json
             end
-            file.write ']'
+            file.write "]"
             ActiveRecord::Base.connection.query_cache.clear
           end
-          file.write '}'
+          file.write "}"
         end
       rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
@@ -202,7 +202,7 @@ class ExternalDeviceController < ApplicationController
       ]
       get_file_params = params.require(:external_device).permit(safe_params)
 
-      file_path = get_file_params['file_path']
+      file_path = get_file_params["file_path"]
       until File.exists?(file_path)
         sleep 1
       end
@@ -224,7 +224,7 @@ class ExternalDeviceController < ApplicationController
     render json: {data: @all_data.path}, status: :ok
     Thread.new do
       begin
-        uploaded_file_ids = get_uploaded_file_params['uploaded_files'].map {|key, _| key.to_i}
+        uploaded_file_ids = get_uploaded_file_params["uploaded_files"].map {|key, _| key.to_i}
         pictures_data, errors = Array.new(2) {Tempfile.new}
         UploadedFile.includes(:report).find(uploaded_file_ids).each do |uploaded_file|
           image_data = if uploaded_file&.ref.file.exists?
@@ -233,7 +233,7 @@ class ExternalDeviceController < ApplicationController
                          ""
                        end
           if external_user.trusted? || uploaded_file.report.reporter == external_user
-            pictures_data.write(', ') unless pictures_data.length == 0
+            pictures_data.write(", ") unless pictures_data.length == 0
             pictures_data.write({
                                     id: uploaded_file.id,
                                     data: image_data
@@ -344,7 +344,7 @@ class ExternalDeviceController < ApplicationController
             # A hash inside an array means always, that the the ID has to be mapped according to the newly created ID
             # An example would be {..., "observers" => [20, {"old_id" => "Person;100010"}]}
             if element.class == Hash
-              table, old_id = element.values.first.split(';')
+              table, old_id = element.values.first.split(";")
               @id_changes[table][old_id.to_i]
             else
               element
@@ -376,12 +376,12 @@ class ExternalDeviceController < ApplicationController
   def create_file(values)
     old_id = nil
     begin
-      filename = 'external_uploaded_image'
+      filename = "external_uploaded_image"
       tempfile = Tempfile.new filename
       tempfile.binmode
-      tempfile.write Base64.decode64 values.delete('data')
+      tempfile.write Base64.decode64 values.delete("data")
       tempfile.rewind
-      content_type = `file --mime -b #{tempfile.path}`.split(';')[0]
+      content_type = `file --mime -b #{tempfile.path}`.split(";")[0]
       extension = content_type.match(/gif|jpg|jpeg|png/).to_s
       filename += ".#{extension}" if extension
       values["ref"] = ActionDispatch::Http::UploadedFile
@@ -418,14 +418,14 @@ class ExternalDeviceController < ApplicationController
         category, file = pair
         file.close
         file.open
-        final_file.write ', ' unless index == 0
+        final_file.write ", " unless index == 0
         final_file.write "\"#{category}\": ["
         final_file.write file.read
-        final_file.write ']'
+        final_file.write "]"
         file.close
         file.unlink
       end
-      final_file.write '}'
+      final_file.write "}"
     end
     @all_data.close
   end
@@ -439,12 +439,12 @@ class ExternalDeviceController < ApplicationController
       delivery_success = false
       begin
         if recipient
-          logger.debug "sending report to: #{recipient}"
+          logger.debug "Sending report to: #{recipient}"
           UserMailer.user_report(recipient, report).deliver_now
           delivery_success = true
         end
       rescue => e
-        @errors << 'Failed to send the report to the supervisor'
+        @errors << "Failed to send the report to the supervisor"
         logger.error e.message
       end
       if delivery_success
@@ -453,20 +453,20 @@ class ExternalDeviceController < ApplicationController
         return true
       end
     else
-      @errors << 'Could not ensure email encryption so didn\'t send the report to the supervisor'
-      logger.error 'Could not enforce TLS with SendGrid'
+      @errors << "Could not ensure email encryption so didn\"t send the report to the supervisor"
+      logger.error "Could not enforce TLS with SendGrid"
     end
     false
   end
 
   def send_otp_on_phone(phone_number, otp_code)
     begin
-      logger.debug "sending otp to phone: #{phone_number}, otp: #{otp_code}"
+      logger.debug "Sending otp to phone: #{phone_number}, otp: #{otp_code}"
       wait_ticket = BcsSms.send_otp(phone_number, otp_code)
-      logger.debug "waiting #{wait_ticket}"
+      logger.debug "Waiting #{wait_ticket}"
       wait_ticket
     rescue => e
-      logger.error "couldn't send OTP to phone: #{e.message}"
+      logger.error "Couldn't send OTP to phone: #{e.message}"
       false
     end
   end
@@ -477,15 +477,15 @@ class ExternalDeviceController < ApplicationController
     unless SendGridV3.dont_enforce_tls
       begin
         if SendGridV3.enforce_tls?
-          logger.error 'could not turn off enforce TLS with SendGrid for sending login code'
+          logger.error "could not turn off enforce TLS with SendGrid for sending login code"
         end
       rescue SocketError => e
-        logger.error 'could not turn of enforce TLS and could not determine if it is already off.'
+        logger.error "could not turn of enforce TLS and could not determine if it is already off."
         logger.error e.message
       end
     end
     if user.email.present? && user.email_confirmed?
-      logger.debug "sending otp to email: #{user.email}, otp: #{otp_code}"
+      logger.debug "Sending otp to email: #{user.email}, otp: #{otp_code}"
       UserMailer.user_otp_code(user, otp_code).deliver_now
       true
     else
@@ -505,11 +505,11 @@ class ExternalDeviceController < ApplicationController
 
   def external_user
     @external_user ||= begin
-      token = request.headers['Authorization'].split.last
+      token = request.headers["Authorization"].split.last
       payload = decode_jwt(token)
-      user = User.find_by_id payload['sub']
-      users_device = ExternalDevice.find_by device_id: payload['iss'], user_id: user.id
-      if user.updated_at.to_i == payload['iat']
+      user = User.find_by_id payload["sub"]
+      users_device = ExternalDevice.find_by device_id: payload["iss"], user_id: user.id
+      if user.updated_at.to_i == payload["iat"]
         user if users_device
       else
         users_device.update registered: false if users_device&.registered
