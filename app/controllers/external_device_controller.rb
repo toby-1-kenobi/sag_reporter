@@ -21,7 +21,7 @@ class ExternalDeviceController < ApplicationController
       ]
       login_params = params.require(:external_device).permit(safe_params)
 
-      user = User.find_by phone: login_params[:phone]
+      user = User.find_by phone: login_params["phone"]
       # check, whether user exists
       unless user
         logger.error "User not found"
@@ -29,17 +29,17 @@ class ExternalDeviceController < ApplicationController
         return
       end
       # check, whether password is correct
-      unless user.authenticate login_params[:password]
+      unless user.authenticate login_params["password"]
         logger.error "Password wrong"
         render json: {error: "Password wrong", user: user.id}, status: :unauthorized
         return
       end
       # check, whether user device exists and is registered (= successful login)
-      users_device = user.external_devices.find {|d| d.device_id == login_params[:device_id]}
-      if users_device && (users_device.registered || user.authenticate_otp(login_params[:otp], drift: 300))
+      users_device = user.external_devices.find {|d| d.device_id == login_params["device_id"]}
+      if users_device && (users_device.registered || user.authenticate_otp(login_params["otp"], drift: 300))
         users_device.update registered: true unless users_device.registered
-        if users_device.name != login_params[:device_name]
-          users_device.update name: login_params[:device_name]
+        if users_device.name != login_params["device_name"]
+          users_device.update name: login_params["device_name"]
         end
         payload = {sub: user.id, iat: user.updated_at.to_i, iss: users_device.device_id}
         send_message = {
@@ -56,8 +56,8 @@ class ExternalDeviceController < ApplicationController
       # create the (in future unregistered) device, if it doesn't exist
       unless users_device
         new_device = ExternalDevice.new
-        new_device.device_id = login_params[:device_id]
-        new_device.name = login_params[:device_name]
+        new_device.device_id = login_params["device_id"]
+        new_device.name = login_params["device_name"]
         new_device.user = user
         raise new_device.errors.messages.to_s unless new_device.save
       end
@@ -127,7 +127,7 @@ class ExternalDeviceController < ApplicationController
 
   def send_request
     safe_params = [
-        :updated_at
+        :last_sync
     ]
     send_request_params = params.require(:external_device).permit(safe_params)
 
@@ -159,8 +159,8 @@ class ExternalDeviceController < ApplicationController
         File.open(@final_file, "w") do |file|
           @sync_time = 5.seconds.ago
           file.write "{\"last_sync\":#{@sync_time.to_i}"
-          last_updated_at = Time.at send_request_params[:updated_at]
-          @needed = {:updated_at => last_updated_at .. @sync_time}
+          last_sync = Time.at send_request_params["last_sync"]
+          @needed = {:updated_at => last_sync .. @sync_time}
           tables.each do |table|
             table_name = table.name.to_sym
             file.write(',')
