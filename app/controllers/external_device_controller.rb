@@ -264,13 +264,20 @@ class ExternalDeviceController < ApplicationController
     begin
       safe_params = [
           :is_only_test,
-          :UploadedFile => [
-              :id,
-              :data,
-              :old_id
+          :person => [
+              :old_id,
+              :name,
+              :user_id,
+              :geo_state_id
+
+          ],
+          :uploaded_file => [
+              :old_id,
+              :data
           ],
           :report => [
               :id,
+              :old_id,
               :geo_state_id,
               {:language_ids => []},
               :language_ids,
@@ -288,13 +295,12 @@ class ExternalDeviceController < ApplicationController
               :observer_ids,
               :client,
               :version,
-              :old_id,
               :impact_report => [
                   {:impact_report => [
                       :id,
+                      :old_id,
                       :shareable,
-                      :translation_impact,
-                      :old_id
+                      :translation_impact
                   ]}
               ]
           ]
@@ -305,7 +311,7 @@ class ExternalDeviceController < ApplicationController
       @errors = []
       @id_changes = {}
 
-      [ImpactReport, Report, UploadedFile].each do |table|
+      [Person, ImpactReport, Report, UploadedFile].each do |table|
         receive_request_params[table.name.underscore]&.each do |entry|
           new_entry = build table, entry.to_h
           if @is_only_test
