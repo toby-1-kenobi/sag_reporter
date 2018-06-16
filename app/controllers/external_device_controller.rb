@@ -348,6 +348,21 @@ class ExternalDeviceController < ApplicationController
       if table == Report && hash["reporter_id"] != @external_user && !@external_user.admin
         Report.find(hash["id"]).touch if hash["id"]
         raise "User is not allowed to edit report #{hash["id"]}"
+      elsif table == UploadedFile
+        filename = "external_uploaded_image"
+        @tempfile = Tempfile.new filename
+        @tempfile.binmode
+        @tempfile.write Base64.decode64 values.delete("data")
+        @tempfile.rewind
+        content_type = `file --mime -b #{@tempfile.path}`.split(";")[0]
+        extension = content_type.match(/gif|jpg|jpeg|png/).to_s
+        filename += ".#{extension}" if extension
+        values["ref"] = ActionDispatch::Http::UploadedFile
+                            .new({
+                                     tempfile: @tempfile,
+                                     type: content_type,
+                                     filename: filename
+                                 })
       end
       # Go through all the entries to check, whether it has an ID from another uploaded entry
       hash.each do |k, v|
@@ -373,9 +388,7 @@ class ExternalDeviceController < ApplicationController
       end
       logger.debug "#{table}: #{hash}"
       @id_changes[table.name] ||= {}
-      if table == UploadedFile
-        create_file(hash)
-      elsif (id = hash["id"])
+      if (id = hash["id"])
         entry = @is_only_test? table.find(id) : table.update(id, hash)
         @id_changes[table.name].merge!({id => entry})
         entry
@@ -389,43 +402,10 @@ class ExternalDeviceController < ApplicationController
     rescue => e
       @errors << {"#{table.name}:#{old_id}" => e.message}
       return nil
-    end
-  end
-
-  def create_file(values)
-    old_id = nil
-    begin
-      filename = "external_uploaded_image"
-      tempfile = Tempfile.new filename
-      tempfile.binmode
-      tempfile.write Base64.decode64 values.delete("data")
-      tempfile.rewind
-      content_type = `file --mime -b #{tempfile.path}`.split(";")[0]
-      extension = content_type.match(/gif|jpg|jpeg|png/).to_s
-      filename += ".#{extension}" if extension
-      values["ref"] = ActionDispatch::Http::UploadedFile
-                          .new({
-                                   tempfile: tempfile,
-                                   type: content_type,
-                                   filename: filename
-                               })
-      table = UploadedFile
-      if values["id"]
-        table.update values["id"], values
-      else
-        old_id = values.delete "old_id"
-        new_entry = table.new values
-        raise new_entry.errors.messages.to_s unless uploaded_file.save
-        @id_changes[table.name].merge!({old_id => new_entry.id}) if old_id
-        new_entry
-      end
-    rescue => e
-      @errors << {"uploaded_file:#{old_id}" => e}
-      return nil
     ensure
-      if tempfile
-        tempfile.close
-        tempfile.unlink
+      if @tempfile
+        @tempfile.close
+        @tempfile.unlink
       end
     end
   end
