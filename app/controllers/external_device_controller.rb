@@ -299,7 +299,7 @@ class ExternalDeviceController < ApplicationController
               ]
           ]
       ]
-      receive_request_params = params.deep_transform_keys!{|k|k.underscore}.require(:external_device).permit(safe_params)
+      receive_request_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
 
       @is_only_test = receive_request_params["is_only_test"]
       @errors = []
@@ -345,20 +345,20 @@ class ExternalDeviceController < ApplicationController
       end
       # Go through all the entries to check, whether it has an ID from another uploaded entry
       hash.each do |k, v|
-        if v.class == Array
+        if v.is_a? Array
           v.map! do |element|
             # A hash inside an array means always, that the the ID has to be mapped according to the newly created ID
             # An example would be {..., "observers" => [20, {"old_id" => "Person;100010"}]}
-            if element.class == Hash
+            if element.is_a? Hash
               table, old_id = element.values.first.split(";")
               @id_changes[table][old_id.to_i]
             else
               element
             end
           end
-        elsif v.class == Hash
+        elsif v.is_a? Hash
           intern_table = v.keys.first.camelcase.constantize rescue nil
-          if intern_table && v.values.first.class == Hash
+          if intern_table && v.values.first.is_a?(Hash)
             hash[k] = build intern_table, v.values.first
           end
         elsif v == nil
