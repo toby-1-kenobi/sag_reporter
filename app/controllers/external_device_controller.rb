@@ -366,15 +366,16 @@ class ExternalDeviceController < ApplicationController
         end
       end
       logger.debug "#{table}: #{hash}"
+      @id_changes[table.name] ||= {}
       if table == UploadedFile
         create_file(hash)
       elsif (id = hash["id"])
         entry = @is_only_test? table.find(id) : table.update(id, hash)
-        @id_changes[table.name] = {id => entry}
+        @id_changes[table.name].merge!({id => entry})
         entry
       elsif (old_id = hash.delete "old_id")
         new_entry = table.new hash
-        @id_changes[table.name] = {old_id => new_entry}
+        @id_changes[table.name].merge!({old_id => new_entry})
         new_entry
       else
         raise "Entry needs either an ID value or an 'old ID' value"
@@ -409,7 +410,7 @@ class ExternalDeviceController < ApplicationController
         old_id = values.delete "old_id"
         new_entry = table.new values
         raise new_entry.errors.messages.to_s unless uploaded_file.save
-        @id_changes[table.name] = {old_id => new_entry.id} if old_id
+        @id_changes[table.name].merge!({old_id => new_entry.id}) if old_id
         new_entry
       end
     rescue => e
