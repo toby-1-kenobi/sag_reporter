@@ -352,12 +352,12 @@ class ExternalDeviceController < ApplicationController
         filename = "external_uploaded_image"
         @tempfile = Tempfile.new filename
         @tempfile.binmode
-        @tempfile.write Base64.decode64 values.delete("data")
+        @tempfile.write Base64.decode64 hash.delete("data")
         @tempfile.rewind
         content_type = `file --mime -b #{@tempfile.path}`.split(";")[0]
         extension = content_type.match(/gif|jpg|jpeg|png/).to_s
         filename += ".#{extension}" if extension
-        values["ref"] = ActionDispatch::Http::UploadedFile
+        hash["ref"] = ActionDispatch::Http::UploadedFile
                             .new({
                                      tempfile: @tempfile,
                                      type: content_type,
