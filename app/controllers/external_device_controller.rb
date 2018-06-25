@@ -23,9 +23,9 @@ class ExternalDeviceController < ApplicationController
 
       user = User.find_by phone: login_params["phone"]
       # check, whether user exists and password is correct
-      unless user && user.authenticate login_params["password"]
+      unless user && user.authenticate(login_params["password"])
         logger.error "User or password not found. User ID: #{user&.id}"
-        head: :forbidden
+        head :forbidden
         return
       end
       # check, whether user device exists and is registered (= successful login)
@@ -493,7 +493,7 @@ class ExternalDeviceController < ApplicationController
   end
 
   def authenticate_external
-    render json: { error: "JWT invalid" user: @jwt_user_id }, status: :unauthorized unless external_user
+    render json: { error: "JWT invalid", user: @jwt_user_id }, status: :unauthorized unless external_user
   end
 
   def external_user
