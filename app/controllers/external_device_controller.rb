@@ -22,16 +22,10 @@ class ExternalDeviceController < ApplicationController
       login_params = params.require(:external_device).permit(safe_params)
 
       user = User.find_by phone: login_params["phone"]
-      # check, whether user exists
-      unless user
-        logger.error "User not found"
-        render json: {error: "User not found"}, status: :forbidden
-        return
-      end
-      # check, whether password is correct
-      unless user.authenticate login_params["password"]
-        logger.error "Password wrong"
-        render json: {error: "Password wrong", user: user.id}, status: :unauthorized
+      # check, whether user exists and password is correct
+      unless user && user.authenticate login_params["password"]
+        logger.error "User or password not found. User ID: #{user&.id}"
+        head: :forbidden
         return
       end
       # check, whether user device exists and is registered (= successful login)
@@ -499,15 +493,16 @@ class ExternalDeviceController < ApplicationController
   end
 
   def authenticate_external
-    render json: { error: "JWT invalid" }, status: :unauthorized unless external_user
+    render json: { error: "JWT invalid" user: @jwt_user_id }, status: :unauthorized unless external_user
   end
 
   def external_user
     @external_user ||= begin
       token = request.headers["Authorization"].split.last
       payload = decode_jwt(token)
-      user = User.find_by_id payload["sub"]
-      users_device = ExternalDevice.find_by device_id: payload["iss"], user_id: user.id
+      @jwt_user_id = payload["sub"]
+      user = User.find_by_id @jwt_user_id
+      users_device = ExternalDevice.find_by device_id: payload["iss"], user_id: @jwt_user_id
       if user.updated_at.to_i == payload["iat"]
         user if users_device
       else
