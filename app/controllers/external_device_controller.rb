@@ -219,7 +219,7 @@ class ExternalDeviceController < ApplicationController
     get_uploaded_file_params = params.require(:external_device).permit(safe_params)
 
     @all_data = Tempfile.new
-    render json: {data: @all_data.path}, status: :ok
+    render json: {data: "#{@all_data.path}.txt"}, status: :ok
     Thread.new do
       begin
         uploaded_file_ids = get_uploaded_file_params["uploaded_files"].map {|key, _| key.to_i}
@@ -249,6 +249,7 @@ class ExternalDeviceController < ApplicationController
         @all_data.write send_message
       ensure
         [@all_data, pictures_data, errors].each &:close
+        File.rename(@all_data, "#{@all_data.path}.txt")
         [pictures_data, errors].each &:delete
       end
     end
