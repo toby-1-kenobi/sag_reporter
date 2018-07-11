@@ -133,16 +133,16 @@ class ExternalDeviceController < ApplicationController
     }
     join_tables = {
         User: %w(geo_states spoken_languages),
-        GeoState: %w(languages),
+        GeoState: %w(languages state_languages),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers)
     }
     def additional_tables(entry)
-      case entry.class
-        when Report
-          {project_languages: entry.state_languages.in_project.map(&:language)}
+      case entry
+        when GeoState
+          {project_languages: entry.state_languages.map{|sl| sl.language_id if sl.project} - [nil]}
         when ProgressMarker
-          {description: progress_marker.description_for(@external_user)}
+          {description: entry.description_for(@external_user)}
         else
           {}
       end
@@ -166,7 +166,11 @@ class ExternalDeviceController < ApplicationController
               join_tables[table_name]&.each do |join_table|
                 entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
               end
-              entry_data.merge! additional_tables(entry)
+              begin
+                entry_data.merge! additional_tables(entry)
+              rescue
+#                logger.error "Error in adding additional tables for #{entry.class}: #{entry.attributes}"
+              end
               file.write(",") if index != 0
               file.write entry_data.to_json
             end
