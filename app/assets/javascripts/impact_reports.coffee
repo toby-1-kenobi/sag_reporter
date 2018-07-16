@@ -25,6 +25,10 @@ filter_impact_reports = ->
 
 $(document).on "ready page:change", ->
 
+  $('.report .tag-button').on 'click', ->
+    $('#tag-dialog')[0].showModal();
+    return
+
   filter_impact_reports()
 
   $('.card.impact_report.for-tagging.shareable .card-content').append('<div class="chip share">Can be shared with funders</div>')

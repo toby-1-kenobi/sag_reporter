@@ -1,6 +1,6 @@
 
 <script>
-  $('dialog').each(function() {
+  $('dialog.mdl-dialog:not(.registered)').each(function() {
     let dialog = this;
     if (! dialog.showModal) {
       dialogPolyfill.registerDialog(dialog);
@@ -12,5 +12,6 @@
     $(dialog).find('.cancel,.close').on('click', function() {
       dialog.close();
     });
+    $(dialog).addClass('registered');
   });
 </script>
