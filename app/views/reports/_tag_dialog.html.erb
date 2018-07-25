@@ -1,5 +1,52 @@
+<% progress_markers_by_oa = ProgressMarker.active.includes(:topic).all.group_by{ |pm| pm.topic } %>
+
 <dialog class="mdl-dialog" id="tag-dialog">
-  <div class="mdl-dialog__content "><p class="report-content"></p></div>
+  <div class="mdl-dialog__content ">
+    <p class="report-content"></p>
+    <div class="pictures hide"></div>
+    <div class="not-impact-checkbox">
+      <label for="not-impact" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+        <input type="checkbox" id="not-impact" class="mdl-checkbox__input close">
+        <span class="mdl-checkbox__label">This report does not show progress, it is a need or challenge</span>
+      </label>
+    </div>
+    <div class="shareable-checkbox">
+      <label for="shareable" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
+        <input type="checkbox" id="shareable" class="mdl-checkbox__input">
+        <span class="mdl-checkbox__label">This report is suitable for sharing with funders</span>
+      </label>
+    </div>
+    <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical mdlext-js-ripple-effect">
+      <% progress_markers_by_oa.each do |oa, markers| %>
+        <li class="mdlext-accordion__panel">
+          <header class="mdlext-accordion__tab">
+            <span class="mdlext-accordion__tab__caption"><%= oa.name %></span>
+          </header>
+          <section class="mdlext-accordion__tabpanel">
+            <% ProgressMarker.weight_text.each do |weight, weight_text| %>
+            <div>
+              <p><%= weight_text %></p>
+              <ul class="mdl-list">
+              <% markers.select{ |m| m.weight == weight }.each do |marker| %>
+                <li class="mdl-list__item">
+                  <span class="mdl-list__item-primary-content">
+                    <%= marker.description_for(logged_in_user) %>
+                  </span>
+                  <span class="mdl-list__item-secondary-action">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="pm-<%= marker.id.to_s %>" >
+                      <input type="checkbox" class="mdl-checkbox__input" id="pm-<%= marker.id.to_s %>" >
+                    </label>
+                  </span>
+                </li>
+              <% end %>
+              </ul>
+            </div>
+            <% end %>
+          </section>
+        </li>
+      <% end %>
+    </ul>
+  </div>
   <div class="md-dialog__actions">
     <button type="button" class="mdl-button close">Done</button>
   </div>

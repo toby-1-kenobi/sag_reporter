@@ -26,7 +26,10 @@ filter_impact_reports = ->
 $(document).on "ready page:change", ->
 
   $('.report .tag-button').on 'click', ->
-    $('#tag-dialog')[0].showModal();
+    report = $(this).closest('.report')
+    content = report.find('.report-content').text()
+    $('#tag-dialog .report-content').text content
+    $('#tag-dialog')[0].showModal()
     return
 
   filter_impact_reports()
