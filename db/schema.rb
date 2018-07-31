@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180731041843) do
+ActiveRecord::Schema.define(version: 20180731043015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -408,6 +408,17 @@ ActiveRecord::Schema.define(version: 20180731041843) do
 
   add_index "ministries", ["name"], name: "index_ministries_on_name", using: :btree
 
+  create_table "ministry_markers", force: :cascade do |t|
+    t.string   "name",        null: false
+    t.text     "description"
+    t.integer  "ministry_id", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "ministry_markers", ["ministry_id"], name: "index_ministry_markers_on_ministry_id", using: :btree
+  add_index "ministry_markers", ["name"], name: "index_ministry_markers_on_name", using: :btree
+
   create_table "mt_resources", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "name",                           null: false
@@ -780,6 +791,7 @@ ActiveRecord::Schema.define(version: 20180731041843) do
   add_foreign_key "languages", "language_families", column: "family_id"
   add_foreign_key "languages", "projects"
   add_foreign_key "languages", "users", column: "champion_id"
+  add_foreign_key "ministry_markers", "ministries"
   add_foreign_key "mt_resources", "geo_states"
   add_foreign_key "mt_resources", "languages"
   add_foreign_key "mt_resources", "users"
