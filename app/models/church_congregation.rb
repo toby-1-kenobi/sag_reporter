@@ -2,7 +2,6 @@ class ChurchCongregation < ActiveRecord::Base
   belongs_to :organisation
   belongs_to :village
   has_many :users, dependent: :nullify
-  has_many :congregation_ministries, dependent: :destroy
   has_many :planned_ministries, dependent: :destroy
   has_many :actual_ministries, dependent: :destroy
 

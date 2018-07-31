@@ -91,16 +91,6 @@ ActiveRecord::Schema.define(version: 20180731045453) do
 
   add_index "clusters", ["name"], name: "index_clusters_on_name", unique: true, using: :btree
 
-  create_table "congregation_ministries", force: :cascade do |t|
-    t.integer  "church_congregation_id", null: false
-    t.integer  "ministry_id",            null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  add_index "congregation_ministries", ["church_congregation_id"], name: "index_congregation_ministries_on_church_congregation_id", using: :btree
-  add_index "congregation_ministries", ["ministry_id"], name: "index_congregation_ministries_on_ministry_id", using: :btree
-
   create_table "creations", force: :cascade do |t|
     t.integer  "person_id"
     t.integer  "mt_resource_id"
@@ -797,8 +787,6 @@ ActiveRecord::Schema.define(version: 20180731045453) do
   add_foreign_key "attendances", "people"
   add_foreign_key "church_congregations", "organisations"
   add_foreign_key "church_congregations", "villages"
-  add_foreign_key "congregation_ministries", "church_congregations"
-  add_foreign_key "congregation_ministries", "ministries"
   add_foreign_key "creations", "mt_resources"
   add_foreign_key "creations", "people"
   add_foreign_key "curatings", "geo_states"
