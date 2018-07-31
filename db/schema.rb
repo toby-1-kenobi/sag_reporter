@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180731043721) do
+ActiveRecord::Schema.define(version: 20180731045453) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,21 @@ ActiveRecord::Schema.define(version: 20180731043721) do
   add_index "action_points", ["event_id"], name: "index_action_points_on_event_id", using: :btree
   add_index "action_points", ["record_creator_id"], name: "index_action_points_on_record_creator_id", using: :btree
   add_index "action_points", ["responsible_id"], name: "index_action_points_on_responsible_id", using: :btree
+
+  create_table "actual_ministries", force: :cascade do |t|
+    t.integer  "year",                   null: false
+    t.integer  "month",                  null: false
+    t.integer  "value",                  null: false
+    t.integer  "church_congregation_id", null: false
+    t.integer  "ministry_marker_id",     null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "actual_ministries", ["church_congregation_id"], name: "index_actual_ministries_on_church_congregation_id", using: :btree
+  add_index "actual_ministries", ["ministry_marker_id"], name: "index_actual_ministries_on_ministry_marker_id", using: :btree
+  add_index "actual_ministries", ["month"], name: "index_actual_ministries_on_month", using: :btree
+  add_index "actual_ministries", ["year"], name: "index_actual_ministries_on_year", using: :btree
 
   create_table "attendances", force: :cascade do |t|
     t.integer  "person_id",  null: false
@@ -776,6 +791,8 @@ ActiveRecord::Schema.define(version: 20180731043721) do
   add_foreign_key "action_points", "events"
   add_foreign_key "action_points", "people", column: "responsible_id"
   add_foreign_key "action_points", "users", column: "record_creator_id"
+  add_foreign_key "actual_ministries", "church_congregations"
+  add_foreign_key "actual_ministries", "ministry_markers"
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
   add_foreign_key "church_congregations", "organisations"
