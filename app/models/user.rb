@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   has_many :external_devices
   has_many :championed_languages, class_name: 'Language', inverse_of: :champion, foreign_key: 'champion_id', dependent: :nullify,
            after_add: :update_self, after_remove: :update_self
+  belongs_to :church_congregation
 
   attr_accessor :remember_token
 

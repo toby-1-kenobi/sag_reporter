@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180731021201) do
+ActiveRecord::Schema.define(version: 20180731024900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,17 @@ ActiveRecord::Schema.define(version: 20180731021201) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "church_congregations", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "organisation_id"
+    t.integer  "village_id",      null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "church_congregations", ["organisation_id"], name: "index_church_congregations_on_organisation_id", using: :btree
+  add_index "church_congregations", ["village_id"], name: "index_church_congregations_on_village_id", using: :btree
 
   create_table "clusters", force: :cascade do |t|
     t.string   "name",       null: false
@@ -436,11 +447,12 @@ ActiveRecord::Schema.define(version: 20180731021201) do
   add_index "organisation_translations", ["organisation_id"], name: "index_organisation_translations_on_organisation_id", using: :btree
 
   create_table "organisations", force: :cascade do |t|
-    t.string   "name",         null: false
+    t.string   "name",                         null: false
     t.string   "abbreviation"
     t.integer  "parent_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.boolean  "church",       default: false, null: false
   end
 
   add_index "organisations", ["abbreviation"], name: "index_organisations_on_abbreviation", unique: true, using: :btree
@@ -686,8 +698,10 @@ ActiveRecord::Schema.define(version: 20180731021201) do
     t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
     t.boolean  "forward_planning_curator", default: false, null: false
+    t.integer  "church_congregation_id"
   end
 
+  add_index "users", ["church_congregation_id"], name: "index_users_on_church_congregation_id", using: :btree
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
@@ -719,6 +733,8 @@ ActiveRecord::Schema.define(version: 20180731021201) do
   add_foreign_key "action_points", "users", column: "record_creator_id"
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
+  add_foreign_key "church_congregations", "organisations"
+  add_foreign_key "church_congregations", "villages"
   add_foreign_key "creations", "mt_resources"
   add_foreign_key "creations", "people"
   add_foreign_key "curatings", "geo_states"
@@ -777,6 +793,7 @@ ActiveRecord::Schema.define(version: 20180731021201) do
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translatables"
   add_foreign_key "uploaded_files", "reports"
+  add_foreign_key "users", "church_congregations"
   add_foreign_key "users", "languages", column: "interface_language_id"
   add_foreign_key "villages", "geo_states"
 end
