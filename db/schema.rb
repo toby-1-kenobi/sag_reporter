@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180524113819) do
+ActiveRecord::Schema.define(version: 20180731021201) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -693,6 +693,17 @@ ActiveRecord::Schema.define(version: 20180524113819) do
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
 
+  create_table "villages", force: :cascade do |t|
+    t.string   "name",         null: false
+    t.text     "description"
+    t.integer  "geo_state_id", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "villages", ["geo_state_id"], name: "index_villages_on_geo_state_id", using: :btree
+  add_index "villages", ["name"], name: "index_villages_on_name", using: :btree
+
   create_table "zones", force: :cascade do |t|
     t.string   "name",                            null: false
     t.datetime "created_at",                      null: false
@@ -767,4 +778,5 @@ ActiveRecord::Schema.define(version: 20180524113819) do
   add_foreign_key "translations", "translatables"
   add_foreign_key "uploaded_files", "reports"
   add_foreign_key "users", "languages", column: "interface_language_id"
+  add_foreign_key "villages", "geo_states"
 end

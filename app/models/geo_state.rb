@@ -12,6 +12,7 @@ class GeoState < ActiveRecord::Base
   has_many :output_counts
   has_many :progress_updates #this relationship seems unnecessary because it should go through state_languages
   has_many :districts, dependent: :destroy
+  has_many :villages, dependent: :destroy
   has_many :curatings, dependent: :destroy
   has_many :curators, through: :curatings, class_name: 'User', source: 'user', inverse_of: :curated_states
   has_and_belongs_to_many :edits
