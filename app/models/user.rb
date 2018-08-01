@@ -2,6 +2,13 @@ class User < ActiveRecord::Base
 
   include ContactDetails
 
+  enum training_level: {
+    trainee: 0,
+    worker: 1,
+    trainer: 2,
+    consultant: 3
+  }
+
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter, dependent: :restrict_with_error
   has_many :events, inverse_of: :record_creator, dependent: :restrict_with_error
   has_many :people, inverse_of: :record_creator, dependent: :restrict_with_error
@@ -26,6 +33,7 @@ class User < ActiveRecord::Base
   has_many :ministries, through: :ministry_workers, inverse_of: :workers
   has_many :user_benefits, dependent: :destroy
   has_many :app_benefits, through: :user_benefits
+  belongs_to :sahayak, class_name: 'User'
 
   attr_accessor :remember_token
 
@@ -59,6 +67,7 @@ class User < ActiveRecord::Base
   validates :admin, inclusion: [true, false]
   validates :national_curator, inclusion: [true, false]
   validate :interface_language_must_have_locale_tag
+  validate :sahayak_is_a_sahayak
 
   after_save :send_confirmation_email
 
@@ -220,6 +229,12 @@ class User < ActiveRecord::Base
   def interface_language_must_have_locale_tag
     if interface_language.present? and interface_language.locale_tag.blank?
       errors.add(:interface_language, 'must be a user interface language.')
+    end
+  end
+
+  def sahayak_is_a_sahayak
+    if sahayak.present?
+      errors.add(:sahayak, 'must be a sahayak in the app') unless sahayak.is_sahayak?
     end
   end
 

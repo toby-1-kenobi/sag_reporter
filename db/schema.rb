@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180801171427) do
+ActiveRecord::Schema.define(version: 20180801173816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -780,6 +780,9 @@ ActiveRecord::Schema.define(version: 20180801171427) do
     t.string   "reset_password_token"
     t.boolean  "forward_planning_curator", default: false, null: false
     t.integer  "church_congregation_id"
+    t.boolean  "is_sahayak",               default: false, null: false
+    t.integer  "training_level"
+    t.integer  "sahayak_id"
   end
 
   add_index "users", ["church_congregation_id"], name: "index_users_on_church_congregation_id", using: :btree
@@ -787,6 +790,7 @@ ActiveRecord::Schema.define(version: 20180801171427) do
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
+  add_index "users", ["sahayak_id"], name: "index_users_on_sahayak_id", using: :btree
 
   create_table "village_languages", force: :cascade do |t|
     t.integer  "village_id",  null: false
@@ -907,6 +911,7 @@ ActiveRecord::Schema.define(version: 20180801171427) do
   add_foreign_key "user_benefits", "users"
   add_foreign_key "users", "church_congregations"
   add_foreign_key "users", "languages", column: "interface_language_id"
+  add_foreign_key "users", "users", column: "sahayak_id"
   add_foreign_key "village_languages", "languages"
   add_foreign_key "village_languages", "villages"
   add_foreign_key "village_workers", "users", column: "worker_id"
