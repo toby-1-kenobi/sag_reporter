@@ -36,6 +36,8 @@ class Language < ActiveRecord::Base
   has_many :language_progresses, through: :state_languages
   has_many :progress_markers, through: :language_progresses
   has_many :geo_states, through: :state_languages
+  has_many :village_languages, dependent: :destroy
+  has_many :villages, through: :village_languages
   has_many :organisation_engagements, dependent: :destroy
   has_many :engaged_organisations, through: :organisation_engagements, source: :organisation
   has_many :organisation_translations, dependent: :destroy
