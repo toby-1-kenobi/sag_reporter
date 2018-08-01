@@ -4,7 +4,7 @@ class VillageLanguage < ActiveRecord::Base
   belongs_to :language
 
   validates :village, presence: true
-  validates :language, presence: true
+  validates :language, presence: true, uniqueness: { scope: :village }
   validate :language_in_state
 
   private

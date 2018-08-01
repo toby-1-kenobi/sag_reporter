@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180801152424) do
+ActiveRecord::Schema.define(version: 20180801164558) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 20180801152424) do
     t.datetime "updated_at",      null: false
   end
 
+  add_index "church_congregations", ["organisation_id", "village_id"], name: "index_village_church", unique: true, using: :btree
   add_index "church_congregations", ["organisation_id"], name: "index_church_congregations_on_organisation_id", using: :btree
   add_index "church_congregations", ["village_id"], name: "index_church_congregations_on_village_id", using: :btree
 
@@ -424,6 +425,17 @@ ActiveRecord::Schema.define(version: 20180801152424) do
   add_index "ministry_markers", ["ministry_id"], name: "index_ministry_markers_on_ministry_id", using: :btree
   add_index "ministry_markers", ["name"], name: "index_ministry_markers_on_name", using: :btree
 
+  create_table "ministry_workers", force: :cascade do |t|
+    t.integer  "ministry_id", null: false
+    t.integer  "worker_id",   null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "ministry_workers", ["ministry_id", "worker_id"], name: "index_ministry_worker", unique: true, using: :btree
+  add_index "ministry_workers", ["ministry_id"], name: "index_ministry_workers_on_ministry_id", using: :btree
+  add_index "ministry_workers", ["worker_id"], name: "index_ministry_workers_on_worker_id", using: :btree
+
   create_table "mt_resources", force: :cascade do |t|
     t.integer  "user_id"
     t.string   "name",                           null: false
@@ -765,6 +777,7 @@ ActiveRecord::Schema.define(version: 20180801152424) do
   end
 
   add_index "village_languages", ["language_id"], name: "index_village_languages_on_language_id", using: :btree
+  add_index "village_languages", ["village_id", "language_id"], name: "index_village_lang", unique: true, using: :btree
   add_index "village_languages", ["village_id"], name: "index_village_languages_on_village_id", using: :btree
 
   create_table "village_workers", force: :cascade do |t|
@@ -774,6 +787,7 @@ ActiveRecord::Schema.define(version: 20180801152424) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "village_workers", ["village_id", "worker_id"], name: "index_village_worker", unique: true, using: :btree
   add_index "village_workers", ["village_id"], name: "index_village_workers_on_village_id", using: :btree
   add_index "village_workers", ["worker_id"], name: "index_village_workers_on_worker_id", using: :btree
 
@@ -832,6 +846,8 @@ ActiveRecord::Schema.define(version: 20180801152424) do
   add_foreign_key "languages", "projects"
   add_foreign_key "languages", "users", column: "champion_id"
   add_foreign_key "ministry_markers", "ministries"
+  add_foreign_key "ministry_workers", "ministries"
+  add_foreign_key "ministry_workers", "users", column: "worker_id"
   add_foreign_key "mt_resources", "geo_states"
   add_foreign_key "mt_resources", "languages"
   add_foreign_key "mt_resources", "users"

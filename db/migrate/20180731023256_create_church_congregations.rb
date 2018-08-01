@@ -7,5 +7,6 @@ class CreateChurchCongregations < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+    add_index :church_congregations, [:organisation_id, :village_id], unique: true, name: 'index_village_church'
   end
 end

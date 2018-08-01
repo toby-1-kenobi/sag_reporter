@@ -3,5 +3,5 @@ class VillageWorker < ActiveRecord::Base
   belongs_to :village
 
   validates :worker, presence: true
-  validates :village, presence: true
+  validates :village, presence: true, uniqueness: { scope: :worker }
 end

@@ -22,6 +22,8 @@ class User < ActiveRecord::Base
   belongs_to :church_congregation
   has_many :village_workers, dependent: :destroy, inverse_of: :worker
   has_many :villages, through: :village_workers, inverse_of: :workers
+  has_many :ministry_workers, dependent: :destroy, inverse_of: :worker
+  has_many :ministries, through: :ministry_workers, inverse_of: :workers
 
   attr_accessor :remember_token
 

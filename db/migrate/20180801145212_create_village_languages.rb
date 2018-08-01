@@ -6,5 +6,6 @@ class CreateVillageLanguages < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+    add_index :village_languages, [:village_id, :language_id], unique: true, name: 'index_village_lang'
   end
 end
