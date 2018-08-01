@@ -36,14 +36,20 @@ class SessionsController < ApplicationController
         @user = User.find_by(phone: username)
       end
       # skip authentication for the development environment
-      if @user and Rails.env.development?
+      if @user and Rails.env.development? and not @user.user_disabled?
         log_in @user
         remember @user
         redirect_back_or root_path and return
       end
       if @user && @user.authenticate(params[:session][:password])
-        session[:temp_user] = @user.id
-        send_otp(@user)
+        if not @user.user_disabled?
+          session[:temp_user] = @user.id
+          send_otp(@user)
+        else
+          logger.debug "User account disabled"
+          flash.now['error'] = 'User account disabled, please contact your supervisor'
+          render 'new'
+        end
       else
         if @user
           logger.debug "could not authenticate #{@user.phone} with '#{params[:session][:password]}'"

@@ -1,0 +1,22 @@
+<% provide(:title, 'Re-enable Users') %>
+<% provide(:context_title, 'Re-enable disabled users') %>
+<% disabled_us = User.where(:user_disabled => true) %>
+
+  <% disabled_us.each do |dis_us| %>
+    <li class="mdl-list__item">
+    <span class="mdl-list__item-primary-content">
+       <%= dis_us.name%>
+    </span>
+    <span class="mdl-list__item-primary-content">
+    <%= button_to enable_user_path(id: dis_us.id),
+                  id: "disabled-users-re-enable-#{dis_us.id}",
+                  class: 'mdl-button mdl-js-button mdl-button--icon mdl-button--colored',
+                  remote: true,
+                  method: :get do %>
+      <i class="material-icons">thumb_up</i>
+    <% end %>
+    </span>
+    <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="disabled-users-re-enable-<%= dis_us.id %>">Re-enable</div>
+    </li>
+  <% end %>
+

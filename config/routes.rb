@@ -206,6 +206,9 @@ Rails.application.routes.draw do
 
   get 'change_future_year' => 'languages#change_future_year'
 
+  get 'disabled_users' => 'users#disabled_users'
+  get 'enable_user' => 'users#enable_user'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
