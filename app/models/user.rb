@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
   has_many :championed_languages, class_name: 'Language', inverse_of: :champion, foreign_key: 'champion_id', dependent: :nullify,
            after_add: :update_self, after_remove: :update_self
   belongs_to :church_congregation
+  has_many :village_workers, dependent: :destroy, inverse_of: :worker
+  has_many :villages, through: :village_workers, inverse_of: :workers
 
   attr_accessor :remember_token
 

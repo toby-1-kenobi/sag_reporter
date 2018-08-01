@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180801145212) do
+ActiveRecord::Schema.define(version: 20180801152424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -767,6 +767,16 @@ ActiveRecord::Schema.define(version: 20180801145212) do
   add_index "village_languages", ["language_id"], name: "index_village_languages_on_language_id", using: :btree
   add_index "village_languages", ["village_id"], name: "index_village_languages_on_village_id", using: :btree
 
+  create_table "village_workers", force: :cascade do |t|
+    t.integer  "worker_id",  null: false
+    t.integer  "village_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "village_workers", ["village_id"], name: "index_village_workers_on_village_id", using: :btree
+  add_index "village_workers", ["worker_id"], name: "index_village_workers_on_worker_id", using: :btree
+
   create_table "villages", force: :cascade do |t|
     t.string   "name",         null: false
     t.text     "description"
@@ -862,5 +872,7 @@ ActiveRecord::Schema.define(version: 20180801145212) do
   add_foreign_key "users", "languages", column: "interface_language_id"
   add_foreign_key "village_languages", "languages"
   add_foreign_key "village_languages", "villages"
+  add_foreign_key "village_workers", "users", column: "worker_id"
+  add_foreign_key "village_workers", "villages"
   add_foreign_key "villages", "geo_states"
 end
