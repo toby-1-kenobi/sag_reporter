@@ -24,6 +24,8 @@ class User < ActiveRecord::Base
   has_many :villages, through: :village_workers, inverse_of: :workers
   has_many :ministry_workers, dependent: :destroy, inverse_of: :worker
   has_many :ministries, through: :ministry_workers, inverse_of: :workers
+  has_many :user_benefits, dependent: :destroy
+  has_many :app_benefits, through: :user_benefits
 
   attr_accessor :remember_token
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180801164558) do
+ActiveRecord::Schema.define(version: 20180801171427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,14 @@ ActiveRecord::Schema.define(version: 20180801164558) do
   add_index "actual_ministries", ["ministry_marker_id"], name: "index_actual_ministries_on_ministry_marker_id", using: :btree
   add_index "actual_ministries", ["month"], name: "index_actual_ministries_on_month", using: :btree
   add_index "actual_ministries", ["year"], name: "index_actual_ministries_on_year", using: :btree
+
+  create_table "app_benefits", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "app_benefits", ["name"], name: "index_app_benefits_on_name", using: :btree
 
   create_table "attendances", force: :cascade do |t|
     t.integer  "person_id",  null: false
@@ -736,6 +744,17 @@ ActiveRecord::Schema.define(version: 20180801164558) do
   add_index "uploaded_files", ["ref"], name: "index_uploaded_files_on_ref", using: :btree
   add_index "uploaded_files", ["report_id"], name: "index_uploaded_files_on_report_id", using: :btree
 
+  create_table "user_benefits", force: :cascade do |t|
+    t.integer  "user_id",        null: false
+    t.integer  "app_benefit_id", null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "user_benefits", ["app_benefit_id"], name: "index_user_benefits_on_app_benefit_id", using: :btree
+  add_index "user_benefits", ["user_id", "app_benefit_id"], name: "index_user_benefit", unique: true, using: :btree
+  add_index "user_benefits", ["user_id"], name: "index_user_benefits_on_user_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "phone"
@@ -884,6 +903,8 @@ ActiveRecord::Schema.define(version: 20180801164558) do
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translatables"
   add_foreign_key "uploaded_files", "reports"
+  add_foreign_key "user_benefits", "app_benefits"
+  add_foreign_key "user_benefits", "users"
   add_foreign_key "users", "church_congregations"
   add_foreign_key "users", "languages", column: "interface_language_id"
   add_foreign_key "village_languages", "languages"
