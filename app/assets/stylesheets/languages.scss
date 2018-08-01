@@ -390,6 +390,19 @@ table td.check {
   text-align: center !important;
 }
 
+#board-tab {
+  table {
+    margin: 0 auto;
+    tr.divider {
+      height: 25px !important;
+    }
+    .pie-chart {
+      float: right;
+      margin-left: 1em;
+    }
+  }
+}
+
 .mdl-card.translation-status {
   width: initial;
   max-width: 400px;
@@ -407,3 +420,4 @@ table td.check {
     }
   }
 }
+

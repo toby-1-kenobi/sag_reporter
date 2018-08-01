@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       get :load_flm_summary
       get :load_flt_summary
       get :load_language_flm_table
+      get :load_board_report
     end
   end
 
@@ -131,6 +132,7 @@ Rails.application.routes.draw do
       get :load_flm_summary
       get :load_flt_summary
       get :load_language_flm_table
+      get :load_board_report
     end
   end
 
@@ -143,6 +145,8 @@ Rails.application.routes.draw do
   post 'resend_code_to_phone' => 'sessions#resend_otp_to_phone', as: 'resend_code_to_phone'
   post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
   delete 'logout'  => 'sessions#destroy'
+
+  get 'session/change/:id' => 'sessions#change'
   
 
   get  'tally_updates' => 'tally_updates#index'
@@ -184,6 +188,7 @@ Rails.application.routes.draw do
   get 'nation/load_flm_summary' => 'zones#load_flm_summary', as: 'load_national_flm_summary'
   get 'nation/load_flt_summary' => 'zones#load_flt_summary', as: 'load_national_flt_summary'
   get 'nation/load_language_flm_table' => 'zones#load_language_flm_table', as: 'load_national_language_flm_table'
+  get 'nation/load_board_report' => 'zones#load_board_report', as: 'load_national_board_report'
 
   # my_reports is for a single user, but user id param not needed - it's got from logged in user
   get 'my_reports' => 'users#reports', as: 'my_reports'

@@ -2,6 +2,10 @@ class SessionsController < ApplicationController
 
   before_action :check_user, only: [:two_factor_auth, :new, :resend_otp_to_phone, :resend_otp_to_email]
 
+  before_action only: [:change] do
+    redirect_to root_path unless logged_in_user.admin?
+  end
+
   def new
   end
 
@@ -128,6 +132,14 @@ class SessionsController < ApplicationController
       flash.now['error'] = 'Login code incorrect or expired.'
       render 'two_factor_auth'
     end
+  end
+
+  # allow admin users to "become" any other user
+  def change
+    user = User.find params[:id]
+    log_in user
+    flash['success'] = "Switched account to #{user.name}"
+    redirect_to root_path
   end
 
   def destroy

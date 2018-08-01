@@ -21,7 +21,12 @@ class MtResource < ActiveRecord::Base
       other: 14
   }
 
-  enum status: [ :unknown, :work_in_progress, :published ]
+  enum status: {
+      unknown: 0,
+      work_in_progress: 1,
+      published: 2,
+      completed_for_strategic_partners: 3
+  }
 
   belongs_to :user
   belongs_to :language

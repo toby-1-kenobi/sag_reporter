@@ -27,8 +27,9 @@ class Zone < ActiveRecord::Base
       all_lps = LanguageProgress.includes({:progress_marker => :topic}, :progress_updates).all
       all_lps.find_each do |lp|
         oa_name = lp.progress_marker.topic.name
-        table_data[oa_name] ||= Hash.new {0}
+        table_data[oa_name] ||= Hash.new
         lp.outcome_scores(from_date, to_date).each do |date, score|
+          table_data[oa_name][date] ||= 0
           table_data[oa_name][date] += score
         end
       end

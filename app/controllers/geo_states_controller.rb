@@ -46,6 +46,24 @@ class GeoStatesController < ApplicationController
     end
   end
 
+  def load_board_report
+    geo_state = GeoState.find params[:id]
+    languages = geo_state.languages.includes(:finish_line_progresses, :populations).where('state_languages.primary = ?', true)
+    @language_data = []
+    languages.each do |lang|
+      lang_data = {}
+      lang.finish_line_progresses.includes(:finish_line_marker).where(year: nil).each do |flp|
+        lang_data[flp.finish_line_marker.name] = flp.status
+      end
+      pop = lang.best_current_pop
+      lang_data[:pop] = pop ? pop.amount : 0
+      @language_data << lang_data
+    end
+    respond_to do |format|
+      format.js { render 'languages/load_board_report' }
+    end
+  end
+
   def get_autocomplete_items(parameters)
     super(parameters).where(:geo_state_id => params[:geo_state_id])
   end

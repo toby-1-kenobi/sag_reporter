@@ -1,0 +1,101 @@
+<% board_report_data = board_report_figures(@language_data) %>
+<% total_lang = @language_data.count %>
+<% total_pop = @language_data.sum{ |l| l[:pop] } %>
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+  <thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Work to do</th>
+      <th>No. of languages (of <%= total_lang %>)</th>
+      <th>Total Population</th>
+      <% if total_pop > 0 %>
+        <th>
+          percentage of whole<br />population (<%= number_with_delimiter(total_pop, delimiter: ',') %>)
+        </th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+
+    <% @chart_style_need = true %>
+
+    <tr class="divider"></tr>
+    <% obs_block = {
+        survey_needed: 'Survey needed, with possible need for SE/Storying',
+        obs_progress: 'Storying in progress (NT not in progress)'
+    } %>
+    <%= board_report_rows(board_report_data, obs_block, total_lang, total_pop).html_safe %>
+    <%= combined_board_report_row(board_report_data, obs_block.keys, 'Total OBS priority work to be done', total_lang, total_pop).html_safe %>
+
+    <tr class="divider"></tr>
+    <% nt_block = {
+        storying_complete: 'Dialect Survey needed (then NT to start)',
+        nt_progress: 'NT in progress'
+    } %>
+    <%= board_report_rows(board_report_data, nt_block, total_lang, total_pop).html_safe %>
+    <%= combined_board_report_row(board_report_data, nt_block.keys, 'Total NT priority work to be done', total_lang, total_pop).html_safe %>
+
+    <tr class="divider"></tr>
+    <% ot_block = {
+        ot_planned: 'Full OT planned',
+        ot_progress: 'Full OT in progress'
+    } %>
+    <%= board_report_rows(board_report_data, ot_block, total_lang, total_pop).html_safe %>
+    <%= combined_board_report_row(board_report_data, ot_block.keys, 'Total OT work to be done', total_lang, total_pop).html_safe %>
+
+    <tr class="divider"></tr>
+    <%= board_report_rows(
+            board_report_data,
+            {
+                jesus_film: 'Jesus Film needed / in progress',
+                songs: 'First Bible songs needed / in progress',
+                literacy: 'Literacy products needed / in progress',
+                parivartan: 'Parivartan groups needed / in progress',
+                dictionary: 'Dictionary needed / in progress'
+            },
+            total_lang, total_pop
+        ).html_safe %>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Total languages with these needs</th>
+      <th><%= board_report_data[:misc_needs][0] %></th>
+      <th><%= number_with_delimiter(board_report_data[:misc_needs][1], delimiter: ',') %></th>
+      <% if total_pop > 0 %>
+        <th>
+          <% percent = board_report_data[:misc_needs][1].to_f / total_pop.to_f * 100.0 %>
+          <% chart_type = (percent < 50) ? 'low' : 'high' %>
+          <%= number_with_precision(percent, precision: 3, significant: true) %>%
+          <div class="pie-chart <%= chart_type %>"></div>
+        </th>
+      <% end %>
+    </tr>
+    <tr class="divider"></tr>
+    <% @chart_style_need = false %>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Work done or not needed in India</th>
+      <th>No. of languages (of <%= @language_data.count %>)</th>
+      <th>Total Population</th>
+    </tr>
+    <% done_block = {
+        inaccessible: 'Inaccessible',
+        no_need: 'No mother tongue translation needed',
+        outside_india: 'Being done outside India',
+        nt_available: 'NT available',
+        bible_available: 'Whole Bible available'
+    } %>
+    <%= board_report_rows(board_report_data, done_block, total_lang, total_pop).html_safe %>
+    <%= combined_board_report_row(board_report_data, done_block.keys, 'Total scripture work done', total_lang, total_pop).html_safe %>
+
+    <tr class="divider"></tr>
+    <%= board_report_rows(
+            board_report_data,
+            {
+                jesus_film_done: 'Jesus Film available',
+                obs_done: 'Bible story-set available',
+                songs_done: 'Bible songs set available',
+                literacy_done: 'Literacy classes running',
+                parivartan_done: 'Parivartan groups running',
+                dictionary_done: 'Dictionary available'
+            },
+            total_lang, total_pop
+        ).html_safe %>
+  </tbody>
+</table>

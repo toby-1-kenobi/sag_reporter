@@ -4,7 +4,7 @@ class FinishLineProgress < ActiveRecord::Base
       # 0-3 are options for not done markers
       no_need: 0,
       not_accessible: 7,
-      possible_need: 1,
+      survey_needed: 1,
       confirmed_need: 2,
       in_progress: 3,
       outside_india_in_progress: 8,
@@ -40,7 +40,7 @@ class FinishLineProgress < ActiveRecord::Base
     case status
       when 'no_need'
         :nothing
-      when 'possible_need', 'confirmed_need', 'not_accessible'
+      when 'survey_needed', 'confirmed_need', 'not_accessible'
         :no_progress
       when 'in_progress', 'outside_india_in_progress'
         :progress
@@ -56,7 +56,7 @@ class FinishLineProgress < ActiveRecord::Base
   # then the same status should be set in later years as long as it's not a backwards step
   def self.progress_level(status)
     case status
-    when 'possible_need', 'no_need', 'not_accessible'
+    when 'survey_needed', 'no_need', 'not_accessible'
       1
     when 'confirmed_need'
       2
@@ -82,8 +82,6 @@ class FinishLineProgress < ActiveRecord::Base
   end
 
   def self.human_of_status(status, marker_number)
-    # possible_need used to be called potential_need
-    if status == 'potential_need' then status = 'possible_need' end
     if marker_number == 0
       church_engagement_status[status]
     else
@@ -92,7 +90,7 @@ class FinishLineProgress < ActiveRecord::Base
         'No action needed'
       when 'not_accessible'
         'Language not accessible'
-      when 'possible_need'
+      when 'survey_needed'
         if marker_number == 7 # OT
           'Possible need (not V2033)'
         else
@@ -152,8 +150,6 @@ class FinishLineProgress < ActiveRecord::Base
         else
           status.humanize
         end
-      when 'possible_need'
-        'Survey needed'
       else
         status.humanize
       end
@@ -164,7 +160,7 @@ class FinishLineProgress < ActiveRecord::Base
     {
         'no_need' => 'No churches',
         'not_accessible' => 'Language not accessible',
-        'possible_need' => 'No use',
+        'survey_needed' => 'No use',
         'in_progress' => 'Few churches using',
         'completed' => 'Many churches using',
         'further_work_in_progress' => 'Church running project'

@@ -84,6 +84,29 @@ class ZonesController < ApplicationController
     end
   end
 
+  def load_board_report
+    # if there is an id parameter we are loading for a specific zone
+    if params[:id].present?
+      zone = Zone.find params[:id]
+      languages = zone.languages.includes(:finish_line_progresses, :populations).where('state_languages.primary = ?', true)
+    else
+      languages = Language.includes(:finish_line_progresses, :populations)
+    end
+    @language_data = []
+    languages.find_each do |lang|
+      lang_data = {}
+      lang.finish_line_progresses.includes(:finish_line_marker).where(year: nil).each do |flp|
+        lang_data[flp.finish_line_marker.name] = flp.status
+      end
+      pop = lang.best_current_pop
+      lang_data[:pop] = pop ? pop.amount : 0
+      @language_data << lang_data
+    end
+    respond_to do |format|
+      format.js { render 'languages/load_board_report' }
+    end
+  end
+
   def nation
     @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
     @flms = FinishLineMarker.dashboard_visible.order(:number)
