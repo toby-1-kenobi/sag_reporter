@@ -4,16 +4,52 @@ class ExternalDeviceController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_external, except: [:test_server, :login, :send_otp, :get_database_key]
+  before_action :authenticate_external, except: [:test_server, :new_user_info, :forgot_password, :login, :send_otp, :get_database_key]
 
   def test_server
     head :ok
   end
 
+  def new_user_info
+    states_and_languages = {geo_states: GeoState.includes(:languages).all.map{|gs| [gs.id, {name:gs.name, languages:gs.languages.map{|l| [l.id, {name: l.name}]}.to_h}]}.to_h}
+    render json: states_and_languages, status: :ok
+  end
+
+  def forgot_password
+    begin
+      save_params = [
+          :user_name
+      ]
+      forgot_password_params = params.require(:external_device).permit(safe_params)
+
+      user_name = forgot_password["user_name"]
+      if user_name.include? '@'
+        @user = User.find_by(email: user_name)
+      else
+        @user = User.find_by(phone: user_name)
+      end
+      if @user
+        if @user.reset_password?
+          logger.debug "Password request was already submitted"
+        else
+          @user.update_attribute(:reset_password, true)
+          logger.debug "Password request submitted"
+        end
+      else
+        logger.error "Could not find user for: #{user_name}"
+      end
+      head :ok
+    rescue => e
+      send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
+      logger.error send_message
+      render json: send_message, status: :internal_server_error
+    end
+  end
+
   def login
     begin
       safe_params = [
-          :phone,
+          :user_name,
           :password,
           :device_id,
           :device_name,
@@ -21,9 +57,14 @@ class ExternalDeviceController < ApplicationController
       ]
       login_params = params.require(:external_device).permit(safe_params)
 
-      user = User.find_by phone: login_params["phone"]
+      user_name = login_params["user_name"]
+      if user_name.include? '@'
+        user = User.find_by email: user_name
+      else
+        user = User.find_by phone: user_name
+      end
       # check, whether user exists and password is correct
-      unless user && user.authenticate(login_params["password"])
+      unless user&.authenticate(login_params["password"])
         logger.error "User or password not found. User ID: #{user&.id}"
         head :forbidden
         return
