@@ -39,7 +39,7 @@
 /db/language_data
 /db/losa_data.txt
 /db/losa_data
-/config/locales/
+#/config/locales/
 
 # Ignore test coverage data
 /coverage/
