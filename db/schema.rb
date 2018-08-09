@@ -83,14 +83,14 @@ ActiveRecord::Schema.define(version: 20180801173816) do
   create_table "church_congregations", force: :cascade do |t|
     t.string   "name"
     t.integer  "organisation_id"
-    t.integer  "village_id",      null: false
+    t.string   "village",         null: false
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
   end
 
-  add_index "church_congregations", ["organisation_id", "village_id"], name: "index_village_church", unique: true, using: :btree
+  add_index "church_congregations", ["organisation_id", "village"], name: "index_village_church", unique: true, using: :btree
   add_index "church_congregations", ["organisation_id"], name: "index_church_congregations_on_organisation_id", using: :btree
-  add_index "church_congregations", ["village_id"], name: "index_church_congregations_on_village_id", using: :btree
+  add_index "church_congregations", ["village"], name: "index_church_congregations_on_village", using: :btree
 
   create_table "clusters", force: :cascade do |t|
     t.string   "name",       null: false
@@ -792,39 +792,6 @@ ActiveRecord::Schema.define(version: 20180801173816) do
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
   add_index "users", ["sahayak_id"], name: "index_users_on_sahayak_id", using: :btree
 
-  create_table "village_languages", force: :cascade do |t|
-    t.integer  "village_id",  null: false
-    t.integer  "language_id", null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  add_index "village_languages", ["language_id"], name: "index_village_languages_on_language_id", using: :btree
-  add_index "village_languages", ["village_id", "language_id"], name: "index_village_lang", unique: true, using: :btree
-  add_index "village_languages", ["village_id"], name: "index_village_languages_on_village_id", using: :btree
-
-  create_table "village_workers", force: :cascade do |t|
-    t.integer  "worker_id",  null: false
-    t.integer  "village_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "village_workers", ["village_id", "worker_id"], name: "index_village_worker", unique: true, using: :btree
-  add_index "village_workers", ["village_id"], name: "index_village_workers_on_village_id", using: :btree
-  add_index "village_workers", ["worker_id"], name: "index_village_workers_on_worker_id", using: :btree
-
-  create_table "villages", force: :cascade do |t|
-    t.string   "name",         null: false
-    t.text     "description"
-    t.integer  "geo_state_id", null: false
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-  end
-
-  add_index "villages", ["geo_state_id"], name: "index_villages_on_geo_state_id", using: :btree
-  add_index "villages", ["name"], name: "index_villages_on_name", using: :btree
-
   create_table "zones", force: :cascade do |t|
     t.string   "name",                            null: false
     t.datetime "created_at",                      null: false
@@ -843,7 +810,6 @@ ActiveRecord::Schema.define(version: 20180801173816) do
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
   add_foreign_key "church_congregations", "organisations"
-  add_foreign_key "church_congregations", "villages"
   add_foreign_key "creations", "mt_resources"
   add_foreign_key "creations", "people"
   add_foreign_key "curatings", "geo_states"
@@ -912,9 +878,4 @@ ActiveRecord::Schema.define(version: 20180801173816) do
   add_foreign_key "users", "church_congregations"
   add_foreign_key "users", "languages", column: "interface_language_id"
   add_foreign_key "users", "users", column: "sahayak_id"
-  add_foreign_key "village_languages", "languages"
-  add_foreign_key "village_languages", "villages"
-  add_foreign_key "village_workers", "users", column: "worker_id"
-  add_foreign_key "village_workers", "villages"
-  add_foreign_key "villages", "geo_states"
 end
