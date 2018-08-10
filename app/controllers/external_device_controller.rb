@@ -49,7 +49,7 @@ class ExternalDeviceController < ApplicationController
   def login
     begin
       safe_params = [
-          :user_name,
+          :phone,
           :password,
           :device_id,
           :device_name,
@@ -57,7 +57,7 @@ class ExternalDeviceController < ApplicationController
       ]
       login_params = params.require(:external_device).permit(safe_params)
 
-      user_name = login_params["user_name"]
+      user_name = login_params["phone"]
       if user_name.include? '@'
         user = User.find_by email: user_name
       else
