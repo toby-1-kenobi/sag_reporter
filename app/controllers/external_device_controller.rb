@@ -17,17 +17,12 @@ class ExternalDeviceController < ApplicationController
 
   def forgot_password
     begin
-      save_params = [
+      safe_params = [
           :user_name
       ]
       forgot_password_params = params.require(:external_device).permit(safe_params)
 
-      user_name = forgot_password["user_name"]
-      if user_name.include? '@'
-        @user = User.find_by(email: user_name)
-      else
-        @user = User.find_by(phone: user_name)
-      end
+      user = get_user forgot_password_params["user_name"]
       if @user
         if @user.reset_password?
           logger.debug "Password request was already submitted"
@@ -49,7 +44,7 @@ class ExternalDeviceController < ApplicationController
   def login
     begin
       safe_params = [
-          :phone,
+          :user_name,
           :password,
           :device_id,
           :device_name,
@@ -57,12 +52,7 @@ class ExternalDeviceController < ApplicationController
       ]
       login_params = params.require(:external_device).permit(safe_params)
 
-      user_name = login_params["phone"]
-      if user_name.include? '@'
-        user = User.find_by email: user_name
-      else
-        user = User.find_by phone: user_name
-      end
+      user = get_user login_params["user_name"]
       # check, whether user exists and password is correct
       unless user&.authenticate(login_params["password"])
         logger.error "User or password not found. User ID: #{user&.id}"
@@ -108,13 +98,13 @@ class ExternalDeviceController < ApplicationController
 
   def send_otp
     safe_params = [
-        :user_phone,
+        :user_name,
         :device_id,
         :target
     ]
     send_otp_params = params.require(:external_device).permit(safe_params)
 
-    user = User.find_by_phone send_otp_params["user_phone"]
+    user = get_user send_otp_params["user_name"]
     users_device = ExternalDevice.find_by user_id: user&.id, device_id: send_otp_params["device_id"]
     unless users_device && !users_device.registered
       render json: {error: "Device not found"}, status: :forbidden
@@ -533,6 +523,14 @@ class ExternalDeviceController < ApplicationController
   end
 
   # other helpful methods
+  
+  def get_user user_name
+    if user_name&.include? "@"
+      User.find_by email: user_name
+    else
+      User.find_by phone: user_name
+    end
+  end
 
   def create_database_key(user)
     (user.created_at.to_f * 1000000).to_i
