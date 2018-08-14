@@ -4,7 +4,7 @@ ruby "2.5.1"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.10'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sassc-rails'
 # Use Materialize for Google's Material Design layout
 gem 'materialize-sass'
 
@@ -45,13 +45,13 @@ gem 'will_paginate', '~> 3.0.6'
 gem 'groupdate'
 
 # create charts
-gem 'chartkick'
+gem 'chartkick', '~> 1.3.2'
 
 # autocomplete in text fields
 gem 'rails4-autocomplete'
 
 # Use PostgreSQL as the database for Active Record
-gem 'pg'
+gem 'pg', '~> 0.21.0'
 
 # Output PDF files
 gem 'prawn'
@@ -89,9 +89,6 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
-  # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0'
-
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
@@ -104,6 +101,13 @@ group :development, :test do
 
   # for managing environment variable
   gem 'dotenv-rails'
+end
+
+group :development do
+
+  # Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'web-console', '~> 2.0'
+
 end
 
 group :test do
@@ -152,7 +156,7 @@ group :production do
   gem 'puma_worker_killer'
 
   # link to cloud storage
-  gem 'fog'
+  gem 'fog-google'
 
 end
 

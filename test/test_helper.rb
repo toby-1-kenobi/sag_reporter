@@ -5,7 +5,7 @@ require 'rails/test_help'
 require 'simplecov'
 require 'minitest/reporters'
 require 'minitest/rails/capybara'
-require 'mocha/mini_test'
+require 'mocha/minitest'
 #require 'capybara/poltergeist'
 
 SimpleCov.start 'rails'
