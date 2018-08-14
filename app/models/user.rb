@@ -32,6 +32,8 @@ class User < ActiveRecord::Base
   has_many :user_benefits, dependent: :destroy
   has_many :app_benefits, through: :user_benefits
   belongs_to :sahayak, class_name: 'User'
+  has_many :project_users, dependent: :destroy
+  has_many :projects, through: :project_users
 
   attr_accessor :remember_token
 
