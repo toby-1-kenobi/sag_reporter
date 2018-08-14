@@ -14,6 +14,43 @@ class ExternalDeviceController < ApplicationController
     states_and_languages = {geo_states: GeoState.includes(:languages).all.map{|gs| [gs.id, {name:gs.name, languages:gs.languages.map{|l| [l.id, {name: l.name}]}.to_h}]}.to_h}
     render json: states_and_languages, status: :ok
   end
+  
+  def new_user
+    begin
+      safe_params = [
+          :is_only_test,
+          :user => [
+              :old_id,
+              :name,
+              :phone,
+              :email,
+              :interface_language_id
+              {:geo_state_ids => []},
+              {:working_language_ids => []},
+          ]
+      ]
+      new_user_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
+
+      @is_only_test = receive_request_params["is_only_test"]
+      @errors = []
+      @id_changes = {}
+
+      [Person, ImpactReport, Report, UploadedFile].each do |table|
+        receive_request_params[table.name.underscore]&.each do |entry|
+          new_entry = build table, entry.to_h
+          if @is_only_test
+            raise new_entry.errors.messages.to_s unless !new_entry || new_entry.valid?
+          else
+            raise new_entry.errors.messages.to_s unless !new_entry || new_entry.save
+          end
+        end
+      end
+    rescue => e
+      send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
+      logger.error send_message
+      render json: send_message, status: :internal_server_error
+    end
+  end
 
   def forgot_password
     begin
@@ -158,7 +195,7 @@ class ExternalDeviceController < ApplicationController
     send_request_params = params.require(:external_device).permit(safe_params)
 
     tables = [User, GeoState, LanguageProgress, Language, Report, Person, Topic, ProgressMarker,
-              Zone, ImpactReport, UploadedFile]
+              Zone, ImpactReport, UploadedFile, MtResource]
     exclude_attributes = {
         User: %w(password_digest remember_digest otp_secret_key confirm_token reset_password reset_password_token)
     }
@@ -351,7 +388,6 @@ class ExternalDeviceController < ApplicationController
           end
         end
       end
-
       # Send back all the ID changes (as only the whole entries were saved, the ID has to be retrieved here)
       if @is_only_test
         send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.valid?] }.to_h] }.to_h
