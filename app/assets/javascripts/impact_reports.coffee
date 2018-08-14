@@ -29,101 +29,102 @@ $(document).on "ready page:change", ->
 
   $('.card.impact_report.for-tagging.shareable .card-content').append('<div class="chip share">Can be shared with funders</div>')
 
-  $('.card.impact_report.for-tagging .card-content').leanModal
+  if (typeof usingMaterialize) == 'boolean' && usingMaterialize
+    $('.card.impact_report.for-tagging .card-content').leanModal
 
-    ready: ->
-      content = $('.card.impact_report.for-tagging.selected .report-content').text()
-      $('#pm-modal .report-content').text content
-      # check the progress markers that already belong to the selected report
-      $('#pm-modal input:checkbox').prop 'checked', false
-      jQuery.each $('.card.impact_report.for-tagging.selected').attr('data-pm').split(' '), (index, pm_id) ->
-        $('#pm-modal input:checkbox#pm-' + pm_id).prop 'checked', true
-        return
-      # reset the pictures
-      reportID = $('.card.impact_report.for-tagging.selected').attr('data-report-id')
-      $('#pm-modal .pictures').addClass('hide').empty().attr('data-report-id', reportID)
-      if parseInt($('.card.impact_report.for-tagging.selected').attr('data-pictures')) > 0
-        $('#pm-modal .get-pictures-trigger').attr('data-report-id', reportID).removeClass('hide')
-        href = $('#pm-modal .get-pictures-trigger a').attr('href').replace(/\/\d+\//, '/' + reportID + '/')
-        $('#pm-modal .get-pictures-trigger a').attr('href', href)
-      else
-        $('#pm-modal .get-pictures-trigger').
-          attr('data-report-id', 'x').
-          addClass('hide')
-      # set the shareable checkbox
-      if $('.card.impact_report.for-tagging.selected.shareable').length > 0
-        $('input:checkbox#shareable').prop 'checked', true
-      else
-        $('input:checkbox#shareable').prop 'checked', false
-      return
-
-
-    complete: ->
-      # collapse the collapsible inside the modal
-      $('#pm-modal .collapsible-header.active').trigger('click')
-
-      # find the card and report id
-      report_card = $('.card.impact_report.for-tagging.selected')
-      report_id = report_card.attr('id').split('-').pop()
-
-      # if it's not an impact report send ajax to change it
-      # and remove it from the DOM
-      if($('#pm-modal .not-impact-checkbox input:checkbox').is(':checked'))
-        not_impact_url = '/impact_reports/' + report_id + '/not_impact'
-        report_card.remove()
-        jQuery.post not_impact_url, { _method: "patch" }
-
-      else
-        # collect the selected PMs
-        pms = []
-        $('#pm-modal .pm-checkbox input:checkbox:checked').each ->
-          pms.push $(this).attr('id').split('-').pop()
+      ready: ->
+        content = $('.card.impact_report.for-tagging.selected .report-content').text()
+        $('#pm-modal .report-content').text content
+        # check the progress markers that already belong to the selected report
+        $('#pm-modal input:checkbox').prop 'checked', false
+        jQuery.each $('.card.impact_report.for-tagging.selected').attr('data-pm').split(' '), (index, pm_id) ->
+          $('#pm-modal input:checkbox#pm-' + pm_id).prop 'checked', true
           return
-
-        # update the actual report
-        ajax_url = $('#ajax-path').text().replace('report_id', report_id)
-        jQuery.post ajax_url, { _method: "patch", pm_ids: pms }, (data) ->
-          # we receive back a collection of the reports new PMs
-          new_pm_ids = []
-          $('.card.impact_report.for-tagging.selected .progress_markers').empty()
-          jQuery.each data, (index, pmData) ->
-            pmObj = jQuery.parseJSON(pmData)
-            new_pm_ids.push pmObj.id
-            new_pm_element = $('<li/>',
-                'text': pmObj.description
-                'class': 'progress_marker tooltipped ' + pmObj.colour
-                'data-postion': 'bottom'
-                'data-delay': '50'
-                'data-tooltip': pmObj.number
-              )
-            $('.card.impact_report.for-tagging.selected .progress_markers').append(new_pm_element)
-            return
-          $('.tooltipped').tooltip()
-          report_card.attr 'data-pm', new_pm_ids.join ' '
-
-          # cards with no PMs are lighter coloured
-          if new_pm_ids.length > 0
-            report_card.removeClass 'lighten-3'
-            report_card.addClass 'lighten-1'
-          else
-            report_card.removeClass 'lighten-1'
-            report_card.addClass 'lighten-3'
-          return
-
-        # if the shareable checkbox is toggled change the attribute with ajax
+        # reset the pictures
+        reportID = $('.card.impact_report.for-tagging.selected').attr('data-report-id')
+        $('#pm-modal .pictures').addClass('hide').empty().attr('data-report-id', reportID)
+        if parseInt($('.card.impact_report.for-tagging.selected').attr('data-pictures')) > 0
+          $('#pm-modal .get-pictures-trigger').attr('data-report-id', reportID).removeClass('hide')
+          href = $('#pm-modal .get-pictures-trigger a').attr('href').replace(/\/\d+\//, '/' + reportID + '/')
+          $('#pm-modal .get-pictures-trigger a').attr('href', href)
+        else
+          $('#pm-modal .get-pictures-trigger').
+            attr('data-report-id', 'x').
+            addClass('hide')
+        # set the shareable checkbox
         if $('.card.impact_report.for-tagging.selected.shareable').length > 0
-          if $('input:checkbox#shareable').is(':not(:checked)')
-            not_shareable_url = '/impact_reports/' + report_id + '/not_shareable'
-            $('.card.impact_report.for-tagging.selected').removeClass('shareable')
-            $('.card.impact_report.for-tagging.selected .chip.share').remove()
-            jQuery.post not_shareable_url, { _method: "patch" }
+          $('input:checkbox#shareable').prop 'checked', true
+        else
+          $('input:checkbox#shareable').prop 'checked', false
+        return
 
-        if $('.card.impact_report.for-tagging.selected.shareable').length == 0
-          if $('input:checkbox#shareable').is(':checked')
-            shareable_url = '/impact_reports/' + report_id + '/shareable'
-            $('.card.impact_report.for-tagging.selected').addClass('shareable')
-            $('.card.impact_report.for-tagging.selected .card-content').append('<div class="chip share">Can be shared with funders</div>')
-            jQuery.post shareable_url, { _method: "patch" }
+
+      complete: ->
+        # collapse the collapsible inside the modal
+        $('#pm-modal .collapsible-header.active').trigger('click')
+
+        # find the card and report id
+        report_card = $('.card.impact_report.for-tagging.selected')
+        report_id = report_card.attr('id').split('-').pop()
+
+        # if it's not an impact report send ajax to change it
+        # and remove it from the DOM
+        if($('#pm-modal .not-impact-checkbox input:checkbox').is(':checked'))
+          not_impact_url = '/impact_reports/' + report_id + '/not_impact'
+          report_card.remove()
+          jQuery.post not_impact_url, { _method: "patch" }
+
+        else
+          # collect the selected PMs
+          pms = []
+          $('#pm-modal .pm-checkbox input:checkbox:checked').each ->
+            pms.push $(this).attr('id').split('-').pop()
+            return
+
+          # update the actual report
+          ajax_url = $('#ajax-path').text().replace('report_id', report_id)
+          jQuery.post ajax_url, { _method: "patch", pm_ids: pms }, (data) ->
+            # we receive back a collection of the reports new PMs
+            new_pm_ids = []
+            $('.card.impact_report.for-tagging.selected .progress_markers').empty()
+            jQuery.each data, (index, pmData) ->
+              pmObj = jQuery.parseJSON(pmData)
+              new_pm_ids.push pmObj.id
+              new_pm_element = $('<li/>',
+                  'text': pmObj.description
+                  'class': 'progress_marker tooltipped ' + pmObj.colour
+                  'data-postion': 'bottom'
+                  'data-delay': '50'
+                  'data-tooltip': pmObj.number
+                )
+              $('.card.impact_report.for-tagging.selected .progress_markers').append(new_pm_element)
+              return
+            $('.tooltipped').tooltip()
+            report_card.attr 'data-pm', new_pm_ids.join ' '
+
+            # cards with no PMs are lighter coloured
+            if new_pm_ids.length > 0
+              report_card.removeClass 'lighten-3'
+              report_card.addClass 'lighten-1'
+            else
+              report_card.removeClass 'lighten-1'
+              report_card.addClass 'lighten-3'
+            return
+
+          # if the shareable checkbox is toggled change the attribute with ajax
+          if $('.card.impact_report.for-tagging.selected.shareable').length > 0
+            if $('input:checkbox#shareable').is(':not(:checked)')
+              not_shareable_url = '/impact_reports/' + report_id + '/not_shareable'
+              $('.card.impact_report.for-tagging.selected').removeClass('shareable')
+              $('.card.impact_report.for-tagging.selected .chip.share').remove()
+              jQuery.post not_shareable_url, { _method: "patch" }
+
+          if $('.card.impact_report.for-tagging.selected.shareable').length == 0
+            if $('input:checkbox#shareable').is(':checked')
+              shareable_url = '/impact_reports/' + report_id + '/shareable'
+              $('.card.impact_report.for-tagging.selected').addClass('shareable')
+              $('.card.impact_report.for-tagging.selected .card-content').append('<div class="chip share">Can be shared with funders</div>')
+              jQuery.post shareable_url, { _method: "patch" }
 
         return
 
