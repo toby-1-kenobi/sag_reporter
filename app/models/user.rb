@@ -32,6 +32,8 @@ class User < ActiveRecord::Base
   has_many :user_benefits, dependent: :destroy
   has_many :app_benefits, through: :user_benefits
   belongs_to :sahayak, class_name: 'User'
+  has_many :project_users, dependent: :destroy
+  has_many :projects, through: :project_users
 
   attr_accessor :remember_token
 
@@ -53,7 +55,6 @@ class User < ActiveRecord::Base
                 message: 'must use only letters, numbers and spaces'
             },
             allow_nil: true
-  validates :mother_tongue_id, presence: true, allow_nil: false
   validates :geo_states, presence: true
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, length: { maximum: 255 },

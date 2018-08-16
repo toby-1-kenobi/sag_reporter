@@ -7,7 +7,6 @@ describe User do
     phone: '9876543210',
     password: 'foobar',
     password_confirmation: 'foobar',
-    mother_tongue: Language.take,
     email: 'me@example.com',
     email_confirmed: true,
     trusted: true,

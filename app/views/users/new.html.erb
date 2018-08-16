@@ -1,5 +1,3 @@
 <% provide(:title, 'Add New User') %>
-<h1><i class="material-icons large">person_add</i> Add User</h1>
-<div class="row">
-  <%= render partial: 'form', locals: {form_action: 'new'} %>
-</div>
+<% provide(:context_title, 'Add User') %>
+<%= render partial: 'form', locals: {form_action: 'new'} %>

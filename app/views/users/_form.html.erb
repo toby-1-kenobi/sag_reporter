@@ -1,174 +1,186 @@
 
-<%= form_for(@user, html: {class: 'col s12'}) do |f| %>
+<%= form_for(@user, html: {id: 'user-form'}) do |f| %>
     <%= render 'shared/error_messages', object: f.object %>
 
-    <div class="mdl-grid">
-      <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-textfield mdl-js-textfield">
-          <i class="material-icons mdl-textfield__icon">account_circle</i>
-          <%= f.text_field :name, class: 'mdl-textfield__input' %>
-          <%= f.label :name, class: 'mdl-textfield__label' %>
-        </div>
-        <div class="mdl-textfield mdl-js-textfield">
-          <i class="material-icons mdl-textfield__icon">phone</i>
-          <%= f.telephone_field :phone, class: 'mdl-textfield__input' %>
-          <%= f.label :phone, class: 'mdl-textfield__label' %>
-        </div>
-        <div class="mdl-textfield mdl-js-textfield">
-          <i class="material-icons mdl-textfield__icon">email</i>
-          <%= f.email_field :email, class: 'mdl-textfield__input' %>
-          <%= f.label :email, class: 'mdl-textfield__label' %>
-        </div>
+    <div id="user-details-input">
+      <h3>Details</h3>
+      <div class="mdl-textfield mdl-js-textfield">
+        <i class="material-icons mdl-textfield__icon">account_circle</i>
+        <%= f.text_field :name, class: 'mdl-textfield__input' %>
+        <%= f.label :name, class: 'mdl-textfield__label' %>
       </div>
-      <div class="mdl-cell mdl-cell--4-col">
-        <div class="mdl-textfield mdl-js-textfield">
-          <i class="material-icons mdl-textfield__icon">vpn_key</i>
-          <%= f.password_field :password, class: 'mdl-textfield__input' %>
-          <%= f.label :password, class: 'mdl-textfield__label' %>
-        </div>
-        <div class="mdl-textfield mdl-js-textfield">
-          <i class="material-icons mdl-textfield__icon">vpn_key</i>
-          <%= f.password_field :password_confirmation, class: 'mdl-textfield__input' %>
-          <%= f.label :password_confirmation, 'Confirm Password', class: 'mdl-textfield__label' %>
-        </div>
-        <% if logged_in_user.admin? %>
-          <div>
-            <%= f.label :admin, class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
-              <%= f.check_box(:admin, class: 'mdl-checkbox__input', disabled: logged_in_user?(@user)) %>
-              <span class="mdl-checkbox__label">Administrator</span>
-            <% end %>
-          </div>
-        <% end %>
+      <div class="mdl-textfield mdl-js-textfield">
+        <i class="material-icons mdl-textfield__icon">phone</i>
+        <%= f.telephone_field :phone, class: 'mdl-textfield__input' %>
+        <%= f.label :phone, class: 'mdl-textfield__label' %>
       </div>
-      <div class="mdl-cell mdl-cell--4-col">
-        <div id="interface-language-select" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-          <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name, options = {}, html_options = {class: 'mdlext-selectfield__select'}) %>
-          <%= f.label :interface_language_id, 'Language for using Reporter', class: 'mdlext-selectfield__label' %>
-        </div>
-        <% if logged_in_user.admin? %>
-          <div>
-            <%= f.label :national, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
-              <%= f.check_box(:national, class: 'mdl-switch__input') %>
-              <span class="mdl-switch__label">National edit access</span>
-            <% end %>
-          </div>
-          <div>
-            <%= f.label :trusted, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
-                <%= f.check_box(:trusted, class: 'mdl-switch__input') %>
-                <span class="mdl-switch__label">View sensitive data</span>
-            <% end %>
-          </div>
-        <% end %>
-        <div class="mdl-textfield mdl-js-textfield">
-          <%= f.text_field :role_description, class: 'mdl-textfield__input' %>
-          <%= f.label :role_description, class: 'mdl-textfield__label' %>
-        </div>
+      <div class="mdl-textfield mdl-js-textfield">
+        <i class="material-icons mdl-textfield__icon">email</i>
+        <%= f.email_field :email, class: 'mdl-textfield__input' %>
+        <%= f.label :email, class: 'mdl-textfield__label' %>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield">
+        <i class="material-icons mdl-textfield__icon">vpn_key</i>
+        <%= f.password_field :password, class: 'mdl-textfield__input' %>
+        <%= f.label :password, class: 'mdl-textfield__label' %>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield">
+        <i class="material-icons mdl-textfield__icon">vpn_key</i>
+        <%= f.password_field :password_confirmation, class: 'mdl-textfield__input' %>
+        <%= f.label :password_confirmation, 'Confirm Password', class: 'mdl-textfield__label' %>
+      </div>
+      <div id="interface-language-select" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name, options = {}, html_options = {class: 'mdlext-selectfield__select'}) %>
+        <%= f.label :interface_language_id, 'Language for using Reporter', class: 'mdlext-selectfield__label' %>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield">
+        <%= f.text_field :role_description, class: 'mdl-textfield__input' %>
+        <%= f.label :role_description, class: 'mdl-textfield__label' %>
       </div>
     </div>
 
     <% if logged_in_user.admin? %>
-      <div class="zone-state-language mdl-grid">
-        <div class="mdl-cell mdl-cell--3-col">
-          <h3>Zones</h3>
-          <ul class="mdl-list">
-            <% @zones.each do |zone| %>
-              <li class="mdl-list__item">
-                <span class="mdl-list__item-primary-content">
-                  <%= zone.name %>
-                </span>
-                <span class="mdl-list__item-secondary-action">
-                  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="zone-checkbox-<%= zone.id %>">
-                    <input
-                      type="checkbox"
-                      id="zone-checkbox-<%= zone.id %>"
-                      value="<%= zone.id %>"
-                      class="filter-trigger mdl-checkbox__input"
-                      data-filter-trigger-label="zone"
-                      <%= (@user.zones.include? zone) ? 'checked' : '' %>
-                    />
-                  </label>
-                </span>
-              </li>
-            <% end %>
-          </ul>
+      <div id="user-permissions-input">
+        <h3>Privileges</h3>
+        <div class="permission-control">
+          <%= f.label :admin, class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
+            <%= f.check_box(:admin, class: 'mdl-checkbox__input', disabled: logged_in_user?(@user)) %>
+            <span class="mdl-checkbox__label">Administrator</span>
+          <% end %>
         </div>
-        <div class="mdl-cell mdl-cell--4-col">
-          <h3>States</h3>
-          <div class="checkbox-clarification-wrapper"><span class="checkbox-clarification">(member / curator)</span></div>
-          <ul class="mdl-list">
-            <% @geo_states.each do |geo_state| %>
-                <li class="filterable-item hide mdl-list__item" data-filter-label="zone" data-zone="<%= geo_state.zone_id %>">
-                <span class="mdl-list__item-primary-content">
-                  <%= geo_state.name %>
-                </span>
-                <span class="inline-controls mdl-list__item-secondary-action">
-                  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="state-checkbox-<%= geo_state.id %>">
-                    <input
-                    type="checkbox"
-                    id="state-checkbox-<%= geo_state.id %>"
-                    name="user[geo_states][<%= geo_state.id %>]"
-                    value="<%= geo_state.id %>"
-                    class="filter-trigger mdl-checkbox__input"
-                    data-filter-trigger-label="geo-state"
-                    <%= (@user.geo_states.include? geo_state) ? 'checked' : '' %>
-                    />
-                  </label><span class="control-divider">/</span><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="curating-state-checkbox-<%= geo_state.id %>">
-                    <input
-                      type="checkbox"
-                      id="curating-state-checkbox-<%= geo_state.id %>"
-                      name="user[curated_states][<%= geo_state.id %>]"
-                      class="mdl-checkbox__input"
-                      <%= (@user.curated_states.include? geo_state) ? 'checked' : '' %>
-                    />
-                  </label>
-                </span>
-                </li>
-            <% end %>
-          </ul>
+        <div class="permission-control">
+          <%= f.label :national, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
+            <%= f.check_box(:national, class: 'mdl-switch__input') %>
+            <span class="mdl-switch__label">National edit access</span>
+          <% end %>
         </div>
-        <div class="mdl-cell mdl-cell--4-col">
-          <h3>Languages</h3>
-          <div class="checkbox-clarification-wrapper"><span class="checkbox-clarification">(can speak / mother tongue / champion)</span></div>
-          <ul class="mdl-list">
-            <% @languages.each do |language| %>
-              <li class="filterable-item hide mdl-list__item" data-filter-label="geo-state" data-geo-state="<%= language.geo_state_ids_str.present? ? language.geo_state_ids_str : '-1' %>">
-                <span class="mdl-list__item-primary-content">
-                  <%= language.name %>
-                </span>
-                <span class="inline-controls mdl-list__item-secondary-action">
-                  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="language-checkbox-<%= language.id %>">
-                    <input
-                      type="checkbox"
-                      id="language-checkbox-<%= language.id %>"
-                      name="user[speaks][<%= language.id %>]"
-                      value="<%= language.id %>"
-                      class="mdl-checkbox__input" <%= (@user.spoken_languages.include? language) ? 'checked' : '' %>
-                    />
-                  </label><span class="control-divider">/</span><label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="language-radio-<%= language.id %>">
-                    <input
-                    type="radio"
-                    id="language-radio-<%= language.id %>"
-                    name="user[mother_tongue_id]"
-                    value="<%= language.id %>"
-                    class="mdl-radio__button" <%= (@user.mother_tongue == language) ? 'checked' : '' %>
-                    />
-                  </label><span class="control-divider">/</span><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="champion-checkbox-<%= language.id %>">
-                    <input
+        <div class="permission-control">
+          <%= f.label :trusted, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
+            <%= f.check_box(:trusted, class: 'mdl-switch__input') %>
+            <span class="mdl-switch__label">View sensitive data</span>
+          <% end %>
+        </div>
+      </div>
+
+      <div id="user-projects-input">
+        <h3>Projects</h3>
+        <ul class="mdl-list">
+          <% @projects.each do |project| %>
+            <li class="mdl-list__item">
+              <span class="mdl-list__item-primary-content">
+                <%= project.name %>
+              </span>
+              <span class="mdl-list__item-secondary-action">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="project-checkbox-<%= project.id %>">
+                  <input
                     type="checkbox"
-                    id="champion-checkbox-<%= language.id %>"
-                    name="user[champion][<%= language.id %>]"
-                    value="<%= language.id %>"
+                    id="project-checkbox-<%= project.id %>"
+                    name="user[projects][<%= project.id %>]"
+                    value="<%= project.id %>"
                     class="mdl-checkbox__input"
-                    <% if language.champion.present? %>
-                      <%= (language.champion == @user) ? 'checked' : 'disabled' %>
-                    <% end %>
+                    <%= (@user.projects.include? project) ? 'checked' : '' %>
                     />
-                  </label>
-                </span>
+                </label>
+              </span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <div id="user-zones-input">
+        <h3>Zones</h3>
+        <ul class="mdl-list">
+          <% @zones.each do |zone| %>
+            <li class="mdl-list__item">
+              <span class="mdl-list__item-primary-content">
+                <%= zone.name %>
+              </span>
+              <span class="mdl-list__item-secondary-action">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="zone-checkbox-<%= zone.id %>">
+                  <input
+                    type="checkbox"
+                    id="zone-checkbox-<%= zone.id %>"
+                    value="<%= zone.id %>"
+                    class="filter-trigger mdl-checkbox__input"
+                    data-filter-trigger-label="zone"
+                    <%= (@user.zones.include? zone) ? 'checked' : '' %>
+                  />
+                </label>
+              </span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <div id="user-states-input">
+        <h3>States</h3>
+        <div class="checkbox-clarification-wrapper"><span class="checkbox-clarification">(member / curator)</span></div>
+        <ul class="mdl-list">
+          <% @geo_states.each do |geo_state| %>
+              <li class="filterable-item hide mdl-list__item" data-filter-label="zone" data-zone="<%= geo_state.zone_id %>">
+              <span class="mdl-list__item-primary-content">
+                <%= geo_state.name %>
+              </span>
+              <span class="inline-controls mdl-list__item-secondary-action">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="state-checkbox-<%= geo_state.id %>">
+                  <input
+                  type="checkbox"
+                  id="state-checkbox-<%= geo_state.id %>"
+                  name="user[geo_states][<%= geo_state.id %>]"
+                  value="<%= geo_state.id %>"
+                  class="filter-trigger mdl-checkbox__input"
+                  data-filter-trigger-label="geo-state"
+                  <%= (@user.geo_states.include? geo_state) ? 'checked' : '' %>
+                  />
+                </label><span class="control-divider">/</span><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="curating-state-checkbox-<%= geo_state.id %>">
+                  <input
+                    type="checkbox"
+                    id="curating-state-checkbox-<%= geo_state.id %>"
+                    name="user[curated_states][<%= geo_state.id %>]"
+                    class="mdl-checkbox__input"
+                    <%= (@user.curated_states.include? geo_state) ? 'checked' : '' %>
+                  />
+                </label>
+              </span>
               </li>
-            <% end %>
-          </ul>
-        </div>
+          <% end %>
+        </ul>
+      </div>
+
+      <div id="user-languages-input">
+        <h3>Languages</h3>
+        <div class="checkbox-clarification-wrapper"><span class="checkbox-clarification">(can speak / champion)</span></div>
+        <ul class="mdl-list">
+          <% @languages.each do |language| %>
+            <li class="filterable-item hide mdl-list__item" data-filter-label="geo-state" data-geo-state="<%= language.geo_state_ids_str.present? ? language.geo_state_ids_str : '-1' %>">
+              <span class="mdl-list__item-primary-content">
+                <%= language.name %>
+              </span>
+              <span class="inline-controls mdl-list__item-secondary-action">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="language-checkbox-<%= language.id %>">
+                  <input
+                    type="checkbox"
+                    id="language-checkbox-<%= language.id %>"
+                    name="user[speaks][<%= language.id %>]"
+                    value="<%= language.id %>"
+                    class="mdl-checkbox__input" <%= (@user.spoken_languages.include? language) ? 'checked' : '' %>
+                  />
+                </label><span class="control-divider">/</span><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="champion-checkbox-<%= language.id %>">
+                  <input
+                  type="checkbox"
+                  id="champion-checkbox-<%= language.id %>"
+                  name="user[champion][<%= language.id %>]"
+                  value="<%= language.id %>"
+                  class="mdl-checkbox__input"
+                  <% if language.champion.present? %>
+                    <%= (language.champion == @user) ? 'checked' : 'disabled' %>
+                  <% end %>
+                  />
+                </label>
+              </span>
+            </li>
+          <% end %>
+        </ul>
       </div>
     <% end %>
 

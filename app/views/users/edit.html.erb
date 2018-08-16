@@ -3,13 +3,6 @@
 <% else %>
     <% provide(:title, "Edit profile of user ##{@user.id}") %>
 <% end %>
-<% if logged_in_user?(@user)
-     heading = "Edit your profile"
-   else
-     heading = "Edit user profile"
-   end
-%>
-<h1><i class="material-icons large">create</i> <%= heading %></h1>
-<div class="row">
-  <%= render partial: 'form', locals: {form_action: 'edit'} %>
-</div>
+<% heading = logged_in_user?(@user) ? 'Edit your profile' : 'Edit user profile' %>
+<% provide(:context_title, heading) %>
+<%= render partial: 'form', locals: {form_action: 'edit'} %>

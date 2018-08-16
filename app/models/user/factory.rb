@@ -3,6 +3,7 @@ class User::Factory
   attr_reader :instance
 
   def build_user(params)
+    projects = params.delete(:projects)
     champion = params.delete(:champion)
     speaks = params.delete(:speaks)
     geo_states = params.delete(:geo_states)
@@ -12,6 +13,10 @@ class User::Factory
     rescue
       return false
     else
+      if projects
+        @instance.projects.clear
+        @instance.projects << Project.where(id: projects)
+      end
       if champion
         @instance.championed_languages.clear
         champion.each do |lang_id|
@@ -22,9 +27,6 @@ class User::Factory
         speaks.each do |lang_id|
           @instance.spoken_languages << Language.find(lang_id)
         end
-      end
-      if @instance.mother_tongue
-        @instance.spoken_languages << @instance.mother_tongue unless @instance.spoken_languages.include? @instance.mother_tongue
       end
       if geo_states
         geo_states.each do |geo_state_id|

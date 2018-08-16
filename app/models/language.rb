@@ -26,7 +26,7 @@ class Language < ActiveRecord::Base
   }
 
   #TODO: write tests for destroying languages so that when restriction applies other dependants don't get destroyed
-  has_many :user_mt_speakers, class_name: 'User', foreign_key: 'mother_tongue_id', dependent: :restrict_with_error
+  has_many :user_mt_speakers, class_name: 'User', foreign_key: 'mother_tongue_id', dependent: :nullify
   has_many :output_counts
   has_many :mt_resources, dependent: :restrict_with_error
   has_and_belongs_to_many :user_speakers, class_name: 'User'
