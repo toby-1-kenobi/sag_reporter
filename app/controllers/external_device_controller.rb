@@ -24,7 +24,7 @@ class ExternalDeviceController < ApplicationController
               :name,
               :phone,
               :email,
-              :interface_language_id
+              :interface_language_id,
               {:geo_state_ids => []},
               {:working_language_ids => []},
           ]
