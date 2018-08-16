@@ -2,9 +2,39 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.zone-state-language {
-  h3 {
-    padding-left: 16px;
+#user-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-row-gap: 0.5em;
+  grid-column-gap: 2em;
+  grid-template-areas:
+          "details permissions projects"
+          "zones states languages";
+
+  #user-details-input {
+    grid-area: details;
+  }
+  #user-permissions-input {
+    grid-area: permissions;
+  }
+  #user-projects-input {
+    grid-area: projects;
+  }
+  #user-zones-input {
+    grid-area: zones;
+  }
+  #user-states-input {
+    grid-area: states;
+  }
+  #user-languages-input {
+    grid-area: languages;
+  }
+  h3{
+    padding-left: 1em;
+  }
+  .permission-control {
+    padding-top: 1ex;
   }
 }
 
