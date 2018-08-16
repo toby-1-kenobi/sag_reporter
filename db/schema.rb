@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180814160706) do
+ActiveRecord::Schema.define(version: 20180816075719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -773,7 +773,7 @@ ActiveRecord::Schema.define(version: 20180814160706) do
     t.datetime "updated_at",                               null: false
     t.string   "password_digest"
     t.string   "remember_digest"
-    t.integer  "mother_tongue_id",                         null: false
+    t.integer  "mother_tongue_id"
     t.integer  "interface_language_id"
     t.string   "otp_secret_key"
     t.string   "email"

@@ -26,22 +26,22 @@
         <% end %>
         <tr>
           <th><%= 'Zone'.pluralize(user_card.zones.count) %>:</th>
-          <td><%= user_card.zones.map{ |z| z.name }.join(', ') %></td>
+          <td><%= user_card.zones.map{ |z| z.name }.to_sentence %></td>
           <th><%= 'State'.pluralize(user_card.geo_states.count) %>:</th>
-          <td><%= user_card.geo_states.pluck(:name).join(', ') %></td>
+          <td><%= user_card.geo_states.pluck(:name).to_sentence %></td>
         </tr>
         <tr>
-          <th>Mother tongue:</th>
-          <td><%= user_card.mother_tongue.name %></td>
+          <th><%= 'Project'.pluralize(user_card.projects.count) %>:</th>
+          <td><%= user_card.projects.pluck(:name).to_sentence %></td>
           <th>Can speak:</th>
-          <td><%= user_card.spoken_languages.pluck(:name).join(', ') %></td>
+          <td><%= user_card.spoken_languages.pluck(:name).to_sentence %></td>
         </tr>
         <tr>
           <th>Role:</th>
           <td><%= user_card.role_description %></td>
           <% if user_card.curated_states.any? %>
             <th>Curating for</th>
-            <td><%= user_card.curated_states.pluck(:name).join(', ') %></td>
+            <td><%= user_card.curated_states.pluck(:name).to_sentence %></td>
           <% end %>
         </tr>
         <% if privileges.any? %>
@@ -50,7 +50,7 @@
             <td <%= 'colspan="3"' if user_card.championed_languages.empty? %>><%= privileges.join(', ') %></td>
             <% if user_card.championed_languages.any? %>
               <th>Point <%= 'language'.pluralize(user_card.championed_languages.count) %>:</th>
-              <td><%= user_card.championed_languages.pluck(:name).join(', ') %></td>
+              <td><%= user_card.championed_languages.pluck(:name).to_sentence %></td>
             <% end %>
           </tr>
         <% end %>

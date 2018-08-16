@@ -152,7 +152,6 @@ class UsersController < ApplicationController
       :email,
       :email_confirmed,
       :confirm_token,
-      :mother_tongue_id,
       :interface_language_id,
       :trusted,
       :admin,

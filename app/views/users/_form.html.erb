@@ -149,7 +149,7 @@
 
       <div id="user-languages-input">
         <h3>Languages</h3>
-        <div class="checkbox-clarification-wrapper"><span class="checkbox-clarification">(can speak / mother tongue / champion)</span></div>
+        <div class="checkbox-clarification-wrapper"><span class="checkbox-clarification">(can speak / champion)</span></div>
         <ul class="mdl-list">
           <% @languages.each do |language| %>
             <li class="filterable-item hide mdl-list__item" data-filter-label="geo-state" data-geo-state="<%= language.geo_state_ids_str.present? ? language.geo_state_ids_str : '-1' %>">
@@ -164,14 +164,6 @@
                     name="user[speaks][<%= language.id %>]"
                     value="<%= language.id %>"
                     class="mdl-checkbox__input" <%= (@user.spoken_languages.include? language) ? 'checked' : '' %>
-                  />
-                </label><span class="control-divider">/</span><label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="language-radio-<%= language.id %>">
-                  <input
-                  type="radio"
-                  id="language-radio-<%= language.id %>"
-                  name="user[mother_tongue_id]"
-                  value="<%= language.id %>"
-                  class="mdl-radio__button" <%= (@user.mother_tongue == language) ? 'checked' : '' %>
                   />
                 </label><span class="control-divider">/</span><label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="champion-checkbox-<%= language.id %>">
                   <input
