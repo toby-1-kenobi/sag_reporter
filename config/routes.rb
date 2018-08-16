@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       get  'test_server'
       post 'new_user_info'
       post 'new_user'
+      post 'new_user'
       post 'forgot_password'
       post 'login'
       post 'send_otp'
