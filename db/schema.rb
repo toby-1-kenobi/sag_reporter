@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180816075719) do
+ActiveRecord::Schema.define(version: 20180817094522) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -433,6 +433,23 @@ ActiveRecord::Schema.define(version: 20180816075719) do
   add_index "ministry_markers", ["ministry_id"], name: "index_ministry_markers_on_ministry_id", using: :btree
   add_index "ministry_markers", ["name"], name: "index_ministry_markers_on_name", using: :btree
 
+  create_table "ministry_outputs", force: :cascade do |t|
+    t.integer  "church_congregation_id", null: false
+    t.integer  "ministry_marker_id",     null: false
+    t.integer  "year",                   null: false
+    t.integer  "month",                  null: false
+    t.integer  "value",                  null: false
+    t.boolean  "actual",                 null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "ministry_outputs", ["actual"], name: "index_ministry_outputs_on_actual", using: :btree
+  add_index "ministry_outputs", ["church_congregation_id"], name: "index_ministry_outputs_on_church_congregation_id", using: :btree
+  add_index "ministry_outputs", ["ministry_marker_id"], name: "index_ministry_outputs_on_ministry_marker_id", using: :btree
+  add_index "ministry_outputs", ["month"], name: "index_ministry_outputs_on_month", using: :btree
+  add_index "ministry_outputs", ["year"], name: "index_ministry_outputs_on_year", using: :btree
+
   create_table "ministry_workers", force: :cascade do |t|
     t.integer  "ministry_id", null: false
     t.integer  "worker_id",   null: false
@@ -846,6 +863,8 @@ ActiveRecord::Schema.define(version: 20180816075719) do
   add_foreign_key "languages", "projects"
   add_foreign_key "languages", "users", column: "champion_id"
   add_foreign_key "ministry_markers", "ministries"
+  add_foreign_key "ministry_outputs", "church_congregations"
+  add_foreign_key "ministry_outputs", "ministry_markers"
   add_foreign_key "ministry_workers", "ministries"
   add_foreign_key "ministry_workers", "users", column: "worker_id"
   add_foreign_key "mt_resources", "geo_states"

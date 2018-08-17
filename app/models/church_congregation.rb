@@ -1,8 +1,7 @@
 class ChurchCongregation < ActiveRecord::Base
   belongs_to :organisation
   has_many :users, dependent: :nullify
-  has_many :planned_ministries, dependent: :destroy
-  has_many :actual_ministries, dependent: :destroy
+  has_many :ministry_outputs, dependent: :destroy
 
   validates :village, presence: true, uniqueness: { scope: :organisation }
 
