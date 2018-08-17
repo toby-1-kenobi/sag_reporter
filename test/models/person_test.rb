@@ -2,7 +2,7 @@ require "test_helper"
 
 describe Person do
 
-  let(:person) { Person.new(name: "Fred", geo_state: geo_states(:nb)) }
+  let(:person) { Person.new(name: "Fred", geo_state: FactoryBot.build(:geo_state)) }
 
   it "is valid with only a name and geo_State" do
     value(person).must_be :valid?

@@ -96,6 +96,9 @@ group :development, :test do
   # For creating test-doubles
   gem 'mocha', require: false
 
+  # Factories instead of fixures
+  gem 'factory_bot_rails'
+
   # For high level specification of integration tests
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
