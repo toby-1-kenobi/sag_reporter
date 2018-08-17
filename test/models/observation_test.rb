@@ -1,7 +1,9 @@
 require "test_helper"
 
 describe Observation do
-  let(:observation) { Observation.new report: reports("report-1"), person: people("user-1") }
+  let(:report) { Report.new }
+  let(:person) { Person.new name: "Dude" }
+  let(:observation) { Observation.new report: report, person: person }
 
   it "must be valid" do
     value(observation).must_be :valid?

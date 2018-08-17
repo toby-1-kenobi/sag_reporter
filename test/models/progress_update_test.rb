@@ -4,12 +4,12 @@ describe ProgressUpdate do
 
   let(:progress_update) { ProgressUpdate.new progress: ProgressMarker.spread_text.keys.first,
       year: 2015, month: 1,
-      user: users(:andrew),
+      user: FactoryBot.build(:user),
       language_progress: language_progress
     }
     
-  let(:language_progress) {LanguageProgress.new state_language: state_languages(:nb_toto),
-      progress_marker: progress_markers(:disease_prevented)
+  let(:language_progress) {LanguageProgress.new state_language: FactoryBot.build(:state_language),
+      progress_marker: FactoryBot.build(:progress_marker)
     }
 
   it 'must be valid' do
