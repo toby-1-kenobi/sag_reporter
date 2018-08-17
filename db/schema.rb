@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180817115811) do
+ActiveRecord::Schema.define(version: 20180817121324) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -780,7 +780,6 @@ ActiveRecord::Schema.define(version: 20180817115811) do
     t.integer  "church_congregation_id"
     t.boolean  "is_sahayak",               default: false, null: false
     t.integer  "training_level"
-    t.integer  "sahayak_id"
   end
 
   add_index "users", ["church_congregation_id"], name: "index_users_on_church_congregation_id", using: :btree
@@ -788,7 +787,6 @@ ActiveRecord::Schema.define(version: 20180817115811) do
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
-  add_index "users", ["sahayak_id"], name: "index_users_on_sahayak_id", using: :btree
 
   create_table "zones", force: :cascade do |t|
     t.string   "name",                            null: false
@@ -875,5 +873,4 @@ ActiveRecord::Schema.define(version: 20180817115811) do
   add_foreign_key "user_benefits", "users"
   add_foreign_key "users", "church_congregations"
   add_foreign_key "users", "languages", column: "interface_language_id"
-  add_foreign_key "users", "users", column: "sahayak_id"
 end

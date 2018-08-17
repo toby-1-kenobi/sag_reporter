@@ -66,7 +66,6 @@ class User < ActiveRecord::Base
   validates :admin, inclusion: [true, false]
   validates :national_curator, inclusion: [true, false]
   validate :interface_language_must_have_locale_tag
-  validate :sahayak_is_a_sahayak
 
   after_save :send_confirmation_email
 
@@ -228,12 +227,6 @@ class User < ActiveRecord::Base
   def interface_language_must_have_locale_tag
     if interface_language.present? and interface_language.locale_tag.blank?
       errors.add(:interface_language, 'must be a user interface language.')
-    end
-  end
-
-  def sahayak_is_a_sahayak
-    if sahayak.present?
-      errors.add(:sahayak, 'must be a sahayak in the app') unless sahayak.is_sahayak?
     end
   end
 
