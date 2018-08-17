@@ -1,0 +1,31 @@
+<% provide(:title, 'LCI Board Member Approval') %>
+<% provide(:context_title, 'LCI Board Member Approval') %>
+<% zone_approved_us = User.where(:registration_status => 1) %>
+
+<% zone_approved_us.each do |us| %>
+  <li class="mdl-list__item" id="required-board-member-approval-<%= us.id %>">
+    <span class="mdl-list__item-primary-content">
+       <%= us.name%>
+    </span>
+    <span class="mdl-list__item-primary-content">
+    <%= button_to lciboard_member_accept_path(id: us.id),
+                  id: "lciboard-member-accept-#{us.id}",
+                  class: 'mdl-button mdl-js-button mdl-button--icon mdl-button--colored',
+                  remote: true,
+                  method: :post do %>
+      <i class="material-icons">thumb_up</i>
+    <% end %>
+    </span>
+    <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="lciboard-member-accept-<%= us.id %>">Approve</div>
+    <span class="mdl-list__item-primary-content">
+    <%= button_to lciboard_member_reject_path(id: us.id),
+                  id: "lciboard-member-reject-#{us.id}",
+                  class: 'mdl-button mdl-js-button mdl-button--icon mdl-button--colored',
+                  remote: true,
+                  method: :post do %>
+      <i class="material-icons">thumb_down</i>
+    <% end %>
+    </span>
+    <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="lciboard-member-reject-<%= us.id %>">Reject</div>
+  </li>
+<% end %>

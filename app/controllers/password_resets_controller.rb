@@ -39,7 +39,7 @@ class PasswordResetsController < ApplicationController
   def approve_user_request
     @user = User.find_by(id: params[:id])
     if @user and @user.update_attributes(reset_password: false, reset_password_token: SecureRandom.urlsafe_base64(nil, false))
-      @mail_sent = send_pwd_reset_instructions(@user)
+      @mail_sent = send_pwd_reset_instructions(@user, @user.reset_password_token)
     else
       Rails.logger.error ("failed to update attributes in user ##{params[:id]} for password reset approval")
     end

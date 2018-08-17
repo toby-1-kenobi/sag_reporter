@@ -9,6 +9,21 @@ class User < ActiveRecord::Base
     consultant: 3
   }
 
+  enum registration_status: {
+      unapproved: 0,
+      zone_approved: 1,
+      approved: 2
+  }
+
+  enum user_type: {
+      church_member: 0,
+      field_supervisor: 1,
+      project_trainer: 2,
+      project_manager: 3,
+      supporter: 4
+  }
+
+
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter, dependent: :restrict_with_error
   has_many :events, inverse_of: :record_creator, dependent: :restrict_with_error
   has_many :people, inverse_of: :record_creator, dependent: :restrict_with_error

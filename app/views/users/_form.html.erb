@@ -60,6 +60,12 @@
             <span class="mdl-switch__label">View sensitive data</span>
           <% end %>
         </div>
+        <div>
+          <%= f.label :registration_curator, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
+            <%= f.check_box(:registration_curator, class: 'mdl-switch__input') %>
+            <span class="mdl-switch__label">Registration curator edit access</span>
+          <% end %>
+        </div>
       </div>
 
       <div id="user-projects-input">

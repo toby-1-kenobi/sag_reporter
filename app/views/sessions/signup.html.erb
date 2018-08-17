@@ -1,0 +1,45 @@
+<% provide(:title, 'Sign up') %>
+<% provide(:context_title, 'Create user account') %>
+<% @interface_languages = Language.where.not(locale_tag: nil).order(:name) %>
+<% @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)%>
+
+ <%= form_for(:signup, url: signup_path) do |f| %>
+    <div class="mdl-grid">
+      <div class="mdl-cell mdl-cell--4-col">
+        <div class="mdl-textfield mdl-js-textfield">
+          <i class="material-icons mdl-textfield__icon">account_circle</i>
+          <%= f.text_field :name, class: 'mdl-textfield__input' %>
+          <%= f.label :name, class: 'mdl-textfield__label' %>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield">
+          <i class="material-icons mdl-textfield__icon">phone</i>
+          <%= f.telephone_field :phone, class: 'mdl-textfield__input' %>
+          <%= f.label :phone, class: 'mdl-textfield__label' %>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield">
+          <i class="material-icons mdl-textfield__icon">email</i>
+          <%= f.email_field :email, class: 'mdl-textfield__input' %>
+          <%= f.label :email, class: 'mdl-textfield__label' %>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield">
+          <%= f.text_field :role_description, class: 'mdl-textfield__input' %>
+          <%= f.label :role_description, class: 'mdl-textfield__label' %>
+        </div>
+      </div>
+        <div class="mdl-cell mdl-cell--4-col ">
+        <div  class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name, options = {}, html_options = {class: 'mdlext-selectfield__select'}) %>
+          <%= f.label :interface_language_id, 'Language for using Reporter', class: 'mdlext-selectfield__label' %>
+        </div>
+          <div>
+            <ul class="mdl-list">
+              <div  class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+                <%= f.collection_select(:id, @geo_states.all, :id, :name, {:prompt => "Please Select a State"}, {:multiple => true}) %>
+              </div>
+            </ul>
+          </div>
+        </div>
+     </div>
+  <%= submit_tag "Create" %>
+  <% end %>
+

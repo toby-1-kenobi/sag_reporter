@@ -1,0 +1,51 @@
+<% provide(:title, 'Zone Curator Approval') %>
+<% provide(:context_title, 'Zone Curator Approval') %>
+<% unapproved_us = User.where(:registration_status => 0) %>
+
+<% unapproved_us.each do |us| %>
+  <li class="mdl-list__item" id="new-user-approval-<%= us.id %>">
+    <span class="mdl-list__item-primary-content">
+       <%= us.name %>
+    </span>
+    <span class="mdl-list__item-primary-content">
+      <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect user-approval-trigger-class" id="user-approval-trigger-<%= us.id %>">
+        Approve
+       </button>
+    </span>
+
+    <span class="mdl-list__item-primary-content">
+       <%= button_to zone_curator_reject_path(id: us.id),
+                  class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect',
+                  remote: true,
+                  method: :post do %> Reject
+       <% end %>
+    </span>
+  </li>
+
+  <dialog class="mdl-dialog" id="userapproval-dialog-<%= us.id %>">
+  <h4 class="mdl-dialog__title">User Approval</h4>
+    <div class="mdl-dialog__content">
+       <%= form_for(:zone_approval, url: zone_approval_path, remote: true) do |f| %>
+          <div class="mdl-textfield mdl-js-textfield">
+            <%= f.label :user_type %><br>
+            <%= f.select :user_type, User.user_types.keys %>
+          </div>
+          <div>
+            <%= f.label :national, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
+              <%= f.check_box(:national, class: 'mdl-switch__input') %>
+              <span class="mdl-switch__label">National edit access</span>
+            <% end %>
+          </div>
+    </div>
+    <div class="mdl-dialog__actions">
+       <button type="button" class="mdl-button close">Cancel</button>
+       <%= f.hidden_field :user_id, :value => us.id %>
+       <%= button_to zone_curator_accept_path(id: us.id),
+                  class: 'mdl-button approved',
+                  remote: true,
+                  method: :post do %>Approve
+       <% end %>
+    </div>
+   <% end %>
+  </dialog>
+<% end %>

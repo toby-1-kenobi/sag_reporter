@@ -44,10 +44,10 @@ class SessionsController < ApplicationController
         log_in @user
         remember @user
         redirect_back_or root_path and return
-      end
+       end
       if @user && @user.authenticate(params[:session][:password])
-        session[:temp_user] = @user.id
-        send_otp(@user)
+         session[:temp_user] = @user.id
+         send_otp(@user)
       else
         if @user
           logger.debug "could not authenticate #{@user.phone} with '#{params[:session][:password]}'"
@@ -145,6 +145,10 @@ class SessionsController < ApplicationController
   def destroy
     log_out if logged_in?
     redirect_to login_url
+  end
+
+  def sign_up
+    render 'sessions/signup'
   end
 
   private

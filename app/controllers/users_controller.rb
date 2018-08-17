@@ -2,6 +2,7 @@ class UsersController < ApplicationController
 
   include ParamsHelper
   include ReportFilter
+  include UsersHelper
 
   before_action :require_login
 
@@ -137,6 +138,81 @@ class UsersController < ApplicationController
       format.html
       format.js { render 'reports/update_collection' }
     end
+  end
+
+  def user_registration_approval
+    render 'users/zone_curator_approval'
+  end
+
+  def zone_curator_accept
+    @user = User.find_by(id: params[:zone_approval][:user_id])
+    if @user and @user.update_attributes(:registration_status => 1, user_type:params[:zone_approval][:user_type], national:params[:zone_approval][:national])
+      approval_users_tracking(@user)
+      email_send_to_lciboard_members(params[:authenticity_token])
+    end
+    #@user.errors.full_messages
+    respond_to :js
+  end
+
+  def zone_curator_reject
+    @user = User.find_by(id: params[:id])
+    if @user.destroy
+      flash[:success] = "User #{name} deleted"
+    else
+      flash[:error] = "Unable to delete #{name}"
+      flash[:error] += ': '+ @user.errors.messages.values.join(', ') if @user.errors.any?
+    end
+    respond_to :js
+  end
+
+  def approval_users_tracking(user)
+    @approval_track_users = RegistrationApprovals.new(registered_user: user.id, user_approve_registration: logged_in_user.id)
+    @approval_track_users.errors.full_messages
+    if @approval_track_users.save
+      flash[:success] = "User approval track record created"
+    else
+    end
+  end
+
+  def email_send_to_lciboard_members(token)
+    lci_borad_members = User.where(lci_board_member: true, registration_status: 2)
+    lci_borad_members.each do |board_member|
+      @mail_sent = send_registared_user_info(board_member, token)
+    end
+  end
+
+  def send_registared_user_info(user, token)
+    if user.email.presence
+      logger.debug "sending registred user information to email: #{user.email}"
+      UserMailer.send_email_to_lci_board_members(user, token).deliver_now
+      true
+    end
+  end
+
+  def lciboard_member_approval
+    render 'users/lciboard_member_approval'
+  end
+
+  def lciboard_member_accept
+    @user = User.find_by(id: params[:id])
+    if @user
+      @user.errors.full_messages
+      @user.update_attribute(:registration_status, 2)
+      @mail_sent = send_pwd_reset_instructions(@user, @user.reset_password_token)
+    end
+    respond_to :js
+  end
+
+  def lciboard_member_reject
+    @user = User.find_by(id: params[:id])
+    name = @user.name
+    if @user.destroy
+      flash[:success] = "User #{name} deleted"
+    else
+      flash[:error] = "Unable to delete #{name}"
+      flash[:error] += ': '+ @user.errors.messages.values.join(', ') if @user.errors.any?
+    end
+    respond_to :js
   end
 
   private

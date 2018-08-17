@@ -83,4 +83,20 @@ class UserMailer < ActionMailer::Base
     mail(to: curator.email, subject: 'LCI language edits waiting for approval')
   end
 
+  def registration_request_email(user, token)
+    headers['X-SMTPAPI'] = {
+        category: ['registrationrequest']
+    }.to_json
+    @user = user
+    mail(to: "#{user.name} <#{user.email}>", subject: 'Registration Request For Approval')
+  end
+
+  def send_email_to_lci_board_members(user, token)
+    headers['X-SMTPAPI'] = {
+        category: ['new user information']
+    }.to_json
+    @user = user
+    mail(to: "#{user.name} <#{user.email}>", subject: 'Registration Request For Approval')
+  end
+
 end
