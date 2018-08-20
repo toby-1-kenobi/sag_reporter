@@ -4,7 +4,8 @@ feature 'Login' do
 
   def setup
     Capybara.current_driver = :poltergeist
-    @admin_user = users(:andrew)
+    FactoryBot.create(:language, name: 'English', locale_tag: 'en')
+    @admin_user = FactoryBot.create(:user, admin: true)
   end
 
   scenario 'user can resend login code to phone' do

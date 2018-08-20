@@ -5,7 +5,8 @@ class UsersCreateTest < ActionDispatch::IntegrationTest
 	include IntegrationHelper
 
   def setup
-    @admin = users(:andrew)
+    FactoryBot.create(:language, name: 'English', locale_tag: 'en')
+    @admin = FactoryBot.create(:user, admin: true)
   end
   
   test "invalid user create" do

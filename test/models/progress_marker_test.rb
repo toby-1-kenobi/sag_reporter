@@ -4,7 +4,7 @@ describe ProgressMarker do
 
   let(:progress_marker) { ProgressMarker.new(
       name: 'test pm',
-      topic: topics(:movement_building)
+      topic: FactoryBot.build(:topic)
   ) }
   let(:zone_with_default_pms) { Zone.new(name: 'test zone 1') }
   let(:state_in_default_zone) { GeoState.new(
@@ -58,14 +58,14 @@ describe ProgressMarker do
   end
 
   it 'finds or creates LanguageProgresses as necessary' do
-    state_language = state_languages(:nb_toto)
+    state_language = FactoryBot.build(:state_language)
     init_language_progress_count = LanguageProgress.count
     # the first call should create a new LanguageProgress and increase the count
-    language_progress = progress_marker.language_progress(state_language)
+    progress_marker.language_progress(state_language)
     lp_count_after_first_call = LanguageProgress.count
     _(lp_count_after_first_call).must_equal init_language_progress_count + 1
     # the second call shouldn't create a new LanguageProgress since it's now already there
-    language_progress = progress_marker.language_progress(state_language)
+    progress_marker.language_progress(state_language)
     _(LanguageProgress.count).must_equal lp_count_after_first_call
   end
 

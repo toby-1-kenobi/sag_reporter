@@ -6,6 +6,7 @@ require 'simplecov'
 require 'minitest/reporters'
 require 'minitest/rails/capybara'
 require 'mocha/minitest'
+# require 'support/factory_bot'
 #require 'capybara/poltergeist'
 
 SimpleCov.start 'rails'
@@ -16,10 +17,14 @@ Minitest::Reporters.use!(
   Minitest.backtrace_filter
 )
 
+class Minitest::Spec
+  include FactoryBot::Syntax::Methods
+end
+
 class ActiveSupport::TestCase
 	
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-  fixtures :all
+  # fixtures :all
 
   # Add more helper methods to be used by all tests here...
 
@@ -38,9 +43,9 @@ module IntegrationHelper
 
   def log_in_as(user, options = {})
     password    = options[:password]    || 'password'
-    post two_factor_auth_path, session: { phone:    	   user.phone,
+    post two_factor_auth_path, session: { username:    	   user.phone,
 		                                   		password:	     password}
-    post login_path, session: 					{ phone:   		   user.phone,
+    post login_path, session: 					{ username:   		   user.phone,
 		                            					password:    	 password,
 				 											  					otp_code:		   user.otp_code}
 	end

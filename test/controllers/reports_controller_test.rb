@@ -3,10 +3,11 @@ require 'test_helper'
 describe ReportsController do
 
   before do
-    @admin_user = users(:andrew)
-    @pleb_user = users(:peter)
-    @national_user = users(:norman)
-    @report = reports(:'report-1')
+    FactoryBot.create(:language, name: 'English', locale_tag: 'en')
+    @admin_user = FactoryBot.create(:user, admin: true)
+    @pleb_user = FactoryBot.create(:user)
+    @national_user = FactoryBot.create(:user, national: true)
+    @report = FactoryBot.create(:report)
   end
 
   it 'must show a report for another user in the same state' do
@@ -20,7 +21,7 @@ describe ReportsController do
 
   it 'wont show a report from another user in another state' do
     log_in_as @pleb_user
-    @report.geo_state = geo_states(:gujarat)
+    @report.geo_state = FactoryBot.create(:geo_state)
     @report.save!
     _(@pleb_user.geo_states).wont_include @report.geo_state
     _(@pleb_user).wont_equal @report.reporter
@@ -30,7 +31,7 @@ describe ReportsController do
 
   it 'must show to a national user any report' do
     log_in_as @national_user
-    @report.geo_state = geo_states(:gujarat)
+    @report.geo_state = FactoryBot.create(:geo_state)
     @report.save!
     _(@national_user.geo_states).wont_include @report.geo_state
     _(@national_user).wont_equal @report.reporter

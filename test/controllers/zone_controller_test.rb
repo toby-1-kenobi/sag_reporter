@@ -3,8 +3,9 @@ require 'test_helper'
 describe ZonesController do
 
   before do
-    @national_user = users(:norman)
-    @normal_user = users(:emma)
+    FactoryBot.create(:language, name: 'English', locale_tag: 'en')
+    @national_user = FactoryBot.create(:user, national: true)
+    @normal_user = FactoryBot.create(:user, national: false)
   end
 
   it 'should get index when logged in' do
@@ -37,38 +38,38 @@ describe ZonesController do
   end
 
   it 'should redirect to login when not logged in goes to zone dashboard' do
-    get :show, id: zones(:west)
+    get :show, id: FactoryBot.create(:zone)
     assert_redirected_to login_path
   end
 
   it 'should let user go to own zone dashboard' do
     log_in_as @normal_user
-    get :show, id: zones(:north_east)
+    get :show, id: @normal_user.geo_states.first.zone
     _(response).must_be :success?
   end
 
   it 'wont let users go to dashboard of a zone they are not in' do
     log_in_as @normal_user
-    get :show, id: zones(:west)
+    get :show, id: FactoryBot.create(:zone)
     assert_redirected_to zones_path
   end
 
   it 'should let national users go to any zone dashboard' do
     log_in_as @national_user
-    get :show, id: zones(:west)
+    get :show, id: FactoryBot.create(:zone)
     _(response).must_be :success?
   end
 
   it 'parses the filter parameter' do
     log_in_as @normal_user
-    get :show, id: zones(:north_east), filter: '3,4,5-234-246-123'
+    get :show, id: @normal_user.geo_states.first.zone, filter: '3,4,5-234-246-123'
     parsed = {'3' => %w(2 3 4), '4' => %w(2 4 6), '5' => %w(1 2 3)}
     assigns(:flm_filters).must_equal parsed
   end
 
   it 'uses default filters' do
     log_in_as @normal_user
-    get :show, id: zones(:north_east)
+    get :show, id: @normal_user.geo_states.first.zone
     default = {
         '1' => %w(0 1 2 3 4 5 6),
         '2' => %w(0 1 2 3 4 5 6),

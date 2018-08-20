@@ -7,26 +7,28 @@ describe PeopleController do
   let(:barney) { Person.find_or_create_by(name: "Barney") }
   let(:betty) { Person.find_or_create_by(name: "betty") }
 
+  before do
+    FactoryBot.create(:language, name: 'English', locale_tag: 'en')
+  end
+
   let(:admin_user) {
   	User.create(
   	  name: 'Toby',
   	  phone: '7777777777',
   	  password:              'password',
   	  password_confirmation: 'password',
-  	  mother_tongue: Language.take,
-  	  role: Role.find_by_name('admin'),
-      geo_states: [GeoState.take]
+      geo_states: [FactoryBot.create(:geo_state)]
   	)
   }
 
   before do
-  	log_in_as(me)
+  	log_in_as(admin_user)
   end
 
   it "gets people I've created as my contacts" do
-  	fred.record_creator = me
+  	fred.record_creator = admin_user
   	fred.save
-  	wilma.record_creator = me
+  	wilma.record_creator = admin_user
   	wilma.save
   	get :index
   	must_respond_with :success
@@ -38,7 +40,7 @@ describe PeopleController do
   	post :create, person: {name: "Ben"}
   	must_respond_with :redirect
   	ben = Person.find_by_name("Ben")
-  	_(ben.record_creator).must_equal me
+  	_(ben.record_creator).must_equal admin_user
   end
 
 end

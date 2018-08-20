@@ -20,7 +20,7 @@ describe User::Factory do
       password: "foobar", 
       password_confirmation: "foobar",
       mother_tongue_id: 5,
-      geo_states: [geo_states(:nb).id]
+      geo_states: [FactoryBot.create(:geo_state).id]
     }
     _(factory.build_user(user_params)).must_equal true
     _(factory.instance()).must_be :valid?
@@ -61,18 +61,6 @@ describe User::Factory do
       what: "huh?"
     }
     _(factory.build_user(user_params)).must_equal false
-  end
-
-  it "makes sure the mother-tongue is included in spoken languages" do
-    user_params = {
-      name: "Test User", 
-      phone: "9876543210", 
-      password: "foobar", 
-      password_confirmation: "foobar",
-      mother_tongue: language
-    }
-    _(factory.build_user(user_params)).must_equal true
-    _(factory.instance().spoken_languages).must_include language
   end
 
 end

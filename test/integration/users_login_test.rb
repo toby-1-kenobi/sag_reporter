@@ -5,7 +5,8 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
 	include IntegrationHelper
 
   def setup
-    @admin_user = users(:andrew)
+    FactoryBot.create(:language, name: 'English', locale_tag: 'en')
+    @admin_user = FactoryBot.create(:user, admin: true)
   end
 
   test 'login with invalid information' do

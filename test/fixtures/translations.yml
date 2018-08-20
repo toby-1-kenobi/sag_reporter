@@ -1,7 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
-
-make_report_hindi:
-  translatable: make_report
-  language: hindi
-  content: "रिपोर्ट तयार करे"
-

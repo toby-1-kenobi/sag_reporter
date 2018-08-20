@@ -3,26 +3,26 @@ require 'test_helper'
 describe Language do
 
   let(:language) { Language.new name: 'Test language', lwc: false}
+  let(:state_based_user) { FactoryBot.build(:user) }
   let(:language_prompt_due) { Language.new name: 'prompt due',
                                            updated_at: 31.days.ago,
-                                           champion: users(:emma),
+                                           champion: state_based_user,
                                            champion_prompted: 50.days.ago }
   let(:language_prompt_nearly_due) { Language.new name: 'prompt nearly due',
                                                   updated_at: 26.days.ago,
-                                                  champion: users(:emma),
+                                                  champion: state_based_user,
                                                   champion_prompted: 50.days.ago }
   let(:language_prompt_due_later) { Language.new name: 'prompt due later',
                                                  updated_at: 24.days.ago,
-                                                 champion: users(:emma),
+                                                 champion: state_based_user,
                                                  champion_prompted: 50.days.ago }
   let(:language_prompt_overdue) { Language.new name: 'prompt overdue',
                                                updated_at: 41.days.ago,
-                                               champion: users(:emma),
+                                               champion: state_based_user,
                                                champion_prompted: 50.days.ago }
-  let(:assam) { GeoState.new name: 'Assam' }
-  let(:bihar) { GeoState.new name: 'bihar' }
-  let(:national_user) { users(:nathan) }
-  let(:state_based_user) { users(:emma) }
+  let(:assam) { FactoryBot.build(:geo_state, name: 'Assam') }
+  let(:bihar) { FactoryBot.build(:geo_state, name: 'bihar') }
+  let(:national_user) { FactoryBot.build(:user, national: true) }
 
   it 'must be valid' do
     value(language).must_be :valid?
@@ -86,7 +86,7 @@ describe Language do
   it 'has latest edit date as latest change if more recent than modification date' do
     language.save
     edit = Edit.create(
-            user: users(:andrew),
+            user: state_based_user,
             model_klass_name: 'Language',
             record_id: language.id,
             attribute_name: 'iso',
@@ -129,7 +129,7 @@ describe Language do
     UserMailer.expects(:prompt_champion).never
     language_prompt_due.save
     Edit.create(
-        user: users(:andrew),
+        user: state_based_user,
         model_klass_name: 'Language',
         record_id: language_prompt_due.id,
         attribute_name: 'iso',

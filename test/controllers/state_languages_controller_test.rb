@@ -2,12 +2,13 @@ require "test_helper"
 
 describe StateLanguagesController do
 
-  def setup
-    @admin_user = users(:andrew)
+  before do
+    FactoryBot.create(:language, name: 'English', locale_tag: 'en')
+    admin_user = FactoryBot.create(:user, admin: true)
+    log_in_as(admin_user)
   end
 
   it 'must set the outcome_scores variable for transformation spreadsheet' do
-    log_in_as(@admin_user)
     get :transformation_spreadsheet,
         year_a: 2016,
         month_a: 1,

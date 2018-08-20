@@ -5,9 +5,9 @@ class UsersEditTest < ActionDispatch::IntegrationTest
 	include IntegrationHelper
 
   def setup
-    @admin_user = users(:andrew)
-    @pleb_user = users(:peter)
-    @english = languages(:english)
+    @english = FactoryBot.create(:language, name: 'English', locale_tag: 'en')
+    @admin_user = FactoryBot.create(:user, admin: true)
+    @pleb_user = FactoryBot.create(:user)
   end
 
   test "unsuccessful edit" do
@@ -17,41 +17,10 @@ class UsersEditTest < ActionDispatch::IntegrationTest
     patch user_path(@admin_user), user: {name:  "",
                                                phone: "55555",
                                                password:              "foo",
-                                               password_confirmation: "bar",
-                                               mother_tongue_id: @english.id }
+                                               password_confirmation: "bar" }
     assert_template 'users/edit'
   end
 
-  test "cannot edit own role" do
-    log_in_as(@admin_user)
-    get edit_user_path(@admin_user)
-    role = @admin_user.role
-    patch user_path(@admin_user), user: {name:  @admin_user.name,
-                                               phone: @admin_user.phone,
-                                               password:              "",
-                                               password_confirmation: "",
-                                               role_id: @pleb_user.role.id,
-                                               mother_tongue_id: @english.id
-                                  }
-    @admin_user.reload
-    assert_equal role, @admin_user.role
-  end
-
-  test "successful edit role of other user" do
-    log_in_as(@admin_user)
-    get edit_user_path(@pleb_user)
-    patch user_path(@pleb_user), user: {name:  @pleb_user.name,
-                                              phone: @pleb_user.phone,
-                                              password:              "",
-                                              password_confirmation: "",
-                                              role_id: @admin_user.role.id,
-                                              mother_tongue_id: @english.id
-                                  }
-    assert_not flash.empty?
-    assert_redirected_to @pleb_user
-    @pleb_user.reload
-    assert_equal @pleb_user.role, @admin_user.role
-  end
 
   test "successful edit self with friendly forwarding" do
     get edit_user_path(@admin_user)

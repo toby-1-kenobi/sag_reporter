@@ -6,7 +6,7 @@ describe Report::Factory do
 
   it "makes valid reports" do
     report_params = {
-      "geo_state_id"=>"#{geo_states(:nb).id}",
+      "geo_state_id"=>"#{FactoryBot.build(:geo_state).id}",
       "content"=>"This is a test report",
       "impact_report"=>"1",
       "planning_report"=>"1",
@@ -15,8 +15,8 @@ describe Report::Factory do
       "mt_church"=>"0",
       "needs_society"=>"0",
       "needs_church"=>"0",
-      "languages"=>["#{languages(:toto).id}", "#{languages(:santali).id}"],
-      reporter: users(:andrew)
+      "languages"=>["#{FactoryBot.create(:language, name: 'Toto', iso: 'txo').id}", "#{FactoryBot.create(:language, name: 'Santali', iso: 'san').id}"],
+      reporter: FactoryBot.create(:user)
     }
     _(factory.build_report(report_params)).must_equal true
     _(factory.instance()).must_be :valid?

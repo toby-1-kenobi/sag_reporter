@@ -1,10 +1,20 @@
 require "test_helper"
 
 describe Edit do
-  let(:language) { languages(:assamese) }
-  let(:curator) { users(:andrew) }
-  let(:language_edit) { edits(:language_edit) }
-  let(:pending_edit) { edits(:pending_single) }
+  let(:language) { FactoryBot.create(:language) }
+  let(:curator) { FactoryBot.create(:user) }
+  let(:edit_author) { FactoryBot.create(:user) }
+  let(:language_edit) { FactoryBot.build(:edit, record_id: language.id, user: edit_author) }
+  let(:pending_edit) { FactoryBot.build(:edit, record_id: language.id, status: Edit.statuses[:pending_single_approval], user: edit_author) }
+  let(:double_pending_edit) { FactoryBot.build(:edit, record_id: language.id, status: Edit.statuses[:pending_double_approval], user: edit_author) }
+  let(:national_pending_edit) { FactoryBot.build(:edit, record_id: language.id, status: Edit.statuses[:pending_national_approval], user: edit_author) }
+  let(:approved_edit) { FactoryBot.build(:edit, record_id: language.id, status: Edit.statuses[:approved], user: edit_author) }
+  let(:rejected_edit) { FactoryBot.build(:edit, record_id: language.id, status: Edit.statuses[:rejected], user: edit_author) }
+
+  before do
+    Curating.create(user: curator, geo_state: language.geo_states.first)
+    edit_author.geo_states << language.geo_states.first
+  end
 
   it 'must be valid' do
     value(language_edit).must_be :valid?
@@ -22,12 +32,12 @@ describe Edit do
   end
 
   it 'wont be valid if the user isnt a member of the relevant state(s) or national' do
-    language_edit.user = users(:peter)
+    language_edit.user = FactoryBot.build(:user)
     _(language_edit).wont_be :valid?
   end
 
   it 'must be valid if the user isnt a member of the relevant state(s) but is national' do
-    language_edit.user = users(:richard)
+    language_edit.user = FactoryBot.build(:user, national: true)
     _(language_edit).must_be :valid?
   end
 
@@ -98,23 +108,25 @@ describe Edit do
   end
 
   it 'scopes to pending edits' do
+    Edit.find_each do |edit|
+      edit.save
+    end
     _(Edit.pending).wont_include language_edit
-    _(Edit.pending).must_include edits(:pending_single)
-    _(Edit.pending).must_include edits(:pending_double)
-    _(Edit.pending).wont_include edits(:pending_national)
-    _(Edit.pending).wont_include edits(:approved)
-    _(Edit.pending).wont_include edits(:rejected)
+    _(Edit.pending).must_include pending_edit
+    _(Edit.pending).must_include double_pending_edit
+    _(Edit.pending).wont_include national_pending_edit
+    _(Edit.pending).wont_include approved_edit
+    _(Edit.pending).wont_include rejected_edit
   end
 
   it 'scopes to a users curating geo_states' do
-    # callbacks are skipped when fixtures are inserted
     # we need the results of the after_save callback for this test
     # so save all edits.
     Edit.find_each do |edit|
       edit.save
     end
     _(Edit.for_curating(curator)).must_include language_edit
-    _(Edit.for_curating(curator)).wont_include edits(:pending_double)
+    _(Edit.for_curating(curator)).wont_include double_pending_edit
   end
 
   it 'must prompt curators when it has been pending for a while' do
@@ -140,7 +152,9 @@ describe Edit do
   it 'sets the curated prompted date when prompting curators' do
     pending_edit.created_at = 8.days.ago
     pending_edit.save
+    User.curating(pending_edit).must_include curator
     Edit.prompt_curators
+    Rails.logger.debug "#{curator.email} last_prompted: #{curator.curator_prompted}"
     _(curator.curator_prompted).must_be :>, 10.seconds.ago
   end
 

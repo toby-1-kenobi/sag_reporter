@@ -27,7 +27,8 @@ module SagReporter
 
     # Use Minitest (spec) for generating new tests
     config.generators do |generator|
-        generator.test_framework :minitest, spec: true
+      generator.test_framework :minitest, spec: true
+      generator.fixture_replacement :factory_bot
     end
 
     config.action_mailer.delivery_method = SendGridActionMailerAdapter::DeliveryMethod

@@ -2,10 +2,10 @@ require 'test_helper'
 
 class SessionsControllerTest < ActionController::TestCase
 	def setup
-		@admin_user = users(:andrew)
-		@normal_user = users(:emma)
-		@user_email_unconfirmed = users(:email_unconfirmed)
-		@user_email_confirmed = users(:email_confirmed)
+		@admin_user = FactoryBot.create(:user, admin: true)
+		@normal_user = FactoryBot.create(:user)
+		@user_email_unconfirmed = FactoryBot.create(:user, email_confirmed: false)
+		@user_email_confirmed = FactoryBot.create(:user, email_confirmed: true)
   end
 
   def json_response
@@ -25,14 +25,14 @@ class SessionsControllerTest < ActionController::TestCase
   # SMS server and mailer need to be mocked for these tests
   test 'should send otp message on phone and show flash message' do
 		BcsSms.expects(:send_otp).returns({'status' => true})
-  	post :two_factor_auth, { session: {phone: @user_email_unconfirmed.phone, password: 'password'} }
+  	post :two_factor_auth, { session: {username: @user_email_unconfirmed.phone, password: 'password'} }
     assert_equal session[:temp_user], @user_email_unconfirmed.id
 		value(flash['info']).wont_be_nil
   end
 
   test 'should show error message if phone and email cannot receive OTP' do
     BcsSms.expects(:send_otp).returns({'status' => false})
-  	post :two_factor_auth, { session: {phone: @user_email_unconfirmed.phone, password: 'password'} }
+  	post :two_factor_auth, { session: {username: @user_email_unconfirmed.phone, password: 'password'} }
   	assert_equal @user_email_unconfirmed.id, session[:temp_user]
 		value(flash['error']).wont_be_nil
   end
@@ -67,34 +67,34 @@ class SessionsControllerTest < ActionController::TestCase
   end
 
   test 'user should not able to login with wrong phone number' do
-  	post :two_factor_auth, { session: {phone: '0987656329', password: '12345678'} }
+  	post :two_factor_auth, { session: {username: '0987656329', password: '12345678'} }
 		assert_response :success
 		value(flash['error']).wont_be_nil
   end
 
 	test 'user should not able to login with wrong password' do
-		post :two_factor_auth, { session: {phone: '0987654322', password: '12345678'} }
+		post :two_factor_auth, { session: {username: '0987654322', password: '12345678'} }
 		assert_response :success
 		value(flash['error']).wont_be_nil
 	end
 
   it 'sends otp message on phone and show flash message' do
     BcsSms.expects(:send_otp).returns({'status' => true})
-  	post :two_factor_auth, { session: {phone: @user_email_unconfirmed.phone, password: 'password'} }
+  	post :two_factor_auth, { session: {username: @user_email_unconfirmed.phone, password: 'password'} }
   	assert_equal @user_email_unconfirmed.id, session[:temp_user]
 		value(flash['info']).wont_be_nil
   end
 
   test 'should send otp both phone and email and show flash message' do
     BcsSms.expects(:send_otp).returns({'status' => true})
-  	post :two_factor_auth, { session: {phone: @user_email_confirmed.phone, password: 'password'} }
+  	post :two_factor_auth, { session: {username: @user_email_confirmed.phone, password: 'password'} }
   	assert_equal @user_email_confirmed.id, session[:temp_user]
 		value(flash['info']).wont_be_nil
   end
 
   test 'should not send otp if user entered bad credentials' do
     BcsSms.expects(:send_otp).never
-  	post :two_factor_auth, { session: {phone: @admin_user.phone, password: '12345678'} }
+  	post :two_factor_auth, { session: {username: @admin_user.phone, password: '12345678'} }
 		assert_response :success
 		value(flash['error']).wont_be_nil
 	end

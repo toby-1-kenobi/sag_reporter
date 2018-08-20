@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe Population do
 
-  let(:population) { populations(:toto2015) }
+  let(:population) { FactoryBot.build(:population, amount: 1600, year: 2015, source: 'ethnologue') }
 
   it 'must be valid' do
     _(population).must_be :valid?

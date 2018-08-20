@@ -179,6 +179,7 @@ class Edit < ActiveRecord::Base
       curators.each do |curator|
         UserMailer.prompt_curator(curator).deliver_now
         curator.curator_prompted = DateTime.current
+        Rails.logger.debug "curator prompted #{curator.curator_prompted} #{curator.email}"
         curator.save
       end
     end
@@ -220,12 +221,16 @@ class Edit < ActiveRecord::Base
 
   def get_geo_states
     case model_klass_name
-      when 'Language'
+    when 'Language'
+      begin
         Language.find(record_id).geo_states
-      when 'FinishLineProgress'
-        FinishLineProgress.find(record_id).language.geo_states
-      else
-        user.geo_states
+      rescue ActiveRecord::RecordNotFound
+        GeoState.none
+      end
+    when 'FinishLineProgress'
+      FinishLineProgress.find(record_id).language.geo_states
+    else
+      user.geo_states
     end
   end
 

@@ -26,7 +26,7 @@ describe User do
   let(:nb_edit) { edits(:pending_double) }
 
   before do
-    user.geo_states << geo_states(:nb)
+    user.geo_states << FactoryBot.build(:geo_state)
   end
 
 
@@ -65,7 +65,7 @@ describe User do
     report = Report.new(
         reporter: user,
         content: 'hi',
-        geo_state: geo_states(:nb),
+        geo_state: FactoryBot.build(:geo_state),
         impact_report: impact_reports(:'impact-report-1')
     )
     report.save!
@@ -77,7 +77,7 @@ describe User do
     event = Event.new(
         event_label: 'hi',
         event_date: Time.now,
-        geo_state: geo_states(:nb),
+        geo_state: FactoryBot.build(:geo_state),
         participant_amount: 0,
         record_creator: user
     )
@@ -87,7 +87,7 @@ describe User do
   end
 
   it 'wont be destroyed with person' do
-    person = Person.new(name: 'joe', record_creator: user, geo_state: geo_states(:nb))
+    person = Person.new(name: 'joe', record_creator: user, geo_state: FactoryBot.build(:geo_state))
     person.save!
     user.destroy
     value(user).must_be :persisted?
@@ -241,10 +241,11 @@ describe User do
 
   it 'knows if it curates for a language' do
     user.curated_states.clear
-    _(user.curates_for? languages(:toto)).wont_equal true
-    user.curated_states << languages(:toto).geo_states.first
+    lang = FactoryBot.create(:language)
+    _(user.curates_for(lang).wont_equal true
+    user.curated_states << lang.geo_states.first
     user.save
-    _(user.curates_for? languages(:toto)).must_equal true
+    _(user.curates_for? lang).must_equal true
   end
 
 end

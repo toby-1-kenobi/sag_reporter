@@ -1,7 +1,7 @@
 require 'test_helper'
 
 describe Curating do
-  let(:curating) { Curating.new(geo_state: geo_states(:nb), user: users(:andrew)) }
+  let(:curating) { Curating.new(geo_state: FactoryBot.build(:geo_state), user: FactoryBot.create(:user)) }
 
   it 'must be valid' do
     value(curating).must_be :valid?
