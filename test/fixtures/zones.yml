@@ -1,8 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-north_east:
-  name: North East
-
-west:
-  name: West
-
