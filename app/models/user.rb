@@ -31,7 +31,6 @@ class User < ActiveRecord::Base
   has_many :ministries, through: :ministry_workers, inverse_of: :workers
   has_many :user_benefits, dependent: :destroy
   has_many :app_benefits, through: :user_benefits
-  belongs_to :sahayak, class_name: 'User'
   has_many :project_users, dependent: :destroy
   has_many :projects, through: :project_users
 
