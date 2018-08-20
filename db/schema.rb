@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180817121324) do
+ActiveRecord::Schema.define(version: 20180820095212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -399,13 +399,15 @@ ActiveRecord::Schema.define(version: 20180817121324) do
   add_index "languages_users", ["user_id", "language_id"], name: "index_languages_users_on_user_id_and_language_id", unique: true, using: :btree
 
   create_table "ministries", force: :cascade do |t|
-    t.string   "name",        null: false
+    t.string   "name",                    null: false
     t.text     "description"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.integer  "topic_id",    default: 1, null: false
   end
 
   add_index "ministries", ["name"], name: "index_ministries_on_name", using: :btree
+  add_index "ministries", ["topic_id"], name: "index_ministries_on_topic_id", using: :btree
 
   create_table "ministry_markers", force: :cascade do |t|
     t.string   "name",        null: false
@@ -828,6 +830,7 @@ ActiveRecord::Schema.define(version: 20180817121324) do
   add_foreign_key "languages", "language_families", column: "family_id"
   add_foreign_key "languages", "projects"
   add_foreign_key "languages", "users", column: "champion_id"
+  add_foreign_key "ministries", "topics"
   add_foreign_key "ministry_markers", "ministries"
   add_foreign_key "ministry_outputs", "church_congregations"
   add_foreign_key "ministry_outputs", "ministry_markers"
