@@ -3,8 +3,8 @@ require 'test_helper'
 describe FinishLineProgress do
   let(:flp) { FinishLineProgress.new(
       status: 0,
-      language: languages(:toto),
-      finish_line_marker: finish_line_markers(:flm_00)
+      language: FactoryBot.create(:language),
+      finish_line_marker: FactoryBot.create(:finish_line_marker)
   ) }
 
   it "must be valid" do
@@ -38,23 +38,9 @@ describe FinishLineProgress do
     _(FinishLineProgress.get_current_year).must_equal 2026
   end
 
-  it "finds the current one if there's none closer earlier than specified year" do
-    flp.save
-    _(FinishLineProgress.closest_to(flp.language_id, flp.finish_line_marker_id, 3000)).must_equal flp
-  end
-
-  it "finds the latest one before specified year" do
-    attributes = flp.attributes.except('id', 'created_at', 'updated_at', 'year')
-    flp.save
-    FinishLineProgress.stub :get_current_year, 2018 do
-      target = FinishLineProgress.create(attributes.merge(year: 2020))
-      _(FinishLineProgress.closest_to(flp.language_id, flp.finish_line_marker_id, 3000)).must_equal target
-    end
-  end
-
   it "creates from next year when it only finds current" do
-    attributes = flp.attributes.except('id', 'created_at', 'updated_at', 'year')
     flp.save
+    attributes = flp.attributes.except('id', 'created_at', 'updated_at', 'year')
     FinishLineProgress.stub :get_current_year, 2018 do
       assert_difference('FinishLineProgress.count', +2) do
         FinishLineProgress.find_or_create_by(attributes.merge(year: 2020))

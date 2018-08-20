@@ -1,7 +1,7 @@
 require "test_helper"
 
 describe LanguageName do
-  let(:language_name) { LanguageName.new name: 'test', language: languages(:toto)}
+  let(:language_name) { LanguageName.new name: 'test', language: FactoryBot.create(:language)}
 
   it "must be valid" do
     value(language_name).must_be :valid?

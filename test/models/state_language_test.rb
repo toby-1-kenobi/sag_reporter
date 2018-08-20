@@ -1,9 +1,10 @@
 require 'test_helper'
 
 describe StateLanguage do
-  let(:state_language) { StateLanguage.new geo_state: geo_states(:nb), language: languages(:toto) }
-  let(:admin_user) { users(:andrew) }
-  let(:pm) { progress_markers(:skills_used) }
+  let(:toto) { FactoryBot.build(:language, name: "Toto") }
+  let(:state_language) { StateLanguage.new geo_state: FactoryBot.build(:geo_state), language: toto }
+  let(:admin_user) { FactoryBot.build(:user, admin: true) }
+  let(:pm) { FactoryBot.build(:progress_marker) }
   let(:lang_prog) { LanguageProgress.new state_language: state_language, progress_marker: pm }
 
   it 'must be valid' do
@@ -11,7 +12,8 @@ describe StateLanguage do
   end
 
   it 'is sortable by language name' do
-    sl_santali = StateLanguage.new language: languages(:santali)
+    santali = FactoryBot.build(:language, name: "Santali")
+    sl_santali = FactoryBot.build(:state_language, language: santali)
     _([state_language, sl_santali].sort!).must_equal [sl_santali, state_language]
   end
 
@@ -65,7 +67,7 @@ describe StateLanguage do
   #   value(max_scores[faith_oa.id]).must_equal 0 # not used
   # end
 
-  it 'returns nil when asked for a table where there is no progress updates' do
+  it 'returns nil when asked for a table where there is no progress updatetotos' do
     start_date = Date.new(2015,7,1)
     end_date = Date.new(2015,12,1)
     _(state_language.outcome_table_data(admin_user, from_date: start_date, to_date: end_date)).must_be_nil
@@ -73,8 +75,11 @@ describe StateLanguage do
 
   it 'returns recent active impact reports' do
     duration = 3.months
-    report_count = languages(:toto).reports.active.where('report_date >= ?', duration.ago).count
-    _(state_languages(:nb_toto).recent_impact_reports(duration).count).must_equal report_count
+    toto.reports << FactoryBot.create(:report, report_date: 4.months.ago.to_date)
+    toto.reports << FactoryBot.create(:report, report_date: 2.months.ago.to_date)
+    toto.reports << FactoryBot.create(:report, report_date: 1.month.ago.to_date, status: 1) # inactive
+    report_count = toto.reports.active.where('report_date >= ?', duration.ago).count
+    _(state_language.recent_impact_reports(duration).count).must_equal report_count
   end
 
   it 'returns nil for last progress update when there are none' do

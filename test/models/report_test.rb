@@ -2,10 +2,11 @@ require 'test_helper'
 
 describe Report do
 
+  let(:geo_state) { FactoryBot.create(:geo_state) }
   let(:report) { Report.new(
     content: 'report content',
-    reporter: users(:andrew),
-    geo_state: geo_states(:nb),
+    reporter: FactoryBot.build(:user),
+    geo_state: geo_state,
     status: :active,
     report_date: Date.today,
     sub_district: sub_district,
@@ -13,7 +14,7 @@ describe Report do
   ) }
   let(:impact_report) { ImpactReport.new }
   let(:sub_district) { SubDistrict.new district: district}
-  let(:district) { District.new geo_state: geo_states(:nb) }
+  let(:district) { District.new geo_state: geo_state }
 
   before do
     report.impact_report = impact_report
@@ -36,12 +37,12 @@ describe Report do
   end
 
   it 'may have many languages' do
-  	report.languages << Language.take(2)
+  	report.languages << FactoryBot.build_list(:language, 2)
   	_(report.languages.length).must_equal 2
   end
 
   it 'may have many topics' do
-  	report.topics << Topic.take(2)
+    report.topics << FactoryBot.build_list(:topic, 2)
   	_(report.topics.length).must_equal 2
   end
 
@@ -80,11 +81,12 @@ describe Report do
 
   it 'scopes to let non-sensitive users see only their own reports' do
     own_report = report.dup
-    own_report.reporter = users(:emma)
+    non_sensitive_user = FactoryBot.create(:user, trusted = false)
+    own_report.reporter = non_sensitive_user
     own_report.impact_report = impact_report
     report.save!
     own_report.save!
-    reports = Report.user_limited(users(:emma))
+    reports = Report.user_limited(non_sensitive_user)
     _(reports).must_include own_report
     _(reports).wont_include report
   end

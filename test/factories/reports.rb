@@ -4,5 +4,6 @@ FactoryBot.define do
     content { "My report content" }
     geo_state
     report_date { "2018-08-17" }
+    impact_report
   end
 end

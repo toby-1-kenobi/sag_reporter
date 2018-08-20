@@ -10,7 +10,7 @@ describe User::Updater do
       phone: "9876543210", 
       password_digest: User.digest('password'),
       mother_tongue_id: 5,
-      geo_states: [geo_states(:nb)]) }
+      geo_states: [FactoryBot.build(:geo_state)]) }
 
   it "updates users" do
     user_params = {

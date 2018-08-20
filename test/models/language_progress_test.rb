@@ -2,18 +2,18 @@ require 'test_helper'
 
 describe LanguageProgress do
   let(:language_progress) { LanguageProgress.new progress_marker: pm, state_language: sl }
-  let(:pm) { ProgressMarker.new name: 'test pm', topic: topics(:language_development)}
+  let(:pm) { FactoryBot.build(:progress_marker) }
   let(:sl) { StateLanguage.new }
   let(:pu1) { ProgressUpdate.new progress: 2,
                                  year:2015,
                                  month: 8,
                                  language_progress: language_progress,
-                                 user: users(:andrew) }
+                                 user: FactoryBot.build(:user) }
   let(:pu2) { ProgressUpdate.new progress: 3,
                                  year:2015,
                                  month: 10,
                                  language_progress: language_progress,
-                                 user: users(:andrew) }
+                                 user: FactoryBot.build(:user) }
 
   it 'must be valid' do
     value(language_progress).must_be :valid?
@@ -40,7 +40,7 @@ describe LanguageProgress do
 
   it 'may have non-unique progress marker with different state_language' do
     language_progress.save
-    language_progress2 = LanguageProgress.new(progress_marker: pm, state_language: StateLanguage.take)
+    language_progress2 = LanguageProgress.new(progress_marker: pm, state_language: FactoryBot.create(:state_language))
     _(language_progress2).must_be :valid?
   end
 
