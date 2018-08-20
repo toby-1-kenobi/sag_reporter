@@ -5,8 +5,9 @@ class UsersIndexTest < ActionDispatch::IntegrationTest
 	include IntegrationHelper
 
   def setup
-    @admin_user = users(:andrew)
-    @view_user = users(:richard)
+    FactoryBot.create(:language, name: 'English', locale_tag: 'en')
+    @admin_user = FactoryBot.create(:user, admin: true)
+    @view_user = FactoryBot.create(:user)
   end
 
   test "index including pagination and delete links" do

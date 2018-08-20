@@ -15,13 +15,13 @@
     <%= render partial: 'language_table', locals: { language: lang } %>
   <p>To make updates, please log into the <%= link_to 'LCI App', login_url %>
     and go to the <%= link_to "#{lang.name} details page", show_details_language_url(lang.id) %></p>
-<p>For more detailed instructions on editing a language, follow this link to the <%= link_to 'help page', help_edit_language_path %>.</p>
+<p>For more detailed instructions on editing a language, follow this link to the <%= link_to 'help page', help_edit_language_url %>.</p>
 <% else %>
   <p>You are the primary point person for each of the following languages.
   Please scroll down and check the details of each language here. If you see a language needs updating,
   log in to the <%= link_to 'LCI App', login_url %> and update the language from the language details page.
   You can find these pages by following the links in this email on the language names.</p>
-  <p>For more detailed instructions on editing a language, follow this link to the <%= link_to 'help page', help_edit_language_path %>.</p>
+  <p>For more detailed instructions on editing a language, follow this link to the <%= link_to 'help page', help_edit_language_url %>.</p>
 
       <% @languages.each do |lang, last_updated| %>
 

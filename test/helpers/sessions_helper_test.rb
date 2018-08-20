@@ -3,7 +3,7 @@ require 'test_helper'
 class SessionsHelperTest < ActionView::TestCase
 
   def setup
-    @admin_user = users(:andrew)
+    @admin_user = FactoryBot.create(:user, admin: true)
     remember(@admin_user)
   end
 

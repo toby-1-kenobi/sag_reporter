@@ -7,21 +7,20 @@ class UsersControllerTest < ActionController::TestCase
     request.env['HTTP_AUTHORIZATION'] = "Bearer #{token}"
   end
 
-  let(:some_state) { geo_states(:nb) }
+  let(:some_state) { FactoryBot.create(:geo_state) }
 
   let(:user_params) { { :user => {
       name: 'test user',
       phone: '1357924680',
       password: 'PassWord123',
       password_confirmation: 'PassWord123',
-      role_id: Role.take.id,
-      mother_tongue_id: Language.take.id,
       geo_states: { some_state.id => some_state.id }
   } } }
 
   def setup
-    @admin_user = users(:andrew)
-    @normal_user = users(:emma)
+    FactoryBot.create(:language, name: 'English', locale_tag: 'en')
+    @admin_user = FactoryBot.create(:user, admin: true)
+    @normal_user = FactoryBot.create(:user)
   end
 
   def json_response
