@@ -16,11 +16,11 @@ class User < ActiveRecord::Base
   }
 
   enum user_type: {
-      church_member: 0,
-      field_supervisor: 1,
-      project_trainer: 2,
-      project_manager: 3,
-      supporter: 4
+      'I am leading ministries in the community with my church': 0,
+      'I am a field supervisor (Sahayak) and I facilitate and serve the ministries under grassroots churches': 1,
+      'I am a project trainer or consultant for a specific "stream"': 2,
+      'I am a project manager or administrator for a particular state or organisation': 3,
+      'I am praying and financially supporting work in language communities.': 4
   }
 
 

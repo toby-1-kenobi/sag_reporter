@@ -28,7 +28,11 @@
        <%= form_for(:zone_approval, url: zone_approval_path, remote: true) do |f| %>
           <div class="mdl-textfield mdl-js-textfield">
             <%= f.label :user_type %><br>
-            <%= f.select :user_type, User.user_types.keys %>
+        <li class="mdl-list__item">
+            <span class= "mdl-list__item-primary-content">
+               <%= f.select :user_type, User.user_types.keys %>
+            </span>
+        </li>
           </div>
           <div>
             <%= f.label :national, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
@@ -39,12 +43,15 @@
     </div>
     <div class="mdl-dialog__actions">
        <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+    <div class="mdl-dialog__actions", id="approve-button-<%= us.id %>">
        <%= f.hidden_field :user_id, :value => us.id %>
        <%= button_to zone_curator_accept_path(id: us.id),
                   class: 'mdl-button approved',
                   remote: true,
                   method: :post do %>Approve
        <% end %>
+
     </div>
    <% end %>
   </dialog>

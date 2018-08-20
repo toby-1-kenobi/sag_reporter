@@ -88,7 +88,7 @@ class UserMailer < ActionMailer::Base
         category: ['registrationrequest']
     }.to_json
     @user = user
-    mail(to: "#{user.name} <#{user.email}>", subject: 'Registration Request For Approval')
+    mail(to: "#{user.name} <#{user.email}>", subject: 'Request For Approval')
   end
 
   def send_email_to_lci_board_members(user, token)
@@ -96,7 +96,7 @@ class UserMailer < ActionMailer::Base
         category: ['new user information']
     }.to_json
     @user = user
-    mail(to: "#{user.name} <#{user.email}>", subject: 'Registration Request For Approval')
+    mail(to: "#{user.name} <#{user.email}>", subject: 'Request For Approval')
   end
 
 end

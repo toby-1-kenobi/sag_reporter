@@ -148,7 +148,10 @@ class UsersController < ApplicationController
     @user = User.find_by(id: params[:zone_approval][:user_id])
     if @user and @user.update_attributes(:registration_status => 1, user_type:params[:zone_approval][:user_type], national:params[:zone_approval][:national])
       approval_users_tracking(@user)
-      email_send_to_lciboard_members(params[:authenticity_token])
+      count = User.where(lci_board_member: true).count
+      if count > 0
+        email_send_to_lciboard_members(params[:authenticity_token])
+      end
     end
     #@user.errors.full_messages
     respond_to :js
@@ -175,7 +178,7 @@ class UsersController < ApplicationController
   end
 
   def email_send_to_lciboard_members(token)
-    lci_borad_members = User.where(lci_board_member: true, registration_status: 2)
+    lci_borad_members = User.where(lci_board_member: true)
     lci_borad_members.each do |board_member|
       @mail_sent = send_registared_user_info(board_member, token)
     end
@@ -196,7 +199,6 @@ class UsersController < ApplicationController
   def lciboard_member_accept
     @user = User.find_by(id: params[:id])
     if @user
-      @user.errors.full_messages
       @user.update_attribute(:registration_status, 2)
       @mail_sent = send_pwd_reset_instructions(@user, @user.reset_password_token)
     end

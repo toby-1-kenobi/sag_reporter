@@ -87,52 +87,49 @@
   </div>
 
   <% edit_count = get_edit_count %>
-  <% if logged_in_user.national_curator? || logged_in_user.lci_board_member? %>
-  <% #if edit_count > 0 || reg_us_cnt > 0  %>
+  <% if (logged_in_user.national_curator? && (reg_us_cnt > 0 || edit_count > 0)) || (logged_in_user.lci_board_member? && zone_approved_cnt > 0) %>
   <div id="curator-card" class="mdl-card mdl-shadow--2dp"
      <% if logged_in_user.admin? %>
         style="grid-area: curator;"
     <% end %>>
 
     <div class="mdl-card__title">
-      <% if edit_count > 0 %>
-            'Curate Edits'
-      <% elsif reg_us_cnt > 0 %>
-        'Registrations waiting'
-      <% elsif zone_approved_cnt > 0 %>
-         'Lci board member Approval'
+      <% if edit_count > 0 && logged_in_user.national_curator? %>
+            Curate Edits
+      <% elsif reg_us_cnt > 0 && logged_in_user.national_curator? %>
+        Curator Approval
+      <% elsif zone_approved_cnt > 0 && logged_in_user.lci_board_member? %>
+         LCI Board Member Approval
       <% end %>
     </div>
 
     <div class="mdl-card__supporting-text">
-      <% if edit_count > 0 %>
+      <% if edit_count > 0 && logged_in_user.national_curator? %>
         You have <span class="edit-count"><%= edit_count %> <%= 'edit'.pluralize(edit_count) %></span> to curate.
         Please attend to <%= edit_count == 1 ? 'this' : 'these' %> as soon as possible.
-      <% elsif reg_us_cnt > 0 %>
+      <% elsif reg_us_cnt > 0 && logged_in_user.national_curator? %>
         You have <span class="reg_us_cnt"><%= reg_us_cnt %> <%= 'registration'.pluralize(reg_us_cnt) %></span>
         waiting to your approval.
-        Please attend to <%= reg_us_cnt == 1 ? 'this' : 'these' %> as soon as possible.
-      <% elsif zone_approved_cnt > 0 %>
+      <% elsif zone_approved_cnt > 0 && logged_in_user.lci_board_member? %>
           You have <span class="reg_us_cnt"><%= zone_approved_cnt %> <%= 'registration'.pluralize(zone_approved_cnt) %></span>
           waiting to your approval.
-          Please attend to <%= zone_approved_cnt == 1 ? 'this' : 'these' %> as soon as possible.
       <% end %>
     </div>
     <div class="mdl-card__actions mdl-card--border">
-      <% if edit_count > 0 %>
+      <% if edit_count > 0  && logged_in_user.national_curator?%>
         <%= link_to curate_edits_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
           <i class="material-icons">done_all</i>
           Curate Edits
         <% end %>
-      <% elsif reg_us_cnt > 0 %>
+      <% elsif reg_us_cnt > 0  && logged_in_user.national_curator?%>
         <%= link_to user_approval_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
         <i class="material-icons">done_all</i>
-          Approve rquests
+          Curator Approval
         <% end %>
-      <% elsif zone_approved_cnt > 0 %>
+      <% elsif zone_approved_cnt > 0 && logged_in_user.lci_board_member? %>
         <%= link_to lciboard_member_approval_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
         <i class="material-icons">done_all</i>
-           User Approve
+          LCI Board Member Approval
         <% end %>
       <% end %>
     </div>
