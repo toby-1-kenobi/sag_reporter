@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :ministry_output do
     ministry_marker
+    association :creator, factory: :user
     value { 1 }
     year { 2018 }
     month { 8 }

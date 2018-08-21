@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180821102816) do
+ActiveRecord::Schema.define(version: 20180821170307) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,10 +82,12 @@ ActiveRecord::Schema.define(version: 20180821102816) do
     t.integer  "ministry_id",            null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.integer  "language_id",            null: false
   end
 
   add_index "church_ministries", ["church_congregation_id", "ministry_id"], name: "index_church_ministry", unique: true, using: :btree
   add_index "church_ministries", ["church_congregation_id"], name: "index_church_ministries_on_church_congregation_id", using: :btree
+  add_index "church_ministries", ["language_id"], name: "index_church_ministries_on_language_id", using: :btree
   add_index "church_ministries", ["ministry_id"], name: "index_church_ministries_on_ministry_id", using: :btree
 
   create_table "clusters", force: :cascade do |t|
@@ -440,10 +442,12 @@ ActiveRecord::Schema.define(version: 20180821102816) do
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
     t.integer  "church_ministry_id", null: false
+    t.integer  "creator_id",         null: false
   end
 
   add_index "ministry_outputs", ["actual"], name: "index_ministry_outputs_on_actual", using: :btree
   add_index "ministry_outputs", ["church_ministry_id"], name: "index_ministry_outputs_on_church_ministry_id", using: :btree
+  add_index "ministry_outputs", ["creator_id"], name: "index_ministry_outputs_on_creator_id", using: :btree
   add_index "ministry_outputs", ["ministry_marker_id"], name: "index_ministry_outputs_on_ministry_marker_id", using: :btree
   add_index "ministry_outputs", ["month"], name: "index_ministry_outputs_on_month", using: :btree
   add_index "ministry_outputs", ["year"], name: "index_ministry_outputs_on_year", using: :btree
@@ -818,6 +822,7 @@ ActiveRecord::Schema.define(version: 20180821102816) do
   add_foreign_key "attendances", "people"
   add_foreign_key "church_congregations", "organisations"
   add_foreign_key "church_ministries", "church_congregations"
+  add_foreign_key "church_ministries", "languages"
   add_foreign_key "church_ministries", "ministries"
   add_foreign_key "creations", "mt_resources"
   add_foreign_key "creations", "people"
@@ -847,6 +852,7 @@ ActiveRecord::Schema.define(version: 20180821102816) do
   add_foreign_key "ministry_markers", "ministries"
   add_foreign_key "ministry_outputs", "church_ministries"
   add_foreign_key "ministry_outputs", "ministry_markers"
+  add_foreign_key "ministry_outputs", "users", column: "creator_id"
   add_foreign_key "ministry_workers", "ministries"
   add_foreign_key "ministry_workers", "users", column: "worker_id"
   add_foreign_key "mt_resources", "geo_states"
