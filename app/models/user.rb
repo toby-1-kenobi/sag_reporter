@@ -34,6 +34,8 @@ class User < ActiveRecord::Base
   has_many :project_users, dependent: :destroy
   has_many :projects, through: :project_users
   has_many :ministry_outputs, inverse_of: :creator, dependent: :restrict_with_error
+  has_many :language_users, dependent: :destroy
+  has_many :languages, through: :language_users
 
   attr_accessor :remember_token
 

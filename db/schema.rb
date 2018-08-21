@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180821170307) do
+ActiveRecord::Schema.define(version: 20180821171708) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -323,6 +323,17 @@ ActiveRecord::Schema.define(version: 20180821170307) do
 
   add_index "language_progresses", ["progress_marker_id"], name: "index_language_progresses_on_progress_marker_id", using: :btree
   add_index "language_progresses", ["state_language_id"], name: "index_language_progresses_on_state_language_id", using: :btree
+
+  create_table "language_users", force: :cascade do |t|
+    t.integer  "language_id", null: false
+    t.integer  "user_id",     null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "language_users", ["language_id", "user_id"], name: "index_language_user", unique: true, using: :btree
+  add_index "language_users", ["language_id"], name: "index_language_users_on_language_id", using: :btree
+  add_index "language_users", ["user_id"], name: "index_language_users_on_user_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
     t.string   "name",                                                  null: false
@@ -843,6 +854,8 @@ ActiveRecord::Schema.define(version: 20180821170307) do
   add_foreign_key "language_names", "languages"
   add_foreign_key "language_progresses", "progress_markers"
   add_foreign_key "language_progresses", "state_languages"
+  add_foreign_key "language_users", "languages"
+  add_foreign_key "language_users", "users"
   add_foreign_key "languages", "clusters"
   add_foreign_key "languages", "data_sources", column: "pop_source_id"
   add_foreign_key "languages", "language_families", column: "family_id"
