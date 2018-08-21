@@ -77,6 +77,7 @@ gem 'mini_magick'
 gem 'httparty'
 gem 'active_model_otp'
 gem 'sendgrid_actionmailer_adapter'
+gem 'recaptcha', require: 'recaptcha/rails'
 
 # Use Unicorn as the app server
 # gem 'unicorn'

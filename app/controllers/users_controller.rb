@@ -153,12 +153,13 @@ class UsersController < ApplicationController
         email_send_to_lciboard_members(params[:authenticity_token])
       end
     end
-    #@user.errors.full_messages
     respond_to :js
   end
 
   def zone_curator_reject
     @user = User.find_by(id: params[:id])
+    name = @user.name
+    @user_id = @user.id
     if @user.destroy
       flash[:success] = "User #{name} deleted"
     else

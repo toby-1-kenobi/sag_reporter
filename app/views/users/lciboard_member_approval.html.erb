@@ -4,28 +4,24 @@
 
 <% zone_approved_us.each do |us| %>
   <li class="mdl-list__item" id="required-board-member-approval-<%= us.id %>">
-    <span class="mdl-list__item-primary-content">
+    <span class="mdl-list__item-primary-content mdl-cell--6-col">
        <%= us.name%>
     </span>
-    <span class="mdl-list__item-primary-content">
+    <span class="mdl-list__item-primary-content mdl-cell--3-col">
     <%= button_to lciboard_member_accept_path(id: us.id),
-                  id: "lciboard-member-accept-#{us.id}",
-                  class: 'mdl-button mdl-js-button mdl-button--icon mdl-button--colored',
+                  class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect',
                   remote: true,
-                  method: :post do %>
-      <i class="material-icons">thumb_up</i>
+                  onclick: "return confirm('Are you sure?')",
+                  method: :post do %>Approve
     <% end %>
     </span>
-    <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="lciboard-member-accept-<%= us.id %>">Approve</div>
-    <span class="mdl-list__item-primary-content">
+    <span class="mdl-list__item-primary-content mdl-cell--3-col">
     <%= button_to lciboard_member_reject_path(id: us.id),
-                  id: "lciboard-member-reject-#{us.id}",
-                  class: 'mdl-button mdl-js-button mdl-button--icon mdl-button--colored',
+                  class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect',
                   remote: true,
-                  method: :post do %>
-      <i class="material-icons">thumb_down</i>
-    <% end %>
+                  onclick: "return confirm('Are you sure?')",
+                  method: :post do %>Reject
+       <% end %>
     </span>
-    <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="lciboard-member-reject-<%= us.id %>">Reject</div>
   </li>
 <% end %>

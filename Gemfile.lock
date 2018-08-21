@@ -286,6 +286,8 @@ GEM
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
     rdoc (4.3.0)
+    recaptcha (4.11.1)
+      json
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -400,6 +402,7 @@ DEPENDENCIES
   rails (= 4.2.10)
   rails4-autocomplete
   rails_12factor
+  recaptcha
   sassc-rails
   sdoc (~> 0.4.0)
   sendgrid_actionmailer_adapter
@@ -413,4 +416,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.2
+   1.16.3

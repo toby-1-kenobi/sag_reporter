@@ -8,7 +8,7 @@ class SignupController < ApplicationController
     @user = User.new(name:params[:signup][:name],phone:params[:signup][:phone], email:params[:signup][:email],
                      role_description:params[:signup][:role_description],
                      mother_tongue_id:params[:signup][:interface_language_id], registration_status:0,
-                     password:'asfafaf', geo_states:@geo_states)
+                     password:'asfafa', geo_states:@geo_states)
     if @user.save
       user_registration_request_mail(@geo_states, params[:authenticity_token])
     else

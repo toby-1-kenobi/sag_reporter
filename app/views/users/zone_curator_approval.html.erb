@@ -4,19 +4,20 @@
 
 <% unapproved_us.each do |us| %>
   <li class="mdl-list__item" id="new-user-approval-<%= us.id %>">
-    <span class="mdl-list__item-primary-content">
+    <span class="mdl-list__item-primary-content mdl-cell--6-col">
        <%= us.name %>
     </span>
-    <span class="mdl-list__item-primary-content">
-      <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect user-approval-trigger-class" id="user-approval-trigger-<%= us.id %>">
+    <span class="mdl-list__item-primary-content mdl-cell--3-col">
+      <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect user-approval-trigger-class"
+              id="user-approval-trigger-<%= us.id %>">
         Approve
        </button>
     </span>
-
-    <span class="mdl-list__item-primary-content">
+    <span class="mdl-list__item-primary-content mdl-cell--3-col">
        <%= button_to zone_curator_reject_path(id: us.id),
                   class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect',
                   remote: true,
+                  onclick: "return confirm('Are you sure?')",
                   method: :post do %> Reject
        <% end %>
     </span>
@@ -28,30 +29,28 @@
        <%= form_for(:zone_approval, url: zone_approval_path, remote: true) do |f| %>
           <div class="mdl-textfield mdl-js-textfield">
             <%= f.label :user_type %><br>
-        <li class="mdl-list__item">
-            <span class= "mdl-list__item-primary-content">
-               <%= f.select :user_type, User.user_types.keys %>
-            </span>
-        </li>
+            <li class="mdl-list__item">
+              <span class= "mdl-list__item-primary-content ">
+                 <%= f.select :user_type, User.user_types.keys %>
+              </span>
+            </li>
           </div>
           <div>
-            <%= f.label :national, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
-              <%= f.check_box(:national, class: 'mdl-switch__input') %>
+            <%= f.label "national"+us.id.to_s, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
+              <%= f.check_box :national, class: 'mdl-switch__input' , id: "zone_approval_national"+us.id.to_s %>
               <span class="mdl-switch__label">National edit access</span>
             <% end %>
           </div>
     </div>
     <div class="mdl-dialog__actions">
        <button type="button" class="mdl-button close">Cancel</button>
-    </div>
-    <div class="mdl-dialog__actions", id="approve-button-<%= us.id %>">
        <%= f.hidden_field :user_id, :value => us.id %>
        <%= button_to zone_curator_accept_path(id: us.id),
                   class: 'mdl-button approved',
                   remote: true,
+                  onclick: "return confirm('Are you sure?')",
                   method: :post do %>Approve
        <% end %>
-
     </div>
    <% end %>
   </dialog>
