@@ -141,17 +141,19 @@ class UsersController < ApplicationController
   end
 
   def user_registration_approval
+    @unapproved_us = User.where(:registration_status => 0)
     render 'users/zone_curator_approval'
   end
 
   def zone_curator_accept
     @user = User.find_by(id: params[:zone_approval][:user_id])
+    name = @user.name
     if @user and @user.update_attributes(:registration_status => 1, user_type:params[:zone_approval][:user_type], national:params[:zone_approval][:national])
       approval_users_tracking(@user)
-      count = User.where(lci_board_member: true).count
-      if count > 0
-        email_send_to_lciboard_members(params[:authenticity_token])
-      end
+      email_send_to_lciboard_members(params[:authenticity_token])
+      flash[:success] = "User #{name} approved successfully"
+    else
+      flash[:error] = "User #{name} not able to approve"
     end
     respond_to :js
   end
@@ -159,7 +161,7 @@ class UsersController < ApplicationController
   def zone_curator_reject
     @user = User.find_by(id: params[:id])
     name = @user.name
-    @user_id = @user.id
+    @user_id = @user.id #backup user id to remove row in html page
     if @user.destroy
       flash[:success] = "User #{name} deleted"
     else
@@ -171,10 +173,10 @@ class UsersController < ApplicationController
 
   def approval_users_tracking(user)
     @approval_track_users = RegistrationApprovals.new(registered_user: user.id, user_approve_registration: logged_in_user.id)
-    @approval_track_users.errors.full_messages
     if @approval_track_users.save
       flash[:success] = "User approval track record created"
     else
+      flash[:success] = "Not able to craete User approval track record"
     end
   end
 
@@ -201,7 +203,7 @@ class UsersController < ApplicationController
     @user = User.find_by(id: params[:id])
     if @user
       @user.update_attribute(:registration_status, 2)
-      @mail_sent = send_pwd_reset_instructions(@user, @user.reset_password_token)
+      @mail_sent = lci_board_member_approval_mail(@user, params[:authenticity_token])
     end
     respond_to :js
   end
@@ -209,6 +211,7 @@ class UsersController < ApplicationController
   def lciboard_member_reject
     @user = User.find_by(id: params[:id])
     name = @user.name
+    @user_id = @user.id #backup user id to remove row in html page
     if @user.destroy
       flash[:success] = "User #{name} deleted"
     else
@@ -241,7 +244,8 @@ class UsersController < ApplicationController
       {:speaks => []},
       {:geo_states => []},
       {:curated_states => []},
-      :reset_password
+      :reset_password,
+      :registration_curator
     ]
     # current user cannot change own access level or state
     if params[:id] and logged_in_user?(User.find(params[:id]))

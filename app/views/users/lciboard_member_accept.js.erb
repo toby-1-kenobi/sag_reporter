@@ -1,2 +1,4 @@
-console.log('rejected user <%= @user.id %>');
-$('#required-board-member-approval-<%= @user.id %>').remove();
+/* Removing user row in approval list*/
+<% if @user.registration_status == 'approved' %>
+  $('#required-board-member-approval-<%= @user.id %>').remove();
+<% end %>

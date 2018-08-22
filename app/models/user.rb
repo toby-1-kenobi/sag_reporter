@@ -222,7 +222,7 @@ class User < ActiveRecord::Base
   # Check if the email address has been updated and it is present
   # if so send an email to confirm their email address.
   def send_confirmation_email
-    if self.email_changed? && self.email.present?
+    if self.email_changed? && self.email.present? && self.registration_status != 'unapproved'
       self.update_columns(
           confirm_token: SecureRandom.urlsafe_base64.to_s,
           email_confirmed: false

@@ -107,12 +107,14 @@
       <% if edit_count > 0 && logged_in_user.national_curator? %>
         You have <span class="edit-count"><%= edit_count %> <%= 'edit'.pluralize(edit_count) %></span> to curate.
         Please attend to <%= edit_count == 1 ? 'this' : 'these' %> as soon as possible.
-      <% elsif reg_us_cnt > 0 && logged_in_user.national_curator? %>
-        You have <span class="reg_us_cnt"><%= reg_us_cnt %> <%= 'registration'.pluralize(reg_us_cnt) %></span>
+      <% end %>
+      <% if (reg_us_cnt > 0 && logged_in_user.national_curator?) %>
+        You have
+        <span class="reg_us_cnt"><%= reg_us_cnt %> <%= 'registration'.pluralize(reg_us_cnt) %></span>
+      <% end %>
+      <% if (zone_approved_cnt > 0 && logged_in_user.lci_board_member?) %>
+        <span class="reg_us_cnt"><%= zone_approved_cnt %> <%= 'registration'.pluralize(zone_approved_cnt) %></span>
         waiting to your approval.
-      <% elsif zone_approved_cnt > 0 && logged_in_user.lci_board_member? %>
-          You have <span class="reg_us_cnt"><%= zone_approved_cnt %> <%= 'registration'.pluralize(zone_approved_cnt) %></span>
-          waiting to your approval.
       <% end %>
     </div>
     <div class="mdl-card__actions mdl-card--border">
@@ -121,12 +123,14 @@
           <i class="material-icons">done_all</i>
           Curate Edits
         <% end %>
-      <% elsif reg_us_cnt > 0  && logged_in_user.national_curator?%>
+      <% end %>
+      <% if reg_us_cnt > 0  && logged_in_user.national_curator?%>
         <%= link_to user_approval_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
         <i class="material-icons">done_all</i>
           Curator Approval
         <% end %>
-      <% elsif zone_approved_cnt > 0 && logged_in_user.lci_board_member? %>
+      <% end %>
+      <% if zone_approved_cnt > 0 && logged_in_user.lci_board_member? %>
         <%= link_to lciboard_member_approval_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
         <i class="material-icons">done_all</i>
           LCI Board Member Approval

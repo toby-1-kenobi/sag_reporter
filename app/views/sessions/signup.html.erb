@@ -1,7 +1,6 @@
 <% provide(:title, 'Sign up') %>
 <% provide(:context_title, 'Create user account') %>
 <% @interface_languages = Language.where.not(locale_tag: nil).order(:name) %>
-<% @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)%>
 
  <%= form_for(:signup, url: signup_path) do |f| %>
     <div class="mdl-grid">
@@ -34,7 +33,7 @@
           <div>
             <ul class="mdl-list">
               <div  class="mdlext-selectfield mdlext-js-selectfield ">
-                <%= f.collection_select(:id, @geo_states.all, :id, :name, {:prompt => 'Please select states'},{:multiple => true}) %>
+                <%= f.collection_select(:id, @geo_states.all, :id, :name, {:prompt => "Please select"},{:multiple => true}) %>
 
               </div>
             </ul>
@@ -42,7 +41,7 @@
           <div>
             <ul class="mdl-list">
               <div  class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label ">
-               <%= recaptcha_tags %>
+                <%= recaptcha_tags %>
               </div>
             </ul>
           </div>
