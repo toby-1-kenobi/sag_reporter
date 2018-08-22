@@ -150,7 +150,7 @@ class UsersController < ApplicationController
     name = @user.name
     if @user and @user.update_attributes(:registration_status => 1, user_type:params[:zone_approval][:user_type], national:params[:zone_approval][:national])
       approval_users_tracking(@user)
-      email_send_to_lciboard_members(params[:authenticity_token])
+      email_send_to_lci_board_members(params[:authenticity_token])
       flash[:success] = "User #{name} approved successfully"
     else
       flash[:error] = "User #{name} not able to approve"
@@ -176,30 +176,30 @@ class UsersController < ApplicationController
     if @approval_track_users.save
       flash[:success] = "User approval track record created"
     else
-      flash[:success] = "Not able to craete User approval track record"
+      flash[:success] = "Not able to create User approval track record"
     end
   end
 
-  def email_send_to_lciboard_members(token)
-    lci_borad_members = User.where(lci_board_member: true)
-    lci_borad_members.each do |board_member|
-      @mail_sent = send_registared_user_info(board_member, token)
+  def email_send_to_lci_board_members(token)
+    lci_board_members = User.where(lci_board_member: true)
+    lci_board_members.each do |board_member|
+      @mail_sent = send_registered_user_info(board_member, token)
     end
   end
 
-  def send_registared_user_info(user, token)
+  def send_registered_user_info(user, token)
     if user.email.presence
-      logger.debug "sending registred user information to email: #{user.email}"
+      logger.debug "sending registered user information to email: #{user.email}"
       UserMailer.send_email_to_lci_board_members(user, token).deliver_now
       true
     end
   end
 
-  def lciboard_member_approval
-    render 'users/lciboard_member_approval'
+  def lci_board_member_approval
+    render 'users/lci_board_member_approval'
   end
 
-  def lciboard_member_accept
+  def lci_board_member_accept
     @user = User.find_by(id: params[:id])
     token = generate_pwd_reset_token_user(@user)
     if @user
@@ -221,7 +221,7 @@ class UsersController < ApplicationController
   end
 
 
-  def lciboard_member_reject
+  def lci_board_member_reject
     @user = User.find_by(id: params[:id])
     name = @user.name
     @user_id = @user.id #backup user id to remove row in html page

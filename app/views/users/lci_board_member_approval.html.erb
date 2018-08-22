@@ -8,7 +8,7 @@
        <%= us.name%>
     </span>
     <span class="mdl-list__item-primary-content mdl-cell--3-col">
-    <%= button_to lciboard_member_accept_path(id: us.id),
+    <%= button_to lci_board_member_accept_path(id: us.id),
                   class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect',
                   remote: true,
                   onclick: "return confirm('Are you sure?')",
@@ -16,7 +16,7 @@
     <% end %>
     </span>
     <span class="mdl-list__item-primary-content mdl-cell--3-col">
-    <%= button_to lciboard_member_reject_path(id: us.id),
+    <%= button_to lci_board_member_reject_path(id: us.id),
                   class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect',
                   remote: true,
                   onclick: "return confirm('Are you sure?')",

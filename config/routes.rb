@@ -224,9 +224,9 @@ Rails.application.routes.draw do
 
   post 'zone_approval'  => 'users#zone_curator_accept'
 
-  get 'lciboard_member_approval' => 'users#lciboard_member_approval'
-  post 'lciboard_member_accept'  => 'users#lciboard_member_accept'
-  post 'lciboard_member_reject'     => 'users#lciboard_member_reject'
+  get 'lci_board_member_approval' => 'users#lci_board_member_approval'
+  post 'lci_board_member_accept'  => 'users#lci_board_member_accept'
+  post 'lci_board_member_reject'     => 'users#lci_board_member_reject'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
