@@ -201,12 +201,25 @@ class UsersController < ApplicationController
 
   def lciboard_member_accept
     @user = User.find_by(id: params[:id])
+    token = generate_pwd_reset_token_user(@user)
     if @user
       @user.update_attribute(:registration_status, 2)
-      @mail_sent = lci_board_member_approval_mail(@user, params[:authenticity_token])
+      @mail_sent = lci_board_member_approval_mail(@user, token)
     end
     respond_to :js
   end
+
+  def generate_pwd_reset_token_user(user)
+    token = User.new_token
+    @user = User.find_by(id: user.id)
+    if @user
+      @user.update_attributes(reset_password_token: BCrypt::Password.create(token))
+      return token
+    else
+      return false
+    end
+  end
+
 
   def lciboard_member_reject
     @user = User.find_by(id: params[:id])
