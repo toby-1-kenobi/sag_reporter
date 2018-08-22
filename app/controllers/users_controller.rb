@@ -172,7 +172,7 @@ class UsersController < ApplicationController
   end
 
   def approval_users_tracking(user)
-    @approval_track_users = RegistrationApprovals.new(registered_user: user.id, user_approve_registration: logged_in_user.id)
+    @approval_track_users = RegistrationApproval.new(registering_user: user, approver: logged_in_user)
     if @approval_track_users.save
       flash[:success] = "User approval track record created"
     else

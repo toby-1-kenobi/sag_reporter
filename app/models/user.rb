@@ -49,6 +49,10 @@ class User < ActiveRecord::Base
   belongs_to :sahayak, class_name: 'User'
   has_many :project_users, dependent: :destroy
   has_many :projects, through: :project_users
+  has_many :registration_approvals, foreign_key: 'registering_user_id', dependent: :destroy
+  has_many :registration_approvers, through: :registration_approvals, class_name: 'User', source: :approver, inverse_of: :registering_users
+  has_many :approved_registrations, class_name: 'RegistrationApproval', foreign_key: 'approver_id', dependent: :destroy
+  has_many :registering_users, through: :approved_registrations, class_name: 'User', inverse_of: :registration_approvers
 
   attr_accessor :remember_token
 
