@@ -35,7 +35,7 @@ var dialogs = "<%= escape_javascript render 'edit_future_dialogs', language: @la
 $("#future_year_dialogs").append(dialogs);
 
 
-$('dialog').each(function() {
+$('dialog.mdl-dialog:not(.registered)').each(function() {
     let dialog = this;
     if (! dialog.showModal) {
         dialogPolyfill.registerDialog(dialog);
@@ -47,4 +47,5 @@ $('dialog').each(function() {
     $(dialog).find('.cancel,.close').on('click', function() {
         dialog.close();
     });
+    $(dialog).addClass('registered');
 });

@@ -51,15 +51,6 @@ class StaticPagesController < ApplicationController
             category: 'report'
         },
         {
-            condition: (logged_in_user.trusted? or logged_in_user.reports.active.any?),
-            path: tag_impact_reports_path,
-            text: 'Tag impact reports',
-            icon: 'label',
-            lcr_icon: 'lcr-icon-tag',
-            colour: 'red',
-            category: 'progress'
-        },
-        {
             condition: (logged_in_user.trusted?),
             path: select_to_assess_path,
             text: 'Assess progress marker levels',

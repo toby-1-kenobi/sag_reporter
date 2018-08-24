@@ -1,0 +1,5 @@
+<% if @report.shareable %>
+  $('#report-<%= @report.report_id %>').find('.shareable-icon').show();
+<% else %>
+  $('#report-<%= @report.report_id %>').find('.shareable-icon').hide();
+<% end %>

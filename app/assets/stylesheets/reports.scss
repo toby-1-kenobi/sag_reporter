@@ -5,6 +5,9 @@
 @import 'common';
 
 div.report {
+  .shareable-icon {
+    padding-left: 1ex;
+  }
   .card-content {
     .reporter, .observers {
       text-align: right;

@@ -59,12 +59,8 @@ Rails.application.routes.draw do
   end
 
   resources :impact_reports, except: [:new, :create, :index] do
-    collection do
-      get 'tag'
-      get 'tag/:month', to: 'impact_reports#tag', as: 'tag_month'
-    end
-    get 'tag', on: :collection
     member do
+      get 'tag'
       patch 'tag_update'
       patch 'archive'
       patch 'unarchive'
