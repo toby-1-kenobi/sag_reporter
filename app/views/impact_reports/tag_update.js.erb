@@ -1,5 +1,6 @@
 <% if @impact_report.progress_markers.include?(@pm) %>
   $('#report-<%= @impact_report.report_id %>').find('.progress-markers').append("<%= j render partial: 'impact_reports/pm_chip', locals: { report_id: @impact_report.report.id, pm: @pm } %>");
+  componentHandler.upgradeElements($('#report-<%= @impact_report.report_id %> .mdl-tooltip').get());
 <% else %>
   $('#report-<%= @impact_report.report_id %>').find('.progress-markers #report-<%= @impact_report.report_id %>-pm-chip-<%= @pm.id %>').remove();
 <% end %>

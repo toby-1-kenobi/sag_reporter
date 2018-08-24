@@ -1,6 +1,9 @@
 <% progress_markers_by_oa = ProgressMarker.active.includes(:topic).all.group_by{ |pm| pm.topic } %>
 <dialog class="mdl-dialog tag-dialog" id="tag-dialog-<%= impact_report.id %>">
   <div class="mdl-dialog__content ">
+    <% impact_report.report.pictures.each do |picture| %>
+      <%= link_to_if(picture.ref?, image_tag(picture.ref_url(:thumb)), picture.ref_url)  %>
+    <% end %>
     <p class="report-content"><%= impact_report.content %></p>
     <div class="pictures hide"></div>
     <div class="shareable-checkbox">
