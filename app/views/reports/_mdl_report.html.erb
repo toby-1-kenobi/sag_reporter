@@ -2,6 +2,9 @@
      data-pm="<%= mdl_report.impact_report.progress_markers.pluck(:id).join(' ') %>">
   <div class="mdl-card__title">
     <h2 class="mdl-card__title-text"><%= mdl_report.report_type %> Report</h2>
+    <% if mdl_report.impact_report? %>
+      <i class="material-icons shareable-icon <%= 'hide' unless mdl_report.impact_report.shareable %>">stars</i>
+    <% end %>
     <% if mdl_report.archived? %>
       <span class="mdl-card__subtitle-text">archived</span>
     <% end %>

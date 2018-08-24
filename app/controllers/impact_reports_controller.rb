@@ -67,9 +67,7 @@ class ImpactReportsController < ApplicationController
   end
 
   def tag
-    @impact_report = ImpactReport.find(params[:id])
-  	@outcome_areas = Topic.all
-  	@progress_markers_by_oa = ProgressMarker.active.includes(:topic).all.group_by{ |pm| pm.topic }
+    @impact_report_id = params[:id]
     respond_to :js
   end
 
@@ -98,24 +96,10 @@ class ImpactReportsController < ApplicationController
     render json: return_data
   end
 
-  def not_impact
-    report = ImpactReport.find(params[:id])
-    report.make_not_impact
-    render nothing: true
-  end
-
   def shareable
-    report = ImpactReport.find(params[:id])
-    report.shareable = true
-    report.save
-    render nothing: true
-  end
-
-  def not_shareable
-    report = ImpactReport.find(params[:id])
-    report.shareable = false
-    report.save
-    render nothing: true
+    @report = ImpactReport.find(params[:id])
+    @report.update_attribute(:shareable, params[:shareable].present?)
+    respond_to :js
   end
 
     private

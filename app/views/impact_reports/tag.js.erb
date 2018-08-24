@@ -1,11 +1,11 @@
-var jqDialog = $('#tag-dialog-<%= @impact_report.id %>');
+var jqDialog = $('#tag-dialog-<%= @impact_report_id %>');
 if (jqDialog.hasClass('tag-dialog')) {
     dialog = jqDialog[0];
 } else {
-    $('#tag-dialog-<%= @impact_report.id %>').replaceWith("<%= j render partial: 'tag_dialog', locals: { impact_report: @impact_report } %>");
-    componentHandler.upgradeElement($('#tag-dialog-<%= @impact_report.id %>').find('.mdlext-accordion')[0]);
-    componentHandler.upgradeElement($('#tag-dialog-<%= @impact_report.id %>').find('.mdl-checkbox')[0]);
-    dialog = $('#tag-dialog-<%= @impact_report.id %>')[0];
+    $('#tag-dialog-<%= @impact_report_id %>').replaceWith("<%= j render partial: 'tag_dialog', locals: { impact_report: ImpactReport.find(@impact_report_id) } %>");
+    //componentHandler.upgradeElement($('#tag-dialog-<%= @impact_report_id %>').find('.mdl-checkbox')[0]);
+    componentHandler.upgradeElement($('#tag-dialog-<%= @impact_report_id %>').find('.mdlext-accordion')[0]);
+    dialog = $('#tag-dialog-<%= @impact_report_id %>')[0];
     if (! dialog.showModal) {
         dialogPolyfill.registerDialog(dialog);
     }

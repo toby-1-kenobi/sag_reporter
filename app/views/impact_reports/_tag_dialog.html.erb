@@ -5,7 +5,13 @@
     <div class="pictures hide"></div>
     <div class="shareable-checkbox">
       <label for="shareable" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
-        <input type="checkbox" id="shareable" class="mdl-checkbox__input">
+        <%= check_box_tag 'shareable', impact_report.id, impact_report.shareable,
+                          data: {
+                              remote: true,
+                              url: shareable_impact_report_path,
+                              method: "PATCH",
+                              class: "mdl-checkbox__input"
+                          } %>
         <span class="mdl-checkbox__label">This report is suitable for sharing with funders</span>
       </label>
     </div>
