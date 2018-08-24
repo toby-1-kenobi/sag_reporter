@@ -7,6 +7,7 @@ class ImpactReport < ActiveRecord::Base
   has_many :topics, through: :progress_markers
   delegate :id, to: :report, prefix: true
   delegate :pictures, to: :report
+  delegate :content, to: :report
 
   validates :shareable, :inclusion => {:in => [true, false]}
   validates :translation_impact, :inclusion => {:in => [true, false]}

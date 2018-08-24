@@ -67,40 +67,10 @@ class ImpactReportsController < ApplicationController
   end
 
   def tag
-    if params[:month]
-      # If the month is later than current month, it must be refering to last year
-      # Future dates dont make sense here
-      if params[:month].to_i > Time.now.month
-        @date = Time.new(Time.now.year - 1, params[:month])
-      else
-        @date = Time.new(Time.now.year, params[:month])
-      end
-    else
-      # Without a month parameter we use the current month
-      @date = Time.now
-    end
-    @date = @date.at_beginning_of_month.to_date
-    date_range = @date..@date.at_end_of_month.to_date
-    geo_state_ids = logged_in_user.geo_states.pluck :id
-  	@reports = ImpactReport.
-      includes(
-        :progress_markers,
-        :report => [:geo_state, :languages, :topics]
-      ).
-      where(
-        'reports.status' => "active",
-        'reports.geo_state_id' => geo_state_ids,
-        'reports.report_date' => date_range
-      )
-    # low-sensitivity users see only their own reports.
-    if not logged_in_user.trusted?
-      @reports = @reports.where('reports.reporter_id' => logged_in_user.id)
-    end
+    @impact_report = ImpactReport.find(params[:id])
   	@outcome_areas = Topic.all
   	@progress_markers_by_oa = ProgressMarker.active.includes(:topic).all.group_by{ |pm| pm.topic }
-    #Todo: Switch to project languages instead of minority languages.
-    @languages = Language.minorities(logged_in_user.geo_states).order("LOWER(languages.name)")
-    @ajax_url = url_for controller: 'impact_reports', action: 'tag_update', id: 'report_id'
+    respond_to :js
   end
 
   def tag_update

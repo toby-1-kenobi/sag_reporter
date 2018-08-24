@@ -1,15 +1,8 @@
 <% progress_markers_by_oa = ProgressMarker.active.includes(:topic).all.group_by{ |pm| pm.topic } %>
-
-<dialog class="mdl-dialog" id="tag-dialog">
+<dialog class="mdl-dialog tag-dialog" id="tag-dialog-<%= impact_report.id %>">
   <div class="mdl-dialog__content ">
-    <p class="report-content"></p>
+    <p class="report-content"><%= impact_report.content %></p>
     <div class="pictures hide"></div>
-    <div class="not-impact-checkbox">
-      <label for="not-impact" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
-        <input type="checkbox" id="not-impact" class="mdl-checkbox__input close">
-        <span class="mdl-checkbox__label">This report does not show progress, it is a need or challenge</span>
-      </label>
-    </div>
     <div class="shareable-checkbox">
       <label for="shareable" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
         <input type="checkbox" id="shareable" class="mdl-checkbox__input">
