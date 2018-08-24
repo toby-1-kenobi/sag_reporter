@@ -33,6 +33,13 @@
         <% end %>
       </div>
     <% end %>
+    <% if mdl_report.impact_report? %>
+      <div class="progress-markers">
+        <% mdl_report.impact_report.progress_markers.each do |pm| %>
+          <%= render partial: 'impact_reports/pm_chip', locals: { report_id: mdl_report.id, pm: pm } %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
     <div class="mdl-card__actions mdl-card--border">
       <% if logged_in_user.admin? or logged_in_user?(mdl_report.reporter) %>

@@ -5,13 +5,14 @@
     <div class="pictures hide"></div>
     <div class="shareable-checkbox">
       <label for="shareable" class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect">
-        <%= check_box_tag 'shareable', impact_report.id, impact_report.shareable,
+        <%= check_box_tag 'shareable', 'yes', impact_report.shareable,
                           data: {
                               remote: true,
-                              url: shareable_impact_report_path,
+                              url: shareable_impact_report_path(impact_report),
                               method: "PATCH",
-                              class: "mdl-checkbox__input"
-                          } %>
+                          },
+                          class: "mdl-checkbox__input"
+        %>
         <span class="mdl-checkbox__label">This report is suitable for sharing with funders</span>
       </label>
     </div>
@@ -33,7 +34,18 @@
                   </span>
                   <span class="mdl-list__item-secondary-action">
                     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="pm-<%= marker.id.to_s %>" >
-                      <input type="checkbox" class="mdl-checkbox__input" id="pm-<%= marker.id.to_s %>" >
+                      <% pm_ids = impact_report.progress_markers.pluck :id %>
+                      <% Rails.logger.debug "pm: #{marker.id} report_pms: #{pm_ids}" %>
+                      <%= check_box_tag "pm-#{marker.id.to_s}",
+                                        'yes',
+                                        pm_ids.include?(marker.id),
+                                        data: {
+                                            remote: true,
+                                            url: tag_update_impact_report_path(impact_report, pm_id: marker.id),
+                                            method: "PATCH",
+                                        },
+                                        class: "mdl-checkbox__input"
+                      %>
                     </label>
                   </span>
                 </li>

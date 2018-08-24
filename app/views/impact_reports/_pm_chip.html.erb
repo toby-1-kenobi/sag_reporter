@@ -1,0 +1,6 @@
+<span id="report-<%= report_id %>-pm-chip-<%= pm.id %>" class="mdl-chip <%= colour_class(pm.topic.colour) %>">
+          <span class="mdl-chip__text"><%= pm.number %></span>
+        </span>
+<div class="mdl-tooltip" data-mdl-for="report-<%= report_id %>-pm-chip-<%= pm.id %>">
+  <%= pm.description_for(logged_in_user) %>
+</div>

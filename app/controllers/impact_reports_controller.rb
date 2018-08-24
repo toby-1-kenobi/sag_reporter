@@ -72,28 +72,14 @@ class ImpactReportsController < ApplicationController
   end
 
   def tag_update
-  	report = ImpactReport.find(params[:id])
-    report.progress_markers.clear
-    if params[:pm_ids] and params[:pm_ids].count > 0
-    	params[:pm_ids].each do |pm_id|
-        report.progress_markers << ProgressMarker.find(pm_id)
-      end
+  	@impact_report = ImpactReport.find(params[:id])
+    @pm = ProgressMarker.find(params[:pm_id])
+    if params["pm-#{@pm.id}"].present?
+      @impact_report.progress_markers << @pm unless @impact_report.progress_markers.include?(@pm)
+    else
+      @impact_report.progress_markers.delete(@pm)
     end
-    # send all the necessary data back to the client js
-    # so it can adjust the dom to reflect the changes
-    # (this is probably not the best way to do this)
-    return_data = Array.new
-  	report.progress_markers.each do |pm|
-      #return_data.push "#{pm.id}_#{pm.name}_#{pm.description}_#{pm.topic.colour}"
-      pm_hash = {
-        id: pm.id,
-        number: pm.number,
-        description: pm.description_for(logged_in_user),
-        colour: pm.topic.colour
-      }
-      return_data.push pm_hash.to_json
-    end
-    render json: return_data
+    respond_to :js
   end
 
   def shareable
