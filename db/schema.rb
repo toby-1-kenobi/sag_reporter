@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180821171708) do
+ActiveRecord::Schema.define(version: 20180827055034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,14 +68,13 @@ ActiveRecord::Schema.define(version: 20180821171708) do
   create_table "church_congregations", force: :cascade do |t|
     t.string   "name"
     t.integer  "organisation_id"
-    t.string   "village",         null: false
+    t.integer  "village_id",      null: false
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
   end
 
-  add_index "church_congregations", ["organisation_id", "village"], name: "index_village_church", unique: true, using: :btree
   add_index "church_congregations", ["organisation_id"], name: "index_church_congregations_on_organisation_id", using: :btree
-  add_index "church_congregations", ["village"], name: "index_church_congregations_on_village", using: :btree
+  add_index "church_congregations", ["village_id"], name: "index_church_congregations_on_village_id", using: :btree
 
   create_table "church_ministries", force: :cascade do |t|
     t.integer  "church_congregation_id", null: false
@@ -251,6 +250,17 @@ ActiveRecord::Schema.define(version: 20180821171708) do
   add_index "finish_line_progresses", ["finish_line_marker_id"], name: "index_finish_line_progresses_on_finish_line_marker_id", using: :btree
   add_index "finish_line_progresses", ["language_id", "finish_line_marker_id", "year"], name: "index_lang_finish_line", unique: true, using: :btree
   add_index "finish_line_progresses", ["language_id"], name: "index_finish_line_progresses_on_language_id", using: :btree
+
+  create_table "forward_planning_targets", force: :cascade do |t|
+    t.integer  "topic_id",                      null: false
+    t.integer  "state_language_id",             null: false
+    t.integer  "year"
+    t.integer  "targets",           default: 0, null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "forward_planning_targets", ["topic_id", "state_language_id", "year"], name: "index_forward_planning_targets", unique: true, using: :btree
 
   create_table "geo_states", force: :cascade do |t|
     t.string   "name",       null: false
@@ -667,6 +677,13 @@ ActiveRecord::Schema.define(version: 20180821171708) do
     t.datetime "updated_at",  null: false
   end
 
+  create_table "registration_approvals", force: :cascade do |t|
+    t.integer  "registered_user",           null: false
+    t.integer  "user_approve_registration", null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
   create_table "reports", force: :cascade do |t|
     t.integer  "reporter_id",                             null: false
     t.text     "content",                                 null: false
@@ -781,11 +798,18 @@ ActiveRecord::Schema.define(version: 20180821171708) do
   add_index "user_benefits", ["user_id", "app_benefit_id"], name: "index_user_benefit", unique: true, using: :btree
   add_index "user_benefits", ["user_id"], name: "index_user_benefits_on_user_id", using: :btree
 
+  create_table "user_passwords", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.string   "password",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "phone"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
     t.string   "password_digest"
     t.string   "remember_digest"
     t.integer  "mother_tongue_id"
@@ -794,20 +818,26 @@ ActiveRecord::Schema.define(version: 20180821171708) do
     t.string   "email"
     t.boolean  "email_confirmed",          default: false
     t.string   "confirm_token"
-    t.boolean  "trusted",                  default: false, null: false
-    t.boolean  "national",                 default: false, null: false
-    t.boolean  "admin",                    default: false, null: false
-    t.boolean  "national_curator",         default: false, null: false
+    t.boolean  "trusted",                  default: false,        null: false
+    t.boolean  "national",                 default: false,        null: false
+    t.boolean  "admin",                    default: false,        null: false
+    t.boolean  "national_curator",         default: false,        null: false
     t.string   "role_description"
     t.datetime "curator_prompted"
-    t.boolean  "lci_board_member",         default: false, null: false
-    t.boolean  "lci_agency_leader",        default: false, null: false
+    t.boolean  "lci_board_member",         default: false,        null: false
+    t.boolean  "lci_agency_leader",        default: false,        null: false
     t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
-    t.boolean  "forward_planning_curator", default: false, null: false
+    t.boolean  "forward_planning_curator", default: false,        null: false
     t.integer  "church_congregation_id"
-    t.boolean  "facilitator",              default: false, null: false
+    t.boolean  "facilitator",              default: false,        null: false
     t.integer  "training_level"
+    t.integer  "registration_status",      default: 2,            null: false
+    t.boolean  "registration_curator",     default: false,        null: false
+    t.integer  "user_type"
+    t.boolean  "user_disabled",            default: false
+    t.date     "user_last_login_dt",       default: '2018-08-20'
+    t.date     "password_change_date"
   end
 
   add_index "users", ["church_congregation_id"], name: "index_users_on_church_congregation_id", using: :btree
@@ -815,6 +845,39 @@ ActiveRecord::Schema.define(version: 20180821171708) do
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
+
+  create_table "village_languages", force: :cascade do |t|
+    t.integer  "village_id",  null: false
+    t.integer  "language_id", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "village_languages", ["language_id"], name: "index_village_languages_on_language_id", using: :btree
+  add_index "village_languages", ["village_id", "language_id"], name: "index_village_lang", unique: true, using: :btree
+  add_index "village_languages", ["village_id"], name: "index_village_languages_on_village_id", using: :btree
+
+  create_table "village_workers", force: :cascade do |t|
+    t.integer  "worker_id",  null: false
+    t.integer  "village_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "village_workers", ["village_id", "worker_id"], name: "index_village_worker", unique: true, using: :btree
+  add_index "village_workers", ["village_id"], name: "index_village_workers_on_village_id", using: :btree
+  add_index "village_workers", ["worker_id"], name: "index_village_workers_on_worker_id", using: :btree
+
+  create_table "villages", force: :cascade do |t|
+    t.string   "name",         null: false
+    t.text     "description"
+    t.integer  "geo_state_id", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "villages", ["geo_state_id"], name: "index_villages_on_geo_state_id", using: :btree
+  add_index "villages", ["name"], name: "index_villages_on_name", using: :btree
 
   create_table "zones", force: :cascade do |t|
     t.string   "name",                            null: false
@@ -832,6 +895,7 @@ ActiveRecord::Schema.define(version: 20180821171708) do
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
   add_foreign_key "church_congregations", "organisations"
+  add_foreign_key "church_congregations", "villages"
   add_foreign_key "church_ministries", "church_congregations"
   add_foreign_key "church_ministries", "languages"
   add_foreign_key "church_ministries", "ministries"
@@ -908,4 +972,9 @@ ActiveRecord::Schema.define(version: 20180821171708) do
   add_foreign_key "user_benefits", "users"
   add_foreign_key "users", "church_congregations"
   add_foreign_key "users", "languages", column: "interface_language_id"
+  add_foreign_key "village_languages", "languages"
+  add_foreign_key "village_languages", "villages"
+  add_foreign_key "village_workers", "users", column: "worker_id"
+  add_foreign_key "village_workers", "villages"
+  add_foreign_key "villages", "geo_states"
 end

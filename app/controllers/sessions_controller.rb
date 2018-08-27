@@ -41,9 +41,15 @@ class SessionsController < ApplicationController
       end
       # skip authentication for the development environment
       if @user and Rails.env.development?
-        log_in @user
-        remember @user
-        redirect_back_or root_path and return
+        stale_user = stale_user_or_not(@user)
+        if stale_user == true
+          log_in @user
+          remember @user
+          redirect_back_or root_path and return
+        else
+          session[:temp_user] = @user.id
+          render 'password_resets/change_password'
+        end
       end
       if @user && @user.authenticate(params[:session][:password])
         session[:temp_user] = @user.id
@@ -145,6 +151,16 @@ class SessionsController < ApplicationController
   def destroy
     log_out if logged_in?
     redirect_to login_url
+  end
+
+  def stale_user_or_not(user)
+    user = User.find_by(id: user.id)
+    password_stale_dt = (Date.today - user.password_change_date).to_i
+    if password_stale_dt <= 180
+      return true
+    else
+      return false
+    end
   end
 
   private

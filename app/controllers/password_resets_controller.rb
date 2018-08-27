@@ -72,16 +72,70 @@ class PasswordResetsController < ApplicationController
   end
 
   def password_change
-      if logged_in_user.update_attributes(
+    @user = User.find_by(id: session[:temp_user])
+    count = UserPassword.where(user_id: @user.id).count
+      if count > 0
+        dup_pwd_flag = check_dup_password(@user,params[:change_password][:password])
+
+        if (BCrypt::Password.new(@user.password_digest) != params[:change_password][:password] && dup_pwd_flag == true)
+          saved_user_password(@user)
+          if @user.update_attributes(
                            password: params[:change_password][:password],
-                           password_confirmation: params[:change_password][:password_confirmation]
-      )
-        flash[:success] = 'Your password successfully updated'
-        redirect_to root_path
+                           password_confirmation: params[:change_password][:password_confirmation],
+                           password_change_date: Date.today
+            )
+            flash[:success] = 'Your password successfully updated'
+            redirect_to root_path
+          else
+            flash.now[:error] = 'Your password update failed'
+            render 'password_resets/change_password'
+          end
+        else
+          flash.now[:error] = 'Password already used choose new password'
+          render 'password_resets/change_password'
+        end
       else
-        flash.now[:error] = 'Your password update failed'
+        if (BCrypt::Password.new(@user.password_digest) != params[:change_password][:password])
+          saved_user_password(@user)
+          if @user.update_attributes(
+              password: params[:change_password][:password],
+              password_confirmation: params[:change_password][:password_confirmation],
+              password_change_date: Date.today
+          )
+            flash[:success] = 'Your password successfully updated'
+            redirect_to root_path
+          else
+            flash.now[:error] = 'Your password update failed'
+            render 'password_resets/change_password'
+          end
+        else
+          flash.now[:error] = 'Password already used choose new password'
+          render 'password_resets/change_password'
+        end
+      end
+  end
+
+  def saved_user_password(user)
+    @user_pwd = UserPassword.new(user_id: user.id, password: user.password_digest)
+
+      if @user_pwd.save
+        flash[:success] = 'Your new password successfully saved'
+      else
+        flash[:error] = 'Unable to create new user'
         render 'password_resets/change_password'
       end
+  end
+
+  def check_dup_password(user, new_password)
+    @password_list = UserPassword.where(user_id: user.id)
+    @password_list.each do |pwd|
+      if (BCrypt::Password.new(pwd.password) != new_password)
+        return true
+      else
+        return false
+
+      end
+    end
   end
 
   private
