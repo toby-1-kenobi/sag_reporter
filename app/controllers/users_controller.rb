@@ -1,10 +1,11 @@
+require 'securerandom'
 class UsersController < ApplicationController
 
   include ParamsHelper
   include ReportFilter
   include UsersHelper
 
-  before_action :require_login
+  before_action :require_login, except: [:create_registration]
 
   # A user's profile can only be edited or seen by
   #    themselves or
@@ -57,6 +58,25 @@ class UsersController < ApplicationController
       end
       assign_for_user_form
       render 'new'
+    end
+  end
+
+  def create_registration
+    user_factory = User::Factory.new
+    registration_params = user_params
+    registration_params[:registration_status] = 0
+    tmp_password = SecureRandom.hex
+    registration_params[:password] = tmp_password
+    registration_params[:password_confirmation] = tmp_password
+    user_factory.build_user(registration_params)
+    @user = user_factory.instance
+    if (Rails.env.development? or verify_recaptcha(modal: @user)) and @user.save
+      user_registration_request_mail(@user.zones)
+      flash[:success] = "When your registration is approved you will receive further instructions"
+      render 'sessions/new'
+    else
+      @geo_states = GeoState.all.order(:name)
+      render 'sessions/sign_up'
     end
   end
 
@@ -298,6 +318,15 @@ class UsersController < ApplicationController
 
   def get_param_user
     @user = User.find(params[:id])
+  end
+
+  def user_registration_request_mail(zones)
+    zones.each do |zone|
+      curators = User.includes(:geo_states).where(registration_curator: true, geo_states: {zone_id: zone.id})
+      curators.each do |curator|
+        @mail_sent = send_registration_request(curator)
+      end
+    end
   end
 
 end

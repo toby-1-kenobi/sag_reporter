@@ -216,7 +216,7 @@ Rails.application.routes.draw do
   get 'change_future_year' => 'languages#change_future_year'
 
   get 'signup' => 'sessions#sign_up'
-  post 'signup' => 'signup#new'
+  post 'signup' => 'users#create_registration'
 
   get 'user_approval' => 'users#user_registration_approval'
   post 'zone_curator_accept'     => 'users#zone_curator_accept'

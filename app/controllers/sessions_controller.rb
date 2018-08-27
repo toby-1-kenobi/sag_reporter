@@ -148,9 +148,8 @@ class SessionsController < ApplicationController
   end
 
   def sign_up
-
-    @geo_states = GeoState.includes(:languages).where.not('languages.id' => nil).order(:name)
-    render 'sessions/signup'
+    @user = User.new
+    @geo_states = GeoState.all.order(:name)
   end
 
   private

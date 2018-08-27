@@ -2,7 +2,8 @@
 <% provide(:context_title, 'Create user account') %>
 <% @interface_languages = Language.where.not(locale_tag: nil).order(:name) %>
 
- <%= form_for(:signup, url: signup_path) do |f| %>
+ <%= form_for(@user, url: signup_path) do |f| %>
+  <%= render 'shared/error_messages', object: f.object %>
     <div class="mdl-grid">
       <div class="mdl-cell mdl-cell--4-col">
         <div class="mdl-textfield mdl-js-textfield">
@@ -25,17 +26,32 @@
           <%= f.label :role_description, class: 'mdl-textfield__label' %>
         </div>
       </div>
-        <div class="mdl-cell mdl-cell--4-col ">
+      <div class="mdl-cell mdl-cell--4-col ">
         <div  class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label mdl-textfield mdl-js-textfield">
           <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name, options = {}, html_options = {class: 'mdlext-selectfield__select'}) %>
           <%= f.label :interface_language_id, 'Language for using Reporter', class: 'mdlext-selectfield__label' %>
         </div>
           <div>
             <ul class="mdl-list">
-              <div  class="mdlext-selectfield mdlext-js-selectfield ">
-                <%= f.collection_select(:id, @geo_states.all, :id, :name, {:prompt => "Please select"},{:multiple => true}) %>
-
-              </div>
+              <% @geo_states.each do |geo_state| %>
+                <li class="mdl-list__item">
+                  <span class="mdl-list__item-primary-content">
+                    <%= geo_state.name %>
+                  </span>
+                  <span class="mdl-list__item-secondary-action">
+                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="state-checkbox-<%= geo_state.id %>">
+                      <input
+                        type="checkbox"
+                        id="state-checkbox-<%= geo_state.id %>"
+                        name="user[geo_states][<%= geo_state.id %>]"
+                        value="<%= geo_state.id %>"
+                        class="mdl-checkbox__input"
+                        <%= (@user.geo_states.include? geo_state) ? 'checked' : '' %>
+                        />
+                    </label>
+                  </span>
+                </li>
+              <% end %>
             </ul>
           </div>
           <div>
