@@ -2,7 +2,7 @@ class MtResource < ActiveRecord::Base
 
   include StateBased
 
-  enum category: {
+  enum medium: {
       song: 0,
       drama: 1,
       big_book: 2,

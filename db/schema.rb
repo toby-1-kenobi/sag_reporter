@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180821171708) do
+ActiveRecord::Schema.define(version: 20180827060029) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -480,7 +480,7 @@ ActiveRecord::Schema.define(version: 20180821171708) do
     t.text     "description"
     t.integer  "language_id",                    null: false
     t.boolean  "cc_share_alike", default: false, null: false
-    t.integer  "category",                       null: false
+    t.integer  "medium",                         null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
     t.integer  "status",         default: 0,     null: false
@@ -490,10 +490,10 @@ ActiveRecord::Schema.define(version: 20180821171708) do
     t.integer  "geo_state_id"
   end
 
-  add_index "mt_resources", ["category"], name: "index_mt_resources_on_category", using: :btree
   add_index "mt_resources", ["created_at"], name: "index_mt_resources_on_created_at", using: :btree
   add_index "mt_resources", ["geo_state_id"], name: "index_mt_resources_on_geo_state_id", using: :btree
   add_index "mt_resources", ["language_id"], name: "index_mt_resources_on_language_id", using: :btree
+  add_index "mt_resources", ["medium"], name: "index_mt_resources_on_medium", using: :btree
   add_index "mt_resources", ["publish_year"], name: "index_mt_resources_on_publish_year", using: :btree
   add_index "mt_resources", ["user_id"], name: "index_mt_resources_on_user_id", using: :btree
 
@@ -667,6 +667,17 @@ ActiveRecord::Schema.define(version: 20180821171708) do
     t.datetime "updated_at",  null: false
   end
 
+  create_table "registration_approvals", force: :cascade do |t|
+    t.integer  "registering_user_id", null: false
+    t.integer  "approver_id",         null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  add_index "registration_approvals", ["approver_id"], name: "index_registration_approvals_on_approver_id", using: :btree
+  add_index "registration_approvals", ["registering_user_id", "approver_id"], name: "index_registering_user_approver", unique: true, using: :btree
+  add_index "registration_approvals", ["registering_user_id"], name: "index_registration_approvals_on_registering_user_id", using: :btree
+
   create_table "reports", force: :cascade do |t|
     t.integer  "reporter_id",                             null: false
     t.text     "content",                                 null: false
@@ -808,6 +819,9 @@ ActiveRecord::Schema.define(version: 20180821171708) do
     t.integer  "church_congregation_id"
     t.boolean  "facilitator",              default: false, null: false
     t.integer  "training_level"
+    t.integer  "registration_status",      default: 2,     null: false
+    t.boolean  "registration_curator",     default: false, null: false
+    t.integer  "user_type"
   end
 
   add_index "users", ["church_congregation_id"], name: "index_users_on_church_congregation_id", using: :btree
@@ -892,6 +906,8 @@ ActiveRecord::Schema.define(version: 20180821171708) do
   add_foreign_key "progress_updates", "users"
   add_foreign_key "project_users", "projects"
   add_foreign_key "project_users", "users"
+  add_foreign_key "registration_approvals", "users", column: "approver_id"
+  add_foreign_key "registration_approvals", "users", column: "registering_user_id"
   add_foreign_key "reports", "challenge_reports"
   add_foreign_key "reports", "events"
   add_foreign_key "reports", "geo_states"
