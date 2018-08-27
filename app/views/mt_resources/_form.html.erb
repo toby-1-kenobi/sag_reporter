@@ -37,9 +37,9 @@
         <%= f.label(:language_id, class: 'mdlext-selectfield__label') %>
       </div>
 
-      <div id="category-input" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-        <%= f.select :category, MtResource.categories.to_a.map { |t| [t[0].humanize, t[0]] }, {}, html_options = {class: 'mdlext-selectfield__select'} %>
-        <%= f.label(:category, class: 'mdlext-selectfield__label') %>
+      <div id="medium-input" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <%= f.select :medium, MtResource.mediums.to_a.map { |t| [t[0].humanize, t[0]] }, {}, html_options = {class: 'mdlext-selectfield__select'} %>
+        <%= f.label(:medium, class: 'mdlext-selectfield__label') %>
       </div>
 
       <div id="status-input" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">

@@ -2,7 +2,7 @@ class MtResource < ActiveRecord::Base
 
   include StateBased
 
-  enum category: {
+  enum medium: {
       song: 0,
       drama: 1,
       big_book: 2,
@@ -32,5 +32,6 @@ class MtResource < ActiveRecord::Base
   belongs_to :language
   has_many :contributions, class_name: 'Creation', dependent: :destroy
   has_many :contributers, through: :contributions, source: 'person'
+  has_and_belongs_to_many :product_categories
 
 end

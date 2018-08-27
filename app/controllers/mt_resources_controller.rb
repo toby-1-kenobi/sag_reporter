@@ -16,7 +16,7 @@ class MtResourcesController < ApplicationController
 
   def language_overview
     @language = Language.find(params[:language_id])
-    @resources_by_category = MtResource.where(language: @language).group_by{ |r| r.category }
+    @resources_by_medium = MtResource.where(language: @language).group_by{ |r| r.medium }
   end
 
   def create
@@ -60,7 +60,7 @@ class MtResourcesController < ApplicationController
       :cc_share_alike,
       :user_id,
       :language_id,
-      :category,
+      :medium,
       :geo_state_id,
       :url,
       :how_to_access,
