@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180827060029) do
+ActiveRecord::Schema.define(version: 20180827070731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -497,6 +497,13 @@ ActiveRecord::Schema.define(version: 20180827060029) do
   add_index "mt_resources", ["publish_year"], name: "index_mt_resources_on_publish_year", using: :btree
   add_index "mt_resources", ["user_id"], name: "index_mt_resources_on_user_id", using: :btree
 
+  create_table "mt_resources_product_categories", id: false, force: :cascade do |t|
+    t.integer "mt_resource_id",      null: false
+    t.integer "product_category_id", null: false
+  end
+
+  add_index "mt_resources_product_categories", ["mt_resource_id", "product_category_id"], name: "index_resource_category", unique: true, using: :btree
+
   create_table "observations", force: :cascade do |t|
     t.integer  "report_id",  null: false
     t.integer  "person_id",  null: false
@@ -608,6 +615,14 @@ ActiveRecord::Schema.define(version: 20180827060029) do
 
   add_index "populations", ["language_id"], name: "index_populations_on_language_id", using: :btree
   add_index "populations", ["year"], name: "index_populations_on_year", using: :btree
+
+  create_table "product_categories", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "product_categories", ["name"], name: "index_product_categories_on_name", unique: true, using: :btree
 
   create_table "progress_markers", force: :cascade do |t|
     t.string   "name"

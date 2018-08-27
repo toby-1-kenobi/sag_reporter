@@ -32,5 +32,6 @@ class MtResource < ActiveRecord::Base
   belongs_to :language
   has_many :contributions, class_name: 'Creation', dependent: :destroy
   has_many :contributers, through: :contributions, source: 'person'
+  has_and_belongs_to_many :product_categories
 
 end
