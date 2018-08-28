@@ -17,4 +17,17 @@ module StaticPagesHelper
     end
     count
   end
+
+  # how many user registrations are awaiting the logged in users approval
+  def get_registrations_count
+    count = 0
+    if logged_in_user.registration_curator?
+      count += User.unapproved.in_zones(logged_in_user.zones).count
+    end
+    if logged_in_user.lci_board_member?
+      count += User.zone_approved.in_zones(logged_in_user.zones).count
+    end
+    count
+  end
+
 end

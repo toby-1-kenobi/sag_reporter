@@ -91,6 +91,8 @@ class User < ActiveRecord::Base
 
   scope :curating, ->(edit) { joins(:curated_states).where('geo_states.id' => edit.geo_states) }
 
+  scope :in_zones, ->(zones) { joins(:geo_states).where('geo_states.zone_id' => zones) }
+
   # Returns the hash digest of the given string.
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost

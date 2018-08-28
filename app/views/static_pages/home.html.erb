@@ -2,8 +2,6 @@
 
 <% provide(:context_title, 'Welcome!') %>
 <% pwd_reset_users = reset_pwd_users %>
-<% reg_us_cnt = User.where(:registration_status => 0).count %>
-<% zone_approved_cnt = User.where(:registration_status => 1).count %>
 
 <div id="welcome-content">
 
@@ -87,53 +85,35 @@
   </div>
 
   <% edit_count = get_edit_count %>
-  <% if (logged_in_user.national_curator? && (reg_us_cnt > 0 || edit_count > 0)) || (logged_in_user.lci_board_member? && zone_approved_cnt > 0) %>
+  <% registrations_count = get_registrations_count %>
+  <% if registrations_count + edit_count > 0 %>
   <div id="curator-card" class="mdl-card mdl-shadow--2dp"
      <% if logged_in_user.admin? %>
         style="grid-area: curator;"
     <% end %>>
 
-    <div class="mdl-card__title">
-      <% if edit_count > 0 && logged_in_user.national_curator? %>
-            Curate Edits
-      <% elsif reg_us_cnt > 0 && logged_in_user.national_curator? %>
-        Curator Approval
-      <% elsif zone_approved_cnt > 0 && logged_in_user.lci_board_member? %>
-         LCI Board Member Approval
-      <% end %>
-    </div>
+    <div class="mdl-card__title">Curate</div>
 
     <div class="mdl-card__supporting-text">
-      <% if edit_count > 0 && logged_in_user.national_curator? %>
+      <% if edit_count > 0 %>
         You have <span class="edit-count"><%= edit_count %> <%= 'edit'.pluralize(edit_count) %></span> to curate.
-        Please attend to <%= edit_count == 1 ? 'this' : 'these' %> as soon as possible.
       <% end %>
-      <% if (reg_us_cnt > 0 && logged_in_user.national_curator?) %>
-        You have
-        <span class="reg_us_cnt"><%= reg_us_cnt %> <%= 'registration'.pluralize(reg_us_cnt) %></span>
+      <% if registrations_count > 0 %>
+        You have <span class="edit-count"><%= registrations_count %> <%= 'user registration'.pluralize(registrations_count) %></span> to curate.
       <% end %>
-      <% if (zone_approved_cnt > 0 && logged_in_user.lci_board_member?) %>
-        <span class="reg_us_cnt"><%= zone_approved_cnt %> <%= 'registration'.pluralize(zone_approved_cnt) %></span>
-        waiting to your approval.
-      <% end %>
+        Please attend to <%= edit_count + registrations_count == 1 ? 'this' : 'these' %> as soon as possible.
     </div>
     <div class="mdl-card__actions mdl-card--border">
-      <% if edit_count > 0  && logged_in_user.national_curator?%>
+      <% if edit_count > 0 %>
         <%= link_to curate_edits_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
           <i class="material-icons">done_all</i>
           Curate Edits
         <% end %>
       <% end %>
-      <% if reg_us_cnt > 0  && logged_in_user.national_curator?%>
+      <% if registrations_count > 0 %>
         <%= link_to user_approval_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
-        <i class="material-icons">done_all</i>
-          Curator Approval
-        <% end %>
-      <% end %>
-      <% if zone_approved_cnt > 0 && logged_in_user.lci_board_member? %>
-        <%= link_to lci_board_member_approval_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
-        <i class="material-icons">done_all</i>
-          LCI Board Member Approval
+        <i class="material-icons">person_add</i>
+          Curate Registrations
         <% end %>
       <% end %>
     </div>

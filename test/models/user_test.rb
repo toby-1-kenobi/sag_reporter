@@ -26,7 +26,7 @@ describe User do
   let(:nb_edit) { edits(:pending_double) }
 
   before do
-    user.geo_states << geo_states(:nb)
+    # user.geo_states << geo_states(:nb)
   end
 
 
@@ -237,6 +237,25 @@ describe User do
     _(User.curating(assam_edit)).wont_include user_curating_nb
     _(User.curating(nb_edit)).must_include user_curating_nb
     _(User.curating(nb_edit)).wont_include user_curating_assam
+  end
+
+  it 'scopes to zones' do
+    zone_a = Zone.new(name: 'A')
+    zone_b = Zone.new(name: 'B')
+    zone_c = Zone.new(name: 'C')
+    state_a = FactoryBot.create(:geo_state, zone: zone_a)
+    state_b = FactoryBot.create(:geo_state, zone: zone_b)
+    state_c = FactoryBot.create(:geo_state, zone: zone_c)
+    user_a = FactoryBot.create(:user)
+    user_a.geo_states << state_a
+    user_bc = FactoryBot.create(:user)
+    user_bc.geo_states << [state_b, state_c]
+    user_c = FactoryBot.create(:user)
+    user_c.geo_states << state_c
+    users_in_ab = User.in_zones([zone_a, zone_b])
+    _(users_in_ab).must_include user_a
+    _(users_in_ab).must_include user_bc
+    _(users_in_ab).wont_include user_c
   end
 
   it 'knows if it curates for a language' do
