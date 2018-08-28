@@ -74,44 +74,28 @@ class PasswordResetsController < ApplicationController
   def password_change
     @user = User.find_by(id: session[:temp_user])
     count = UserPassword.where(user_id: @user.id).count
+    dup_pwd_flag = false
+
       if count > 0
         dup_pwd_flag = check_dup_password(@user,params[:change_password][:password])
+      end
 
-        if (BCrypt::Password.new(@user.password_digest) != params[:change_password][:password] && dup_pwd_flag == true)
-          saved_user_password(@user)
-          if @user.update_attributes(
+      if (BCrypt::Password.new(@user.password_digest) != params[:change_password][:password] && !dup_pwd_flag)
+        saved_user_password(@user)
+        if @user.update_attributes(
                            password: params[:change_password][:password],
                            password_confirmation: params[:change_password][:password_confirmation],
                            password_change_date: Date.today
             )
-            flash[:success] = 'Your password successfully updated'
-            redirect_to root_path
-          else
+          flash[:success] = 'Your password successfully updated'
+          redirect_to root_path
+        else
             flash.now[:error] = 'Your password update failed'
             render 'password_resets/change_password'
-          end
-        else
-          flash.now[:error] = 'Password already used choose new password'
-          render 'password_resets/change_password'
         end
       else
-        if (BCrypt::Password.new(@user.password_digest) != params[:change_password][:password])
-          saved_user_password(@user)
-          if @user.update_attributes(
-              password: params[:change_password][:password],
-              password_confirmation: params[:change_password][:password_confirmation],
-              password_change_date: Date.today
-          )
-            flash[:success] = 'Your password successfully updated'
-            redirect_to root_path
-          else
-            flash.now[:error] = 'Your password update failed'
-            render 'password_resets/change_password'
-          end
-        else
-          flash.now[:error] = 'Password already used choose new password'
-          render 'password_resets/change_password'
-        end
+        flash.now[:error] = 'Password already used choose new password'
+        render 'password_resets/change_password'
       end
   end
 
@@ -128,14 +112,14 @@ class PasswordResetsController < ApplicationController
 
   def check_dup_password(user, new_password)
     @password_list = UserPassword.where(user_id: user.id)
-    @password_list.each do |pwd|
-      if (BCrypt::Password.new(pwd.password) != new_password)
-        return true
-      else
-        return false
 
+    @password_list.each do |pwd|
+      if (BCrypt::Password.new(pwd.password) == new_password)
+        return true
       end
     end
+
+    return false
   end
 
   private

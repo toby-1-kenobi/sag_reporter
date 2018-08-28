@@ -42,7 +42,7 @@ class SessionsController < ApplicationController
       # skip authentication for the development environment
       if @user and Rails.env.development?
         stale_user = stale_user_or_not(@user)
-        if stale_user == true
+        if stale_user
           log_in @user
           remember @user
           redirect_back_or root_path and return
