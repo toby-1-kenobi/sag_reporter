@@ -39,7 +39,7 @@ class UsersController < ApplicationController
   end
 
   def index
-  	@users = User.order('LOWER(name)').paginate(page: params[:page])
+  	@users = User.approved.order('LOWER(name)').paginate(page: params[:page])
   end
 
   def create
