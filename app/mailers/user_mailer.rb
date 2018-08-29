@@ -91,7 +91,7 @@ class UserMailer < ActionMailer::Base
     mail(to: "#{user.name} <#{user.email}>", subject: 'Request For Approval')
   end
 
-  def send_email_to_lci_board_members(user, token)
+  def send_email_to_lci_board_members(user)
     headers['X-SMTPAPI'] = {
         category: ['new user information']
     }.to_json

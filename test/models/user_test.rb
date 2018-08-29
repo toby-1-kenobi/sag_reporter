@@ -266,4 +266,32 @@ describe User do
     _(user.curates_for? languages(:toto)).must_equal true
   end
 
+  it 'goes through the whole registration approval process' do
+    zone_a = Zone.new(name: 'A')
+    zone_b = Zone.new(name: 'B')
+    zone_c = Zone.new(name: 'C')
+    state_a = FactoryBot.create(:geo_state, zone: zone_a)
+    state_a1 = FactoryBot.create(:geo_state, zone: zone_a)
+    state_b = FactoryBot.create(:geo_state, zone: zone_b)
+    state_c = FactoryBot.create(:geo_state, zone: zone_c)
+    registering_user = FactoryBot.create(:user, registration_status: :unapproved)
+    registering_user.geo_states.clear
+    registering_user.geo_states << [state_a, state_b, state_c]
+    approver_ab = FactoryBot.create(:user, registration_curator: true)
+    approver_ab.geo_states << [state_a1, state_b]
+    _(approver_ab).must_be :persisted?
+    approver_c = FactoryBot.create(:user, registration_curator: true)
+    approver_c.geo_states << [state_c]
+    _(approver_c).must_be :persisted?
+    final_approver = FactoryBot.create(:user, lci_board_member: true)
+    registering_user.registration_approval_step(approver_ab)
+    Rails.logger.debug("all approvals: #{RegistrationApproval.all.inspect}")
+    _(registering_user).must_be :unapproved?
+    registering_user.registration_approval_step(approver_c)
+    Rails.logger.debug("all approvals: #{RegistrationApproval.all.inspect}")
+    _(registering_user).must_be :zone_approved?
+    registering_user.registration_approval_step(final_approver)
+    _(registering_user).must_be :approved?
+  end
+
 end

@@ -170,9 +170,8 @@ class UsersController < ApplicationController
     @user = User.find_by(id: params[:zone_approval][:user_id])
     if @user
       name = @user.name
-      if @user.update_attributes(:registration_status => 1, user_type:params[:zone_approval][:user_type], national:params[:zone_approval][:national])
-        approval_users_tracking(@user)
-        email_send_to_lci_board_members(params[:authenticity_token])
+      if @user.registration_approval_step(logged_in_user)
+        email_send_to_lci_board_members() if @user.zone_approved?
         flash[:success] = "User #{name} approved successfully"
       else
         flash[:error] = "User #{name} not able to approve"
@@ -196,26 +195,17 @@ class UsersController < ApplicationController
     respond_to :js
   end
 
-  def approval_users_tracking(user)
-    @approval_track_users = RegistrationApproval.new(registering_user: user, approver: logged_in_user)
-    if @approval_track_users.save
-      flash[:success] = "User approval track record created"
-    else
-      flash[:success] = "Not able to create User approval track record"
-    end
-  end
-
-  def email_send_to_lci_board_members(token)
+  def email_send_to_lci_board_members()
     lci_board_members = User.where(lci_board_member: true)
     lci_board_members.each do |board_member|
-      @mail_sent = send_registered_user_info(board_member, token)
+      @mail_sent = send_registered_user_info(board_member)
     end
   end
 
-  def send_registered_user_info(user, token)
-    if user.email.presence
+  def send_registered_user_info(user)
+    if user.email.present?
       logger.debug "sending registered user information to email: #{user.email}"
-      UserMailer.send_email_to_lci_board_members(user, token).deliver_now
+      UserMailer.send_email_to_lci_board_members(user).deliver_now
       true
     end
   end

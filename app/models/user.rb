@@ -31,6 +31,7 @@ class User < ActiveRecord::Base
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :spoken_languages, class_name: 'Language', after_add: :update_self, after_remove: :update_self
   has_and_belongs_to_many :geo_states, after_add: :update_self, after_remove: :update_self
+  has_many :zones, through: :geo_states
   has_many :output_counts, dependent: :restrict_with_error
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :restrict_with_error
@@ -49,10 +50,11 @@ class User < ActiveRecord::Base
   belongs_to :sahayak, class_name: 'User'
   has_many :project_users, dependent: :destroy
   has_many :projects, through: :project_users
-  has_many :registration_approvals, foreign_key: 'registering_user_id', dependent: :destroy
+  has_many :registration_approvals, foreign_key: 'registering_user_id', dependent: :destroy, inverse_of: :registering_user
   has_many :registration_approvers, through: :registration_approvals, class_name: 'User', source: :approver, inverse_of: :registering_users
-  has_many :approved_registrations, class_name: 'RegistrationApproval', foreign_key: 'approver_id', dependent: :destroy
+  has_many :approved_registrations, class_name: 'RegistrationApproval', foreign_key: 'approver_id', dependent: :destroy, inverse_of: :approver
   has_many :registering_users, through: :approved_registrations, class_name: 'User', inverse_of: :registration_approvers
+  has_many :registration_approved_zones, through: :registration_approvers, source: :zones
 
   attr_accessor :remember_token
 
@@ -159,10 +161,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def zones
-    Zone.of_states geo_states
-  end
-
   def email_activate
     self.email_confirmed = true
     self.confirm_token = nil
@@ -223,8 +221,33 @@ class User < ActiveRecord::Base
     self.touch if self.persisted?
   end
 
-  private
+  # a user registration must first be approved by a zone admin
+  # in each zone that the user is in, then it reaches the next level of approval
+  # and it must be approved by an LCI board member
+  def registration_approval_step(approver)
+    if unapproved?
+      approval = registration_approvals.create(approver: approver)
+      if approval.persisted?
+        reload
+        # check if we have zone approval in each of our zones
+        remaining_zones = zones - registration_approved_zones
+        # if we have covered all zones go to the next approval level
+        zone_approved! unless remaining_zones.any?
+        return true
+      else
+        Rails.logger.error("unable to create a zonal registration approval for user #{id} from user #{approver.id}")
+        return false
+      end
+    elsif zone_approved?
+      approved!
+      return true
+    else
+      Rails.logger.error "User #{id} triggered registration_approval_step when registration_status is #{registration_status}"
+      return false
+    end
+  end
 
+  private
   # Check if the email address has been updated and it is present
   # if so send an email to confirm their email address.
   def send_confirmation_email
