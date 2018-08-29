@@ -1,0 +1,57 @@
+<% provide(:title, 'User Registrations') %>
+<% provide(:context_title, 'Curate User Registrations') %>
+
+<% @registrations.select{ |al,r| r.any? }.each do |approval_level, registrations| %>
+  <h2><%= approval_level.capitalize %> User Registrations</h2>
+  <ul class="mdl-list">
+    <% registrations.each do |user| %>
+      <li class="mdl-list__item" id="new-user-approval-<%= user.id %>">
+        <span class="mdl-list__item-primary-content">
+           <%= user.name %>
+        </span>
+        <span class="mdl-list__item-primary-content">
+          <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect user-approval-trigger-class"
+                  id="user-approval-trigger-<%= user.id %>">
+            Approve
+           </button>
+        </span>
+        <span class="mdl-list__item-primary-content mdl-cell--3-col">
+           <%= button_to zone_curator_reject_path(id: user.id),
+                      class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect',
+                      remote: true,
+                      onclick: "return confirm('Are you sure?')",
+                      method: :post do %> Reject
+           <% end %>
+        </span>
+      </li>
+
+      <dialog class="mdl-dialog mdl-cell--6-col" id="userapproval-dialog-<%= user.id %>">
+      <h4 class="mdl-dialog__title">User Approval</h4>
+        <div class="mdl-dialog__content">
+           <%= form_for(:zone_approval, url: zone_approval_path, remote: true) do |f| %>
+              <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label mdlext-selectfield__select">
+                <%= f.label :user_type %><br>
+                <%= f.select :user_type, User.user_types.keys %>
+              </div>
+              <div class="permission-control">
+                <%= f.label "national"+user.id.to_s, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
+                  <%= f.check_box :national, class: 'mdl-switch__input' , id: "zone_approval_national"+user.id.to_s %>
+                  <span class="mdl-switch__label">National edit access</span>
+                <% end %>
+              </div>
+        </div>
+        <div class="mdl-dialog__actions">
+           <button type="button" class="mdl-button close">Cancel</button>
+           <%= f.hidden_field :user_id, :value => user.id %>
+           <%= button_to zone_curator_accept_path(id: user.id),
+                      class: 'mdl-button approved',
+                      remote: true,
+                      onclick: "return confirm('Are you sure?')",
+                      method: :post do %>Approve
+           <% end %>
+        </div>
+       <% end %>
+      </dialog>
+    <% end %>
+  </ul>
+<% end %>

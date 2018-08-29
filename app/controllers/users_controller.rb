@@ -161,19 +161,24 @@ class UsersController < ApplicationController
   end
 
   def user_registration_approval
-    @unapproved_us = User.where(:registration_status => 0)
-    render 'users/zone_curator_approval'
+    @registrations = {}
+    @registrations['new'] = User.unapproved.in_zones(logged_in_user.zones)
+    @registrations['zone approved'] = User.zone_approved.in_zones(logged_in_user.zones)
   end
 
   def zone_curator_accept
     @user = User.find_by(id: params[:zone_approval][:user_id])
-    name = @user.name
-    if @user and @user.update_attributes(:registration_status => 1, user_type:params[:zone_approval][:user_type], national:params[:zone_approval][:national])
-      approval_users_tracking(@user)
-      email_send_to_lci_board_members(params[:authenticity_token])
-      flash[:success] = "User #{name} approved successfully"
+    if @user
+      name = @user.name
+      if @user.update_attributes(:registration_status => 1, user_type:params[:zone_approval][:user_type], national:params[:zone_approval][:national])
+        approval_users_tracking(@user)
+        email_send_to_lci_board_members(params[:authenticity_token])
+        flash[:success] = "User #{name} approved successfully"
+      else
+        flash[:error] = "User #{name} not able to approve"
+      end
     else
-      flash[:error] = "User #{name} not able to approve"
+      flash[:error] = "User registration not found"
     end
     respond_to :js
   end
@@ -213,10 +218,6 @@ class UsersController < ApplicationController
       UserMailer.send_email_to_lci_board_members(user, token).deliver_now
       true
     end
-  end
-
-  def lci_board_member_approval
-    render 'users/lci_board_member_approval'
   end
 
   def lci_board_member_accept
