@@ -91,7 +91,11 @@ class UsersController < ApplicationController
         message = 'Profile updated with email. Please check mail and confirm your email.'
       end
       flash['success'] = message
-      redirect_to @user
+      if @user.approved?
+        redirect_to @user
+      else
+        redirect_to user_approval_path
+      end
     else
       @user = updater.instance()
       assign_for_user_form
@@ -259,6 +263,7 @@ class UsersController < ApplicationController
       :email_confirmed,
       :confirm_token,
       :interface_language_id,
+      :training_level,
       :trusted,
       :admin,
       :national,
@@ -279,8 +284,8 @@ class UsersController < ApplicationController
         p == {:geo_states => []} ||
             p == {:curated_states => []} ||
             p == {:projects => []} ||
-            [:trusted, :national].include?(p)
-      } unless logged_in_user.admin?
+            [:trusted, :national, :training_level].include?(p)
+      } unless logged_in_user.admin? or logged_in_user.registration_curator?
     end
     params.require(:user).permit(safe_params)
   end

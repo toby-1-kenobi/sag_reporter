@@ -38,7 +38,7 @@ module UsersHelper
   def send_registration_request(user)
     if user.email.presence
       logger.debug "sending registration request to email: #{user.email}"
-      UserMailer.registration_request_email(user, token).deliver_now
+      UserMailer.registration_request_email(user).deliver_now
       true
     end
   end

@@ -60,14 +60,4 @@ $(document).on "ready page:change", ->
   $("#user-zone-dropdown .zone-option input").change showStates
   $("#user-geo_states-dropdown .geo_states-option input").change setLanguageOptions
 
-
-  $('.user-approval-trigger-class').on 'click', ->
-    this_id = this.id;
-    user_id = this_id.replace("user-approval-trigger", "")
-    $('#userapproval-dialog'+user_id)[0].showModal()
-    $('#userapproval-dialog'+user_id).find('.close').on 'click', ->
-      $('#userapproval-dialog'+user_id)[0].close()
-      return
-  return
-
   return
