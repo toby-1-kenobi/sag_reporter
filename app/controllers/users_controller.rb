@@ -167,59 +167,37 @@ class UsersController < ApplicationController
   def user_registration_approval
     @registrations = {}
     @registrations['new'] = User.unapproved.in_zones(logged_in_user.zones)
-    @registrations['zone approved'] = User.zone_approved.in_zones(logged_in_user.zones)
+    @registrations['zone approved'] = logged_in_user.lci_board_member? ? User.zone_approved : User.none
   end
 
   def zone_curator_accept
-    @user = User.find_by(id: params[:zone_approval][:user_id])
+    @user = User.find params[:id]
     if @user
       name = @user.name
       if @user.registration_approval_step(logged_in_user)
         email_send_to_lci_board_members() if @user.zone_approved?
-        flash[:success] = "User #{name} approved successfully"
+        @success = true
       else
-        flash[:error] = "User #{name} not able to approve"
+        @success = false
+        Rails.logger.error "User #{name} not able to approve"
       end
     else
-      flash[:error] = "User registration not found"
+      @success = false
+      Rails.logger.error = "User registration not found for id #{params[:id]}"
     end
     respond_to :js
   end
 
   def zone_curator_reject
-    @user = User.find_by(id: params[:id])
-    name = @user.name
-    @user_id = @user.id #backup user id to remove row in html page
-    if @user.destroy
-      flash[:success] = "User #{name} deleted"
+    user = User.find params[:id]
+    name = user.name
+    @user_id = user.id #backup user id to remove row in html page
+    if user.destroy
+      @success = true
     else
-      flash[:error] = "Unable to delete #{name}"
-      flash[:error] += ': '+ @user.errors.messages.values.join(', ') if @user.errors.any?
-    end
-    respond_to :js
-  end
-
-  def email_send_to_lci_board_members()
-    lci_board_members = User.where(lci_board_member: true)
-    lci_board_members.each do |board_member|
-      @mail_sent = send_registered_user_info(board_member)
-    end
-  end
-
-  def send_registered_user_info(user)
-    if user.email.present?
-      logger.debug "sending registered user information to email: #{user.email}"
-      UserMailer.send_email_to_lci_board_members(user).deliver_now
-      true
-    end
-  end
-
-  def lci_board_member_accept
-    @user = User.find_by(id: params[:id])
-    token = generate_pwd_reset_token_user(@user)
-    if @user
-      @user.update_attribute(:registration_status, 2)
-      @mail_sent = lci_board_member_approval_mail(@user, token)
+      @success = false
+      Rails.logger.error "Unable to delete registration for #{name}"
+      Rails.logger.error user.errors.full_messages if user.errors.any?
     end
     respond_to :js
   end
@@ -233,20 +211,6 @@ class UsersController < ApplicationController
     else
       return false
     end
-  end
-
-
-  def lci_board_member_reject
-    @user = User.find_by(id: params[:id])
-    name = @user.name
-    @user_id = @user.id #backup user id to remove row in html page
-    if @user.destroy
-      flash[:success] = "User #{name} deleted"
-    else
-      flash[:error] = "Unable to delete #{name}"
-      flash[:error] += ': '+ @user.errors.messages.values.join(', ') if @user.errors.any?
-    end
-    respond_to :js
   end
 
   private
@@ -320,7 +284,21 @@ class UsersController < ApplicationController
     zones.each do |zone|
       curators = User.includes(:geo_states).where(registration_curator: true, geo_states: {zone_id: zone.id})
       curators.each do |curator|
-        @mail_sent = send_registration_request(curator)
+        if curator.email.present?
+          logger.debug "sending registration request to email: #{curator.email}"
+          UserMailer.registration_request_email(curator).deliver_now
+          true
+        end
+      end
+    end
+  end
+
+  def email_send_to_lci_board_members()
+    lci_board_members = User.where(lci_board_member: true)
+    lci_board_members.each do |board_member|
+      if board_member.email.present?
+        logger.debug "sending registered user information to email: #{board_member.email}"
+        UserMailer.send_email_to_lci_board_members(board_member).deliver_now
       end
     end
   end

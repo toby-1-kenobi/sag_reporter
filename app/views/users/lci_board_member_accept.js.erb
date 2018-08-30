@@ -1,4 +1,0 @@
-/* Removing user row in approval list*/
-<% if @user.registration_status == 'approved' %>
-  $('#required-board-member-approval-<%= @user.id %>').remove();
-<% end %>

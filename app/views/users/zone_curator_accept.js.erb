@@ -1,5 +1,4 @@
 /* Removing user row in approval list*/
-<% if @user.registration_status == 'zone_approved' %>
-   $('#new-user-approval-<%= @user.id %>').remove();
+<% if @success %>
+  $('#new-user-approval-<%= @user.id %>').fadeOut('fast');
 <% end %>
-$('#userapproval-dialog-<%= @user.id %>')[0].close();

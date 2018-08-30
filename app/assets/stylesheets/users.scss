@@ -54,4 +54,11 @@
   position: relative;
 }
 
+.registration-approval-list {
+  max-width: 35em;
+  .mdl-list__item-secondary-action {
+    padding-left: 1em;
+  }
+}
+
 
