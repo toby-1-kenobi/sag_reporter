@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     get :autocomplete_person_name, :on => :collection
   end
 
-  resources :external_device do
+  resources :android_additions do
     collection do
       get  'test_server'
       post 'new_user_info'
@@ -35,10 +35,16 @@ Rails.application.routes.draw do
       post 'login'
       post 'send_otp'
       post 'get_database_key'
-      post 'send_request'
       post 'get_file'
+    end
+  end
+  
+  resources :android_sync do
+    collection do
+      post 'send_request'
       post 'get_uploaded_file'
       post 'receive_request'
+      post 'get_file'
     end
   end
   
