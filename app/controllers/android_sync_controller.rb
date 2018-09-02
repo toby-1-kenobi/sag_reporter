@@ -13,20 +13,20 @@ class AndroidSyncController < ApplicationController
     send_request_params = params.require(:external_device).permit(safe_params)
 
     tables = [User, GeoState, LanguageProgress, Language, Report, Person, Topic, ProgressMarker,
-              Zone, ImpactReport, UploadedFile, MtResource]
+              Zone, ImpactReport, UploadedFile, MtResource, Organisation, ProgressUpdate, LanguageProgress,
+              StateLanguage, ChurchCongregation, ChurchMinistry, Ministry, MinistryMarker, MinistryOutput,
+              ProductCategory]
     exclude_attributes = {
         User: %w(password_digest remember_digest otp_secret_key confirm_token reset_password reset_password_token)
     }
     join_tables = {
-        User: %w(geo_states spoken_languages),
-        GeoState: %w(languages state_languages),
+        User: %w(geo_states spoken_languages languages ministries),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers)
+        ChurchCongregation: %w(users)
     }
     def additional_tables(entry)
       case entry
-        when GeoState
-          {project_languages: entry.state_languages.map{|sl| sl.language_id if sl.project} - [nil]}
         when ProgressMarker
           {description: entry.description_for(@external_user)}
         else
@@ -188,6 +188,28 @@ class AndroidSyncController < ApplicationController
                       :translation_impact
                   ]}
               ]
+          ],
+          :church_congregation => [
+              :id,
+              :old_id,
+              {:user_ids => []},
+              :user_ids,
+              :village
+          ],
+          :church_ministry => [
+              :id,
+              :old_id
+              :church_congregation_id,
+              :ministry_id
+          ],
+          :ministry_output => [
+              :id,
+              :old_id,
+              :church_ministry_id,
+              :ministry_marker_id,
+              :creator,
+              :value,
+              :actual
           ]
       ]
       receive_request_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
