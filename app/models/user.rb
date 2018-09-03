@@ -225,7 +225,13 @@ class User < ActiveRecord::Base
         # check if we have zone approval in each of our zones
         remaining_zones = zones - registration_approved_zones
         # if we have covered all zones go to the next approval level
-        zone_approved! unless remaining_zones.any?
+        if remaining_zones.empty?
+          if registration_approvers.where(lci_board_member: true).any?
+            approved!
+          else
+            zone_approved!
+          end
+        end
         return { success: true }
       else
         Rails.logger.error("unable to create a zonal registration approval for user #{id} from user #{approver.id} - #{approval.errors.full_messages}")

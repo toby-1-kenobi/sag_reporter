@@ -294,4 +294,16 @@ describe User do
     _(registering_user).must_be :approved?
   end
 
+  it 'gets approved directly on lci_board_member approval' do
+    zone_a = Zone.new(name: 'A')
+    state_a = FactoryBot.create(:geo_state, zone: zone_a)
+    registering_user = FactoryBot.create(:user, registration_status: :unapproved)
+    registering_user.geo_states.clear
+    registering_user.geo_states << [state_a]
+    approver = FactoryBot.create(:user, registration_curator: true, lci_board_member: true)
+    approver.geo_states << [state_a]
+    registering_user.registration_approval_step(approver)
+    _(registering_user).must_be :approved?
+  end
+
 end
