@@ -1,0 +1,6 @@
+/* Removing user row in approval list*/
+<% if @success %>
+  $('#new-user-approval-<%= @user.id %>').fadeOut('fast');
+<% else %>
+  alert('<%= @error %>');
+<% end %>

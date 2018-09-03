@@ -40,14 +40,20 @@ class SessionsController < ApplicationController
         @user = User.find_by(phone: username)
       end
       # skip authentication for the development environment
-      if @user and Rails.env.development?
+      if @user and Rails.env.development? and @user.registration_status == 'approved'
         log_in @user
         remember @user
         redirect_back_or root_path and return
-      end
+       end
       if @user && @user.authenticate(params[:session][:password])
-        session[:temp_user] = @user.id
-        send_otp(@user)
+        if @user.registration_status == 'approved'
+          session[:temp_user] = @user.id
+          send_otp(@user)
+        else
+          logger.debug "User account pendding approval"
+          flash.now['error'] = 'New User Created! Need to wait some time to approval'
+          render 'new'
+        end
       else
         if @user
           logger.debug "could not authenticate #{@user.phone} with '#{params[:session][:password]}'"
@@ -145,6 +151,11 @@ class SessionsController < ApplicationController
   def destroy
     log_out if logged_in?
     redirect_to login_url
+  end
+
+  def sign_up
+    @user = User.new
+    @geo_states = GeoState.all.order(:name)
   end
 
   private

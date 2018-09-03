@@ -211,6 +211,19 @@ Rails.application.routes.draw do
 
   get 'change_future_year' => 'languages#change_future_year'
 
+  get 'signup' => 'sessions#sign_up'
+  post 'signup' => 'users#create_registration'
+
+  get 'user_approval' => 'users#user_registration_approval'
+  post 'zone_curator_accept'     => 'users#zone_curator_accept'
+  post 'zone_curator_reject'     => 'users#zone_curator_reject'
+
+  post 'zone_approval'  => 'users#zone_curator_accept'
+
+  get 'lci_board_member_approval' => 'users#lci_board_member_approval'
+  post 'lci_board_member_accept'  => 'users#lci_board_member_accept'
+  post 'lci_board_member_reject'     => 'users#lci_board_member_reject'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
