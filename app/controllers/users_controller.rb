@@ -12,6 +12,7 @@ class UsersController < ApplicationController
   #    someone with permission
   before_action :authorised_user_edit, only: [:edit, :update]
   before_action :authorised_user_show, only: [:show]
+  before_action :authorised_user_curate, only: [:user_registration_approval, :zone_curator_accept, :zone_curator_reject]
 
   before_action :assign_for_user_form, only: [:new, :edit]
   before_action :get_param_user, only: [:edit, :update, :destroy]
@@ -266,7 +267,10 @@ class UsersController < ApplicationController
   def authorised_user_edit
     get_param_user
     redirect_to(root_url) unless
-        logged_in_user?(@user) or logged_in_user.admin?
+        logged_in_user?(@user) or
+            logged_in_user.admin? or
+            logged_in_user.lci_board_member? or
+            (logged_in_user.registration_curator? and (@user.zones & logged_in_user.zones).any?)
   end
 
   # Confirms authorised user for show.
@@ -274,6 +278,13 @@ class UsersController < ApplicationController
     get_param_user
     redirect_to(root_url) unless
         logged_in_user?(@user) or logged_in_user.admin?
+  end
+
+  def authorised_user_curate
+    redirect_to(root_url) unless
+            logged_in_user.admin? or
+            logged_in_user.lci_board_member? or
+            logged_in_user.registration_curator?
   end
 
   def get_param_user
