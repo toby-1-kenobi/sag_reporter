@@ -168,6 +168,8 @@ class UsersController < ApplicationController
   def user_registration_approval
     @registrations = {}
     @registrations['new'] = User.unapproved.in_zones(logged_in_user.zones)
+    # don't include new registrations that have already been approved in the zones of the logged in user
+    @registrations['new'] = @registrations['new'].to_a.select{ |u| ((u.zones - u.registration_approved_zones) & logged_in_user.zones).any? }
     @registrations['zone approved'] = logged_in_user.lci_board_member? ? User.zone_approved : User.none
   end
 

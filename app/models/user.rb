@@ -85,7 +85,7 @@ class User < ActiveRecord::Base
 
   scope :curating, ->(edit) { joins(:curated_states).where('geo_states.id' => edit.geo_states) }
 
-  scope :in_zones, ->(zones) { joins(:geo_states).where('geo_states.zone_id' => zones) }
+  scope :in_zones, ->(zones) { joins(:geo_states).where('geo_states.zone_id' => zones).uniq }
 
   # Returns the hash digest of the given string.
   def User.digest(string)
