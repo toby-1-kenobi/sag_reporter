@@ -3,10 +3,9 @@ class User < ActiveRecord::Base
   include ContactDetails
 
   enum training_level: {
-    team_member: 0,
-    facilitator: 1,
-    trainer: 4,
-    consultant: 8
+    team_member: 1,
+    facilitator: 2,
+    project_supervisor: 4,
   }
 
   enum registration_status: {
