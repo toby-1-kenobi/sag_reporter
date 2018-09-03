@@ -309,7 +309,7 @@ class UsersController < ApplicationController
   end
 
   def email_send_to_lci_board_members()
-    lci_board_members = User.where(lci_board_member: true)
+    lci_boa6cHSPWido3Ijrd_members = User.where(lci_board_member: true)
     lci_board_members.each do |board_member|
       if board_member.email.present?
         logger.debug "sending registered user information to email: #{board_member.email}"
