@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <% if logged_in_user.admin? or logged_in_user.registration_curator? %>
+    <% if logged_in_user.admin? or logged_in_user.zone_admin? %>
       <div id="user-permissions-input">
         <h3>Privileges</h3>
         <div class="permission-control">
@@ -61,9 +61,9 @@
           <% end %>
         </div>
         <div class="permission-control">
-          <%= f.label :registration_curator, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
-            <%= f.check_box(:registration_curator, class: 'mdl-switch__input') %>
-            <span class="mdl-switch__label">Registration curator</span>
+          <%= f.label :zone_admin, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
+            <%= f.check_box(:zone_admin, class: 'mdl-switch__input') %>
+            <span class="mdl-switch__label">Zone administrator</span>
           <% end %>
         </div>
         <div class="permission-control">

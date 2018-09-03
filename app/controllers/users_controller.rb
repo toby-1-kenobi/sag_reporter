@@ -243,7 +243,7 @@ class UsersController < ApplicationController
       {:geo_states => []},
       {:curated_states => []},
       :reset_password,
-      :registration_curator
+      :zone_admin
     ]
     # current user cannot change own access level or state
     if params[:id] and logged_in_user?(User.find(params[:id]))
@@ -254,7 +254,7 @@ class UsersController < ApplicationController
             p == {:curated_states => []} ||
             p == {:projects => []} ||
             [:trusted, :national, :training_level].include?(p)
-      } unless logged_in_user.admin? or logged_in_user.registration_curator?
+      } unless logged_in_user.admin? or logged_in_user.zone_admin?
     end
     params.require(:user).permit(safe_params)
   end
@@ -274,7 +274,7 @@ class UsersController < ApplicationController
         logged_in_user?(@user) or
             logged_in_user.admin? or
             logged_in_user.lci_board_member? or
-            (logged_in_user.registration_curator? and (@user.zones & logged_in_user.zones).any?)
+            (logged_in_user.zone_admin? and (@user.zones & logged_in_user.zones).any?)
   end
 
   # Confirms authorised user for show.
@@ -288,7 +288,7 @@ class UsersController < ApplicationController
     redirect_to(root_url) unless
             logged_in_user.admin? or
             logged_in_user.lci_board_member? or
-            logged_in_user.registration_curator?
+            logged_in_user.zone_admin?
   end
 
   def get_param_user
@@ -297,7 +297,7 @@ class UsersController < ApplicationController
 
   def user_registration_request_mail(zones)
     zones.each do |zone|
-      curators = User.includes(:geo_states).where(registration_curator: true, geo_states: {zone_id: zone.id})
+      curators = User.includes(:geo_states).where(zone_admin: true, geo_states: {zone_id: zone.id})
       curators.each do |curator|
         if curator.email.present?
           logger.debug "sending registration request to email: #{curator.email}"

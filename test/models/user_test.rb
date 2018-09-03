@@ -278,10 +278,10 @@ describe User do
     registering_user = FactoryBot.create(:user, registration_status: :unapproved)
     registering_user.geo_states.clear
     registering_user.geo_states << [state_a, state_b, state_c]
-    approver_ab = FactoryBot.create(:user, registration_curator: true)
+    approver_ab = FactoryBot.create(:user, zone_admin: true)
     approver_ab.geo_states << [state_a1, state_b]
     _(approver_ab).must_be :persisted?
-    approver_c = FactoryBot.create(:user, registration_curator: true)
+    approver_c = FactoryBot.create(:user, zone_admin: true)
     approver_c.geo_states << [state_c]
     _(approver_c).must_be :persisted?
     final_approver = FactoryBot.create(:user, lci_board_member: true)
@@ -301,7 +301,7 @@ describe User do
     registering_user = FactoryBot.create(:user, registration_status: :unapproved)
     registering_user.geo_states.clear
     registering_user.geo_states << [state_a]
-    approver = FactoryBot.create(:user, registration_curator: true, lci_board_member: true)
+    approver = FactoryBot.create(:user, zone_admin: true, lci_board_member: true)
     approver.geo_states << [state_a]
     registering_user.registration_approval_step(approver)
     _(registering_user).must_be :approved?

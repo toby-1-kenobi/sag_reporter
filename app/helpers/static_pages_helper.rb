@@ -21,7 +21,7 @@ module StaticPagesHelper
   # how many user registrations are awaiting the logged in users approval
   def get_registrations_count
     count = 0
-    if logged_in_user.registration_curator?
+    if logged_in_user.zone_admin?
       count += User.unapproved. # counting unapproved registrations
           in_zones(logged_in_user.zones). # sharing at least one zone with the logged in user
           to_a.select{ |u| # filter out all registrations that are already approved in this users zones
