@@ -176,16 +176,29 @@ class UsersController < ApplicationController
   def zone_curator_accept
     @user = User.find params[:id]
     if @user
-      name = @user.name
-      if @user.registration_approval_step(logged_in_user)
+      result = @user.registration_approval_step(logged_in_user)
+      @success = result[:success]
+      if @success
         email_send_to_lci_board_members() if @user.zone_approved?
-        @success = true
+        if @user.approved?
+          token = @user.generate_pwd_reset_token
+          if token
+            send_pwd_reset_instructions(@user, token)
+          else
+            @user.zone_approved!
+            RegistrationApproval.where(registering_user: @user, approver: logged_in_user).destroy_all
+            @success = false
+            @error = "unable to send password reset instructions to #{@user.name}"
+            Rails.logger.error "User #{@user.id}: could not send password reset instructions"
+          end
+        end
       else
-        @success = false
-        Rails.logger.error "User #{name} not able to approve"
+        @error = result[:error_message]
+        Rails.logger.error "User #{@user.id} not able to approve"
       end
     else
       @success = false
+      @error = "User registration #{params[:id]} doesn't exist"
       Rails.logger.error = "User registration not found for id #{params[:id]}"
     end
     respond_to :js
@@ -203,17 +216,6 @@ class UsersController < ApplicationController
       Rails.logger.error user.errors.full_messages if user.errors.any?
     end
     respond_to :js
-  end
-
-  def generate_pwd_reset_token_user(user)
-    token = User.new_token
-    @user = User.find_by(id: user.id)
-    if @user
-      @user.update_attributes(reset_password_token: BCrypt::Password.create(token))
-      return token
-    else
-      return false
-    end
   end
 
   private

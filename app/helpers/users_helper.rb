@@ -23,16 +23,5 @@ module UsersHelper
       false
     end
   end
-
-  def lci_board_member_approval_mail(user, token)
-    if user.email.present?
-      logger.debug "sending password reset instructions to email: #{user.email}"
-      UserMailer.reset_password_email(user, token).deliver_now
-      true
-    else
-      logger.error "could not send password reset to: #{user.email}"
-      false
-    end
-  end
 end
 

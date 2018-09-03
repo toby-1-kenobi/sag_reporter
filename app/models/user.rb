@@ -216,6 +216,7 @@ class User < ActiveRecord::Base
   # a user registration must first be approved by a zone admin
   # in each zone that the user is in, then it reaches the next level of approval
   # and it must be approved by an LCI board member
+  # returns a hash with key :success indicating if it worked
   def registration_approval_step(approver)
     if unapproved?
       approval = registration_approvals.create(approver: approver)
@@ -225,17 +226,29 @@ class User < ActiveRecord::Base
         remaining_zones = zones - registration_approved_zones
         # if we have covered all zones go to the next approval level
         zone_approved! unless remaining_zones.any?
-        return true
+        return { success: true }
       else
-        Rails.logger.error("unable to create a zonal registration approval for user #{id} from user #{approver.id}")
-        return false
+        Rails.logger.error("unable to create a zonal registration approval for user #{id} from user #{approver.id} - #{approval.errors.full_messages}")
+        return { success: false, error_message: "unable to approve this user! #{approval.errors.full_messages}" }
       end
     elsif zone_approved?
-      approved!
-      return true
+      if approver.lci_board_member? or approver.admin?
+        if email.present?
+          approved!
+          # registration has gone through two human approval process
+          # assume that email address is correct
+          update_attribute(:email_confirmed, true)
+          return { success: true }
+        else
+          return { success: false, error_message: 'Cannot approve a user with no email address' }
+        end
+      else
+        Rails.logger.error "Unprivileged user id: #{approver.id} attempted to approve user registration id #{id}"
+        return { success: false, error_message: 'You do not have permission to give final approval' }
+      end
     else
       Rails.logger.error "User #{id} triggered registration_approval_step when registration_status is #{registration_status}"
-      return false
+      return { success: false, error_message: 'User was already approved' }
     end
   end
 
