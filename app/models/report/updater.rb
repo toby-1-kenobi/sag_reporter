@@ -27,13 +27,19 @@ class Report::Updater
       add_observers(observers, @instance.geo_state_id, @instance.reporter) if observers
 
       if @instance.planning_report.present? and planning.to_i == 0
-        @instance.planning_report.destroy
+        report = @instance.planning_report
+        @instance.update_attribute(:planning_report_id, nil)
+        report.destroy
       end
       if @instance.impact_report.present? and impact.to_i == 0
-        @instance.impact_report.destroy
+        report = @instance.impact_report
+        @instance.update_attribute(:impact_report_id, nil)
+        report.destroy
       end
       if @instance.challenge_report.present? and challenge.to_i == 0
-        @instance.challenge_report.destroy
+        report = @instance.challenge_report
+        @instance.update_attribute(:challenge_report_id, nil)
+        report.destroy
       end
 
       if @instance.planning_report.blank? and planning.to_i == 1

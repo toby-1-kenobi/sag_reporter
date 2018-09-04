@@ -34,4 +34,10 @@ class MtResource < ActiveRecord::Base
   has_many :contributers, through: :contributions, source: 'person'
   has_and_belongs_to_many :product_categories
 
+  validates :name, presence: true
+  validates :language, presence: true
+  validates :cc_share_alike, presence: true
+  validates :medium, presence: true
+  validates :status, presence: true
+
 end

@@ -2,7 +2,7 @@ class ImpactReport < ActiveRecord::Base
 
   include ReportType
 
-  has_one :report, inverse_of: :impact_report, dependent: :nullify
+  has_one :report, inverse_of: :impact_report
   has_and_belongs_to_many :progress_markers, after_add: :update_self, after_remove: :update_self
   has_many :topics, through: :progress_markers
   delegate :id, to: :report, prefix: true
@@ -12,6 +12,8 @@ class ImpactReport < ActiveRecord::Base
   validates :shareable, :inclusion => {:in => [true, false]}
   validates :translation_impact, :inclusion => {:in => [true, false]}
   validates_presence_of :report
+
+  after_destroy { report.update_columns(impact_report_id: nil) if report.persisted? }
 
   def report_type
     'impact'

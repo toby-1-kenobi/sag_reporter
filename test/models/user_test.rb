@@ -2,31 +2,23 @@ require 'test_helper'
 
 describe User do
 
-  let(:user) { User.new(
-    name: 'Example User',
-    phone: '9876543210',
-    password: 'foobar',
-    password_confirmation: 'foobar',
-    email: 'me@example.com',
-    email_confirmed: true,
-    trusted: true,
-    national: true,
-    admin: false,
-    national_curator: false
-  ) }
+  let(:user) { FactoryBot.create(:user,
+                                 national: true,
+                                 trusted: true,
+                                 email_confirmed: true) }
+  let(:national_user) { FactoryBot.create(:user, national: true) }
   let(:zone_with_alt_pms) { Zone.new(name: 'test zone', pm_description_type: :alternate) }
   let(:state_in_alt_zone) { GeoState.new(
       name: 'test state',
       zone: zone_with_alt_pms
   ) }
-  let(:pirate_language) { Language.new(locale_tag: 'pirate') }
-  let(:user_curating_assam) { users(:andrew) }
-  let(:user_curating_nb) { users(:nathan) }
-  let(:assam_edit) { edits(:pending_single) }
-  let(:nb_edit) { edits(:pending_double) }
+  let(:pirate_language) { FactoryBot.build(:language, locale_tag: 'pirate') }
+  let(:assam) { FactoryBot.create(:geo_state, name: 'Assam') }
+  let(:nb) { FactoryBot.create(:geo_state, name: 'North Bengal') }
 
   before do
     user.geo_states << FactoryBot.build(:geo_state)
+    FactoryBot.create(:language, name: 'English', locale_tag: 'en')
   end
 
 
@@ -57,18 +49,12 @@ describe User do
   end
   
   it 'can have multiple geo_states' do
-    user.geo_states << geo_states(:assam)
+    user.geo_states << assam
     value(user.geo_states.length).must_be :>, 1
   end
 
   it 'wont be destroyed with report' do
-    report = Report.new(
-        reporter: user,
-        content: 'hi',
-        geo_state: FactoryBot.build(:geo_state),
-        impact_report: impact_reports(:'impact-report-1')
-    )
-    report.save!
+    FactoryBot.create( :report, reporter: user)
     user.destroy
     value(user).must_be :persisted?
   end
@@ -87,37 +73,14 @@ describe User do
   end
 
   it 'wont be destroyed with person' do
-    person = Person.new(name: 'joe', record_creator: user, geo_state: FactoryBot.build(:geo_state))
+    person = Person.new(name: 'jpu = oe', record_creator: user, geo_state: FactoryBot.build(:geo_state))
     person.save!
     user.destroy
     value(user).must_be :persisted?
   end
 
   it 'wont be destroyed with progress update' do
-    pu = ProgressUpdate.new(
-        progress: 1,
-        month: 1,
-        year: 2016,
-        user: user,
-        language_progress: language_progresses(:aka_skills_used)
-    )
-    pu.save!
-    user.destroy
-    value(user).must_be :persisted?
-  end
-
-  # it 'wont be destroyed with output count' do
-  #   oc = output_counts(:output_count_1)
-  #   oc.user = user
-  #   oc.save!
-  #   user.destroy
-  #   value(user).must_be :persisted?
-  # end
-
-  it 'wont be destroyed with mt resource' do
-    resource = mt_resources(:'resource-1')
-    resource.user = user
-    resource.save!
+    FactoryBot.create(:progress_update, user: user)
     user.destroy
     value(user).must_be :persisted?
   end
@@ -197,11 +160,6 @@ describe User do
     _(user).must_be :sees_alternate_pm_descriptions?
   end
 
-  it "doesn't specify alternate pm descriptions if it is not in a zone that requires them" do
-    user.zones.each{ |zone| zone.pm_description_type = 'default' }
-    _(user).wont_be :sees_alternate_pm_descriptions?
-  end
-
   it 'will unconfirm email and send confirmation on email change' do
     mock_mailer = mock
     mock_mailer.expects(:deliver_now).at_least_once
@@ -228,15 +186,15 @@ describe User do
   end
 
   it 'scopes to curators for an edit' do
-    # callbacks are skipped when fixtures are inserted
-    # we need the results of the after_save callback on Edit for this test
-    # so save the edits.
-    assam_edit.save
-    nb_edit.save
-    _(User.curating(assam_edit)).must_include user_curating_assam
-    _(User.curating(assam_edit)).wont_include user_curating_nb
-    _(User.curating(nb_edit)).must_include user_curating_nb
-    _(User.curating(nb_edit)).wont_include user_curating_assam
+    curators = FactoryBot.create_list(:user_with_curatings, 2)
+    first_s_language = FactoryBot.create(:state_language, geo_state: curators.first.curated_states.first)
+    second_s_language = FactoryBot.create(:state_language, geo_state: curators.second.curated_states.first)
+    first_language_edit = FactoryBot.create(:edit, user: user, record_id: first_s_language.language_id)
+    second_language_edit = FactoryBot.create(:edit, user: user, record_id: second_s_language.language_id)
+    _(User.curating(first_language_edit)).must_include curators.first
+    _(User.curating(first_language_edit)).wont_include curators.second
+    _(User.curating(second_language_edit)).must_include curators.second
+    _(User.curating(second_language_edit)).wont_include curators.first
   end
 
   it 'scopes to zones' do
@@ -261,7 +219,7 @@ describe User do
   it 'knows if it curates for a language' do
     user.curated_states.clear
     lang = FactoryBot.create(:language)
-    _(user.curates_for(lang).wont_equal true
+    _(user.curates_for?(lang)).wont_equal true
     user.curated_states << lang.geo_states.first
     user.save
     _(user.curates_for? lang).must_equal true

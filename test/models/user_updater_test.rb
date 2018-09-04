@@ -24,17 +24,4 @@ describe User::Updater do
     _(updater.instance().name).must_equal "Test User Updated"
   end
 
-  it "makes sure the mother-tongue is included in spoken languages" do
-    db_language = Language.take
-    user_params = {
-      name: "Test User", 
-      phone: "9876543210", 
-      password: "foobar", 
-      password_confirmation: "foobar",
-      mother_tongue: db_language
-    }
-    updater.update_user(user_params)
-    _(updater.instance().spoken_languages).must_include db_language
-  end
-
 end
