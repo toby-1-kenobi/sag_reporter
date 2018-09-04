@@ -10,7 +10,9 @@ class AndroidAdditionsController < ApplicationController
   end
 
   def new_user_info
-    states_and_languages = {geo_states: GeoState.includes(:languages).all.map{|gs| [gs.id, {name:gs.name, languages:gs.languages.map{|l| [l.id, {name: l.name}]}.to_h}]}.to_h}
+    states_and_languages = {geo_states: GeoState.includes(:languages).all.map do |gs|
+      [gs.id, {name: gs.name, languages: gs.languages.map{|l| [l.id, {name: l.name}]}.to_h}]
+    end.to_h}
     render json: states_and_languages, status: :ok
   end
   
@@ -30,12 +32,12 @@ class AndroidAdditionsController < ApplicationController
       ]
       new_user_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
 
-      @is_only_test = receive_request_params["is_only_test"]
+      @is_only_test = new_user_params["is_only_test"]
       @errors = []
       @id_changes = {}
 
       [Person, ImpactReport, Report, UploadedFile].each do |table|
-        receive_request_params[table.name.underscore]&.each do |entry|
+        new_user_params[table.name.underscore]&.each do |entry|
           new_entry = build table, entry.to_h
           if @is_only_test
             raise new_entry.errors.messages.to_s unless !new_entry || new_entry.valid?
@@ -58,7 +60,7 @@ class AndroidAdditionsController < ApplicationController
       ]
       forgot_password_params = params.require(:external_device).permit(safe_params)
 
-      user = get_user forgot_password_params["user_name"]
+      @user = get_user forgot_password_params["user_name"]
       if @user
         if @user.reset_password?
           logger.debug "Password request was already submitted"
@@ -116,12 +118,12 @@ class AndroidAdditionsController < ApplicationController
       end
       # create the (in future unregistered) device, if it doesn't exist
       unless users_device
-        new_device = ExternalDevice.new({
-                                            device_id: login_params["device_id"],
-                                            name: login_params["device_name"],
-                                            user: user
-                                        })
-        raise new_device.errors.messages.to_s unless new_device.save
+        raise new_device.errors.messages.to_s unless
+            ExternalDevice.new({
+                                   device_id: login_params["device_id"],
+                                   name: login_params["device_name"],
+                                   user: user
+                               }).save
       end
       logger.error "Device not registered"
       render json: {user: user.id, status: "OTP", error: "Device not registered, register with OTP"}, status: :created
@@ -255,7 +257,7 @@ class AndroidAdditionsController < ApplicationController
 
   # other helpful methods
   
-  def get_user user_name
+  def get_user(user_name)
     if user_name&.include? "@"
       User.find_by email: user_name
     else

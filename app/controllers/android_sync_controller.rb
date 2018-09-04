@@ -8,14 +8,16 @@ class AndroidSyncController < ApplicationController
 
   def send_request
     safe_params = [
-        :last_sync
+        :last_sync,
+        :without_reports
     ]
     send_request_params = params.require(:external_device).permit(safe_params)
 
-    tables = [User, GeoState, LanguageProgress, Language, Report, Person, Topic, ProgressMarker,
+    tables = [User, GeoState, LanguageProgress, Language, Person, Topic, ProgressMarker,
               Zone, ImpactReport, UploadedFile, MtResource, Organisation, ProgressUpdate, LanguageProgress,
               StateLanguage, ChurchCongregation, ChurchMinistry, Ministry, MinistryMarker, MinistryOutput,
               ProductCategory]
+    tables << Report unless send_request_params["without_reports"]
     exclude_attributes = {
         User: %w(password_digest remember_digest otp_secret_key confirm_token reset_password reset_password_token)
     }
@@ -31,6 +33,8 @@ class AndroidSyncController < ApplicationController
           {description: entry.description_for(@external_user)}
         when ProgressUpdate
           {month: "#{entry.year}-#{'%02i' % entry.month}"}
+        when StateLanguage
+          {isPrimary: entry.primary}
         else
           {}
       end
@@ -57,7 +61,7 @@ class AndroidSyncController < ApplicationController
               begin
                 entry_data.merge! additional_tables(entry)
               rescue
-#                logger.error "Error in adding additional tables for #{entry.class}: #{entry.attributes}"
+                logger.error "Error in adding additional tables for #{entry.class}: #{entry.attributes}"
               end
               file.write(",") if index != 0
               file.write entry_data.to_json
