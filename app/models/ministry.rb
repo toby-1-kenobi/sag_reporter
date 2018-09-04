@@ -1,6 +1,6 @@
 class Ministry < ActiveRecord::Base
 
-  has_many :ministry_markers, dependent: :destroy
+  has_many :deliverables, dependent: :destroy
   has_many :ministry_workers, dependent: :destroy
   has_many :workers, through: :ministry_workers
   has_many :church_ministries, dependent: :destroy

@@ -1,23 +1,23 @@
 class MinistryOutput < ActiveRecord::Base
 
   belongs_to :church_ministry
-  belongs_to :ministry_marker
+  belongs_to :deliverable
   belongs_to :creator, class_name: "User"
 
   validates :church_ministry, presence: true
-  validates :ministry_marker, presence: true
+  validates :deliverable, presence: true
   validates :creator, presence: true
   validates :month, presence: true, format: { with: /\A[2-9]\d{3}-(0|1)[0-9]\z/, message: "should be in the format 'YYYY-MM'"}
   validates :value, presence: true
   validates :actual, inclusion: [true, false]
-  validate :ministry_marker_belongs_to_church_ministry
+  validate :deliverable_ministry_belongs_to_church_ministry
   validate :year_in_range
   validate :month_in_range
 
   private
 
-  def ministry_marker_belongs_to_church_ministry
-    errors.add(:ministry_marker, "must belong to the church ministry") unless ministry_marker.ministry == church_ministry.ministry
+  def deliverable_ministry_belongs_to_church_ministry
+    errors.add(:deliverable, "must belong to the church ministry") unless deliverable.ministry == church_ministry.ministry
   end
 
   def year_in_range

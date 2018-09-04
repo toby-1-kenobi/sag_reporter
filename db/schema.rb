@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904151852) do
+ActiveRecord::Schema.define(version: 20180904155255) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,6 +119,17 @@ ActiveRecord::Schema.define(version: 20180904151852) do
   end
 
   add_index "data_sources", ["name"], name: "index_data_sources_on_name", unique: true, using: :btree
+
+  create_table "deliverables", force: :cascade do |t|
+    t.string   "name",        null: false
+    t.text     "description"
+    t.integer  "ministry_id", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "deliverables", ["ministry_id"], name: "index_deliverables_on_ministry_id", using: :btree
+  add_index "deliverables", ["name"], name: "index_deliverables_on_name", using: :btree
 
   create_table "dialects", force: :cascade do |t|
     t.integer  "language_id", null: false
@@ -424,19 +435,8 @@ ActiveRecord::Schema.define(version: 20180904151852) do
   add_index "ministries", ["name"], name: "index_ministries_on_name", using: :btree
   add_index "ministries", ["topic_id"], name: "index_ministries_on_topic_id", using: :btree
 
-  create_table "ministry_markers", force: :cascade do |t|
-    t.string   "name",        null: false
-    t.text     "description"
-    t.integer  "ministry_id", null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  add_index "ministry_markers", ["ministry_id"], name: "index_ministry_markers_on_ministry_id", using: :btree
-  add_index "ministry_markers", ["name"], name: "index_ministry_markers_on_name", using: :btree
-
   create_table "ministry_outputs", force: :cascade do |t|
-    t.integer  "ministry_marker_id", null: false
+    t.integer  "deliverable_id",     null: false
     t.string   "month",              null: false
     t.integer  "value",              null: false
     t.boolean  "actual",             null: false
@@ -449,7 +449,7 @@ ActiveRecord::Schema.define(version: 20180904151852) do
   add_index "ministry_outputs", ["actual"], name: "index_ministry_outputs_on_actual", using: :btree
   add_index "ministry_outputs", ["church_ministry_id"], name: "index_ministry_outputs_on_church_ministry_id", using: :btree
   add_index "ministry_outputs", ["creator_id"], name: "index_ministry_outputs_on_creator_id", using: :btree
-  add_index "ministry_outputs", ["ministry_marker_id"], name: "index_ministry_outputs_on_ministry_marker_id", using: :btree
+  add_index "ministry_outputs", ["deliverable_id"], name: "index_ministry_outputs_on_deliverable_id", using: :btree
   add_index "ministry_outputs", ["month"], name: "index_ministry_outputs_on_month", using: :btree
 
   create_table "ministry_workers", force: :cascade do |t|
@@ -857,6 +857,7 @@ ActiveRecord::Schema.define(version: 20180904151852) do
   add_foreign_key "creations", "people"
   add_foreign_key "curatings", "geo_states"
   add_foreign_key "curatings", "users"
+  add_foreign_key "deliverables", "ministries"
   add_foreign_key "dialects", "languages"
   add_foreign_key "districts", "geo_states"
   add_foreign_key "edits", "users"
@@ -879,9 +880,8 @@ ActiveRecord::Schema.define(version: 20180904151852) do
   add_foreign_key "languages", "projects"
   add_foreign_key "languages", "users", column: "champion_id"
   add_foreign_key "ministries", "topics"
-  add_foreign_key "ministry_markers", "ministries"
   add_foreign_key "ministry_outputs", "church_ministries"
-  add_foreign_key "ministry_outputs", "ministry_markers"
+  add_foreign_key "ministry_outputs", "deliverables"
   add_foreign_key "ministry_outputs", "users", column: "creator_id"
   add_foreign_key "ministry_workers", "ministries"
   add_foreign_key "ministry_workers", "users", column: "worker_id"

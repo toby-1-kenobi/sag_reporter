@@ -1,7 +1,7 @@
 FactoryBot.define do
-  factory :ministry_marker do
-    name { "My ministry marker" }
-    description  { "My ministry marker description" }
+  factory :deliverable do
+    name { "My deliverable" }
+    description  { "My deliverable description" }
     ministry
   end
 end
