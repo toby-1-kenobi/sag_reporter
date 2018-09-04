@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904115251) do
+ActiveRecord::Schema.define(version: 20180904121106) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,14 +89,6 @@ ActiveRecord::Schema.define(version: 20180904115251) do
   add_index "church_teams", ["organisation_id", "village"], name: "index_village_church", unique: true, using: :btree
   add_index "church_teams", ["organisation_id"], name: "index_church_teams_on_organisation_id", using: :btree
   add_index "church_teams", ["village"], name: "index_church_teams_on_village", using: :btree
-
-  create_table "clusters", force: :cascade do |t|
-    t.string   "name",       null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "clusters", ["name"], name: "index_clusters_on_name", unique: true, using: :btree
 
   create_table "creations", force: :cascade do |t|
     t.integer  "person_id"
@@ -348,7 +340,6 @@ ActiveRecord::Schema.define(version: 20180904115251) do
     t.integer  "pop_source_id"
     t.text     "location"
     t.integer  "number_of_translations"
-    t.integer  "cluster_id"
     t.text     "info"
     t.text     "translation_info"
     t.integer  "translation_need",                    default: 0,       null: false
@@ -399,7 +390,6 @@ ActiveRecord::Schema.define(version: 20180904115251) do
   end
 
   add_index "languages", ["champion_id"], name: "index_languages_on_champion_id", using: :btree
-  add_index "languages", ["cluster_id"], name: "index_languages_on_cluster_id", using: :btree
   add_index "languages", ["family_id"], name: "index_languages_on_family_id", using: :btree
   add_index "languages", ["iso"], name: "index_languages_on_iso", unique: true, using: :btree
   add_index "languages", ["name"], name: "index_languages_on_name", using: :btree
@@ -883,7 +873,6 @@ ActiveRecord::Schema.define(version: 20180904115251) do
   add_foreign_key "language_progresses", "state_languages"
   add_foreign_key "language_users", "languages"
   add_foreign_key "language_users", "users"
-  add_foreign_key "languages", "clusters"
   add_foreign_key "languages", "data_sources", column: "pop_source_id"
   add_foreign_key "languages", "language_families", column: "family_id"
   add_foreign_key "languages", "projects"
