@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904121106) do
+ActiveRecord::Schema.define(version: 20180904151852) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,11 +66,12 @@ ActiveRecord::Schema.define(version: 20180904121106) do
   end
 
   create_table "church_ministries", force: :cascade do |t|
-    t.integer  "church_team_id", null: false
-    t.integer  "ministry_id",    null: false
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
-    t.integer  "language_id",    null: false
+    t.integer  "church_team_id",             null: false
+    t.integer  "ministry_id",                null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "language_id",                null: false
+    t.integer  "status",         default: 0, null: false
   end
 
   add_index "church_ministries", ["church_team_id", "ministry_id"], name: "index_church_ministry", unique: true, using: :btree
