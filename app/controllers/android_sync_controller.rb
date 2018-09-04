@@ -29,6 +29,8 @@ class AndroidSyncController < ApplicationController
       case entry
         when ProgressMarker
           {description: entry.description_for(@external_user)}
+        when ProgressUpdate
+          {month: "#{entry.year}-#{'%02i' % entry.month}"}
         else
           {}
       end
