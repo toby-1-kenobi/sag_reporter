@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904164015) do
+ActiveRecord::Schema.define(version: 20180904171359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -233,6 +233,20 @@ ActiveRecord::Schema.define(version: 20180904164015) do
   end
 
   add_index "external_devices", ["user_id"], name: "index_external_devices_on_user_id", using: :btree
+
+  create_table "facilitator_feedbacks", force: :cascade do |t|
+    t.integer  "church_ministry_id", null: false
+    t.string   "month",              null: false
+    t.text     "feedback",           null: false
+    t.integer  "team_member_id"
+    t.text     "response"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "facilitator_feedbacks", ["church_ministry_id"], name: "index_facilitator_feedbacks_on_church_ministry_id", using: :btree
+  add_index "facilitator_feedbacks", ["month"], name: "index_facilitator_feedbacks_on_month", using: :btree
+  add_index "facilitator_feedbacks", ["team_member_id"], name: "index_facilitator_feedbacks_on_team_member_id", using: :btree
 
   create_table "finish_line_markers", force: :cascade do |t|
     t.string   "name",        null: false
@@ -873,6 +887,8 @@ ActiveRecord::Schema.define(version: 20180904164015) do
   add_foreign_key "events_purposes", "events"
   add_foreign_key "events_purposes", "purposes"
   add_foreign_key "external_devices", "users"
+  add_foreign_key "facilitator_feedbacks", "church_ministries"
+  add_foreign_key "facilitator_feedbacks", "users", column: "team_member_id"
   add_foreign_key "finish_line_progresses", "finish_line_markers"
   add_foreign_key "finish_line_progresses", "languages"
   add_foreign_key "geo_states", "zones"

@@ -48,6 +48,7 @@ class User < ActiveRecord::Base
   has_many :approved_registrations, class_name: 'RegistrationApproval', foreign_key: 'approver_id', dependent: :destroy, inverse_of: :approver
   has_many :registering_users, through: :approved_registrations, class_name: 'User', inverse_of: :registration_approvers
   has_many :registration_approved_zones, through: :registration_approvers, source: :zones
+  has_many :facilitator_responses, class_name: 'FacilitatorFeedback', inverse_of: :team_member, dependent: :nullify
 
   attr_accessor :remember_token
 
