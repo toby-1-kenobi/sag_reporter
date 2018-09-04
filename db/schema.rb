@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904155255) do
+ActiveRecord::Schema.define(version: 20180904161337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -703,13 +703,17 @@ ActiveRecord::Schema.define(version: 20180904155255) do
     t.string   "client",              default: "LCR",     null: false
     t.string   "version",             default: "unknown", null: false
     t.boolean  "significant",         default: false,     null: false
+    t.integer  "project_id"
+    t.integer  "church_ministry_id"
   end
 
   add_index "reports", ["challenge_report_id"], name: "index_reports_on_challenge_report_id", using: :btree
+  add_index "reports", ["church_ministry_id"], name: "index_reports_on_church_ministry_id", using: :btree
   add_index "reports", ["event_id"], name: "index_reports_on_event_id", using: :btree
   add_index "reports", ["geo_state_id"], name: "index_reports_on_geo_state_id", using: :btree
   add_index "reports", ["impact_report_id"], name: "index_reports_on_impact_report_id", using: :btree
   add_index "reports", ["planning_report_id"], name: "index_reports_on_planning_report_id", using: :btree
+  add_index "reports", ["project_id"], name: "index_reports_on_project_id", using: :btree
   add_index "reports", ["report_date"], name: "index_reports_on_report_date", using: :btree
   add_index "reports", ["reporter_id"], name: "index_reports_on_reporter_id", using: :btree
   add_index "reports", ["status"], name: "index_reports_on_status", using: :btree
@@ -912,10 +916,12 @@ ActiveRecord::Schema.define(version: 20180904155255) do
   add_foreign_key "registration_approvals", "users", column: "approver_id"
   add_foreign_key "registration_approvals", "users", column: "registering_user_id"
   add_foreign_key "reports", "challenge_reports"
+  add_foreign_key "reports", "church_ministries"
   add_foreign_key "reports", "events"
   add_foreign_key "reports", "geo_states"
   add_foreign_key "reports", "impact_reports"
   add_foreign_key "reports", "planning_reports"
+  add_foreign_key "reports", "projects"
   add_foreign_key "reports", "sub_districts"
   add_foreign_key "state_languages", "geo_states"
   add_foreign_key "state_languages", "languages"

@@ -14,6 +14,8 @@ class Report < ActiveRecord::Base
   has_many :pictures, class_name: 'UploadedFile', dependent: :nullify, after_add: :update_self, after_remove: :update_self
   has_many :observations, inverse_of: :report, dependent: :destroy
   has_many :observers, through: :observations, source: 'person', after_add: :update_self, after_remove: :update_self
+  belongs_to :project
+  belongs_to :church_ministry
   accepts_nested_attributes_for :pictures,
                                 allow_destroy: true,
                                 reject_if: :all_blank
