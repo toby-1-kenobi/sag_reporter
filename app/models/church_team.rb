@@ -1,4 +1,4 @@
-class ChurchCongregation < ActiveRecord::Base
+class ChurchTeam < ActiveRecord::Base
   belongs_to :organisation
   has_many :users, dependent: :nullify
   has_many :church_ministries, dependent: :destroy

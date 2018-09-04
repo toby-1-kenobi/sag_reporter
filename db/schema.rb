@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180903121137) do
+ActiveRecord::Schema.define(version: 20180904115251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,7 +65,20 @@ ActiveRecord::Schema.define(version: 20180903121137) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "church_congregations", force: :cascade do |t|
+  create_table "church_ministries", force: :cascade do |t|
+    t.integer  "church_team_id", null: false
+    t.integer  "ministry_id",    null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.integer  "language_id",    null: false
+  end
+
+  add_index "church_ministries", ["church_team_id", "ministry_id"], name: "index_church_ministry", unique: true, using: :btree
+  add_index "church_ministries", ["church_team_id"], name: "index_church_ministries_on_church_team_id", using: :btree
+  add_index "church_ministries", ["language_id"], name: "index_church_ministries_on_language_id", using: :btree
+  add_index "church_ministries", ["ministry_id"], name: "index_church_ministries_on_ministry_id", using: :btree
+
+  create_table "church_teams", force: :cascade do |t|
     t.string   "name"
     t.integer  "organisation_id"
     t.string   "village",         null: false
@@ -73,22 +86,9 @@ ActiveRecord::Schema.define(version: 20180903121137) do
     t.datetime "updated_at",      null: false
   end
 
-  add_index "church_congregations", ["organisation_id", "village"], name: "index_village_church", unique: true, using: :btree
-  add_index "church_congregations", ["organisation_id"], name: "index_church_congregations_on_organisation_id", using: :btree
-  add_index "church_congregations", ["village"], name: "index_church_congregations_on_village", using: :btree
-
-  create_table "church_ministries", force: :cascade do |t|
-    t.integer  "church_congregation_id", null: false
-    t.integer  "ministry_id",            null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "language_id",            null: false
-  end
-
-  add_index "church_ministries", ["church_congregation_id", "ministry_id"], name: "index_church_ministry", unique: true, using: :btree
-  add_index "church_ministries", ["church_congregation_id"], name: "index_church_ministries_on_church_congregation_id", using: :btree
-  add_index "church_ministries", ["language_id"], name: "index_church_ministries_on_language_id", using: :btree
-  add_index "church_ministries", ["ministry_id"], name: "index_church_ministries_on_ministry_id", using: :btree
+  add_index "church_teams", ["organisation_id", "village"], name: "index_village_church", unique: true, using: :btree
+  add_index "church_teams", ["organisation_id"], name: "index_church_teams_on_organisation_id", using: :btree
+  add_index "church_teams", ["village"], name: "index_church_teams_on_village", using: :btree
 
   create_table "clusters", force: :cascade do |t|
     t.string   "name",       null: false
@@ -829,7 +829,7 @@ ActiveRecord::Schema.define(version: 20180903121137) do
     t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
     t.boolean  "forward_planning_curator", default: false, null: false
-    t.integer  "church_congregation_id"
+    t.integer  "church_team_id"
     t.boolean  "facilitator",              default: false, null: false
     t.integer  "training_level"
     t.integer  "registration_status",      default: 2,     null: false
@@ -837,7 +837,7 @@ ActiveRecord::Schema.define(version: 20180903121137) do
     t.integer  "user_type"
   end
 
-  add_index "users", ["church_congregation_id"], name: "index_users_on_church_congregation_id", using: :btree
+  add_index "users", ["church_team_id"], name: "index_users_on_church_team_id", using: :btree
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
@@ -858,10 +858,10 @@ ActiveRecord::Schema.define(version: 20180903121137) do
   add_foreign_key "action_points", "users", column: "record_creator_id"
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
-  add_foreign_key "church_congregations", "organisations"
-  add_foreign_key "church_ministries", "church_congregations"
+  add_foreign_key "church_ministries", "church_teams"
   add_foreign_key "church_ministries", "languages"
   add_foreign_key "church_ministries", "ministries"
+  add_foreign_key "church_teams", "organisations"
   add_foreign_key "creations", "mt_resources"
   add_foreign_key "creations", "people"
   add_foreign_key "curatings", "geo_states"
@@ -935,6 +935,6 @@ ActiveRecord::Schema.define(version: 20180903121137) do
   add_foreign_key "uploaded_files", "reports"
   add_foreign_key "user_benefits", "app_benefits"
   add_foreign_key "user_benefits", "users"
-  add_foreign_key "users", "church_congregations"
+  add_foreign_key "users", "church_teams"
   add_foreign_key "users", "languages", column: "interface_language_id"
 end
