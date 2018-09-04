@@ -22,7 +22,7 @@ class AndroidSyncController < ApplicationController
     join_tables = {
         User: %w(geo_states spoken_languages languages ministries),
         Report: %w(languages observers),
-        ImpactReport: %w(progress_markers)
+        ImpactReport: %w(progress_markers),
         ChurchCongregation: %w(users)
     }
     def additional_tables(entry)
@@ -200,7 +200,7 @@ class AndroidSyncController < ApplicationController
           ],
           :church_ministry => [
               :id,
-              :old_id
+              :old_id,
               :church_congregation_id,
               :ministry_id
           ],
