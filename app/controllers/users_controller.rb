@@ -1,15 +1,18 @@
+require 'securerandom'
 class UsersController < ApplicationController
 
   include ParamsHelper
   include ReportFilter
+  include UsersHelper
 
-  before_action :require_login
+  before_action :require_login, except: [:create_registration]
 
   # A user's profile can only be edited or seen by
   #    themselves or
   #    someone with permission
   before_action :authorised_user_edit, only: [:edit, :update]
   before_action :authorised_user_show, only: [:show]
+  before_action :authorised_user_curate, only: [:user_registration_approval, :zone_curator_accept, :zone_curator_reject]
 
   before_action :assign_for_user_form, only: [:new, :edit]
   before_action :get_param_user, only: [:edit, :update, :destroy]
@@ -37,7 +40,7 @@ class UsersController < ApplicationController
   end
 
   def index
-  	@users = User.order('LOWER(name)').paginate(page: params[:page])
+  	@users = User.approved.order('LOWER(name)').paginate(page: params[:page])
   end
 
   def create
@@ -59,6 +62,25 @@ class UsersController < ApplicationController
     end
   end
 
+  def create_registration
+    user_factory = User::Factory.new
+    registration_params = user_params
+    registration_params[:registration_status] = 0
+    tmp_password = SecureRandom.hex
+    registration_params[:password] = tmp_password
+    registration_params[:password_confirmation] = tmp_password
+    user_factory.build_user(registration_params)
+    @user = user_factory.instance
+    if (Rails.env.development? or verify_recaptcha(modal: @user)) and @user.save
+      user_registration_request_mail(@user.zones)
+      flash[:success] = "When your registration is approved you will receive further instructions"
+      render 'sessions/new'
+    else
+      @geo_states = GeoState.all.order(:name)
+      render 'sessions/sign_up'
+    end
+  end
+
   def edit
   end
 
@@ -70,7 +92,11 @@ class UsersController < ApplicationController
         message = 'Profile updated with email. Please check mail and confirm your email.'
       end
       flash['success'] = message
-      redirect_to @user
+      if @user.approved?
+        redirect_to @user
+      else
+        redirect_to user_approval_path
+      end
     else
       @user = updater.instance()
       assign_for_user_form
@@ -139,6 +165,59 @@ class UsersController < ApplicationController
     end
   end
 
+  def user_registration_approval
+    @registrations = {}
+    @registrations['new'] = User.unapproved.in_zones(logged_in_user.zones)
+    # don't include new registrations that have already been approved in the zones of the logged in user
+    @registrations['new'] = @registrations['new'].to_a.select{ |u| ((u.zones - u.registration_approved_zones) & logged_in_user.zones).any? }
+    @registrations['zone approved'] = logged_in_user.lci_board_member? ? User.zone_approved : User.none
+  end
+
+  def zone_curator_accept
+    @user = User.find params[:id]
+    if @user
+      result = @user.registration_approval_step(logged_in_user)
+      @success = result[:success]
+      if @success
+        email_send_to_lci_board_members() if @user.zone_approved?
+        if @user.approved?
+          token = @user.generate_pwd_reset_token
+          if token
+            send_pwd_reset_instructions(@user, token)
+          else
+            @user.zone_approved!
+            RegistrationApproval.where(registering_user: @user, approver: logged_in_user).destroy_all
+            @success = false
+            @error = "unable to send password reset instructions to #{@user.name}"
+            Rails.logger.error "User #{@user.id}: could not send password reset instructions"
+          end
+        end
+      else
+        @error = result[:error_message]
+        Rails.logger.error "User #{@user.id} not able to approve"
+      end
+    else
+      @success = false
+      @error = "User registration #{params[:id]} doesn't exist"
+      Rails.logger.error = "User registration not found for id #{params[:id]}"
+    end
+    respond_to :js
+  end
+
+  def zone_curator_reject
+    user = User.find params[:id]
+    name = user.name
+    @user_id = user.id #backup user id to remove row in html page
+    if user.destroy
+      @success = true
+    else
+      @success = false
+      Rails.logger.error "Unable to delete registration for #{name}"
+      Rails.logger.error user.errors.full_messages if user.errors.any?
+    end
+    respond_to :js
+  end
+
   private
 
   def user_params
@@ -153,6 +232,7 @@ class UsersController < ApplicationController
       :email_confirmed,
       :confirm_token,
       :interface_language_id,
+      :training_level,
       :trusted,
       :admin,
       :national,
@@ -162,7 +242,8 @@ class UsersController < ApplicationController
       {:speaks => []},
       {:geo_states => []},
       {:curated_states => []},
-      :reset_password
+      :reset_password,
+      :zone_admin
     ]
     # current user cannot change own access level or state
     if params[:id] and logged_in_user?(User.find(params[:id]))
@@ -172,8 +253,8 @@ class UsersController < ApplicationController
         p == {:geo_states => []} ||
             p == {:curated_states => []} ||
             p == {:projects => []} ||
-            [:trusted, :national].include?(p)
-      } unless logged_in_user.admin?
+            [:trusted, :national, :training_level].include?(p)
+      } unless logged_in_user.admin? or logged_in_user.zone_admin?
     end
     params.require(:user).permit(safe_params)
   end
@@ -190,7 +271,10 @@ class UsersController < ApplicationController
   def authorised_user_edit
     get_param_user
     redirect_to(root_url) unless
-        logged_in_user?(@user) or logged_in_user.admin?
+        logged_in_user?(@user) or
+            logged_in_user.admin? or
+            logged_in_user.lci_board_member? or
+            (logged_in_user.zone_admin? and (@user.zones & logged_in_user.zones).any?)
   end
 
   # Confirms authorised user for show.
@@ -200,8 +284,38 @@ class UsersController < ApplicationController
         logged_in_user?(@user) or logged_in_user.admin?
   end
 
+  def authorised_user_curate
+    redirect_to(root_url) unless
+            logged_in_user.admin? or
+            logged_in_user.lci_board_member? or
+            logged_in_user.zone_admin?
+  end
+
   def get_param_user
     @user = User.find(params[:id])
+  end
+
+  def user_registration_request_mail(zones)
+    zones.each do |zone|
+      curators = User.includes(:geo_states).where(zone_admin: true, geo_states: {zone_id: zone.id})
+      curators.each do |curator|
+        if curator.email.present?
+          logger.debug "sending registration request to email: #{curator.email}"
+          UserMailer.registration_request_email(curator).deliver_now
+          true
+        end
+      end
+    end
+  end
+
+  def email_send_to_lci_board_members()
+    lci_boa6cHSPWido3Ijrd_members = User.where(lci_board_member: true)
+    lci_board_members.each do |board_member|
+      if board_member.email.present?
+        logger.debug "sending registered user information to email: #{board_member.email}"
+        UserMailer.send_email_to_lci_board_members(board_member).deliver_now
+      end
+    end
   end
 
 end

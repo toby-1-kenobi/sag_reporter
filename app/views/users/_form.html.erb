@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <% if logged_in_user.admin? %>
+    <% if logged_in_user.admin? or logged_in_user.zone_admin? %>
       <div id="user-permissions-input">
         <h3>Privileges</h3>
         <div class="permission-control">
@@ -59,6 +59,18 @@
             <%= f.check_box(:trusted, class: 'mdl-switch__input') %>
             <span class="mdl-switch__label">View sensitive data</span>
           <% end %>
+        </div>
+        <div class="permission-control">
+          <%= f.label :zone_admin, class: 'mdl-switch mdl-js-switch mdl-js-ripple-effect' do %>
+            <%= f.check_box(:zone_admin, class: 'mdl-switch__input') %>
+            <span class="mdl-switch__label">Zone administrator</span>
+          <% end %>
+        </div>
+        <div class="permission-control">
+          <div id="training-level-select" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+            <%= f.select(:training_level, User.training_levels.keys.map{ |tl| [tl.humanize, tl] }, options = {}, html_options = {class: 'mdlext-selectfield__select'}) %>
+            <%= f.label :training_level, 'Level of training', class: 'mdlext-selectfield__label' %>
+          </div>
         </div>
       </div>
 

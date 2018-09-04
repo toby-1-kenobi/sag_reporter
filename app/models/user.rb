@@ -3,11 +3,17 @@ class User < ActiveRecord::Base
   include ContactDetails
 
   enum training_level: {
-    trainee: 0,
-    worker: 1,
-    trainer: 2,
-    consultant: 3
+    team_member: 1,
+    facilitator: 2,
+    project_supervisor: 4,
   }
+
+  enum registration_status: {
+      unapproved: 0,
+      zone_approved: 1,
+      approved: 2
+  }
+
 
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter, dependent: :restrict_with_error
   has_many :events, inverse_of: :record_creator, dependent: :restrict_with_error
@@ -16,6 +22,7 @@ class User < ActiveRecord::Base
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'
   has_and_belongs_to_many :spoken_languages, class_name: 'Language', after_add: :update_self, after_remove: :update_self
   has_and_belongs_to_many :geo_states, after_add: :update_self, after_remove: :update_self
+  has_many :zones, through: :geo_states
   has_many :output_counts, dependent: :restrict_with_error
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :restrict_with_error
@@ -36,6 +43,11 @@ class User < ActiveRecord::Base
   has_many :ministry_outputs, inverse_of: :creator, dependent: :restrict_with_error
   has_many :language_users, dependent: :destroy
   has_many :languages, through: :language_users
+  has_many :registration_approvals, foreign_key: 'registering_user_id', dependent: :destroy, inverse_of: :registering_user
+  has_many :registration_approvers, through: :registration_approvals, class_name: 'User', source: :approver, inverse_of: :registering_users
+  has_many :approved_registrations, class_name: 'RegistrationApproval', foreign_key: 'approver_id', dependent: :destroy, inverse_of: :approver
+  has_many :registering_users, through: :approved_registrations, class_name: 'User', inverse_of: :registration_approvers
+  has_many :registration_approved_zones, through: :registration_approvers, source: :zones
 
   attr_accessor :remember_token
 
@@ -72,6 +84,8 @@ class User < ActiveRecord::Base
   after_save :send_confirmation_email
 
   scope :curating, ->(edit) { joins(:curated_states).where('geo_states.id' => edit.geo_states) }
+
+  scope :in_zones, ->(zones) { joins(:geo_states).where('geo_states.zone_id' => zones).uniq }
 
   # Returns the hash digest of the given string.
   def User.digest(string)
@@ -139,10 +153,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def zones
-    Zone.of_states geo_states
-  end
-
   def email_activate
     self.email_confirmed = true
     self.confirm_token = nil
@@ -203,12 +213,57 @@ class User < ActiveRecord::Base
     self.touch if self.persisted?
   end
 
+  # a user registration must first be approved by a zone admin
+  # in each zone that the user is in, then it reaches the next level of approval
+  # and it must be approved by an LCI board member
+  # returns a hash with key :success indicating if it worked
+  def registration_approval_step(approver)
+    if unapproved?
+      approval = registration_approvals.create(approver: approver)
+      if approval.persisted?
+        reload
+        # check if we have zone approval in each of our zones
+        remaining_zones = zones - registration_approved_zones
+        # if we have covered all zones go to the next approval level
+        if remaining_zones.empty?
+          if registration_approvers.where(lci_board_member: true).any?
+            approved!
+          else
+            zone_approved!
+          end
+        end
+        return { success: true }
+      else
+        Rails.logger.error("unable to create a zonal registration approval for user #{id} from user #{approver.id} - #{approval.errors.full_messages}")
+        return { success: false, error_message: "unable to approve this user! #{approval.errors.full_messages}" }
+      end
+    elsif zone_approved?
+      if approver.lci_board_member? or approver.admin?
+        if email.present?
+          approved!
+          # registration has gone through two human approval process
+          # assume that email address is correct
+          update_attribute(:email_confirmed, true)
+          return { success: true }
+        else
+          return { success: false, error_message: 'Cannot approve a user with no email address' }
+        end
+      else
+        Rails.logger.error "Unprivileged user id: #{approver.id} attempted to approve user registration id #{id}"
+        return { success: false, error_message: 'You do not have permission to give final approval' }
+      end
+    else
+      Rails.logger.error "User #{id} triggered registration_approval_step when registration_status is #{registration_status}"
+      return { success: false, error_message: 'User was already approved' }
+    end
+  end
+
   private
 
   # Check if the email address has been updated and it is present
   # if so send an email to confirm their email address.
   def send_confirmation_email
-    if self.email_changed? && self.email.present?
+    if self.email_changed? && self.email.present? && self.registration_status != 'unapproved'
       self.update_columns(
           confirm_token: SecureRandom.urlsafe_base64.to_s,
           email_confirmed: false

@@ -1,0 +1,67 @@
+<% provide(:title, 'Sign up') %>
+<% provide(:context_title, 'Apply for user account') %>
+<% @interface_languages = Language.where.not(locale_tag: nil).order(:name) %>
+
+<%= form_for(@user, url: signup_path, html: { id: 'user-registration-form' }) do |f| %>
+  <div id="registration-feedback-messages">
+    <%= render 'shared/error_messages', object: f.object %>
+  </div>
+  <div id="registration-user-details">
+    <div class="mdl-textfield mdl-js-textfield">
+      <i class="material-icons mdl-textfield__icon">account_circle</i>
+      <%= f.text_field :name, class: 'mdl-textfield__input',:required => true %>
+      <%= f.label :name, class: 'mdl-textfield__label' %>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield">
+      <i class="material-icons mdl-textfield__icon">phone</i>
+      <%= f.telephone_field :phone, class: 'mdl-textfield__input', :required => true %>
+      <%= f.label :phone, class: 'mdl-textfield__label' %>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield">
+      <i class="material-icons mdl-textfield__icon">email</i>
+      <%= f.email_field :email, class: 'mdl-textfield__input', :required => true %>
+      <%= f.label :email, class: 'mdl-textfield__label' %>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield">
+      <%= f.text_field :role_description, class: 'mdl-textfield__input' %>
+      <%= f.label :role_description, class: 'mdl-textfield__label' %>
+    </div>
+    <div  class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label mdl-textfield mdl-js-textfield">
+      <%= f.collection_select(:interface_language_id, @interface_languages, :id, :name, options = {}, html_options = {class: 'mdlext-selectfield__select'}) %>
+      <%= f.label :interface_language_id, 'Language for using Reporter', class: 'mdlext-selectfield__label' %>
+    </div>
+  </div>
+  <%# splits the list of states into halves to show side-by-side %>
+  <% slices = {} %>
+  <% slices['first'], slices['second'] = @geo_states.each_slice((@geo_states.count/2.0).round).to_a %>
+  <% slices.each do |ordinal, slice| %>
+    <div id="registration-states-<%= ordinal %>-half">
+      <ul class="mdl-list">
+        <% slice.each do |geo_state| %>
+          <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+              <%= geo_state.name %>
+            </span>
+            <span class="mdl-list__item-secondary-action">
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="state-checkbox-<%= geo_state.id %>">
+                <input
+                  type="checkbox"
+                  id="state-checkbox-<%= geo_state.id %>"
+                  name="user[geo_states][<%= geo_state.id %>]"
+                  value="<%= geo_state.id %>"
+                  class="mdl-checkbox__input"
+                  <%= (@user.geo_states.include? geo_state) ? 'checked' : '' %>
+                  />
+              </label>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= recaptcha_tags %>
+  <%= button_tag type: 'submit', id: "registration-submit-button", class: "mdl-button mdl-button--raised mdl-button--accent mdl-js-button mdl-js-ripple-effect" do %>
+    Register <i class="material-icons mdl-textfield__icon">send</i>
+  <% end %>
+<% end %>
+

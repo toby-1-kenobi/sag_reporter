@@ -239,6 +239,25 @@ describe User do
     _(User.curating(nb_edit)).wont_include user_curating_assam
   end
 
+  it 'scopes to zones' do
+    zone_a = Zone.new(name: 'A')
+    zone_b = Zone.new(name: 'B')
+    zone_c = Zone.new(name: 'C')
+    state_a = FactoryBot.create(:geo_state, zone: zone_a)
+    state_b = FactoryBot.create(:geo_state, zone: zone_b)
+    state_c = FactoryBot.create(:geo_state, zone: zone_c)
+    user_a = FactoryBot.create(:user)
+    user_a.geo_states << state_a
+    user_bc = FactoryBot.create(:user)
+    user_bc.geo_states << [state_b, state_c]
+    user_c = FactoryBot.create(:user)
+    user_c.geo_states << state_c
+    users_in_ab = User.in_zones([zone_a, zone_b])
+    _(users_in_ab).must_include user_a
+    _(users_in_ab).must_include user_bc
+    _(users_in_ab).wont_include user_c
+  end
+
   it 'knows if it curates for a language' do
     user.curated_states.clear
     lang = FactoryBot.create(:language)
@@ -246,6 +265,46 @@ describe User do
     user.curated_states << lang.geo_states.first
     user.save
     _(user.curates_for? lang).must_equal true
+  end
+
+  it 'goes through the whole registration approval process' do
+    zone_a = Zone.new(name: 'A')
+    zone_b = Zone.new(name: 'B')
+    zone_c = Zone.new(name: 'C')
+    state_a = FactoryBot.create(:geo_state, zone: zone_a)
+    state_a1 = FactoryBot.create(:geo_state, zone: zone_a)
+    state_b = FactoryBot.create(:geo_state, zone: zone_b)
+    state_c = FactoryBot.create(:geo_state, zone: zone_c)
+    registering_user = FactoryBot.create(:user, registration_status: :unapproved)
+    registering_user.geo_states.clear
+    registering_user.geo_states << [state_a, state_b, state_c]
+    approver_ab = FactoryBot.create(:user, zone_admin: true)
+    approver_ab.geo_states << [state_a1, state_b]
+    _(approver_ab).must_be :persisted?
+    approver_c = FactoryBot.create(:user, zone_admin: true)
+    approver_c.geo_states << [state_c]
+    _(approver_c).must_be :persisted?
+    final_approver = FactoryBot.create(:user, lci_board_member: true)
+    registering_user.registration_approval_step(approver_ab)
+    Rails.logger.debug("all approvals: #{RegistrationApproval.all.inspect}")
+    _(registering_user).must_be :unapproved?
+    registering_user.registration_approval_step(approver_c)
+    Rails.logger.debug("all approvals: #{RegistrationApproval.all.inspect}")
+    _(registering_user).must_be :zone_approved?
+    registering_user.registration_approval_step(final_approver)
+    _(registering_user).must_be :approved?
+  end
+
+  it 'gets approved directly on lci_board_member approval' do
+    zone_a = Zone.new(name: 'A')
+    state_a = FactoryBot.create(:geo_state, zone: zone_a)
+    registering_user = FactoryBot.create(:user, registration_status: :unapproved)
+    registering_user.geo_states.clear
+    registering_user.geo_states << [state_a]
+    approver = FactoryBot.create(:user, zone_admin: true, lci_board_member: true)
+    approver.geo_states << [state_a]
+    registering_user.registration_approval_step(approver)
+    _(registering_user).must_be :approved?
   end
 
 end

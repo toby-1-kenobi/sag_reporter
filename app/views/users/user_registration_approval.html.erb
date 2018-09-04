@@ -1,0 +1,37 @@
+<% provide(:title, 'User Registrations') %>
+<% provide(:context_title, 'Curate User Registrations') %>
+
+<% @registrations.select{ |_,r| r.any? }.each do |approval_level, registrations| %>
+  <h2><%= approval_level.capitalize %> User Registrations</h2>
+  <ul class="mdl-list registration-approval-list">
+    <% registrations.each do |user| %>
+
+      <li class="mdl-list__item" id="new-user-approval-<%= user.id %>">
+        <span class="mdl-list__item-primary-content">
+           <%= link_to user.name, edit_user_path(user) %>
+        </span>
+        <span class="mdl-list__item-secondary-action">
+           <%= button_to zone_curator_accept_path(id: user.id),
+                         class: 'mdl-button approved mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect',
+                         remote: true,
+                         onclick: "return confirm('Approve #{user.name} - Are you sure?')",
+                         method: :post do %>Approve
+           <% end %>
+        </span>
+        <span class="mdl-list__item-secondary-action">
+           <%= button_to zone_curator_reject_path(id: user.id),
+                      class: 'mdl-button mdl-button--raised mdl-js-button mdl-js-ripple-effect',
+                      remote: true,
+                      onclick: "return confirm('Reject #{user.name} - Are you sure?')",
+                      method: :post do %> Reject
+           <% end %>
+        </span>
+      </li>
+
+    <% end %>
+  </ul>
+<% end %>
+
+<% if @registrations.select{ |_,r| r.any? }.empty? %>
+  <p>There are no user registrations waiting your approval</p>
+<% end %>

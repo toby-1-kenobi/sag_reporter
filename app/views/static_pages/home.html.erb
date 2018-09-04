@@ -85,23 +85,36 @@
   </div>
 
   <% edit_count = get_edit_count %>
-  <% if edit_count > 0 %>
+  <% registrations_count = get_registrations_count %>
+  <% if registrations_count + edit_count > 0 %>
   <div id="curator-card" class="mdl-card mdl-shadow--2dp"
      <% if logged_in_user.admin? %>
         style="grid-area: curator;"
-    <% end %>
-  >
-    <div class="mdl-card__title">
-      Curate Edits
-    </div>
+    <% end %>>
+
+    <div class="mdl-card__title">Curate</div>
+
     <div class="mdl-card__supporting-text">
-      You have <span class="edit-count"><%= edit_count %> <%= 'edit'.pluralize(edit_count) %></span> to curate.
-      Please attend to <%= edit_count == 1 ? 'this' : 'these' %> as soon as possible.
+      <% if edit_count > 0 %>
+        You have <span class="edit-count"><%= edit_count %> <%= 'edit'.pluralize(edit_count) %></span> to curate.
+      <% end %>
+      <% if registrations_count > 0 %>
+        You have <span class="edit-count"><%= registrations_count %> <%= 'user registration'.pluralize(registrations_count) %></span> to curate.
+      <% end %>
+        Please attend to <%= edit_count + registrations_count == 1 ? 'this' : 'these' %> as soon as possible.
     </div>
     <div class="mdl-card__actions mdl-card--border">
-      <%= link_to curate_edits_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
+      <% if edit_count > 0 %>
+        <%= link_to curate_edits_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
           <i class="material-icons">done_all</i>
           Curate Edits
+        <% end %>
+      <% end %>
+      <% if registrations_count > 0 %>
+        <%= link_to user_approval_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' do %>
+        <i class="material-icons">person_add</i>
+          Curate Registrations
+        <% end %>
       <% end %>
     </div>
   </div>
@@ -128,7 +141,6 @@
     </div>
   </div>
   <% end %>
-
 </div>
 
 <% grouped_links = @links.select{ |link| link[:condition] }.group_by{ |link| link[:category] } %>
