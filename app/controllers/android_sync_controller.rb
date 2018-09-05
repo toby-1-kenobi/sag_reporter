@@ -4,20 +4,40 @@ class AndroidSyncController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_external
+  #before_action :authenticate_external
 
   def send_request
     safe_params = [
-        :last_sync,
-        :without_reports
+        :last_sync
     ]
     send_request_params = params.require(:external_device).permit(safe_params)
 
-    tables = [User, GeoState, LanguageProgress, Language, Person, Topic, ProgressMarker,
-              Zone, ImpactReport, UploadedFile, MtResource, Organisation, ProgressUpdate, LanguageProgress,
-              StateLanguage, ChurchTeam, ChurchMinistry, Ministry, Deliverable, MinistryOutput,
-              ProductCategory, Project, FacilitatorFeedback]
-    tables << Report unless send_request_params["without_reports"]
+    tables = [
+        [User, %w(name user_type)],
+        [GeoState, %w(name zone_id)],
+        [LanguageProgress, %w(progress_marker_id state_language_id)],
+        [Language, %w(name)],
+        [Person, %w(name geo_state_id)],
+        [Topic, %w(name colour)],
+        [ProgressMarker, %w(name topic_id)],
+        [Zone, %w(name)],
+        [ImpactReport, %w(translation_impact)],
+        [UploadedFile, %w(report_id)],
+        [MtResource, %w(user_id name language_id medium geo_state_id url)],
+        [Organisation, %w(name abbreviation church)],
+        [ProgressUpdate, %w(user_id language_progress_id progress month year)],
+        [LanguageProgress, %w(progress_marker_id state_language_id)],
+        [StateLanguage, %w(geo_state_id language_id project)],
+        [ChurchTeam, %w(name organisation_id village)],
+        [ChurchMinistry, %w(church_team_id ministry_id language_id status)],
+        [Ministry, %w(name description topic_id)],
+        [Deliverable, %w(name description ministry_id for_facilitator)],
+        [MinistryOutput, %w(deliverable_id month value actual church_ministry_id creator_id comment)],
+        [ProductCategory, %w(name)],
+        [Project, %w(name)],
+        [FacilitatorFeedback, %w(church_ministry_id month feedback team_member_id response)],
+        [Report, %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id)]
+    ]
     exclude_attributes = {
         User: %w(password_digest remember_digest otp_secret_key confirm_token reset_password reset_password_token)
     }
@@ -51,12 +71,15 @@ class AndroidSyncController < ApplicationController
           raise "No last sync variable" unless send_request_params["last_sync"]
           last_sync = Time.at send_request_params["last_sync"]
           @needed = {:updated_at => last_sync .. @sync_time}
-          tables.each do |table|
+          tables.each do |table, attributes|
             table_name = table.name.to_sym
             file.write(",")
             file.write "\"#{table_name}\":["
             table.where(@needed).includes(join_tables[table_name]).each_with_index do |entry, index|
-              entry_data = entry.attributes.except("created_at", "updated_at", *exclude_attributes[table_name])
+              entry_data = Hash.new
+              attributes.each do |attribute|
+                entry_data.merge!({attribute => entry.send(attribute)})
+              end
               join_tables[table_name]&.each do |join_table|
                 entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
               end
@@ -370,6 +393,7 @@ class AndroidSyncController < ApplicationController
 end
 # for easily getting all attributes:
 # Language.new.attributes.except("created_at","updated_at").keys.each{|k|puts "          #{k}: xxx.#{k},"}.nil?
+# puts tables.map{|t|  "["+t.name + ", %w(" +t.new&.attributes&.except("created_at", "updated_at", "id")&.keys&.join(" ").to_s + ")],"}
 
 # hm=Person.reflect_on_all_associations(:has_many).map{|r|r.name}
 # hm2=hm.map{|h|h.to_s.singularize + "_ids"}
