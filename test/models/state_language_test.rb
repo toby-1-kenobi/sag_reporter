@@ -67,7 +67,7 @@ describe StateLanguage do
   #   value(max_scores[faith_oa.id]).must_equal 0 # not used
   # end
 
-  it 'returns nil when asked for a table where there is no progress updatetotos' do
+  it 'returns nil when asked for a table where there is no progress updates' do
     start_date = Date.new(2015,7,1)
     end_date = Date.new(2015,12,1)
     _(state_language.outcome_table_data(admin_user, from_date: start_date, to_date: end_date)).must_be_nil
