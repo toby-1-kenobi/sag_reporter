@@ -36,7 +36,7 @@ class AndroidSyncController < ApplicationController
         when ProgressUpdate
           {month: "#{entry.year}-#{'%02i' % entry.month}"}
         when StateLanguage
-          {isPrimary: entry.primary}
+          {is_primary: entry.primary}
         else
           {}
       end
