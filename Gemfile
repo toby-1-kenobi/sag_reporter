@@ -51,7 +51,7 @@ gem 'chartkick', '~> 1.3.2'
 gem 'rails4-autocomplete'
 
 # Use PostgreSQL as the database for Active Record
-gem 'pg', '~> 0.21.0'
+gem 'pg', '~> 0.20.0'
 
 # Output PDF files
 gem 'prawn'

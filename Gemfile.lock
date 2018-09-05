@@ -235,7 +235,7 @@ GEM
       mini_portile2 (~> 2.3.0)
     os (1.0.0)
     pdf-core (0.7.0)
-    pg (0.21.0)
+    pg (0.20.0)
     prawn (2.2.2)
       pdf-core (~> 0.7.0)
       ttfunk (~> 1.5)
@@ -399,7 +399,7 @@ DEPENDENCIES
   minitest-spec-rails
   mocha
   momentjs-rails (~> 2.11, >= 2.11.1)
-  pg (~> 0.21.0)
+  pg (~> 0.20.0)
   prawn
   prawn-graph
   prawn-table

@@ -6,14 +6,16 @@ class Report < ActiveRecord::Base
 
 	belongs_to :reporter, class_name: 'User'
 	belongs_to :event
-  belongs_to :planning_report, inverse_of: :report
-  belongs_to :impact_report, inverse_of: :report, touch: true
-  belongs_to :challenge_report, inverse_of: :report
+  belongs_to :planning_report, inverse_of: :report, dependent: :destroy
+  belongs_to :impact_report, inverse_of: :report, touch: true, dependent: :destroy
+  belongs_to :challenge_report, inverse_of: :report, dependent: :destroy
 	has_and_belongs_to_many :languages, after_add: :update_self, after_remove: :update_self
 	has_and_belongs_to_many :topics
   has_many :pictures, class_name: 'UploadedFile', dependent: :nullify, after_add: :update_self, after_remove: :update_self
   has_many :observations, inverse_of: :report, dependent: :destroy
   has_many :observers, through: :observations, source: 'person', after_add: :update_self, after_remove: :update_self
+  belongs_to :project
+  belongs_to :church_ministry
   accepts_nested_attributes_for :pictures,
                                 allow_destroy: true,
                                 reject_if: :all_blank
@@ -29,6 +31,7 @@ class Report < ActiveRecord::Base
   validates :status, presence: true, allow_nil: false
   validates :report_date, presence: true
   validates :client, presence: true # a string identifying by which application the report was submitted
+  validates :impact_report_id, allow_nil: true, uniqueness: true
   validate :at_least_one_subtype
   #validate :location_present_for_new_record
 
@@ -148,7 +151,11 @@ class Report < ActiveRecord::Base
   end
 
   def make_not_impact
-    self.impact_report.destroy if self.impact_report? and self.impact_report.persisted?
+    if self.impact_report? and self.impact_report.persisted?
+      ir = self.impact_report
+      self.update_attribute(:impact_report_id, nil)
+      ir.destroy
+    end
     if !self.planning_report? && !self.challenge_report?
       self.planning_report = PlanningReport.new
       self.save

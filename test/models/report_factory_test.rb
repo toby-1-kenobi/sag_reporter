@@ -5,20 +5,17 @@ describe Report::Factory do
   let(:factory) { Report::Factory.new }
 
   it "makes valid reports" do
+    languages = FactoryBot.create_list(:language, 2)
     report_params = {
-      "geo_state_id"=>"#{FactoryBot.build(:geo_state).id}",
       "content"=>"This is a test report",
       "impact_report"=>"1",
       "planning_report"=>"1",
       "report_date"=>"1 March, 2016",
-      "mt_society"=>"0",
-      "mt_church"=>"0",
-      "needs_society"=>"0",
-      "needs_church"=>"0",
-      "languages"=>["#{FactoryBot.create(:language, name: 'Toto', iso: 'txo').id}", "#{FactoryBot.create(:language, name: 'Santali', iso: 'san').id}"],
-      reporter: FactoryBot.create(:user)
+      "languages"=>languages.map{ |lang| lang.id.to_s },
+      "geo_state_id"=>languages.first.geo_states.first.id.to_s,
+      "reporter_id"=>FactoryBot.create(:user).id.to_s
     }
-    _(factory.build_report(report_params)).must_equal true
+    _(result = factory.build_report(report_params)).must_equal true
     _(factory.instance()).must_be :valid?
   end
 

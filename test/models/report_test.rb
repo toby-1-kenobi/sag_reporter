@@ -83,7 +83,7 @@ describe Report do
     own_report = report.dup
     non_sensitive_user = FactoryBot.create(:user, trusted = false)
     own_report.reporter = non_sensitive_user
-    own_report.impact_report = impact_report
+    own_report.impact_report = ImpactReport.create
     report.save!
     own_report.save!
     reports = Report.user_limited(non_sensitive_user)

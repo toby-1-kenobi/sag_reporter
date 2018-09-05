@@ -42,7 +42,6 @@ class Language < ActiveRecord::Base
   has_many :translating_organisations, through: :organisation_translations, source: :organisation
   belongs_to :family, class_name: 'LanguageFamily'
   belongs_to :pop_source, class_name: 'DataSource'
-  belongs_to :cluster
   has_many :language_names, dependent: :destroy
   has_many :dialects, dependent: :destroy
   has_many :finish_line_progresses, dependent: :destroy
@@ -54,7 +53,6 @@ class Language < ActiveRecord::Base
   has_many :users, through: :language_users
 
   delegate :name, to: :family, prefix: true, allow_nil: true
-  delegate :name, to: :cluster, prefix: true
 
   validates :name, presence: true, allow_nil: false, uniqueness: true
   validates :iso,

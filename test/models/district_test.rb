@@ -22,7 +22,7 @@ describe District do
   end
 
   it "must have a unique name within it's geo_state" do
-    district.geo_state = GeoState.take
+    district.geo_state = FactoryBot.create(:geo_state)
     d2 = district.dup
     district.save
     d2.valid?
@@ -31,7 +31,7 @@ describe District do
 
   it "may have non-unique name if in different geo_states" do
     d2 = district.dup
-    district.geo_state = GeoState.take
+    district.geo_state = FactoryBot.create(:geo_state)
     d2.geo_state = geo_state
     d2.sub_districts = [sub_district]
     district.save

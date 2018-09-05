@@ -8,7 +8,7 @@ describe MinistryOutput do
   end
 
   it "wont have a ministry marker not belonging to it's ministry" do
-    ministry_output.ministry_marker = FactoryBot.build(:ministry_marker)
+    ministry_output.deliverable = FactoryBot.build(:deliverable)
     value(ministry_output).wont_be :valid?
   end
 

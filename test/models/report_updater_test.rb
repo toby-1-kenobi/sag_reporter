@@ -3,33 +3,23 @@ require "test_helper"
 describe Report::Updater do
 
   let(:updater) { Report::Updater.new(report) }
-  let(:report) { Report.new(
-      reporter: FactoryBot.build(:user),
-      geo_state: FactoryBot.build(:geo_state),
-      content: "This is a test report",
-      impact_report: impact_report,
-      report_date: Date.new(2016, 3, 1)) }
-  let(:impact_report) { ImpactReport.new }
-  let(:english) { FactoryBot.build(:language, name: "English", iso: "eng") }
-  let(:assamese) { FactoryBot.build(:language, name: "Assamese", iso: "asa") }
+  let(:report) { FactoryBot.create(:report) }
+  let(:english) { FactoryBot.create(:language, name: "English", iso: "eng") }
+  let(:assamese) { FactoryBot.create(:language, name: "Assamese", iso: "asa") }
 
   it "updates reports" do
-    updater.instance.languages << FactoryBot.build(:language)
-    updater.instance.topics << FactoryBot.build(:topic)
+    geo_state = FactoryBot.create(:geo_state)
+    updater.instance.languages << FactoryBot.create(:language)
     report_params = {
-      "geo_state_id"=>"#{FactoryBot.create(:geo_state).id}",
+      "geo_state_id"=>"#{geo_state.id}",
       "content"=>"This is an updated report",
       "impact_report"=>"0",
       "planning_report"=>"1",
       "challenge_report"=>"0",
       "report_date"=>"2 March, 2016",
-      "mt_society"=>"0",
-      "mt_church"=>"0",
-      "needs_society"=>"0",
-      "needs_church"=>"0",
       "languages"=>[
-          "#{FactoryBot.create(:state_language, language: english).id}",
-          "#{FactoryBot.create(:state_language, language: assamese).id}"
+          "#{FactoryBot.create(:state_language, language: english, geo_state: geo_state).id}",
+          "#{FactoryBot.create(:state_language, language: assamese, geo_state: geo_state).id}"
       ]
     }
     result = updater.update_report(report_params)

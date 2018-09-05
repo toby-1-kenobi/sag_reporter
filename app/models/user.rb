@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
   has_many :zones, through: :geo_states
   has_many :output_counts, dependent: :restrict_with_error
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
-  has_many :mt_resources, dependent: :restrict_with_error
+  has_many :mt_resources, dependent: :nullify
   has_many :curatings, dependent: :destroy
   has_many :curated_states, through: :curatings, class_name: 'GeoState', source: 'geo_state', inverse_of: :curators
   has_many :edits, dependent: :destroy
@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
   has_many :external_devices
   has_many :championed_languages, class_name: 'Language', inverse_of: :champion, foreign_key: 'champion_id', dependent: :nullify,
            after_add: :update_self, after_remove: :update_self
-  belongs_to :church_congregation
+  belongs_to :church_team
   has_many :ministry_workers, foreign_key: :worker_id, dependent: :destroy, inverse_of: :worker
   has_many :ministries, through: :ministry_workers, inverse_of: :workers
   has_many :user_benefits, dependent: :destroy
@@ -48,6 +48,7 @@ class User < ActiveRecord::Base
   has_many :approved_registrations, class_name: 'RegistrationApproval', foreign_key: 'approver_id', dependent: :destroy, inverse_of: :approver
   has_many :registering_users, through: :approved_registrations, class_name: 'User', inverse_of: :registration_approvers
   has_many :registration_approved_zones, through: :registration_approvers, source: :zones
+  has_many :facilitator_responses, class_name: 'FacilitatorFeedback', inverse_of: :team_member, dependent: :nullify
 
   attr_accessor :remember_token
 

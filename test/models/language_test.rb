@@ -2,24 +2,28 @@ require 'test_helper'
 
 describe Language do
 
-  let(:language) { Language.new name: 'Test language', lwc: false}
+  let(:language) { FactoryBot.build(:language) }
   let(:state_based_user) { FactoryBot.build(:user) }
-  let(:language_prompt_due) { Language.new name: 'prompt due',
+  let(:language_prompt_due) { FactoryBot.build(:language,
+                                               name: 'prompt due',
                                            updated_at: 31.days.ago,
                                            champion: state_based_user,
-                                           champion_prompted: 50.days.ago }
-  let(:language_prompt_nearly_due) { Language.new name: 'prompt nearly due',
+                                           champion_prompted: 50.days.ago) }
+  let(:language_prompt_nearly_due) { FactoryBot.build(:language,
+                                                      name: 'prompt nearly due',
                                                   updated_at: 26.days.ago,
                                                   champion: state_based_user,
-                                                  champion_prompted: 50.days.ago }
-  let(:language_prompt_due_later) { Language.new name: 'prompt due later',
+                                                  champion_prompted: 50.days.ago) }
+  let(:language_prompt_due_later) { FactoryBot.build(:language,
+                                                     name: 'prompt due later',
                                                  updated_at: 24.days.ago,
                                                  champion: state_based_user,
-                                                 champion_prompted: 50.days.ago }
-  let(:language_prompt_overdue) { Language.new name: 'prompt overdue',
+                                                 champion_prompted: 50.days.ago) }
+  let(:language_prompt_overdue) { FactoryBot.build(:language,
+                                                   name: 'prompt overdue',
                                                updated_at: 41.days.ago,
                                                champion: state_based_user,
-                                               champion_prompted: 50.days.ago }
+                                               champion_prompted: 50.days.ago) }
   let(:assam) { FactoryBot.build(:geo_state, name: 'Assam') }
   let(:bihar) { FactoryBot.build(:geo_state, name: 'bihar') }
   let(:national_user) { FactoryBot.build(:user, national: true) }
@@ -34,6 +38,7 @@ describe Language do
   end
 
   it 'returns its states ids' do
+    language.geo_states.clear
   	language.geo_states << assam
   	language.geo_states << bihar
   	assam.stub(:id, 8) do
@@ -69,8 +74,11 @@ describe Language do
   end
 
   it 'will limit scope for state based users' do
+    languages = FactoryBot.create_list(:language, 3)
     _(state_based_user).wont_be :national?
-    #count the languages the user has access to
+    state_based_user.geo_states << languages.first.geo_states
+    state_based_user.save
+    # count the languages the user has access to
     language_count = 0
     state_based_user.geo_states.each do |state|
       language_count += state.languages.count
@@ -86,7 +94,7 @@ describe Language do
   it 'has latest edit date as latest change if more recent than modification date' do
     language.save
     edit = Edit.create(
-            user: state_based_user,
+            user: national_user,
             model_klass_name: 'Language',
             record_id: language.id,
             attribute_name: 'iso',
@@ -97,7 +105,7 @@ describe Language do
     )
     _(language.last_changed.to_a).must_equal language.updated_at.to_a
     edit.created_at = language.updated_at + 1.day
-    edit.save
+    edit.save!
     _(language.last_changed.to_a).must_equal edit.created_at.to_a
   end
 
@@ -128,8 +136,8 @@ describe Language do
   it 'wont prompt champions when there are pending edits in the last month' do
     UserMailer.expects(:prompt_champion).never
     language_prompt_due.save
-    Edit.create(
-        user: state_based_user,
+    Edit.create!(
+        user: national_user,
         model_klass_name: 'Language',
         record_id: language_prompt_due.id,
         attribute_name: 'iso',
