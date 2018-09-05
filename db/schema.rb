@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180904171359) do
+ActiveRecord::Schema.define(version: 20180905042443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -555,33 +555,6 @@ ActiveRecord::Schema.define(version: 20180904171359) do
   add_index "organisations", ["abbreviation"], name: "index_organisations_on_abbreviation", unique: true, using: :btree
   add_index "organisations", ["name"], name: "index_organisations_on_name", unique: true, using: :btree
 
-  create_table "output_counts", force: :cascade do |t|
-    t.integer  "output_tally_id",             null: false
-    t.integer  "user_id",                     null: false
-    t.integer  "language_id",                 null: false
-    t.integer  "amount",          default: 0, null: false
-    t.integer  "year",                        null: false
-    t.integer  "month",                       null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
-    t.integer  "geo_state_id",                null: false
-  end
-
-  add_index "output_counts", ["geo_state_id"], name: "index_output_counts_on_geo_state_id", using: :btree
-  add_index "output_counts", ["language_id"], name: "index_output_counts_on_language_id", using: :btree
-  add_index "output_counts", ["output_tally_id"], name: "index_output_counts_on_output_tally_id", using: :btree
-  add_index "output_counts", ["user_id"], name: "index_output_counts_on_user_id", using: :btree
-
-  create_table "output_tallies", force: :cascade do |t|
-    t.integer  "topic_id",    null: false
-    t.string   "name",        null: false
-    t.text     "description"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  add_index "output_tallies", ["topic_id"], name: "index_output_tallies_on_topic_id", using: :btree
-
   create_table "people", force: :cascade do |t|
     t.string   "name"
     t.text     "description"
@@ -917,11 +890,6 @@ ActiveRecord::Schema.define(version: 20180904171359) do
   add_foreign_key "organisation_translations", "languages"
   add_foreign_key "organisation_translations", "organisations"
   add_foreign_key "organisations", "organisations", column: "parent_id"
-  add_foreign_key "output_counts", "geo_states"
-  add_foreign_key "output_counts", "languages"
-  add_foreign_key "output_counts", "output_tallies"
-  add_foreign_key "output_counts", "users"
-  add_foreign_key "output_tallies", "topics"
   add_foreign_key "people", "geo_states"
   add_foreign_key "people", "languages"
   add_foreign_key "people", "users"
