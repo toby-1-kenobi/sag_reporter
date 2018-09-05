@@ -78,6 +78,11 @@ class PasswordResetsController < ApplicationController
   end
 
   def password_change
+    checker = StrongPassword::StrengthChecker.new(params[:change_password][:password])
+    if checker.is_weak?
+      flash.now[:error] = "Your password is too weak"
+      render 'password_resets/change_password'
+    else
       if logged_in_user.update_attributes(
                            password: params[:change_password][:password],
                            password_confirmation: params[:change_password][:password_confirmation]
@@ -88,6 +93,7 @@ class PasswordResetsController < ApplicationController
         flash.now[:error] = 'Your password update failed'
         render 'password_resets/change_password'
       end
+    end
   end
 
   private

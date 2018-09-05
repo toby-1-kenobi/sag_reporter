@@ -82,6 +82,14 @@ class User < ActiveRecord::Base
   validates :national_curator, inclusion: [true, false]
   validate :interface_language_must_have_locale_tag
 
+  include ActiveModel::Validations
+
+  # Basic usage.  Defaults to minimum entropy of 18 and no dictionary checking
+  validates :password, password_strength: true
+  # Alternative way to request password strength validation on a field
+  validates_password_strength :password
+
+
   after_save :send_confirmation_email
 
   scope :curating, ->(edit) { joins(:curated_states).where('geo_states.id' => edit.geo_states) }
