@@ -77,7 +77,7 @@ class AndroidSyncController < ApplicationController
             file.write "\"#{table_name}\":["
             table.where(@needed).includes(join_tables[table_name]).each_with_index do |entry, index|
               entry_data = Hash.new
-              attributes.each do |attribute|
+              (attributes + ["id"]).each do |attribute|
                 entry_data.merge!({attribute => entry.send(attribute)})
               end
               join_tables[table_name]&.each do |join_table|
