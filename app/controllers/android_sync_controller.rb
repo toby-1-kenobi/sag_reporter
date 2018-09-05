@@ -15,8 +15,8 @@ class AndroidSyncController < ApplicationController
 
     tables = [User, GeoState, LanguageProgress, Language, Person, Topic, ProgressMarker,
               Zone, ImpactReport, UploadedFile, MtResource, Organisation, ProgressUpdate, LanguageProgress,
-              StateLanguage, ChurchCongregation, ChurchMinistry, Ministry, MinistryMarker, MinistryOutput,
-              ProductCategory]
+              StateLanguage, ChurchTeam, ChurchMinistry, Ministry, Deliverable, MinistryOutput,
+              ProductCategory, Project, FacilitatorFeedback]
     tables << Report unless send_request_params["without_reports"]
     exclude_attributes = {
         User: %w(password_digest remember_digest otp_secret_key confirm_token reset_password reset_password_token)
@@ -25,7 +25,9 @@ class AndroidSyncController < ApplicationController
         User: %w(geo_states spoken_languages languages ministries),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
-        ChurchCongregation: %w(users)
+        ChurchTeam: %w(users)
+        Project: %w(languages project_users)
+        MtResource: %w(product_categories)
     }
     def additional_tables(entry)
       case entry
