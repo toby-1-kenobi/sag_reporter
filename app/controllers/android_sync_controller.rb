@@ -25,8 +25,8 @@ class AndroidSyncController < ApplicationController
         User: %w(geo_states spoken_languages languages ministries),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
-        ChurchTeam: %w(users)
-        Project: %w(languages project_users)
+        ChurchTeam: %w(users),
+        Project: %w(languages project_users),
         MtResource: %w(product_categories)
     }
     def additional_tables(entry)
