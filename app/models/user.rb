@@ -34,21 +34,18 @@ class User < ActiveRecord::Base
   has_many :championed_languages, class_name: 'Language', inverse_of: :champion, foreign_key: 'champion_id', dependent: :nullify,
            after_add: :update_self, after_remove: :update_self
   belongs_to :church_team
-  has_many :ministry_workers, foreign_key: :worker_id, dependent: :destroy, inverse_of: :worker
-  has_many :ministries, through: :ministry_workers, inverse_of: :workers
   has_many :user_benefits, dependent: :destroy
   has_many :app_benefits, through: :user_benefits
   has_many :project_users, dependent: :destroy
   has_many :projects, through: :project_users
   has_many :ministry_outputs, inverse_of: :creator, dependent: :restrict_with_error
-  has_many :language_users, dependent: :destroy
-  has_many :languages, through: :language_users
   has_many :registration_approvals, foreign_key: 'registering_user_id', dependent: :destroy, inverse_of: :registering_user
   has_many :registration_approvers, through: :registration_approvals, class_name: 'User', source: :approver, inverse_of: :registering_users
   has_many :approved_registrations, class_name: 'RegistrationApproval', foreign_key: 'approver_id', dependent: :destroy, inverse_of: :approver
   has_many :registering_users, through: :approved_registrations, class_name: 'User', inverse_of: :registration_approvers
   has_many :registration_approved_zones, through: :registration_approvers, source: :zones
   has_many :facilitator_responses, class_name: 'FacilitatorFeedback', inverse_of: :team_member, dependent: :nullify
+  has_one :facilitator, dependent: :destroy
 
   attr_accessor :remember_token
 

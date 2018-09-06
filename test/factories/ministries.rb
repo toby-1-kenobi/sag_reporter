@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :ministry do
-    name { "My Ministry" }
+    sequence(:number){ |n| n }
     topic
   end
 end

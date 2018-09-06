@@ -1,6 +1,6 @@
 class ChurchTeam < ActiveRecord::Base
 
-  include state_based
+  include StateBased
 
   belongs_to :organisation
   has_many :users, dependent: :nullify
