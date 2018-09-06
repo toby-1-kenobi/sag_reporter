@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180905042443) do
+ActiveRecord::Schema.define(version: 20180906102023) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,16 +121,14 @@ ActiveRecord::Schema.define(version: 20180905042443) do
   add_index "data_sources", ["name"], name: "index_data_sources_on_name", unique: true, using: :btree
 
   create_table "deliverables", force: :cascade do |t|
-    t.string   "name",                            null: false
-    t.text     "description"
     t.integer  "ministry_id",                     null: false
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
     t.boolean  "for_facilitator", default: false, null: false
+    t.integer  "number"
   end
 
   add_index "deliverables", ["ministry_id"], name: "index_deliverables_on_ministry_id", using: :btree
-  add_index "deliverables", ["name"], name: "index_deliverables_on_name", using: :btree
 
   create_table "dialects", force: :cascade do |t|
     t.integer  "language_id", null: false
@@ -440,14 +438,12 @@ ActiveRecord::Schema.define(version: 20180905042443) do
   add_index "languages_users", ["user_id", "language_id"], name: "index_languages_users_on_user_id_and_language_id", unique: true, using: :btree
 
   create_table "ministries", force: :cascade do |t|
-    t.string   "name",                    null: false
-    t.text     "description"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.integer  "topic_id",    default: 1, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "topic_id",   default: 1, null: false
+    t.integer  "number"
   end
 
-  add_index "ministries", ["name"], name: "index_ministries_on_name", using: :btree
   add_index "ministries", ["topic_id"], name: "index_ministries_on_topic_id", using: :btree
 
   create_table "ministry_outputs", force: :cascade do |t|
@@ -595,12 +591,10 @@ ActiveRecord::Schema.define(version: 20180905042443) do
   add_index "populations", ["year"], name: "index_populations_on_year", using: :btree
 
   create_table "product_categories", force: :cascade do |t|
-    t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "number"
   end
-
-  add_index "product_categories", ["name"], name: "index_product_categories_on_name", unique: true, using: :btree
 
   create_table "progress_markers", force: :cascade do |t|
     t.string   "name"
