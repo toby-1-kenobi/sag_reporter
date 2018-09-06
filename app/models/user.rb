@@ -33,7 +33,8 @@ class User < ActiveRecord::Base
   has_many :external_devices
   has_many :championed_languages, class_name: 'Language', inverse_of: :champion, foreign_key: 'champion_id', dependent: :nullify,
            after_add: :update_self, after_remove: :update_self
-  belongs_to :church_team
+  has_many :church_team_memberships, dependent: :destroy
+  has_many :church_teams, through: :church_team_memberships
   has_many :user_benefits, dependent: :destroy
   has_many :app_benefits, through: :user_benefits
   has_many :project_users, dependent: :destroy

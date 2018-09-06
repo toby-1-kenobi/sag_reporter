@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180906153434) do
+ActiveRecord::Schema.define(version: 20180906155701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,17 @@ ActiveRecord::Schema.define(version: 20180906153434) do
   add_index "church_ministries", ["facilitator_id"], name: "index_church_ministries_on_facilitator_id", using: :btree
   add_index "church_ministries", ["language_id"], name: "index_church_ministries_on_language_id", using: :btree
   add_index "church_ministries", ["ministry_id"], name: "index_church_ministries_on_ministry_id", using: :btree
+
+  create_table "church_team_memberships", force: :cascade do |t|
+    t.integer  "user_id",        null: false
+    t.integer  "church_team_id", null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "church_team_memberships", ["church_team_id"], name: "index_church_team_memberships_on_church_team_id", using: :btree
+  add_index "church_team_memberships", ["user_id", "church_team_id"], name: "index_church_team_user", unique: true, using: :btree
+  add_index "church_team_memberships", ["user_id"], name: "index_church_team_memberships_on_user_id", using: :btree
 
   create_table "church_teams", force: :cascade do |t|
     t.string   "name"
@@ -831,15 +842,12 @@ ActiveRecord::Schema.define(version: 20180906153434) do
     t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
     t.boolean  "forward_planning_curator", default: false, null: false
-    t.integer  "church_team_id"
-    t.boolean  "facilitator",              default: false, null: false
     t.integer  "training_level"
     t.integer  "registration_status",      default: 2,     null: false
     t.boolean  "zone_admin",               default: false, null: false
     t.integer  "user_type"
   end
 
-  add_index "users", ["church_team_id"], name: "index_users_on_church_team_id", using: :btree
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
   add_index "users", ["mother_tongue_id"], name: "index_users_on_mother_tongue_id", using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
@@ -864,6 +872,8 @@ ActiveRecord::Schema.define(version: 20180906153434) do
   add_foreign_key "church_ministries", "facilitators"
   add_foreign_key "church_ministries", "languages"
   add_foreign_key "church_ministries", "ministries"
+  add_foreign_key "church_team_memberships", "church_teams"
+  add_foreign_key "church_team_memberships", "users"
   add_foreign_key "church_teams", "geo_states"
   add_foreign_key "church_teams", "organisations"
   add_foreign_key "creations", "mt_resources"
@@ -941,6 +951,5 @@ ActiveRecord::Schema.define(version: 20180906153434) do
   add_foreign_key "uploaded_files", "reports"
   add_foreign_key "user_benefits", "app_benefits"
   add_foreign_key "user_benefits", "users"
-  add_foreign_key "users", "church_teams"
   add_foreign_key "users", "languages", column: "interface_language_id"
 end
