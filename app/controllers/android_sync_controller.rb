@@ -4,7 +4,7 @@ class AndroidSyncController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-  #before_action :authenticate_external
+  before_action :authenticate_external
 
   def send_request
     safe_params = [
