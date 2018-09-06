@@ -10,6 +10,6 @@ class Ministry < ActiveRecord::Base
   has_many :supervisors, through: :project_streams, class_name: 'User'
   belongs_to :topic
 
-  validates :number, presence: true
+  validates :number, presence: true, uniqueness: true
 
 end
