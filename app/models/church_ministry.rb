@@ -8,6 +8,7 @@ class ChurchMinistry < ActiveRecord::Base
   belongs_to :church_team
   belongs_to :ministry
   belongs_to :language
+  belongs_to :facilitator
   has_many :ministry_outputs, dependent: :restrict_with_exception
   has_many :reports, dependent: :nullify
   has_many :facilitator_feedbacks, dependent: :destroy
@@ -15,5 +16,6 @@ class ChurchMinistry < ActiveRecord::Base
   validates :church_team, presence: true
   validates :ministry, presence: true
   validates :language, presence: true
+  validates :facilitator, presence: true
 
 end

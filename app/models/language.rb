@@ -49,8 +49,8 @@ class Language < ActiveRecord::Base
   belongs_to :champion, class_name: 'User', inverse_of: :championed_languages
   has_many :populations, dependent: :destroy, inverse_of: :language
   belongs_to :project
-  has_many :language_users, dependent: :destroy
-  has_many :users, through: :language_users
+  has_many :facilitator_languages, dependent: :destroy
+  has_many :facilitators, through: :facilitator_languages
 
   delegate :name, to: :family, prefix: true, allow_nil: true
 
@@ -171,6 +171,7 @@ class Language < ActiveRecord::Base
   # the selected filters are indicated by the id of the flm status
   def self.parse_filter_param(param)
     #TODO: what happens if an invalid string comes in?
+    #TODO: what happens if an flm status id has multiple digits?
     flm_filters = {}
     tokens = param.split('-')
     tokens.shift.split('_').each do |flm_number|

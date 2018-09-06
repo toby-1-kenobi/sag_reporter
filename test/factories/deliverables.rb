@@ -1,7 +1,6 @@
 FactoryBot.define do
   factory :deliverable do
-    name { "My deliverable" }
-    description  { "My deliverable description" }
+    sequence(:number){ |n| n }
     ministry
   end
 end
