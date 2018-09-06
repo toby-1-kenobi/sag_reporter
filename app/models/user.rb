@@ -46,6 +46,7 @@ class User < ActiveRecord::Base
   has_many :registration_approved_zones, through: :registration_approvers, source: :zones
   has_many :facilitator_responses, class_name: 'FacilitatorFeedback', inverse_of: :team_member, dependent: :nullify
   has_one :facilitator, dependent: :destroy
+  has_many :project_streams, dependent: :restrict_with_error, inverse_of: :supervisor
 
   attr_accessor :remember_token
 

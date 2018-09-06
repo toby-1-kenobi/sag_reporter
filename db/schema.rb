@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180906135618) do
+ActiveRecord::Schema.define(version: 20180906141816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -639,6 +639,19 @@ ActiveRecord::Schema.define(version: 20180906135618) do
   add_index "progress_updates", ["user_id"], name: "index_progress_updates_on_user_id", using: :btree
   add_index "progress_updates", ["year"], name: "index_progress_updates_on_year", using: :btree
 
+  create_table "project_streams", force: :cascade do |t|
+    t.integer  "project_id",    null: false
+    t.integer  "ministry_id",   null: false
+    t.integer  "supervisor_id", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "project_streams", ["ministry_id"], name: "index_project_streams_on_ministry_id", using: :btree
+  add_index "project_streams", ["project_id", "ministry_id"], name: "index_project_ministry", unique: true, using: :btree
+  add_index "project_streams", ["project_id"], name: "index_project_streams_on_project_id", using: :btree
+  add_index "project_streams", ["supervisor_id"], name: "index_project_streams_on_supervisor_id", using: :btree
+
   create_table "project_users", force: :cascade do |t|
     t.integer  "project_id", null: false
     t.integer  "user_id",    null: false
@@ -905,6 +918,9 @@ ActiveRecord::Schema.define(version: 20180906135618) do
   add_foreign_key "progress_markers", "topics"
   add_foreign_key "progress_updates", "language_progresses"
   add_foreign_key "progress_updates", "users"
+  add_foreign_key "project_streams", "ministries"
+  add_foreign_key "project_streams", "projects"
+  add_foreign_key "project_streams", "users", column: "supervisor_id"
   add_foreign_key "project_users", "projects"
   add_foreign_key "project_users", "users"
   add_foreign_key "registration_approvals", "users", column: "approver_id"
