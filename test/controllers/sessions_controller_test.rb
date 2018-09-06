@@ -102,13 +102,13 @@ class SessionsControllerTest < ActionController::TestCase
 	test 'user should be able to resend otp to phone' do
     BcsSms.expects(:send_otp).returns({'status' => true})
 		session[:temp_user] = @user_email_unconfirmed.id
-		get :resend_otp_to_phone
+		get :resend_otp_to_phone, format: :js
 		assert_response :success
 	end
 
 	test 'user should be able to resend otp to mail with confirmed email' do
 		session[:temp_user] = @user_email_confirmed.id
-		get :resend_otp_to_email
+		get :resend_otp_to_email, format: :js
 		assert_response :success
 	end
 

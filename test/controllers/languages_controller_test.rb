@@ -25,9 +25,12 @@ describe LanguagesController do
   end
 
   it 'lets a user go to the language details for a language in their state' do
-    log_in_as(@normal_user)
-    get :show_details, id: language
-    _(response).must_be :success?
+    flm = FactoryBot.build(:finish_line_marker)
+    FinishLineMarker.stub :find_by_number, flm do
+      log_in_as(@normal_user)
+      get :show_details, id: language
+      _(response).must_be :success?
+    end
   end
 
   it 'wont let a user go to the language dashboard of a language not in their state' do
@@ -55,9 +58,12 @@ describe LanguagesController do
   end
 
   it 'will let a national user go to the language details for any language' do
-    log_in_as(@national_user)
-    get :show_details, id: other_language
-    _(response).must_be :success?
+    flm = FactoryBot.build(:finish_line_marker)
+    FinishLineMarker.stub :find_by_number, flm do
+      log_in_as(@national_user)
+      get :show_details, id: other_language
+      _(response).must_be :success?
+    end
   end
 
   it 'must let an admin user set the language champion' do

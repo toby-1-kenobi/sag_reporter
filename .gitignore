@@ -60,9 +60,6 @@ app/helpers/populations_helper.rb
 db/orgs.rb
 db/orgs_data.csv
 parse_worklog.rb
-test/controllers/edit_controller_test.rb
-test/controllers/finish_line_progress_controller_test.rb
-test/controllers/help_controller_test.rb
 test/controllers/organisations_controller_test.rb
 test/controllers/populations_controller_test.rb
 test/features/view_reports_test.rb

@@ -2,11 +2,6 @@ require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
 
-  def authenticate
-    token = Knock::AuthToken.new(payload: { sub: @admin_user.id }).token
-    request.env['HTTP_AUTHORIZATION'] = "Bearer #{token}"
-  end
-
   let(:some_state) { FactoryBot.create(:geo_state) }
 
   let(:user_params) { { :user => {
@@ -103,11 +98,11 @@ class UsersControllerTest < ActionController::TestCase
     end
   end
 
-  it 'allows admin users to create new trusted curator users' do
+  it 'allows admin users to create new trusted users' do
     log_in_as(@admin_user)
     user_params[:user][:curator] = 'true'
     user_params[:user][:trusted] = 'true'
-    assert_difference 'User.where(curator: true, trusted: true).count' do
+    assert_difference 'User.where(trusted: true).count' do
       post :create, user_params
     end
   end
@@ -168,15 +163,6 @@ class UsersControllerTest < ActionController::TestCase
     _(@normal_user.geo_states).wont_include states[0]
   end
 
-  test 'get user data with token auth' do
-    authenticate
-    get :admin_user
-    response = ActiveSupport::JSON.decode @response.body
-    assert_equal @admin_user.name, response['name']
-    assert_equal @admin_user.phone, response['phone']
-    assert_equal @admin_user.geo_states.count, response['geo_states'].count
-  end
-
   test 'user can update profile with email' do
     log_in_as(@admin_user)
     patch :update, id: @admin_user.id, user: { email: "test123@example.com" }
@@ -193,6 +179,10 @@ class UsersControllerTest < ActionController::TestCase
 
   test 'resend confirm email to user' do
     log_in_as(@admin_user)
+    @admin_user.update_columns(
+        confirm_token: SecureRandom.urlsafe_base64.to_s,
+        email_confirmed: false
+    )
     get :re_confirm_email
     assert_not_nil json_response['message']
     assert_response :success
