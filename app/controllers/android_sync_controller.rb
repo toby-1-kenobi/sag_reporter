@@ -15,7 +15,6 @@ class AndroidSyncController < ApplicationController
     tables = [
         [User, %w(name user_type)],
         [GeoState, %w(name zone_id)],
-        [LanguageProgress, %w(progress_marker_id state_language_id)],
         [Language, %w(name colour)],
         [Person, %w(name geo_state_id)],
         [Topic, %w(name colour)],
@@ -38,9 +37,6 @@ class AndroidSyncController < ApplicationController
         [FacilitatorFeedback, %w(church_ministry_id month feedback team_member_id response)],
         [Report, %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id)]
     ]
-    exclude_attributes = {
-        User: %w(password_digest remember_digest otp_secret_key confirm_token reset_password reset_password_token)
-    }
     join_tables = {
         User: %w(geo_states spoken_languages languages ministries),
         Report: %w(languages observers),
@@ -51,6 +47,15 @@ class AndroidSyncController < ApplicationController
     }
     def additional_tables(entry)
       case entry
+        when User
+          if entry.trusted
+            %w(phone interface_language_id email email_confirmed trusted national
+admin lci_board_member lci_agency_leader reset_password
+church_team_id facilitator zone_admin).map do |attribute|
+              [attribute, entry.send(attribute)]
+            end.to_h
+          else {}
+          end
         when ProgressMarker
           {description: entry.description_for(@external_user)}
         when ProgressUpdate
@@ -220,18 +225,27 @@ class AndroidSyncController < ApplicationController
                   ]}
               ]
           ],
-          :church_congregation => [
+          :ministry => [
+              :id,
+              :old_id,
+              :name,
+              :topic_id
+          ],
+          :church_team => [
               :id,
               :old_id,
               {:user_ids => []},
               :user_ids,
-              :village
+              :village,
+              :geo_state_id
           ],
           :church_ministry => [
               :id,
               :old_id,
-              :church_congregation_id,
-              :ministry_id
+              :church_team_id,
+              :ministry_id,
+              :status,
+              :language_id
           ],
           :ministry_output => [
               :id,
@@ -244,14 +258,17 @@ class AndroidSyncController < ApplicationController
           ]
       ]
       receive_request_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
+      puts receive_request_params
 
       @is_only_test = receive_request_params["is_only_test"]
       @errors = []
       @id_changes = {}
 
-      [Person, ImpactReport, Report, UploadedFile].each do |table|
+      [Person, ImpactReport, Report, UploadedFile, Ministry, ChurchTeam, ChurchMinistry, MinistryOutput].each do |table|
         receive_request_params[table.name.underscore]&.each do |entry|
           new_entry = build table, entry.to_h
+          puts "valid " + new_entry&.valid?.to_s + new_entry.attributes.to_s 
+          puts "IDs: " + @id_changes.to_s
           if @is_only_test
             raise new_entry.errors.messages.to_s unless !new_entry || new_entry.valid?
           else
@@ -304,14 +321,16 @@ class AndroidSyncController < ApplicationController
       # Go through all the entries to check, whether it has an ID from another uploaded entry
       hash.each do |k, v|
         if v.is_a? Array
-          v.map! do |element|
-            # A hash inside an array means always, that the the ID has to be mapped according to the newly created ID
-            # An example would be {..., "observers" => [20, {"old_id" => "Person;100010"}]}
-            if element.is_a? Hash
-              table, old_id = element.values.first.split(";")
-              @id_changes[table][old_id.to_i]
-            else
-              element
+          if k.last(4) == "_ids"
+            v.map! do |element|
+              # A hash inside an array means always, that the the ID has to be mapped according to the newly created ID
+              # An example would be {..., "observers" => [20, {"old_id" => "Person;100010"}]}
+              if element.to_s.include?(";")
+                join_table, old_id = element.split(";")
+                @id_changes[join_table][old_id.to_i].id
+              else
+                element
+              end
             end
           end
         elsif v.is_a? Hash
@@ -320,10 +339,17 @@ class AndroidSyncController < ApplicationController
             hash[k] = build intern_table, v.values.first
           end
         elsif v == nil
-          hash[k] = [] if k[-4..-1] == "_ids"
+          hash[k] = [] if k.last(4) == "_ids"
+        else
+        puts k.last(3) == "_id" && v.to_s.include?(";")
+          if k.last(3) == "_id" && v.to_s.include?(";")
+            join_table, old_id = v.split(";")
+            hash[k] = @id_changes[join_table][old_id.to_i].id
+          end
         end
       end
       logger.debug "#{table}: #{hash}"
+      puts table.class
       @id_changes[table.name] ||= {}
       if (id = hash["id"])
         entry = @is_only_test? table.find(id) : table.update(id, hash)
@@ -337,7 +363,8 @@ class AndroidSyncController < ApplicationController
         raise "Entry needs either an ID value or an 'old ID' value"
       end
     rescue => e
-      @errors << {"#{table.name}:#{old_id}" => e.message}
+      @errors << {"#{table}:#{old_id}" => e.message}
+      puts "ERROR:"+ @errors.to_s
       return nil
     ensure
       if @tempfile
