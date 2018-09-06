@@ -5,7 +5,7 @@ describe ReportsController do
   before do
     FactoryBot.create(:language, name: 'English', locale_tag: 'en')
     @admin_user = FactoryBot.create(:user, admin: true)
-    @pleb_user = FactoryBot.create(:user)
+    @pleb_user = FactoryBot.create(:user, trusted: true)
     @national_user = FactoryBot.create(:user, national: true)
     @report = FactoryBot.create(:report)
   end
