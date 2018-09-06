@@ -20,12 +20,13 @@ class AndroidSyncController < ApplicationController
         [Topic, %w(name colour)],
         [ProgressMarker, %w(name topic_id)],
         [Zone, %w(name)],
+        [Report, %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id)],
         [ImpactReport, %w(translation_impact)],
         [UploadedFile, %w(report_id)],
         [MtResource, %w(user_id name language_id cc_share_alike medium status geo_state_id url)],
         [Organisation, %w(name abbreviation church)],
-        [ProgressUpdate, %w(user_id language_progress_id progress month year)],
         [LanguageProgress, %w(progress_marker_id state_language_id)],
+        [ProgressUpdate, %w(user_id language_progress_id progress month year)],
         [StateLanguage, %w(geo_state_id language_id project)],
         [ChurchTeam, %w(name organisation_id village)],
         [ChurchMinistry, %w(church_team_id ministry_id language_id status)],
@@ -34,8 +35,7 @@ class AndroidSyncController < ApplicationController
         [MinistryOutput, %w(deliverable_id month value actual church_ministry_id creator_id comment)],
         [ProductCategory, %w(name)],
         [Project, %w(name)],
-        [FacilitatorFeedback, %w(church_ministry_id month feedback team_member_id response)],
-        [Report, %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id)]
+        [FacilitatorFeedback, %w(church_ministry_id month feedback team_member_id response)]
     ]
     join_tables = {
         User: %w(geo_states spoken_languages languages ministries),
@@ -45,17 +45,70 @@ class AndroidSyncController < ApplicationController
         Project: %w(languages project_users),
         MtResource: %w(product_categories)
     }
+    @all_restricted_ids = Hash.new
+    def restrict(table)
+      restricted_ids = table.ids
+      unless @external_user.national
+        user_geo_states = @external_user.geo_state_ids
+        geo_state_restricted = table.joins(:geo_states).where(geo_states: {id: user_geo_states})
+        restricted_ids = case table.new
+          when User
+            table.joins(:geo_states).where(geo_states: {id: user_geo_states}).ids
+          when Language
+            table.joins(:geo_states).where(geo_states: {id: user_geo_states}).ids
+          when Person
+            table.where(geo_state_id: user_geo_states).ids
+          when MtResource
+            table.where(geo_state_id: user_geo_states).ids
+          when ChurchTeam
+            table.where(geo_state_id: user_geo_states).ids
+          when Report
+            table.where(geo_state_id: user_geo_states).ids
+          when LanguageProgress
+            table.joins(:state_language).where(state_languages: {geo_state_id: [user_geo_states]}).ids
+            
+          when ImpactReport
+            table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
+          when UploadedFile
+            table.where(report_id:@all_restricted_ids[Report.name]).ids
+          when ProgressUpdate
+            table.where(language_progress_id:@all_restricted_ids[LanguageProgress.name]).ids
+          when ChurchMinistry
+            table.where(church_team_id:@all_restricted_ids[ChurchTeam.name]).ids
+          when MinistryOutput
+            table.where(church_ministry_id:@all_restricted_ids[ChurchMinistry.name]).ids
+          when FacilitatorFeedback
+            table.where(church_ministry_id:@all_restricted_ids[ChurchMinistry.name]).ids
+          when Project
+            table.joins(:languages).where(languages: {id: @all_restricted_ids[Language.name]}).ids
+          else restricted_ids
+        end
+      end
+      unless @external_user.trusted
+        restricted_ids = case table.new
+          when User
+            []
+          when Organisation
+            []
+          when Report
+            table.where(id: restricted_ids, reporter_id: @external_user.id).ids
+          when ImpactReport
+            table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
+          when UploadedFile
+            table.where(report_id:@all_restricted_ids[Report.name]).ids
+          else
+            restricted_ids
+        end
+      end
+      @all_restricted_ids[table.name] = restricted_ids
+    end
+    restrict = Hash.new
+    joins(:geo_states).where(geo_states: {id: 4})
+    joins(:state_languages).where(state_languages: {geo_state_id: 4})
+    where(mother_tongue_id: [4,5,7, 12])
+    where(reporter_id:1)
     def additional_tables(entry)
       case entry
-        when User
-          if entry.trusted
-            %w(phone interface_language_id email email_confirmed trusted national
-admin lci_board_member lci_agency_leader reset_password
-church_team_id facilitator zone_admin).map do |attribute|
-              [attribute, entry.send(attribute)]
-            end.to_h
-          else {}
-          end
         when ProgressMarker
           {description: entry.description_for(@external_user)}
         when ProgressUpdate
@@ -80,7 +133,7 @@ church_team_id facilitator zone_admin).map do |attribute|
             table_name = table.name.to_sym
             file.write(",")
             file.write "\"#{table_name}\":["
-            table.where(@needed).includes(join_tables[table_name]).each_with_index do |entry, index|
+            table.where(id: restrict(table)).where(@needed).includes(join_tables[table_name]).each_with_index do |entry, index|
               entry_data = Hash.new
               (attributes + ["id"]).each do |attribute|
                 entry_data.merge!({attribute => entry.send(attribute)})
@@ -258,7 +311,6 @@ church_team_id facilitator zone_admin).map do |attribute|
           ]
       ]
       receive_request_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
-      puts receive_request_params
 
       @is_only_test = receive_request_params["is_only_test"]
       @errors = []
@@ -267,8 +319,6 @@ church_team_id facilitator zone_admin).map do |attribute|
       [Person, ImpactReport, Report, UploadedFile, Ministry, ChurchTeam, ChurchMinistry, MinistryOutput].each do |table|
         receive_request_params[table.name.underscore]&.each do |entry|
           new_entry = build table, entry.to_h
-          puts "valid " + new_entry&.valid?.to_s + new_entry.attributes.to_s 
-          puts "IDs: " + @id_changes.to_s
           if @is_only_test
             raise new_entry.errors.messages.to_s unless !new_entry || new_entry.valid?
           else
@@ -341,7 +391,6 @@ church_team_id facilitator zone_admin).map do |attribute|
         elsif v == nil
           hash[k] = [] if k.last(4) == "_ids"
         else
-        puts k.last(3) == "_id" && v.to_s.include?(";")
           if k.last(3) == "_id" && v.to_s.include?(";")
             join_table, old_id = v.split(";")
             hash[k] = @id_changes[join_table][old_id.to_i].id
@@ -349,7 +398,6 @@ church_team_id facilitator zone_admin).map do |attribute|
         end
       end
       logger.debug "#{table}: #{hash}"
-      puts table.class
       @id_changes[table.name] ||= {}
       if (id = hash["id"])
         entry = @is_only_test? table.find(id) : table.update(id, hash)
@@ -364,7 +412,6 @@ church_team_id facilitator zone_admin).map do |attribute|
       end
     rescue => e
       @errors << {"#{table}:#{old_id}" => e.message}
-      puts "ERROR:"+ @errors.to_s
       return nil
     ensure
       if @tempfile
