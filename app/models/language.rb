@@ -171,6 +171,7 @@ class Language < ActiveRecord::Base
   # the selected filters are indicated by the id of the flm status
   def self.parse_filter_param(param)
     #TODO: what happens if an invalid string comes in?
+    #TODO: what happens if an flm status id has multiple digits?
     flm_filters = {}
     tokens = param.split('-')
     tokens.shift.split('_').each do |flm_number|

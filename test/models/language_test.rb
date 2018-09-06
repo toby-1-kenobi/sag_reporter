@@ -227,4 +227,10 @@ describe Language do
     _(language.best_current_pop).must_equal pop
   end
 
+  it 'parses filter parameter' do
+    param = '3_4_5-234-246-123'
+    parsed = {'3' => %w(2 3 4), '4' => %w(2 4 6), '5' => %w(1 2 3)}
+    _(Language.parse_filter_param(param)).must_equal parsed
+  end
+
 end

@@ -172,7 +172,11 @@ class UsersControllerTest < ActionController::TestCase
 
   test 'verified user with confirmation token' do
     log_in_as(@admin_user)
-    get :confirm_email, { id: @admin_user.confirm_token}
+    @admin_user.update_columns(
+        confirm_token: SecureRandom.urlsafe_base64.to_s,
+        email_confirmed: false
+    )
+    get :confirm_email, { id: @admin_user.confirm_token }
     _(flash['success']).must_be :present?
     assert_redirected_to root_path
   end
