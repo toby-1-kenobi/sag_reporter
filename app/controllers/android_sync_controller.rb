@@ -7,11 +7,6 @@ class AndroidSyncController < ApplicationController
   before_action :authenticate_external
 
   def send_request
-    safe_params = [
-        :last_sync
-    ]
-    send_request_params = params.require(:external_device).permit(safe_params)
-
     tables = [
         [User, %w(name user_type)],
         [GeoState, %w(name zone_id)],
@@ -29,20 +24,23 @@ class AndroidSyncController < ApplicationController
         [ProgressUpdate, %w(user_id language_progress_id progress month year)],
         [StateLanguage, %w(geo_state_id language_id project)],
         [ChurchTeam, %w(name organisation_id village)],
-        [ChurchMinistry, %w(church_team_id ministry_id language_id status)],
-        [Ministry, %w(name description topic_id)],
-        [Deliverable, %w(name description ministry_id for_facilitator)],
+        [ChurchMinistry, %w(church_team_id ministry_id language_id status facilitator_id)],
+        [Ministry, %w(number topic_id)],
+        [Deliverable, %w(number ministry_id for_facilitator)],
         [MinistryOutput, %w(deliverable_id month value actual church_ministry_id creator_id comment)],
-        [ProductCategory, %w(name)],
+        [ProductCategory, %w(number)],
         [Project, %w(name)],
+        [ProjectStream, %w(project_id ministry_id supervisor_id)],
+        [Facilitator, %w(user_id)],
         [FacilitatorFeedback, %w(church_ministry_id month feedback team_member_id response)]
     ]
     join_tables = {
-        User: %w(geo_states spoken_languages languages ministries),
+        User: %w(geo_states spoken_languages church_teams),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
         Project: %w(languages project_users),
+        Facilitator: %w(languages ministries),
         MtResource: %w(product_categories)
     }
     @all_restricted_ids = Hash.new
@@ -50,7 +48,6 @@ class AndroidSyncController < ApplicationController
       restricted_ids = table.ids
       unless @external_user.national
         user_geo_states = @external_user.geo_state_ids
-        geo_state_restricted = table.joins(:geo_states).where(geo_states: {id: user_geo_states})
         restricted_ids = case table.new
           when User
             table.joins(:geo_states).where(geo_states: {id: user_geo_states}).ids
@@ -70,43 +67,43 @@ class AndroidSyncController < ApplicationController
           when ImpactReport
             table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
           when UploadedFile
-            table.where(report_id:@all_restricted_ids[Report.name]).ids
+            table.where(report_id: @all_restricted_ids[Report.name]).ids
           when ProgressUpdate
-            table.where(language_progress_id:@all_restricted_ids[LanguageProgress.name]).ids
+            table.where(language_progress_id: @all_restricted_ids[LanguageProgress.name]).ids
           when ChurchMinistry
-            table.where(church_team_id:@all_restricted_ids[ChurchTeam.name]).ids
+            table.where(church_team_id: @all_restricted_ids[ChurchTeam.name]).ids
           when MinistryOutput
-            table.where(church_ministry_id:@all_restricted_ids[ChurchMinistry.name]).ids
+            table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
           when FacilitatorFeedback
-            table.where(church_ministry_id:@all_restricted_ids[ChurchMinistry.name]).ids
+            table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
           when Project
             table.joins(:languages).where(languages: {id: @all_restricted_ids[Language.name]}).ids
+          when Facilitator
+            table.where(user_id: @all_restricted_ids[User.name]).ids
           else restricted_ids
         end
       end
       unless @external_user.trusted
         restricted_ids = case table.new
           when User
-            []
+            [@external_user.id]
           when Organisation
             []
           when Report
             table.where(id: restricted_ids, reporter_id: @external_user.id).ids
+            
+          when Facilitator
+            table.where(user_id: @all_restricted_ids[User.name]).ids
           when ImpactReport
             table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
           when UploadedFile
-            table.where(report_id:@all_restricted_ids[Report.name]).ids
+            table.where(report_id: @all_restricted_ids[Report.name]).ids
           else
             restricted_ids
         end
       end
       @all_restricted_ids[table.name] = restricted_ids
     end
-    restrict = Hash.new
-    joins(:geo_states).where(geo_states: {id: 4})
-    joins(:state_languages).where(state_languages: {geo_state_id: 4})
-    where(mother_tongue_id: [4,5,7, 12])
-    where(reporter_id:1)
     def additional_tables(entry)
       case entry
         when ProgressMarker
@@ -119,21 +116,30 @@ class AndroidSyncController < ApplicationController
           {}
       end
     end
+    
+    safe_params = [
+        :last_sync
+    ] + tables.map{|table, _| {table.name => []} }
+    send_request_params = params.require(:external_device).permit(safe_params)
+    
     @final_file = Tempfile.new
     render json: {data: "#{@final_file.path}.txt"}, status: :ok
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
-          @sync_time = 5.seconds.ago
-          file.write "{\"last_sync\":#{@sync_time.to_i}"
+          this_sync = 5.seconds.ago
+          file.write "{\"last_sync\":#{this_sync.to_i}"
           raise "No last sync variable" unless send_request_params["last_sync"]
           last_sync = Time.at send_request_params["last_sync"]
-          @needed = {:updated_at => last_sync .. @sync_time}
           tables.each do |table, attributes|
             table_name = table.name.to_sym
             file.write(",")
             file.write "\"#{table_name}\":["
-            table.where(id: restrict(table)).where(@needed).includes(join_tables[table_name]).each_with_index do |entry, index|
+            offline_ids = send_request_params[table.name] || [0]
+            restricted_ids = restrict(table)
+            table.where("(id IN (?) AND id IN (?) AND updated_at BETWEEN ? AND ?) OR (id NOT IN (?) AND id IN (?))",
+                        offline_ids, restricted_ids, last_sync, this_sync, offline_ids, restricted_ids)
+                .includes(join_tables[table_name]).each_with_index do |entry, index|
               entry_data = Hash.new
               (attributes + ["id"]).each do |attribute|
                 entry_data.merge!({attribute => entry.send(attribute)})
