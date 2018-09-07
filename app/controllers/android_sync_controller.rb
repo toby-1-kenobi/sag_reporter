@@ -66,8 +66,6 @@ class AndroidSyncController < ApplicationController
             
           when ImpactReport
             table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
-          when UploadedFile
-            table.where(report_id: @all_restricted_ids[Report.name]).ids
           when ProgressUpdate
             table.where(language_progress_id: @all_restricted_ids[LanguageProgress.name]).ids
           when ChurchMinistry
@@ -96,11 +94,13 @@ class AndroidSyncController < ApplicationController
             table.where(user_id: @all_restricted_ids[User.name]).ids
           when ImpactReport
             table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
-          when UploadedFile
-            table.where(report_id: @all_restricted_ids[Report.name]).ids
           else
             restricted_ids
         end
+      end
+      #just send pictures, which have a valid report_id
+      if table == UploadedFile
+        restricted_ids = table.where(report_id: @all_restricted_ids[Report.name]).ids
       end
       @all_restricted_ids[table.name] = restricted_ids
     end
