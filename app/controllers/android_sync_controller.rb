@@ -247,11 +247,11 @@ class AndroidSyncController < ApplicationController
 
   def receive_request
     begin
-      foreign_key_names = [
+      @foreign_key_names = {
           picture: :uploaded_file,
           reporter: :user,
           observer: :person,
-      ]
+      }
       safe_params = [
           :is_only_test,
           person: [
@@ -260,10 +260,6 @@ class AndroidSyncController < ApplicationController
               :user_id,
               :geo_state_id
 
-          ],
-          uploaded_file: [
-              :old_id,
-              :data
           ],
           report: [
               :id,
@@ -274,8 +270,6 @@ class AndroidSyncController < ApplicationController
               :report_date,
               :translation_impact,
               :significant,
-              {picture_ids: []},
-              :picture_ids,
               :content,
               :reporter_id,
               :impact_report,
@@ -285,20 +279,18 @@ class AndroidSyncController < ApplicationController
               :observer_ids,
               :client,
               :version,
-              impact_report: [
-                  {impact_report: [
-                      :id,
-                      :old_id,
-                      :shareable,
-                      :translation_impact
-                  ]}
-              ]
           ],
-          ministry: [
-              :id,
+          uploaded_file: [
               :old_id,
-              :number,
-              :topic_id
+              :data,
+              :report_id
+          ],
+          impact_report: [
+                  :id,
+                  :old_id,
+                  :report_id,
+                  :shareable,
+                  :translation_impact
           ],
           church_team: [
               :id,
@@ -316,13 +308,6 @@ class AndroidSyncController < ApplicationController
               :status,
               :language_id
           ],
-          deliverable: [
-              :id,
-              :old_id,
-              :number,
-              :ministry_id,
-              :for_facilitator
-          ],
           ministry_output: [
               :id,
               :old_id,
@@ -339,13 +324,21 @@ class AndroidSyncController < ApplicationController
       @errors = []
       @id_changes = {}
 
-      [Person, ImpactReport, Report, UploadedFile, Ministry, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput].each do |table|
-        receive_request_params[table.name.underscore]&.each do |entry|
-          new_entry = build table, entry.to_h
-          if @is_only_test
-            @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.valid?
-          else
-            @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
+      # The following tables have to be in the order, that they only contain IDs of the previous ones
+      [Person, Report, ImpactReport, UploadedFile, ChurchTeam, ChurchMinistry, MinistryOutput].each do |table|
+        receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
+      end
+      puts @id_changes
+      @id_changes.each do |table, entries|
+        entries.each do |old_id, new_entry|
+          begin
+            if @is_only_test
+              @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.valid?
+            else
+              @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
+            end
+          rescue => e
+            @errors << {"#{table}:#{old_id}" => e.message}
           end
         end
       end
@@ -392,50 +385,38 @@ class AndroidSyncController < ApplicationController
                                  })
       end
       # Go through all the entries to check, whether it has an ID from another uploaded entry
-      hash.each do |k, v|
-        if v.is_a? Array
-          if k.last(4) == "_ids"
-            v.map! do |element|
-              # A hash inside an array means always, that the the ID has to be mapped according to the newly created ID
-              # An example would be {..., "observers" => [20, {"old_id" => "Person;100010"}]}
-              if element.to_s.include?(";")
-                join_table, old_id = element.split(";")
-                @id_changes[join_table][old_id.to_i].id
-              else
-                element
-              end
-            end
+      hash.clone.each do |k, v|
+        if k.last(4) == "_ids" && v.is_a?(Array)
+          foreign_table = k.remove("_ids")
+          foreign_table = @foreign_key_names[foreign_table .to_sym]&.to_s || foreign_table
+          foreign_table = foreign_table.camelcase
+          hash[k.remove("_ids").pluralize] = v.map do |element|
+            @id_changes.dig(foreign_table, element) || foreign_table.constantize.find(element)
           end
-        elsif v.is_a? Hash
-          intern_table = v.keys.first.camelcase.constantize rescue nil
-          if intern_table && v.values.first.is_a?(Hash)
-            hash[k] = build intern_table, v.values.first
-          end
-        elsif v == nil
-          hash[k] = [] if k.last(4) == "_ids"
-        else
-          if k.last(3) == "_id" && v.to_s.include?(";")
-            join_table, old_id = v.split(";")
-            hash[k] = @id_changes[join_table][old_id.to_i].id
-          end
+          hash.delete k
+        elsif k.last(3) == "_id" && k != "old_id"
+          foreign_table = k.remove("_id")
+          foreign_table = @foreign_key_names[foreign_table.to_sym]&.to_s || foreign_table
+          foreign_table = foreign_table.camelcase
+          hash[k.remove("_id")] = @id_changes.dig(foreign_table, v) || foreign_table.constantize.find(v)
+          hash.delete k
+        elsif v == nil && k.last(4) == "_ids"
+          hash[k] = []
         end
       end
       logger.debug "#{table}: #{hash}"
       @id_changes[table.name] ||= {}
       if (id = hash["id"])
         entry = @is_only_test? table.find(id) : table.update(id, hash)
-        @id_changes[table.name].merge!({id => entry})
-        entry
+        @id_changes[table.name].merge!({old_id => entry})
       elsif (old_id = hash.delete "old_id")
         new_entry = table.new hash
         @id_changes[table.name].merge!({old_id => new_entry})
-        new_entry
       else
         raise "Entry needs either an ID value or an 'old ID' value"
       end
     rescue => e
       @errors << {"#{table}:#{old_id}" => e.message}
-      return nil
     ensure
       if @tempfile
         @tempfile.close
