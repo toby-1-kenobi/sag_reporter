@@ -135,8 +135,9 @@ class AndroidSyncController < ApplicationController
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
             has_entry = false
-            table.where(id: restrict(table)).where("updated_at BETWEEN ? AND ? AND id IN (?) OR id NOT IN (?)",
-                        last_sync, this_sync, offline_ids, offline_ids)
+            restricted_ids = restrict(table)
+            table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
+                        last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
                 .includes(join_tables[table_name]).each do |entry|
               entry_data = Hash.new
               (attributes + ["id"]).each do |attribute|
@@ -147,9 +148,9 @@ class AndroidSyncController < ApplicationController
               end
               begin
                 entry_data.merge! additional_tables(entry)
-              rescue
-                logger.error "Error in adding additional tables for #{entry.class}: #{entry.attributes}"
-                end
+              rescue => e
+                logger.error "Error in adding additional tables for #{entry.class}: #{entry.attributes}" + e.to_s
+              end
               if has_entry
                 file.write(",")
               else
