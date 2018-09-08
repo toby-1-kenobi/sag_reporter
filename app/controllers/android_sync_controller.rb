@@ -7,33 +7,33 @@ class AndroidSyncController < ApplicationController
   before_action :authenticate_external
 
   def send_request
-    tables = [
-        [User, %w(name user_type)],
-        [GeoState, %w(name zone_id)],
-        [Language, %w(name colour)],
-        [Person, %w(name geo_state_id)],
-        [Topic, %w(name colour)],
-        [ProgressMarker, %w(name topic_id)],
-        [Zone, %w(name)],
-        [Report, %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id)],
-        [ImpactReport, %w(translation_impact)],
-        [UploadedFile, %w(report_id)],
-        [MtResource, %w(user_id name language_id cc_share_alike medium status geo_state_id url)],
-        [Organisation, %w(name abbreviation church)],
-        [LanguageProgress, %w(progress_marker_id state_language_id)],
-        [ProgressUpdate, %w(user_id language_progress_id progress month year)],
-        [StateLanguage, %w(geo_state_id language_id project)],
-        [ChurchTeam, %w(name organisation_id village geo_state_id)],
-        [ChurchMinistry, %w(church_team_id ministry_id language_id status facilitator_id)],
-        [Ministry, %w(number topic_id)],
-        [Deliverable, %w(number ministry_id for_facilitator)],
-        [MinistryOutput, %w(deliverable_id month value actual church_ministry_id creator_id comment)],
-        [ProductCategory, %w(number)],
-        [Project, %w(name)],
-        [ProjectStream, %w(project_id ministry_id supervisor_id)],
-        [Facilitator, %w(user_id)],
-        [FacilitatorFeedback, %w(church_ministry_id month feedback team_member_id response)]
-    ]
+    tables = {
+        User => %w(name user_type),
+        GeoState => %w(name zone_id),
+        Language => %w(name colour),
+        Person => %w(name geo_state_id),
+        Topic => %w(name colour),
+        ProgressMarker => %w(name topic_id),
+        Zone => %w(name),
+        Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id),
+        ImpactReport => %w(translation_impact),
+        UploadedFile => %w(report_id),
+        MtResource => %w(user_id name language_id cc_share_alike medium status geo_state_id url),
+        Organisation => %w(name abbreviation church),
+        LanguageProgress => %w(progress_marker_id state_language_id),
+        ProgressUpdate => %w(user_id language_progress_id progress month year),
+        StateLanguage => %w(geo_state_id language_id project),
+        ChurchTeam => %w(name organisation_id village geo_state_id),
+        ChurchMinistry => %w(church_team_id ministry_id language_id status facilitator_id),
+        Ministry => %w(number topic_id),
+        Deliverable => %w(number ministry_id for_facilitator),
+        MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
+        ProductCategory => %w(number),
+        Project => %w(name),
+        ProjectStream => %w(project_id ministry_id supervisor_id),
+        Facilitator => %w(user_id),
+        FacilitatorFeedback => %w(church_ministry_id month feedback team_member_id response)
+    }
     join_tables = {
         User: %w(geo_states spoken_languages church_teams),
         Report: %w(languages observers),
@@ -204,7 +204,7 @@ class AndroidSyncController < ApplicationController
 
   def get_uploaded_file
     safe_params = [
-        :uploaded_files => [],
+        uploaded_files: [],
     ]
     get_uploaded_file_params = params.require(:external_device).permit(safe_params)
 
@@ -247,41 +247,46 @@ class AndroidSyncController < ApplicationController
 
   def receive_request
     begin
+      foreign_key_names = [
+          picture: :uploaded_file,
+          reporter: :user,
+          observer: :person,
+      ]
       safe_params = [
           :is_only_test,
-          :person => [
+          person: [
               :old_id,
               :name,
               :user_id,
               :geo_state_id
 
           ],
-          :uploaded_file => [
+          uploaded_file: [
               :old_id,
               :data
           ],
-          :report => [
+          report: [
               :id,
               :old_id,
               :geo_state_id,
-              {:language_ids => []},
+              {language_ids: []},
               :language_ids,
               :report_date,
               :translation_impact,
               :significant,
-              {:picture_ids => []},
+              {picture_ids: []},
               :picture_ids,
               :content,
               :reporter_id,
               :impact_report,
-              {:progress_marker_ids => []},
+              {progress_marker_ids: []},
               :progress_marker_ids,
-              {:observer_ids => []},
+              {observer_ids: []},
               :observer_ids,
               :client,
               :version,
-              :impact_report => [
-                  {:impact_report => [
+              impact_report: [
+                  {impact_report: [
                       :id,
                       :old_id,
                       :shareable,
@@ -289,21 +294,21 @@ class AndroidSyncController < ApplicationController
                   ]}
               ]
           ],
-          :ministry => [
+          ministry: [
               :id,
               :old_id,
-              :name,
+              :number,
               :topic_id
           ],
-          :church_team => [
+          church_team: [
               :id,
               :old_id,
-              {:user_ids => []},
+              {user_ids: []},
               :user_ids,
               :village,
               :geo_state_id
           ],
-          :church_ministry => [
+          church_ministry: [
               :id,
               :old_id,
               :church_team_id,
@@ -311,11 +316,18 @@ class AndroidSyncController < ApplicationController
               :status,
               :language_id
           ],
-          :ministry_output => [
+          deliverable: [
+              :id,
+              :old_id,
+              :number,
+              :ministry_id,
+              :for_facilitator
+          ],
+          ministry_output: [
               :id,
               :old_id,
               :church_ministry_id,
-              :ministry_marker_id,
+              :deliverable_id,
               :creator,
               :value,
               :actual
@@ -327,13 +339,13 @@ class AndroidSyncController < ApplicationController
       @errors = []
       @id_changes = {}
 
-      [Person, ImpactReport, Report, UploadedFile, Ministry, ChurchTeam, ChurchMinistry, MinistryOutput].each do |table|
+      [Person, ImpactReport, Report, UploadedFile, Ministry, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput].each do |table|
         receive_request_params[table.name.underscore]&.each do |entry|
           new_entry = build table, entry.to_h
           if @is_only_test
-            raise new_entry.errors.messages.to_s unless !new_entry || new_entry.valid?
+            @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.valid?
           else
-            raise new_entry.errors.messages.to_s unless !new_entry || new_entry.save
+            @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
           end
         end
       end
