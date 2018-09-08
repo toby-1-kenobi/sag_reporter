@@ -127,19 +127,17 @@ class AndroidSyncController < ApplicationController
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
+          last_sync = Time.at send_request_params["last_sync"]
           this_sync = 5.seconds.ago
           file.write "{\"last_sync\":#{this_sync.to_i}"
           raise "No last sync variable" unless send_request_params["last_sync"]
-          last_sync = Time.at send_request_params["last_sync"]
           tables.each do |table, attributes|
             table_name = table.name.to_sym
-            file.write(",")
-            file.write "\"#{table_name}\":["
             offline_ids = send_request_params[table.name] || [0]
-            restricted_ids = restrict(table)
-            table.where("(id IN (?) AND id IN (?) AND updated_at BETWEEN ? AND ?) OR (id NOT IN (?) AND id IN (?))",
-                        offline_ids, restricted_ids, last_sync, this_sync, offline_ids, restricted_ids)
-                .includes(join_tables[table_name]).each_with_index do |entry, index|
+            has_entry = false
+            table.where(id: restrict(table)).where("updated_at BETWEEN ? AND ? AND id IN (?) OR id NOT IN (?)",
+                        last_sync, this_sync, offline_ids, offline_ids)
+                .includes(join_tables[table_name]).each do |entry|
               entry_data = Hash.new
               (attributes + ["id"]).each do |attribute|
                 entry_data.merge!({attribute => entry.send(attribute)})
@@ -151,11 +149,17 @@ class AndroidSyncController < ApplicationController
                 entry_data.merge! additional_tables(entry)
               rescue
                 logger.error "Error in adding additional tables for #{entry.class}: #{entry.attributes}"
+                end
+              if has_entry
+                file.write(",")
+              else
+                file.write(",")
+                file.write "\"#{table_name}\":["
               end
-              file.write(",") if index != 0
+              has_entry = true
               file.write entry_data.to_json
             end
-            file.write "]"
+            file.write "]" if has_entry
             ActiveRecord::Base.connection.query_cache.clear
           end
           file.write "}"
