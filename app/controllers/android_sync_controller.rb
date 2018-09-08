@@ -23,7 +23,7 @@ class AndroidSyncController < ApplicationController
         [LanguageProgress, %w(progress_marker_id state_language_id)],
         [ProgressUpdate, %w(user_id language_progress_id progress month year)],
         [StateLanguage, %w(geo_state_id language_id project)],
-        [ChurchTeam, %w(name organisation_id village)],
+        [ChurchTeam, %w(name organisation_id village geo_state_id)],
         [ChurchMinistry, %w(church_team_id ministry_id language_id status facilitator_id)],
         [Ministry, %w(number topic_id)],
         [Deliverable, %w(number ministry_id for_facilitator)],
