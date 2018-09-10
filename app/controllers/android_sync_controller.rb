@@ -86,7 +86,7 @@ class AndroidSyncController < ApplicationController
           when User
             [@external_user.id]
           when Organisation
-            []
+            table.where(church: true).ids
           when Report
             table.where(id: restricted_ids, reporter_id: @external_user.id).ids
             
