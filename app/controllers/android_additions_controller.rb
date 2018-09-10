@@ -21,30 +21,30 @@ class AndroidAdditionsController < ApplicationController
       safe_params = [
           :is_only_test,
           :user => [
-              :old_id,
               :name,
               :phone,
               :email,
               :interface_language_id,
               {:geo_state_ids => []},
-              {:working_language_ids => []},
+              {:spoken_language_ids => []},
+              :role_description
           ]
       ]
       new_user_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
-
-      @is_only_test = new_user_params["is_only_test"]
-      @errors = []
-      @id_changes = {}
-
-      [Person, ImpactReport, Report, UploadedFile].each do |table|
-        new_user_params[table.name.underscore]&.each do |entry|
-          new_entry = build table, entry.to_h
-          if @is_only_test
-            raise new_entry.errors.messages.to_s unless !new_entry || new_entry.valid?
-          else
-            raise new_entry.errors.messages.to_s unless !new_entry || new_entry.save
-          end
-        end
+      is_only_test = new_user_params.delete "is_only_test"
+      new_user_params = new_user_params["user"]
+      new_user_params[:password] = SecureRandom.hex
+      new_user_params[:registration_status] = 0
+      new_user = User.new new_user_params
+      if new_user&.valid?
+        new_user.save unless is_only_test
+        send_message = {status: "success", user_id: new_user.id}.to_json
+        logger.debug send_message
+        render json: send_message, status: :ok
+      else
+        send_message = {"#{table}:#{old_id}" => new_entry.errors.messages.to_s}.to_json
+        logger.error send_message
+        render json: send_message, status: :forbidden
       end
     rescue => e
       send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
