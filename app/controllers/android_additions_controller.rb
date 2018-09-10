@@ -42,7 +42,7 @@ class AndroidAdditionsController < ApplicationController
         logger.debug send_message
         render json: send_message, status: :ok
       else
-        send_message = {"user" => new_entry.errors.messages.to_s}.to_json
+        send_message = {"user" => new_user.errors.messages.to_s}.to_json
         logger.error send_message
         render json: send_message, status: :forbidden
       end
