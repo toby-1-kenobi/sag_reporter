@@ -297,6 +297,7 @@ class AndroidSyncController < ApplicationController
               :old_id,
               {user_ids: []},
               :user_ids,
+              :organisation_id,
               :village,
               :geo_state_id
           ],
@@ -306,6 +307,7 @@ class AndroidSyncController < ApplicationController
               :church_team_id,
               :ministry_id,
               :status,
+              :facilitator_id,
               :language_id
           ],
           ministry_output: [
@@ -313,8 +315,10 @@ class AndroidSyncController < ApplicationController
               :old_id,
               :church_ministry_id,
               :deliverable_id,
+              :month,
               :creator,
               :value,
+              :comment,
               :actual
           ]
       ]
