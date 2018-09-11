@@ -39,7 +39,7 @@ class AndroidSyncController < ApplicationController
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
-        Project: %w(languages users ministries supervisors),
+        Project: %w(languages users),
         Facilitator: %w(languages ministries),
         MtResource: %w(product_categories)
     }
