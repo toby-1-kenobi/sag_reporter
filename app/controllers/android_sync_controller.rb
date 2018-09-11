@@ -39,7 +39,7 @@ class AndroidSyncController < ApplicationController
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
-        Project: %w(languages project_users),
+        Project: %w(languages users ministries supervisors),
         Facilitator: %w(languages ministries),
         MtResource: %w(product_categories)
     }
@@ -118,6 +118,7 @@ class AndroidSyncController < ApplicationController
     end
     
     safe_params = [
+        :first_download,
         :last_sync
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
@@ -131,6 +132,14 @@ class AndroidSyncController < ApplicationController
           this_sync = 5.seconds.ago
           file.write "{\"last_sync\":#{this_sync.to_i}"
           raise "No last sync variable" unless send_request_params["last_sync"]
+          if send_request_params["first_download"]
+            if @external_user.church_teams.empty? && @external_user.facilitator
+              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry)
+            else
+              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry,
+                  Topic, ProgressMarker, MtResource, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput, ProductCategory, Facilitator, FacilitatorFeedback)
+            end
+          end
           tables.each do |table, attributes|
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
