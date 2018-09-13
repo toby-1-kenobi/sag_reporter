@@ -16,6 +16,5 @@ class ChurchMinistry < ActiveRecord::Base
   validates :church_team, presence: true
   validates :ministry, presence: true
   validates :language, presence: true
-  validates :facilitator, presence: true
 
 end
