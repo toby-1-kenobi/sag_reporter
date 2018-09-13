@@ -104,7 +104,7 @@
         translating_orgs = Organisation.none
       end
     %>
-    <div class="mdl-tabs__panel" id="organisations-tab">
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'organisations' %>" id="organisations-tab">
       <% if engaged_orgs.any? %>
         <h4>Serving in development</h4>
         <ul class="mdl-list">
@@ -120,9 +120,31 @@
     </div>
   <% end %>
 
+  <% if tabs.include? :projects %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'projects' %>" id="projects-tab">
+      <%
+        case dashboard_type
+        when :state
+          projects = Project.in_states(@geo_state)
+        when :zone
+          projects = Project.in_zones(@zone)
+        else # nation
+          projects = Project.all
+        end
+      %>
+      <% if projects.any? %>
+        <p>implement projects list</p>
+      <% else %>
+        <div class="empty-state">
+          <p>No projects here.</p>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
   <% if tabs.include? :reports %>
     <% Rails.logger.debug 'reports tab' %>
-    <div class="mdl-tabs__panel" id="reports-tab">
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'reports' %>" id="reports-tab">
       <%= form_tag({controller: dashboard_type == :state ? 'geo_states' : 'zones', action: 'reports'}, method: 'get', remote: true, id: 'report-view-filters') do %>
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--4-col">

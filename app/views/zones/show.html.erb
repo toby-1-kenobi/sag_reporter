@@ -8,6 +8,7 @@
 </ul>
 
 <% tabs = [:progress, :states, :languages, :organisations, :reports] %>
+<% tabs.append(:projects) if logged_in_user.can_view_projects? %>
 <% tabs.append(:board) if logged_in_user.can_future_plan? %>
 <% @tab ||= 'progress' %>
 

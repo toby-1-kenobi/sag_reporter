@@ -2,11 +2,11 @@ class User < ActiveRecord::Base
 
   include ContactDetails
 
-  enum training_level: {
-    team_member: 1,
-    facilitator: 2,
-    project_supervisor: 4,
-  }
+  # enum training_level: {
+  #   team_member: 1,
+  #   facilitator: 2,
+  #   project_supervisor: 4,
+  # }
 
   enum registration_status: {
       unapproved: 0,
@@ -68,7 +68,7 @@ class User < ActiveRecord::Base
                 with: /\A[\d\w ]+\Z/im,
                 message: 'must use only letters, numbers and spaces'
             },
-            allow_nil: trueother_
+            allow_nil: true
   validates :geo_states, presence: true
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, length: { maximum: 255 },
@@ -170,6 +170,18 @@ class User < ActiveRecord::Base
 
   def can_future_plan?
     admin? or lci_board_member? or lci_agency_leader?
+  end
+
+  def project_supervisor?
+    ProjectStream.exists?(supervisor: id)
+  end
+
+  def can_manage_projects?
+    admin? or lci_board_member? or zone_admin?
+  end
+
+  def can_view_projects?
+    can_manage_projects? or project_supervisor?
   end
 
   # find out if this user curates for a particular language
