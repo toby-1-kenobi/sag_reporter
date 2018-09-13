@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  get 'projects/administer'
+
+  get 'projects/show'
+
   get 'help/edit_language'
 
   get 'population/create'

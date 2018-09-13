@@ -68,7 +68,7 @@ class User < ActiveRecord::Base
                 with: /\A[\d\w ]+\Z/im,
                 message: 'must use only letters, numbers and spaces'
             },
-            allow_nil: true
+            allow_nil: trueother_
   validates :geo_states, presence: true
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, length: { maximum: 255 },
