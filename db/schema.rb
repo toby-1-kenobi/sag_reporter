@@ -837,9 +837,9 @@ ActiveRecord::Schema.define(version: 20180913054349) do
     t.boolean  "national_curator",         default: false, null: false
     t.string   "role_description"
     t.datetime "curator_prompted"
+    t.boolean  "reset_password",           default: false
     t.boolean  "lci_board_member",         default: false, null: false
     t.boolean  "lci_agency_leader",        default: false, null: false
-    t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
     t.boolean  "forward_planning_curator", default: false, null: false
     t.integer  "training_level"
