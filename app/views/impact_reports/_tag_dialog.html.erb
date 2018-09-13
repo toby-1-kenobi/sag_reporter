@@ -26,10 +26,8 @@
             <span class="mdlext-accordion__tab__caption"><%= oa.name %></span>
           </header>
           <section class="mdlext-accordion__tabpanel">
+            <ul class="mdl-list">
             <% ProgressMarker.weight_text.each do |weight, weight_text| %>
-            <div>
-              <p><%= weight_text %></p>
-              <ul class="mdl-list">
               <% markers.select{ |m| m.weight == weight }.each do |marker| %>
                 <li class="mdl-list__item">
                   <span class="mdl-list__item-primary-content">
@@ -53,9 +51,8 @@
                   </span>
                 </li>
               <% end %>
-              </ul>
-            </div>
             <% end %>
+            </ul>
           </section>
         </li>
       <% end %>
