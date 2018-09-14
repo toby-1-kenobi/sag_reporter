@@ -1,5 +1,7 @@
 class Project < ActiveRecord::Base
   has_many :languages, dependent: :nullify
+  has_many :state_projects, dependent: :destroy
+  has_many :geo_states, through: :state_projects
   has_many :project_users, dependent: :destroy
   has_many :users, through: :project_users
   has_many :reports, dependent: :nullify
