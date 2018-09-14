@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180913054349) do
+ActiveRecord::Schema.define(version: 20180914060456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -837,15 +837,16 @@ ActiveRecord::Schema.define(version: 20180913054349) do
     t.boolean  "national_curator",         default: false, null: false
     t.string   "role_description"
     t.datetime "curator_prompted"
-    t.boolean  "reset_password",           default: false
     t.boolean  "lci_board_member",         default: false, null: false
     t.boolean  "lci_agency_leader",        default: false, null: false
+    t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
     t.boolean  "forward_planning_curator", default: false, null: false
     t.integer  "training_level"
     t.integer  "registration_status",      default: 2,     null: false
     t.boolean  "zone_admin",               default: false, null: false
     t.integer  "user_type"
+    t.string   "organisation"
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
