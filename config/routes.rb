@@ -1,9 +1,5 @@
 Rails.application.routes.draw do
 
-  get 'projects/administer'
-
-  get 'projects/show'
-
   get 'help/edit_language'
 
   get 'population/create'
@@ -116,7 +112,9 @@ Rails.application.routes.draw do
 
   resources :populations, only: [:create]
 
-  resources :projects, only: [:index, :create, :destroy]
+  resources :projects, only: [:index, :create, :destroy] do
+    get 'administer', on: :member
+  end
 
   resources :reports do
     collection do

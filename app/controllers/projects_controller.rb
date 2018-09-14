@@ -26,6 +26,11 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def administer
+    @project = Project.find(params[:id])
+    respond_to :js
+  end
+
   private
 
   def project_params

@@ -133,7 +133,21 @@
         end
       %>
       <% if projects.any? %>
-        <p>implement projects list</p>
+        <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
+          <% projects.each do |project| %>
+            <li id="project-<%= project.id %>" class="mdlext-accordion__panel">
+              <header class="mdlext-accordion__tab">
+                <span class="mdlext-accordion__tab__caption project-<%= project.id %>-name"><%= project.name %></span>
+              </header>
+              <section class="mdlext-accordion__tabpanel">
+                <% if logged_in_user.can_manage_projects? %>
+                  <%= link_to 'Administer', administer_project_path(project), remote: true %>
+                <% end %>
+                <div id="project-<%= project.id %>-content">Project content goes here ...</div>
+              </section>
+            </li>
+          <% end %>
+        </ul>
       <% else %>
         <div class="empty-state">
           <p>No projects here.</p>
