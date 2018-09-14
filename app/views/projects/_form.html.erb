@@ -14,6 +14,30 @@
   <div class="mdl-tabs__panel is-active" id="protocols-panel">
   </div>
   <div class="mdl-tabs__panel" id="languages-streams-panel">
+    <% languages = dashboard_languages(@dashboard_type) %>
+    <% if languages.size <= 20 %>
+    <% else %>
+      <ul id="project-<%= @project.id %>-language-list" class="mdl-list">
+        <% @project.languages.each do |project_language| %>
+          <li class="mdl-list__item" data-language-id="<%= project_language.id %>">
+            <span class="mdl-list__item-primary-content"><%= project_language.name %></span>
+          </li>
+        <% end %>
+      </ul>
+      <div>
+        <%= text_field_tag "project-#{@project.id}-add-language-button", '', { class: 'select-language', 'data-project-id' => @project.id }%>
+        <%= label_tag "project-#{@project.id}-add-language-button", 'Add a language' %>
+        <ul class="add-language-possibilities">
+          <% languages.each do |language| %>
+            <li id="project-<%= @project.id %>-add-language-<%= language.id %>" data-lang-name="<%= language.name.downcase %> <%= language.iso %>" class="hide">
+              <%= link_to add_language_to_project_path(@project, language), method: :patch, remote: true, class: 'mdl-button' do %>
+                <%= language.name %> (<%= language.iso %>)
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
   </div>
   <div class="mdl-tabs__panel" id="responsible-panel">
   </div>

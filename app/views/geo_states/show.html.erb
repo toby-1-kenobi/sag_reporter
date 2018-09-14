@@ -15,4 +15,5 @@
 <% tabs.append(:board) if logged_in_user.can_future_plan? %>
 <% @tab ||= 'progress' %>
 
-<%= render partial: 'shared/dashboard', locals: { tabs: tabs, dashboard_type: :state, dashboard_object: @geo_state } %>
+<% @dashboard_type = :state %>
+<%= render partial: 'shared/dashboard', locals: { tabs: tabs, dashboard_object: @geo_state } %>

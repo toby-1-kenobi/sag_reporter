@@ -36,6 +36,14 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
+  def add_language
+    @project = Project.find(params[:id])
+    @language = Language.find(params[:lang])
+    #@language.project!
+    @project.languages << @language unless @project.languages.include? @language
+    respond_to :js
+  end
+
   private
 
   def project_params

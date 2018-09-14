@@ -478,4 +478,15 @@ module LanguagesHelper
     "#{pie_style}#{pie_html}"
   end
 
+  def dashboard_languages(dashboard_type)
+    case dashboard_type
+    when :state
+      @geo_state.languages
+    when :zone
+      @zone.languages
+    else
+      Language.all
+    end
+  end
+
 end

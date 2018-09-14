@@ -9,7 +9,7 @@
 
   <% if tabs.include? :progress %>
     <%
-      case dashboard_type
+      case @dashboard_type
       when :state
         flm_summary_path = load_flm_summary_geo_state_path(@geo_state)
         flt_summary_path = load_flt_summary_geo_state_path(@geo_state)
@@ -50,7 +50,7 @@
   <% end %>
 
   <% if tabs.include? :states %>
-    <% states = (dashboard_type == :zone) ? @geo_states : GeoState  %>
+    <% states = (@dashboard_type == :zone) ? @geo_states : GeoState  %>
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'states' %>" id="states-tab">
       <ul class="state-list mdl-list">
         <% states.find_each do |state| %>
@@ -67,7 +67,7 @@
   <% if tabs.include? :languages %>
     <% Rails.logger.debug 'languages tab' %>
     <%
-      case dashboard_type
+      case @dashboard_type
       when :state
         language_table_path = load_language_flm_table_geo_state_path(@geo_state, filter: @language_flm_filters)
       when :zone
@@ -87,13 +87,13 @@
   <% if tabs.include? :organisations %>
     <% Rails.logger.debug 'org tab' %>
     <%
-      case dashboard_type
+      case @dashboard_type
       when :state
         local = {geo_state_id: @geo_state.id}
       when :zone
         local = {zone_id: @zone.id}
       else
-        Rails.logger.warning "not expecting #{dashboard_type} to include agencies tab"
+        Rails.logger.warning "not expecting #{@dashboard_type} to include agencies tab"
         local = {}
       end
       if dashboard_object
@@ -123,7 +123,7 @@
   <% if tabs.include? :projects %>
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'projects' %>" id="projects-tab">
       <%
-        case dashboard_type
+        case @dashboard_type
         when :state
           projects = Project.in_states(@geo_state)
         when :zone
@@ -160,7 +160,7 @@
   <% if tabs.include? :reports %>
     <% Rails.logger.debug 'reports tab' %>
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'reports' %>" id="reports-tab">
-      <%= form_tag({controller: dashboard_type == :state ? 'geo_states' : 'zones', action: 'reports'}, method: 'get', remote: true, id: 'report-view-filters') do %>
+      <%= form_tag({controller: @dashboard_type == :state ? 'geo_states' : 'zones', action: 'reports'}, method: 'get', remote: true, id: 'report-view-filters') do %>
         <div class="mdl-grid">
           <div class="mdl-cell mdl-cell--4-col">
             <%= render 'reports/filter_since' %>
@@ -169,7 +169,7 @@
           <div class="mdl-cell mdl-cell--4-col">
             <%= render 'reports/filter_archived' %>
             <%= render 'reports/filter_significant' %>
-            <% if dashboard_type == :zone %>
+            <% if @dashboard_type == :zone %>
               <% states = logged_in_user.national? ? @zone.geo_states : @zone.geo_states.where(id: logged_in_user.geo_states) %>
               <%= render partial: 'reports/filter_states', locals: {states: states.order(:name)} %>
             <% end %>
@@ -209,7 +209,7 @@
   <% if tabs.include? :board %>
     <% Rails.logger.debug 'board tab' %>
     <%
-      case dashboard_type
+      case @dashboard_type
       when :state
         report_path = load_board_report_geo_state_path(@geo_state)
       when :zone

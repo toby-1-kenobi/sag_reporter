@@ -1,2 +1,10 @@
 $('#project-<%= @project.id %>-content').html('<%= j render(partial: 'form') %>');
 componentHandler.upgradeElements($('#project-<%= @project.id %>-content').find('.mdl-tabs').get());
+$('#project-<%= @project.id %>-content .select-language').on('input', function(){
+    const entry = this.value.toLowerCase();
+    $('#project-<%= @project.id %>-content .add-language-possibilities li').hide();
+    if (entry.length >= 3){
+        console.log(entry);
+        $('#project-<%= @project.id %>-content .add-language-possibilities li[data-lang-name*=\''+ entry +'\']').show();
+    }
+});
