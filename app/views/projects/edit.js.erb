@@ -1,0 +1,2 @@
+$('#project-<%= @project.id %>-content').html('<%= j render(partial: 'form') %>');
+componentHandler.upgradeElements($('#project-<%= @project.id %>-content').find('.mdl-tabs').get());

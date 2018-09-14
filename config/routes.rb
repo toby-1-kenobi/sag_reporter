@@ -112,9 +112,7 @@ Rails.application.routes.draw do
 
   resources :populations, only: [:create]
 
-  resources :projects, only: [:index, :create, :destroy] do
-    get 'administer', on: :member
-  end
+  resources :projects
 
   resources :reports do
     collection do

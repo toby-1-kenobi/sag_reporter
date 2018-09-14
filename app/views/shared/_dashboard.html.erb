@@ -140,10 +140,11 @@
                 <span class="mdlext-accordion__tab__caption project-<%= project.id %>-name"><%= project.name %></span>
               </header>
               <section class="mdlext-accordion__tabpanel">
-                <% if logged_in_user.can_manage_projects? %>
-                  <%= link_to 'Administer', administer_project_path(project), remote: true %>
-                <% end %>
-                <div id="project-<%= project.id %>-content">Project content goes here ...</div>
+                <div id="project-<%= project.id %>-content">
+                  <%= link_to project, remote: true, class: 'mdl-button' do %>
+                    Show project <i class="material-icons">visibility</i>
+                  <% end %>
+                </div>
               </section>
             </li>
           <% end %>

@@ -1,0 +1,24 @@
+
+<%= link_to @project, remote: true, class: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' do %>
+  Show project <i class="material-icons">visibility</i>
+<% end %>
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+  <div class="mdl-tabs__tab-bar">
+    <a href="#protocols-panel" class="mdl-tabs__tab is-active">Protocols</a>
+    <a href="#languages-streams-panel" class="mdl-tabs__tab">Languages and Streams</a>
+    <a href="#responsible-panel" class="mdl-tabs__tab">Who is Responsible</a>
+    <a href="#targets-language-panel" class="mdl-tabs__tab">Set Targets by Language</a>
+    <a href="#targets-stream-panel" class="mdl-tabs__tab">Set Targets by Stream</a>
+  </div>
+
+  <div class="mdl-tabs__panel is-active" id="protocols-panel">
+  </div>
+  <div class="mdl-tabs__panel" id="languages-streams-panel">
+  </div>
+  <div class="mdl-tabs__panel" id="responsible-panel">
+  </div>
+  <div class="mdl-tabs__panel" id="targets-language-panel">
+  </div>
+  <div class="mdl-tabs__panel" id="targets-stream-panel">
+  </div>
+</div>
