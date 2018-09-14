@@ -226,6 +226,7 @@ class UsersController < ApplicationController
     safe_params = [
       :name,
       :phone,
+      :organisation,
       :password,
       :password_confirmation,
       :email,
