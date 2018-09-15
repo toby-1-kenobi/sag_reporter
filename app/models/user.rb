@@ -2,12 +2,6 @@ class User < ActiveRecord::Base
 
   include ContactDetails
 
-  enum training_level: {
-    team_member: 1,
-    facilitator: 2,
-    project_supervisor: 4,
-  }
-
   enum registration_status: {
       unapproved: 0,
       zone_approved: 1,
@@ -35,6 +29,7 @@ class User < ActiveRecord::Base
            after_add: :update_self, after_remove: :update_self
   has_many :church_team_memberships, dependent: :destroy
   has_many :church_teams, through: :church_team_memberships
+  has_many :church_ministries, foreign_key: 'facilitator_id', inverse_of: :facilitator
   has_many :user_benefits, dependent: :destroy
   has_many :app_benefits, through: :user_benefits
   has_many :ministry_outputs, inverse_of: :creator, dependent: :restrict_with_error
@@ -183,6 +178,9 @@ class User < ActiveRecord::Base
         (forward_planning_curator? and edit.pending_forward_planning_approval?)
   end
 
+  def facilitator?
+    LanguageStream.exists?(facilitator_id: id)
+  end
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180915183251) do
+ActiveRecord::Schema.define(version: 20180915190536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,16 +66,16 @@ ActiveRecord::Schema.define(version: 20180915183251) do
   end
 
   create_table "church_ministries", force: :cascade do |t|
-    t.integer  "church_team_id",                 null: false
-    t.integer  "ministry_id",                    null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
-    t.integer  "status",             default: 0, null: false
-    t.integer  "language_stream_id"
+    t.integer  "church_team_id",             null: false
+    t.integer  "ministry_id",                null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "status",         default: 0, null: false
+    t.integer  "facilitator_id"
   end
 
   add_index "church_ministries", ["church_team_id"], name: "index_church_ministries_on_church_team_id", using: :btree
-  add_index "church_ministries", ["language_stream_id"], name: "index_church_ministries_on_language_stream_id", using: :btree
+  add_index "church_ministries", ["facilitator_id"], name: "index_church_ministries_on_facilitator_id", using: :btree
   add_index "church_ministries", ["ministry_id"], name: "index_church_ministries_on_ministry_id", using: :btree
 
   create_table "church_team_memberships", force: :cascade do |t|
@@ -874,8 +874,8 @@ ActiveRecord::Schema.define(version: 20180915183251) do
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
   add_foreign_key "church_ministries", "church_teams"
-  add_foreign_key "church_ministries", "language_streams"
   add_foreign_key "church_ministries", "ministries"
+  add_foreign_key "church_ministries", "users", column: "facilitator_id"
   add_foreign_key "church_team_memberships", "church_teams"
   add_foreign_key "church_team_memberships", "users"
   add_foreign_key "church_teams", "organisations"
