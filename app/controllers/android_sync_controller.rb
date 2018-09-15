@@ -8,7 +8,7 @@ class AndroidSyncController < ApplicationController
 
   def send_request
     tables = {
-        User => %w(name user_type),
+        User => %w(name),
         GeoState => %w(name zone_id),
         Language => %w(name colour),
         Person => %w(name geo_state_id),
@@ -23,15 +23,16 @@ class AndroidSyncController < ApplicationController
         LanguageProgress => %w(progress_marker_id state_language_id),
         ProgressUpdate => %w(user_id language_progress_id progress month year),
         StateLanguage => %w(geo_state_id language_id project),
-        ChurchTeam => %w(name organisation_id village geo_state_id),
-        ChurchMinistry => %w(church_team_id ministry_id language_id status facilitator_id),
+        ChurchTeam => %w(name organisation_id village state_language_id),
+        ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(number topic_id),
         Deliverable => %w(number ministry_id for_facilitator),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
-        Facilitator => %w(user_id),
+        QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
+        LanguageStream => %w(state_language_id ministry_id)
         FacilitatorFeedback => %w(church_ministry_id month feedback team_member_id response)
     }
     join_tables = {
@@ -39,8 +40,7 @@ class AndroidSyncController < ApplicationController
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
-        Project: %w(languages users),
-        Facilitator: %w(languages ministries),
+        Project: %w(state_languages users),
         MtResource: %w(product_categories)
     }
     @all_restricted_ids = Hash.new
@@ -308,7 +308,7 @@ class AndroidSyncController < ApplicationController
               :user_ids,
               :organisation_id,
               :village,
-              :geo_state_id
+              :state_language_id
           ],
           church_ministry: [
               :id,
@@ -316,8 +316,7 @@ class AndroidSyncController < ApplicationController
               :church_team_id,
               :ministry_id,
               :status,
-              :facilitator_id,
-              :language_id
+              :facilitator_id
           ],
           ministry_output: [
               :id,
