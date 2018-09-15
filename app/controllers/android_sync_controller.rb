@@ -32,7 +32,7 @@ class AndroidSyncController < ApplicationController
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
-        LanguageStream => %w(state_language_id ministry_id)
+        LanguageStream => %w(state_language_id ministry_id),
         FacilitatorFeedback => %w(church_ministry_id month feedback team_member_id response)
     }
     join_tables = {
