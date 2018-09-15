@@ -222,7 +222,7 @@ class UsersController < ApplicationController
 
   def user_params
     # make hash options into arrays
-    param_reduce(params['user'], ['projects', 'geo_states', 'champion', 'speaks', 'curated_states'])
+    param_reduce(params['user'], ['geo_states', 'champion', 'speaks', 'curated_states'])
     safe_params = [
       :name,
       :phone,
@@ -233,12 +233,10 @@ class UsersController < ApplicationController
       :email_confirmed,
       :confirm_token,
       :interface_language_id,
-      :training_level,
       :trusted,
       :admin,
       :national,
       :role_description,
-      {:projects => []},
       {:champion => []},
       {:speaks => []},
       {:geo_states => []},
@@ -253,8 +251,7 @@ class UsersController < ApplicationController
       safe_params.reject!{ |p|
         p == {:geo_states => []} ||
             p == {:curated_states => []} ||
-            p == {:projects => []} ||
-            [:trusted, :national, :training_level].include?(p)
+            [:trusted, :national].include?(p)
       } unless logged_in_user.admin? or logged_in_user.zone_admin?
     end
     params.require(:user).permit(safe_params)

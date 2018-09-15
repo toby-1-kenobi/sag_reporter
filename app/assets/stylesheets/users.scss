@@ -10,7 +10,8 @@
   grid-column-gap: 2em;
   grid-template-areas:
           "details permissions projects"
-          "zones states languages";
+          "zones states languages"
+          "zones states submit";
 
   #user-details-input {
     grid-area: details;
@@ -23,12 +24,24 @@
   }
   #user-zones-input {
     grid-area: zones;
+    ul {
+      max-width: 20em;
+    }
   }
   #user-states-input {
     grid-area: states;
+    ul, .checkbox-clarification-wrapper {
+      max-width: 30em;
+    }
   }
   #user-languages-input {
     grid-area: languages;
+    ul, .checkbox-clarification-wrapper {
+      max-width: 30em;
+    }
+  }
+  #user-form-submit-button {
+    grid-area: submit;
   }
   h3{
     padding-left: 1em;
