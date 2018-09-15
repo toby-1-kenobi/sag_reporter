@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180914122833) do
+ActiveRecord::Schema.define(version: 20180915040320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -254,6 +254,7 @@ ActiveRecord::Schema.define(version: 20180914122833) do
     t.text     "response"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.text     "facilitator_plan"
   end
 
   add_index "facilitator_feedbacks", ["church_ministry_id"], name: "index_facilitator_feedbacks_on_church_ministry_id", using: :btree
