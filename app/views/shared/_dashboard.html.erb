@@ -132,7 +132,7 @@
           <% projects.each do |project| %>
             <li id="project-<%= project.id %>" class="mdlext-menu__item">
               <%= link_to project, remote: true, class: 'mdl-button' do %>
-                <span project-<%= project.id %>-name"><%= project.name %></span>
+                <span class="project-<%= project.id %>-name"><%= project.name %></span>
               <% end %>
             </li>
           <% end %>

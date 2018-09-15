@@ -1,5 +1,6 @@
 $('#project-content').html('<%= j render(partial: 'form') %>');
 componentHandler.upgradeElements($('#project-content').find('.mdl-tabs').get());
+componentHandler.upgradeElements($('#project-content').find('.mdl-textfield').get());
 $('#project>-content .select-language').on('input', function(){
     const entry = this.value.toLowerCase();
     $('#project-content .add-language-possibilities li').hide();
@@ -7,4 +8,7 @@ $('#project>-content .select-language').on('input', function(){
         console.log(entry);
         $('#project-content .add-language-possibilities li[data-lang-name*=\''+ entry +'\']').show();
     }
+});
+$('#project-content .submit-on-change').on('change', function(){
+    $(this).closest('form').submit();
 });

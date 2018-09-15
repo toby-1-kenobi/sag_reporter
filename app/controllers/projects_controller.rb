@@ -2,8 +2,8 @@ class ProjectsController < ApplicationController
 
   before_action :require_login
 
-  before_action only: [:create, :destroy] do
-    head :forbidden unless logged_in_user.admin?
+  before_action only: [:create, :destroy, :update] do
+    head :forbidden unless logged_in_user.admin? or logged_in_user.zone_admin?
   end
 
   def index
@@ -28,6 +28,12 @@ class ProjectsController < ApplicationController
 
   def edit
     @project = Project.find(params[:id])
+    respond_to :js
+  end
+
+  def update
+    @project = Project.find(params[:id])
+    @project.update_attributes(project_params)
     respond_to :js
   end
 

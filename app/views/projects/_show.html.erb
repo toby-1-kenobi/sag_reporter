@@ -1,3 +1,4 @@
+<h3 class="project-<%= @project.id %>-name"><%= @project.name %></h3>
 <% if logged_in_user.can_manage_projects? %>
   <%= link_to edit_project_path(@project), remote: true, class: 'mdl-button mdl-js-button mdl-button--raised' do %>
     Administer <i class="material-icons">settings</i>

@@ -1,4 +1,9 @@
-
+<%= form_for @project, remote: true do |f| %>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label submit-on-change">
+    <%= f.text_field :name, class: 'mdl-textfield__input' %>
+    <%= f.label :name, 'Project name', class: 'mdl-textfield__label' %>
+  </div>
+<% end %>
 <%= link_to @project, remote: true, class: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' do %>
   Show project <i class="material-icons">visibility</i>
 <% end %>
