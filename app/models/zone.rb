@@ -7,12 +7,13 @@ class Zone < ActiveRecord::Base
       alternate: 1
   }
 
-  has_many :geo_states
+  has_many :geo_states, dependent: :restrict_with_error
   has_many :users, through: :geo_states
   has_many :languages, through: :geo_states
   has_many :state_languages, through: :geo_states
   has_many :engaged_organisations, through: :geo_states
   has_many :translating_organisations, through: :geo_states
+  has_many :projects, through: :geo_states
 
   def self.of_states(geo_states)
     geo_states.collect{ |gs| gs.zone }.uniq

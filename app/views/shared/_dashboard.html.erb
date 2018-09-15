@@ -122,33 +122,23 @@
 
   <% if tabs.include? :projects %>
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'projects' %>" id="projects-tab">
-      <%
-        case @dashboard_type
-        when :state
-          projects = Project.in_states(@geo_state)
-        when :zone
-          projects = Project.in_zones(@zone)
-        else # nation
-          projects = Project.all
-        end
-      %>
+      <% projects = defined?(dashboard_object) ? dashboard_object.projects : Project.all %>
       <% if projects.any? %>
-        <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
+        <button class="mdl-button mdl-js-button mdlext-js-menu-button" aria-controls="project-menu">
+          <span>Select a project</span>
+          <i class="material-icons">more_vert</i>
+        </button>
+        <ul id="project-menu" class="mdlext-menu">
           <% projects.each do |project| %>
-            <li id="project-<%= project.id %>" class="mdlext-accordion__panel">
-              <header class="mdlext-accordion__tab">
-                <span class="mdlext-accordion__tab__caption project-<%= project.id %>-name"><%= project.name %></span>
-              </header>
-              <section class="mdlext-accordion__tabpanel">
-                <div id="project-<%= project.id %>-content">
-                  <%= link_to project, remote: true, class: 'mdl-button' do %>
-                    Show project <i class="material-icons">visibility</i>
-                  <% end %>
-                </div>
-              </section>
+            <li id="project-<%= project.id %>" class="mdlext-menu__item">
+              <%= link_to project, remote: true, class: 'mdl-button' do %>
+                <span project-<%= project.id %>-name"><%= project.name %></span>
+              <% end %>
             </li>
           <% end %>
         </ul>
+        <div id="project-content">
+        </div>
       <% else %>
         <div class="empty-state">
           <p>No projects here.</p>

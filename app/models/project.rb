@@ -12,8 +12,4 @@ class Project < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
-  scope :in_states, ->(states) { joins(languages: :geo_states).where('geo_states.id' => states).uniq }
-
-  scope :in_zones, ->(zones) { joins(languages: :geo_states).where('geo_states.zone_id' => zones).uniq }
-
 end
