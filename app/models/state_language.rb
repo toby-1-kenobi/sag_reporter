@@ -4,6 +4,8 @@ class StateLanguage < ActiveRecord::Base
   belongs_to :language
   has_many :language_progresses, dependent: :destroy
   has_many :progress_updates, through: :language_progresses
+  has_many :language_streams, dependent: :destroy
+  has_many :facilitators, through: :language_streams, class_name: 'User'
 
   delegate :name, to: :language, prefix: true
   delegate :name, to: :geo_state, prefix: 'state'

@@ -1,8 +1,8 @@
 class Ministry < ActiveRecord::Base
 
   has_many :deliverables, dependent: :destroy
-  has_many :facilitator_streams, dependent: :destroy
-  has_many :facilitators, through: :facilitator_streams
+  has_many :language_streams, dependent: :destroy
+  has_many :facilitators, through: :language_streams, class_name: 'User'
   has_many :church_ministries, dependent: :destroy
   has_many :church_teams, through: :church_ministries
   has_many :project_streams, dependent: :destroy
