@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180915181134) do
+ActiveRecord::Schema.define(version: 20180915181924) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -631,6 +631,17 @@ ActiveRecord::Schema.define(version: 20180915181134) do
   add_index "progress_updates", ["user_id"], name: "index_progress_updates_on_user_id", using: :btree
   add_index "progress_updates", ["year"], name: "index_progress_updates_on_year", using: :btree
 
+  create_table "project_languages", force: :cascade do |t|
+    t.integer  "project_id",        null: false
+    t.integer  "state_language_id", null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "project_languages", ["project_id", "state_language_id"], name: "index_project_language", unique: true, using: :btree
+  add_index "project_languages", ["project_id"], name: "index_project_languages_on_project_id", using: :btree
+  add_index "project_languages", ["state_language_id"], name: "index_project_languages_on_state_language_id", using: :btree
+
   create_table "project_streams", force: :cascade do |t|
     t.integer  "project_id",    null: false
     t.integer  "ministry_id",   null: false
@@ -907,6 +918,8 @@ ActiveRecord::Schema.define(version: 20180915181134) do
   add_foreign_key "progress_markers", "topics"
   add_foreign_key "progress_updates", "language_progresses"
   add_foreign_key "progress_updates", "users"
+  add_foreign_key "project_languages", "projects"
+  add_foreign_key "project_languages", "state_languages"
   add_foreign_key "project_streams", "ministries"
   add_foreign_key "project_streams", "projects"
   add_foreign_key "project_streams", "users", column: "supervisor_id"
