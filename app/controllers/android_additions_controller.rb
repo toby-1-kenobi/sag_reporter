@@ -11,7 +11,7 @@ class AndroidAdditionsController < ApplicationController
 
   def new_user_info
     states_and_languages = {geo_states: GeoState.includes(:languages).all.map do |gs|
-      [gs.id, {name: gs.name, languages: gs.languages.map{|l| [l.id, {name: l.name}]}.to_h}]
+      [gs.id, gs.name]
     end.to_h}
     render json: states_and_languages, status: :ok
   end
@@ -24,12 +24,11 @@ class AndroidAdditionsController < ApplicationController
           :device_name,
           :user => [
               :name,
+              :organisation,
               :phone,
               :email,
               :interface_language_id,
-              {:geo_state_ids => []},
-              {:spoken_language_ids => []},
-              :role_description
+              {:geo_state_ids => []}
           ]
       ]
       new_user_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
