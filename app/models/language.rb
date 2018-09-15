@@ -49,8 +49,6 @@ class Language < ActiveRecord::Base
   belongs_to :champion, class_name: 'User', inverse_of: :championed_languages
   has_many :populations, dependent: :destroy, inverse_of: :language
   belongs_to :project
-  has_many :facilitator_languages, dependent: :destroy
-  has_many :facilitators, through: :facilitator_languages
 
   delegate :name, to: :family, prefix: true, allow_nil: true
 
