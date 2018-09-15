@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180915175038) do
+ActiveRecord::Schema.define(version: 20180915180136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -427,7 +427,6 @@ ActiveRecord::Schema.define(version: 20180915175038) do
     t.boolean  "oral_traditions_print"
     t.integer  "champion_id"
     t.datetime "champion_prompted"
-    t.integer  "project_id"
   end
 
   add_index "languages", ["champion_id"], name: "index_languages_on_champion_id", using: :btree
@@ -435,7 +434,6 @@ ActiveRecord::Schema.define(version: 20180915175038) do
   add_index "languages", ["iso"], name: "index_languages_on_iso", unique: true, using: :btree
   add_index "languages", ["name"], name: "index_languages_on_name", using: :btree
   add_index "languages", ["pop_source_id"], name: "index_languages_on_pop_source_id", using: :btree
-  add_index "languages", ["project_id"], name: "index_languages_on_project_id", using: :btree
   add_index "languages", ["translation_need"], name: "index_languages_on_translation_need", using: :btree
   add_index "languages", ["translation_progress"], name: "index_languages_on_translation_progress", using: :btree
 
@@ -898,7 +896,6 @@ ActiveRecord::Schema.define(version: 20180915175038) do
   add_foreign_key "language_streams", "users", column: "facilitator_id"
   add_foreign_key "languages", "data_sources", column: "pop_source_id"
   add_foreign_key "languages", "language_families", column: "family_id"
-  add_foreign_key "languages", "projects"
   add_foreign_key "languages", "users", column: "champion_id"
   add_foreign_key "ministries", "topics"
   add_foreign_key "ministry_outputs", "church_ministries"

@@ -112,7 +112,7 @@ Rails.application.routes.draw do
 
   resources :populations, only: [:create]
 
-  resources :projects, only: [:index, :create, :destroy]
+  resources :projects, only: [:create, :destroy]
 
   resources :reports do
     collection do
