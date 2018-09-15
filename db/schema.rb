@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180913054349) do
+ActiveRecord::Schema.define(version: 20180915040320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -254,6 +254,7 @@ ActiveRecord::Schema.define(version: 20180913054349) do
     t.text     "response"
     t.datetime "created_at",         null: false
     t.datetime "updated_at",         null: false
+    t.text     "facilitator_plan"
   end
 
   add_index "facilitator_feedbacks", ["church_ministry_id"], name: "index_facilitator_feedbacks_on_church_ministry_id", using: :btree
@@ -757,6 +758,17 @@ ActiveRecord::Schema.define(version: 20180913054349) do
   add_index "state_languages", ["language_id"], name: "index_state_languages_on_language_id", using: :btree
   add_index "state_languages", ["project"], name: "index_state_languages_on_project", using: :btree
 
+  create_table "state_projects", force: :cascade do |t|
+    t.integer  "project_id",   null: false
+    t.integer  "geo_state_id", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "state_projects", ["geo_state_id"], name: "index_state_projects_on_geo_state_id", using: :btree
+  add_index "state_projects", ["project_id", "geo_state_id"], name: "state_projects_index", unique: true, using: :btree
+  add_index "state_projects", ["project_id"], name: "index_state_projects_on_project_id", using: :btree
+
   create_table "sub_districts", force: :cascade do |t|
     t.string   "name",        null: false
     t.integer  "district_id"
@@ -837,15 +849,16 @@ ActiveRecord::Schema.define(version: 20180913054349) do
     t.boolean  "national_curator",         default: false, null: false
     t.string   "role_description"
     t.datetime "curator_prompted"
-    t.boolean  "reset_password",           default: false
     t.boolean  "lci_board_member",         default: false, null: false
     t.boolean  "lci_agency_leader",        default: false, null: false
+    t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
     t.boolean  "forward_planning_curator", default: false, null: false
     t.integer  "training_level"
     t.integer  "registration_status",      default: 2,     null: false
     t.boolean  "zone_admin",               default: false, null: false
     t.integer  "user_type"
+    t.string   "organisation"
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
@@ -945,6 +958,8 @@ ActiveRecord::Schema.define(version: 20180913054349) do
   add_foreign_key "reports", "sub_districts"
   add_foreign_key "state_languages", "geo_states"
   add_foreign_key "state_languages", "languages"
+  add_foreign_key "state_projects", "geo_states"
+  add_foreign_key "state_projects", "projects"
   add_foreign_key "sub_districts", "districts"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translatables"
