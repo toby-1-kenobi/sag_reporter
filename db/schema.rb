@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180915181924) do
+ActiveRecord::Schema.define(version: 20180915183251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -670,6 +670,18 @@ ActiveRecord::Schema.define(version: 20180915181924) do
     t.datetime "updated_at",  null: false
   end
 
+  create_table "quarterly_targets", force: :cascade do |t|
+    t.integer  "state_language_id", null: false
+    t.integer  "deliverable_id",    null: false
+    t.string   "quarter",           null: false
+    t.integer  "value",             null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "quarterly_targets", ["deliverable_id"], name: "index_quarterly_targets_on_deliverable_id", using: :btree
+  add_index "quarterly_targets", ["state_language_id"], name: "index_quarterly_targets_on_state_language_id", using: :btree
+
   create_table "registration_approvals", force: :cascade do |t|
     t.integer  "registering_user_id", null: false
     t.integer  "approver_id",         null: false
@@ -923,6 +935,8 @@ ActiveRecord::Schema.define(version: 20180915181924) do
   add_foreign_key "project_streams", "ministries"
   add_foreign_key "project_streams", "projects"
   add_foreign_key "project_streams", "users", column: "supervisor_id"
+  add_foreign_key "quarterly_targets", "deliverables"
+  add_foreign_key "quarterly_targets", "state_languages"
   add_foreign_key "registration_approvals", "users", column: "approver_id"
   add_foreign_key "registration_approvals", "users", column: "registering_user_id"
   add_foreign_key "reports", "challenge_reports"
