@@ -10,13 +10,15 @@ class GeoState < ActiveRecord::Base
   has_many :events
   has_and_belongs_to_many :people
   has_many :output_counts
-  has_many :progress_updates #this relationship seems unnecessary because it should go through state_languages
+  has_many :progress_updates # this relationship seems unnecessary because it should go through state_languages
   has_many :districts, dependent: :destroy
   has_many :curatings, dependent: :destroy
   has_many :curators, through: :curatings, class_name: 'User', source: 'user', inverse_of: :curated_states
   has_and_belongs_to_many :edits
   has_many :engaged_organisations, through: :languages
   has_many :translating_organisations, through: :languages
+  has_many :state_projects, dependent: :destroy
+  has_many :projects, through: :state_projects
   delegate :name, to: :zone, prefix: true
 
   def minority_languages

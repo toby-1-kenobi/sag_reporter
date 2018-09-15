@@ -2,12 +2,6 @@ class User < ActiveRecord::Base
 
   include ContactDetails
 
-  enum training_level: {
-    team_member: 1,
-    facilitator: 2,
-    project_supervisor: 4,
-  }
-
   enum registration_status: {
       unapproved: 0,
       zone_approved: 1,
@@ -35,10 +29,9 @@ class User < ActiveRecord::Base
            after_add: :update_self, after_remove: :update_self
   has_many :church_team_memberships, dependent: :destroy
   has_many :church_teams, through: :church_team_memberships
+  has_many :church_ministries, foreign_key: 'facilitator_id', inverse_of: :facilitator
   has_many :user_benefits, dependent: :destroy
   has_many :app_benefits, through: :user_benefits
-  has_many :project_users, dependent: :destroy
-  has_many :projects, through: :project_users
   has_many :ministry_outputs, inverse_of: :creator, dependent: :restrict_with_error
   has_many :registration_approvals, foreign_key: 'registering_user_id', dependent: :destroy, inverse_of: :registering_user
   has_many :registration_approvers, through: :registration_approvals, class_name: 'User', source: :approver, inverse_of: :registering_users
@@ -46,7 +39,9 @@ class User < ActiveRecord::Base
   has_many :registering_users, through: :approved_registrations, class_name: 'User', inverse_of: :registration_approvers
   has_many :registration_approved_zones, through: :registration_approvers, source: :zones
   has_many :facilitator_responses, class_name: 'FacilitatorFeedback', inverse_of: :team_member, dependent: :nullify
-  has_one :facilitator, dependent: :destroy
+  has_many :language_streams, foreign_key: 'facilitator_id', inverse_of: :facilitator
+  has_many :ministries, through: :language_streams
+  has_many :state_languages, through: :language_streams
   has_many :project_streams, dependent: :restrict_with_error, inverse_of: :supervisor
 
   attr_accessor :remember_token
@@ -183,6 +178,12 @@ class User < ActiveRecord::Base
         (forward_planning_curator? and edit.pending_forward_planning_approval?)
   end
 
+  def facilitator?
+    LanguageStream.exists?(facilitator_id: id)
+  end
+  
+  # if you want to use a scope:
+  # scope :facilitators, ->{ joins(:language_streams).where.not(:language_streams => {}) }
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles

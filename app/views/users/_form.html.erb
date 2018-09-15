@@ -20,6 +20,11 @@
         <%= f.label :email, class: 'mdl-textfield__label' %>
       </div>
       <div class="mdl-textfield mdl-js-textfield">
+        <i class="material-icons mdl-textfield__icon">account_circle</i>
+        <%= f.text_field :organisation, class: 'mdl-textfield__input' %>
+        <%= f.label :organisation, 'Church/Organisation', class: 'mdl-textfield__label' %>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield">
         <i class="material-icons mdl-textfield__icon">vpn_key</i>
         <%= f.password_field :password, class: 'mdl-textfield__input' %>
         <%= f.label :password, class: 'mdl-textfield__label' %>
@@ -66,37 +71,9 @@
             <span class="mdl-switch__label">Zone administrator</span>
           <% end %>
         </div>
-        <div class="permission-control">
-          <div id="training-level-select" class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-            <%= f.select(:training_level, User.training_levels.keys.map{ |tl| [tl.humanize, tl] }, options = {}, html_options = {class: 'mdlext-selectfield__select'}) %>
-            <%= f.label :training_level, 'Level of training', class: 'mdlext-selectfield__label' %>
-          </div>
-        </div>
       </div>
 
       <div id="user-projects-input">
-        <h3>Projects</h3>
-        <ul class="mdl-list">
-          <% @projects.each do |project| %>
-            <li class="mdl-list__item">
-              <span class="mdl-list__item-primary-content">
-                <%= project.name %>
-              </span>
-              <span class="mdl-list__item-secondary-action">
-                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="project-checkbox-<%= project.id %>">
-                  <input
-                    type="checkbox"
-                    id="project-checkbox-<%= project.id %>"
-                    name="user[projects][<%= project.id %>]"
-                    value="<%= project.id %>"
-                    class="mdl-checkbox__input"
-                    <%= (@user.projects.include? project) ? 'checked' : '' %>
-                    />
-                </label>
-              </span>
-            </li>
-          <% end %>
-        </ul>
       </div>
 
       <div id="user-zones-input">
@@ -195,8 +172,7 @@
         </ul>
       </div>
     <% end %>
-
-        <%= button_tag( :class => 'mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect') do %>
-          <%= form_action == 'new' ? 'Create New User' : 'Update' %> <i class="material-icons right">create</i>
-        <% end %>
+    <%= button_tag( id: 'user-form-submit-button', class: 'mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect') do %>
+      <%= form_action == 'new' ? 'Create New User' : 'Update' %> <i class="material-icons right">create</i>
+    <% end %>
   <% end %>

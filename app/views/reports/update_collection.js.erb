@@ -6,4 +6,5 @@ $('.reports-container').html(`
     <%= j render 'reports/empty_state' %>
   <% end %>
 `);
+componentHandler.upgradeElements($('.mdl-tooltip').get());
 $('#report-filter-spinner').removeClass('is-active');

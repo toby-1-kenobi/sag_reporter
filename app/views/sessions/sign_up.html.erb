@@ -23,6 +23,11 @@
       <%= f.label :email, class: 'mdl-textfield__label' %>
     </div>
     <div class="mdl-textfield mdl-js-textfield">
+      <i class="material-icons mdl-textfield__icon">account_circle</i>
+      <%= f.text_field :organisation, class: 'mdl-textfield__input' %>
+      <%= f.label :organisation, 'Church/Organisation', class: 'mdl-textfield__label' %>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield">
       <%= f.text_field :role_description, class: 'mdl-textfield__input' %>
       <%= f.label :role_description, class: 'mdl-textfield__label' %>
     </div>
