@@ -20,6 +20,8 @@ class AndroidAdditionsController < ApplicationController
     begin
       safe_params = [
           :is_only_test,
+          :device_id,
+          :device_name,
           :user => [
               :name,
               :phone,
@@ -37,7 +39,14 @@ class AndroidAdditionsController < ApplicationController
       new_user_params[:registration_status] = 0
       new_user = User.new new_user_params
       if new_user&.valid?
-        new_user.save unless is_only_test
+        unless is_only_test
+          ExternalDevice.create({
+                                 device_id: login_params["device_id"],
+                                 name: login_params["device_name"],
+                                 user: new_user
+                             }) if login_params["device_id"] && login_params["device_name"]
+          new_user.save
+        end
         send_message = {status: "success", user_id: new_user.id}.to_json
         logger.debug send_message
         render json: send_message, status: :ok
@@ -92,7 +101,7 @@ class AndroidAdditionsController < ApplicationController
 
       user = get_user login_params["user_name"]
       # check, whether user exists and password is correct
-      unless user&.authenticate(login_params["password"])
+      unless user&.authenticate(login_params["password"]) && user.registration_status?
         logger.error "User or password not found. User ID: #{user&.id}"
         head :forbidden
         return
