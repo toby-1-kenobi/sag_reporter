@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180915180136) do
+ActiveRecord::Schema.define(version: 20180915181134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -644,17 +644,6 @@ ActiveRecord::Schema.define(version: 20180915180136) do
   add_index "project_streams", ["project_id"], name: "index_project_streams_on_project_id", using: :btree
   add_index "project_streams", ["supervisor_id"], name: "index_project_streams_on_supervisor_id", using: :btree
 
-  create_table "project_users", force: :cascade do |t|
-    t.integer  "project_id", null: false
-    t.integer  "user_id",    null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "project_users", ["project_id", "user_id"], name: "index_project_user", unique: true, using: :btree
-  add_index "project_users", ["project_id"], name: "index_project_users_on_project_id", using: :btree
-  add_index "project_users", ["user_id"], name: "index_project_users_on_user_id", using: :btree
-
   create_table "projects", force: :cascade do |t|
     t.string   "name",       null: false
     t.datetime "created_at", null: false
@@ -921,8 +910,6 @@ ActiveRecord::Schema.define(version: 20180915180136) do
   add_foreign_key "project_streams", "ministries"
   add_foreign_key "project_streams", "projects"
   add_foreign_key "project_streams", "users", column: "supervisor_id"
-  add_foreign_key "project_users", "projects"
-  add_foreign_key "project_users", "users"
   add_foreign_key "registration_approvals", "users", column: "approver_id"
   add_foreign_key "registration_approvals", "users", column: "registering_user_id"
   add_foreign_key "reports", "challenge_reports"
