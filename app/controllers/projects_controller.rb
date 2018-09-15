@@ -27,7 +27,7 @@ class ProjectsController < ApplicationController
   end
 
   def edit
-    @project = Project.find(params[:id])
+    @project = Project.includes(:geo_states).find(params[:id])
     respond_to :js
   end
 
@@ -47,6 +47,17 @@ class ProjectsController < ApplicationController
     @language = Language.find(params[:lang])
     #@language.project!
     @project.languages << @language unless @project.languages.include? @language
+    respond_to :js
+  end
+
+  def set_state
+    @project = Project.find(params[:id])
+    @geo_state = GeoState.find(params[:geo_state])
+    if params["state-#{@geo_state.id}"].present?
+      @project.geo_states << @geo_state unless @project.geo_states.include? @geo_state
+    else
+      @project.geo_states.delete @geo_state
+    end
     respond_to :js
   end
 

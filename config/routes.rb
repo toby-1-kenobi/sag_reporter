@@ -115,6 +115,7 @@ Rails.application.routes.draw do
   resources :projects do
     member do
       patch 'add_language/:lang', to: 'projects#add_language', as: 'add_language_to'
+      patch 'set_state/:geo_state', to: 'projects#set_state', as: 'set_state_in'
     end
   end
 
