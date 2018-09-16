@@ -40,7 +40,7 @@ class AndroidSyncController < ApplicationController
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
-        Project: %w(state_languages users),
+        Project: %w(state_languages),
         MtResource: %w(product_categories)
     }
     @all_restricted_ids = Hash.new
