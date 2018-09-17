@@ -439,7 +439,7 @@ class AndroidSyncController < ApplicationController
       @id_changes[table.name] ||= {}
       if (id = hash["id"])
         entry = @is_only_test? table.find(id) : table.update(id, hash)
-        @id_changes[table.name].merge!({old_id => entry})
+        @id_changes[table.name].merge!({id => entry})
       elsif (old_id = hash.delete "old_id")
         new_entry = table.new hash
         @id_changes[table.name].merge!({old_id => new_entry})
