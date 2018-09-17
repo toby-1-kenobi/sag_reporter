@@ -1,16 +1,25 @@
 $('#project-content').html('<%= j render(partial: 'form') %>');
+
 componentHandler.upgradeElements($('#project-content').find('.mdl-tabs').get());
 componentHandler.upgradeElements($('#project-content').find('.mdl-textfield').get());
-$('#project>-content .select-language').on('input', function(){
+
+$('.add-facilitator-input').on('input', function(){
     const entry = this.value.toLowerCase();
     $('#project-content .add-language-possibilities li').hide();
     if (entry.length >= 3){
+        const userData = JSON.parse($('#user-data').html());
         console.log(entry);
-        $('#project-content .add-language-possibilities li[data-lang-name*=\''+ entry +'\']').show();
+        userData.forEach(function(user){
+            if (user.name.toLowerCase().includes(entry)){
+                console.log(user.id + ' : ' + user.name);
+            }
+        });
     }
 });
+
 $('#project-content .submit-on-change').on('change', function(){
     $(this).closest('form').submit();
 });
+
 window.bindFilters();
 $('.filter-trigger').trigger('change');
