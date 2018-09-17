@@ -330,7 +330,6 @@ class AndroidSyncController < ApplicationController
               :church_ministry_id,
               :deliverable_id,
               :month,
-              :creator,
               :value,
               :comment,
               :creator_id,
