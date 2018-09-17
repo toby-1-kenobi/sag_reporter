@@ -260,6 +260,7 @@ class AndroidSyncController < ApplicationController
           picture: :uploaded_file,
           reporter: :user,
           creator: :user,
+          facilitator: :user,
           observer: :person,
       }
       safe_params = [
