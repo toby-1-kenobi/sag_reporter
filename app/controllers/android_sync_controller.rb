@@ -30,9 +30,9 @@ class AndroidSyncController < ApplicationController
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
-        ProjectStream => %w(project_id ministry_id supervisor_id facilitator_id),
+        ProjectStream => %w(project_id ministry_id supervisor_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
-        LanguageStream => %w(state_language_id ministry_id),
+        LanguageStream => %w(state_language_id ministry_id facilitator_id),
         FacilitatorFeedback => %w(church_ministry_id month feedback team_member_id response facilitator_plan)
     }
     join_tables = {
