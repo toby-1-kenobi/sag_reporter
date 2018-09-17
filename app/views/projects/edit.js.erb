@@ -12,3 +12,5 @@ $('#project>-content .select-language').on('input', function(){
 $('#project-content .submit-on-change').on('change', function(){
     $(this).closest('form').submit();
 });
+window.bindFilters();
+$('.filter-trigger').trigger('change');

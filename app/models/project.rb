@@ -3,6 +3,7 @@ class Project < ActiveRecord::Base
   has_many :geo_states, through: :state_projects
   has_many :project_languages, dependent: :destroy
   has_many :state_languages, through: :project_languages
+  has_many :geo_states, through:  :state_languages
   has_many :reports, dependent: :nullify
   has_many :project_streams, dependent: :destroy
   has_many :ministries, through: :project_streams

@@ -45,17 +45,6 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
-  def set_state
-    @project = Project.find(params[:id])
-    @geo_state = GeoState.find(params[:geo_state])
-    if params["state-#{@geo_state.id}"].present?
-      @project.geo_states << @geo_state unless @project.geo_states.include? @geo_state
-    else
-      @project.geo_states.delete @geo_state
-    end
-    respond_to :js
-  end
-
   private
 
   def project_params
