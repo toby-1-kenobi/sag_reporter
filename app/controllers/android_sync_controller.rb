@@ -149,25 +149,25 @@ class AndroidSyncController < ApplicationController
                         last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
                 .includes(join_tables[table_name]).each do |entry|
               entry_data = Hash.new
-              (attributes + ["id"]).each do |attribute|
-                entry_data.merge!({attribute => entry.send(attribute)})
-              end
-              join_tables[table_name]&.each do |join_table|
-                entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
-              end
               begin
+                (attributes + ["id"]).each do |attribute|
+                  entry_data.merge!({attribute => entry.send(attribute)})
+                end
+                join_tables[table_name]&.each do |join_table|
+                  entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
+                end
                 entry_data.merge! additional_tables(entry)
+                if has_entry
+                  file.write(",")
+                else
+                  file.write(",")
+                  file.write "\"#{table_name}\":["
+                end
+                has_entry = true
+                file.write entry_data.to_json
               rescue => e
-                logger.error "Error in adding additional tables for #{entry.class}: #{entry.attributes}" + e.to_s
+                logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
               end
-              if has_entry
-                file.write(",")
-              else
-                file.write(",")
-                file.write "\"#{table_name}\":["
-              end
-              has_entry = true
-              file.write entry_data.to_json
             end
             file.write "]" if has_entry
             ActiveRecord::Base.connection.query_cache.clear
@@ -301,6 +301,12 @@ class AndroidSyncController < ApplicationController
                   :shareable,
                   :translation_impact
           ],
+          organisation: [
+                  :id,
+                  :old_id,
+                  :name,
+                  :church
+          ],
           church_team: [
               :id,
               :old_id,
@@ -337,7 +343,7 @@ class AndroidSyncController < ApplicationController
       @id_changes = {}
 
       # The following tables have to be in the order, that they only contain IDs of the previous ones
-      [Person, Report, ImpactReport, UploadedFile, ChurchTeam, ChurchMinistry, MinistryOutput].each do |table|
+      [Person, Report, ImpactReport, UploadedFile, Organisation, ChurchTeam, ChurchMinistry, MinistryOutput].each do |table|
         receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
       end
       puts @id_changes
