@@ -137,7 +137,7 @@ class AndroidSyncController < ApplicationController
               tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry)
             else
               tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry,
-                  Topic, ProgressMarker, MtResource, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput, ProductCategory, Facilitator, FacilitatorFeedback)
+                  Topic, ProgressMarker, MtResource, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput, ProductCategory, FacilitatorFeedback)
             end
           end
           tables.each do |table, attributes|
