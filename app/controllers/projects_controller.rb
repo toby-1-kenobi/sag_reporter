@@ -37,11 +37,16 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
-  def add_language
+  def set_language
     @project = Project.find(params[:id])
-    @language = Language.find(params[:lang])
-    #@language.project!
-    @project.languages << @language unless @project.languages.include? @language
+    @state_language = StateLanguage.find(params[:state_language])
+    if params["sl-#{@state_language.id}"].present?
+      @state_language.update_attribute(:project, true)
+      @project.state_languages << @state_language unless @project.state_languages.include? @state_language
+    else
+      @project.state_languages.delete @state_language
+      @state_language.update_attribute(:project, false) unless (@state_language.projects.any? or @state_language.progress_updates.any?)
+    end
     respond_to :js
   end
 
