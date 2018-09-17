@@ -259,6 +259,7 @@ class AndroidSyncController < ApplicationController
       @foreign_key_names = {
           picture: :uploaded_file,
           reporter: :user,
+          creator: :user,
           observer: :person,
       }
       safe_params = [
