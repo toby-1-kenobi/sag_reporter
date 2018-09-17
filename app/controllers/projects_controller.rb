@@ -50,6 +50,17 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
+  def set_stream
+    @project = Project.find(params[:id])
+    @stream = Ministry.find(params[:ministry])
+    if params["stream-#{@stream.id}"].present?
+      @project.ministries << @stream unless @project.ministries.include? @stream
+    else
+      @project.ministries.delete @stream
+    end
+    respond_to :js
+  end
+
   private
 
   def project_params

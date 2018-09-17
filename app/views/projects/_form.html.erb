@@ -51,7 +51,14 @@
           %>
         </ul>
       </div>
-      <div id="project-streams"></div>
+      <div id="project-streams">
+        <h4>Streams</h4>
+        <ul class="mdl-list">
+          <%= render partial: 'project_stream',
+                     collection: Ministry.all
+          %>
+        </ul>
+      </div>
 
     </div>
   </div>

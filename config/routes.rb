@@ -115,6 +115,7 @@ Rails.application.routes.draw do
   resources :projects, except: [:index] do
     member do
       patch 'set_language/:state_language', to: 'projects#set_language', as: 'set_language_in'
+      patch 'set_stream/:ministry', to: 'projects#set_stream', as: 'set_stream_in'
     end
   end
 

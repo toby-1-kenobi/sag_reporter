@@ -1,0 +1,19 @@
+<li class="mdl-list__item">
+  <span class="mdl-list__item-primary-content">
+    <%= project_stream.name %>
+  </span>
+  <span class="mdl-list__item-secondary-action">
+    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="stream-<%= project_stream.id.to_s %>" >
+      <%= check_box_tag "stream-#{project_stream.id.to_s}",
+                        'yes',
+                        @project.ministries.include?(project_stream),
+                        data: {
+                            remote: true,
+                            url: set_stream_in_project_path(@project, project_stream),
+                            method: "PATCH",
+                        },
+                        class: "mdl-checkbox__input"
+      %>
+    </label>
+  </span>
+</li>
