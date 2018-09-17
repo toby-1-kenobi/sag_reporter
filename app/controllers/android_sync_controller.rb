@@ -333,6 +333,7 @@ class AndroidSyncController < ApplicationController
               :creator,
               :value,
               :comment,
+              :creator_id,
               :actual
           ]
       ]
