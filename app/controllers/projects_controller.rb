@@ -6,11 +6,6 @@ class ProjectsController < ApplicationController
     head :forbidden unless logged_in_user.admin? or logged_in_user.zone_admin?
   end
 
-  def index
-    redirect_to root_path unless logged_in_user.admin?
-    @projects = Project.all
-  end
-
   def create
     @project = Project.create(project_params)
     respond_to :js

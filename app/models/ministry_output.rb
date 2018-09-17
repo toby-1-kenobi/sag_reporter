@@ -2,6 +2,7 @@ class MinistryOutput < ActiveRecord::Base
 
   belongs_to :church_ministry
   belongs_to :deliverable
+  has_many :quarterly_targets, through: :deliverable
   belongs_to :creator, class_name: "User"
 
   validates :church_ministry, presence: true

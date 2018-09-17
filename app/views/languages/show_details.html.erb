@@ -58,21 +58,6 @@
           <% end %>
         </tr>
       <% end %>
-      <% if logged_in_user.trusted? %>
-        <tr>
-          <th>Assign project</th>
-          <td>
-            <span id="project-name">
-              <%= @language.project.present? ? @language.project.name : 'not assigned' %>
-            </span>
-            <% if logged_in_user.admin? %>
-              <button id="project-edit-button" class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
-                <i class="material-icons">edit</i>
-              </button>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
       <% if logged_in_user.admin? %>
         <tr id="project-input-row" class="hide">
           <td colspan="2">
