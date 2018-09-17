@@ -261,6 +261,7 @@ class AndroidSyncController < ApplicationController
           reporter: :user,
           creator: :user,
           facilitator: :user,
+          team_member: :user,
           observer: :person,
       }
       safe_params = [
@@ -326,6 +327,16 @@ class AndroidSyncController < ApplicationController
               :status,
               :facilitator_id
           ],
+          facilitator_feedback: [
+              :id,
+              :old_id,
+              :church_ministry_id,
+              :month,
+              :feedback,
+              :response,
+              :team_member_id,
+              :facilitator_plan,
+          ],
           ministry_output: [
               :id,
               :old_id,
@@ -345,7 +356,7 @@ class AndroidSyncController < ApplicationController
       @id_changes = {}
 
       # The following tables have to be in the order, that they only contain IDs of the previous ones
-      [Person, Report, ImpactReport, UploadedFile, Organisation, ChurchTeam, ChurchMinistry, MinistryOutput].each do |table|
+      [Person, Report, ImpactReport, UploadedFile, Organisation, ChurchTeam, ChurchMinistry, FacilitatorFeedback, MinistryOutput].each do |table|
         receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
       end
       puts @id_changes
