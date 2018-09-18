@@ -9,15 +9,18 @@
 ]
 </script>
 
-<%= form_for @project, remote: true do |f| %>
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label submit-on-change">
-    <%= f.text_field :name, class: 'mdl-textfield__input' %>
-    <%= f.label :name, 'Project name', class: 'mdl-textfield__label' %>
-  </div>
-<% end %>
-<%= link_to @project, remote: true, class: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' do %>
-  Show project <i class="material-icons">visibility</i>
-<% end %>
+<div id="project-edit-head">
+  <%= form_for @project, remote: true do |f| %>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label submit-on-change">
+      <%= f.text_field :name, class: 'mdl-textfield__input' %>
+      <%= f.label :name, 'Project name', class: 'mdl-textfield__label' %>
+    </div>
+  <% end %>
+  <%= link_to @project, remote: true, class: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' do %>
+    Show project <i class="material-icons">visibility</i>
+  <% end %>
+</div>
+
 <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
   <div class="mdl-tabs__tab-bar">
     <a href="#protocols-panel" class="mdl-tabs__tab is-active">Protocols</a>
@@ -74,13 +77,41 @@
     </div>
   </div>
   <div class="mdl-tabs__panel" id="responsible-panel">
+    <% project_streams = @project.project_streams.includes(:ministry, :supervisor)  %>
+    <h4>Supervisors</h4>
+    <table class="mdl-data-table mdl-js-data-table">
+      <thead>
+      <tr>
+        <% project_streams.each do |ps| %>
+          <th class="mdl-data-table__cell--non-numeric"><%= ps.ministry.name %></th>
+        <% end %>
+      </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <% project_streams.each do |ps| %>
+            <td class="mdl-data-table__cell--non-numeric">
+              <%= ps.supervisor.present? ? ps.supervisor.name : '<em>Unassigned</em>'.html_safe %>
+              <div class="change-supervisor-controls" data-ministry="<%= ps.ministry.id %>">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input change-supervisor-input" type="text" id="change-supervisor-input-<%= ps.ministry.id %>">
+                  <label class="mdl-textfield__label" for="change-supervisor-input-<%= ps.ministry.id %>">Change supervisor</label>
+                </div>
+                <div class="change-supervisor-choices" id="change-supervisor-choices-<%= ps.ministry.id %>"></div>
+              </div>
+            </td>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
+
     <h4>Facilitators</h4>
     <table class="mdl-data-table mdl-js-data-table">
       <thead>
         <tr>
           <th class="mdl-data-table__cell--non-numeric">Language</th>
-          <% @project.ministries.each do |ministry| %>
-            <th class="mdl-data-table__cell--non-numeric"><%= ministry.name %></th>
+          <% project_streams.each do |ps| %>
+            <th class="mdl-data-table__cell--non-numeric"><%= ps.ministry.name %></th>
           <% end %>
         </tr>
       </thead>
@@ -93,20 +124,20 @@
                 (in <%= state_language.state_name %>)
               <% end %>
             </td>
-            <% @project.ministries.each do |ministry| %>
-              <td data-ministry="<%= ministry.id %>" data-state-language="<%= state_language.id %>" >
+            <% project_streams.each do |ps| %>
+              <td data-ministry="<%= ps.ministry.id %>" data-state-language="<%= state_language.id %>" >
                 <ul class="mdl-list facilitator-list">
                   <%= render partial: 'project_facilitator',
-                             collection: @project.language_streams.where(ministry: ministry, state_language: state_language),
-                             locals: { stream_id: ministry.id, state_language_id: state_language.id }
+                             collection: @project.language_streams.where(ministry: ps.ministry, state_language: state_language),
+                             locals: { stream_id: ps.ministry.id, state_language_id: state_language.id }
                   %>
                 </ul>
-                <div class="add-facilitator-controls" data-ministry="<%= ministry.id %>" data-state-language="<%= state_language.id %>">
+                <div class="add-facilitator-controls" data-ministry="<%= ps.ministry.id %>" data-state-language="<%= state_language.id %>">
                   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input add-facilitator-input" type="text" id="add-facilitator-input-<%= state_language.id %>-<%= ministry.id %>">
-                    <label class="mdl-textfield__label" for="add-facilitator-input-<%= state_language.id %>-<%= ministry.id %>">Add facilitator</label>
+                    <input class="mdl-textfield__input add-facilitator-input" type="text" id="add-facilitator-input-<%= state_language.id %>-<%= ps.ministry.id %>">
+                    <label class="mdl-textfield__label" for="add-facilitator-input-<%= state_language.id %>-<%= ps.ministry.id %>">Add facilitator</label>
                   </div>
-                  <div class="add-facilitator-choices" id="add-facilitator-choices-<%= state_language.id %>-<%= ministry.id %>"></div>
+                  <div class="add-facilitator-choices" id="add-facilitator-choices-<%= state_language.id %>-<%= ps.ministry.id %>"></div>
                 </div>
               </td>
             <% end %>

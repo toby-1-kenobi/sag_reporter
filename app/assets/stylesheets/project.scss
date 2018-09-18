@@ -6,6 +6,11 @@
   }
 }
 
+#project-edit-head {
+  display: flex;
+  justify-content: center;
+}
+
 #languages-streams-panel .grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
