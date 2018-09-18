@@ -1,7 +1,7 @@
 require "test_helper"
 
 describe ProjectStream do
-  let(:project_stream) { FactoryBot.build(:project_stream) }
+  let(:project_streams) { FactoryBot.build(:project_streams) }
 
   it "must be valid" do
     value(project_stream).must_be :valid?

@@ -79,7 +79,7 @@
   <div class="mdl-tabs__panel" id="responsible-panel">
     <% project_streams = @project.project_streams.includes(:ministry, :supervisor)  %>
     <h4>Supervisors</h4>
-    <table class="mdl-data-table mdl-js-data-table">
+    <table class="mdl-data-table mdl-js-data-table supervisors">
       <thead>
       <tr>
         <% project_streams.each do |ps| %>
@@ -91,13 +91,13 @@
         <tr>
           <% project_streams.each do |ps| %>
             <td class="mdl-data-table__cell--non-numeric">
-              <%= ps.supervisor.present? ? ps.supervisor.name : '<em>Unassigned</em>'.html_safe %>
-              <div class="change-supervisor-controls" data-ministry="<%= ps.ministry.id %>">
+              <span class="supervisor-name project-stream-<%= ps.id %>-supervisor-name"><%= ps.supervisor.present? ? ps.supervisor.name : '<em>Unassigned</em>'.html_safe %></span>
+              <div class="change-supervisor-controls" data-ps-id="<%= ps.id %>">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  <input class="mdl-textfield__input change-supervisor-input" type="text" id="change-supervisor-input-<%= ps.ministry.id %>">
-                  <label class="mdl-textfield__label" for="change-supervisor-input-<%= ps.ministry.id %>">Change supervisor</label>
+                  <input class="mdl-textfield__input change-supervisor-input" type="text" id="change-supervisor-input-<%= ps.id %>">
+                  <label class="mdl-textfield__label" for="change-supervisor-input-<%= ps.id %>">Change supervisor</label>
                 </div>
-                <div class="change-supervisor-choices" id="change-supervisor-choices-<%= ps.ministry.id %>"></div>
+                <div class="change-supervisor-choices" id="change-supervisor-choices-<%= ps.id %>"></div>
               </div>
             </td>
           <% end %>

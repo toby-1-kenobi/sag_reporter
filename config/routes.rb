@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+
   get 'help/edit_language'
 
   get 'population/create'
@@ -121,6 +122,8 @@ Rails.application.routes.draw do
       patch 'add_facilitator/:stream/:state_language/:facilitator', to: 'projects#add_facilitator', as: 'add_facilitator_to'
     end
   end
+
+  patch 'project_streams/:id/set_supervisor/:supervisor', to: 'project_streams#set_supervisor', as: 'set_supervisor_in_project_stream'
 
   resources :reports do
     collection do
