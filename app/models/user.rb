@@ -83,6 +83,8 @@ class User < ActiveRecord::Base
 
   scope :in_zones, ->(zones) { joins(:geo_states).where('geo_states.zone_id' => zones).uniq }
 
+  scope :facilitators, ->{ joins(:language_streams) }
+
   # Returns the hash digest of the given string.
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
@@ -182,9 +184,6 @@ class User < ActiveRecord::Base
   def facilitator?
     LanguageStream.exists?(facilitator_id: id)
   end
-  
-  # if you want to use a scope:
-  # scope :facilitators, ->{ joins(:language_streams).where.not(:language_streams => {}) }
 
   # allow method names such as is_a_ROLE1_or_ROLE2?
   # where ROLE1 and ROLE2 are the names of a valid roles
