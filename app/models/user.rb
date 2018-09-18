@@ -38,7 +38,8 @@ class User < ActiveRecord::Base
   has_many :approved_registrations, class_name: 'RegistrationApproval', foreign_key: 'approver_id', dependent: :destroy, inverse_of: :approver
   has_many :registering_users, through: :approved_registrations, class_name: 'User', inverse_of: :registration_approvers
   has_many :registration_approved_zones, through: :registration_approvers, source: :zones
-  has_many :facilitator_responses, class_name: 'FacilitatorFeedback', inverse_of: :team_member, dependent: :nullify
+  has_many :facilitator_plan_responses, class_name: 'FacilitatorFeedback', inverse_of: :plan_team_member, dependent: :nullify
+  has_many :facilitator_result_responses, class_name: 'FacilitatorFeedback', inverse_of: :result_team_member, dependent: :nullify
   has_many :language_streams, foreign_key: 'facilitator_id', inverse_of: :facilitator
   has_many :ministries, through: :language_streams
   has_many :state_languages, through: :language_streams
