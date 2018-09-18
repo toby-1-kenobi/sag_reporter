@@ -1,1 +1,8 @@
-console.log('added facilitator');
+<% min_id = @language_stream.ministry_id %>
+<% lang_id = @language_stream.state_language_id %>
+<% facilitators = @language_stream.project.facilitators.where('language_streams.ministry_id' => min_id, 'language_streams.state_language_id' => lang_id) %>
+$('td[data-ministry=<%= min_id %>][data-state-language=<%= lang_id %>]').find('.facilitator-list').html(
+    '<%= j render partial: 'project_facilitator', collection: facilitators %>'
+);
+$('#add-facilitator-input-<%= lang_id %>-<%= min_id %>').val('');
+$('#add-facilitator-choices-<%= lang_id %>-<%= min_id %>').empty();

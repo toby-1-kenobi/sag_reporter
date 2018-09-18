@@ -94,15 +94,9 @@
               <% end %>
             </td>
             <% @project.ministries.each do |ministry| %>
-              <td>
-                <ul class="mdl-list">
-                  <% LanguageStream.where(ministry: ministry, state_language: state_language).each do |ls| %>
-                    <li class="mdl-list__item">
-                      <span class="mdl-list__item-primary-content">
-                        <%= ls.facilitator.name %>
-                      </span>
-                    </li>
-                  <% end %>
+              <td data-ministry="<%= ministry.id %>" data-state-language="<%= state_language.id %>" >
+                <ul class="mdl-list facilitator-list">
+                  <%= render partial: 'project_facilitator', collection: @project.facilitators.where('language_streams.ministry_id' => ministry, 'language_streams.state_language_id' => state_language) %>
                 </ul>
                 <div class="add-facilitator-controls" data-ministry="<%= ministry.id %>" data-state-language="<%= state_language.id %>">
                   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">

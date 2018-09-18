@@ -8,5 +8,7 @@ class Project < ActiveRecord::Base
   has_many :project_streams, dependent: :destroy
   has_many :ministries, through: :project_streams
   has_many :supervisors, through: :project_streams, class_name: 'User'
+  has_many :language_streams, dependent: :nullify
+  has_many :facilitators, through: :language_streams, class_name: 'User'
   validates :name, presence: true, uniqueness: true
 end

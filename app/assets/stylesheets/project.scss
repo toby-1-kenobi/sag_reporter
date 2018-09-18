@@ -25,3 +25,9 @@
     grid-area: streams;
   }
 }
+
+.add-facilitator-choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
