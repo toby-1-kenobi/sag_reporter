@@ -1,0 +1,7 @@
+<span class="mdl-chip">
+  <span class="mdl-chip__text facilitator-name"></span>
+  <%# stream, language and facilitator id is are place holders that should be substituted in JS %>
+  <%= link_to add_facilitator_to_project_path(@project, 0, 0, 0), method: :patch, remote: true, class: 'add-facilitator-link' do %>
+    <button type="button" class="mdl-chip__action"><i class="material-icons">add</i></button>
+  <% end %>
+</span>

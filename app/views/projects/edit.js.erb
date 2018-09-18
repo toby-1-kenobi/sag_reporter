@@ -5,13 +5,21 @@ componentHandler.upgradeElements($('#project-content').find('.mdl-textfield').ge
 
 $('.add-facilitator-input').on('input', function(){
     const entry = this.value.toLowerCase();
-    $('#project-content .add-language-possibilities li').hide();
+    const upperContainer = $(this).closest('.add-facilitator-controls')
+    const container = upperContainer.find('.add-facilitator-choices');
+    const ministryID = upperContainer.attr('data-ministry');
+    const stateLanguageID = upperContainer.attr('data-state-language');
+    container.empty();
     if (entry.length >= 3){
         const userData = JSON.parse($('#user-data').html());
-        console.log(entry);
         userData.forEach(function(user){
             if (user.name.toLowerCase().includes(entry)){
-                console.log(user.id + ' : ' + user.name);
+                facChip = $('<%= j render partial: 'add_facilitator' %>');
+                facChip.find('.facilitator-name').text(user.name);
+                facChip.find('.add-facilitator-link').attr('href', function(i, ref){
+                    return ref.replace('/0/0/0', '/'+ministryID+'/'+stateLanguageID+'/'+user.id);
+                });
+                container.append(facChip);
             }
         });
     }

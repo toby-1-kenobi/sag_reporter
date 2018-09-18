@@ -61,6 +61,16 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
+  def add_facilitator
+    @language_stream = LanguageStream.find_or_create_by(
+        ministry_id: params[:stream],
+        state_language_id: params[:state_language],
+        facilitator_id: params[:facilitator]
+    )
+    @language_stream.update_attribute(:project_id, params[:id])
+    respond_to :js
+  end
+
   private
 
   def project_params

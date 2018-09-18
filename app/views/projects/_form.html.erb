@@ -104,12 +104,13 @@
                     </li>
                   <% end %>
                 </ul>
-                <div class="add-facilitator-controls" data-ministry="<%= ministry.id %>" data-state-language="<%= state_language.id %>"></div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  <input class="mdl-textfield__input add-facilitator-input" type="text" id="add-facilitator-input-<%= state_language.id %>-<%= ministry.id %>">
-                  <label class="mdl-textfield__label" for="add-facilitator-input-<%= state_language.id %>-<%= ministry.id %>">Add facilitator</label>
+                <div class="add-facilitator-controls" data-ministry="<%= ministry.id %>" data-state-language="<%= state_language.id %>">
+                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input add-facilitator-input" type="text" id="add-facilitator-input-<%= state_language.id %>-<%= ministry.id %>">
+                    <label class="mdl-textfield__label" for="add-facilitator-input-<%= state_language.id %>-<%= ministry.id %>">Add facilitator</label>
+                  </div>
+                  <div class="add-facilitator-choices" id="add-facilitator-choices-<%= state_language.id %>-<%= ministry.id %>"></div>
                 </div>
-                <div id="add-facilitator-choices-<%= state_language.id %>-<%= ministry.id %>"></div>
               </td>
             <% end %>
           </tr>
