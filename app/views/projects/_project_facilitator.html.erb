@@ -1,5 +1,10 @@
-<li class="mdl-list__item">
+<li class="mdl-list__item" id="facilitator-list-item-<%= project_facilitator.id %>">
   <span class="mdl-list__item-primary-content">
-    <%= project_facilitator.name %>
+    <%= project_facilitator.facilitator.name %>
+  </span>
+  <span class="mdl-list__item-secondary-action">
+    <%= link_to project_facilitator, method: :delete, remote: true, class: 'mdl-button mdl-js-button mdl-button--icon' do %>
+      <i class="material-icons">cancel</i>
+    <% end %>
   </span>
 </li>

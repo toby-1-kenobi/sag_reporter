@@ -8,6 +8,29 @@ Rails.application.routes.draw do
 
   get 'about' => 'static_pages#about'
 
+  resources :android_additions do
+    collection do
+      get  'test_server'
+      post 'new_user_info'
+      post 'new_user'
+      post 'new_user'
+      post 'forgot_password'
+      post 'login'
+      post 'send_otp'
+      post 'get_database_key'
+      post 'get_file'
+    end
+  end
+
+  resources :android_sync do
+    collection do
+      post 'send_request'
+      post 'get_uploaded_file'
+      post 'receive_request'
+      post 'get_file'
+    end
+  end
+
   resources :edits, only: [:create, :destroy] do
     collection do
       get 'curate'
@@ -23,29 +46,6 @@ Rails.application.routes.draw do
 
   resources :events do
     get :autocomplete_person_name, :on => :collection
-  end
-
-  resources :android_additions do
-    collection do
-      get  'test_server'
-      post 'new_user_info'
-      post 'new_user'
-      post 'new_user'
-      post 'forgot_password'
-      post 'login'
-      post 'send_otp'
-      post 'get_database_key'
-      post 'get_file'
-    end
-  end
-  
-  resources :android_sync do
-    collection do
-      post 'send_request'
-      post 'get_uploaded_file'
-      post 'receive_request'
-      post 'get_file'
-    end
   end
   
   resources :geo_states, only: [:show] do
@@ -96,6 +96,8 @@ Rails.application.routes.draw do
       get 'populations'
     end
   end
+
+  resources :language_streams, only: [:destroy]
 
   resources :mt_resources
 
