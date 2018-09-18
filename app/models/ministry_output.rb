@@ -5,7 +5,6 @@ class MinistryOutput < ActiveRecord::Base
   has_many :quarterly_targets, through: :deliverable
   belongs_to :creator, class_name: "User"
 
-  validates :church_ministry, presence: true
   validates :deliverable, presence: true
   validates :creator, presence: true
   validates :month, presence: true, format: { with: /\A[2-9]\d{3}-(0|1)[0-9]\z/, message: "should be in the format 'YYYY-MM'"}
@@ -18,7 +17,9 @@ class MinistryOutput < ActiveRecord::Base
   private
 
   def deliverable_ministry_belongs_to_church_ministry
-    errors.add(:deliverable, "must belong to the church ministry") unless deliverable.ministry == church_ministry.ministry
+    if church_ministry.present?
+      errors.add(:deliverable, "must belong to the church ministry") unless deliverable.ministry == church_ministry.ministry
+    end
   end
 
   def year_in_range
