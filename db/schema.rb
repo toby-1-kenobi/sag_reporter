@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180918175050) do
+ActiveRecord::Schema.define(version: 20180918180915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -776,6 +776,22 @@ ActiveRecord::Schema.define(version: 20180918175050) do
   add_index "sub_districts", ["district_id"], name: "index_sub_districts_on_district_id", using: :btree
   add_index "sub_districts", ["name"], name: "index_sub_districts_on_name", using: :btree
 
+  create_table "supervisor_feedbacks", force: :cascade do |t|
+    t.integer  "supervisor_id",        null: false
+    t.integer  "facilitator_id",       null: false
+    t.string   "month",                null: false
+    t.text     "plan_feedback"
+    t.text     "plan_response"
+    t.text     "result_feedback"
+    t.integer  "facilitator_progress"
+    t.integer  "project_progress"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "supervisor_feedbacks", ["facilitator_id"], name: "index_supervisor_feedbacks_on_facilitator_id", using: :btree
+  add_index "supervisor_feedbacks", ["supervisor_id"], name: "index_supervisor_feedbacks_on_supervisor_id", using: :btree
+
   create_table "topics", force: :cascade do |t|
     t.string   "name",                                               null: false
     t.text     "description"
@@ -956,6 +972,8 @@ ActiveRecord::Schema.define(version: 20180918175050) do
   add_foreign_key "state_projects", "geo_states"
   add_foreign_key "state_projects", "projects"
   add_foreign_key "sub_districts", "districts"
+  add_foreign_key "supervisor_feedbacks", "users", column: "facilitator_id"
+  add_foreign_key "supervisor_feedbacks", "users", column: "supervisor_id"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translatables"
   add_foreign_key "uploaded_files", "reports"
