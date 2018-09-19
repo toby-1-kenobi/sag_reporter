@@ -4,6 +4,8 @@ class GeoState < ActiveRecord::Base
   has_and_belongs_to_many :users
   has_many :state_languages, dependent: :destroy
   has_many :languages, through: :state_languages, after_add: :update_self, after_remove: :update_self
+  has_many :project_languages, through: :state_languages
+  has_many :projects, through: :project_languages
   has_many :reports, dependent: :restrict_with_error
   has_many :impact_reports
   has_many :mt_resources, dependent: :restrict_with_error
@@ -17,8 +19,6 @@ class GeoState < ActiveRecord::Base
   has_and_belongs_to_many :edits
   has_many :engaged_organisations, through: :languages
   has_many :translating_organisations, through: :languages
-  has_many :state_projects, dependent: :destroy
-  has_many :projects, through: :state_projects
   delegate :name, to: :zone, prefix: true
 
   def minority_languages
