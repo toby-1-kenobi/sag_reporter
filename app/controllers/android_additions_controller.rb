@@ -33,12 +33,13 @@ class AndroidAdditionsController < ApplicationController
       ]
       new_user_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
       is_only_test = new_user_params.delete "is_only_test"
-      user_params = new_user_params["user"]
+      user_params = new_user_params.delete "user"
       user_params[:password] = SecureRandom.hex
       user_params[:registration_status] = 0
       new_user = User.new user_params
       if new_user&.valid?
         unless is_only_test
+          logger.debug "Register external device with: #{new_user_params["device_id"]}, #{new_user_params["device_name"]} (#{new_user_params})."
           ExternalDevice.create({
                                  device_id: new_user_params["device_id"],
                                  name: new_user_params["device_name"],
