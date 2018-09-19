@@ -129,17 +129,21 @@
         </button>
         <ul id="project-menu" class="mdlext-menu">
           <%= render partial: 'projects/project_menu_item', collection: projects %>
-          <li class="mdlext-menu__item">
-            <%= link_to projects_path, method: :post, remote: true, class: 'mdl-button' do %>
-              New Project <i class="material-icons">note_add</i>
-            <% end %>
-          </li>
+          <% if logged_in_user.can_manage_projects? %>
+            <li class="mdlext-menu__item">
+              <%= link_to projects_path, method: :post, remote: true, class: 'mdl-button' do %>
+                New Project <i class="material-icons">note_add</i>
+              <% end %>
+            </li>
+          <% end %>
         </ul>
       <% if projects.empty? %>
         <div class="empty-state">
           <p>No projects here.</p>
-          <%= link_to projects_path, method: :post, remote: true, class: 'mdl-button' do %>
-            New Project <i class="material-icons">note_add</i>
+          <% if logged_in_user.can_manage_projects? %>
+            <%= link_to projects_path, method: :post, remote: true, class: 'mdl-button' do %>
+              New Project <i class="material-icons">note_add</i>
+            <% end %>
           <% end %>
         </div>
       <% end %>

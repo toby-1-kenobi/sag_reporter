@@ -86,6 +86,8 @@ class User < ActiveRecord::Base
 
   scope :facilitators, ->{ joins(:language_streams) }
 
+  scope :visible_to, ->(user) { user.national? ? approved : approved.joins(:geo_states).where('geo_states.id' => user.geo_states).uniq }
+
   # Returns the hash digest of the given string.
   def User.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
@@ -176,7 +178,7 @@ class User < ActiveRecord::Base
   end
 
   def can_manage_projects?
-    admin? or lci_board_member? or zone_admin?
+    trusted? and (admin? or lci_board_member? or zone_admin?)
   end
 
   def can_view_projects?
