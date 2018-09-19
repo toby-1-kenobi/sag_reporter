@@ -26,6 +26,11 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
+  def edit_responsible
+    @project = Project.includes(:geo_states).find(params[:id])
+    respond_to :js
+  end
+
   def update
     @project = Project.find(params[:id])
     @project.update_attributes(project_params)
