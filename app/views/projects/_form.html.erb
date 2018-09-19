@@ -2,7 +2,7 @@
 <%# this is sensitive data, so this page should only be rendered for trusted users %>
 <script type="application/json" id="user-data">
 [
-  <% users = User.approved.pluck(:id, :name) %>
+  <% users = User.visible_to(logged_in_user).pluck(:id, :name) %>
   <% users.each_with_index do |user, index| %>
   {"id":<%= user[0] %>,"name":"<%= user[1] %>"}<%= ',' unless index == users.size - 1 %>
   <% end %>

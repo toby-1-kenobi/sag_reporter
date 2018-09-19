@@ -216,6 +216,26 @@ describe User do
     _(users_in_ab).wont_include user_c
   end
 
+  it 'scopes to a user' do
+    state_a = FactoryBot.create(:geo_state)
+    state_b = FactoryBot.create(:geo_state)
+    user_a = FactoryBot.create(:user)
+    user_a.geo_states << state_a
+    user_a_rego = FactoryBot.create(:user, registration_status: 1) #zone approved, but not registered
+    user_a_rego.geo_states << state_a
+    user_b = FactoryBot.create(:user)
+    user_b.geo_states << state_b
+    user_ab = FactoryBot.create(:user)
+    user_ab.geo_states << [state_a, state_b]
+    users = User.visible_to(user_a)
+    _(users).must_include user_ab
+    _(users).wont_include user_b
+    _(users).wont_include user_a_rego
+    more_users = User.visible_to(national_user)
+    _(more_users).must_include user_b
+    _(more_users).wont_include user_a_rego
+  end
+
   it 'knows if it curates for a language' do
     user.curated_states.clear
     lang = FactoryBot.create(:language)
