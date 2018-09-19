@@ -26,7 +26,7 @@ class AndroidSyncController < ApplicationController
         ChurchTeam => %w(name organisation_id village state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(number topic_id),
-        Deliverable => %w(number ministry_id for_facilitator),
+        Deliverable => %w(number ministry_id),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
