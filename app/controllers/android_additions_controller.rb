@@ -42,7 +42,7 @@ class AndroidAdditionsController < ApplicationController
           ExternalDevice.create({
                                  device_id: new_user_params["device_id"],
                                  name: new_user_params["device_name"],
-                                 registered: true
+                                 registered: true,
                                  user: new_user
                              }) if new_user_params["device_id"] && new_user_params["device_name"]
           new_user.save
