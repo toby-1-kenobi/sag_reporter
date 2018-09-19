@@ -31,12 +31,6 @@
           <td><%= user_card.geo_states.pluck(:name).to_sentence %></td>
         </tr>
         <tr>
-          <th><%= 'Project'.pluralize(user_card.projects.count) %>:</th>
-          <td><%= user_card.projects.pluck(:name).to_sentence %></td>
-          <th>Can speak:</th>
-          <td><%= user_card.spoken_languages.pluck(:name).to_sentence %></td>
-        </tr>
-        <tr>
           <th>Role:</th>
           <td><%= user_card.role_description %></td>
           <% if user_card.curated_states.any? %>

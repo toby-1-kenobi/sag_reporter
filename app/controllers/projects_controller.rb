@@ -2,8 +2,11 @@ class ProjectsController < ApplicationController
 
   before_action :require_login
 
-  before_action only: [:create, :destroy, :update] do
-    head :forbidden unless logged_in_user.admin? or logged_in_user.zone_admin?
+  before_action except: [:show] do
+    head :forbidden unless logged_in_user.can_manage_projects?
+  end
+  before_action only: [:show] do
+    head :forbidden unless logged_in_user.can_view_projects?
   end
 
   def create
