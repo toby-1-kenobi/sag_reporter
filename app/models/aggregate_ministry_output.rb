@@ -1,10 +1,11 @@
 class AggregateMinistryOutput < ActiveRecord::Base
 
   belongs_to :aggregate_deliverable
-  belongs_to :language_stream
+  belongs_to :state_language
   belongs_to :creator, class_name: 'User'
 
   validates :aggregate_deliverable, presence: true
+  validates :state_language, presence: true
   validates :creator, presence: true
   validates :month, presence: true, format: { with: /\A[2-9]\d{3}-(0|1)[0-9]\z/, message: "should be in the format 'YYYY-MM'"}
   validates :value, presence: true

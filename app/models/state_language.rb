@@ -9,6 +9,7 @@ class StateLanguage < ActiveRecord::Base
   has_many :facilitators, through: :language_streams, class_name: 'User'
   has_many :project_languages, dependent: :destroy
   has_many :projects, through: :project_languages
+  has_many :aggregate_ministry_outputs, dependent: :restrict_with_error
   has_many :quarterly_targets, dependent: :restrict_with_error
   has_many :aggregate_quarterly_targets, dependent: :restrict_with_error
 
