@@ -39,14 +39,15 @@ class AndroidAdditionsController < ApplicationController
       new_user = User.new user_params
       if new_user&.valid?
         unless is_only_test
+          new_user.save
           external_device = ExternalDevice.create({
                                  device_id: new_user_params["device_id"],
                                  name: new_user_params["device_name"],
                                  registered: true,
                                  user: new_user
                              })
-          logger.debug "Register external device with: #{new_user_params}: #{external_device&.attributes}, #{external_device&.valid?}, #{external_device&.errors&.messages}"
-          new_user.save
+          logger.debug "Register external device with: #{new_user_params}: #{external_device&.attributes}"
+          logger.error "Problems with registering external device: #{external_device&.errors&.messages}" unless external_device&.valid?
         end
         send_message = {status: "success", user_id: new_user.id}.to_json
         logger.debug send_message
