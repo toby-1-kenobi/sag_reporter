@@ -51,19 +51,21 @@ class AndroidSyncController < ApplicationController
         restricted_ids = case table.new
           when User
             table.joins(:geo_states).where(geo_states: {id: user_geo_states}).ids
-          when Language
-            table.joins(:geo_states).where(geo_states: {id: user_geo_states}).ids
+          when StateLanguage
+            table.where(geo_state_id: user_geo_states).ids
           when Person
             table.where(geo_state_id: user_geo_states).ids
           when MtResource
             table.where(geo_state_id: user_geo_states).ids
-          when ChurchTeam
-            table.joins(:state_language).where(state_languages:{geo_state_id: user_geo_states}).ids
           when Report
             table.where(geo_state_id: user_geo_states).ids
-          when LanguageProgress
-            table.joins(:state_language).where(state_languages: {geo_state_id: [user_geo_states]}).ids
             
+          when ChurchTeam
+            table.joins(:state_language).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+          when LanguageProgress
+            table.joins(:state_language).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+          when Language
+            table.joins(:state_languages).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
           when ImpactReport
             table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
           when ProgressUpdate
@@ -75,7 +77,7 @@ class AndroidSyncController < ApplicationController
           when FacilitatorFeedback
             table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
           when Project
-            table.joins(:languages).where(languages: {id: @all_restricted_ids[Language.name]}).ids
+            table.joins(:state_languages).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
           else restricted_ids
         end
       end
