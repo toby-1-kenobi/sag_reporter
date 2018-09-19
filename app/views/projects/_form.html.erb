@@ -37,7 +37,7 @@
       <div id="project-states">
         <h4>States</h4>
         <ul class="mdl-list">
-          <% GeoState.order(:name).each do |state| %>
+          <% dashboard_project_states(@project, @dashboard_type).each do |state| %>
           <li class="mdl-list__item">
             <span class="mdl-list__item-primary-content"><%= state.name %></span>
             <span class="mdl-list__item-secondary-action">
