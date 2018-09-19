@@ -143,6 +143,7 @@ class AndroidSyncController < ApplicationController
             offline_ids = send_request_params[table.name] || [0]
             has_entry = false
             restricted_ids = restrict(table)
+            logger.debug "Update #{table.name} at: #{restricted_ids}. Those are offline already: #{offline_ids}"
             table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
                         last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
                 .includes(join_tables[table_name]).each do |entry|
