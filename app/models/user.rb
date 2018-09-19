@@ -33,6 +33,7 @@ class User < ActiveRecord::Base
   has_many :user_benefits, dependent: :destroy
   has_many :app_benefits, through: :user_benefits
   has_many :ministry_outputs, inverse_of: :creator, dependent: :restrict_with_error
+  has_many :aggregate_ministry_outputs, inverse_of: :creator, dependent: :restrict_with_error
   has_many :registration_approvals, foreign_key: 'registering_user_id', dependent: :destroy, inverse_of: :registering_user
   has_many :registration_approvers, through: :registration_approvals, class_name: 'User', source: :approver, inverse_of: :registering_users
   has_many :approved_registrations, class_name: 'RegistrationApproval', foreign_key: 'approver_id', dependent: :destroy, inverse_of: :approver
