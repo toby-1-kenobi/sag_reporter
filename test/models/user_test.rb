@@ -267,7 +267,7 @@ describe User do
 
   it 'knows if it is a supervisor' do
     _(user).wont_be :project_supervisor?
-    FactoryBot.create(:project_streams, supervisor: user)
+    FactoryBot.create(:project_stream, supervisor: user)
     _(user).must_be :project_supervisor?
   end
 
