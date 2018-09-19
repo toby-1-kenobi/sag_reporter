@@ -8,7 +8,7 @@ class AndroidSyncController < ApplicationController
 
   def send_request
     tables = {
-        User => %w(name user_type),
+        User => %w(name),
         GeoState => %w(name zone_id),
         Language => %w(name colour),
         Person => %w(name geo_state_id),
@@ -23,24 +23,24 @@ class AndroidSyncController < ApplicationController
         LanguageProgress => %w(progress_marker_id state_language_id),
         ProgressUpdate => %w(user_id language_progress_id progress month year),
         StateLanguage => %w(geo_state_id language_id project),
-        ChurchTeam => %w(name organisation_id village geo_state_id),
-        ChurchMinistry => %w(church_team_id ministry_id language_id status facilitator_id),
+        ChurchTeam => %w(name organisation_id village state_language_id),
+        ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(number topic_id),
         Deliverable => %w(number ministry_id for_facilitator),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
-        Facilitator => %w(user_id),
-        FacilitatorFeedback => %w(church_ministry_id month feedback team_member_id response)
+        QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
+        LanguageStream => %w(state_language_id ministry_id facilitator_id),
+        FacilitatorFeedback => %w(church_ministry_id month feedback team_member_id response facilitator_plan)
     }
     join_tables = {
         User: %w(geo_states spoken_languages church_teams),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
-        Project: %w(languages project_users),
-        Facilitator: %w(languages ministries),
+        Project: %w(state_languages),
         MtResource: %w(product_categories)
     }
     @all_restricted_ids = Hash.new
@@ -86,7 +86,7 @@ class AndroidSyncController < ApplicationController
           when User
             [@external_user.id]
           when Organisation
-            []
+            table.where(church: true).ids
           when Report
             table.where(id: restricted_ids, reporter_id: @external_user.id).ids
             
@@ -118,6 +118,7 @@ class AndroidSyncController < ApplicationController
     end
     
     safe_params = [
+        :first_download,
         :last_sync
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
@@ -131,6 +132,14 @@ class AndroidSyncController < ApplicationController
           this_sync = 5.seconds.ago
           file.write "{\"last_sync\":#{this_sync.to_i}"
           raise "No last sync variable" unless send_request_params["last_sync"]
+          if send_request_params["first_download"]
+            if @external_user.church_teams.empty? && @external_user.facilitator
+              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry)
+            else
+              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry,
+                  Topic, ProgressMarker, MtResource, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput, ProductCategory, FacilitatorFeedback)
+            end
+          end
           tables.each do |table, attributes|
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
@@ -140,25 +149,25 @@ class AndroidSyncController < ApplicationController
                         last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
                 .includes(join_tables[table_name]).each do |entry|
               entry_data = Hash.new
-              (attributes + ["id"]).each do |attribute|
-                entry_data.merge!({attribute => entry.send(attribute)})
-              end
-              join_tables[table_name]&.each do |join_table|
-                entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
-              end
               begin
+                (attributes + ["id"]).each do |attribute|
+                  entry_data.merge!({attribute => entry.send(attribute)})
+                end
+                join_tables[table_name]&.each do |join_table|
+                  entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
+                end
                 entry_data.merge! additional_tables(entry)
+                if has_entry
+                  file.write(",")
+                else
+                  file.write(",")
+                  file.write "\"#{table_name}\":["
+                end
+                has_entry = true
+                file.write entry_data.to_json
               rescue => e
-                logger.error "Error in adding additional tables for #{entry.class}: #{entry.attributes}" + e.to_s
+                logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
               end
-              if has_entry
-                file.write(",")
-              else
-                file.write(",")
-                file.write "\"#{table_name}\":["
-              end
-              has_entry = true
-              file.write entry_data.to_json
             end
             file.write "]" if has_entry
             ActiveRecord::Base.connection.query_cache.clear
@@ -250,6 +259,9 @@ class AndroidSyncController < ApplicationController
       @foreign_key_names = {
           picture: :uploaded_file,
           reporter: :user,
+          creator: :user,
+          facilitator: :user,
+          team_member: :user,
           observer: :person,
       }
       safe_params = [
@@ -292,6 +304,12 @@ class AndroidSyncController < ApplicationController
                   :shareable,
                   :translation_impact
           ],
+          organisation: [
+                  :id,
+                  :old_id,
+                  :name,
+                  :church
+          ],
           church_team: [
               :id,
               :old_id,
@@ -299,7 +317,7 @@ class AndroidSyncController < ApplicationController
               :user_ids,
               :organisation_id,
               :village,
-              :geo_state_id
+              :state_language_id
           ],
           church_ministry: [
               :id,
@@ -307,8 +325,17 @@ class AndroidSyncController < ApplicationController
               :church_team_id,
               :ministry_id,
               :status,
-              :facilitator_id,
-              :language_id
+              :facilitator_id
+          ],
+          facilitator_feedback: [
+              :id,
+              :old_id,
+              :church_ministry_id,
+              :month,
+              :feedback,
+              :response,
+              :team_member_id,
+              :facilitator_plan,
           ],
           ministry_output: [
               :id,
@@ -316,9 +343,9 @@ class AndroidSyncController < ApplicationController
               :church_ministry_id,
               :deliverable_id,
               :month,
-              :creator,
               :value,
               :comment,
+              :creator_id,
               :actual
           ]
       ]
@@ -329,7 +356,7 @@ class AndroidSyncController < ApplicationController
       @id_changes = {}
 
       # The following tables have to be in the order, that they only contain IDs of the previous ones
-      [Person, Report, ImpactReport, UploadedFile, ChurchTeam, ChurchMinistry, MinistryOutput].each do |table|
+      [Person, Report, ImpactReport, UploadedFile, Organisation, ChurchTeam, ChurchMinistry, FacilitatorFeedback, MinistryOutput].each do |table|
         receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
       end
       puts @id_changes
@@ -412,7 +439,7 @@ class AndroidSyncController < ApplicationController
       @id_changes[table.name] ||= {}
       if (id = hash["id"])
         entry = @is_only_test? table.find(id) : table.update(id, hash)
-        @id_changes[table.name].merge!({old_id => entry})
+        @id_changes[table.name].merge!({id => entry})
       elsif (old_id = hash.delete "old_id")
         new_entry = table.new hash
         @id_changes[table.name].merge!({old_id => new_entry})

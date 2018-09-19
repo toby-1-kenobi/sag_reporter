@@ -11,7 +11,7 @@ class AndroidAdditionsController < ApplicationController
 
   def new_user_info
     states_and_languages = {geo_states: GeoState.includes(:languages).all.map do |gs|
-      [gs.id, {name: gs.name, languages: gs.languages.map{|l| [l.id, {name: l.name}]}.to_h}]
+      [gs.id, gs.name]
     end.to_h}
     render json: states_and_languages, status: :ok
   end
@@ -20,31 +20,39 @@ class AndroidAdditionsController < ApplicationController
     begin
       safe_params = [
           :is_only_test,
+          :device_id,
+          :device_name,
           :user => [
-              :old_id,
               :name,
+              :organisation,
               :phone,
               :email,
               :interface_language_id,
-              {:geo_state_ids => []},
-              {:working_language_ids => []},
+              {:geo_state_ids => []}
           ]
       ]
       new_user_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
-
-      @is_only_test = new_user_params["is_only_test"]
-      @errors = []
-      @id_changes = {}
-
-      [Person, ImpactReport, Report, UploadedFile].each do |table|
-        new_user_params[table.name.underscore]&.each do |entry|
-          new_entry = build table, entry.to_h
-          if @is_only_test
-            raise new_entry.errors.messages.to_s unless !new_entry || new_entry.valid?
-          else
-            raise new_entry.errors.messages.to_s unless !new_entry || new_entry.save
-          end
+      is_only_test = new_user_params.delete "is_only_test"
+      new_user_params = new_user_params["user"]
+      new_user_params[:password] = SecureRandom.hex
+      new_user_params[:registration_status] = 0
+      new_user = User.new new_user_params
+      if new_user&.valid?
+        unless is_only_test
+          ExternalDevice.create({
+                                 device_id: new_user_params["device_id"],
+                                 name: new_user_params["device_name"],
+                                 user: new_user
+                             }) if new_user_params["device_id"] && new_user_params["device_name"]
+          new_user.save
         end
+        send_message = {status: "success", user_id: new_user.id}.to_json
+        logger.debug send_message
+        render json: send_message, status: :ok
+      else
+        send_message = {"user" => new_user.errors.messages.to_s}.to_json
+        logger.error send_message
+        render json: send_message, status: :forbidden
       end
     rescue => e
       send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
@@ -92,7 +100,7 @@ class AndroidAdditionsController < ApplicationController
 
       user = get_user login_params["user_name"]
       # check, whether user exists and password is correct
-      unless user&.authenticate(login_params["password"])
+      unless user&.authenticate(login_params["password"]) && user.registration_status?
         logger.error "User or password not found. User ID: #{user&.id}"
         head :forbidden
         return
