@@ -58,7 +58,7 @@ class AndroidSyncController < ApplicationController
           when MtResource
             table.where(geo_state_id: user_geo_states).ids
           when ChurchTeam
-            table.where(geo_state_id: user_geo_states).ids
+            table.joins(:state_language).where(state_languages:{geo_state_id: user_geo_states}).ids
           when Report
             table.where(geo_state_id: user_geo_states).ids
           when LanguageProgress
