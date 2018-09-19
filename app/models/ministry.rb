@@ -12,7 +12,7 @@ class Ministry < ActiveRecord::Base
   has_many :supervisors, through: :project_streams, class_name: 'User'
   belongs_to :topic
 
-  validates :number, presence: true, uniqueness: true
+  validates :code, presence: true, uniqueness: true, length: { is: 2 }
 
   # key for the l10n translation of the description
   # is 'm_xx' where 'xx' is a 2-digit representation of the number
