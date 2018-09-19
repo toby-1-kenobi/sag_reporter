@@ -76,8 +76,6 @@ class AndroidSyncController < ApplicationController
             table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
           when Project
             table.joins(:languages).where(languages: {id: @all_restricted_ids[Language.name]}).ids
-          when Facilitator
-            table.where(user_id: @all_restricted_ids[User.name]).ids
           else restricted_ids
         end
       end
@@ -90,8 +88,6 @@ class AndroidSyncController < ApplicationController
           when Report
             table.where(id: restricted_ids, reporter_id: @external_user.id).ids
             
-          when Facilitator
-            table.where(user_id: @all_restricted_ids[User.name]).ids
           when ImpactReport
             table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
           else
