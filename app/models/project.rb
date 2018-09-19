@@ -1,6 +1,4 @@
 class Project < ActiveRecord::Base
-  has_many :state_projects, dependent: :destroy
-  has_many :geo_states, through: :state_projects
   has_many :project_languages, dependent: :destroy
   has_many :state_languages, through: :project_languages
   has_many :geo_states, through: :state_languages
