@@ -48,9 +48,6 @@
 app/assets/fonts/GenBasB.ttf
 app/assets/fonts/GenBasR.ttf
 app/assets/images/oldfavicon.ico
-app/assets/javascripts/edit.coffee
-app/assets/javascripts/help.coffee
-app/assets/javascripts/organisations.coffee
 app/assets/stylesheets/help.scss
 app/assets/stylesheets/organisations.scss
 app/assets/stylesheets/populations.scss
@@ -64,13 +61,6 @@ test/controllers/organisations_controller_test.rb
 test/controllers/populations_controller_test.rb
 test/features/view_reports_test.rb
 test/features/zone_map_test.rb
-test/fixtures/app_events.yml
-test/fixtures/cache_backups.yml
-test/fixtures/data_sources.yml
-test/fixtures/dialects.yml
-test/fixtures/language_names.yml
-test/fixtures/organisation_engagements.yml
-test/fixtures/organisation_translations.yml
 test/helpers/edit_helper_test.rb
 test/helpers/finish_line_progress_helper_test.rb
 test/helpers/help_helper_test.rb

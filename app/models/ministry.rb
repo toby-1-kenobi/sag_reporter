@@ -13,4 +13,14 @@ class Ministry < ActiveRecord::Base
 
   validates :number, presence: true, uniqueness: true
 
+  # key for the l10n translation of the description
+  # is 'm_xx' where 'xx' is a 2-digit representation of the number
+  def translation_key
+    "m_#{sprintf('%02d', number)}"
+  end
+
+  def name
+    I18n.t("ministries.names.#{translation_key}")
+  end
+
 end

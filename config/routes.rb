@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+
   get 'help/edit_language'
 
   get 'population/create'
@@ -7,6 +8,29 @@ Rails.application.routes.draw do
   root 'static_pages#home'
 
   get 'about' => 'static_pages#about'
+
+  resources :android_additions do
+    collection do
+      get  'test_server'
+      post 'new_user_info'
+      post 'new_user'
+      post 'new_user'
+      post 'forgot_password'
+      post 'login'
+      post 'send_otp'
+      post 'get_database_key'
+      post 'get_file'
+    end
+  end
+
+  resources :android_sync do
+    collection do
+      post 'send_request'
+      post 'get_uploaded_file'
+      post 'receive_request'
+      post 'get_file'
+    end
+  end
 
   resources :edits, only: [:create, :destroy] do
     collection do
@@ -23,29 +47,6 @@ Rails.application.routes.draw do
 
   resources :events do
     get :autocomplete_person_name, :on => :collection
-  end
-
-  resources :android_additions do
-    collection do
-      get  'test_server'
-      post 'new_user_info'
-      post 'new_user'
-      post 'new_user'
-      post 'forgot_password'
-      post 'login'
-      post 'send_otp'
-      post 'get_database_key'
-      post 'get_file'
-    end
-  end
-  
-  resources :android_sync do
-    collection do
-      post 'send_request'
-      post 'get_uploaded_file'
-      post 'receive_request'
-      post 'get_file'
-    end
   end
   
   resources :geo_states, only: [:show] do
@@ -97,6 +98,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :language_streams, only: [:destroy]
+
   resources :mt_resources
 
   resources :organisations
@@ -112,7 +115,16 @@ Rails.application.routes.draw do
 
   resources :populations, only: [:create]
 
-  resources :projects, only: [:create, :destroy]
+  resources :projects, except: [:index] do
+    member do
+      get 'edit_responsible'
+      patch 'set_language/:state_language', to: 'projects#set_language', as: 'set_language_in'
+      patch 'set_stream/:ministry', to: 'projects#set_stream', as: 'set_stream_in'
+      patch 'add_facilitator/:stream/:state_language/:facilitator', to: 'projects#add_facilitator', as: 'add_facilitator_to'
+    end
+  end
+
+  patch 'project_streams/:id/set_supervisor/:supervisor', to: 'project_streams#set_supervisor', as: 'set_supervisor_in_project_stream'
 
   resources :reports do
     collection do

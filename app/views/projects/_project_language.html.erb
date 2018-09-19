@@ -1,0 +1,23 @@
+<% show_state = true unless defined?(show_state) %>
+<li class="filterable-item hide mdl-list__item" data-filter-label="state" data-state="<%= project_language.geo_state_id %>">
+  <span class="mdl-list__item-primary-content">
+    <%= project_language.language_name %>
+    <% if show_state %>
+      (in <%= project_language.state_name %>)
+    <% end %>
+  </span>
+  <span class="mdl-list__item-secondary-action">
+    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="sl-<%= project_language.id.to_s %>" >
+      <%= check_box_tag "sl-#{project_language.id.to_s}",
+                        'yes',
+                        @project.state_languages.include?(project_language),
+                        data: {
+                            remote: true,
+                            url: set_language_in_project_path(@project, project_language),
+                            method: "PATCH",
+                        },
+                        class: "mdl-checkbox__input"
+      %>
+    </label>
+  </span>
+</li>

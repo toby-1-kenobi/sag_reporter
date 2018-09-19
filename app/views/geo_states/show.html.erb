@@ -5,13 +5,15 @@
 <!-- breadcrumbs will go here -->
 <!-- India | Zone | current state | previously navigated language -->
 <ul class="breadcrumbs">
-  <li><%=	 link_to 'India', nation_path %></li>
+  <li><%=	link_to 'India', nation_path %></li>
   <li><%= link_to "#{@geo_state.zone.name} Zone", zone_path(@geo_state.zone) %></li>
   <li><%= link_to @geo_state.name, geo_state_path(@geo_state) %></li>
 </ul>
 
 <% tabs = [:progress, :languages, :organisations, :reports] %>
+<% tabs.append(:projects) if logged_in_user.can_view_projects? %>
 <% tabs.append(:board) if logged_in_user.can_future_plan? %>
 <% @tab ||= 'progress' %>
 
-<%= render partial: 'shared/dashboard', locals: { tabs: tabs, dashboard_type: :state, dashboard_object: @geo_state } %>
+<% @dashboard_type = :state %>
+<%= render partial: 'shared/dashboard', locals: { tabs: tabs, dashboard_object: @geo_state } %>

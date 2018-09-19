@@ -1,0 +1,85 @@
+<%# embed user data into the page so that autocomplete works for user fields %>
+<%# this is sensitive data, so this page should only be rendered for trusted users %>
+<script type="application/json" id="user-data">
+[
+  <% users = User.approved.pluck(:id, :name) %>
+  <% users.each_with_index do |user, index| %>
+  {"id":<%= user[0] %>,"name":"<%= user[1] %>"}<%= ',' unless index == users.size - 1 %>
+  <% end %>
+]
+</script>
+
+<div id="project-edit-head">
+  <%= form_for @project, remote: true do |f| %>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label submit-on-change">
+      <%= f.text_field :name, class: 'mdl-textfield__input' %>
+      <%= f.label :name, 'Project name', class: 'mdl-textfield__label' %>
+    </div>
+  <% end %>
+  <%= link_to @project, remote: true, class: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored' do %>
+    Show project <i class="material-icons">visibility</i>
+  <% end %>
+</div>
+
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+  <div class="mdl-tabs__tab-bar">
+    <a href="#protocols-panel" class="mdl-tabs__tab is-active">Protocols</a>
+    <a href="#languages-streams-panel" class="mdl-tabs__tab">Languages and Streams</a>
+    <a id="responsible-tab" href="#responsible-panel" class="mdl-tabs__tab dirty">Who is Responsible</a>
+    <a href="#targets-language-panel" class="mdl-tabs__tab">Set Targets by Language</a>
+    <a href="#targets-stream-panel" class="mdl-tabs__tab">Set Targets by Stream</a>
+  </div>
+
+  <div class="mdl-tabs__panel is-active" id="protocols-panel">
+  </div>
+  <div class="mdl-tabs__panel" id="languages-streams-panel">
+    <div class="grid-container">
+      <div id="project-states">
+        <h4>States</h4>
+        <ul class="mdl-list">
+          <% dashboard_project_states(@project, @dashboard_type).each do |state| %>
+          <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content"><%= state.name %></span>
+            <span class="mdl-list__item-secondary-action">
+              <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="state-<%= state.id.to_s %>" >
+                  <input
+                    type="checkbox"
+                    id="state-<%= state.id.to_s %>"
+                    value="<%= state.id %>"
+                    class="filter-trigger mdl-checkbox__input"
+                    data-filter-trigger-label="state"
+                    <%= (@project.geo_states.include? state) ? 'checked' : '' %>
+                    />
+              </label>
+            </span>
+          </li>
+          <% end %>
+        </ul>
+      </div>
+      <div id="project-languages">
+        <h4>Languages</h4>
+        <ul class="mdl-list">
+          <%= render partial: 'project_language',
+                     collection: dashboard_state_languages(@dashboard_type),
+                     locals: { show_state: @dashboard_type != :state }
+          %>
+        </ul>
+      </div>
+      <div id="project-streams">
+        <h4>Streams</h4>
+        <ul class="mdl-list">
+          <%= render partial: 'project_stream',
+                     collection: Ministry.all
+          %>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  <div class="mdl-tabs__panel" id="responsible-panel">
+  </div>
+  <div class="mdl-tabs__panel" id="targets-language-panel">
+  </div>
+  <div class="mdl-tabs__panel" id="targets-stream-panel">
+  </div>
+</div>

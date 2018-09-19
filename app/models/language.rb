@@ -72,6 +72,8 @@ class Language < ActiveRecord::Base
     end
   }
 
+  scope :in_states, ->(states) { joins(:geo_states).where('geo_states.id' => states).uniq }
+
   def to_s
     name
   end

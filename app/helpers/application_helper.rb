@@ -41,6 +41,7 @@ module ApplicationHelper
         zones: 'Zones',
         states: 'States',
         languages: 'Languages',
+				projects: 'My Projects',
         organisations: 'Agencies',
         reports: 'Impact Stories',
         board: 'LCI Board Report'

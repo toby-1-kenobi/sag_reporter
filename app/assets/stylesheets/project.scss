@@ -5,3 +5,38 @@
     padding-right: 1ex;
   }
 }
+
+#project-edit-head, .project-head {
+  display: flex;
+  justify-content: center;
+}
+
+#languages-streams-panel .grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-row-gap: 0.5em;
+  grid-column-gap: 2em;
+  grid-template-areas:
+          "states languages streams";
+
+  #project-states {
+    grid-area: states;
+  }
+  #project-languages {
+    grid-area: languages;
+  }
+  #project-streams {
+    grid-area: streams;
+  }
+}
+
+.add-facilitator-choices, .change-supervisor-choices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+table.supervisors .supervisor-name {
+  font-size: large !important;
+}

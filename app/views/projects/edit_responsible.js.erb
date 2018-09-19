@@ -1,0 +1,47 @@
+$('#responsible-panel').html('<%= j render 'responsible' %>');
+componentHandler.upgradeElements($('#responsible-panel').find('.mdl-textfield').get());
+$('#responsible-tab').removeClass('dirty');
+
+$('.add-facilitator-input').on('input', function(){
+    const entry = this.value.toLowerCase();
+    const upperContainer = $(this).closest('.add-facilitator-controls');
+    const container = upperContainer.find('.add-facilitator-choices');
+    const ministryID = upperContainer.attr('data-ministry');
+    const stateLanguageID = upperContainer.attr('data-state-language');
+    container.empty();
+    if (entry.length >= 3){
+        const userData = JSON.parse($('#user-data').html());
+        userData.forEach(function(user){
+            if (user.name.toLowerCase().includes(entry)){
+                facChip = $('<%= j render partial: 'add_facilitator' %>');
+                facChip.find('.facilitator-name').text(user.name);
+                facChip.find('.add-facilitator-link').attr('href', function(i, ref){
+                    return ref.replace('/0/0/0', '/'+ministryID+'/'+stateLanguageID+'/'+user.id);
+                });
+                container.append(facChip);
+            }
+        });
+    }
+});
+
+$('.change-supervisor-input').on('input', function(){
+    const entry = this.value.toLowerCase();
+    const upperContainer = $(this).closest('.change-supervisor-controls');
+    const container = upperContainer.find('.change-supervisor-choices');
+    const projectStreamID = upperContainer.attr('data-ps-id');
+    container.empty();
+    if (entry.length >= 3){
+        const userData = JSON.parse($('#user-data').html());
+        userData.forEach(function(user){
+            if (user.name.toLowerCase().includes(entry)){
+                facChip = $('<%= j render partial: 'set_supervisor' %>');
+                facChip.find('.supervisor-name').text(user.name);
+                facChip.find('.set-supervisor-link').attr('href', function(i, ref){
+                    ref = ref.replace('project_streams/0', 'project_streams/'+projectStreamID);
+                    return ref.replace('set_supervisor/0', 'set_supervisor/'+user.id);
+                });
+                container.append(facChip);
+            }
+        });
+    }
+});

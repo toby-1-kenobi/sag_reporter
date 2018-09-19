@@ -170,6 +170,18 @@ class User < ActiveRecord::Base
     admin? or lci_board_member? or lci_agency_leader?
   end
 
+  def project_supervisor?
+    ProjectStream.exists?(supervisor: id)
+  end
+
+  def can_manage_projects?
+    admin? or lci_board_member? or zone_admin?
+  end
+
+  def can_view_projects?
+    can_manage_projects? or project_supervisor?
+  end
+
   # find out if this user curates for a particular language
   def curates_for?(language)
     curated_states.where(id: language.geo_states.pluck(:id)).any?
