@@ -176,7 +176,7 @@ class User < ActiveRecord::Base
   end
 
   def can_manage_projects?
-    admin? or lci_board_member? or zone_admin?
+    trusted? and (admin? or lci_board_member? or zone_admin?)
   end
 
   def can_view_projects?
