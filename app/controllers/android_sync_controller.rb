@@ -261,6 +261,7 @@ class AndroidSyncController < ApplicationController
           creator: :user,
           facilitator: :user,
           team_member: :user,
+          supervisor: :user,
           observer: :person,
       }
       safe_params = [
