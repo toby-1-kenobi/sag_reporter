@@ -1,4 +1,8 @@
 <% if @project.persisted? -%>
-  $('#new-project-list-item').before('<%= j render @project %>');
-  $('#new-project-list-item').find('form')[0].reset();
+  const newItem = $('<%= j render partial: 'projects/project_menu_item', object: @project %>');
+  $('#project-menu').prepend(newItem);
+  const menuButton = document.querySelector('#project-menu-button');
+  const menu = menuButton.MaterialExtMenuButton.getMenuElement();
+  menuButton.MaterialExtMenuButton.setSelectedMenuItem(menu.children[0]);
+  $.ajax({url: '<%= edit_project_path(@project) %>'});
 <% end -%>

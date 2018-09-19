@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = Project.create(project_params)
+    @project = Project.create(name: "#{Faker::Color.color_name} #{Faker::Lorem.word}".titleize)
     respond_to :js
   end
 
