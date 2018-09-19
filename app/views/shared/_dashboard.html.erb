@@ -122,7 +122,7 @@
 
   <% if tabs.include? :projects %>
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'projects' %>" id="projects-tab">
-      <% projects = defined?(dashboard_object) ? dashboard_object.projects : Project.all %>
+      <% projects = defined?(dashboard_object) ? dashboard_object.projects.uniq : Project.all %>
         <button id="project-menu-button" class="mdl-button mdl-js-button mdlext-js-menu-button" aria-controls="project-menu">
           <span>Select a project</span>
           <i class="material-icons">more_vert</i>
