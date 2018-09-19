@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180919081747) do
+ActiveRecord::Schema.define(version: 20180919083627) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,18 @@ ActiveRecord::Schema.define(version: 20180919081747) do
   add_index "aggregate_ministry_outputs", ["aggregate_deliverable_id"], name: "index_aggregate_ministry_outputs_on_aggregate_deliverable_id", using: :btree
   add_index "aggregate_ministry_outputs", ["creator_id"], name: "index_aggregate_ministry_outputs_on_creator_id", using: :btree
   add_index "aggregate_ministry_outputs", ["language_stream_id"], name: "index_aggregate_ministry_outputs_on_language_stream_id", using: :btree
+
+  create_table "aggregate_quarterly_targets", force: :cascade do |t|
+    t.integer  "state_language_id",        null: false
+    t.integer  "aggregate_deliverable_id", null: false
+    t.string   "quarter",                  null: false
+    t.integer  "value",                    null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "aggregate_quarterly_targets", ["aggregate_deliverable_id"], name: "index_aggregate_quarterly_targets_on_aggregate_deliverable_id", using: :btree
+  add_index "aggregate_quarterly_targets", ["state_language_id"], name: "index_aggregate_quarterly_targets_on_state_language_id", using: :btree
 
   create_table "app_benefits", force: :cascade do |t|
     t.string   "name",       null: false
@@ -919,6 +931,8 @@ ActiveRecord::Schema.define(version: 20180919081747) do
   add_foreign_key "aggregate_ministry_outputs", "aggregate_deliverables"
   add_foreign_key "aggregate_ministry_outputs", "language_streams"
   add_foreign_key "aggregate_ministry_outputs", "users", column: "creator_id"
+  add_foreign_key "aggregate_quarterly_targets", "aggregate_deliverables"
+  add_foreign_key "aggregate_quarterly_targets", "state_languages"
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
   add_foreign_key "church_ministries", "church_teams"
