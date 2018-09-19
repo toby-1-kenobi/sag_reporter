@@ -4,4 +4,8 @@ class Deliverable < ActiveRecord::Base
   has_many :quarterly_targets, dependent: :restrict_with_error
   validates :ministry, presence: true
   validates :number, presence: true, uniqueness: { scope: :ministry }
+
+  def translation_key
+    "#{ministry.code.upcase}#{sprintf('%02d', number)}"
+  end
 end
