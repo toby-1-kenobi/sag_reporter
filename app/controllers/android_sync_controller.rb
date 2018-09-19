@@ -26,7 +26,7 @@ class AndroidSyncController < ApplicationController
         ChurchTeam => %w(name organisation_id village state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(number topic_id),
-        Deliverable => %w(number ministry_id for_facilitator),
+        Deliverable => %w(number ministry_id),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
@@ -51,19 +51,21 @@ class AndroidSyncController < ApplicationController
         restricted_ids = case table.new
           when User
             table.joins(:geo_states).where(geo_states: {id: user_geo_states}).ids
-          when Language
-            table.joins(:geo_states).where(geo_states: {id: user_geo_states}).ids
+          when StateLanguage
+            table.where(geo_state_id: user_geo_states).ids
           when Person
             table.where(geo_state_id: user_geo_states).ids
           when MtResource
             table.where(geo_state_id: user_geo_states).ids
-          when ChurchTeam
-            table.where(geo_state_id: user_geo_states).ids
           when Report
             table.where(geo_state_id: user_geo_states).ids
-          when LanguageProgress
-            table.joins(:state_language).where(state_languages: {geo_state_id: [user_geo_states]}).ids
             
+          when ChurchTeam
+            table.joins(:state_language).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+          when LanguageProgress
+            table.joins(:state_language).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+          when Language
+            table.joins(:state_languages).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
           when ImpactReport
             table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
           when ProgressUpdate
@@ -75,9 +77,7 @@ class AndroidSyncController < ApplicationController
           when FacilitatorFeedback
             table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
           when Project
-            table.joins(:languages).where(languages: {id: @all_restricted_ids[Language.name]}).ids
-          when Facilitator
-            table.where(user_id: @all_restricted_ids[User.name]).ids
+            table.joins(:state_languages).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
           else restricted_ids
         end
       end
@@ -90,8 +90,6 @@ class AndroidSyncController < ApplicationController
           when Report
             table.where(id: restricted_ids, reporter_id: @external_user.id).ids
             
-          when Facilitator
-            table.where(user_id: @all_restricted_ids[User.name]).ids
           when ImpactReport
             table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
           else
@@ -133,7 +131,7 @@ class AndroidSyncController < ApplicationController
           file.write "{\"last_sync\":#{this_sync.to_i}"
           raise "No last sync variable" unless send_request_params["last_sync"]
           if send_request_params["first_download"]
-            if @external_user.church_teams.empty? && @external_user.facilitator
+            if @external_user.church_teams.empty? && @external_user.facilitator?
               tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry)
             else
               tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry,
@@ -145,6 +143,7 @@ class AndroidSyncController < ApplicationController
             offline_ids = send_request_params[table.name] || [0]
             has_entry = false
             restricted_ids = restrict(table)
+            logger.debug "Update #{table.name} at: #{restricted_ids}. Those are offline already: #{offline_ids}"
             table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
                         last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
                 .includes(join_tables[table_name]).each do |entry|
