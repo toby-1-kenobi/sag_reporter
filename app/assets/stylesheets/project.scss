@@ -9,6 +9,12 @@
 #project-edit-head, .project-head {
   display: flex;
   justify-content: center;
+  :submit {
+    display: inline;
+  }
+  #show-project-button, #administer-project-button {
+    margin: 1em;
+  }
 }
 
 #languages-streams-panel .grid-container {
