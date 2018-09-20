@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180919171507) do
+ActiveRecord::Schema.define(version: 20180920052419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -405,7 +405,7 @@ ActiveRecord::Schema.define(version: 20180919171507) do
   end
 
   add_index "language_streams", ["facilitator_id"], name: "index_language_streams_on_facilitator_id", using: :btree
-  add_index "language_streams", ["ministry_id", "state_language_id", "facilitator_id"], name: "index_ministry_language_facilitator", unique: true, using: :btree
+  add_index "language_streams", ["ministry_id", "state_language_id", "facilitator_id", "project_id"], name: "index_ministry_language_facilitator_project", unique: true, using: :btree
   add_index "language_streams", ["ministry_id"], name: "index_language_streams_on_ministry_id", using: :btree
   add_index "language_streams", ["project_id"], name: "index_language_streams_on_project_id", using: :btree
   add_index "language_streams", ["state_language_id"], name: "index_language_streams_on_state_language_id", using: :btree
