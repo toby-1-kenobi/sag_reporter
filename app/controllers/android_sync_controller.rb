@@ -135,10 +135,11 @@ class AndroidSyncController < ApplicationController
           raise "No last sync variable" unless send_request_params["last_sync"]
           if send_request_params["first_download"]
             if @external_user.church_teams.empty? && @external_user.facilitator?
-              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry)
+              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry, LanguageStream)
             else
               tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry,
-                  Topic, ProgressMarker, MtResource, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput, ProductCategory, FacilitatorFeedback)
+                  Topic, ProgressMarker, MtResource, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput, 
+                  ProductCategory, FacilitatorFeedback, LanguageStream)
             end
           end
           tables.each do |table, attributes|
