@@ -25,15 +25,18 @@ class AndroidSyncController < ApplicationController
         StateLanguage => %w(geo_state_id language_id project),
         ChurchTeam => %w(name organisation_id village state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
-        Ministry => %w(number topic_id),
+        Ministry => %w(code topic_id),
         Deliverable => %w(number ministry_id),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
-        QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
+        AggregateDeliverable => %w(ministry_id number),
+        AggregateMinistryOutput => %w(aggregate_deliverable_id month value actual creator_id comment state_language_id),
+        AggregateQuarterlyTarget => %w(state_language_id aggregate_deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id),
-        FacilitatorFeedback => %w(church_ministry_id month feedback team_member_id response facilitator_plan)
+        SupervisorFeedback => %w(supervisor_id facilitator_id month plan_feedback plan_response result_feedback facilitator_progress project_progress),
+        FacilitatorFeedback => %w(church_ministry_id month plan_feedback plan_team_member_id plan_response facilitator_plan result_feedback result_response result_team_member_id progress)
     }
     join_tables = {
         User: %w(geo_states spoken_languages church_teams),
@@ -132,10 +135,11 @@ class AndroidSyncController < ApplicationController
           raise "No last sync variable" unless send_request_params["last_sync"]
           if send_request_params["first_download"]
             if @external_user.church_teams.empty? && @external_user.facilitator?
-              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry)
+              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry, LanguageStream)
             else
               tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry,
-                  Topic, ProgressMarker, MtResource, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput, ProductCategory, FacilitatorFeedback)
+                  Topic, ProgressMarker, MtResource, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput, 
+                  ProductCategory, FacilitatorFeedback, LanguageStream)
             end
           end
           tables.each do |table, attributes|
@@ -261,6 +265,7 @@ class AndroidSyncController < ApplicationController
           creator: :user,
           facilitator: :user,
           team_member: :user,
+          supervisor: :user,
           observer: :person,
       }
       safe_params = [
