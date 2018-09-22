@@ -23,7 +23,7 @@
     <% end %>
   <% end %>
 
-  <% if @user.email.present? and @user.email_confirmed? and @user.reset_password_token.blank? %>
+  <% if @user.email.present? and @user.email_confirmed? %>
       <script>
         function spin() {
           $('#resend-email-code-form .mdl-spinner').addClass('is-active');
