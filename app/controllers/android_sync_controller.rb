@@ -34,7 +34,8 @@ class AndroidSyncController < ApplicationController
         AggregateDeliverable => %w(ministry_id number),
         AggregateMinistryOutput => %w(aggregate_deliverable_id month value actual creator_id comment state_language_id),
         AggregateQuarterlyTarget => %w(state_language_id aggregate_deliverable_id quarter value),
-        LanguageStream => %w(state_language_id ministry_id facilitator_id),
+        QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
+        LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
         SupervisorFeedback => %w(supervisor_id facilitator_id month plan_feedback plan_response result_feedback facilitator_progress project_progress),
         FacilitatorFeedback => %w(church_ministry_id month plan_feedback plan_team_member_id plan_response facilitator_plan result_feedback result_response result_team_member_id progress)
     }
