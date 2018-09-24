@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180924055835) do
+ActiveRecord::Schema.define(version: 20180924112512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -703,6 +703,7 @@ ActiveRecord::Schema.define(version: 20180924055835) do
   end
 
   add_index "quarterly_targets", ["deliverable_id"], name: "index_quarterly_targets_on_deliverable_id", using: :btree
+  add_index "quarterly_targets", ["state_language_id", "deliverable_id", "quarter"], name: "index_language_deliverable_quarter", unique: true, using: :btree
   add_index "quarterly_targets", ["state_language_id"], name: "index_quarterly_targets_on_state_language_id", using: :btree
 
   create_table "registration_approvals", force: :cascade do |t|
