@@ -168,11 +168,8 @@ class FinishLineProgress < ActiveRecord::Base
   end
 
   def self.get_current_year
-    # year ticks over on October 1st
-    year_cutoff_month = 10
-    year_cutoff_day = 1
     current_year = Date.today.year
-    cutoff_date = Date.new(current_year, year_cutoff_month, year_cutoff_day)
+    cutoff_date = Date.new(current_year, Rails.configuration.year_cutoff_month, Rails.configuration.year_cutoff_day)
     if Date.today >= cutoff_date
       current_year + 1
     else

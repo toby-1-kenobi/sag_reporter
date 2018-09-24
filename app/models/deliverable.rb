@@ -21,4 +21,9 @@ class Deliverable < ActiveRecord::Base
   def translation_key
     "#{ministry.code.upcase}#{sprintf('%02d', number)}"
   end
+
+  def short_form
+    I18n.t("deliverables.short_form.#{translation_key}")
+  end
+
 end
