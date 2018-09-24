@@ -58,19 +58,6 @@
           <% end %>
         </tr>
       <% end %>
-      <% if logged_in_user.admin? %>
-        <tr id="project-input-row" class="hide">
-          <td colspan="2">
-            <%= form_for @language, url: assign_project_language_path, remote: true, method: :patch do |f| %>
-              <% project_array = @projects.map {|p| [p.name,p.id]} %>
-              <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-                <%= f.select(:project_id, options_for_select(project_array),{:include_blank => 'no project'}, {id: 'language-project-select', class: 'mdlext-selectfield__select'}) %>
-                <%= f.label :project_id, 'Select a project', class: 'mdlext-selectfield__label' %>
-              </div>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
     </table>
 
     <h3>General</h3>

@@ -76,7 +76,6 @@ class LanguagesController < ApplicationController
       flp = FinishLineProgress.find edit.record_id
       @pending_flm_ids << flp.finish_line_marker_id
     end
-    @projects = Project.all
     @future_years = get_future_years(@language)
   end
 
