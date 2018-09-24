@@ -1,1 +1,7 @@
 $('#targets-by-language-content').html('<%= j render partial: 'targets_by_language', locals: { project: @project, state_language: @state_language } %>')
+$('.quarterly-target-input').on('input', function(){
+   $(this).find('input').addClass('dirty');
+});
+$('.quarterly-target-input').on('change', function(){
+    $(this).closest('form').submit();
+});

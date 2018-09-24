@@ -166,6 +166,11 @@ Rails.application.routes.draw do
   get 'signup' => 'sessions#sign_up'
   get 'password_reset/:user_id/:token' => 'sessions#two_factor_auth', as: 'reset_password'
 
+  resources :state_languages, only: [] do
+    member do
+      patch 'set_target/:deliverable/:quarter', action: 'set_target', as: 'set_target_in'
+    end
+  end
   get 'finish_line_marker_spreadsheet' => 'state_languages#finish_line_marker_spreadsheet', as: 'finish_line_marker_spreadsheet'
   get 'outcomes' => 'state_languages#outcomes', as: 'outcomes'
   get 'outcomes/:id' => 'state_languages#outcomes_data'

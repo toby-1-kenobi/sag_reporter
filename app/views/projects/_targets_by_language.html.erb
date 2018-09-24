@@ -28,10 +28,28 @@
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form %></td>
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.reporter.humanize %></td>
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.calculation_method.humanize %></td>
-          <% years.each do %>
-            <td>total</td>
+          <% years.each do |year| %>
+            <% targets = year_targets(state_language, deliverable, year) %>
+            <td><%= calculate_annual_target(targets, deliverable) %></td>
+            <% values = targets.pluck(:quarter, :value) %>
             <% (1..4).each do |quarter| %>
-              <td>Q<%= quarter %></td>
+              <% match = values.select{ |q, _| q == "#{year}-#{quarter}" } %>
+              <td class="quarterly-target"
+                  data-state-language="<%= state_language.id %>"
+                  data-deliverable="<%= deliverable.id %>"
+                  data-quarter="<%= "#{year}-#{quarter}" %>"
+              >
+                <%= form_tag set_target_in_state_language_path(state_language, deliverable, "#{year}-#{quarter}"), method: :patch, remote: true do %>
+                  <div class="mdl-textfield mdl-js-textfield quarterly-target-input">
+                    <input class="mdl-textfield__input"
+                           type="text"
+                           pattern="[0-9]*(\.[0-9]+)?"
+                           name="target"
+                           value="<%= match.first[1] if match.any? %>">
+                    <span class="mdl-textfield__error">Enter a number</span>
+                  </div>
+                <% end %>
+              </td>
             <% end %>
           <% end %>
         </tr>

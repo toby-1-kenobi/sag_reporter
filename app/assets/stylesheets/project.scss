@@ -46,3 +46,14 @@
 table.supervisors .supervisor-name {
   font-size: large !important;
 }
+
+td.quarterly-target {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  .quarterly-target-input {
+    width: 40px !important;
+    input.dirty {
+      background-color: beige;
+    }
+  }
+}
