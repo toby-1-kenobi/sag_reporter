@@ -79,6 +79,12 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
+  def targets_by_language
+    @project = Project.find(params[:id])
+    @state_language = StateLanguage.find(params[:state_language])
+    respond_to :js
+  end
+
   private
 
   def project_params

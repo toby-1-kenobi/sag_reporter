@@ -11,5 +11,9 @@ $('#responsible-tab.dirty').on('click', function(){
     $.ajax({url: '<%= edit_responsible_project_url(@project) %>'});
 });
 
+document.querySelector('#targets-by-language-button').addEventListener('menuselect', function(e) {
+    $.ajax({url: $(e.detail.source).attr('data-ajax-url')});
+});
+
 window.bindFilters();
 $('.filter-trigger').trigger('change');

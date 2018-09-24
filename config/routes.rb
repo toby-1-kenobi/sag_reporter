@@ -118,9 +118,10 @@ Rails.application.routes.draw do
   resources :projects, except: [:index] do
     member do
       get 'edit_responsible'
-      patch 'set_language/:state_language', to: 'projects#set_language', as: 'set_language_in'
-      patch 'set_stream/:ministry', to: 'projects#set_stream', as: 'set_stream_in'
-      patch 'add_facilitator/:stream/:state_language/:facilitator', to: 'projects#add_facilitator', as: 'add_facilitator_to'
+      get 'targets_by_language/:state_language', action: 'targets_by_language', as: 'targets_by_language_in'
+      patch 'set_language/:state_language', action: 'set_language', as: 'set_language_in'
+      patch 'set_stream/:ministry', action: 'set_stream', as: 'set_stream_in'
+      patch 'add_facilitator/:stream/:state_language/:facilitator', action: 'add_facilitator', as: 'add_facilitator_to'
     end
   end
 
