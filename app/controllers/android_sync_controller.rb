@@ -26,14 +26,12 @@ class AndroidSyncController < ApplicationController
         ChurchTeam => %w(name organisation_id village state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(code topic_id),
-        Deliverable => %w(number ministry_id),
+        Deliverable => %w(number ministry_id calculation_method reporter),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
-        AggregateDeliverable => %w(ministry_id number),
-        AggregateMinistryOutput => %w(aggregate_deliverable_id month value actual creator_id comment state_language_id),
-        AggregateQuarterlyTarget => %w(state_language_id aggregate_deliverable_id quarter value),
+        AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
         SupervisorFeedback => %w(supervisor_id facilitator_id month plan_feedback plan_response result_feedback facilitator_progress project_progress),
@@ -154,9 +152,7 @@ class AndroidSyncController < ApplicationController
                 .includes(join_tables[table_name]).each do |entry|
               entry_data = Hash.new
               begin
-                (attributes + ["id"]).each do |attribute|
-                  entry_data.merge!({attribute => entry.send(attribute)})
-                end
+                entry_data.merge!(entry.attributes.slice(*(attributes + ["id"])))
                 join_tables[table_name]&.each do |join_table|
                   entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
                 end
