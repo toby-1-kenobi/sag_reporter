@@ -14,7 +14,6 @@ class AndroidSyncController < ApplicationController
         Person => %w(name geo_state_id),
         Topic => %w(name colour),
         ProgressMarker => %w(name topic_id),
-        Zone => %w(name),
         Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id),
         ImpactReport => %w(translation_impact),
         UploadedFile => %w(report_id),
@@ -133,13 +132,7 @@ class AndroidSyncController < ApplicationController
           file.write "{\"last_sync\":#{this_sync.to_i}"
           raise "No last sync variable" unless send_request_params["last_sync"]
           if send_request_params["first_download"]
-            if @external_user.church_teams.empty? && @external_user.facilitator?
-              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry, LanguageStream)
-            else
-              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry,
-                  Topic, ProgressMarker, MtResource, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput, 
-                  ProductCategory, FacilitatorFeedback, LanguageStream)
-            end
+            tables.except!(Person, Topic, ProgressMarker, Report, ImpactReport, UploadedFile, LanguageProgress, ProgressUpdate)
           end
           tables.each do |table, attributes|
             table_name = table.name.to_sym
