@@ -40,7 +40,7 @@
   <% @project.state_languages.each do |state_language| %>
     <tr>
       <td class="mdl-data-table__cell--non-numeric">
-        <%= state_language.name(@project.geo_states.count > 1) %>
+        <%= state_language.name(@project.geo_states.uniq.count > 1) %>
       </td>
       <% project_streams.each do |ps| %>
         <td data-ministry="<%= ps.ministry.id %>" data-state-language="<%= state_language.id %>" >

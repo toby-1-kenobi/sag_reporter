@@ -1,1 +1,6 @@
 $('#responsible-tab').addClass('dirty');
+
+$('#targets-by-language-menu').html('<%= j render partial: 'language_menu_item', collection: @project.state_languages %>');
+$('#targets-by-language-content, #targets-by-stream-content').empty();
+const menuButton = document.querySelector('#targets-by-language-button');
+menuButton.MaterialExtMenuButton.setSelectedMenuItem();
