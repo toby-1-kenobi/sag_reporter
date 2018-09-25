@@ -9,4 +9,9 @@ class QuarterlyTarget < ActiveRecord::Base
   validates :value, presence: true
 
   scope :year, -> (year){ where('quarter LIKE ?', "%#{year}-%") }
+
+  def year
+    quarter.slice(0..3).to_i
+  end
+
 end

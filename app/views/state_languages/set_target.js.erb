@@ -1,1 +1,8 @@
-console.log('<%= @quarterly_target.deliverable.short_form %>');
+<% sl = @quarterly_target.state_language_id %>
+<% del = @quarterly_target.deliverable_id %>
+<% q = @quarterly_target.quarter %>
+const editedCell = $('.quarterly-target[data-state-language="<%= sl %>"][data-deliverable="<%= del %>"][data-quarter="<%= q %>"]');
+editedCell.find('input').removeClass('dirty');
+
+<% targets = year_targets(@quarterly_target.state_language, @quarterly_target.deliverable, @quarterly_target.year) %>
+editedCell.siblings('.annual-target[data-year="<%= @quarterly_target.year %>"]').text('<%= calculate_annual_target(targets, @quarterly_target.deliverable) %>');

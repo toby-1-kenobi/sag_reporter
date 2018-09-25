@@ -30,7 +30,7 @@
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.calculation_method.humanize %></td>
           <% years.each do |year| %>
             <% targets = year_targets(state_language, deliverable, year) %>
-            <td><%= calculate_annual_target(targets, deliverable) %></td>
+            <td class="annual-target" data-year="<%= year %>"><%= calculate_annual_target(targets, deliverable) %></td>
             <% values = targets.pluck(:quarter, :value) %>
             <% (1..4).each do |quarter| %>
               <% match = values.select{ |q, _| q == "#{year}-#{quarter}" } %>
