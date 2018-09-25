@@ -151,16 +151,6 @@ class LanguagesController < ApplicationController
     end
   end
 
-  def outputs_table
-    @language = Language.find(params[:id])
-    respond_to do |format|
-      format.pdf do
-        pdf = OutputsTablePdf.new(@language, logged_in_user.geo_state)
-        send_data pdf.render, filename: "#{@language.name}_outputs.pdf", type: 'application/pdf'
-      end
-    end
-  end
-
   def outcomes_table
     @geo_state = GeoState.find(params[:geo_state_id])
     @language = Language.find(params[:id])

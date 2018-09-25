@@ -31,6 +31,12 @@ class StateLanguage < ActiveRecord::Base
     language.name.downcase <=> sl.language.name.downcase
   end
 
+  def name(show_state)
+    name = language_name
+    name += " (in #{state_name})" if show_state
+    return name
+  end
+
   def outcome_table_data(user, options = {})
     options[:from_date] ||= 12.months.ago
     if options[:from_date] < BASE_DATE

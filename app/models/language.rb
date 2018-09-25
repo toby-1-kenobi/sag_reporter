@@ -237,35 +237,4 @@ class Language < ActiveRecord::Base
     Language.translation_status_colour[translation_status]
   end
 
-  def table_data(geo_state, user, options = {})
-    options[:from_date] ||= 6.months.ago
-    options[:to_date] ||= Date.today
-    dates_by_month = (options[:from_date].to_date..options[:to_date].to_date).select{ |d| d.day == 1}
-
-    table = Array.new
-
-    headers = ['Outputs']
-    dates_by_month.each{ |date| headers.push(date.strftime('%B %Y')) }
-    table.push(headers)
-
-    OutputTally.all.order(:topic_id).each do |tally|
-      unless tally.topic.hide_for?(user)
-        row = [tally.description]
-        dates_by_month.each do |date|
-          row.push(tally.total(geo_state, [self], date.year, date.month))
-        end
-        table.push(row)
-      end
-    end
-
-    resources_row = ['Number of tools completed by the network']
-    dates_by_month.each_with_index do |date, index|
-      resources_row.push(MtResource.where(geo_state: geo_state, language: self, created_at: date..(dates_by_month[index + 1] || date + 1.month)).count)
-    end
-    table.push(resources_row)
-
-    return table
-
-  end
-
 end

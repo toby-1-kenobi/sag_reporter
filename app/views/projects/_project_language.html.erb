@@ -1,10 +1,7 @@
 <% show_state = true unless defined?(show_state) %>
 <li class="filterable-item hide mdl-list__item" data-filter-label="state" data-state="<%= project_language.geo_state_id %>">
   <span class="mdl-list__item-primary-content">
-    <%= project_language.language_name %>
-    <% if show_state %>
-      (in <%= project_language.state_name %>)
-    <% end %>
+    <%= project_language.name(show_state) %>
   </span>
   <span class="mdl-list__item-secondary-action">
     <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="sl-<%= project_language.id.to_s %>" >

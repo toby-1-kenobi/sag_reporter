@@ -80,7 +80,16 @@
   <div class="mdl-tabs__panel" id="responsible-panel">
   </div>
   <div class="mdl-tabs__panel" id="targets-language-panel">
+    <button id="targets-by-language-button" class="mdl-button mdl-js-button mdlext-js-menu-button" aria-controls="targets-by-language-menu">
+      <span>Select a language</span>
+      <i class="material-icons">more_vert</i>
+    </button>
+    <ul id="targets-by-language-menu" class="mdlext-menu">
+      <%= render partial: 'language_menu_item', collection: @project.state_languages %>
+    </ul>
   </div>
+  <div id="targets-by-language-content"></div>
   <div class="mdl-tabs__panel" id="targets-stream-panel">
+    <div id="targets-by-stream-content"></div>
   </div>
 </div>

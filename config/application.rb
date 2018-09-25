@@ -35,5 +35,9 @@ module SagReporter
 
     config.action_mailer.default_url_options = { host: 'lcreporter.herokuapp.com' }
 
+    # year ticks over on October 1st
+    config.year_cutoff_month = 10
+    config.year_cutoff_day = 1
+
   end
 end

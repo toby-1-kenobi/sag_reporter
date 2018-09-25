@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180920052419) do
+ActiveRecord::Schema.define(version: 20180924112512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,42 +30,21 @@ ActiveRecord::Schema.define(version: 20180920052419) do
   add_index "action_points", ["record_creator_id"], name: "index_action_points_on_record_creator_id", using: :btree
   add_index "action_points", ["responsible_id"], name: "index_action_points_on_responsible_id", using: :btree
 
-  create_table "aggregate_deliverables", force: :cascade do |t|
-    t.integer  "ministry_id", null: false
-    t.integer  "number",      null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  add_index "aggregate_deliverables", ["ministry_id"], name: "index_aggregate_deliverables_on_ministry_id", using: :btree
-
   create_table "aggregate_ministry_outputs", force: :cascade do |t|
-    t.integer  "aggregate_deliverable_id", null: false
-    t.string   "month",                    null: false
-    t.integer  "value",                    null: false
-    t.boolean  "actual",                   null: false
-    t.integer  "creator_id",               null: false
+    t.string   "month",             null: false
+    t.integer  "value",             null: false
+    t.boolean  "actual",            null: false
+    t.integer  "creator_id",        null: false
     t.text     "comment"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.integer  "state_language_id",        null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.integer  "state_language_id", null: false
+    t.integer  "deliverable_id",    null: false
   end
 
-  add_index "aggregate_ministry_outputs", ["aggregate_deliverable_id"], name: "index_aggregate_ministry_outputs_on_aggregate_deliverable_id", using: :btree
   add_index "aggregate_ministry_outputs", ["creator_id"], name: "index_aggregate_ministry_outputs_on_creator_id", using: :btree
+  add_index "aggregate_ministry_outputs", ["deliverable_id"], name: "index_aggregate_ministry_outputs_on_deliverable_id", using: :btree
   add_index "aggregate_ministry_outputs", ["state_language_id"], name: "index_aggregate_ministry_outputs_on_state_language_id", using: :btree
-
-  create_table "aggregate_quarterly_targets", force: :cascade do |t|
-    t.integer  "state_language_id",        null: false
-    t.integer  "aggregate_deliverable_id", null: false
-    t.string   "quarter",                  null: false
-    t.integer  "value",                    null: false
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-  end
-
-  add_index "aggregate_quarterly_targets", ["aggregate_deliverable_id"], name: "index_aggregate_quarterly_targets_on_aggregate_deliverable_id", using: :btree
-  add_index "aggregate_quarterly_targets", ["state_language_id"], name: "index_aggregate_quarterly_targets_on_state_language_id", using: :btree
 
   create_table "app_benefits", force: :cascade do |t|
     t.string   "name",       null: false
@@ -169,10 +148,12 @@ ActiveRecord::Schema.define(version: 20180920052419) do
   add_index "data_sources", ["name"], name: "index_data_sources_on_name", unique: true, using: :btree
 
   create_table "deliverables", force: :cascade do |t|
-    t.integer  "ministry_id", null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-    t.integer  "number",      null: false
+    t.integer  "ministry_id",                    null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.integer  "number",                         null: false
+    t.integer  "calculation_method", default: 0, null: false
+    t.integer  "reporter",           default: 0, null: false
   end
 
   add_index "deliverables", ["ministry_id"], name: "index_deliverables_on_ministry_id", using: :btree
@@ -722,6 +703,7 @@ ActiveRecord::Schema.define(version: 20180920052419) do
   end
 
   add_index "quarterly_targets", ["deliverable_id"], name: "index_quarterly_targets_on_deliverable_id", using: :btree
+  add_index "quarterly_targets", ["state_language_id", "deliverable_id", "quarter"], name: "index_language_deliverable_quarter", unique: true, using: :btree
   add_index "quarterly_targets", ["state_language_id"], name: "index_quarterly_targets_on_state_language_id", using: :btree
 
   create_table "registration_approvals", force: :cascade do |t|
@@ -916,12 +898,9 @@ ActiveRecord::Schema.define(version: 20180920052419) do
   add_foreign_key "action_points", "events"
   add_foreign_key "action_points", "people", column: "responsible_id"
   add_foreign_key "action_points", "users", column: "record_creator_id"
-  add_foreign_key "aggregate_deliverables", "ministries"
-  add_foreign_key "aggregate_ministry_outputs", "aggregate_deliverables"
+  add_foreign_key "aggregate_ministry_outputs", "deliverables"
   add_foreign_key "aggregate_ministry_outputs", "state_languages"
   add_foreign_key "aggregate_ministry_outputs", "users", column: "creator_id"
-  add_foreign_key "aggregate_quarterly_targets", "aggregate_deliverables"
-  add_foreign_key "aggregate_quarterly_targets", "state_languages"
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
   add_foreign_key "church_ministries", "church_teams"

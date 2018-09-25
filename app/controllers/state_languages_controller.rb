@@ -150,6 +150,16 @@ class StateLanguagesController < ApplicationController
     end
   end
 
+  def set_target
+    @quarterly_target = QuarterlyTarget.find_or_create_by(
+        state_language_id: params[:id],
+        deliverable_id: params[:deliverable],
+        quarter: params[:quarter]
+    )
+    @quarterly_target.update_attribute(:value, params[:target].to_i)
+    respond_to :js
+  end
+
   private
 
   def collect_transformation_data

@@ -1,23 +1,23 @@
 class AggregateMinistryOutput < ActiveRecord::Base
 
-  belongs_to :aggregate_deliverable
+  belongs_to :deliverable
   belongs_to :state_language
   belongs_to :creator, class_name: 'User'
 
-  validates :aggregate_deliverable, presence: true
+  validates :deliverable, presence: true
   validates :state_language, presence: true
   validates :creator, presence: true
   validates :month, presence: true, format: { with: /\A[2-9]\d{3}-(0|1)[0-9]\z/, message: "should be in the format 'YYYY-MM'"}
   validates :value, presence: true
   validates :actual, inclusion: [true, false]
-  validate :deliverable_ministry_belongs_to_language_stream
+  validate :deliverable_is_not_for_church_team_assessment
   validate :year_in_range
   validate :month_in_range
 
   private
 
-  def deliverable_ministry_belongs_to_language_stream
-    errors.add(:aggregate_deliverable, "must belong to the linked stream") unless aggregate_deliverable.ministry_id == language_stream.ministry_id
+  def deliverable_is_not_for_church_team_assessment
+    errors.add(:deliverable, 'should not be for church team assessment') if deliverable.church_team?
   end
 
   def year_in_range

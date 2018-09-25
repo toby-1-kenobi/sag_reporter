@@ -1,13 +1,6 @@
 Rails.application.routes.draw do
 
-
-  get 'help/edit_language'
-
-  get 'population/create'
-
   root 'static_pages#home'
-
-  get 'about' => 'static_pages#about'
 
   resources :android_additions do
     collection do
@@ -32,6 +25,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'states/autocomplete_sub_district_name/:district_id' => 'districts#autocomplete_sub_district_name', as: 'autocomplete_sub_district_name_district'
+
   resources :edits, only: [:create, :destroy] do
     collection do
       get 'curate'
@@ -48,6 +43,8 @@ Rails.application.routes.draw do
   resources :events do
     get :autocomplete_person_name, :on => :collection
   end
+
+  get 'events/new'
   
   resources :geo_states, only: [:show] do
     member do
@@ -60,10 +57,16 @@ Rails.application.routes.draw do
       get :load_board_report
     end
   end
+  get 'outcomes/get_totals_chart/:id' => 'geo_states#get_totals_chart', as: 'outcomes_totals_chart'
+  get 'outcomes/get_combined_languages_chart/:id' => 'geo_states#get_combined_languages_chart', as: 'combined_languages_chart'
+  get 'outcomes/get_outcome_area_chart/:id/:topic_id' => 'geo_states#get_outcome_area_chart', as: 'outcome_area_chart'
+  get 'states/autocomplete_district_name/:geo_state_id' => 'geo_states#autocomplete_district_name', as: 'autocomplete_district_name_geo_state'
 
   scope :help, controller: 'help' do
     get 'edit_language'
   end
+  get 'help/edit_language'
+
 
   resources :impact_reports, except: [:new, :create, :index] do
     member do
@@ -97,12 +100,25 @@ Rails.application.routes.draw do
       get 'populations'
     end
   end
+  get 'outcomes/get_language_chart/:id' => 'languages#get_chart', as: 'language_outcomes_chart'
+  get 'languages/fetch_jp_data/:iso' => 'languages#fetch_jp_data', as: 'fetch_jp_data'
+  get 'language_tab_spreadsheet' => 'languages#language_tab_spreadsheet', as: 'language_tab_spreadsheet'
+  get 'add_finish_line_progress' => 'languages#add_finish_line_progress', as: 'add_finish_line_progress'
+  get 'change_future_year' => 'languages#change_future_year'
 
   resources :language_streams, only: [:destroy]
 
   resources :mt_resources
+  get 'language/resources/:language_id' => 'mt_resources#language_overview'
 
   resources :organisations
+
+  resources :password_resets, only: [:new, :create, :edit, :update]
+  get 'update_reset' => 'password_resets#approve_user_request'
+  patch 'update_reset' => 'password_resets#reject_user_request'
+  get 'verify_otp'   => 'password_resets#verify'
+  post 'verify_otp'  => 'password_resets#verify_otp'
+  post 'change_password' => 'password_resets#password_change'
 
   scope :pb, controller: 'pb_api' do
     post 'authenticate', action: :jwt
@@ -114,13 +130,15 @@ Rails.application.routes.draw do
   end
 
   resources :populations, only: [:create]
+  get 'population/create'
 
   resources :projects, except: [:index] do
     member do
       get 'edit_responsible'
-      patch 'set_language/:state_language', to: 'projects#set_language', as: 'set_language_in'
-      patch 'set_stream/:ministry', to: 'projects#set_stream', as: 'set_stream_in'
-      patch 'add_facilitator/:stream/:state_language/:facilitator', to: 'projects#add_facilitator', as: 'add_facilitator_to'
+      get 'targets_by_language/:state_language', action: 'targets_by_language', as: 'targets_by_language_in'
+      patch 'set_language/:state_language', action: 'set_language', as: 'set_language_in'
+      patch 'set_stream/:ministry', action: 'set_stream', as: 'set_stream_in'
+      patch 'add_facilitator/:stream/:state_language/:facilitator', action: 'add_facilitator', as: 'add_facilitator_to'
     end
   end
 
@@ -136,13 +154,52 @@ Rails.application.routes.draw do
       get 'pictures'
     end
   end
-  
+
+  get    'login'   => 'sessions#new'
+  post   'login'   => 'sessions#create'
+  post   'two_factor_auth'   => 'sessions#two_factor_auth'
+  get 'otp_poll/:ticket' => 'sessions#poll', as: 'otp_poll'
+  post 'resend_code_to_phone' => 'sessions#resend_otp_to_phone', as: 'resend_code_to_phone'
+  post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
+  delete 'logout'  => 'sessions#destroy'
+  get 'session/change/:id' => 'sessions#change'
+  get 'signup' => 'sessions#sign_up'
+  get 'password_reset/:user_id/:token' => 'sessions#two_factor_auth', as: 'reset_password'
+
+  resources :state_languages, only: [] do
+    member do
+      patch 'set_target/:deliverable/:quarter', action: 'set_target', as: 'set_target_in'
+    end
+  end
+  get 'finish_line_marker_spreadsheet' => 'state_languages#finish_line_marker_spreadsheet', as: 'finish_line_marker_spreadsheet'
+  get 'outcomes' => 'state_languages#outcomes', as: 'outcomes'
+  get 'outcomes/:id' => 'state_languages#outcomes_data'
+  get 'transformation_spreadsheet' => 'state_languages#transformation_spreadsheet', as: 'transformation_spreadsheet'
+  get 'overview/show_outcomes_progress/:id' => 'state_languages#show_outcomes_progress', as: 'show_outcomes_progress'
+  get 'overview' => 'state_languages#overview', as: 'overview'
+  get 'transformation' => 'state_languages#transformation', as: 'transformation'
+  get 'outcomes/get_chart/:id' => 'state_languages#get_chart', as: 'outcomes_chart'
+  get 'outcomes/table/:id' => 'state_languages#get_table', as: 'outcomes_table'
+
+  get 'outcomes/:state_language_id/:months' => 'topics#assess_progress', as: 'assess_progress'
+  get 'outcomes/:state_language_id/:months.pdf' => 'topics#assess_progress', as: 'assess_progress_pdf'
+  post 'outcomes/:state_language_id/:months' => 'topics#update_progress'
+  get 'outcomes/select' => 'topics#assess_progress_select', as: 'select_to_assess'
+
+  get 'about' => 'static_pages#about'
+
   resources :users do
     member do
       get :confirm_email
       get :reports
     end
   end
+  get 're_send_to_confirm_email' => 'users#re_confirm_email'
+  post 'signup' => 'users#create_registration'
+  get 'user_approval' => 'users#user_registration_approval'
+  post 'zone_curator_accept'     => 'users#zone_curator_accept'
+  post 'zone_curator_reject'     => 'users#zone_curator_reject'
+  get 'my_reports' => 'users#reports', as: 'my_reports'
 
   resources :zones, only: [:index, :show] do
     member do
@@ -153,54 +210,6 @@ Rails.application.routes.draw do
       get :load_board_report
     end
   end
-
-  get 're_send_to_confirm_email' => 'users#re_confirm_email'
-
-  get    'login'   => 'sessions#new'
-  post   'login'   => 'sessions#create'
-  post   'two_factor_auth'   => 'sessions#two_factor_auth'
-  get 'otp_poll/:ticket' => 'sessions#poll', as: 'otp_poll'
-  post 'resend_code_to_phone' => 'sessions#resend_otp_to_phone', as: 'resend_code_to_phone'
-  post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
-  delete 'logout'  => 'sessions#destroy'
-
-  get 'session/change/:id' => 'sessions#change'
-  
-
-  get  'tally_updates' => 'tally_updates#index'
-  post 'tally_updates' => 'tally_updates#create'
-
-  get 'events/new'
-
-  get 'languages/fetch_jp_data/:iso' => 'languages#fetch_jp_data', as: 'fetch_jp_data'
-
-  get 'outcomes/select' => 'topics#assess_progress_select', as: 'select_to_assess'
-  get 'outcomes/get_chart/:id' => 'state_languages#get_chart', as: 'outcomes_chart'
-  get 'outcomes/get_language_chart/:id' => 'languages#get_chart', as: 'language_outcomes_chart'
-  get 'outcomes/get_totals_chart/:id' => 'geo_states#get_totals_chart', as: 'outcomes_totals_chart'
-  get 'outcomes/get_combined_languages_chart/:id' => 'geo_states#get_combined_languages_chart', as: 'combined_languages_chart'
-  get 'outcomes/get_outcome_area_chart/:id/:topic_id' => 'geo_states#get_outcome_area_chart', as: 'outcome_area_chart'
-  get 'outcomes/table/:id' => 'state_languages#get_table', as: 'outcomes_table'
-  get 'outcomes/:state_language_id/:months' => 'topics#assess_progress', as: 'assess_progress'
-  get 'outcomes/:state_language_id/:months.pdf' => 'topics#assess_progress', as: 'assess_progress_pdf'
-  post 'outcomes/:state_language_id/:months' => 'topics#update_progress'
-  get 'outcomes' => 'state_languages#outcomes', as: 'outcomes'
-  get 'outcomes/:id' => 'state_languages#outcomes_data'
-
-  get 'outputs/report_numbers' => 'output_tallies#report_numbers', as: 'report_numbers'
-  post 'outputs/report_numbers' => 'output_tallies#update_numbers', as: 'update_numbers'
-  get 'outputs' => 'output_tallies#table', as: 'outputs'
-  get 'outputs/:id' => 'languages#outputs_table'
-
-  get 'language/resources/:language_id' => 'mt_resources#language_overview'
-
-  get 'overview' => 'state_languages#overview', as: 'overview'
-  get 'transformation' => 'state_languages#transformation', as: 'transformation'
-  get 'transformation_spreadsheet' => 'state_languages#transformation_spreadsheet', as: 'transformation_spreadsheet'
-  get 'overview/show_outcomes_progress/:id' => 'state_languages#show_outcomes_progress', as: 'show_outcomes_progress'
-  get 'states/autocomplete_district_name/:geo_state_id' => 'geo_states#autocomplete_district_name', as: 'autocomplete_district_name_geo_state'
-  get 'states/autocomplete_sub_district_name/:district_id' => 'districts#autocomplete_sub_district_name', as: 'autocomplete_sub_district_name_district'
-
   get 'nation' => 'zones#nation', as: 'nation'
   get 'national_outcomes_chart' => 'zones#national_outcomes_chart', as: 'national_outcomes_chart'
   get 'nation/load_flm_summary' => 'zones#load_flm_summary', as: 'load_national_flm_summary'
@@ -208,39 +217,10 @@ Rails.application.routes.draw do
   get 'nation/load_language_flm_table' => 'zones#load_language_flm_table', as: 'load_national_language_flm_table'
   get 'nation/load_board_report' => 'zones#load_board_report', as: 'load_national_board_report'
 
-  # my_reports is for a single user, but user id param not needed - it's got from logged in user
-  get 'my_reports' => 'users#reports', as: 'my_reports'
-  get 'whatsapp' => 'static_pages#whatsapp_link'
 
-  resources :password_resets,     only: [:new, :create, :edit, :update]
 
-  get 'update_reset' => 'password_resets#approve_user_request'
-  patch 'update_reset' => 'password_resets#reject_user_request'
-  get 'verify_otp'   => 'password_resets#verify'
-  post 'verify_otp'  => 'password_resets#verify_otp'
-  post 'change_password' => 'password_resets#password_change'
-  get 'password_reset/:user_id/:token' => 'sessions#two_factor_auth', as: 'reset_password'
 
-  get 'finish_line_marker_spreadsheet' => 'state_languages#finish_line_marker_spreadsheet', as: 'finish_line_marker_spreadsheet'
-  get 'language_tab_spreadsheet' => 'languages#language_tab_spreadsheet', as: 'language_tab_spreadsheet'
 
-  #adding finish line progress for future year
-  get 'add_finish_line_progress' => 'languages#add_finish_line_progress', as: 'add_finish_line_progress'
-
-  get 'change_future_year' => 'languages#change_future_year'
-
-  get 'signup' => 'sessions#sign_up'
-  post 'signup' => 'users#create_registration'
-
-  get 'user_approval' => 'users#user_registration_approval'
-  post 'zone_curator_accept'     => 'users#zone_curator_accept'
-  post 'zone_curator_reject'     => 'users#zone_curator_reject'
-
-  post 'zone_approval'  => 'users#zone_curator_accept'
-
-  get 'lci_board_member_approval' => 'users#lci_board_member_approval'
-  post 'lci_board_member_accept'  => 'users#lci_board_member_accept'
-  post 'lci_board_member_reject'     => 'users#lci_board_member_reject'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

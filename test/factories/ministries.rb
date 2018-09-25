@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :ministry do
-    sequence(:number){ |n| n }
+    sequence(:code){ |n| n.to_s.rjust(2, '0') }
     topic
   end
 end
