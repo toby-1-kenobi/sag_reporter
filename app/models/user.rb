@@ -17,7 +17,6 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :spoken_languages, class_name: 'Language', after_add: :update_self, after_remove: :update_self
   has_and_belongs_to_many :geo_states, after_add: :update_self, after_remove: :update_self
   has_many :zones, through: :geo_states
-  has_many :output_counts, dependent: :restrict_with_error
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :nullify
   has_many :curatings, dependent: :destroy
@@ -44,7 +43,7 @@ class User < ActiveRecord::Base
   has_many :language_streams, foreign_key: 'facilitator_id', inverse_of: :facilitator
   has_many :ministries, through: :language_streams
   has_many :state_languages, through: :language_streams
-  has_many :project_streams, dependent: :restrict_with_error, inverse_of: :supervisor
+  has_many :project_streams, foreign_key: 'supervisor_id', dependent: :restrict_with_error, inverse_of: :supervisor
 
   attr_accessor :remember_token
 
@@ -103,9 +102,9 @@ class User < ActiveRecord::Base
   def generate_pwd_reset_token
     token = User.new_token
     if update_attributes(reset_password_token: BCrypt::Password.create(token))
-      return token
+      token
     else
-      return false
+      false
     end
   end
 
@@ -210,7 +209,7 @@ class User < ActiveRecord::Base
         return national_curator? if role_name == 'national_curator'
         return true if role_description.present? and role_name == role_description.parameterize('_')
       end
-      return false
+      false
     else
       super
     end
