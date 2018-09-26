@@ -14,7 +14,6 @@ class AndroidSyncController < ApplicationController
         Person => %w(name geo_state_id),
         Topic => %w(name colour),
         ProgressMarker => %w(name topic_id),
-        Zone => %w(name),
         Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id),
         ImpactReport => %w(translation_impact),
         UploadedFile => %w(report_id),
@@ -26,14 +25,12 @@ class AndroidSyncController < ApplicationController
         ChurchTeam => %w(name organisation_id village state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(code topic_id),
-        Deliverable => %w(number ministry_id),
+        Deliverable => %w(number ministry_id calculation_method reporter),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
-        AggregateDeliverable => %w(ministry_id number),
-        AggregateMinistryOutput => %w(aggregate_deliverable_id month value actual creator_id comment state_language_id),
-        AggregateQuarterlyTarget => %w(state_language_id aggregate_deliverable_id quarter value),
+        AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
         SupervisorFeedback => %w(supervisor_id facilitator_id month plan_feedback plan_response result_feedback facilitator_progress project_progress),
@@ -135,13 +132,7 @@ class AndroidSyncController < ApplicationController
           file.write "{\"last_sync\":#{this_sync.to_i}"
           raise "No last sync variable" unless send_request_params["last_sync"]
           if send_request_params["first_download"]
-            if @external_user.church_teams.empty? && @external_user.facilitator?
-              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry, LanguageStream)
-            else
-              tables = tables.slice(User, GeoState, StateLanguage, Language, Organisation, Ministry,
-                  Topic, ProgressMarker, MtResource, ChurchTeam, ChurchMinistry, Deliverable, MinistryOutput, 
-                  ProductCategory, FacilitatorFeedback, LanguageStream)
-            end
+            tables.except!(Person, Topic, ProgressMarker, Report, ImpactReport, UploadedFile, LanguageProgress, ProgressUpdate)
           end
           tables.each do |table, attributes|
             table_name = table.name.to_sym
@@ -154,9 +145,7 @@ class AndroidSyncController < ApplicationController
                 .includes(join_tables[table_name]).each do |entry|
               entry_data = Hash.new
               begin
-                (attributes + ["id"]).each do |attribute|
-                  entry_data.merge!({attribute => entry.send(attribute)})
-                end
+                entry_data.merge!(entry.attributes.slice(*(attributes + ["id"])))
                 join_tables[table_name]&.each do |join_table|
                   entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
                 end
