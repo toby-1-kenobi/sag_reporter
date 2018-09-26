@@ -2,6 +2,8 @@ $('#project-content').html('<%= j render(partial: 'form') %>');
 
 componentHandler.upgradeElements($('#project-content').find('.mdl-tabs').get());
 componentHandler.upgradeElements($('#project-content').find('.mdl-textfield').get());
+componentHandler.upgradeElements($('#project-content').find('.mdlext-js-menu-button').get());
+componentHandler.upgradeElements($('#project-content').find('.mdlext-menu').get());
 
 $('#project-name-input').on('input', function(){
     $('#project-name-submit').show().css('display', 'inline-block');

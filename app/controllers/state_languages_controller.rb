@@ -160,6 +160,27 @@ class StateLanguagesController < ApplicationController
     respond_to :js
   end
 
+  def copy_targets
+    state_language = StateLanguage.find(params[:id])
+    source_language = StateLanguage.find(params[:source])
+    project = Project.find(params[:project])
+    # operate only on the project ministries
+    project.ministries.each do |ministry|
+      ministry.deliverables.each do |deliverable|
+        # delete existing quarterly target values for the deliverables in this ministry
+        deliverable.quarterly_targets.where(state_language: state_language).destroy_all
+        # duplicate the targets from the source language
+        deliverable.quarterly_targets.where(state_language: source_language).find_each do |target|
+          dup_target = target.dup
+          # reassign the state-language on the duplicated target
+          dup_target.state_language = state_language
+          dup_target.save
+        end
+      end
+    end
+    respond_to :js
+  end
+
   private
 
   def collect_transformation_data

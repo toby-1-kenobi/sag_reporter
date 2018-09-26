@@ -47,6 +47,14 @@ table.supervisors .supervisor-name {
   font-size: large !important;
 }
 
+#targets-by-language-content-head {
+  display: flex;
+  align-items: flex-end;
+  button {
+    margin: 1em;
+  }
+}
+
 td.quarterly-target {
   padding-left: 8px !important;
   padding-right: 8px !important;

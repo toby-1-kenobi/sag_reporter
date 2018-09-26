@@ -1,7 +1,14 @@
 $('#targets-by-language-content').html('<%= j render partial: 'targets_by_language', locals: { project: @project, state_language: @state_language } %>')
+componentHandler.upgradeElements($('#targets-by-language-content').find('.mdlext-js-menu-button').get());
+componentHandler.upgradeElements($('#targets-by-language-content').find('.mdlext-menu').get());
+
 $('.quarterly-target-input').on('input', function(){
    $(this).find('input').addClass('dirty');
 });
 $('.quarterly-target-input').on('change', function(){
     $(this).closest('form').submit();
+});
+
+document.querySelector('#copy-from-language-button').addEventListener('menuselect', function(e) {
+    $.ajax({url: $(e.detail.source).attr('data-ajax-url'), method: 'PATCH'});
 });
