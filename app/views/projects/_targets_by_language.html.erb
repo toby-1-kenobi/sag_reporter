@@ -13,7 +13,7 @@
 </ul>
 <ul id="copy-from-language-menu" class="mdlext-menu">
   <%= render partial: 'projects/language_copy_menu_item',
-             collection: StateLanguage.joins(:project_languages),
+             collection: StateLanguage.where.not(id: state_language.id).joins(:project_languages),
              locals: { target_language: state_language }
   %>
 </ul>
