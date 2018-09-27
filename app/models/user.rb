@@ -45,6 +45,8 @@ class User < ActiveRecord::Base
   has_many :ministries, through: :language_streams
   has_many :state_languages, through: :language_streams
   has_many :project_streams, dependent: :restrict_with_error, inverse_of: :supervisor
+  has_many :project_supervisions, class_name: 'ProjectSupervisor', dependent: :destroy
+  has_many :supervised_projects, through: :project_supervisions, class_name: 'Project', inverse_of: :supervisors
 
   attr_accessor :remember_token
 
