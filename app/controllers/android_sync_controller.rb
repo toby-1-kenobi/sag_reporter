@@ -30,6 +30,7 @@ class AndroidSyncController < ApplicationController
         ProductCategory => %w(number),
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
+        ProjectSupervisor => %w(project_id user_id role),
         AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
