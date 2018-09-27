@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180924112512) do
+ActiveRecord::Schema.define(version: 20180927071735) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -666,17 +666,30 @@ ActiveRecord::Schema.define(version: 20180924112512) do
   add_index "project_languages", ["state_language_id"], name: "index_project_languages_on_state_language_id", using: :btree
 
   create_table "project_streams", force: :cascade do |t|
-    t.integer  "project_id",    null: false
-    t.integer  "ministry_id",   null: false
+    t.integer  "project_id",                null: false
+    t.integer  "ministry_id",               null: false
     t.integer  "supervisor_id"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.integer  "stage",         default: 0, null: false
   end
 
   add_index "project_streams", ["ministry_id"], name: "index_project_streams_on_ministry_id", using: :btree
   add_index "project_streams", ["project_id", "ministry_id"], name: "index_project_ministry", unique: true, using: :btree
   add_index "project_streams", ["project_id"], name: "index_project_streams_on_project_id", using: :btree
   add_index "project_streams", ["supervisor_id"], name: "index_project_streams_on_supervisor_id", using: :btree
+
+  create_table "project_supervisors", force: :cascade do |t|
+    t.integer  "project_id", null: false
+    t.integer  "user_id",    null: false
+    t.integer  "role",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "project_supervisors", ["project_id", "user_id", "role"], name: "index_project_supervisor_role", unique: true, using: :btree
+  add_index "project_supervisors", ["project_id"], name: "index_project_supervisors_on_project_id", using: :btree
+  add_index "project_supervisors", ["user_id"], name: "index_project_supervisors_on_user_id", using: :btree
 
   create_table "projects", force: :cascade do |t|
     t.string   "name",       null: false
@@ -966,6 +979,8 @@ ActiveRecord::Schema.define(version: 20180924112512) do
   add_foreign_key "project_streams", "ministries"
   add_foreign_key "project_streams", "projects"
   add_foreign_key "project_streams", "users", column: "supervisor_id"
+  add_foreign_key "project_supervisors", "projects"
+  add_foreign_key "project_supervisors", "users"
   add_foreign_key "quarterly_targets", "deliverables"
   add_foreign_key "quarterly_targets", "state_languages"
   add_foreign_key "registration_approvals", "users", column: "approver_id"

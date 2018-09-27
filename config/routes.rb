@@ -169,6 +169,7 @@ Rails.application.routes.draw do
   resources :state_languages, only: [] do
     member do
       patch 'set_target/:deliverable/:quarter', action: 'set_target', as: 'set_target_in'
+      patch 'copy_targets_from/:source/:project', action: 'copy_targets', as: 'copy_targets_to'
     end
   end
   get 'finish_line_marker_spreadsheet' => 'state_languages#finish_line_marker_spreadsheet', as: 'finish_line_marker_spreadsheet'
