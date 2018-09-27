@@ -12,7 +12,7 @@
 <ul id="copy-from-template-menu" class="mdlext-menu">
 </ul>
 <ul id="copy-from-language-menu" class="mdlext-menu">
-  <%= render partial: 'language_copy_menu_item',
+  <%= render partial: 'projects/language_copy_menu_item',
              collection: StateLanguage.joins(:project_languages),
              locals: { target_language: state_language }
   %>
