@@ -8,7 +8,7 @@ class AndroidSyncController < ApplicationController
 
   def send_request
     tables = {
-        User => %w(name),
+        User => %w(),
         GeoState => %w(name zone_id),
         Language => %w(name colour),
         Person => %w(name geo_state_id),
