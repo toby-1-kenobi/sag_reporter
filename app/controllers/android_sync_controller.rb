@@ -112,6 +112,8 @@ class AndroidSyncController < ApplicationController
           {month: "#{entry.year}-#{'%02i' % entry.month}"}
         when StateLanguage
           {is_primary: entry.primary}
+        when ChurchTeam
+          {leader: entry.village}
         else
           {}
       end
