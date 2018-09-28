@@ -1,0 +1,7 @@
+<span class="mdl-chip">
+  <span class="mdl-chip__text supervisor-name"></span>
+  <%# supervisor id is a place holder that should be substituted in JS %>
+  <%= link_to project_supervisors_path(project: @project, supervisor: 0), method: :post, remote: true, class: 'add-supervisor-link' do %>
+    <button type="button" class="mdl-chip__action"><i class="material-icons">add</i></button>
+  <% end %>
+</span>

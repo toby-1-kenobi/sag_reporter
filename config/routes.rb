@@ -144,6 +144,8 @@ Rails.application.routes.draw do
 
   patch 'project_streams/:id/set_supervisor/:supervisor', to: 'project_streams#set_supervisor', as: 'set_supervisor_in_project_stream'
 
+  resources :project_supervisors, only: [:create, :destroy]
+
   resources :reports do
     collection do
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
