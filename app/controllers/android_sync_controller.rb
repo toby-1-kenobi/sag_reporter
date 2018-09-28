@@ -335,7 +335,7 @@ class AndroidSyncController < ApplicationController
           aggregate_ministry_output: [
               :id,
               :old_id,
-              :church_ministry_id,
+              :state_language_id,
               :deliverable_id,
               :month,
               :value,
