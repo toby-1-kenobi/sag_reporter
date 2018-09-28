@@ -1,0 +1,14 @@
+<li class="mdl-list__item">
+  <span class="mdl-list__item-primary-content"><%= project_supervisor.name %></span>
+  <span class="mdl-list__item-secondary-action">
+    <%= form_for project_supervisor, remote: true do |f| %>
+      <div class="mdlext-selectfield mdlext-js-selectfield">
+        <%= f.select :role, ProjectSupervisor.roles.keys.map{ |r| [r.humanize, r] }, {}, {class: 'supervisor-role-select mdlext-selectfield__select mdlext-js-selectfield mdlext-selectfield--floating-label'} %>
+        <%= f.label :role, class: 'mdlext-selectfield__label' %>
+      </div>
+    <% end %>
+    <%= link_to project_supervisor, method: :delete, remote: true, class: 'mdl-button mdl-js-button mdl-button--icon' do %>
+      <i class="material-icons">cancel</i>
+    <% end %>
+  </span>
+</li>

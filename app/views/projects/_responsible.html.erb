@@ -1,5 +1,18 @@
 <% project_streams = @project.project_streams.includes(:ministry, :supervisor) %>
-<h4>Supervisors</h4>
+
+<h4>Project Supervisors</h4>
+<ul class="mdl-list" id="project-supervisors-list">
+  <%= render partial: 'project_supervisor', collection: @project.project_supervisors.order(:id) %>
+</ul>
+<div class="add-supervisor-controls">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input add-supervisor-input" type="text" id="add-supervisor-input">
+    <label class="mdl-textfield__label" for="add-supervisor-input">Add Supervisor</label>
+  </div>
+  <div id="add-supervisor-choices"></div>
+</div>
+
+<h4>Stream Supervisors</h4>
 <table class="mdl-data-table mdl-js-data-table supervisors">
   <thead>
   <tr>
