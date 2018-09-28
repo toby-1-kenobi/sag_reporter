@@ -332,6 +332,17 @@ class AndroidSyncController < ApplicationController
               :team_member_id,
               :facilitator_plan,
           ],
+          aggregate_ministry_output: [
+              :id,
+              :old_id,
+              :church_ministry_id,
+              :deliverable_id,
+              :month,
+              :value,
+              :comment,
+              :creator_id,
+              :actual
+          ],
           ministry_output: [
               :id,
               :old_id,
@@ -351,7 +362,7 @@ class AndroidSyncController < ApplicationController
       @id_changes = {}
 
       # The following tables have to be in the order, that they only contain IDs of the previous ones
-      [Person, Report, ImpactReport, UploadedFile, Organisation, ChurchTeam, ChurchMinistry, FacilitatorFeedback, MinistryOutput].each do |table|
+      [Person, Report, ImpactReport, UploadedFile, Organisation, ChurchTeam, ChurchMinistry, FacilitatorFeedback, AggregateMinistryOutput, MinistryOutput].each do |table|
         receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
       end
       puts @id_changes
