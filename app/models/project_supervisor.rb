@@ -13,4 +13,6 @@ class ProjectSupervisor < ActiveRecord::Base
   validates :user, presence: true
   validates :role, presence: true
 
+  delegate :name, to: :user
+
 end

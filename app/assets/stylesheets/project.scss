@@ -37,6 +37,19 @@
   }
 }
 
+#project-supervisors-list {
+  max-width: 40em;
+  .edit_project_supervisor {
+    display: inline;
+    .mdlext-selectfield {
+      max-width: 15em;
+    }
+  }
+  .mdl-button--icon {
+    margin-left: 2em;
+  }
+}
+
 .add-facilitator-choices, .change-supervisor-choices {
   display: flex;
   flex-direction: column;

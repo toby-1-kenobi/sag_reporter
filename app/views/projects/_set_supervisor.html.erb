@@ -1,6 +1,6 @@
 <span class="mdl-chip">
   <span class="mdl-chip__text supervisor-name"></span>
-  <%# stream, language and facilitator id is are place holders that should be substituted in JS %>
+  <%# stream and supervisor id are place holders that should be substituted in JS %>
   <%= link_to set_supervisor_in_project_stream_path(0,0), method: :patch, remote: true, class: 'set-supervisor-link' do %>
     <button type="button" class="mdl-chip__action"><i class="material-icons">add</i></button>
   <% end %>

@@ -1,5 +1,6 @@
 $('#responsible-panel').html('<%= j render 'responsible' %>');
 componentHandler.upgradeElements($('#responsible-panel').find('.mdl-textfield').get());
+componentHandler.upgradeElements($('#project-supervisors-list').find('.mdlext-selectfield').get());
 $('#responsible-tab').removeClass('dirty');
 
 $('.add-facilitator-input').on('input', function(){
@@ -13,7 +14,7 @@ $('.add-facilitator-input').on('input', function(){
         const userData = JSON.parse($('#user-data').html());
         userData.forEach(function(user){
             if (user.name.toLowerCase().includes(entry)){
-                facChip = $('<%= j render partial: 'add_facilitator' %>');
+                var facChip = $('<%= j render partial: 'add_facilitator' %>');
                 facChip.find('.facilitator-name').text(user.name);
                 facChip.find('.add-facilitator-link').attr('href', function(i, ref){
                     return ref.replace('/0/0/0', '/'+ministryID+'/'+stateLanguageID+'/'+user.id);
@@ -34,14 +35,37 @@ $('.change-supervisor-input').on('input', function(){
         const userData = JSON.parse($('#user-data').html());
         userData.forEach(function(user){
             if (user.name.toLowerCase().includes(entry)){
-                facChip = $('<%= j render partial: 'set_supervisor' %>');
-                facChip.find('.supervisor-name').text(user.name);
-                facChip.find('.set-supervisor-link').attr('href', function(i, ref){
+                var supChip = $('<%= j render partial: 'set_supervisor' %>');
+                supChip.find('.supervisor-name').text(user.name);
+                supChip.find('.set-supervisor-link').attr('href', function(i, ref){
                     ref = ref.replace('project_streams/0', 'project_streams/'+projectStreamID);
                     return ref.replace('set_supervisor/0', 'set_supervisor/'+user.id);
                 });
-                container.append(facChip);
+                container.append(supChip);
             }
         });
     }
+});
+
+$('.add-supervisor-input').on('input', function(){
+    const entry = this.value.toLowerCase();
+    const upperContainer = $(this).closest('.add-supervisor-controls');
+    const container = upperContainer.find('#add-supervisor-choices');
+    container.empty();
+    if (entry.length >= 3){
+        const userData = JSON.parse($('#user-data').html());
+        userData.forEach(function(user){
+            if (user.name.toLowerCase().includes(entry)){
+                var supChip = $('<%= j render partial: 'add_supervisor' %>');
+                supChip.find('.supervisor-name').text(user.name);
+                supChip.find('.add-supervisor-link').attr('href', function(i, ref){
+                    return ref.replace('supervisor=0', 'supervisor='+user.id);
+                });
+                container.append(supChip);
+            }
+        });
+    }
+});
+$('.supervisor-role-select').on('change', function(){
+    $(this).closest('form').submit();
 });
