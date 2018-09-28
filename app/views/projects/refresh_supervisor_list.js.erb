@@ -1,0 +1,8 @@
+$('#project-supervisors-list').html('<%= j render(partial: 'projects/project_supervisor', collection: @project.project_supervisors.order(:id)) %>')
+componentHandler.upgradeElements($('#project-supervisors-list').find('.mdlext-selectfield').get());
+$('.add-supervisor-input').val('');
+$('#add-supervisor-choices').empty();
+
+$('.supervisor-role-select').on('change', function(){
+    $(this).closest('form').submit();
+});
