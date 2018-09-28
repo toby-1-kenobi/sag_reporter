@@ -155,7 +155,7 @@ class AndroidAdditionsController < ApplicationController
 
     user = get_user send_otp_params["user_name"]
     users_device = ExternalDevice.find_by user_id: user&.id, device_id: send_otp_params["device_id"]
-    unless users_device && !users_device.registered
+    unless users_device
       render json: {error: "Device not found"}, status: :forbidden
       return
     end
@@ -291,7 +291,7 @@ class AndroidAdditionsController < ApplicationController
       @jwt_user_id = payload["sub"]
       user = User.find_by_id @jwt_user_id
       users_device = ExternalDevice.find_by device_id: payload["iss"], user_id: @jwt_user_id
-      if user.updated_at.to_i == payload["iat"]
+      if user.updated_at.to_i == payload["iat"] && users_device && users_device.updated_at + 7.days < Time.now
         user if users_device
       else
         users_device.update registered: false if users_device&.registered
