@@ -38,7 +38,7 @@ class AndroidSyncController < ApplicationController
         FacilitatorFeedback => %w(church_ministry_id month plan_feedback plan_team_member_id plan_response facilitator_plan result_feedback result_response result_team_member_id progress)
     }
     join_tables = {
-        User: %w(geo_states spoken_languages church_teams),
+        User: %w(geo_states spoken_languages),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
