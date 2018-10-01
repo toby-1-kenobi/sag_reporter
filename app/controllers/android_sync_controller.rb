@@ -50,7 +50,7 @@ class AndroidSyncController < ApplicationController
       if table == User
         project_ids = ProjectStream.where(supervisor_id: @external_user.id).map(&:project_id) + ProjectSupervisor.where(user_id: @external_user.id).map(&:project_id)
         unless project_ids.empty?
-          restricted_ids = LanguageStream.where(project_id: project_ids).map(&:facilitator_id).uniq + [@external_user.id]
+          restricted_ids = LanguageStream.where(project_id: project_ids).map(&:facilitator_id) + [@external_user.id]
         else
           restricted_ids = [@external_user.id]
         end
