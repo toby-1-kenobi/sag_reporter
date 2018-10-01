@@ -178,7 +178,10 @@ class AndroidSyncController < ApplicationController
             file.write "]" if has_entry
             ActiveRecord::Base.connection.query_cache.clear
           end
-          file.write deleted_entries.to_json unless deleted_entries.empty?
+          unless deleted_entries.empty?
+            file.write ","
+            file.write({deleted: deleted_entries}.to_json)
+          end
           file.write "}"
         end
       rescue => e
