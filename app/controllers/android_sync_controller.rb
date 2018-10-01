@@ -179,8 +179,8 @@ class AndroidSyncController < ApplicationController
             ActiveRecord::Base.connection.query_cache.clear
           end
           unless deleted_entries.empty?
-            file.write ","
-            file.write({deleted: deleted_entries}.to_json)
+            file.write ",\"deleted\":"
+            file.write deleted_entries.to_json
           end
           file.write "}"
         end
