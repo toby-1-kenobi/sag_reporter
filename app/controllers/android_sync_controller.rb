@@ -143,6 +143,7 @@ class AndroidSyncController < ApplicationController
           if send_request_params["first_download"]
             tables.except!(Person, Topic, ProgressMarker, Report, ImpactReport, UploadedFile, LanguageProgress, ProgressUpdate)
           end
+          deleted_entries = Hash.new
           tables.each do |table, attributes|
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
