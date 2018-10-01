@@ -172,11 +172,12 @@ class AndroidSyncController < ApplicationController
               end
             end
             unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
-              file.write({delete: offline_ids - restricted_ids}.to_json)
+              deleted_entries[table_name] = offline_ids - restricted_ids
             end
             file.write "]" if has_entry
             ActiveRecord::Base.connection.query_cache.clear
           end
+          file.write deleted_entries.to_json unless deleted_entries.empty?
           file.write "}"
         end
       rescue => e
