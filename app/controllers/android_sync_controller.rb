@@ -13,7 +13,7 @@ class AndroidSyncController < ApplicationController
         Language => %w(name colour),
         Person => %w(name geo_state_id),
         Topic => %w(name colour),
-        ProgressMarker => %w(name topic_id),
+        ProgressMarker => %w(name topic_id number),
         Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id),
         ImpactReport => %w(translation_impact),
         UploadedFile => %w(report_id),
@@ -114,8 +114,6 @@ class AndroidSyncController < ApplicationController
     end
     def additional_tables(entry)
       case entry
-        when ProgressMarker
-          {description: entry.description_for(@external_user)}
         when ProgressUpdate
           {month: "#{entry.year}-#{'%02i' % entry.month}"}
         when StateLanguage
@@ -321,7 +319,7 @@ class AndroidSyncController < ApplicationController
               {user_ids: []},
               :user_ids,
               :organisation_id,
-              :village,
+              :leader,
               :state_language_id
           ],
           church_ministry: [
@@ -449,6 +447,9 @@ class AndroidSyncController < ApplicationController
           hash.delete k
         elsif v == nil && k.last(4) == "_ids"
           hash[k] = []
+        elsif k == "leader"
+          hash["village"] = v
+          hash.delete k
         end
       end
       logger.debug "#{table}: #{hash}"
