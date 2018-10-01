@@ -8,7 +8,7 @@ class AndroidSyncController < ApplicationController
 
   def send_request
     tables = {
-        User => %w(),
+        User => %w(name),
         GeoState => %w(name zone_id),
         Language => %w(name colour),
         Person => %w(name geo_state_id),
@@ -47,12 +47,19 @@ class AndroidSyncController < ApplicationController
     }
     @all_restricted_ids = Hash.new
     def restrict(table)
-      restricted_ids = table.ids
+      if table == User
+        project_ids = ProjectStream.where(supervisor_id: @external_user.id).map(&:project_id) + ProjectSupervisor.where(user_id: @external_user.id).map(&:project_id)
+        unless project_ids.empty?
+          restricted_ids = LanguageStream.where(project_id: project_ids).map(&:facilitator_id).uniq + [@external_user.id]
+        else
+          restricted_ids = [@external_user.id]
+        end
+      else
+        restricted_ids = table.ids
+      end
       unless @external_user.national
         user_geo_states = @external_user.geo_state_ids
         restricted_ids = case table.new
-          when User
-            table.joins(:geo_states).where(geo_states: {id: user_geo_states}).ids
           when StateLanguage
             table.where(geo_state_id: user_geo_states).ids
           when Person
@@ -80,7 +87,8 @@ class AndroidSyncController < ApplicationController
             table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
           when Project
             table.joins(:state_languages).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
-          else restricted_ids
+          else
+            restricted_ids
         end
       end
       unless @external_user.trusted
@@ -197,7 +205,7 @@ class AndroidSyncController < ApplicationController
       deadline = Time.now + 1.minute
       until File.exists?(file_path)
         sleep 1
-        raise "Creating of the file took to long" if Time.now > deadline
+        raise "Creating of the file took too long" if Time.now > deadline
       end
       send_file file_path, status: :ok
     rescue => e
