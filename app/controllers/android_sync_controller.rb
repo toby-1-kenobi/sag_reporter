@@ -22,7 +22,7 @@ class AndroidSyncController < ApplicationController
         LanguageProgress => %w(progress_marker_id state_language_id),
         ProgressUpdate => %w(user_id language_progress_id progress month year),
         StateLanguage => %w(geo_state_id language_id project),
-        ChurchTeam => %w(name organisation_id village state_language_id),
+        ChurchTeam => %w(name organisation_id leader state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(code topic_id),
         Deliverable => %w(number ministry_id calculation_method reporter),
@@ -45,6 +45,16 @@ class AndroidSyncController < ApplicationController
         Project: %w(state_languages),
         MtResource: %w(product_categories)
     }
+    def additional_tables(entry)
+      case entry
+        when ProgressUpdate
+          {month: "#{entry.year}-#{sprintf('%02d', entry.month)}"}
+        when StateLanguage
+          {is_primary: entry.primary}
+        else
+          {}
+      end
+    end
     @all_restricted_ids = Hash.new
     def restrict(table)
       if table == User
@@ -111,18 +121,6 @@ class AndroidSyncController < ApplicationController
         restricted_ids = table.where(report_id: @all_restricted_ids[Report.name]).ids
       end
       @all_restricted_ids[table.name] = restricted_ids
-    end
-    def additional_tables(entry)
-      case entry
-        when ProgressUpdate
-          {month: "#{entry.year}-#{'%02i' % entry.month}"}
-        when StateLanguage
-          {is_primary: entry.primary}
-        when ChurchTeam
-          {leader: entry.village}
-        else
-          {}
-      end
     end
     
     safe_params = [
@@ -455,9 +453,6 @@ class AndroidSyncController < ApplicationController
           hash.delete k
         elsif v == nil && k.last(4) == "_ids"
           hash[k] = []
-        elsif k == "leader"
-          hash["village"] = v
-          hash.delete k
         end
       end
       logger.debug "#{table}: #{hash}"
