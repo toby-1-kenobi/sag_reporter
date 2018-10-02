@@ -30,6 +30,7 @@ class AndroidSyncController < ApplicationController
         ProductCategory => %w(number),
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
+        ProjectSupervisor => %w(project_id user_id role),
         AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
@@ -46,12 +47,19 @@ class AndroidSyncController < ApplicationController
     }
     @all_restricted_ids = Hash.new
     def restrict(table)
-      restricted_ids = table.ids
+      if table == User
+        project_ids = ProjectStream.where(supervisor_id: @external_user.id).map(&:project_id) + ProjectSupervisor.where(user_id: @external_user.id).map(&:project_id)
+        unless project_ids.empty?
+          restricted_ids = LanguageStream.where(project_id: project_ids).map(&:facilitator_id) + [@external_user.id]
+        else
+          restricted_ids = [@external_user.id]
+        end
+      else
+        restricted_ids = table.ids
+      end
       unless @external_user.national
         user_geo_states = @external_user.geo_state_ids
         restricted_ids = case table.new
-          when User
-            table.joins(:geo_states).where(geo_states: {id: user_geo_states}).ids
           when StateLanguage
             table.where(geo_state_id: user_geo_states).ids
           when Person
@@ -79,7 +87,8 @@ class AndroidSyncController < ApplicationController
             table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
           when Project
             table.joins(:state_languages).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
-          else restricted_ids
+          else
+            restricted_ids
         end
       end
       unless @external_user.trusted
@@ -111,6 +120,8 @@ class AndroidSyncController < ApplicationController
           {month: "#{entry.year}-#{'%02i' % entry.month}"}
         when StateLanguage
           {is_primary: entry.primary}
+        when ChurchTeam
+          {leader: entry.village}
         else
           {}
       end
@@ -194,7 +205,7 @@ class AndroidSyncController < ApplicationController
       deadline = Time.now + 1.minute
       until File.exists?(file_path)
         sleep 1
-        raise "Creating of the file took to long" if Time.now > deadline
+        raise "Creating of the file took too long" if Time.now > deadline
       end
       send_file file_path, status: :ok
     rescue => e
@@ -331,6 +342,17 @@ class AndroidSyncController < ApplicationController
               :team_member_id,
               :facilitator_plan,
           ],
+          aggregate_ministry_output: [
+              :id,
+              :old_id,
+              :state_language_id,
+              :deliverable_id,
+              :month,
+              :value,
+              :comment,
+              :creator_id,
+              :actual
+          ],
           ministry_output: [
               :id,
               :old_id,
@@ -350,7 +372,7 @@ class AndroidSyncController < ApplicationController
       @id_changes = {}
 
       # The following tables have to be in the order, that they only contain IDs of the previous ones
-      [Person, Report, ImpactReport, UploadedFile, Organisation, ChurchTeam, ChurchMinistry, FacilitatorFeedback, MinistryOutput].each do |table|
+      [Person, Report, ImpactReport, UploadedFile, Organisation, ChurchTeam, ChurchMinistry, FacilitatorFeedback, AggregateMinistryOutput, MinistryOutput].each do |table|
         receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
       end
       puts @id_changes
