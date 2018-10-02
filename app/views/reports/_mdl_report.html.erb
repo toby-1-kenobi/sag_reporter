@@ -1,5 +1,8 @@
 <div class="report mdl-card mdl-shadow--2dp <%= 'archived' if mdl_report.archived? %>" id="report-<%= mdl_report.id %>"
-     data-pm="<%= mdl_report.impact_report.progress_markers.pluck(:id).join(' ') %>">
+   <% if mdl_report.impact_report? %>
+     data-pm="<%= mdl_report.impact_report.progress_markers.pluck(:id).join(' ') %>"
+   <% end %>
+>
   <div class="mdl-card__title">
     <h2 class="mdl-card__title-text"><%= mdl_report.report_type %> Report</h2>
     <% if mdl_report.impact_report? %>
