@@ -129,6 +129,11 @@ Rails.application.routes.draw do
     get :contacts, on: :collection
   end
 
+  resources :phone_messages, only: [] do
+    get :pending, on: :collection
+    patch :update, on: :collection
+  end
+
   resources :populations, only: [:create]
   get 'population/create'
 
