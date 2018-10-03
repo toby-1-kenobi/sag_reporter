@@ -3,6 +3,6 @@ FactoryBot.define do
     name { "My Local Church" }
     association :organisation, church: true
     state_language
-    village { "My Village" }
+    leader { "My Leader" }
   end
 end

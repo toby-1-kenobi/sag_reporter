@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181002162728) do
+ActiveRecord::Schema.define(version: 20181003134839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -597,6 +597,18 @@ ActiveRecord::Schema.define(version: 20181002162728) do
   add_index "people", ["name"], name: "index_people_on_name", using: :btree
   add_index "people", ["user_id"], name: "index_people_on_user_id", using: :btree
 
+  create_table "phone_messages", force: :cascade do |t|
+    t.integer  "user_id",        null: false
+    t.text     "content",        null: false
+    t.datetime "sent_at"
+    t.text     "error_messages"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "phone_messages", ["sent_at"], name: "index_phone_messages_on_sent_at", using: :btree
+  add_index "phone_messages", ["user_id"], name: "index_phone_messages_on_user_id", using: :btree
+
   create_table "planning_reports", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -970,6 +982,7 @@ ActiveRecord::Schema.define(version: 20181002162728) do
   add_foreign_key "people", "geo_states"
   add_foreign_key "people", "languages"
   add_foreign_key "people", "users"
+  add_foreign_key "phone_messages", "users"
   add_foreign_key "populations", "languages"
   add_foreign_key "progress_markers", "topics"
   add_foreign_key "progress_updates", "language_progresses"
