@@ -40,11 +40,11 @@ class SessionsController < ApplicationController
         @user = User.find_by(phone: username)
       end
       # skip authentication for the development environment
-      if @user and Rails.env.development? and @user.registration_status == 'approved'
-        log_in @user
-        remember @user
-        redirect_back_or root_path and return
-       end
+      # if @user and Rails.env.development? and @user.registration_status == 'approved'
+      #   log_in @user
+      #   remember @user
+      #   redirect_back_or root_path and return
+      #  end
       if @user && @user.authenticate(params[:session][:password])
         if @user.registration_status == 'approved'
           session[:temp_user] = @user.id
@@ -70,7 +70,7 @@ class SessionsController < ApplicationController
     logger.debug('resend otp')
     if session[:temp_user]
       if user = User.find_by(id: session[:temp_user])
-        @ticket = send_otp_on_phone("+91#{user.phone}", user.otp_code)
+        @ticket = send_otp_on_phone(user, user.otp_code)
         respond_to :js
       else
         # temp user doesn't exist so go back to square 1
@@ -99,12 +99,6 @@ class SessionsController < ApplicationController
       # no temp user so we need the login credentials
       redirect_to login_path
     end
-  end
-
-  def poll
-    ticket = params[:ticket]
-    logger.debug("polling for #{ticket}")
-    render json: BcsSms.poll(ticket.to_i)
   end
 
   def create
@@ -163,7 +157,7 @@ class SessionsController < ApplicationController
   def send_otp(user)
     otp_code = user.otp_code
     if user.phone.present? and not user.email_confirmed?
-      @ticket = send_otp_on_phone("+91#{user.phone}", otp_code)
+      @ticket = send_otp_on_phone(user, otp_code)
       flash.now['info'] = "A short login code has been sent to your phone (#{user.phone}). Please wait for it."
     elsif user.phone.blank? and send_otp_via_mail(@user, otp_code)
       flash.now['info'] = "A short login code has been sent to your email (#{user.email}). Check your inbox."
@@ -172,12 +166,12 @@ class SessionsController < ApplicationController
     end
   end
 
-  def send_otp_on_phone(phone_number, otp_code)
+  def send_otp_on_phone(user, otp_code)
     begin
-      logger.debug("sending otp to phone: #{phone_number}, otp: #{otp_code}")
-      wait_ticket = BcsSms.send_otp(phone_number, otp_code)
-      logger.debug("waiting #{wait_ticket}")
-      return wait_ticket
+      logger.debug("sending otp to: #{user.name}, otp: #{otp_code}")
+      msg = PhoneMessage.create(user: user, content: "#{otp_code} is your Rev79 login code")
+      logger.debug("waiting #{msg.id}")
+      return msg.id
     rescue => e
       logger.error("couldn't send OTP to phone: #{e.message}")
       return false

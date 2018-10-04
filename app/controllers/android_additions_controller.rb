@@ -161,7 +161,7 @@ class AndroidAdditionsController < ApplicationController
     end
     case send_otp_params["target"]
       when "phone"
-        success = send_otp_on_phone("+91#{user.phone}", user.otp_code)
+        success = send_otp_on_phone(user, user.otp_code)
       when "email"
         success = send_otp_via_mail(user, user.otp_code)
       else
@@ -232,12 +232,12 @@ class AndroidAdditionsController < ApplicationController
     false
   end
 
-  def send_otp_on_phone(phone_number, otp_code)
+  def send_otp_on_phone(user, otp_code)
     begin
-      logger.debug "Sending otp to phone: #{phone_number}, otp: #{otp_code}"
-      wait_ticket = BcsSms.send_otp(phone_number, otp_code)
+      logger.debug "Sending otp to #{user.name}, otp: #{otp_code}"
+      msg = PhoneMessage.create(user: user, content: "#{otp_code} is your Rev79 login code")
       logger.debug "Waiting #{wait_ticket}"
-      wait_ticket
+      msg.id
     rescue => e
       logger.error "Couldn't send OTP to phone: #{e.message}"
       false

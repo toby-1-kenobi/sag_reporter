@@ -3,7 +3,7 @@ class PhoneMessagesController < ApplicationController
 
   skip_before_action :verify_authenticity_token
 
-  before_action do
+  before_action except: [:poll] do
     head :forbidden unless hmac_authorise
   end
 
@@ -47,6 +47,24 @@ class PhoneMessagesController < ApplicationController
 
     respond_to do |format|
       format.json { render json: 'OK' }
+    end
+  end
+
+  def poll
+    msg = PhoneMessage.find params[:id]
+    if msg
+      if msg.sent_at.present?
+        response = { 'status' => true }
+      elsif msg.error_messages.present?
+        response = { 'status' => msg.error_messages }
+      else
+        response = { 'status' => 'pending' }
+      end
+    else
+      response = { 'status' => 'invalid ticket' }
+    end
+    respond_to do |format|
+      format.json { render json: response }
     end
   end
 
