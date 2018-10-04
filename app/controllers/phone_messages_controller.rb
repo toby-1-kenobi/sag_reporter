@@ -4,6 +4,10 @@ class PhoneMessagesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   before_action except: [:poll] do
+    head :forbidden unless recent_timestamp
+  end
+
+  before_action except: [:poll] do
     head :forbidden unless hmac_authorise
   end
 
@@ -72,11 +76,20 @@ class PhoneMessagesController < ApplicationController
 
   def hmac_authorise
     client_token = request.headers['Authorization']
-    signature = "#{request.url}:#{request.body.to_json.to_s}"
+    timestamp = params['timestamp']
     key = Rails.application.secrets.sms_key
-    hmac_digest = OpenSSL::HMAC.hexdigest('sha1', key, signature)
+    hmac_digest = OpenSSL::HMAC.hexdigest('sha1', key, timestamp)
     Rails.logger.debug hmac_digest
+    Rails.logger.info("Bad hmac for phone message api") if hmac_digest != client_token
     hmac_digest == client_token
+  end
+
+  def recent_timestamp
+    return false unless params['timestamp']
+    # the timestamp in the request must be not less than 5 seconds ago
+    delta = Time.now.to_i - params['timestamp'].to_i
+    Rails.logger.info("Phone message api delta #{delta}") if delta > 5
+    return delta <= 5
   end
 
 end
