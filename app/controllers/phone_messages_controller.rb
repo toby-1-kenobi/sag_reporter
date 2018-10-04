@@ -10,7 +10,7 @@ class PhoneMessagesController < ApplicationController
 
   def pending
     respond_to do |format|
-      format.json { render json: PhoneMessage.pending }
+      format.json { render json: PhoneMessage.pending.to_json(only: [:id, :content], include: [user: { only: :phone }]) }
     end
   end
 
@@ -75,6 +75,7 @@ class PhoneMessagesController < ApplicationController
     signature = "#{request.url}:#{request.body.to_json.to_s}"
     key = Rails.application.secrets.sms_key
     hmac_digest = OpenSSL::HMAC.hexdigest('sha1', key, signature)
+    Rails.logger.debug hmac_digest
     hmac_digest == client_token
   end
 
