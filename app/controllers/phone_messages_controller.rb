@@ -77,6 +77,7 @@ class PhoneMessagesController < ApplicationController
   def hmac_authorise
     client_token = request.headers['Authorization']
     timestamp = params['timestamp']
+    Rails.logger.debug("timestamp => #{timestamp}")
     key = Rails.application.secrets.sms_key
     hmac_digest = OpenSSL::HMAC.hexdigest('sha1', key, timestamp)
     Rails.logger.debug hmac_digest
