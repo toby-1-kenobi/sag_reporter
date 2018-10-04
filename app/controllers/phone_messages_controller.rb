@@ -21,7 +21,7 @@ class PhoneMessagesController < ApplicationController
   def update
     # sent param should contain a list of phone message ids that got sent
     if params[:sent]
-      params[:sent].each do |id|
+      JSON.parse(params[:sent]).each do |id|
         sms = PhoneMessage.find id
         if sms
           if sms.sent_at
@@ -38,7 +38,7 @@ class PhoneMessagesController < ApplicationController
 
     # errors param contains a hash with message id as key and error messages as values
     if params[:errors]
-      params[:errors].each do |id, error_messages|
+      JSON.parse(params[:errors]).each do |id, error_messages|
         sms = PhoneMessage.find id
         if sms
           sms.error_messages = error_messages
