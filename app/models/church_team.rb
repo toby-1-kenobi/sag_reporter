@@ -7,11 +7,7 @@ class ChurchTeam < ActiveRecord::Base
   has_many :church_team_memberships, dependent: :destroy
   has_many :users, through: :church_team_memberships
 
-  validates :village, presence: true
+  validates :leader, presence: true
   validates :state_language, presence: true
 
-  def full_name
-    description = "#{organisation ? organisation.name : 'independent church'} in #{village}"
-    name.present? ? "#{name} (#{description})" : description
-  end
 end

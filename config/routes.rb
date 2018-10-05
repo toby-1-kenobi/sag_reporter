@@ -129,6 +129,12 @@ Rails.application.routes.draw do
     get :contacts, on: :collection
   end
 
+  resources :phone_messages, only: [] do
+    get :pending, on: :collection
+    patch :update, on: :collection
+    get :poll, on: :member
+  end
+
   resources :populations, only: [:create]
   get 'population/create'
 
@@ -160,7 +166,6 @@ Rails.application.routes.draw do
   get    'login'   => 'sessions#new'
   post   'login'   => 'sessions#create'
   post   'two_factor_auth'   => 'sessions#two_factor_auth'
-  get 'otp_poll/:ticket' => 'sessions#poll', as: 'otp_poll'
   post 'resend_code_to_phone' => 'sessions#resend_otp_to_phone', as: 'resend_code_to_phone'
   post 'resend_code_to_email' => 'sessions#resend_otp_to_email', as: 'resend_code_to_email'
   delete 'logout'  => 'sessions#destroy'

@@ -1,12 +1,12 @@
 function poll(ticket) {
-    console.log("polling <%= otp_poll_path('999') %>".replace('999', ticket));
+    console.log("polling <%= poll_phone_message_path('999') %>".replace('999', ticket));
     $('#resend-phone-form .mdl-spinner').addClass('is-active');
     $('#resend-phone-form .resend_otp_to_phone').attr('disabled', '');
     let stillWaiting = true;
     setTimeout(function() {
         $.ajax(
             {
-                url: "<%= otp_poll_path('999') %>".replace('999', ticket),
+                url: "<%= poll_phone_message_path('999') %>".replace('999', ticket),
                 success: function(data) {
                     console.log("polling got: " + JSON.stringify(data));
                     if (data.status == "invalid ticket") {
