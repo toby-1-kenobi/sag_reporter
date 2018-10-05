@@ -51,6 +51,12 @@ class AndroidSyncController < ApplicationController
           {month: "#{entry.year}-#{sprintf('%02d', entry.month)}"}
         when StateLanguage
           {is_primary: entry.primary}
+        when User
+          if entry.id == @external_user.id
+            entry.attributes.slice *%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description)
+          else
+            {}
+          end
         else
           {}
       end
