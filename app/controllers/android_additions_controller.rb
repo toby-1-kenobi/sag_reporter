@@ -167,6 +167,7 @@ class AndroidAdditionsController < ApplicationController
       else
         success = false
     end
+    logger.debug "Send OTP (#{user.otp_code}) to #{send_otp_params["target"]}: #{success}"
     render json: {status: "OTP code sending success: #{success}"}, status: :ok
   end
 
