@@ -19,8 +19,8 @@ class AndroidSyncController < ApplicationController
         UploadedFile => %w(report_id),
         MtResource => %w(user_id name language_id cc_share_alike medium status geo_state_id url),
         Organisation => %w(name abbreviation church),
-        LanguageProgress => %w(progress_marker_id state_language_id),
-        ProgressUpdate => %w(user_id language_progress_id progress month year),
+#        LanguageProgress => %w(progress_marker_id state_language_id),
+#        ProgressUpdate => %w(user_id language_progress_id progress month year),
         StateLanguage => %w(geo_state_id language_id project),
         ChurchTeam => %w(name organisation_id leader state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
@@ -72,6 +72,8 @@ class AndroidSyncController < ApplicationController
         else
           restricted_ids = LanguageStream.where(project_id: project_ids).map(&:facilitator_id) + [@external_user.id]
         end
+      elsif table == Report
+        restricted_ids = table.where("report_date >= '2018-1-1' AND significant = true").ids
       else
         restricted_ids = table.ids
       end
@@ -79,32 +81,30 @@ class AndroidSyncController < ApplicationController
         user_geo_states = @external_user.geo_state_ids
         restricted_ids = case table.new
           when StateLanguage
-            table.where(geo_state_id: user_geo_states).ids
+            table.where(id: restricted_ids, geo_state_id: user_geo_states).ids
           when Person
-            table.where(geo_state_id: user_geo_states).ids
+            table.where(id: restricted_ids, geo_state_id: user_geo_states).ids
           when MtResource
-            table.where(geo_state_id: user_geo_states).ids
+            table.where(id: restricted_ids, geo_state_id: user_geo_states).ids
           when Report
-            table.where(geo_state_id: user_geo_states).ids
+            table.where(id: restricted_ids, geo_state_id: user_geo_states).ids
             
           when ChurchTeam
-            table.joins(:state_language).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
           when LanguageProgress
-            table.joins(:state_language).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
           when Language
-            table.joins(:state_languages).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
-          when ImpactReport
-            table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
+            table.joins(:state_languages).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
           when ProgressUpdate
-            table.where(language_progress_id: @all_restricted_ids[LanguageProgress.name]).ids
+            table.where(id: restricted_ids, language_progress_id: @all_restricted_ids[LanguageProgress.name]).ids
           when ChurchMinistry
-            table.where(church_team_id: @all_restricted_ids[ChurchTeam.name]).ids
+            table.where(id: restricted_ids, church_team_id: @all_restricted_ids[ChurchTeam.name]).ids
           when MinistryOutput
-            table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
+            table.where(id: restricted_ids, church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
           when FacilitatorFeedback
-            table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
+            table.where(id: restricted_ids, church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
           when Project
-            table.joins(:state_languages).where(state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_languages).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
           else
             restricted_ids
         end
@@ -116,15 +116,17 @@ class AndroidSyncController < ApplicationController
           when Report
             table.where(id: restricted_ids, reporter_id: @external_user.id).ids
             
-          when ImpactReport
-            table.joins(:report).where(reports:{id: @all_restricted_ids[Report.name]}).ids
           else
             restricted_ids
         end
       end
       #just send pictures, which have a valid report_id
       if table == UploadedFile
-        restricted_ids = table.where(report_id: @all_restricted_ids[Report.name]).ids
+        restricted_ids = table.where(id: restricted_ids, report_id: @all_restricted_ids[Report.name]).ids
+      elsif table == ImpactReport
+        table.joins(:report).where(id: restricted_ids, reports:{id: @all_restricted_ids[Report.name]}).ids
+      elsif table == Person
+        table.joins(:reports).where(id: restricted_ids, reports:{id: @all_restricted_ids[Report.name]}).ids
       end
       @all_restricted_ids[table.name] = restricted_ids
     end
