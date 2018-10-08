@@ -65,10 +65,12 @@ class AndroidSyncController < ApplicationController
     def restrict(table)
       if table == User
         project_ids = ProjectStream.where(supervisor_id: @external_user.id).map(&:project_id) + ProjectSupervisor.where(user_id: @external_user.id).map(&:project_id)
-        unless project_ids.empty? && @external_user.trusted?
+        if project_ids.empty?
+          restricted_ids = [@external_user.id]
+        elsif @external_user.trusted?
           restricted_ids = table.ids
         else
-          restricted_ids = [@external_user.id]
+          restricted_ids = LanguageStream.where(project_id: project_ids).map(&:facilitator_id) + [@external_user.id]
         end
       else
         restricted_ids = table.ids
@@ -109,8 +111,6 @@ class AndroidSyncController < ApplicationController
       end
       unless @external_user.trusted
         restricted_ids = case table.new
-          when User
-            [@external_user.id]
           when Organisation
             table.where(church: true).ids
           when Report
