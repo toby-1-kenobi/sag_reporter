@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181003134839) do
+ActiveRecord::Schema.define(version: 20181008132118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -810,7 +810,6 @@ ActiveRecord::Schema.define(version: 20181003134839) do
   add_index "sub_districts", ["name"], name: "index_sub_districts_on_name", using: :btree
 
   create_table "supervisor_feedbacks", force: :cascade do |t|
-    t.integer  "supervisor_id",        null: false
     t.integer  "facilitator_id",       null: false
     t.string   "month",                null: false
     t.text     "plan_feedback"
@@ -820,10 +819,11 @@ ActiveRecord::Schema.define(version: 20181003134839) do
     t.integer  "project_progress"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.integer  "project_stream_id"
   end
 
   add_index "supervisor_feedbacks", ["facilitator_id"], name: "index_supervisor_feedbacks_on_facilitator_id", using: :btree
-  add_index "supervisor_feedbacks", ["supervisor_id"], name: "index_supervisor_feedbacks_on_supervisor_id", using: :btree
+  add_index "supervisor_feedbacks", ["project_stream_id"], name: "index_supervisor_feedbacks_on_project_stream_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
     t.string   "name",                                               null: false
@@ -1009,8 +1009,8 @@ ActiveRecord::Schema.define(version: 20181003134839) do
   add_foreign_key "state_languages", "geo_states"
   add_foreign_key "state_languages", "languages"
   add_foreign_key "sub_districts", "districts"
+  add_foreign_key "supervisor_feedbacks", "project_streams"
   add_foreign_key "supervisor_feedbacks", "users", column: "facilitator_id"
-  add_foreign_key "supervisor_feedbacks", "users", column: "supervisor_id"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translatables"
   add_foreign_key "uploaded_files", "reports"
