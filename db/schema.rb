@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181008132118) do
+ActiveRecord::Schema.define(version: 20181008134257) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -819,7 +819,7 @@ ActiveRecord::Schema.define(version: 20181008132118) do
     t.integer  "project_progress"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
-    t.integer  "project_stream_id"
+    t.integer  "project_stream_id",    null: false
   end
 
   add_index "supervisor_feedbacks", ["facilitator_id"], name: "index_supervisor_feedbacks_on_facilitator_id", using: :btree
