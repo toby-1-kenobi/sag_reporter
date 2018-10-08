@@ -18,7 +18,7 @@
   %>
 </ul>
 
-<% years = (1..3).map{ |y| FinishLineProgress.get_current_year + y } %>
+<% years = (0..2).map{ |y| FinishLineProgress.get_current_year + y } %>
 <% month_start = Date::ABBR_MONTHNAMES[(Rails.configuration.year_cutoff_month)] %>
 <% month_end = Date::ABBR_MONTHNAMES[(Rails.configuration.year_cutoff_month - 1)] %>
 <% hidden_deliverables = %w(
