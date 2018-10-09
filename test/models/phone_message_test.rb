@@ -2,6 +2,7 @@ require "test_helper"
 
 describe PhoneMessage do
   let(:phone_message) { FactoryBot.build(:phone_message) }
+  let(:expired_message) { FactoryBot.create(:phone_message, expiration: 10.seconds.ago) }
 
   it "must be valid" do
     value(phone_message).must_be :valid?
@@ -19,5 +20,11 @@ describe PhoneMessage do
     _(pending).must_include phone_message
     _(pending).wont_include has_error
     _(pending).wont_include sent
+  end
+
+  it "makes expired messages not pending" do
+    _(PhoneMessage.pending).must_include expired_message
+    PhoneMessage.update_expired
+    _(PhoneMessage.pending).wont_include expired_message
   end
 end

@@ -11,6 +11,9 @@ class PhoneMessagesController < ApplicationController
     head :forbidden unless hmac_authorise
   end
 
+  before_action only: [:pending, :poll] do
+    PhoneMessage.update_expired
+  end
 
   def pending
     respond_to do |format|

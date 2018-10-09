@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181008134257) do
+ActiveRecord::Schema.define(version: 20181009144915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -604,6 +604,7 @@ ActiveRecord::Schema.define(version: 20181008134257) do
     t.text     "error_messages"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.datetime "expiration"
   end
 
   add_index "phone_messages", ["sent_at"], name: "index_phone_messages_on_sent_at", using: :btree

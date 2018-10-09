@@ -27,7 +27,7 @@ function poll(ticket) {
                     else {
                         console.log("failure");
                         stillWaiting = false;
-                        $('.otp_msg').html('Could not send the login code to your phone!');
+                        $('.otp_msg').html('Could not send the login code to your phone! ' + data.status);
                         $('.otp_msg').hide().fadeIn();
                     }
                 },
