@@ -281,6 +281,7 @@ class AndroidSyncController < ApplicationController
           supervisor: :user,
           observer: :person,
       }
+      # The following tables have to be in the order, that they only contain IDs of the previous ones
       safe_params = [
           :is_only_test,
           person: [
@@ -349,10 +350,27 @@ class AndroidSyncController < ApplicationController
               :old_id,
               :church_ministry_id,
               :month,
-              :feedback,
-              :response,
-              :team_member_id,
+              :plan_feedback,
+              :plan_team_member_id,
+              :plan_response,
               :facilitator_plan,
+              :result_feedback,
+              :result_response,
+              :result_team_member_id,
+              :progress
+          ],
+          supervisor_feedback: [
+              :id,
+              :old_id,
+              :facilitator_id,
+              :supervisor_id,
+              :ministry_id,
+              :month,
+              :plan_feedback,
+              :plan_response,
+              :result_feedback,
+              :facilitator_progress,
+              :project_progress
           ],
           aggregate_ministry_output: [
               :id,
@@ -382,9 +400,9 @@ class AndroidSyncController < ApplicationController
       @is_only_test = receive_request_params["is_only_test"]
       @errors = []
       @id_changes = {}
-
-      # The following tables have to be in the order, that they only contain IDs of the previous ones
-      [Person, Report, ImpactReport, UploadedFile, Organisation, ChurchTeam, ChurchMinistry, FacilitatorFeedback, AggregateMinistryOutput, MinistryOutput].each do |table|
+      
+      safe_params.second.keys.each do |key|
+        table = key.to_s.camelcase.constantize
         receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
       end
       puts @id_changes
