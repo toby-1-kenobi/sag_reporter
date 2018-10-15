@@ -9,7 +9,8 @@ class Deliverable < ActiveRecord::Base
       church_team: 0,
       facilitator: 1,
       supervisor: 2,
-      auto: 3
+      auto: 3,
+      disabled: 4
   }
 
   belongs_to :ministry
