@@ -167,6 +167,7 @@ class AndroidSyncController < ApplicationController
     send_request_params = params.require(:external_device).permit(safe_params)
     
     @translation_values_en = Array.new
+    @translation_values_hi = Array.new
     I18n.enforce_available_locales = false
     @final_file = Tempfile.new
     render json: {data: "#{@final_file.path}.txt"}, status: :ok
