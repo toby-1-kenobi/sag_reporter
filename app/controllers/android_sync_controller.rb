@@ -51,6 +51,46 @@ class AndroidSyncController < ApplicationController
           {month: "#{entry.year}-#{sprintf('%02d', entry.month)}"}
         when StateLanguage
           {is_primary: entry.primary}
+        when ProgressMarker
+          if entry.number
+            I18n.locale = :hi
+            value = I18n.t "progress_markers.descriptions.#{entry.translation_key}", default: nil
+            @translation_values_hi <<  value if value
+            I18n.locale = :en
+            value = I18n.t "progress_markers.descriptions.#{entry.translation_key}", default: nil
+            @translation_values_en <<  value if value
+            {description: @translation_values_en.size} if value
+          else
+            {}
+          end
+        when Ministry
+          I18n.locale = :hi
+          value = I18n.t "ministries.names.#{entry.translation_key}", default: nil
+          @translation_values_hi <<  value if value
+          I18n.locale = :en
+          value = I18n.t "ministries.names.#{entry.translation_key}", default: nil
+          @translation_values_en <<  value if value
+          {name: @translation_values_en.size} if value
+        when Deliverable
+          I18n.locale = :hi
+          value = I18n.t "deliverables.short_form.#{entry.translation_key}", default: nil
+          @translation_values_hi <<  value if value
+          value = I18n.t "deliverables.plan_form.#{entry.translation_key}", default: nil
+          @translation_values_hi <<  value if value
+          value = I18n.t "deliverables.report_form.#{entry.translation_key}", default: nil
+          @translation_values_hi <<  value if value
+          I18n.locale = :en
+          size = @translation_values_en.size
+          value = I18n.t "deliverables.short_form.#{entry.translation_key}", default: nil
+          @translation_values_en <<  value if value
+          short_form = @translation_values_en.size
+          value = I18n.t "deliverables.plan_form.#{entry.translation_key}", default: nil
+          @translation_values_en <<  value if value
+          plan_form = @translation_values_en.size
+          value = I18n.t "deliverables.report_form.#{entry.translation_key}", default: nil
+          @translation_values_en <<  value if value
+          report_form = @translation_values_en.size
+          {short_form: short_form, plan_form: plan_form, report_form: report_form} unless @translation_values_en.size == size
         when User
           if entry.id == @external_user.id
             entry.attributes.slice *%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description)
@@ -132,11 +172,20 @@ class AndroidSyncController < ApplicationController
     end
     
     safe_params = [
+        :has_translations,
         :first_download,
         :last_sync
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
     
+    unless send_request_params["has_translations"]
+      send_request_params["Ministry"] = nil
+      send_request_params["Deliverable"] = nil
+      send_request_params["ProgressMarker"] = nil
+    end
+    @translation_values_en = Array.new
+    @translation_values_hi = Array.new
+    I18n.enforce_available_locales = false
     @final_file = Tempfile.new
     render json: {data: "#{@final_file.path}.txt"}, status: :ok
     Thread.new do
@@ -169,8 +218,7 @@ class AndroidSyncController < ApplicationController
                 if has_entry
                   file.write(",")
                 else
-                  file.write(",")
-                  file.write "\"#{table_name}\":["
+                  file.write ",\"#{table_name}\":["
                 end
                 has_entry = true
                 file.write entry_data.to_json
@@ -184,6 +232,15 @@ class AndroidSyncController < ApplicationController
             file.write "]" if has_entry
             ActiveRecord::Base.connection.query_cache.clear
           end
+          id = 0
+          all_translation_values = Array.new
+          @translation_values_en.each_with_index do |entry, index|
+            all_translation_values << {id: id += 1, value: entry, language_id: 1}
+          end
+          @translation_values_hi.each_with_index do |entry, index|
+            all_translation_values << {id: id += 1, value: entry, language_id: 2}
+          end
+          file.write ",\"Translation\":#{all_translation_values.to_json}" unless all_translation_values.empty?
           unless deleted_entries.empty?
             file.write ",\"deleted\":"
             file.write deleted_entries.to_json
@@ -281,6 +338,7 @@ class AndroidSyncController < ApplicationController
           supervisor: :user,
           observer: :person,
       }
+      # The following tables have to be in the order, that they only contain IDs of the previous ones
       safe_params = [
           :is_only_test,
           person: [
@@ -349,10 +407,27 @@ class AndroidSyncController < ApplicationController
               :old_id,
               :church_ministry_id,
               :month,
-              :feedback,
-              :response,
-              :team_member_id,
+              :plan_feedback,
+              :plan_team_member_id,
+              :plan_response,
               :facilitator_plan,
+              :result_feedback,
+              :result_response,
+              :result_team_member_id,
+              :progress
+          ],
+          supervisor_feedback: [
+              :id,
+              :old_id,
+              :facilitator_id,
+              :supervisor_id,
+              :ministry_id,
+              :month,
+              :plan_feedback,
+              :plan_response,
+              :result_feedback,
+              :facilitator_progress,
+              :project_progress
           ],
           aggregate_ministry_output: [
               :id,
@@ -382,9 +457,9 @@ class AndroidSyncController < ApplicationController
       @is_only_test = receive_request_params["is_only_test"]
       @errors = []
       @id_changes = {}
-
-      # The following tables have to be in the order, that they only contain IDs of the previous ones
-      [Person, Report, ImpactReport, UploadedFile, Organisation, ChurchTeam, ChurchMinistry, FacilitatorFeedback, AggregateMinistryOutput, MinistryOutput].each do |table|
+      
+      safe_params.second.keys.each do |key|
+        table = key.to_s.camelcase.constantize
         receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
       end
       puts @id_changes
