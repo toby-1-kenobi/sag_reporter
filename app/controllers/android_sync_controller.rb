@@ -210,7 +210,7 @@ class AndroidSyncController < ApplicationController
               end
             end
             id = 0
-            all_translation_values
+            all_translation_values = Array.new
             @translation_values_en.each_with_index do |entry, index|
               all_translation_values << {id: id += 1, value: entry, language_id: 1}
             end
