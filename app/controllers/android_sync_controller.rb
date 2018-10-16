@@ -201,8 +201,7 @@ class AndroidSyncController < ApplicationController
                 if has_entry
                   file.write(",")
                 else
-                  file.write(",")
-                  file.write "\"#{table_name}\":["
+                  file.write ",\"#{table_name}\":["
                 end
                 has_entry = true
                 file.write entry_data.to_json
@@ -210,6 +209,11 @@ class AndroidSyncController < ApplicationController
                 logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
               end
             end
+            unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
+              deleted_entries[table_name] = offline_ids - restricted_ids
+            end
+            file.write "]" if has_entry
+            ActiveRecord::Base.connection.query_cache.clear
             id = 0
             all_translation_values = Array.new
             @translation_values_en.each_with_index do |entry, index|
@@ -219,11 +223,6 @@ class AndroidSyncController < ApplicationController
               all_translation_values << {id: id += 1, value: entry, language_id: 2}
             end
             file.write "," + {Translation: all_translation_values}.to_json unless all_translation_values.empty?
-            unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
-              deleted_entries[table_name] = offline_ids - restricted_ids
-            end
-            file.write "]" if has_entry
-            ActiveRecord::Base.connection.query_cache.clear
           end
           unless deleted_entries.empty?
             file.write ",\"deleted\":"
