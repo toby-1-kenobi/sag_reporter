@@ -223,7 +223,7 @@ class AndroidSyncController < ApplicationController
           @translation_values_hi.each_with_index do |entry, index|
             all_translation_values << {id: id += 1, value: entry, language_id: 2}
           end
-          file.write "," + {Translation: all_translation_values}.to_json unless all_translation_values.empty?
+          file.write ",\"Translation\":#{all_translation_values.to_json}" unless all_translation_values.empty?
           unless deleted_entries.empty?
             file.write ",\"deleted\":"
             file.write deleted_entries.to_json
