@@ -63,9 +63,9 @@ class AndroidSyncController < ApplicationController
           end
         when Ministry
           I18n.locale = :hi
-          @translation_values_hi << I18n.t("ministries.names.#{entry.translation_key}", default: nil)
+          @translation_values_hi << I18n.t("ministries.names.#{entry.code}", default: nil)
           I18n.locale = :en
-          @translation_values_en << I18n.t("ministries.names.#{entry.translation_key}", default: nil)
+          @translation_values_en << I18n.t("ministries.names.#{entry.code}", default: nil)
           {name: @translation_values_en.size}
         when Deliverable
           I18n.locale = :hi
