@@ -51,6 +51,35 @@ class AndroidSyncController < ApplicationController
           {month: "#{entry.year}-#{sprintf('%02d', entry.month)}"}
         when StateLanguage
           {is_primary: entry.primary}
+        when ProgressMarker
+          if entry.number
+            I18n.locale = :hi
+            @translation_values_hi << I18n.t("progress_markers.descriptions.#{entry.translation_key}")
+            I18n.locale = :en
+            @translation_values_en << I18n.t("progress_markers.descriptions.#{entry.translation_key}")
+            {description: @translation_values_en.size}
+          else
+            {}
+          end
+        when Ministry
+          I18n.locale = :hi
+          @translation_values_hi << I18n.t("ministries.names.#{entry.translation_key}")
+          I18n.locale = :en
+          @translation_values_en << I18n.t("ministries.names.#{entry.translation_key}")
+          {name: @translation_values_en.size}
+        when Deliverable
+          I18n.locale = :hi
+          @translation_values_hi << I18n.t("deliverables.short_form.#{entry.translation_key}")
+          @translation_values_hi << I18n.t("deliverables.plan_form.#{entry.translation_key}")
+          @translation_values_hi << I18n.t("deliverables.report_form.#{entry.translation_key}")
+          I18n.locale = :en
+          @translation_values_en << I18n.t("deliverables.short_form.#{entry.translation_key}")
+          short_form = @translation_values_en.size
+          @translation_values_en << I18n.t("deliverables.plan_form.#{entry.translation_key}")
+          plan_form = @translation_values_en.size
+          @translation_values_en << I18n.t("deliverables.report_form.#{entry.translation_key}")
+          report_form = @translation_values_en.size
+          {short_form: short_form, plan_form: plan_form, report_form: report_form}
         when User
           if entry.id == @external_user.id
             entry.attributes.slice *%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description)
@@ -137,6 +166,8 @@ class AndroidSyncController < ApplicationController
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
     
+    @translation_values_en = Array.new
+    I18n.enforce_available_locales = false
     @final_file = Tempfile.new
     render json: {data: "#{@final_file.path}.txt"}, status: :ok
     Thread.new do
@@ -178,6 +209,15 @@ class AndroidSyncController < ApplicationController
                 logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
               end
             end
+            id = 0
+            all_translation_values
+            @translation_values_en.each_with_index do |entry, index|
+              all_translation_values << {id: id += 1, value: entry, language_id: 1}
+            end
+            @translation_values_hi.each_with_index do |entry, index|
+              all_translation_values << {id: id += 1, value: entry, language_id: 2}
+            end
+            file.write "," + all_translation_values.to_json unless all_translation_values.empty?
             unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
               deleted_entries[table_name] = offline_ids - restricted_ids
             end
