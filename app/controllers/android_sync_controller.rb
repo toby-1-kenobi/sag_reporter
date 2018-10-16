@@ -218,7 +218,7 @@ class AndroidSyncController < ApplicationController
             @translation_values_hi.each_with_index do |entry, index|
               all_translation_values << {id: id += 1, value: entry, language_id: 2}
             end
-            file.write "," + all_translation_values.to_json unless all_translation_values.empty?
+            file.write "," + {Translation: all_translation_values}.to_json unless all_translation_values.empty?
             unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
               deleted_entries[table_name] = offline_ids - restricted_ids
             end
