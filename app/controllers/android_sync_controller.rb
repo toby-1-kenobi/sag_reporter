@@ -167,7 +167,8 @@ class AndroidSyncController < ApplicationController
         :last_sync
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
-    logger.debug "Send all translations: #{send_request_params["has_translations"]}"
+    
+    logger.debug "Send all translations: #{send_request_params.keys};#{send_request_params}"
     unless send_request_params["has_translations"]
       send_request_params["Ministry"] = nil
       send_request_params["Deliverable"] = nil
