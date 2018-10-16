@@ -54,31 +54,31 @@ class AndroidSyncController < ApplicationController
         when ProgressMarker
           if entry.number
             I18n.locale = :hi
-            @translation_values_hi << I18n.t "progress_markers.descriptions.#{entry.translation_key}", default: nil
+            @translation_values_hi << I18n.t("progress_markers.descriptions.#{entry.translation_key}", default: nil)
             I18n.locale = :en
-            @translation_values_en << I18n.t "progress_markers.descriptions.#{entry.translation_key}", default: nil
+            @translation_values_en << I18n.t("progress_markers.descriptions.#{entry.translation_key}", default: nil)
             {description: @translation_values_en.size}
           else
             {}
           end
         when Ministry
           I18n.locale = :hi
-          @translation_values_hi << I18n.t "ministries.names.#{entry.translation_key}", default: nil
+          @translation_values_hi << I18n.t("ministries.names.#{entry.translation_key}", default: nil)
           I18n.locale = :en
-          @translation_values_en << I18n.t "ministries.names.#{entry.translation_key}", default: nil
+          @translation_values_en << I18n.t("ministries.names.#{entry.translation_key}", default: nil)
           {name: @translation_values_en.size}
         when Deliverable
           I18n.locale = :hi
-          @translation_values_hi << I18n.t "deliverables.short_form.#{entry.translation_key}", default: nil
-          @translation_values_hi << I18n.t "deliverables.plan_form.#{entry.translation_key}", default: nil
-          @translation_values_hi << I18n.t "deliverables.report_form.#{entry.translation_key}", default: nil
+          @translation_values_hi << I18n.t("deliverables.short_form.#{entry.translation_key}", default: nil)
+          @translation_values_hi << I18n.t("deliverables.plan_form.#{entry.translation_key}", default: nil)
+          @translation_values_hi << I18n.t("deliverables.report_form.#{entry.translation_key}", default: nil)
           I18n.locale = :en
           size = @translation_values_en.size
-          @translation_values_en << I18n.t "deliverables.short_form.#{entry.translation_key}", default: nil
+          @translation_values_en << I18n.t("deliverables.short_form.#{entry.translation_key}", default: nil)
           short_form = @translation_values_en.size
-          @translation_values_en << I18n.t "deliverables.plan_form.#{entry.translation_key}", default: nil
+          @translation_values_en << I18n.t("deliverables.plan_form.#{entry.translation_key}", default: nil)
           plan_form = @translation_values_en.size
-          @translation_values_en << I18n.t "deliverables.report_form.#{entry.translation_key}", default: nil
+          @translation_values_en << I18n.t("deliverables.report_form.#{entry.translation_key}", default: nil)
           report_form = @translation_values_en.size
           {short_form: short_form, plan_form: plan_form, report_form: report_form}
         when User
