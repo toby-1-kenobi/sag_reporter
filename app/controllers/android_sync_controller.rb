@@ -54,32 +54,43 @@ class AndroidSyncController < ApplicationController
         when ProgressMarker
           if entry.number
             I18n.locale = :hi
-            @translation_values_hi << I18n.t("progress_markers.descriptions.#{entry.translation_key}")
+            value = I18n.t "progress_markers.descriptions.#{entry.translation_key}", default: nil
+            @translation_values_hi <<  value if value
             I18n.locale = :en
-            @translation_values_en << I18n.t("progress_markers.descriptions.#{entry.translation_key}")
-            {description: @translation_values_en.size}
+            value = I18n.t "progress_markers.descriptions.#{entry.translation_key}", default: nil
+            @translation_values_en <<  value if value
+            {description: @translation_values_en.size} if value
           else
             {}
           end
         when Ministry
           I18n.locale = :hi
-          @translation_values_hi << I18n.t("ministries.names.#{entry.translation_key}")
+          value = I18n.t "ministries.names.#{entry.translation_key}", default: nil
+          @translation_values_hi <<  value if value
           I18n.locale = :en
-          @translation_values_en << I18n.t("ministries.names.#{entry.translation_key}")
-          {name: @translation_values_en.size}
+          value = I18n.t "ministries.names.#{entry.translation_key}", default: nil
+          @translation_values_en <<  value if value
+          {name: @translation_values_en.size} if value
         when Deliverable
           I18n.locale = :hi
-          @translation_values_hi << I18n.t("deliverables.short_form.#{entry.translation_key}")
-          @translation_values_hi << I18n.t("deliverables.plan_form.#{entry.translation_key}")
-          @translation_values_hi << I18n.t("deliverables.report_form.#{entry.translation_key}")
+          value = I18n.t "deliverables.short_form.#{entry.translation_key}", default: nil
+          @translation_values_hi <<  value if value
+          value = I18n.t "deliverables.plan_form.#{entry.translation_key}", default: nil
+          @translation_values_hi <<  value if value
+          value = I18n.t "deliverables.report_form.#{entry.translation_key}", default: nil
+          @translation_values_hi <<  value if value
           I18n.locale = :en
-          @translation_values_en << I18n.t("deliverables.short_form.#{entry.translation_key}")
+          size = @translation_values_en.size
+          value = I18n.t "deliverables.short_form.#{entry.translation_key}", default: nil
+          @translation_values_en <<  value if value
           short_form = @translation_values_en.size
-          @translation_values_en << I18n.t("deliverables.plan_form.#{entry.translation_key}")
+          value = I18n.t "deliverables.plan_form.#{entry.translation_key}", default: nil
+          @translation_values_en <<  value if value
           plan_form = @translation_values_en.size
-          @translation_values_en << I18n.t("deliverables.report_form.#{entry.translation_key}")
+          value = I18n.t "deliverables.report_form.#{entry.translation_key}", default: nil
+          @translation_values_en <<  value if value
           report_form = @translation_values_en.size
-          {short_form: short_form, plan_form: plan_form, report_form: report_form}
+          {short_form: short_form, plan_form: plan_form, report_form: report_form} unless @translation_values_en.size == size
         when User
           if entry.id == @external_user.id
             entry.attributes.slice *%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description)
@@ -161,11 +172,17 @@ class AndroidSyncController < ApplicationController
     end
     
     safe_params = [
+        :has_translations,
         :first_download,
         :last_sync
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
     
+    unless send_request_params["has_translations"]
+      send_request_params["Ministry"] = nil
+      send_request_params["Deliverable"] = nil
+      send_request_params["ProgressMarker"] = nil
+    end
     @translation_values_en = Array.new
     @translation_values_hi = Array.new
     I18n.enforce_available_locales = false
