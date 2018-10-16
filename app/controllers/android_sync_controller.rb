@@ -225,10 +225,10 @@ class AndroidSyncController < ApplicationController
           id = 0
           all_translation_values = Array.new
           @translation_values_en.each_with_index do |entry, index|
-            all_translation_values << {id: id += 1, code: index, value: entry, language_id: 1}
+            all_translation_values << {id: id += 1, code: index + 1, value: entry, language_id: 1}
           end
           @translation_values_hi.each_with_index do |entry, index|
-            all_translation_values << {id: id += 1, code: index, value: entry, language_id: 2}
+            all_translation_values << {id: id += 1, code: index + 1, value: entry, language_id: 2}
           end
           file.write ",\"Translation\":#{all_translation_values.to_json}" unless all_translation_values.empty?
           unless deleted_entries.empty?
