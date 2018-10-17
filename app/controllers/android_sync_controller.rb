@@ -45,6 +45,9 @@ class AndroidSyncController < ApplicationController
         Project: %w(state_languages),
         MtResource: %w(product_categories)
     }
+    additional_join_tables = {
+        Deliverable: %w(ministry)
+    }
     def additional_tables(entry)
       case entry
         when ProgressUpdate
@@ -85,7 +88,7 @@ class AndroidSyncController < ApplicationController
           if entry.id == @external_user.id
             entry.attributes.slice *%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description)
           else
-            {}
+            {external_device_registered: !entry.external_devices.empty?}
           end
         else
           {}
@@ -197,7 +200,7 @@ class AndroidSyncController < ApplicationController
             logger.debug "Update #{table.name} at: #{restricted_ids}. Those are offline already: #{offline_ids}"
             table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
                         last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
-                .includes(join_tables[table_name]).each do |entry|
+                .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
               entry_data = Hash.new
               begin
                 entry_data.merge!(entry.attributes.slice(*(attributes + ["id"])))
