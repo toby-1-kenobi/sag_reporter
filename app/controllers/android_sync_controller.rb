@@ -54,43 +54,33 @@ class AndroidSyncController < ApplicationController
         when ProgressMarker
           if entry.number
             I18n.locale = :hi
-            value = I18n.t "progress_markers.descriptions.#{entry.translation_key}", default: nil
-            @translation_values_hi <<  value if value
+            @translation_values_hi << I18n.t("progress_markers.descriptions.#{entry.translation_key}", default: nil)
             I18n.locale = :en
-            value = I18n.t "progress_markers.descriptions.#{entry.translation_key}", default: nil
-            @translation_values_en <<  value if value
-            {description: @translation_values_en.size} if value
+            @translation_values_en << I18n.t("progress_markers.descriptions.#{entry.translation_key}", default: nil)
+            {description: @translation_values_en.size}
           else
             {}
           end
         when Ministry
           I18n.locale = :hi
-          value = I18n.t "ministries.names.#{entry.translation_key}", default: nil
-          @translation_values_hi <<  value if value
+          @translation_values_hi << I18n.t("ministries.names.#{entry.code}", default: nil)
           I18n.locale = :en
-          value = I18n.t "ministries.names.#{entry.translation_key}", default: nil
-          @translation_values_en <<  value if value
-          {name: @translation_values_en.size} if value
+          @translation_values_en << I18n.t("ministries.names.#{entry.code}", default: nil)
+          {name: @translation_values_en.size}
         when Deliverable
           I18n.locale = :hi
-          value = I18n.t "deliverables.short_form.#{entry.translation_key}", default: nil
-          @translation_values_hi <<  value if value
-          value = I18n.t "deliverables.plan_form.#{entry.translation_key}", default: nil
-          @translation_values_hi <<  value if value
-          value = I18n.t "deliverables.report_form.#{entry.translation_key}", default: nil
-          @translation_values_hi <<  value if value
+          @translation_values_hi << I18n.t("deliverables.short_form.#{entry.translation_key}", default: nil)
+          @translation_values_hi << I18n.t("deliverables.plan_form.#{entry.translation_key}", default: nil)
+          @translation_values_hi << I18n.t("deliverables.report_form.#{entry.translation_key}", default: nil)
           I18n.locale = :en
           size = @translation_values_en.size
-          value = I18n.t "deliverables.short_form.#{entry.translation_key}", default: nil
-          @translation_values_en <<  value if value
+          @translation_values_en << I18n.t("deliverables.short_form.#{entry.translation_key}", default: nil)
           short_form = @translation_values_en.size
-          value = I18n.t "deliverables.plan_form.#{entry.translation_key}", default: nil
-          @translation_values_en <<  value if value
+          @translation_values_en << I18n.t("deliverables.plan_form.#{entry.translation_key}", default: nil)
           plan_form = @translation_values_en.size
-          value = I18n.t "deliverables.report_form.#{entry.translation_key}", default: nil
-          @translation_values_en <<  value if value
+          @translation_values_en << I18n.t("deliverables.report_form.#{entry.translation_key}", default: nil)
           report_form = @translation_values_en.size
-          {short_form: short_form, plan_form: plan_form, report_form: report_form} unless @translation_values_en.size == size
+          {short_form: short_form, plan_form: plan_form, report_form: report_form}
         when User
           if entry.id == @external_user.id
             entry.attributes.slice *%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description)
@@ -235,10 +225,10 @@ class AndroidSyncController < ApplicationController
           id = 0
           all_translation_values = Array.new
           @translation_values_en.each_with_index do |entry, index|
-            all_translation_values << {id: id += 1, value: entry, language_id: 1}
+            all_translation_values << {id: id += 1, code: index + 1, value: entry, language_id: 1}
           end
           @translation_values_hi.each_with_index do |entry, index|
-            all_translation_values << {id: id += 1, value: entry, language_id: 2}
+            all_translation_values << {id: id += 1, code: index + 1, value: entry, language_id: 2}
           end
           file.write ",\"Translation\":#{all_translation_values.to_json}" unless all_translation_values.empty?
           unless deleted_entries.empty?
