@@ -88,7 +88,7 @@ class AndroidSyncController < ApplicationController
           if entry.id == @external_user.id
             entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
                 .merge({external_device_registered: !entry.external_devices.empty?})
-          end
+          else
             {external_device_registered: !entry.external_devices.empty?}
           end
         else
