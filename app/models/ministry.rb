@@ -10,11 +10,22 @@ class Ministry < ActiveRecord::Base
   has_many :projects, through: :project_streams
   has_many :supervisors, through: :project_streams, class_name: 'User'
   belongs_to :topic
+  belongs_to :name, class_name: 'TranslationCode', dependent: :delete
+  before_create :create_translation_codes
+  after_destroy :delete_translation_codes
 
-  validates :code, presence: true, uniqueness: true, length: { is: 2 }
+  validates :code, presence: true, uniqueness: true#, length: { is: 2 }
 
-  def name
+  def old_name
     I18n.t("ministries.names.#{code.upcase}")
+  end
+
+  def create_translation_codes
+    self.name ||= TranslationCode.create
+  end
+
+  def delete_translation_codes
+    self.name.delete
   end
 
 end
