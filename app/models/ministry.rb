@@ -14,8 +14,6 @@ class Ministry < ActiveRecord::Base
   before_create :create_translation_codes
   after_destroy :delete_translation_codes
 
-  validates :code, presence: true, uniqueness: true#, length: { is: 2 }
-
   def old_name
     I18n.t("ministries.names.#{code.upcase}")
   end
