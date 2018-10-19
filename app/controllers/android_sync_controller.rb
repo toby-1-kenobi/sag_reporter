@@ -110,6 +110,8 @@ class AndroidSyncController < ApplicationController
         end
       elsif table == Report
         restricted_ids = table.where("report_date >= '2018-1-1' AND significant = true").ids
+      elsif table == Translation
+        restricted_ids = table.where.not(translation_code: nil).ids
       else
         restricted_ids = table.ids
       end
