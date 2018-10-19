@@ -167,6 +167,7 @@ class AndroidAdditionsController < ApplicationController
       else
         success = false
     end
+    logger.debug "Send OTP (#{user.otp_code}) to #{send_otp_params["target"]}: #{success}"
     render json: {status: "OTP code sending success: #{success}"}, status: :ok
   end
 
@@ -236,7 +237,6 @@ class AndroidAdditionsController < ApplicationController
     begin
       logger.debug "Sending otp to #{user.name}, otp: #{otp_code}"
       msg = PhoneMessage.create(user: user, content: "#{otp_code} is your Rev79 login code")
-      logger.debug "Waiting #{wait_ticket}"
       msg.id
     rescue => e
       logger.error "Couldn't send OTP to phone: #{e.message}"

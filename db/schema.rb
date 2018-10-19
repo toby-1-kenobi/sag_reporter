@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181008134257) do
+ActiveRecord::Schema.define(version: 20181018111115) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -154,10 +154,16 @@ ActiveRecord::Schema.define(version: 20181008134257) do
     t.integer  "number",                         null: false
     t.integer  "calculation_method", default: 0, null: false
     t.integer  "reporter",           default: 0, null: false
+    t.integer  "short_form_id",                  null: false
+    t.integer  "plan_form_id",                   null: false
+    t.integer  "result_form_id",                 null: false
   end
 
   add_index "deliverables", ["ministry_id"], name: "index_deliverables_on_ministry_id", using: :btree
   add_index "deliverables", ["number", "ministry_id"], name: "index_deliverables_number_ministry", unique: true, using: :btree
+  add_index "deliverables", ["plan_form_id"], name: "index_deliverables_on_plan_form_id", using: :btree
+  add_index "deliverables", ["result_form_id"], name: "index_deliverables_on_result_form_id", using: :btree
+  add_index "deliverables", ["short_form_id"], name: "index_deliverables_on_short_form_id", using: :btree
 
   create_table "dialects", force: :cascade do |t|
     t.integer  "language_id", null: false
@@ -479,8 +485,10 @@ ActiveRecord::Schema.define(version: 20181008134257) do
     t.datetime "updated_at",             null: false
     t.integer  "topic_id",   default: 1, null: false
     t.string   "code"
+    t.integer  "name_id",                null: false
   end
 
+  add_index "ministries", ["name_id"], name: "index_ministries_on_name_id", using: :btree
   add_index "ministries", ["topic_id"], name: "index_ministries_on_topic_id", using: :btree
 
   create_table "ministry_outputs", force: :cascade do |t|
@@ -510,11 +518,11 @@ ActiveRecord::Schema.define(version: 20181008134257) do
     t.integer  "medium",                         null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.integer  "geo_state_id",                   null: false
     t.integer  "status",         default: 0,     null: false
     t.integer  "publish_year"
     t.string   "url"
     t.text     "how_to_access"
-    t.integer  "geo_state_id"
   end
 
   add_index "mt_resources", ["created_at"], name: "index_mt_resources_on_created_at", using: :btree
@@ -819,11 +827,13 @@ ActiveRecord::Schema.define(version: 20181008134257) do
     t.integer  "project_progress"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
-    t.integer  "project_stream_id",    null: false
+    t.integer  "ministry_id",          null: false
+    t.integer  "supervisor_id",        null: false
   end
 
   add_index "supervisor_feedbacks", ["facilitator_id"], name: "index_supervisor_feedbacks_on_facilitator_id", using: :btree
-  add_index "supervisor_feedbacks", ["project_stream_id"], name: "index_supervisor_feedbacks_on_project_stream_id", using: :btree
+  add_index "supervisor_feedbacks", ["ministry_id"], name: "index_supervisor_feedbacks_on_ministry_id", using: :btree
+  add_index "supervisor_feedbacks", ["supervisor_id"], name: "index_supervisor_feedbacks_on_supervisor_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
     t.string   "name",                                               null: false
@@ -844,16 +854,23 @@ ActiveRecord::Schema.define(version: 20181008134257) do
 
   add_index "translatables", ["identifier"], name: "index_translatables_on_identifier", using: :btree
 
+  create_table "translation_codes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "translations", force: :cascade do |t|
     t.integer  "translatable_id"
     t.integer  "language_id"
     t.text     "content"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+    t.integer  "translation_code_id"
   end
 
   add_index "translations", ["language_id"], name: "index_translations_on_language_id", using: :btree
   add_index "translations", ["translatable_id"], name: "index_translations_on_translatable_id", using: :btree
+  add_index "translations", ["translation_code_id"], name: "index_translations_on_translation_code_id", using: :btree
 
   create_table "uploaded_files", force: :cascade do |t|
     t.integer  "report_id"
@@ -895,9 +912,9 @@ ActiveRecord::Schema.define(version: 20181008134257) do
     t.boolean  "national_curator",         default: false, null: false
     t.string   "role_description"
     t.datetime "curator_prompted"
+    t.boolean  "reset_password",           default: false
     t.boolean  "lci_board_member",         default: false, null: false
     t.boolean  "lci_agency_leader",        default: false, null: false
-    t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
     t.boolean  "forward_planning_curator", default: false, null: false
     t.integer  "registration_status",      default: 2,     null: false
@@ -940,6 +957,9 @@ ActiveRecord::Schema.define(version: 20181008134257) do
   add_foreign_key "curatings", "geo_states"
   add_foreign_key "curatings", "users"
   add_foreign_key "deliverables", "ministries"
+  add_foreign_key "deliverables", "translation_codes", column: "plan_form_id"
+  add_foreign_key "deliverables", "translation_codes", column: "result_form_id"
+  add_foreign_key "deliverables", "translation_codes", column: "short_form_id"
   add_foreign_key "dialects", "languages"
   add_foreign_key "districts", "geo_states"
   add_foreign_key "edits", "users"
@@ -966,6 +986,7 @@ ActiveRecord::Schema.define(version: 20181008134257) do
   add_foreign_key "languages", "language_families", column: "family_id"
   add_foreign_key "languages", "users", column: "champion_id"
   add_foreign_key "ministries", "topics"
+  add_foreign_key "ministries", "translation_codes", column: "name_id"
   add_foreign_key "ministry_outputs", "church_ministries"
   add_foreign_key "ministry_outputs", "deliverables"
   add_foreign_key "ministry_outputs", "users", column: "creator_id"
@@ -1009,10 +1030,11 @@ ActiveRecord::Schema.define(version: 20181008134257) do
   add_foreign_key "state_languages", "geo_states"
   add_foreign_key "state_languages", "languages"
   add_foreign_key "sub_districts", "districts"
-  add_foreign_key "supervisor_feedbacks", "project_streams"
+  add_foreign_key "supervisor_feedbacks", "ministries"
   add_foreign_key "supervisor_feedbacks", "users", column: "facilitator_id"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translatables"
+  add_foreign_key "translations", "translation_codes"
   add_foreign_key "uploaded_files", "reports"
   add_foreign_key "user_benefits", "app_benefits"
   add_foreign_key "user_benefits", "users"

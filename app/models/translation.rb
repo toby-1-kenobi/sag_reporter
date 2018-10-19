@@ -1,6 +1,7 @@
 class Translation < ActiveRecord::Base
   belongs_to :translatable
   belongs_to :language
+  belongs_to :translation_code
 
   def self.get_string(identifier, user)
   	translatable = Translatable.find_by_identifier!(identifier)
