@@ -518,11 +518,11 @@ ActiveRecord::Schema.define(version: 20181018111115) do
     t.integer  "medium",                         null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
-    t.integer  "geo_state_id",                   null: false
     t.integer  "status",         default: 0,     null: false
     t.integer  "publish_year"
     t.string   "url"
     t.text     "how_to_access"
+    t.integer  "geo_state_id"
   end
 
   add_index "mt_resources", ["created_at"], name: "index_mt_resources_on_created_at", using: :btree
@@ -612,6 +612,7 @@ ActiveRecord::Schema.define(version: 20181018111115) do
     t.text     "error_messages"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.datetime "expiration"
   end
 
   add_index "phone_messages", ["sent_at"], name: "index_phone_messages_on_sent_at", using: :btree
@@ -896,8 +897,8 @@ ActiveRecord::Schema.define(version: 20181018111115) do
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "phone"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
     t.string   "password_digest"
     t.string   "remember_digest"
     t.integer  "mother_tongue_id"
@@ -906,20 +907,21 @@ ActiveRecord::Schema.define(version: 20181018111115) do
     t.string   "email"
     t.boolean  "email_confirmed",          default: false
     t.string   "confirm_token"
-    t.boolean  "trusted",                  default: false, null: false
-    t.boolean  "national",                 default: false, null: false
-    t.boolean  "admin",                    default: false, null: false
-    t.boolean  "national_curator",         default: false, null: false
+    t.boolean  "trusted",                  default: false,        null: false
+    t.boolean  "national",                 default: false,        null: false
+    t.boolean  "admin",                    default: false,        null: false
+    t.boolean  "national_curator",         default: false,        null: false
     t.string   "role_description"
     t.datetime "curator_prompted"
+    t.boolean  "lci_board_member",         default: false,        null: false
+    t.boolean  "lci_agency_leader",        default: false,        null: false
     t.boolean  "reset_password",           default: false
-    t.boolean  "lci_board_member",         default: false, null: false
-    t.boolean  "lci_agency_leader",        default: false, null: false
     t.string   "reset_password_token"
-    t.boolean  "forward_planning_curator", default: false, null: false
-    t.integer  "registration_status",      default: 2,     null: false
-    t.boolean  "zone_admin",               default: false, null: false
+    t.boolean  "forward_planning_curator", default: false,        null: false
+    t.integer  "registration_status",      default: 2,            null: false
+    t.boolean  "zone_admin",               default: false,        null: false
     t.string   "organisation"
+    t.date     "user_last_login_dt",       default: '2018-10-20'
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree

@@ -1,6 +1,6 @@
 <% provide(:title, 'Re-enable Users') %>
 <% provide(:context_title, 'Re-enable disabled users') %>
-<% disabled_us = User.where(:user_disabled => true) %>
+<% disabled_us = User.disabled %>
 
   <% disabled_us.each do |dis_us| %>
     <li class="mdl-list__item">

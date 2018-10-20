@@ -40,7 +40,7 @@ class SessionsController < ApplicationController
         @user = User.find_by(phone: username)
       end
       # skip authentication for the development environment
-      if @user and Rails.env.development? and not @user.user_disabled?
+      if @user and Rails.env.development?
         log_in @user
         remember @user
         redirect_back_or root_path and return
@@ -49,9 +49,13 @@ class SessionsController < ApplicationController
         if @user.registration_status == 'approved'
           session[:temp_user] = @user.id
           send_otp(@user)
+        elsif @user.disabled?
+          logger.debug "User account disabled"
+          flash.now['error'] = 'Your account has been disabled. Please contact your supervisor if it should be reenabled'
+          render 'new'
         else
-          logger.debug "User account pendding approval"
-          flash.now['error'] = 'New User Created! Need to wait some time to approval'
+          logger.debug "User account pending approval"
+          flash.now['error'] = 'Your account is still waiting for registration approval.'
           render 'new'
         end
       else

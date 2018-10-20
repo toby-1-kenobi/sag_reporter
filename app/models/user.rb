@@ -5,7 +5,8 @@ class User < ActiveRecord::Base
   enum registration_status: {
       unapproved: 0,
       zone_approved: 1,
-      approved: 2
+      approved: 2,
+      disabled: 3
   }
 
 
@@ -107,6 +108,14 @@ class User < ActiveRecord::Base
       token
     else
       false
+    end
+  end
+
+  def User.disable_stale_accounts
+    approved.each do |user|
+      if user.user_last_login_dt < 180.days.ago
+        user.disbaled!
+      end
     end
   end
 
@@ -301,16 +310,6 @@ class User < ActiveRecord::Base
   def interface_language_must_have_locale_tag
     if interface_language.present? and interface_language.locale_tag.blank?
       errors.add(:interface_language, 'must be a user interface language.')
-    end
-  end
-
-  def disable_stale_accounts
-    @users = User.where(:user_disabled => false)
-    @users.each do |user|
-      num_of_days = (Date.today - user.user_last_login_dt).to_i
-      if num_of_days > 180
-        user.update_attribute(:user_disabled, true)
-      end
     end
   end
 
