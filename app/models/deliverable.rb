@@ -24,7 +24,7 @@ class Deliverable < ActiveRecord::Base
   before_create :create_translation_codes
   after_destroy :delete_translation_codes
   
-  scope :with_values, ->{
+  scope :with_locales, ->{
     joins("LEFT JOIN translations AS short_form_translation_en " +
               "ON short_form_translation_en.translation_code_id = short_form_id " +
               "AND short_form_translation_en.language_id = 1")
