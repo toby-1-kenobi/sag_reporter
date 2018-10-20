@@ -40,6 +40,7 @@ module SessionsHelper
   def require_login
     if logged_in?
       remember(logged_in_user)
+      update_login_dt(logged_in_user)
     else
       flash['warning'] = 'Please log in.'
       respond_to do |format|
@@ -84,5 +85,12 @@ module SessionsHelper
 
   def current_user
     @current_user
+  end
+
+  #Update user last login date
+  def update_login_dt(user)
+    if user
+      user.update_attribute(:user_last_login_dt, Date.today)
+    end
   end
 end

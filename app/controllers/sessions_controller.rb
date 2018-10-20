@@ -40,11 +40,11 @@ class SessionsController < ApplicationController
         @user = User.find_by(phone: username)
       end
       # skip authentication for the development environment
-      # if @user and Rails.env.development? and @user.registration_status == 'approved'
-      #   log_in @user
-      #   remember @user
-      #   redirect_back_or root_path and return
-      #  end
+      if @user and Rails.env.development? and not @user.user_disabled?
+        log_in @user
+        remember @user
+        redirect_back_or root_path and return
+      end
       if @user && @user.authenticate(params[:session][:password])
         if @user.registration_status == 'approved'
           session[:temp_user] = @user.id

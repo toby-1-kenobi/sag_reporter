@@ -304,4 +304,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  def disable_stale_accounts
+    @users = User.where(:user_disabled => false)
+    @users.each do |user|
+      num_of_days = (Date.today - user.user_last_login_dt).to_i
+      if num_of_days > 180
+        user.update_attribute(:user_disabled, true)
+      end
+    end
+  end
+
 end

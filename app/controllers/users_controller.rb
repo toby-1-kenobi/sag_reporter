@@ -218,6 +218,18 @@ class UsersController < ApplicationController
     respond_to :js
   end
 
+  def disabled_users
+    render 'users/disabled_users'
+  end
+
+  def enable_user
+    @user = User.find_by(id: params[:id])
+    if @user
+      @user.update_attributes(:user_disabled => false, :user_last_login_dt => Date.today)
+    end
+    respond_to :js
+  end
+
   private
 
   def user_params
