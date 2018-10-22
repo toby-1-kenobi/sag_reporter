@@ -217,6 +217,7 @@ class AndroidSyncController < ApplicationController
                 if has_entry
                   file.write(",")
                 else
+                  log.debug "First entry: #{entry_data}"
                   file.write ",\"#{table_name}\":["
                 end
                 has_entry = true
