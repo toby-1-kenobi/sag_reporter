@@ -36,7 +36,7 @@ class AndroidSyncController < ApplicationController
         AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
-        SupervisorFeedback => %w(supervisor_id facilitator_id month plan_feedback plan_response result_feedback facilitator_progress project_progress),
+        SupervisorFeedback => %w(ministry_id supervisor_id facilitator_id month plan_feedback plan_response result_feedback facilitator_progress project_progress),
         FacilitatorFeedback => %w(church_ministry_id month plan_feedback plan_team_member_id plan_response facilitator_plan result_feedback result_response result_team_member_id progress)
     }
     join_tables = {
@@ -48,7 +48,8 @@ class AndroidSyncController < ApplicationController
         MtResource: %w(product_categories)
     }
     additional_join_tables = {
-        Deliverable: %w(ministry)
+        Deliverable: %w(ministry),
+        User: %w(external_devices)
     }
     def additional_tables(entry)
       case entry
