@@ -91,4 +91,11 @@ describe Report do
     _(reports).wont_include report
   end
 
+  it 'must update timestamp when language is added' do
+    report = FactoryBot.create(:report, updated_at: 1.day.ago)
+    init_value = report.updated_at
+    report.languages << FactoryBot.create(:language)
+    _(report.updated_at).must_be :>, init_value
+  end
+
 end

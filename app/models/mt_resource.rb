@@ -32,12 +32,18 @@ class MtResource < ActiveRecord::Base
   belongs_to :language
   has_many :contributions, class_name: 'Creation', dependent: :destroy
   has_many :contributers, through: :contributions, source: 'person'
-  has_and_belongs_to_many :product_categories
+  has_and_belongs_to_many :product_categories, after_add: :update_self, after_remove: :update_self
 
   validates :name, presence: true
   validates :language, presence: true
   validates :cc_share_alike, presence: true
   validates :medium, presence: true
   validates :status, presence: true
+
+  private
+
+  def update_self _
+    self.touch if self.persisted?
+  end
 
 end

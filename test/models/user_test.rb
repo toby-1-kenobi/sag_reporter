@@ -291,4 +291,21 @@ describe User do
     _(user).must_be :project_supervisor?
   end
 
+  it 'must update timestamp when a geo_state is added' do
+    init_value = user.updated_at
+    user.geo_states << FactoryBot.create(:geo_state)
+    user.reload
+    _(user.updated_at).must_be :>, init_value
+  end
+
+  it 'must update timestamp when a geo_state is removed' do
+    state = FactoryBot.create(:geo_state)
+    user.geo_states << state
+    user.reload
+    init_value = user.updated_at
+    user.geo_states.delete state
+    user.reload
+    _(user.updated_at).must_be :>, init_value
+  end
+
 end
