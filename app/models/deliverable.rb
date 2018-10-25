@@ -68,6 +68,8 @@ class Deliverable < ActiveRecord::Base
 
   scope :with_translations, -> { includes(short_form: [:translations], plan_form: [:translations], result_form: [:translations]) }
 
+  scope :active, -> { where.not(reporter: 4) }
+
   def translation_key
     "#{ministry.code.upcase}#{sprintf('%02d', number)}"
   end
