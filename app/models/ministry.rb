@@ -14,6 +14,25 @@ class Ministry < ActiveRecord::Base
   before_create :create_translation_codes
   after_destroy :delete_translation_codes
 
+  scope :with_values, ->{
+    joins("LEFT JOIN translations AS translation_en " +
+              "ON translation_en.translation_code_id = short_form_id " +
+              "AND translation_en.language_id = 1")
+        .joins("LEFT JOIN translations AS translation_hi " +
+              "ON translation_en.translation_code_id = short_form_id " +
+              "AND translation_en.language_id = 2")
+        .select("*, translation_en.content AS name_en, translation_hi.content AS name_hi")
+  }
+
+  scope :with_values, ->(language_id) {
+    joins("LEFT JOIN translations AS translation " +
+              "ON translation.translation_code_id = name_id " +
+              "AND translation.language_id = #{language_id}")
+        .select("*, content AS name_value")
+  }
+
+  scope :with_translations, -> { includes(name: [:translations]) }
+  
   def old_name
     I18n.t("ministries.names.#{code.upcase}")
   end

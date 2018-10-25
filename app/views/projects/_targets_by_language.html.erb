@@ -35,7 +35,7 @@
   <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
     <thead>
       <tr>
-        <th class="mdl-data-table__cell--non-numeric" rowspan="2"><%= ministry.name %></th>
+        <th class="mdl-data-table__cell--non-numeric" rowspan="2"><%= ministry.old_name %></th>
         <th class="mdl-data-table__cell--non-numeric" rowspan="2">Reported by</th>
         <th class="mdl-data-table__cell--non-numeric" rowspan="2">Calculated by</th>
         <% years.each do |year| %>
@@ -54,7 +54,7 @@
     <tbody>
       <% ministry.deliverables.order(:number).select{ |d| hidden_deliverables.exclude? d.translation_key }.each do |deliverable| %>
         <tr>
-          <td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form %></td>
+          <td class="mdl-data-table__cell--non-numeric"><%= deliverable.old_short_form %></td>
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.reporter.humanize %></td>
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.calculation_method.humanize %></td>
           <% years.each do |year| %>

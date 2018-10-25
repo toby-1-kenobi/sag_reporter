@@ -11,9 +11,9 @@ class AndroidSyncController < ApplicationController
         User => %w(name),
         GeoState => %w(name zone_id),
         Language => %w(name colour),
-        Person => %w(name geo_state_id),
+#        Person => %w(name geo_state_id),
         Topic => %w(name colour),
-        ProgressMarker => %w(name topic_id number),
+#        ProgressMarker => %w(name topic_id number),
         Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id),
         ImpactReport => %w(translation_impact),
         UploadedFile => %w(report_id),
@@ -24,8 +24,10 @@ class AndroidSyncController < ApplicationController
         StateLanguage => %w(geo_state_id language_id project),
         ChurchTeam => %w(name organisation_id leader state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
-        Ministry => %w(code topic_id),
-        Deliverable => %w(number ministry_id calculation_method reporter),
+        Ministry => %w(topic_id name_id code),
+        Deliverable => %w(ministry_id calculation_method reporter, short_form_id, plan_form_id, result_form_id number),
+        TranslationCode => %w(),
+        Translation => %w(language_id, content translation_code_id),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
@@ -34,7 +36,7 @@ class AndroidSyncController < ApplicationController
         AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
-        SupervisorFeedback => %w(supervisor_id facilitator_id month plan_feedback plan_response result_feedback facilitator_progress project_progress),
+        SupervisorFeedback => %w(ministry_id supervisor_id facilitator_id month plan_feedback plan_response result_feedback facilitator_progress project_progress),
         FacilitatorFeedback => %w(church_ministry_id month plan_feedback plan_team_member_id plan_response facilitator_plan result_feedback result_response result_team_member_id progress)
     }
     join_tables = {
@@ -46,7 +48,8 @@ class AndroidSyncController < ApplicationController
         MtResource: %w(product_categories)
     }
     additional_join_tables = {
-        Deliverable: %w(ministry)
+        Deliverable: %w(ministry),
+        User: %w(external_devices)
     }
     def additional_tables(entry)
       case entry
@@ -108,6 +111,8 @@ class AndroidSyncController < ApplicationController
         end
       elsif table == Report
         restricted_ids = table.where("report_date >= '2018-1-1' AND significant = true").ids
+      elsif table == Translation
+        restricted_ids = table.where.not(translation_code: nil).ids
       else
         restricted_ids = table.ids
       end
@@ -212,6 +217,7 @@ class AndroidSyncController < ApplicationController
                 if has_entry
                   file.write(",")
                 else
+                  logger.debug "First entry: #{entry_data}"
                   file.write ",\"#{table_name}\":["
                 end
                 has_entry = true
