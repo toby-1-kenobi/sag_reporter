@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181018111115) do
+ActiveRecord::Schema.define(version: 20181026062917) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -846,31 +846,21 @@ ActiveRecord::Schema.define(version: 20181018111115) do
     t.integer  "number",                           default: 0,       null: false
   end
 
-  create_table "translatables", force: :cascade do |t|
-    t.string   "identifier", null: false
-    t.text     "content",    null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "translatables", ["identifier"], name: "index_translatables_on_identifier", using: :btree
-
   create_table "translation_codes", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "translations", force: :cascade do |t|
-    t.integer  "translatable_id"
-    t.integer  "language_id"
-    t.text     "content"
+    t.integer  "language_id",         null: false
+    t.text     "content",             null: false
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
-    t.integer  "translation_code_id"
+    t.integer  "translation_code_id", null: false
   end
 
+  add_index "translations", ["language_id", "translation_code_id"], name: "index_language_translation_code", unique: true, using: :btree
   add_index "translations", ["language_id"], name: "index_translations_on_language_id", using: :btree
-  add_index "translations", ["translatable_id"], name: "index_translations_on_translatable_id", using: :btree
   add_index "translations", ["translation_code_id"], name: "index_translations_on_translation_code_id", using: :btree
 
   create_table "uploaded_files", force: :cascade do |t|
@@ -1035,7 +1025,6 @@ ActiveRecord::Schema.define(version: 20181018111115) do
   add_foreign_key "supervisor_feedbacks", "ministries"
   add_foreign_key "supervisor_feedbacks", "users", column: "facilitator_id"
   add_foreign_key "translations", "languages"
-  add_foreign_key "translations", "translatables"
   add_foreign_key "translations", "translation_codes"
   add_foreign_key "uploaded_files", "reports"
   add_foreign_key "user_benefits", "app_benefits"

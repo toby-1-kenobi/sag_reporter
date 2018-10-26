@@ -1,5 +1,4 @@
 class Translation < ActiveRecord::Base
-  belongs_to :translatable
   belongs_to :language
   belongs_to :translation_code
 
