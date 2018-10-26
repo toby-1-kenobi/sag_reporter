@@ -17,10 +17,18 @@ class TranslationCode < ActiveRecord::Base
   end
   
   def en=(value)
-    (translations.find{|t| t.language_id == 1 } || Translation.create(language_id:1)).update content: value
+    create_en.update content: value
   end
 
   def hi=(value)
-    (translations.find{|t| t.language_id == 2 } || Translation.create(language_id: 2)).update content: value
+    create_hi.update content: value
   end
-end 
+
+  def create_en
+    translations.find{|t| t.language_id == 1 } || Translation.create(translation_code: self, language_id: 1)
+  end
+
+  def create_hi
+    translations.find{|t| t.language_id == 2 } || Translation.create(translation_code: self, language_id: 2)
+  end
+end
