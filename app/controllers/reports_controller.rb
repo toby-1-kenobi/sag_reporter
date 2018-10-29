@@ -14,7 +14,6 @@ class ReportsController < ApplicationController
     redirect_to root_path unless logged_in_user.admin?
   end
 
-  before_action :get_translations, only: [:new, :edit]
   before_action :find_report, only: [:edit, :update, :show, :archive, :unarchive, :pictures]
 
   before_action only: [:show] do
@@ -92,7 +91,6 @@ class ReportsController < ApplicationController
       @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states).order('languages.name')
       @topics = Topic.all
       @geo_states = @report.available_geo_states(logged_in_user)
-      get_translations
       render 'new'
     end
   end
@@ -119,7 +117,6 @@ class ReportsController < ApplicationController
       @geo_states = @report.available_geo_states(logged_in_user)
       @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states)
       @topics = Topic.all
-      get_translations
       render 'edit'
     end
   end

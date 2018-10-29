@@ -9,7 +9,7 @@
       <div class="report-content mdl-textfield mdl-js-textfield">
         <i class="material-icons mdl-textfield__icon">create</i>
         <%= f.text_area :content, rows: '8', class: 'mdl-textfield__input' %>
-        <%= f.label :content, @translations['type_report'], class: 'mdl-textfield__label' %>
+        <%= f.label :content, 'Type your report here', class: 'mdl-textfield__label' %>
       </div>
     </div>
 
@@ -26,7 +26,7 @@
             <%= ff.file_field :ref, accept: 'image/jpeg,image/gif,image/png', class: 'hide' %>
             <%= ff.label :ref, class: 'mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect' do %>
               <i class="material-icons">insert_photo</i>
-              <%= @translations['put_photo'] %>
+              <%= 'Put in a photo' %>
             <% end %>
           </div>
         <% end %>
@@ -67,7 +67,7 @@
     </div>
 
     <div class="mdl-cell mdl-cell--3-col">
-      <div class="form-section-header"><%= @translations['relates_languages'] %></div>
+      <div class="form-section-header"><%= 'It relates to these languages' %></div>
       <ul class="mdl-list">
       <% @state_languages.each do |language| %>
         <li class="filterable-item hide mdl-list__item" data-filter-label="geo-state" data-geo-state="<%= language.geo_state_id %>">
