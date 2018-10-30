@@ -59,10 +59,23 @@ class Deliverable < ActiveRecord::Base
     I18n.t("deliverables.short_form.#{translation_key}")
   end
 
+  scope :with_values, -> do
+    translation_code_names = [:short_form_id, :plan_form_id, :result_form_id]
+    translation_code_ids = select(translation_code_names).map do |t|
+      translation_code_names.map {|name| t.send(name)}
+    end.flatten
+    @@translations = Translation.where(translation_code_id: translation_code_ids)
+    self
+  end
+
   private
 
   def translations
-    @translations ||= Translation.where(translation_code_id: [short_form_id, plan_form_id, result_form_id])
+    @@translations ||= []
+    unless @@translations.find{|translation| translation.translation_code_id == short_form_id}
+      @@translations.push(*Translation.where(translation_code_id: [short_form_id, plan_form_id, result_form_id]))
+    end
+    @@translations
   end
 
   def create_translation(language_id, translation_code_id, content)

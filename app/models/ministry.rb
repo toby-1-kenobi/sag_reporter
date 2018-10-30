@@ -45,10 +45,23 @@ class Ministry < ActiveRecord::Base
     end
   end
 
+  scope :with_values, -> do
+    translation_code_names = [:name_id]
+    translation_code_ids = select(translation_code_names).map do |t|
+      translation_code_names.map {|name| t.send(name)}
+    end.flatten
+    @@translations = Translation.where(translation_code_id: translation_code_ids)
+    self
+  end
+
   private
 
   def translations
-    @translations ||= Translation.where(translation_code_id: name_id)
+    @@translations ||= []
+    unless @@translations.find{|translation| translation.translation_code_id == name_id}
+      @@translations.push(*Translation.where(translation_code_id: name_id))
+    end
+    @@translations
   end
 
   def create_translation(language_id, translation_code_id, content)
