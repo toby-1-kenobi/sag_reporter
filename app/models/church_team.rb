@@ -10,4 +10,6 @@ class ChurchTeam < ActiveRecord::Base
   validates :leader, presence: true
   validates :state_language, presence: true
 
+  scope :in_project, ->(project) { joins(:ministries).where('ministries.id in (?)', project.ministries.pluck(:id)).where(state_language: project.state_languages).uniq }
+
 end

@@ -29,6 +29,12 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
+  def teams
+    @project = Project.find(params[:id])
+    @teams = ChurchTeam.in_project(@project)
+    respond_to :js
+  end
+
   def edit_responsible
     @project = Project.includes(:geo_states).find(params[:id])
     respond_to :js

@@ -1,1 +1,5 @@
 $('#project-content').html('<%= j render(partial: 'show') %>');
+
+$('#teams-tab.dirty').on('click', function(){
+    $.ajax({url: '<%= teams_project_url(@project) %>'});
+});

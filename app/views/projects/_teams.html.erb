@@ -1,0 +1,7 @@
+<% if @teams.any? %>
+  <ul>
+    <%= render partial: 'team', collection: @teams %>
+  </ul>
+<% else %>
+  <p>There are no church teams in this project.</p>
+<% end %>

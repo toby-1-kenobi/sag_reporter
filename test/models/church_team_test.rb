@@ -27,4 +27,24 @@ describe ChurchTeam do
     _(church_team.updated_at).must_be :>, init_value
   end
 
+  it "scopes to a project" do
+    project = FactoryBot.create(:project)
+    state_lang = FactoryBot.create(:state_language)
+    ministry = FactoryBot.create(:ministry)
+    project.state_languages << state_lang
+    project.ministries << ministry
+    church_team.state_language = state_lang
+    church_team.save
+    church_team.ministries << ministry
+    # ct2 right stream, wrong language
+    ct2 = FactoryBot.create(:church_team)
+    ct2.ministries << ministry
+    # ct3 right language, wrong stream
+    ct3 = FactoryBot.create(:church_team, state_language: state_lang)
+    teams = ChurchTeam.in_project(project)
+    teams.must_include church_team
+    teams.wont_include ct2
+    teams.wont_include ct3
+  end
+
 end
