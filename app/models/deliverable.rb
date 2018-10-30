@@ -23,50 +23,33 @@ class Deliverable < ActiveRecord::Base
   validates :number, presence: true, uniqueness: { scope: :ministry }
   before_create :create_translation_codes
   after_destroy :delete_translation_codes
-  
-  scope :with_locales, ->{
-    joins("LEFT JOIN translations AS short_form_translation_en " +
-              "ON short_form_translation_en.translation_code_id = short_form_id " +
-              "AND short_form_translation_en.language_id = 1")
-        .joins("LEFT JOIN translations AS plan_form_translation_en  " +
-                   "ON plan_form_translation_en.translation_code_id = plan_form_id " +
-                   "AND short_form_translation_en.language_id = 1")
-        .joins("LEFT JOIN translations AS result_form_translation_en  " +
-                   "ON result_form_translation_en.translation_code_id = result_form_id " +
-                   "AND short_form_translation_en.language_id = 1")
-        .joins("LEFT JOIN translations AS short_form_translation_hi " +
-              "ON short_form_translation_hi.translation_code_id = short_form_id " +
-              "AND short_form_translation_hi.language_id = 2")
-        .joins("LEFT JOIN translations AS plan_form_translation_hi  " +
-                   "ON plan_form_translation_hi.translation_code_id = plan_form_id " +
-                   "AND short_form_translation_hi.language_id = 2")
-        .joins("LEFT JOIN translations AS result_form_translation_hi  " +
-                   "ON result_form_translation_hi.translation_code_id = result_form_id " +
-                   "AND short_form_translation_hi.language_id = 2")
-        .select("*, short_form_translation_en.content AS short_form_en, " +
-                    "plan_form_translation_en.content AS plan_form_en, " +
-                    "result_form_translation_en.content AS result_form_en, " +
-                    "short_form_translation_hi.content AS short_form_hi, " +
-                    "plan_form_translation_hi.content AS plan_form_hi, " +
-                    "result_form_translation_hi.content AS result_form_hi")
-  }
 
-  scope :with_values, ->(language_id) {
-    joins("LEFT JOIN translations AS short_form_translation " +
-              "ON short_form_translation.translation_code_id = short_form_id " +
-              "AND short_form_translation.language_id = #{language_id}")
-        .joins("LEFT JOIN translations AS plan_form_translation  " +
-                   "ON plan_form_translation.translation_code_id = plan_form_id " +
-                   "AND short_form_translation.language_id = #{language_id}")
-        .joins("LEFT JOIN translations AS result_form_translation  " +
-                   "ON result_form_translation.translation_code_id = result_form_id " +
-                   "AND short_form_translation.language_id = #{language_id}")
-        .select("*, short_form_translation.content AS short_form_value, " +
-                    "plan_form_translation.content AS plan_form_value, " +
-                    "result_form_translation.content AS result_form_value")
-  }
-
-  scope :with_translations, -> { includes(short_form: [:translations], plan_form: [:translations], result_form: [:translations]) }
+  # Method for reading and writing all translation values (e.g. short_form_en = "?" or plan_form_value)
+  # it has to be a combination of the translation connection name and the locale or "value", if the actual I18n locale shall be used
+  # if it can't find a value in a specific language, it takes English, if it exists; doesn't work for not defined locales
+  def method_missing(method_id, *args)
+    locale = method_id.to_s.split("_").last
+    translation_code_name = method_id.to_s.remove "_#{locale}"
+    if self.class.reflect_on_association(translation_code_name)&.klass == TranslationCode
+      is_assignment = locale.last == "="
+      locale.remove! "=" if is_assignment
+      locale = I18n.locale if locale == "value"
+      possible_locales = {en: 1, hi: 2}
+      language_id = possible_locales[locale.to_sym] || super
+      translation_code_id = send("#{translation_code_name}_id")
+      if is_assignment
+        content = args.first
+        find_translation(language_id, translation_code_id)&.update(content: content) ||
+            create_translation(language_id, translation_code_id, content)
+        @translations = nil
+      else
+        find_translation(language_id, translation_code_id)&.content ||
+            find_translation(1, translation_code_id)&.content
+        end
+    else
+      super
+    end
+  end
 
   def translation_key
     "#{ministry.code.upcase}#{sprintf('%02d', number)}"
@@ -74,6 +57,20 @@ class Deliverable < ActiveRecord::Base
 
   def old_short_form
     I18n.t("deliverables.short_form.#{translation_key}")
+  end
+
+  private
+
+  def translations
+    @translations ||= Translation.where(translation_code_id: [short_form_id, plan_form_id, result_form_id])
+  end
+
+  def create_translation(language_id, translation_code_id, content)
+    Translation.create(translation_code_id: translation_code_id, language_id: language_id, content: content)
+  end
+  
+  def find_translation(language_id, translation_code_id)
+    translations.find{|translation| translation.language_id == language_id && translation.translation_code_id == translation_code_id}
   end
 
   def create_translation_codes
