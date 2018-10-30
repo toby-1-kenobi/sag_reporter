@@ -25,8 +25,7 @@ class User < ActiveRecord::Base
   has_many :edits, dependent: :destroy
   has_many :curated_edits, class_name: 'Edit', foreign_key: 'curated_by_id', inverse_of: :curated_by, dependent: :nullify
   has_many :external_devices
-  has_many :championed_languages, class_name: 'Language', inverse_of: :champion, foreign_key: 'champion_id', dependent: :nullify,
-           after_add: :update_self, after_remove: :update_self
+  has_many :championed_languages, class_name: 'Language', inverse_of: :champion, foreign_key: 'champion_id', dependent: :nullify
   has_many :church_team_memberships, dependent: :destroy
   has_many :church_teams, through: :church_team_memberships
   has_many :church_ministries, foreign_key: 'facilitator_id', inverse_of: :facilitator

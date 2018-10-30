@@ -11,6 +11,7 @@ class Ministry < ActiveRecord::Base
   has_many :supervisors, through: :project_streams, class_name: 'User'
   belongs_to :topic
   belongs_to :name, class_name: 'TranslationCode', dependent: :delete
+  has_many :translations, through: :name, class_name: 'Translation'
   before_create :create_translation_codes
   after_destroy :delete_translation_codes
 

@@ -12,4 +12,5 @@ class Project < ActiveRecord::Base
   has_many :language_streams, dependent: :nullify
   has_many :facilitators, through: :language_streams, class_name: 'User'
   validates :name, presence: true, uniqueness: true
+
 end
