@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181031115735) do
+ActiveRecord::Schema.define(version: 20181031122702) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -874,6 +874,17 @@ ActiveRecord::Schema.define(version: 20181031115735) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "translation_progresses", force: :cascade do |t|
+    t.integer  "language_id"
+    t.integer  "chapter_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "translation_progresses", ["chapter_id"], name: "index_translation_progresses_on_chapter_id", using: :btree
+  add_index "translation_progresses", ["language_id", "chapter_id"], name: "index_language_chapter", unique: true, using: :btree
+  add_index "translation_progresses", ["language_id"], name: "index_translation_progresses_on_language_id", using: :btree
+
   create_table "translations", force: :cascade do |t|
     t.integer  "language_id",         null: false
     t.text     "content",             null: false
@@ -1048,6 +1059,8 @@ ActiveRecord::Schema.define(version: 20181031115735) do
   add_foreign_key "sub_districts", "districts"
   add_foreign_key "supervisor_feedbacks", "ministries"
   add_foreign_key "supervisor_feedbacks", "users", column: "facilitator_id"
+  add_foreign_key "translation_progresses", "chapters"
+  add_foreign_key "translation_progresses", "languages"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translation_codes"
   add_foreign_key "uploaded_files", "reports"
