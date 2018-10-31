@@ -62,8 +62,8 @@ class AndroidSyncController < ApplicationController
             entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
                 .merge(external_device_registered: !entry.external_devices.empty?)
           else
-            %w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description)
-                .map{|key| [key, nil]}.to_h
+            {phone: nil, mother_tongue_id: nil, interface_language_id: nil, email: nil,
+             trusted: false, national: false, admin: false, national_curator: false, role_description: nil}
                 .merge(external_device_registered: !entry.external_devices.empty?)
           end
         else
