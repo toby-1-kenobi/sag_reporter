@@ -243,7 +243,7 @@ class AndroidSyncController < ApplicationController
                   entry_data.merge!({join_table => foreign_ids})
                   identifier = [table.name.underscore, join_table]
                   join_table_data[identifier] ||= Array.new
-                  join_table_data[identifier] += foreign_ids.map{|foreign_id| "(#{entry.id},#{foreign_id})"}
+                  join_table_data[identifier] += foreign_ids.map{|foreign_id| [entry.id,foreign_id]}
                 end
                 additions = additional_tables(entry)
                 entry_data.merge! additions
@@ -273,9 +273,9 @@ class AndroidSyncController < ApplicationController
               puts "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first} IN (#{data.map &:first})"
               file_2.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first} IN (#{data.map &:first})"
               puts "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
-                       "VALUES#{data.join ","};" unless data.empty?
+                       "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
               file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
-                       "VALUES#{data.join ","};" unless data.empty?
+                       "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
             end
             ActiveRecord::Base.connection.query_cache.clear
           end
