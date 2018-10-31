@@ -162,7 +162,7 @@ class AndroidSyncController < ApplicationController
           file.write "{\"last_sync\":#{this_sync.to_i}"
           raise "No last sync variable" unless send_request_params["last_sync"]
           if send_request_params["first_download"]
-            tables.except!(Person, Topic, ProgressMarker, Report, ImpactReport, UploadedFile, LanguageProgress, ProgressUpdate)
+            tables.except!(Person, Topic, ProgressMarker, Report, ImpactReport, UploadedFile, LanguageProgress, ProgressUpdate, QuarterlyTarget)
           end
           deleted_entries = Hash.new
           tables.each do |table, attributes|
