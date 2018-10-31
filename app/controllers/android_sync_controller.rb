@@ -9,7 +9,7 @@ class AndroidSyncController < ApplicationController
   def send_request
     tables = {
         User => %w(name),
-        GeoState => %w(name zone_id),
+        GeoState => %w(name),
         Language => %w(name colour),
 #        Person => %w(name geo_state_id),
         Topic => %w(name colour),
@@ -22,7 +22,7 @@ class AndroidSyncController < ApplicationController
 #        LanguageProgress => %w(progress_marker_id state_language_id),
 #        ProgressUpdate => %w(user_id language_progress_id progress month year),
         StateLanguage => %w(geo_state_id language_id project),
-        ChurchTeam => %w(name organisation_id leader state_language_id),
+        ChurchTeam => %w(organisation_id leader state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(topic_id name_id code),
         Deliverable => %w(ministry_id calculation_method reporter short_form_id plan_form_id result_form_id number),
@@ -40,6 +40,7 @@ class AndroidSyncController < ApplicationController
         FacilitatorFeedback => %w(church_ministry_id month plan_feedback plan_team_member_id plan_response facilitator_plan result_feedback result_response result_team_member_id progress)
     }
     join_tables = {
+        User: %w(geo_states),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
@@ -59,7 +60,6 @@ class AndroidSyncController < ApplicationController
         when User
           if entry.id == @external_user.id
             entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
-                .merge(geo_state_ids: entry.geo_state_ids)
                 .merge(external_device_registered: !entry.external_devices.empty?)
           else
             {external_device_registered: !entry.external_devices.empty?}
