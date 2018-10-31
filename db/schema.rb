@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181026062917) do
+ActiveRecord::Schema.define(version: 20181031115136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,18 @@ ActiveRecord::Schema.define(version: 20181026062917) do
   add_index "attendances", ["event_id", "person_id"], name: "index_attendances_on_event_id_and_person_id", unique: true, using: :btree
   add_index "attendances", ["event_id"], name: "index_attendances_on_event_id", using: :btree
   add_index "attendances", ["person_id"], name: "index_attendances_on_person_id", using: :btree
+
+  create_table "books", force: :cascade do |t|
+    t.string   "name",         null: false
+    t.string   "abbreviation", null: false
+    t.integer  "number",       null: false
+    t.boolean  "nt",           null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "books", ["nt"], name: "index_books_on_nt", using: :btree
+  add_index "books", ["number"], name: "index_books_on_number", using: :btree
 
   create_table "cache_backups", force: :cascade do |t|
     t.string   "name",       null: false
