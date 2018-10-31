@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181031115136) do
+ActiveRecord::Schema.define(version: 20181031115735) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,6 +92,17 @@ ActiveRecord::Schema.define(version: 20181031115136) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "chapters", force: :cascade do |t|
+    t.integer  "book_id"
+    t.integer  "number",     null: false
+    t.integer  "verses",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "chapters", ["book_id"], name: "index_chapters_on_book_id", using: :btree
+  add_index "chapters", ["number"], name: "index_chapters_on_number", using: :btree
 
   create_table "church_ministries", force: :cascade do |t|
     t.integer  "church_team_id",             null: false
@@ -949,6 +960,7 @@ ActiveRecord::Schema.define(version: 20181031115136) do
   add_foreign_key "aggregate_ministry_outputs", "users", column: "creator_id"
   add_foreign_key "attendances", "events"
   add_foreign_key "attendances", "people"
+  add_foreign_key "chapters", "books"
   add_foreign_key "church_ministries", "church_teams"
   add_foreign_key "church_ministries", "ministries"
   add_foreign_key "church_ministries", "users", column: "facilitator_id"
