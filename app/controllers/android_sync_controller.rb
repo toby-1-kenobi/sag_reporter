@@ -267,9 +267,11 @@ class AndroidSyncController < ApplicationController
             file.write "]" if has_entry
             columns << "is_online"
             values.map! {|value| "(#{(value+[1]).join(",")})"}
-            puts "INSERT INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
-            file_2.write "INSERT INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
+            puts "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
+            file_2.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             join_table_data.each do |join_table_names, data|
+              puts "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first} IN (#{data.map &:first})"
+              file_2.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first} IN (#{data.map &:first})"
               puts "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
                        "VALUES#{data.join ","};" unless data.empty?
               file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
