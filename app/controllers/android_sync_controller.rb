@@ -270,8 +270,8 @@ class AndroidSyncController < ApplicationController
             puts "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             file_2.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             join_table_data.each do |join_table_names, data|
-              puts "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first} IN (#{data.map(&:first).join ","});"
-              file_2.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first} IN (#{data.map(&:first).join ","});"
+              puts "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).join ","});"
+              file_2.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).join ","});"
               puts "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
                        "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
               file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
