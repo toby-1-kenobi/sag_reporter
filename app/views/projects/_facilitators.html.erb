@@ -1,0 +1,46 @@
+<% if @project.facilitators.any? %>
+  <% multi_state = @project.geo_states.uniq.count > 1 %>
+  <% @project.language_streams.each do |lang_stream| %>
+    <p><%= lang_stream.facilitator.name %> facilitating <%= lang_stream.ministry.old_name %> for <%= lang_stream.state_language.name(multi_state) %></p>
+    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+      <thead>
+        <tr>
+          <th rowspan="2" class="mdl-data-table__cell--non-numeric">Deliverable</th>
+          <% 2.downto(0).each do |n| %>
+            <th colspan="2" class="mdl-data-table__cell--non-numeric"><%= n.months.ago.strftime("%B") %></th>
+          <% end %>
+        </tr>
+        <tr>
+          <% 3.times do %>
+            <th>Target</th><th>Actual</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% lang_stream.ministry.deliverables.facilitator.each do |deliverable| %>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric">
+              <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>
+            </td>
+
+            <% 2.downto(0).each do |n| %>
+              <% if @outputs[deliverable.id] and @outputs[deliverable.id][n.months.ago.strftime("%Y-%m")] %>
+                <% target = @outputs[deliverable.id][n.months.ago.strftime("%Y-%m")][false][1] || '?' %>
+                <% actual_id, actual_value = @outputs[deliverable.id][n.months.ago.strftime("%Y-%m")][true] || '' %>
+              <% else %>
+                <% target, actual_id, actual_value = '?', 'none', '' %>
+              <% end %>
+              <td><%= target %></td>
+              <td data-amo-id="<%= actual_id %>"><%= actual_value %></td>
+            <% end %>
+          </tr>
+          <div class="mdl-tooltip mdl-tooltip--larg" data-mdl-for="deliverable-name-<%= deliverable.id %>">
+            <%= deliverable.result_form.en %>
+          </div>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+<% else %>
+  <p>No facilitators in this project.</p>
+<% end %>

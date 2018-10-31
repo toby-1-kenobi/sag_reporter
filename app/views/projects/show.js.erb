@@ -1,5 +1,10 @@
 $('#project-content').html('<%= j render(partial: 'show') %>');
+componentHandler.upgradeElements($('#project-content').find('.mdl-tabs').get());
 
 $('#teams-tab.dirty').on('click', function(){
     $.ajax({url: '<%= teams_project_url(@project) %>'});
+});
+
+$('#facs-tab.dirty').on('click', function(){
+    $.ajax({url: '<%= facilitators_project_url(@project) %>'});
 });

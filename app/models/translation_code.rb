@@ -25,10 +25,10 @@ class TranslationCode < ActiveRecord::Base
   end
 
   def create_en
-    translations.find{|t| t.language_id == 1 } || Translation.create(translation_code: self, language_id: 1)
+    translations.find{|t| t.language_id == 1 } || Translation.create(translation_code: self, language_id: 1, content: '')
   end
 
   def create_hi
-    translations.find{|t| t.language_id == 2 } || Translation.create(translation_code: self, language_id: 2)
+    translations.find{|t| t.language_id == 2 } || Translation.create(translation_code: self, language_id: 2, content: '')
   end
 end

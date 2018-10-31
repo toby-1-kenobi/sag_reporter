@@ -18,6 +18,7 @@ class Deliverable < ActiveRecord::Base
   belongs_to :plan_form, class_name: 'TranslationCode', dependent: :destroy
   belongs_to :result_form, class_name: 'TranslationCode', dependent: :destroy
   has_many :ministry_outputs, dependent: :restrict_with_exception
+  has_many :aggregate_ministry_outputs, dependent: :restrict_with_exception
   has_many :quarterly_targets, dependent: :restrict_with_error
   validates :ministry, presence: true
   validates :number, presence: true, uniqueness: { scope: :ministry }

@@ -142,6 +142,7 @@ Rails.application.routes.draw do
     member do
       get 'teams'
       get 'team_deliverables/:team_id', action: 'team_deliverables', as: 'team_deliverables_in'
+      get 'facilitators'
       get 'edit_responsible'
       get 'targets_by_language/:state_language', action: 'targets_by_language', as: 'targets_by_language_in'
       patch 'set_language/:state_language', action: 'set_language', as: 'set_language_in'

@@ -42,6 +42,22 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
+  def facilitators
+    @project = Project.includes(language_streams: [:facilitator, {state_language: [:language, :geo_state]}, {ministry: {deliverables: :aggregate_ministry_outputs}}]).find(params[:id])
+    @outputs = {}
+    @project.language_streams.each do |lang_stream|
+      lang_stream.ministry.deliverables.facilitator.each do |deliverable|
+        @outputs[deliverable.id] ||= {}
+        deliverable.aggregate_ministry_outputs.each do |amo|
+          @outputs[deliverable.id][amo.month] ||= {}
+          @outputs[deliverable.id][amo.month][amo.actual] = [amo.id, amo.value]
+        end
+      end
+    end
+    Rails.logger.debug "outputs: #{@outputs}"
+    respond_to :js
+  end
+
   def edit_responsible
     @project = Project.includes(:geo_states).find(params[:id])
     respond_to :js
