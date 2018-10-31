@@ -220,7 +220,7 @@ class AndroidSyncController < ApplicationController
           tables.each do |table, attributes|
 
             join_table_data = Hash.new
-            columns = ["id"] + attributes
+            columns = Set.new ["id"] + attributes
             values = Array.new
 
             table_name = table.name.to_sym
@@ -267,6 +267,7 @@ class AndroidSyncController < ApplicationController
             file_2.write "INSERT INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             join_table_data.each do |join_table_names, data|
               puts "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
+                       "VALUES#{data.join ","};" unless data.empty?
               file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
                        "VALUES#{data.join ","};" unless data.empty?
             end
