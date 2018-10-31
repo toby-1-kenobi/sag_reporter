@@ -175,7 +175,22 @@ class AndroidSyncController < ApplicationController
       end
       @all_restricted_ids[table] = restricted_ids
     end
-    
+
+    def convert_value(value)
+      case value
+      when String
+        "'#{value}'"
+      when TrueClass
+        1
+      when FalseClass
+        0
+      when NilClass
+        "null"
+      else
+        value
+      end
+    end
+
     safe_params = [
         :has_translations,
         :first_download,
@@ -203,6 +218,7 @@ class AndroidSyncController < ApplicationController
           deleted_entries = Hash.new
           tables.each do |table, attributes|
             table_name = table.name.to_sym
+            columns = attributes + ["id"]
             offline_ids = send_request_params[table.name] || [0]
             has_entry = false
             restricted_ids = restrict(table)
@@ -212,6 +228,7 @@ class AndroidSyncController < ApplicationController
                 .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
               entry_data = Hash.new
               begin
+                values << "(#{entry.attributes.slice(*columns).values.map {|e| convert_value e}.join(",")})"
                 entry_data.merge!(entry.attributes.slice(*(attributes + ["id"])))
                 join_tables[table_name]&.each do |join_table|
                   entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
@@ -233,6 +250,7 @@ class AndroidSyncController < ApplicationController
               deleted_entries[table_name] = offline_ids - restricted_ids
             end
             file.write "]" if has_entry
+            puts "INSERT INTO #{table_name.downcase} (#{columns.join ","}) VALUES #{values};"
             ActiveRecord::Base.connection.query_cache.clear
           end
           unless deleted_entries.empty?
