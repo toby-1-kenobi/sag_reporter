@@ -35,6 +35,13 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
+  def team_deliverables
+    @project = Project.includes(:ministries).find(params[:id])
+    @team = ChurchTeam.includes(:ministries, { state_language: [:language, :geo_state] }).find(params[:team_id])
+    @common_ministries = @team.ministries.where(id: @project.ministries)
+    respond_to :js
+  end
+
   def edit_responsible
     @project = Project.includes(:geo_states).find(params[:id])
     respond_to :js

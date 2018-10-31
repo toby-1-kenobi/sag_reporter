@@ -1,2 +1,13 @@
 $('#teams-panel').html('<%= j render 'teams' %>');
+componentHandler.upgradeElements($('#teams-panel').find('.mdlext-accordion').get());
 $('#teams-tab').removeClass('dirty');
+
+$('#teams-accordion').on('toggle', function(event) {
+    if (event.detail.state == 'open' && $(event.detail.tab).hasClass('dirty')) {
+        const teamId = $(event.detail.tab).data('team-id');
+        var ajaxUrl = '<%= team_deliverables_in_project_url(@project, 'teamidplaceholder') %>'
+        ajaxUrl = ajaxUrl.replace('teamidplaceholder', teamId);
+        $.ajax({url: ajaxUrl});
+        $(event.detail.tab).removeClass('dirty');
+    }
+});

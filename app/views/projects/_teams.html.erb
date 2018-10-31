@@ -1,6 +1,14 @@
 <% if @teams.any? %>
-  <ul>
-    <%= render partial: 'team', collection: @teams %>
+  <ul id="teams-accordion" class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical mdlext-js-ripple-effect">
+    <% @teams.each do |team| %>
+      <li class="mdlext-accordion__panel">
+        <header class="mdlext-accordion__tab dirty" data-team-id="<%= team.id %>">
+          <span class="mdlext-accordion__tab__caption"><%= team.name %></span>
+        </header>
+        <section class="team-deliverables-panel mdlext-accordion__tabpanel" data-team-id="<%= team.id %>">
+        </section>
+      </li>
+    <% end %>
   </ul>
 <% else %>
   <p>There are no church teams in this project.</p>
