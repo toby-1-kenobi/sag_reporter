@@ -214,6 +214,7 @@ class AndroidSyncController < ApplicationController
           last_sync = Time.at send_request_params["last_sync"]
           this_sync = 5.seconds.ago
           file.write "{\"last_sync\":#{this_sync.to_i}"
+          file_2.write "UPDATE app SET last_sync = #{this_sync.to_i};"
           raise "No last sync variable" unless send_request_params["last_sync"]
           if send_request_params["first_download"]
             tables.except!(Person, Topic, ProgressMarker, Report, ImpactReport, UploadedFile, LanguageProgress, ProgressUpdate)
