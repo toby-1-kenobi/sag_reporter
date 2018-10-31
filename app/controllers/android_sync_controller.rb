@@ -63,7 +63,7 @@ class AndroidSyncController < ApplicationController
                 .merge(external_device_registered: !entry.external_devices.empty?)
           else
             %w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description)
-                .map{|key| [key, null]}.to_h
+                .map{|key| [key, nil]}.to_h
                 .merge(external_device_registered: !entry.external_devices.empty?)
           end
         else
