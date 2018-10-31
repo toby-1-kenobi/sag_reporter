@@ -70,25 +70,72 @@ class AndroidSyncController < ApplicationController
     end
     @all_restricted_ids = Hash.new
     def restrict(table)
-      if table == User
-        project_ids = ProjectStream.where(supervisor_id: @external_user.id).map(&:project_id) + ProjectSupervisor.where(user_id: @external_user.id).map(&:project_id)
-        if project_ids.empty?
-          restricted_ids = [@external_user.id]
-        elsif @external_user.trusted?
-          restricted_ids = table.ids
+      table_implementation = table.new
+      unless @project_ids && @state_language_ids && @language_ids && @geo_state_ids
+        @project_ids = ProjectStream.where(supervisor: @external_user).map(&:project_id) +
+            ProjectSupervisor.where(user: @external_user).map(&:project_id)
+        @state_language_ids = Project.includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
+            LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
+            ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id)
+        state_languages = StateLanguage.where(id:@state_language_ids)
+        @language_ids = state_languages.map &:language_id
+        @geo_state_ids = state_languages.map &:geo_state_id
+      end
+      restricted_ids =
+        case table_implementation
+        when User
+          if project_ids.empty?
+            [@external_user.id]
+          elsif @external_user.trusted?
+            table.where(state_language_id: @state_language_ids).ids
+          else
+            LanguageStream.where(project_id: project_ids).map(&:facilitator_id) + [@external_user.id]
+          end
+        when Language
+          table.where(id: @language_ids).ids
+        when GeoState
+          table.where(id: @geo_state_ids).ids
+        when Project
+          table.where(id: @geo_state_ids).ids
+        when StateLanguage
+          table.where(id: @state_language_ids).ids
+        when MtResource
+          table.where(language_id: @language_ids, geo_state_id: @geo_state_ids).ids
+        when Report
+          table.where("report_date >= ?", Date.new(2018, 1, 1)).where(significant: true)
+              .where(geo_state_id: @geo_state_ids).language(@language_ids).ids
+        when Translation
+          table.where.not(translation_code: nil).ids
+        when UploadedFile
+          table.where(report_id: @all_restricted_ids[Report]).ids
+        when ChurchTeam
+          table.where(state_language_id: @state_language_ids).ids
+        when ChurchMinistry
+          table.where(church_team_id: @all_restricted_ids[ChurchTeam]).ids
+        when QuarterlyTarget
+          table.where(state_language_id: @state_language_ids).ids
+        when AggregateMinistryOutput
+          table.where(state_language_id: @state_language_ids).ids
+        when MinistryOutput
+          table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry]).ids
+        when FacilitatorFeedback
+          table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry]).ids
+        when ProjectStream
+          table.where(project_id: @all_restricted_ids[Project]).ids
+        when ProjectSupervisor
+          table.where(project_id: @all_restricted_ids[Project]).ids
+        when LanguageStream
+          table.where(state_language_id: @state_language_ids).ids
+        when ImpactReport
+          table.joins(:report).where(reports:{id: @all_restricted_ids[Report]}).ids
+        when Person
+          table.joins(:reports).where(reports:{id: @all_restricted_ids[Report]}).ids
         else
-          restricted_ids = LanguageStream.where(project_id: project_ids).map(&:facilitator_id) + [@external_user.id]
-        end
-      elsif table == Report
-        restricted_ids = table.where("report_date >= '2018-1-1' AND significant = true").ids
-      elsif table == Translation
-        restricted_ids = table.where.not(translation_code: nil).ids
-      else
-        restricted_ids = table.ids
+          table.ids
       end
       unless @external_user.national
         user_geo_states = @external_user.geo_state_ids
-        restricted_ids = case table.new
+        restricted_ids = case table_implementation
           when StateLanguage
             table.where(id: restricted_ids, geo_state_id: user_geo_states).ids
           when Person
@@ -99,27 +146,25 @@ class AndroidSyncController < ApplicationController
             table.where(id: restricted_ids, geo_state_id: user_geo_states).ids
             
           when ChurchTeam
-            table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage]}).ids
           when LanguageProgress
-            table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage]}).ids
           when Language
-            table.joins(:state_languages).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_languages).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage]}).ids
           when ProgressUpdate
-            table.where(id: restricted_ids, language_progress_id: @all_restricted_ids[LanguageProgress.name]).ids
-          when ChurchMinistry
-            table.where(id: restricted_ids, church_team_id: @all_restricted_ids[ChurchTeam.name]).ids
+            table.where(id: restricted_ids, language_progress_id: @all_restricted_ids[LanguageProgress]).ids
           when MinistryOutput
-            table.where(id: restricted_ids, church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
+            table.where(id: restricted_ids, church_ministry_id: @all_restricted_ids[ChurchMinistry]).ids
           when FacilitatorFeedback
-            table.where(id: restricted_ids, church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
+            table.where(id: restricted_ids, church_ministry_id: @all_restricted_ids[ChurchMinistry]).ids
           when Project
-            table.joins(:state_languages).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_languages).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage]}).ids
           else
             restricted_ids
         end
       end
       unless @external_user.trusted
-        restricted_ids = case table.new
+        restricted_ids = case table_implementation
           when Organisation
             table.where(church: true).ids
           when Report
@@ -129,15 +174,7 @@ class AndroidSyncController < ApplicationController
             restricted_ids
         end
       end
-      #just send pictures, which have a valid report_id
-      if table == UploadedFile
-        restricted_ids = table.where(id: restricted_ids, report_id: @all_restricted_ids[Report.name]).ids
-      elsif table == ImpactReport
-        table.joins(:report).where(id: restricted_ids, reports:{id: @all_restricted_ids[Report.name]}).ids
-      elsif table == Person
-        table.joins(:reports).where(id: restricted_ids, reports:{id: @all_restricted_ids[Report.name]}).ids
-      end
-      @all_restricted_ids[table.name] = restricted_ids
+      @all_restricted_ids[table] = restricted_ids
     end
     
     safe_params = [
@@ -162,7 +199,7 @@ class AndroidSyncController < ApplicationController
           file.write "{\"last_sync\":#{this_sync.to_i}"
           raise "No last sync variable" unless send_request_params["last_sync"]
           if send_request_params["first_download"]
-            tables.except!(Person, Topic, ProgressMarker, Report, ImpactReport, UploadedFile, LanguageProgress, ProgressUpdate, QuarterlyTarget)
+            tables.except!(Person, Topic, ProgressMarker, Report, ImpactReport, UploadedFile, LanguageProgress, ProgressUpdate)
           end
           deleted_entries = Hash.new
           tables.each do |table, attributes|
