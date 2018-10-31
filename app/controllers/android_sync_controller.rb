@@ -87,7 +87,7 @@ class AndroidSyncController < ApplicationController
           if @project_ids.empty?
             [@external_user.id]
           elsif @external_user.trusted?
-            table.where(state_language_id: @state_language_ids).ids
+            table.ids
           else
             LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id]
           end
