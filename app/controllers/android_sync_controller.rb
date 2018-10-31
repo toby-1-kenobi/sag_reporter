@@ -60,7 +60,7 @@ class AndroidSyncController < ApplicationController
           if entry.id == @external_user.id
             entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
                 .merge(geo_state_ids: entry.geo_state_ids)
-                .merge({external_device_registered: !entry.external_devices.empty?})
+                .merge(external_device_registered: !entry.external_devices.empty?)
           else
             {external_device_registered: !entry.external_devices.empty?}
           end
@@ -197,7 +197,7 @@ class AndroidSyncController < ApplicationController
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
     
-    version = send_request_params["version"]
+    version = send_request_params["version"] || ""
     @final_file = Tempfile.new
     @final_file_2 = Tempfile.new
     if version > "1.3.6"
@@ -263,8 +263,10 @@ class AndroidSyncController < ApplicationController
             end
             file.write "]" if has_entry
             values.map! {|value| "(#{value.join(",")})"}
+            puts "INSERT INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             file_2.write "INSERT INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             join_table_data.each do |join_table_names, data|
+              puts "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
               file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
                        "VALUES#{data.join ","};" unless data.empty?
             end
@@ -274,6 +276,7 @@ class AndroidSyncController < ApplicationController
             file.write ",\"deleted\":"
             file.write deleted_entries.to_json
             deleted_entries.each do |table, ids|
+                puts "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.join ","});"
                 file_2.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.join ","});"
             end
           end
