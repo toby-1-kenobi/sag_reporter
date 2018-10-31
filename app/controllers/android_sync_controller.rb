@@ -84,12 +84,12 @@ class AndroidSyncController < ApplicationController
       restricted_ids =
         case table_implementation
         when User
-          if project_ids.empty?
+          if @project_ids.empty?
             [@external_user.id]
           elsif @external_user.trusted?
             table.where(state_language_id: @state_language_ids).ids
           else
-            LanguageStream.where(project_id: project_ids).map(&:facilitator_id) + [@external_user.id]
+            LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id]
           end
         when Language
           table.where(id: @language_ids).ids
