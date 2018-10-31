@@ -40,7 +40,6 @@ class AndroidSyncController < ApplicationController
         FacilitatorFeedback => %w(church_ministry_id month plan_feedback plan_team_member_id plan_response facilitator_plan result_feedback result_response result_team_member_id progress)
     }
     join_tables = {
-        User: %w(),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
@@ -179,7 +178,7 @@ class AndroidSyncController < ApplicationController
     def convert_value(value)
       case value
       when String
-        "'#{value}'"
+        "'#{value.gsub("'","''")}'"
       when TrueClass
         1
       when FalseClass
@@ -192,22 +191,24 @@ class AndroidSyncController < ApplicationController
     end
 
     safe_params = [
-        :has_translations,
+        :version,
         :first_download,
         :last_sync
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
     
-    unless send_request_params["has_translations"]
-      send_request_params["Ministry"] = nil
-      send_request_params["Deliverable"] = nil
-      send_request_params["ProgressMarker"] = nil
-    end
+    version = send_request_params["version"]
     @final_file = Tempfile.new
-    render json: {data: "#{@final_file.path}.txt"}, status: :ok
+    @final_file_2 = Tempfile.new
+    if version > "1.3.6"
+      render json: {data: "#{@final_file_2.path}.txt"}, status: :ok
+    else
+      render json: {data: "#{@final_file.path}.txt"}, status: :ok
+    end
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
+          File.open(@final_file_2, "w") do |file_2|
           last_sync = Time.at send_request_params["last_sync"]
           this_sync = 5.seconds.ago
           file.write "{\"last_sync\":#{this_sync.to_i}"
@@ -217,9 +218,12 @@ class AndroidSyncController < ApplicationController
           end
           deleted_entries = Hash.new
           tables.each do |table, attributes|
+
+            join_table_data = Hash.new
+            columns = ["id"] + attributes
+            values = Array.new
+
             table_name = table.name.to_sym
-            values = Hash.new
-            columns = attributes + ["id"]
             offline_ids = send_request_params[table.name] || [0]
             has_entry = false
             restricted_ids = restrict(table)
@@ -229,12 +233,19 @@ class AndroidSyncController < ApplicationController
                 .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
               entry_data = Hash.new
               begin
-                values << "(#{entry.attributes.slice(*columns).values.map {|e| convert_value e}.join(",")})"
+                entry_values = entry.attributes.slice(*columns).values.map {|e| convert_value e}
                 entry_data.merge!(entry.attributes.slice(*(attributes + ["id"])))
                 join_tables[table_name]&.each do |join_table|
-                  entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
+                  foreign_ids = entry.send(join_table.singularize.foreign_key.pluralize)
+                  entry_data.merge!({join_table => foreign_ids})
+                  identifier = [table.name.underscore, join_table]
+                  join_table_data[identifier] ||= Array.new
+                  join_table_data[identifier] += foreign_ids.map{|foreign_id| "(#{entry.id},#{foreign_id})"}
                 end
-                entry_data.merge! additional_tables(entry)
+                additions = additional_tables(entry)
+                entry_data.merge! additions
+                entry_values += additions.map{|k,v| columns << k.to_s; convert_value(v)}
+                values << entry_values
                 if has_entry
                   file.write(",")
                 else
@@ -251,26 +262,43 @@ class AndroidSyncController < ApplicationController
               deleted_entries[table_name] = offline_ids - restricted_ids
             end
             file.write "]" if has_entry
-            puts "INSERT INTO #{table_name.downcase} (#{columns.join ","}) VALUES #{values};"
+            values.map! {|value| "(#{value.join(",")})"}
+            file_2.write "INSERT INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
+            join_table_data.each do |join_table_names, data|
+              file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
+                       "VALUES#{data.join ","};" unless data.empty?
+            end
             ActiveRecord::Base.connection.query_cache.clear
           end
           unless deleted_entries.empty?
             file.write ",\"deleted\":"
             file.write deleted_entries.to_json
+            deleted_entries.each do |table, ids|
+                file_2.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.join ","});"
+            end
           end
           file.write "}"
+          end
         end
       rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
         logger.error send_message
-        file_path = @final_file.path
+        file_path = version > "1.3.6"? @final_file_2.path: @final_file.path
         @final_file.delete
+        @final_file_2.delete
         @final_file = File.new file_path, "w"
         @final_file.write send_message
       ensure
         @final_file.close unless @final_file.closed?
+        @final_file_2.close unless @final_file_2.closed?
         logger.debug "File writing finished"
-        File.rename(@final_file, "#{@final_file.path}.txt")
+        if version > "1.3.6"
+          File.rename(@final_file_2, "#{@final_file_2.path}.txt")
+          @final_file.delete
+        else
+          File.rename(@final_file, "#{@final_file.path}.txt")
+          @final_file_2.delete
+        end
         ActiveRecord::Base.connection.close
       end
     end
