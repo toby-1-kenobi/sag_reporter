@@ -179,6 +179,8 @@ class AndroidSyncController < ApplicationController
 
     def convert_value(value)
       case value
+      when Date
+        value.strftime("'%Y-%m-%d'")
       when String
         "'#{value.gsub("'","''")}'"
       when TrueClass
