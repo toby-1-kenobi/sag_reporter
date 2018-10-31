@@ -25,9 +25,9 @@ class AndroidSyncController < ApplicationController
         ChurchTeam => %w(name organisation_id leader state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(topic_id name_id code),
-        Deliverable => %w(ministry_id calculation_method reporter, short_form_id, plan_form_id, result_form_id number),
+        Deliverable => %w(ministry_id calculation_method reporter short_form_id plan_form_id result_form_id number),
         TranslationCode => %w(),
-        Translation => %w(language_id, content translation_code_id),
+        Translation => %w(language_id content translation_code_id),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
@@ -96,7 +96,7 @@ class AndroidSyncController < ApplicationController
         when GeoState
           table.where(id: @geo_state_ids).ids
         when Project
-          table.where(id: @geo_state_ids).ids
+          table.where(id: @project_ids).ids
         when StateLanguage
           table.where(id: @state_language_ids).ids
         when MtResource
@@ -104,8 +104,6 @@ class AndroidSyncController < ApplicationController
         when Report
           table.where("report_date >= ?", Date.new(2018, 1, 1)).where(significant: true)
               .where(geo_state_id: @geo_state_ids).language(@language_ids).ids
-        when Translation
-          table.where.not(translation_code: nil).ids
         when UploadedFile
           table.where(report_id: @all_restricted_ids[Report]).ids
         when ChurchTeam
