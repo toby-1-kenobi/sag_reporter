@@ -50,7 +50,7 @@ class ProjectsController < ApplicationController
         @outputs[deliverable.id] ||= {}
         deliverable.aggregate_ministry_outputs.each do |amo|
           @outputs[deliverable.id][amo.month] ||= {}
-          @outputs[deliverable.id][amo.month][amo.actual] = [amo.id, amo.value]
+          @outputs[deliverable.id][amo.month][amo.actual] = amo.value
         end
       end
     end

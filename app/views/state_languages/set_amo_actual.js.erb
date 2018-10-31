@@ -1,0 +1,7 @@
+<% sl = @amo.state_language_id %>
+<% del = @amo.deliverable_id %>
+<% m = @amo.month %>
+<% fac = @amo.creator_id %>
+
+const editedCell = $('.amo-actual[data-state-language="<%= sl %>"][data-deliverable="<%= del %>"][data-month="<%= m %>"][data-fac="<%= fac %>"]');
+editedCell.find('input').removeClass('dirty');

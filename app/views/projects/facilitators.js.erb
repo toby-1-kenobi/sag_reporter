@@ -1,3 +1,10 @@
 $('#facs-panel').html('<%= j render 'facilitators' %>');
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-tooltip').get());
 $('#facs-tab').removeClass('dirty');
+
+$('.amo-actual-input').on('input', function(){
+    $(this).find('input').addClass('dirty');
+});
+$('.amo-actual-input').on('change', function(){
+    $(this).closest('form').submit();
+});
