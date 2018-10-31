@@ -218,6 +218,7 @@ class AndroidSyncController < ApplicationController
           deleted_entries = Hash.new
           tables.each do |table, attributes|
             table_name = table.name.to_sym
+            values = Hash.new
             columns = attributes + ["id"]
             offline_ids = send_request_params[table.name] || [0]
             has_entry = false
