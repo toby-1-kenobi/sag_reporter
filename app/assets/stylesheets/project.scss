@@ -68,10 +68,10 @@ table.supervisors .supervisor-name {
   }
 }
 
-td.quarterly-target {
+td.quarterly-target, td.amo-actual {
   padding-left: 8px !important;
   padding-right: 8px !important;
-  .quarterly-target-input {
+  .quarterly-target-input, .amo-actual-input {
     width: 40px !important;
     input.dirty {
       background-color: beige;
@@ -82,4 +82,13 @@ td.quarterly-target {
 td.annual-target {
   font-size: large;
   font-weight: bold;
+}
+
+.project-facilitator-header {
+  font-size: large;
+  margin: 1ex;
+  margin-top: 3ex;
+  span {
+    font-weight: bold;
+  }
 }

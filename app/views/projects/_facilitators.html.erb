@@ -1,0 +1,66 @@
+<% if @project.facilitators.any? %>
+  <% multi_state = @project.geo_states.uniq.count > 1 %>
+  <% @project.language_streams.each do |lang_stream| %>
+    <div class="project-facilitator-header">
+      <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
+      facilitating <span class="stream-name"><%= lang_stream.ministry.name %></span>
+      for <span class="state-language-name"><%= lang_stream.state_language.name(multi_state) %></span>
+    </div>
+    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+      <thead>
+        <tr>
+          <th rowspan="2" class="mdl-data-table__cell--non-numeric">Deliverable</th>
+          <% 2.downto(0).each do |n| %>
+            <th colspan="2" class="mdl-data-table__cell--non-numeric"><%= n.months.ago.strftime("%B") %></th>
+          <% end %>
+        </tr>
+        <tr>
+          <% 3.times do %>
+            <th>Target</th><th>Actual</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% lang_stream.ministry.deliverables.facilitator.each do |deliverable| %>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric">
+              <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>
+            </td>
+
+            <% 2.downto(0).each do |n| %>
+              <% if @outputs[deliverable.id] and @outputs[deliverable.id][n.months.ago.strftime("%Y-%m")] %>
+                <% target = @outputs[deliverable.id][n.months.ago.strftime("%Y-%m")][false] || '?' %>
+                <% actual = @outputs[deliverable.id][n.months.ago.strftime("%Y-%m")][true] || '' %>
+              <% else %>
+                <% target, actual = '?', '' %>
+              <% end %>
+              <td><%= target %></td>
+              <td class="amo-actual"
+                  data-state-language="<%= lang_stream.state_language_id %>"
+                  data-deliverable="<%= deliverable.id %>"
+                  data-month="<%= n.months.ago.strftime("%Y-%m") %>"
+                  data-fac="<%= lang_stream.facilitator_id %>"
+              >
+                <%= form_tag set_amo_actual_in_state_language_path(lang_stream.state_language, deliverable, n.months.ago.strftime("%Y-%m"), lang_stream.facilitator), method: :patch, remote: true do %>
+                  <div class="mdl-textfield mdl-js-textfield amo-actual-input">
+                    <input class="mdl-textfield__input"
+                           type="text"
+                           pattern="[0-9]*(\.[0-9]+)?"
+                           name="actual"
+                           value="<%= actual %>">
+                    <span class="mdl-textfield__error">Enter a number</span>
+                  </div>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+          <div class="mdl-tooltip mdl-tooltip--larg" data-mdl-for="deliverable-name-<%= deliverable.id %>">
+            <%= deliverable.result_form.en %>
+          </div>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+<% else %>
+  <p>No facilitators in this project.</p>
+<% end %>

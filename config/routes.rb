@@ -142,6 +142,7 @@ Rails.application.routes.draw do
     member do
       get 'teams'
       get 'team_deliverables/:team_id', action: 'team_deliverables', as: 'team_deliverables_in'
+      get 'facilitators'
       get 'edit_responsible'
       get 'targets_by_language/:state_language', action: 'targets_by_language', as: 'targets_by_language_in'
       patch 'set_language/:state_language', action: 'set_language', as: 'set_language_in'
@@ -178,6 +179,7 @@ Rails.application.routes.draw do
   resources :state_languages, only: [] do
     member do
       patch 'set_target/:deliverable/:quarter', action: 'set_target', as: 'set_target_in'
+      patch 'set_amo_actual/:deliverable/:month/:facilitator', action: 'set_amo_actual', as: 'set_amo_actual_in'
       patch 'copy_targets_from/:source/:project', action: 'copy_targets', as: 'copy_targets_to'
     end
   end

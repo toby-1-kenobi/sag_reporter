@@ -160,6 +160,18 @@ class StateLanguagesController < ApplicationController
     respond_to :js
   end
 
+  def set_amo_actual
+    @amo = AggregateMinistryOutput.find_or_create_by(
+        state_language_id: params[:id],
+        deliverable_id: params[:deliverable],
+        month: params[:month],
+        creator_id: params[:facilitator],
+        actual: true
+    )
+    @amo.update_attribute(:value, params[:actual].to_i)
+    respond_to :js
+  end
+
   def copy_targets
     # do nothing if the source and target languages are the same
     if params[:id].to_i != params[:source].to_i
