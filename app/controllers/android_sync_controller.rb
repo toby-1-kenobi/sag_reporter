@@ -40,7 +40,7 @@ class AndroidSyncController < ApplicationController
         FacilitatorFeedback => %w(church_ministry_id month plan_feedback plan_team_member_id plan_response facilitator_plan result_feedback result_response result_team_member_id progress)
     }
     join_tables = {
-        User: %w(geo_states spoken_languages),
+        User: %w(),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
@@ -60,6 +60,7 @@ class AndroidSyncController < ApplicationController
         when User
           if entry.id == @external_user.id
             entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
+                .merge(geo_state_ids: entry.geo_state_ids)
                 .merge({external_device_registered: !entry.external_devices.empty?})
           else
             {external_device_registered: !entry.external_devices.empty?}
