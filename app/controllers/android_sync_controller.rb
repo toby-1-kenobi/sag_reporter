@@ -9,7 +9,7 @@ class AndroidSyncController < ApplicationController
   def send_request
     tables = {
         User => %w(name),
-        GeoState => %w(name zone_id),
+        GeoState => %w(name),
         Language => %w(name colour),
 #        Person => %w(name geo_state_id),
         Topic => %w(name colour),
@@ -22,12 +22,12 @@ class AndroidSyncController < ApplicationController
 #        LanguageProgress => %w(progress_marker_id state_language_id),
 #        ProgressUpdate => %w(user_id language_progress_id progress month year),
         StateLanguage => %w(geo_state_id language_id project),
-        ChurchTeam => %w(name organisation_id leader state_language_id),
+        ChurchTeam => %w(organisation_id leader state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(topic_id name_id code),
-        Deliverable => %w(ministry_id calculation_method reporter, short_form_id, plan_form_id, result_form_id number),
+        Deliverable => %w(ministry_id calculation_method reporter short_form_id plan_form_id result_form_id number),
         TranslationCode => %w(),
-        Translation => %w(language_id, content translation_code_id),
+        Translation => %w(language_id content translation_code_id),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
         ProductCategory => %w(number),
         Project => %w(name),
@@ -40,7 +40,7 @@ class AndroidSyncController < ApplicationController
         FacilitatorFeedback => %w(church_ministry_id month plan_feedback plan_team_member_id plan_response facilitator_plan result_feedback result_response result_team_member_id progress)
     }
     join_tables = {
-        User: %w(geo_states spoken_languages),
+        User: %w(geo_states),
         Report: %w(languages observers),
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
@@ -60,9 +60,11 @@ class AndroidSyncController < ApplicationController
         when User
           if entry.id == @external_user.id
             entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
-                .merge({external_device_registered: !entry.external_devices.empty?})
+                .merge(external_device_registered: !entry.external_devices.empty?)
           else
-            {external_device_registered: !entry.external_devices.empty?}
+            {phone: nil, mother_tongue_id: nil, interface_language_id: nil, email: nil,
+             trusted: false, national: false, admin: false, national_curator: false, role_description: nil}
+                .merge(external_device_registered: !entry.external_devices.empty?)
           end
         else
           {}
@@ -70,25 +72,70 @@ class AndroidSyncController < ApplicationController
     end
     @all_restricted_ids = Hash.new
     def restrict(table)
-      if table == User
-        project_ids = ProjectStream.where(supervisor_id: @external_user.id).map(&:project_id) + ProjectSupervisor.where(user_id: @external_user.id).map(&:project_id)
-        if project_ids.empty?
-          restricted_ids = [@external_user.id]
-        elsif @external_user.trusted?
-          restricted_ids = table.ids
+      table_implementation = table.new
+      unless @project_ids && @state_language_ids && @language_ids && @geo_state_ids
+        @project_ids = ProjectStream.where(supervisor: @external_user).map(&:project_id) +
+            ProjectSupervisor.where(user: @external_user).map(&:project_id)
+        @state_language_ids = Project.includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
+            LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
+            ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id)
+        state_languages = StateLanguage.where(id:@state_language_ids)
+        @language_ids = state_languages.map &:language_id
+        @geo_state_ids = state_languages.map &:geo_state_id
+      end
+      restricted_ids =
+        case table_implementation
+        when User
+          if @project_ids.empty?
+            [@external_user.id]
+          elsif @external_user.trusted?
+            table.ids
+          else
+            LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id]
+          end
+        when Language
+          table.where(id: @language_ids).ids
+        when GeoState
+          table.where(id: @geo_state_ids).ids
+        when Project
+          table.where(id: @project_ids).ids
+        when StateLanguage
+          table.where(id: @state_language_ids).ids
+        when MtResource
+          table.where(language_id: @language_ids, geo_state_id: @geo_state_ids).ids
+        when Report
+          table.where("report_date >= ?", Date.new(2018, 1, 1)).where(significant: true)
+              .where(geo_state_id: @geo_state_ids).language(@language_ids).ids
+        when UploadedFile
+          table.where(report_id: @all_restricted_ids[Report]).ids
+        when ChurchTeam
+          table.where(state_language_id: @state_language_ids).ids
+        when ChurchMinistry
+          table.where(church_team_id: @all_restricted_ids[ChurchTeam]).ids
+        when QuarterlyTarget
+          table.where(state_language_id: @state_language_ids).ids
+        when AggregateMinistryOutput
+          table.where(state_language_id: @state_language_ids).ids
+        when MinistryOutput
+          table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry]).ids
+        when FacilitatorFeedback
+          table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry]).ids
+        when ProjectStream
+          table.where(project_id: @all_restricted_ids[Project]).ids
+        when ProjectSupervisor
+          table.where(project_id: @all_restricted_ids[Project]).ids
+        when LanguageStream
+          table.where(state_language_id: @state_language_ids).ids
+        when ImpactReport
+          table.joins(:report).where(reports:{id: @all_restricted_ids[Report]}).ids
+        when Person
+          table.joins(:reports).where(reports:{id: @all_restricted_ids[Report]}).ids
         else
-          restricted_ids = LanguageStream.where(project_id: project_ids).map(&:facilitator_id) + [@external_user.id]
-        end
-      elsif table == Report
-        restricted_ids = table.where("report_date >= '2018-1-1' AND significant = true").ids
-      elsif table == Translation
-        restricted_ids = table.where.not(translation_code: nil).ids
-      else
-        restricted_ids = table.ids
+          table.ids
       end
       unless @external_user.national
         user_geo_states = @external_user.geo_state_ids
-        restricted_ids = case table.new
+        restricted_ids = case table_implementation
           when StateLanguage
             table.where(id: restricted_ids, geo_state_id: user_geo_states).ids
           when Person
@@ -99,27 +146,25 @@ class AndroidSyncController < ApplicationController
             table.where(id: restricted_ids, geo_state_id: user_geo_states).ids
             
           when ChurchTeam
-            table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage]}).ids
           when LanguageProgress
-            table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage]}).ids
           when Language
-            table.joins(:state_languages).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_languages).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage]}).ids
           when ProgressUpdate
-            table.where(id: restricted_ids, language_progress_id: @all_restricted_ids[LanguageProgress.name]).ids
-          when ChurchMinistry
-            table.where(id: restricted_ids, church_team_id: @all_restricted_ids[ChurchTeam.name]).ids
+            table.where(id: restricted_ids, language_progress_id: @all_restricted_ids[LanguageProgress]).ids
           when MinistryOutput
-            table.where(id: restricted_ids, church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
+            table.where(id: restricted_ids, church_ministry_id: @all_restricted_ids[ChurchMinistry]).ids
           when FacilitatorFeedback
-            table.where(id: restricted_ids, church_ministry_id: @all_restricted_ids[ChurchMinistry.name]).ids
+            table.where(id: restricted_ids, church_ministry_id: @all_restricted_ids[ChurchMinistry]).ids
           when Project
-            table.joins(:state_languages).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage.name]}).ids
+            table.joins(:state_languages).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage]}).ids
           else
             restricted_ids
         end
       end
       unless @external_user.trusted
-        restricted_ids = case table.new
+        restricted_ids = case table_implementation
           when Organisation
             table.where(church: true).ids
           when Report
@@ -129,43 +174,60 @@ class AndroidSyncController < ApplicationController
             restricted_ids
         end
       end
-      #just send pictures, which have a valid report_id
-      if table == UploadedFile
-        restricted_ids = table.where(id: restricted_ids, report_id: @all_restricted_ids[Report.name]).ids
-      elsif table == ImpactReport
-        table.joins(:report).where(id: restricted_ids, reports:{id: @all_restricted_ids[Report.name]}).ids
-      elsif table == Person
-        table.joins(:reports).where(id: restricted_ids, reports:{id: @all_restricted_ids[Report.name]}).ids
-      end
-      @all_restricted_ids[table.name] = restricted_ids
+      @all_restricted_ids[table] = restricted_ids
     end
-    
+
+    def convert_value(value)
+      case value
+      when Date
+        value.strftime("'%Y-%m-%d'")
+      when String
+        "'#{value.gsub("'","''")}'"
+      when TrueClass
+        1
+      when FalseClass
+        0
+      when NilClass
+        "null"
+      else
+        value
+      end
+    end
+
     safe_params = [
-        :has_translations,
+        :version,
         :first_download,
         :last_sync
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
     
-    unless send_request_params["has_translations"]
-      send_request_params["Ministry"] = nil
-      send_request_params["Deliverable"] = nil
-      send_request_params["ProgressMarker"] = nil
-    end
+    version = send_request_params["version"] || ""
     @final_file = Tempfile.new
-    render json: {data: "#{@final_file.path}.txt"}, status: :ok
+    @final_file_2 = Tempfile.new
+    if version > "1.3.6"
+      render json: {data: "#{@final_file_2.path}.txt"}, status: :ok
+    else
+      render json: {data: "#{@final_file.path}.txt"}, status: :ok
+    end
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
+          File.open(@final_file_2, "w") do |file_2|
           last_sync = Time.at send_request_params["last_sync"]
           this_sync = 5.seconds.ago
           file.write "{\"last_sync\":#{this_sync.to_i}"
+          file_2.write "UPDATE app SET last_sync = #{this_sync.to_i};"
           raise "No last sync variable" unless send_request_params["last_sync"]
           if send_request_params["first_download"]
             tables.except!(Person, Topic, ProgressMarker, Report, ImpactReport, UploadedFile, LanguageProgress, ProgressUpdate)
           end
           deleted_entries = Hash.new
           tables.each do |table, attributes|
+
+            join_table_data = Hash.new
+            columns = Set.new ["id"] + attributes
+            values = Array.new
+
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
             has_entry = false
@@ -176,11 +238,19 @@ class AndroidSyncController < ApplicationController
                 .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
               entry_data = Hash.new
               begin
-                entry_data.merge!(entry.attributes.slice(*(attributes + ["id"])))
+                entry_values = entry.attributes.slice(*(["id"] + attributes)).values.map {|e| convert_value e}
+                entry_data.merge!(entry.attributes.slice(*(["id"] + attributes)))
                 join_tables[table_name]&.each do |join_table|
-                  entry_data.merge!({join_table => entry.send(join_table.singularize.foreign_key.pluralize)})
+                  foreign_ids = entry.send(join_table.singularize.foreign_key.pluralize)
+                  entry_data.merge!({join_table => foreign_ids})
+                  identifier = [table.name.underscore, join_table]
+                  join_table_data[identifier] ||= Array.new
+                  join_table_data[identifier] += foreign_ids.map{|foreign_id| [entry.id,foreign_id]}
                 end
-                entry_data.merge! additional_tables(entry)
+                additions = additional_tables(entry)
+                entry_data.merge! additions
+                entry_values += additions.map{|k,v| columns << k.to_s; convert_value(v)}
+                values << entry_values
                 if has_entry
                   file.write(",")
                 else
@@ -197,25 +267,50 @@ class AndroidSyncController < ApplicationController
               deleted_entries[table_name] = offline_ids - restricted_ids
             end
             file.write "]" if has_entry
+            columns << "is_online"
+            values.map! {|value| "(#{(value+[1]).join(",")})"}
+            puts "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
+            file_2.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
+            join_table_data.each do |join_table_names, data|
+              puts "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).join ","});"
+              file_2.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).join ","});"
+              puts "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
+                       "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
+              file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
+                       "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
+            end
             ActiveRecord::Base.connection.query_cache.clear
           end
           unless deleted_entries.empty?
             file.write ",\"deleted\":"
             file.write deleted_entries.to_json
+            deleted_entries.each do |table, ids|
+                puts "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.join ","});"
+                file_2.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.join ","});"
+            end
           end
           file.write "}"
+          end
         end
       rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
         logger.error send_message
-        file_path = @final_file.path
+        file_path = version > "1.3.6"? @final_file_2.path: @final_file.path
         @final_file.delete
+        @final_file_2.delete
         @final_file = File.new file_path, "w"
         @final_file.write send_message
       ensure
         @final_file.close unless @final_file.closed?
+        @final_file_2.close unless @final_file_2.closed?
         logger.debug "File writing finished"
-        File.rename(@final_file, "#{@final_file.path}.txt")
+        if version > "1.3.6"
+          File.rename(@final_file_2, "#{@final_file_2.path}.txt")
+          @final_file.delete
+        else
+          File.rename(@final_file, "#{@final_file.path}.txt")
+          @final_file_2.delete
+        end
         ActiveRecord::Base.connection.close
       end
     end
@@ -287,15 +382,6 @@ class AndroidSyncController < ApplicationController
 
   def receive_request
     begin
-      @foreign_key_names = {
-          picture: :uploaded_file,
-          reporter: :user,
-          creator: :user,
-          facilitator: :user,
-          team_member: :user,
-          supervisor: :user,
-          observer: :person,
-      }
       # The following tables have to be in the order, that they only contain IDs of the previous ones
       safe_params = [
           :is_only_test,
@@ -452,6 +538,16 @@ class AndroidSyncController < ApplicationController
 
   private
 
+  def foreign_key_names(table_name)
+    {picture: :uploaded_file,
+     reporter: :user,
+     creator: :user,
+     facilitator: :user,
+     team_member: :user,
+     supervisor: :user,
+     observer: :person}[table_name.to_sym]&.to_s || table_name
+  end
+
   # receive_request methods:
 
   def build(table, hash)
@@ -480,7 +576,7 @@ class AndroidSyncController < ApplicationController
       hash.clone.each do |k, v|
         if k.last(4) == "_ids" && v.is_a?(Array)
           foreign_table = k.remove("_ids")
-          foreign_table = @foreign_key_names[foreign_table .to_sym]&.to_s || foreign_table
+          foreign_table = foreign_key_names(foreign_table)
           foreign_table = foreign_table.camelcase
           hash[k.remove("_ids").pluralize] = v.map do |element|
             @id_changes.dig(foreign_table, element) || foreign_table.constantize.find(element)
@@ -488,7 +584,7 @@ class AndroidSyncController < ApplicationController
           hash.delete k
         elsif k.last(3) == "_id" && k != "old_id"
           foreign_table = k.remove("_id")
-          foreign_table = @foreign_key_names[foreign_table.to_sym]&.to_s || foreign_table
+          foreign_table = foreign_key_names(foreign_table)
           foreign_table = foreign_table.camelcase
           hash[k.remove("_id")] = @id_changes.dig(foreign_table, v) || foreign_table.constantize.find(v)
           hash.delete k

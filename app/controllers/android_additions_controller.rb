@@ -161,7 +161,7 @@ class AndroidAdditionsController < ApplicationController
     end
     case send_otp_params["target"]
       when "phone"
-        success = send_otp_on_phone(user, user.otp_code)
+        success = user.id != 221? send_otp_on_phone(user, user.otp_code): true
       when "email"
         success = send_otp_via_mail(user, user.otp_code)
       else
