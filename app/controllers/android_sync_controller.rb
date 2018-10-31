@@ -236,8 +236,8 @@ class AndroidSyncController < ApplicationController
                 .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
               entry_data = Hash.new
               begin
-                entry_values = entry.attributes.slice(*columns).values.map {|e| convert_value e}
-                entry_data.merge!(entry.attributes.slice(*(attributes + ["id"])))
+                entry_values = entry.attributes.slice(*(["id"] + attributes)).values.map {|e| convert_value e}
+                entry_data.merge!(entry.attributes.slice(*(["id"] + attributes)))
                 join_tables[table_name]&.each do |join_table|
                   foreign_ids = entry.send(join_table.singularize.foreign_key.pluralize)
                   entry_data.merge!({join_table => foreign_ids})
