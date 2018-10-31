@@ -274,9 +274,9 @@ class AndroidSyncController < ApplicationController
             join_table_data.each do |join_table_names, data|
               puts "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).join ","});"
               file_2.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).join ","});"
-              puts "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
+              puts "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
                        "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
-              file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{join_table_names.second.singularize}_id)" +
+              file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
                        "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
             end
             ActiveRecord::Base.connection.query_cache.clear
@@ -382,15 +382,6 @@ class AndroidSyncController < ApplicationController
 
   def receive_request
     begin
-      @foreign_key_names = {
-          picture: :uploaded_file,
-          reporter: :user,
-          creator: :user,
-          facilitator: :user,
-          team_member: :user,
-          supervisor: :user,
-          observer: :person,
-      }
       # The following tables have to be in the order, that they only contain IDs of the previous ones
       safe_params = [
           :is_only_test,
@@ -547,6 +538,16 @@ class AndroidSyncController < ApplicationController
 
   private
 
+  def foreign_key_names(table_name)
+    {picture: :uploaded_file,
+     reporter: :user,
+     creator: :user,
+     facilitator: :user,
+     team_member: :user,
+     supervisor: :user,
+     observer: :person}[table_name.to_sym]&.to_s || table_name
+  end
+
   # receive_request methods:
 
   def build(table, hash)
@@ -575,7 +576,7 @@ class AndroidSyncController < ApplicationController
       hash.clone.each do |k, v|
         if k.last(4) == "_ids" && v.is_a?(Array)
           foreign_table = k.remove("_ids")
-          foreign_table = @foreign_key_names[foreign_table .to_sym]&.to_s || foreign_table
+          foreign_table = foreign_key_names(foreign_table)
           foreign_table = foreign_table.camelcase
           hash[k.remove("_ids").pluralize] = v.map do |element|
             @id_changes.dig(foreign_table, element) || foreign_table.constantize.find(element)
@@ -583,7 +584,7 @@ class AndroidSyncController < ApplicationController
           hash.delete k
         elsif k.last(3) == "_id" && k != "old_id"
           foreign_table = k.remove("_id")
-          foreign_table = @foreign_key_names[foreign_table.to_sym]&.to_s || foreign_table
+          foreign_table = foreign_key_names(foreign_table)
           foreign_table = foreign_table.camelcase
           hash[k.remove("_id")] = @id_changes.dig(foreign_table, v) || foreign_table.constantize.find(v)
           hash.delete k
