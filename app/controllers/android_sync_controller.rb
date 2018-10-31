@@ -262,7 +262,8 @@ class AndroidSyncController < ApplicationController
               deleted_entries[table_name] = offline_ids - restricted_ids
             end
             file.write "]" if has_entry
-            values.map! {|value| "(#{value.join(",")})"}
+            columns << "is_online"
+            values.map! {|value| "(#{(value+[1]).join(",")})"}
             puts "INSERT INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             file_2.write "INSERT INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             join_table_data.each do |join_table_names, data|
