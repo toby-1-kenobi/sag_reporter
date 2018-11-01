@@ -196,7 +196,6 @@ class AndroidSyncController < ApplicationController
 
     safe_params = [
         :version,
-        :first_download,
         :last_sync
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
@@ -218,9 +217,6 @@ class AndroidSyncController < ApplicationController
           file.write "{\"last_sync\":#{this_sync.to_i}"
           file_2.write "UPDATE app SET last_sync = #{this_sync.to_i};"
           raise "No last sync variable" unless send_request_params["last_sync"]
-          if send_request_params["first_download"]
-            tables.except!(Person, Topic, ProgressMarker, Report, ImpactReport, UploadedFile, LanguageProgress, ProgressUpdate)
-          end
           deleted_entries = Hash.new
           tables.each do |table, attributes|
 
