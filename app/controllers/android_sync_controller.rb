@@ -134,7 +134,8 @@ class AndroidSyncController < ApplicationController
           table.ids
       end
       unless @external_user.national
-        @user_geo_states ||= @external_user.geo_state_ids
+        @user_geo_states ||= @external_user.geo_state_ids + Project.includes(:state_languages).where(id: @project_ids)
+                                                             .map(&:state_languages).flatten.map(&:geo_state_id)
         restricted_ids = case table_implementation
           when StateLanguage
             table.where(id: restricted_ids, geo_state_id: @user_geo_states).ids
