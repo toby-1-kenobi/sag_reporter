@@ -161,10 +161,14 @@ class StateLanguagesController < ApplicationController
   end
 
   def set_amo_actual
+    year = Date.today.year
+    if params[:month].to_i >= Date.today.month + 6
+      year -= 1
+    end
     @amo = AggregateMinistryOutput.find_or_create_by(
         state_language_id: params[:id],
         deliverable_id: params[:deliverable],
-        month: params[:month],
+        month: "#{year.to_s}-#{params[:month].rjust(2,'0')}",
         creator_id: params[:facilitator],
         actual: true
     )

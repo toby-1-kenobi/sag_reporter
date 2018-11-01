@@ -1,6 +1,6 @@
 <% sl = @amo.state_language_id %>
 <% del = @amo.deliverable_id %>
-<% m = @amo.month %>
+<% m = @amo.month[-2..-1] %>
 <% fac = @amo.creator_id %>
 
 const editedCell = $('.amo-actual[data-state-language="<%= sl %>"][data-deliverable="<%= del %>"][data-month="<%= m %>"][data-fac="<%= fac %>"]');
