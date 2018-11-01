@@ -81,7 +81,7 @@ class AndroidSyncController < ApplicationController
             ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id)
         state_languages = StateLanguage.where(id:@state_language_ids)
         @language_ids = state_languages.map &:language_id
-        @geo_state_ids = state_languages.map &:geo_state_id
+        @geo_state_ids = state_languages.map(&:geo_state_id) + @external_user.geo_state_ids
       end
       restricted_ids =
         case table_implementation
@@ -166,7 +166,7 @@ class AndroidSyncController < ApplicationController
       unless @external_user.trusted
         restricted_ids = case table_implementation
           when Organisation
-            table.where(church: true).ids
+            table.where(id: restricted_ids, church: true).ids
           when Report
             table.where(id: restricted_ids, reporter_id: @external_user.id).ids
             
