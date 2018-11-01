@@ -52,7 +52,7 @@
       </tr>
     </thead>
     <tbody>
-      <% ministry.deliverables.active.with_translations.order(:number).select{ |d| hidden_deliverables.exclude? d.translation_key }.each do |deliverable| %>
+      <% ministry.deliverables.active.order(:number).select{ |d| hidden_deliverables.exclude? d.translation_key }.each do |deliverable| %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td>
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.reporter.humanize %></td>
