@@ -80,7 +80,7 @@ class AndroidSyncController < ApplicationController
             LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
             ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id)
         user_geo_state_ids = @external_user.national? ? GeoState.ids : @external_user.geo_state_ids
-        state_languages = StateLanguage.where("id = ? OR geo_state_id IN (?)", @state_language_ids, user_geo_state_ids)
+        state_languages = StateLanguage.where("id IN (?) OR geo_state_id IN (?)", @state_language_ids, user_geo_state_ids)
         @language_ids = state_languages.map &:language_id
         @geo_state_ids = state_languages.map(&:geo_state_id)
       end
