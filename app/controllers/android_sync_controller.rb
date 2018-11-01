@@ -9,6 +9,7 @@ class AndroidSyncController < ApplicationController
   def send_request
     tables = {
         User => %w(name),
+        StateLanguage => %w(geo_state_id language_id project),
         GeoState => %w(name),
         Language => %w(name colour),
 #        Person => %w(name geo_state_id),
@@ -21,7 +22,6 @@ class AndroidSyncController < ApplicationController
         Organisation => %w(name abbreviation church),
 #        LanguageProgress => %w(progress_marker_id state_language_id),
 #        ProgressUpdate => %w(user_id language_progress_id progress month year),
-        StateLanguage => %w(geo_state_id language_id project),
         ChurchTeam => %w(organisation_id leader state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(topic_id name_id code),
