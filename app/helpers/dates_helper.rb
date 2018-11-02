@@ -1,7 +1,15 @@
 module DatesHelper
 
-  def current_quarter
-    1 + ((Date.today.month - Rails.configuration.year_cutoff_month) % 12) / 3
+  def app_year(year, month)
+    if Rails.configuration.year_cutoff_month >= 6
+      month < Rails.configuration.year_cutoff_month ? year : year + 1
+    else
+      month >= Rails.configuration.year_cutoff_month ? year : year - 1
+    end
+  end
+
+  def quarter_for_month(month)
+    1 + ((month - Rails.configuration.year_cutoff_month) % 12) / 3
   end
 
   def months_in_quarter(q)
