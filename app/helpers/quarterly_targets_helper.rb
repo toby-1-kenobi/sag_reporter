@@ -16,4 +16,19 @@ module QuarterlyTargetsHelper
     end
   end
 
+  def calculate_fac_annual_actual(state_language, deliverable, year)
+    last_month = Date.new(year, Rails.configuration.year_cutoff_month) - 1.month
+    first_month = last_month - 11.months
+    amos = state_language.aggregate_ministry_outputs.
+        where(deliverable: deliverable, actual: true).
+        where('month >= ?', first_month.strftime("%Y-%m")).
+        where('month <= ?', last_month.strftime("%Y-%m")).
+        order(:month)
+    if deliverable.most_recent?
+      return amos.any? ? amos.last.value : 0
+    else
+      amos.inject(0) { |sum, amo| sum + amo.value }
+    end
+  end
+
 end

@@ -14,19 +14,21 @@
       <thead>
         <tr>
           <th rowspan="2" class="mdl-data-table__cell--non-numeric">Deliverable</th>
+          <% col_count = 8 %>
           <% [last_q, current_q].each do |quarter| %>
             <% months_in_quarter(quarter).each do |month| %>
               <th colspan="2" class="mdl-data-table__cell--non-numeric"><%= Date::MONTHNAMES[month] %></th>
             <% end %>
-            <th rowspan="2">Quarterly<br>Target</th>
+            <th colspan="2">Quarterly</th>
             <%# column for annual if we have reached the end of app year %>
             <% if quarter == 4 %>
-              <th rowspan="2">Annual<br>Target</th>
+              <th colspan="2">Annual</th>
+              <% col_count += 1 %>
             <% end %>
           <% end %>
         </tr>
         <tr>
-          <% 6.times do %>
+          <% col_count.times do %>
             <th>Target</th><th>Actual</th>
           <% end %>
         </tr>
@@ -38,6 +40,7 @@
               <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>
             </td>
             <% [last_q, current_q].each do |quarter| %>
+              <% quarterly_actual = 0 %>
               <% months = months_in_quarter(quarter) %>
               <% months_with_year(months.first, months.last, months.first != Date.today.month).each do |year_month| %>
                 <% if @outputs[deliverable.id] and
@@ -48,6 +51,9 @@
                   <% actual = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][true] || '' %>
                 <% else %>
                   <% target, actual = '?', '' %>
+                <% end %>
+                <% if actual.present? %>
+                  <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
                 <% end %>
                 <td class="amo-target"><%= target %></td>
                 <td class="amo-actual"
@@ -69,10 +75,12 @@
                 </td>
               <% end %>
               <% q_target = QuarterlyTarget.find_by(state_language: lang_stream.state_language, deliverable: deliverable, quarter: "#{q_year[quarter]}-#{quarter}") %>
-              <td class="quarterly-target"><%= q_target ? q_target.value : '' %></td>
+              <td class="quarterly-target"><%= q_target ? q_target.value : '?' %></td>
+              <td class="quarterly-actual"><%= quarterly_actual %></td>
               <%# column for annual if we have reached the end of app year %>
               <% if quarter == 4 %>
                 <td class="annual-target"><%= calculate_annual_target(year_targets(lang_stream.state_language, deliverable, q_year[quarter]), deliverable) %></td>
+                <td class="annual-actual"><%= calculate_fac_annual_actual(lang_stream.state_language, deliverable, q_year[quarter]) %></td>
               <% end %>
             <% end %>
           </tr>
