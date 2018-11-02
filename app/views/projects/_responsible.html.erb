@@ -17,7 +17,7 @@
   <thead>
   <tr>
     <% project_streams.each do |ps| %>
-      <th class="mdl-data-table__cell--non-numeric"><%= ps.ministry.name %></th>
+      <th class="mdl-data-table__cell--non-numeric"><%= ps.ministry.name.en %></th>
     <% end %>
   </tr>
   </thead>
@@ -45,7 +45,7 @@
   <tr>
     <th class="mdl-data-table__cell--non-numeric">Language</th>
     <% project_streams.each do |ps| %>
-      <th class="mdl-data-table__cell--non-numeric"><%= ps.ministry.name %></th>
+      <th class="mdl-data-table__cell--non-numeric"><%= ps.ministry.name.en %></th>
     <% end %>
   </tr>
   </thead>

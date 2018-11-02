@@ -7,7 +7,7 @@
   <% @project.language_streams.order(:state_language_id, :ministry_id).each do |lang_stream| %>
     <div class="project-facilitator-header">
       <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
-      facilitating <span class="stream-name"><%= lang_stream.ministry.name %></span>
+      facilitating <span class="stream-name"><%= lang_stream.ministry.name.en %></span>
       for <span class="state-language-name"><%= lang_stream.state_language.name(multi_state) %></span>
     </div>
     <table class="facilitator-results mdl-data-table mdl-js-data-table mdl-shadow--2dp">
