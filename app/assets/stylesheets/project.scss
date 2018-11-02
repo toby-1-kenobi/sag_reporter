@@ -18,6 +18,11 @@
 }
 
 .facilitator-results {
+  th {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    text-align: center !important;
+  }
   .amo-target { background-color: deepskyblue; }
   .amo-actual { background-color: lightblue; }
   .quarterly-target { background-color: pink; }
