@@ -17,6 +17,17 @@
   }
 }
 
+.facilitator-results {
+  .amo-target { background-color: deepskyblue; }
+  .amo-actual { background-color: lightblue; }
+  .quarterly-target { background-color: pink; }
+  .annual-target { background-color: palegoldenrod; }
+  .amo-target, .quarterly-target, .annual-target {
+    text-align: center;
+    font-size: larger;
+  }
+}
+
 #languages-streams-panel .grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

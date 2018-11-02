@@ -10,7 +10,7 @@
       facilitating <span class="stream-name"><%= lang_stream.ministry.name %></span>
       for <span class="state-language-name"><%= lang_stream.state_language.name(multi_state) %></span>
     </div>
-    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    <table class="facilitator-results mdl-data-table mdl-js-data-table mdl-shadow--2dp">
       <thead>
         <tr>
           <th rowspan="2" class="mdl-data-table__cell--non-numeric">Deliverable</th>
@@ -49,7 +49,7 @@
                 <% else %>
                   <% target, actual = '?', '' %>
                 <% end %>
-                <td><%= target %></td>
+                <td class="amo-target"><%= target %></td>
                 <td class="amo-actual"
                     data-state-language="<%= lang_stream.state_language_id %>"
                     data-deliverable="<%= deliverable.id %>"
@@ -69,10 +69,10 @@
                 </td>
               <% end %>
               <% q_target = QuarterlyTarget.find_by(state_language: lang_stream.state_language, deliverable: deliverable, quarter: "#{q_year[quarter]}-#{quarter}") %>
-              <td><%= q_target ? q_target.value : '' %></td>
+              <td class="quarterly-target"><%= q_target ? q_target.value : '' %></td>
               <%# column for annual if we have reached the end of app year %>
               <% if quarter == 4 %>
-                <td><%= calculate_annual_target(year_targets(lang_stream.state_language, deliverable, q_year[quarter]), deliverable) %></td>
+                <td class="annual-target"><%= calculate_annual_target(year_targets(lang_stream.state_language, deliverable, q_year[quarter]), deliverable) %></td>
               <% end %>
             <% end %>
           </tr>
