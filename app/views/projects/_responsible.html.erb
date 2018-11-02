@@ -1,4 +1,4 @@
-<% project_streams = @project.project_streams.includes(:ministry, :supervisor) %>
+<% project_streams = @project.project_streams.includes(:ministry, :supervisor).order(:ministry_id) %>
 
 <h4>Project Supervisors</h4>
 <ul class="mdl-list" id="project-supervisors-list">
