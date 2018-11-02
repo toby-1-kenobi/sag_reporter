@@ -32,4 +32,11 @@ describe DatesHelper do
     _(months_in_quarter 1).must_equal [12, 1, 2]
   end
 
+  it 'must assign years to months' do
+    travel_to Time.zone.local(2018, 10, 10)
+    _(months_with_years(9, 2, true)).must_equal ['2018-09', '2018-10', '2018-11', '2018-12', '2019-01', '2019-02']
+    _(months_with_years(12, 2, true)).must_equal ['2017-12', '2018-01', '2018-02']
+    _(months_with_years(12, 2, false)).must_equal ['2018-12', '2019-01', '2019-02']
+  end
+
 end

@@ -36,10 +36,11 @@
               <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>
             </td>
             <% [last_q, current_q].each do |quarter| %>
-              <% months_in_quarter(quarter).each do |month| %>
-                <% if @outputs[deliverable.id] and @outputs[deliverable.id][lang_stream.state_language_id] and @outputs[deliverable.id][lang_stream.state_language_id][month.to_s.rjust(2,'0')] %>
-                  <% target = @outputs[deliverable.id][lang_stream.state_language_id][month.to_s.rjust(2,'0')][false] || '?' %>
-                  <% actual = @outputs[deliverable.id][lang_stream.state_language_id][month.to_s.rjust(2,'0')][true] || '' %>
+              <% months = months_in_quarter(quarter) %>
+              <% months_with_year(months.first, months.last, months.first != Date.today.month).each do |year_month| %>
+                <% if @outputs[deliverable.id] and @outputs[deliverable.id][lang_stream.state_language_id] and @outputs[deliverable.id][lang_stream.state_language_id][year_month] %>
+                  <% target = @outputs[deliverable.id][lang_stream.state_language_id][year_month][false] || '?' %>
+                  <% actual = @outputs[deliverable.id][lang_stream.state_language_id][year_month][true] || '' %>
                 <% else %>
                   <% target, actual = '?', '' %>
                 <% end %>
@@ -47,10 +48,10 @@
                 <td class="amo-actual"
                     data-state-language="<%= lang_stream.state_language_id %>"
                     data-deliverable="<%= deliverable.id %>"
-                    data-month="<%= month.to_s.rjust(2,'0') %>"
+                    data-month="<%= year_month %>"
                     data-fac="<%= lang_stream.facilitator_id %>"
                 >
-                  <%= form_tag set_amo_actual_in_state_language_path(lang_stream.state_language, deliverable, month, lang_stream.facilitator), method: :patch, remote: true do %>
+                  <%= form_tag set_amo_actual_in_state_language_path(lang_stream.state_language, deliverable, year_month, lang_stream.facilitator), method: :patch, remote: true do %>
                     <div class="mdl-textfield mdl-js-textfield amo-actual-input">
                       <input class="mdl-textfield__input"
                              type="text"
