@@ -1,7 +1,9 @@
 <% if @project.facilitators.any? %>
   <% multi_state = @project.geo_states.uniq.count > 1 %>
-  <% current_q = current_quarter %>
+  <% q_year = {} %>
+  <% current_q, q_year[current_q] = current_quarter, FinishLineProgress.get_current_year %>
   <% last_q = (current_q - 2) % 4 + 1 %>
+  <% q_year[last_q] = last_q < current_q ? q_year[current_q] : q_year[current_q] - 1 %>
   <% @project.language_streams.each do |lang_stream| %>
     <div class="project-facilitator-header">
       <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
@@ -63,10 +65,11 @@
                   <% end %>
                 </td>
               <% end %>
-              <td></td>
+              <% q_target = QuarterlyTarget.find_by(state_language: lang_stream.state_language, deliverable: deliverable, quarter: "#{q_year[quarter]}-#{quarter}") %>
+              <td><%= q_target ? q_target.value : '' %></td>
               <%# column for annual if we have reached the end of app year %>
               <% if quarter == 4 %>
-                <td></td>
+                <td><%= calculate_annual_target(year_targets(lang_stream.state_language, deliverable, q_year[quarter]), deliverable) %></td>
               <% end %>
             <% end %>
           </tr>
