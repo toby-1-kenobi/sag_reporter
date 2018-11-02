@@ -50,8 +50,9 @@ class ProjectsController < ApplicationController
         @outputs[deliverable.id] ||= {}
         deliverable.aggregate_ministry_outputs.where(state_language: @project.state_languages).where('month >= ?', 6.months.ago.strftime("%Y-%m")).each do |amo|
           @outputs[deliverable.id][amo.state_language_id] ||= {}
-          @outputs[deliverable.id][amo.state_language_id][amo.month] ||= {}
-          @outputs[deliverable.id][amo.state_language_id][amo.month][amo.actual] = amo.value
+          @outputs[deliverable.id][amo.state_language_id][amo.creator_id] ||= {}
+          @outputs[deliverable.id][amo.state_language_id][amo.creator_id][amo.month] ||= {}
+          @outputs[deliverable.id][amo.state_language_id][amo.creator_id][amo.month][amo.actual] = amo.value
         end
       end
     end

@@ -4,7 +4,7 @@
   <% current_q, q_year[current_q] = current_quarter, FinishLineProgress.get_current_year %>
   <% last_q = (current_q - 2) % 4 + 1 %>
   <% q_year[last_q] = last_q < current_q ? q_year[current_q] : q_year[current_q] - 1 %>
-  <% @project.language_streams.each do |lang_stream| %>
+  <% @project.language_streams.order(:state_language_id, :ministry_id).each do |lang_stream| %>
     <div class="project-facilitator-header">
       <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
       facilitating <span class="stream-name"><%= lang_stream.ministry.name %></span>
@@ -40,9 +40,12 @@
             <% [last_q, current_q].each do |quarter| %>
               <% months = months_in_quarter(quarter) %>
               <% months_with_year(months.first, months.last, months.first != Date.today.month).each do |year_month| %>
-                <% if @outputs[deliverable.id] and @outputs[deliverable.id][lang_stream.state_language_id] and @outputs[deliverable.id][lang_stream.state_language_id][year_month] %>
-                  <% target = @outputs[deliverable.id][lang_stream.state_language_id][year_month][false] || '?' %>
-                  <% actual = @outputs[deliverable.id][lang_stream.state_language_id][year_month][true] || '' %>
+                <% if @outputs[deliverable.id] and
+                    @outputs[deliverable.id][lang_stream.state_language_id] and
+                    @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id] and
+                    @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month] %>
+                  <% target = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][false] || '?' %>
+                  <% actual = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][true] || '' %>
                 <% else %>
                   <% target, actual = '?', '' %>
                 <% end %>
