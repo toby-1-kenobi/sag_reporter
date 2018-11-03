@@ -282,7 +282,7 @@ class AndroidSyncController < ApplicationController
             file.write deleted_entries.to_json
             deleted_entries.each do |table, ids|
                 puts "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.join ","});"
-                file_2.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.join ","});"
+                file_2.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.select{|id| id < 1000000}.join ","});"
             end
           end
           file.write "}"
