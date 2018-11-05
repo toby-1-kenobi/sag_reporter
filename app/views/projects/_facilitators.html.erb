@@ -62,6 +62,11 @@
                     data-month="<%= year_month %>"
                     data-fac="<%= lang_stream.facilitator_id %>"
                 >
+                  <% if actual.present? %>
+                    <button class="amo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                      <i class="material-icons">info</i>
+                    </button>
+                  <% end %>
                   <%= form_tag set_amo_actual_in_state_language_path(lang_stream.state_language, deliverable, year_month, lang_stream.facilitator), method: :patch, remote: true do %>
                     <div class="mdl-textfield mdl-js-textfield amo-actual-input">
                       <input class="mdl-textfield__input"
@@ -91,6 +96,17 @@
       </tbody>
     </table>
   <% end %>
+
+  <dialog id="amo-comment" class="mdl-dialog">
+    <h4 class="mdl-dialog__title">Reason for Variance</h4>
+    <div class="mdl-dialog__content">
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button">Update</button>
+      <button type="button" class="mdl-button close">Close</button>
+    </div>
+  </dialog>
+
 <% else %>
   <p>No facilitators in this project.</p>
 <% end %>
