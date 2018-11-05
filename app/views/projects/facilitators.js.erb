@@ -15,6 +15,7 @@ if (! dialog.showModal) {
     dialogPolyfill.registerDialog(dialog);
 }
 $('.amo-info-button').on('click', function() {
+    $(dialog).find('.mdl-dialog__content input').val($(this).find('.variance-reason').text());
     dialog.showModal();
 });
 dialog.querySelector('.close').addEventListener('click', function() {

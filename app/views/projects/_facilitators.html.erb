@@ -47,10 +47,10 @@
                     @outputs[deliverable.id][lang_stream.state_language_id] and
                     @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id] and
                     @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month] %>
-                  <% target = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][false] || '?' %>
-                  <% actual = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][true] || '' %>
+                  <% target, _ = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][false] || ['?', ''] %>
+                  <% actual, variance_reason = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][true] || ['', ''] %>
                 <% else %>
-                  <% target, actual = '?', '' %>
+                  <% target, actual, variance_reason = '?', '', '' %>
                 <% end %>
                 <% if actual.present? %>
                   <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
@@ -65,6 +65,7 @@
                   <% if actual.present? %>
                     <button class="amo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
                       <i class="material-icons">info</i>
+                      <div hidden class="variance-reason"><%= variance_reason %></div>
                     </button>
                   <% end %>
                   <%= form_tag set_amo_actual_in_state_language_path(lang_stream.state_language, deliverable, year_month, lang_stream.facilitator), method: :patch, remote: true do %>
@@ -100,6 +101,9 @@
   <dialog id="amo-comment" class="mdl-dialog">
     <h4 class="mdl-dialog__title">Reason for Variance</h4>
     <div class="mdl-dialog__content">
+      <div class="mdl-textfield mdl-js-textfield">
+        <input class="mdl-textfield__input" type="text" name="comment">
+      </div>
     </div>
     <div class="mdl-dialog__actions">
       <button type="button" class="mdl-button">Update</button>

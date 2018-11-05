@@ -52,7 +52,7 @@ class ProjectsController < ApplicationController
           @outputs[deliverable.id][amo.state_language_id] ||= {}
           @outputs[deliverable.id][amo.state_language_id][amo.creator_id] ||= {}
           @outputs[deliverable.id][amo.state_language_id][amo.creator_id][amo.month] ||= {}
-          @outputs[deliverable.id][amo.state_language_id][amo.creator_id][amo.month][amo.actual] = amo.value
+          @outputs[deliverable.id][amo.state_language_id][amo.creator_id][amo.month][amo.actual] = [amo.value, amo.comment]
         end
       end
     end
