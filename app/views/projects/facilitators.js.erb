@@ -1,5 +1,6 @@
 $('#facs-panel').html('<%= j render 'facilitators' %>');
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-tooltip').get());
+componentHandler.upgradeElements($('#facs-panel').find('.mdl-textfield').get());
 $('#facs-tab').removeClass('dirty');
 
 $('.amo-actual-input').on('input', function(){
@@ -15,9 +16,14 @@ if (! dialog.showModal) {
     dialogPolyfill.registerDialog(dialog);
 }
 $('.amo-info-button').on('click', function() {
-    $(dialog).find('.mdl-dialog__content input').val($(this).find('.variance-reason').text());
+    $('#variance-reason').html($(this).find('.variance-reason').text());
+    $(dialog).find('.mdl-dialog__content input[name="amo_id"]').val($(this).parent().data('amo-id'));
     dialog.showModal();
 });
 dialog.querySelector('.close').addEventListener('click', function() {
+    dialog.close();
+});
+dialog.querySelector('.submit').addEventListener('click', function() {
+    $(dialog).find('form').submit();
     dialog.close();
 });

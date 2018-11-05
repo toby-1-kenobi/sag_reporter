@@ -47,26 +47,30 @@
                     @outputs[deliverable.id][lang_stream.state_language_id] and
                     @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id] and
                     @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month] %>
-                  <% target, _ = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][false] || ['?', ''] %>
-                  <% actual, variance_reason = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][true] || ['', ''] %>
+                  <% _, target, _ = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][false] || [nil, '?', nil] %>
+                  <% actual_id, actual, variance_reason = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][true] || ['', ''] %>
                 <% else %>
-                  <% target, actual, variance_reason = '?', '', '' %>
+                  <% target, actual_id, actual, variance_reason = '?', '', '', '' %>
                 <% end %>
                 <% if actual.present? %>
                   <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
                 <% end %>
                 <td class="amo-target"><%= target %></td>
                 <td class="amo-actual"
+                    data-amo-id="<%= actual_id %>"
                     data-state-language="<%= lang_stream.state_language_id %>"
                     data-deliverable="<%= deliverable.id %>"
                     data-month="<%= year_month %>"
                     data-fac="<%= lang_stream.facilitator_id %>"
                 >
                   <% if actual.present? %>
-                    <button class="amo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                    <button id="variance-reason-button-<%= actual_id %>" class="amo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
                       <i class="material-icons">info</i>
                       <div hidden class="variance-reason"><%= variance_reason %></div>
                     </button>
+                    <div class="mdl-tooltip" data-mdl-for="variance-reason-button-<%= actual_id %>">
+                      Reason for variance
+                    </div>
                   <% end %>
                   <%= form_tag set_amo_actual_in_state_language_path(lang_stream.state_language, deliverable, year_month, lang_stream.facilitator), method: :patch, remote: true do %>
                     <div class="mdl-textfield mdl-js-textfield amo-actual-input">
@@ -90,7 +94,7 @@
               <% end %>
             <% end %>
           </tr>
-          <div class="mdl-tooltip mdl-tooltip--larg" data-mdl-for="deliverable-name-<%= deliverable.id %>">
+          <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="deliverable-name-<%= deliverable.id %>">
             <%= deliverable.result_form.en %>
           </div>
         <% end %>
@@ -99,16 +103,19 @@
   <% end %>
 
   <dialog id="amo-comment" class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Reason for Variance</h4>
-    <div class="mdl-dialog__content">
-      <div class="mdl-textfield mdl-js-textfield">
-        <input class="mdl-textfield__input" type="text" name="comment">
+    <%= form_tag aggregate_ministry_outputs_update_comment_path, method: :patch, remote: true do %>
+      <div class="mdl-dialog__content">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <textarea class="mdl-textfield__input" type="text" rows="5" name="comment" id="variance-reason"></textarea>
+          <label class="mdl-textfield__label" for="variance-reason">Reason for variance</label>
+        </div>
+        <input type="hidden" name="amo_id">
       </div>
-    </div>
-    <div class="mdl-dialog__actions">
-      <button type="button" class="mdl-button">Update</button>
-      <button type="button" class="mdl-button close">Close</button>
-    </div>
+      <div class="mdl-dialog__actions">
+        <button type="button" class="mdl-button submit">Update</button>
+        <button type="button" class="mdl-button close">Close</button>
+      </div>
+    <% end %>
   </dialog>
 
 <% else %>

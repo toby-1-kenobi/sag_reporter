@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
 
+
   root 'static_pages#home'
+
+  patch 'aggregate_ministry_outputs/update_comment'
 
   resources :android_additions do
     collection do
