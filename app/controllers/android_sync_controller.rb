@@ -80,7 +80,7 @@ class AndroidSyncController < ApplicationController
         @state_language_ids = Project.includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
             LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
             ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id) +
-            StateLanguage.where(geo_state_id: user_geo_state_ids)
+            StateLanguage.where(geo_state_id: user_geo_state_ids).ids
         state_languages = StateLanguage.where(id: @state_language_ids)
         @language_ids = state_languages.map &:language_id
         @geo_state_ids = state_languages.map(&:geo_state_id)
