@@ -65,7 +65,7 @@
                 <% end %>
                 <td class="amo-target"><%= target %></td>
                 <td class="amo-actual"
-                    data-amo-id="<%= actual_id %>"
+                    <%= "data-amo-id=#{actual_id}" if actual.present? %>
                     data-state-language="<%= lang_stream.state_language_id %>"
                     data-deliverable="<%= deliverable.id %>"
                     data-month="<%= year_month %>"
@@ -128,7 +128,7 @@
 
   <dialog id="sup-feedback-dialog" class="mdl-dialog">
       <div class="mdl-dialog__content">
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <div class="sup-feedback mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           <textarea class="mdl-textfield__input" type="text" rows="5" name="comment" id="sup-feedback-input"></textarea>
           <label class="mdl-textfield__label" for="sup-feedback-input">Supervisor Feedback</label>
         </div>
