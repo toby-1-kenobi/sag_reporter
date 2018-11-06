@@ -17,7 +17,7 @@ if (! dialog.showModal) {
     dialogPolyfill.registerDialog(dialog);
 }
 $('.amo-info-button').on('click', function() {
-    $('#variance-reason').html($(this).find('.variance-reason').text());
+    dialog.querySelector('.mdl-textfield').MaterialTextfield.change($(this).find('.variance-reason').text());
     $(dialog).find('.mdl-dialog__content input[name="amo_id"]').val($(this).parent().data('amo-id'));
     dialog.showModal();
 });
