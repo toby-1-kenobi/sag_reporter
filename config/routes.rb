@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-
   root 'static_pages#home'
 
   patch 'aggregate_ministry_outputs/update_comment'
@@ -195,6 +194,8 @@ Rails.application.routes.draw do
   get 'transformation' => 'state_languages#transformation', as: 'transformation'
   get 'outcomes/get_chart/:id' => 'state_languages#get_chart', as: 'outcomes_chart'
   get 'outcomes/table/:id' => 'state_languages#get_table', as: 'outcomes_table'
+
+  resources :supervisor_feedbacks, only: [:update]
 
   get 'outcomes/:state_language_id/:months' => 'topics#assess_progress', as: 'assess_progress'
   get 'outcomes/:state_language_id/:months.pdf' => 'topics#assess_progress', as: 'assess_progress_pdf'

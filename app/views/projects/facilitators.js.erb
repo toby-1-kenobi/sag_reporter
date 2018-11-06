@@ -40,7 +40,26 @@ $('.sup-feedback-button').on('click', function() {
     } else {
         dialog2.querySelector('.sup-approved').MaterialCheckbox.check();
     }
+    $(dialog2).find('.mdl-textfield, .mdl-checkbox').data('sup-feedback-id', $(this).data('sup-feedback-id'));
     dialog2.showModal();
+});
+$(dialog2).find('.sup-feedback').on('change', function(){
+    const url = '<%= supervisor_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('sup-feedback-id'));
+    $.ajax({
+        url: url,
+        method: 'PUT',
+        dataType: 'JSON',
+        data: {supervisor_feedback: {result_feedback: $(this).find('textarea').val()}}
+    });
+});
+$(dialog2).find('.sup-approved').on('change', function(){
+    const url = '<%= supervisor_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('sup-feedback-id'));
+    $.ajax({
+        url: url,
+        method: 'PUT',
+        dataType: 'JSON',
+        data: {supervisor_feedback: {report_approved: $(this).find('input').is(':checked')}}
+    });
 });
 dialog2.querySelector('.close').addEventListener('click', function() {
     dialog2.close();
