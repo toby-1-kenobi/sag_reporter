@@ -1,6 +1,7 @@
 $('#facs-panel').html('<%= j render 'facilitators' %>');
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-tooltip').get());
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-textfield').get());
+componentHandler.upgradeElements($('#facs-panel').find('.mdl-checkbox').get());
 $('#facs-tab').removeClass('dirty');
 
 $('.amo-actual-input').on('input', function(){
@@ -26,4 +27,15 @@ dialog.querySelector('.close').addEventListener('click', function() {
 dialog.querySelector('.submit').addEventListener('click', function() {
     $(dialog).find('form').submit();
     dialog.close();
+});
+
+const dialog2 = document.getElementById('sup-feedback-dialog');
+if (! dialog2.showModal) {
+    dialogPolyfill.registerDialog(dialog2);
+}
+$('.sup-feedback-button').on('click', function() {
+    dialog2.showModal();
+});
+dialog2.querySelector('.close').addEventListener('click', function() {
+    dialog2.close();
 });
