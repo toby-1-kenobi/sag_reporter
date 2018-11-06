@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181031122702) do
+ActiveRecord::Schema.define(version: 20181106013036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -282,10 +282,11 @@ ActiveRecord::Schema.define(version: 20181031122702) do
   create_table "external_devices", force: :cascade do |t|
     t.string   "device_id"
     t.string   "name"
-    t.boolean  "registered", default: false, null: false
+    t.boolean  "registered",  default: false, null: false
     t.integer  "user_id"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "app_version"
   end
 
   add_index "external_devices", ["user_id"], name: "index_external_devices_on_user_id", using: :btree
