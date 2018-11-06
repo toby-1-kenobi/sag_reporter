@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181106013036) do
+ActiveRecord::Schema.define(version: 20181106013231) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -843,17 +843,18 @@ ActiveRecord::Schema.define(version: 20181106013036) do
   add_index "sub_districts", ["name"], name: "index_sub_districts_on_name", using: :btree
 
   create_table "supervisor_feedbacks", force: :cascade do |t|
-    t.integer  "facilitator_id",       null: false
-    t.string   "month",                null: false
+    t.integer  "facilitator_id",                       null: false
+    t.string   "month",                                null: false
     t.text     "plan_feedback"
     t.text     "plan_response"
     t.text     "result_feedback"
     t.integer  "facilitator_progress"
     t.integer  "project_progress"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.integer  "ministry_id",          null: false
-    t.integer  "supervisor_id",        null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.integer  "ministry_id",                          null: false
+    t.integer  "supervisor_id",                        null: false
+    t.boolean  "report_approved",      default: false, null: false
   end
 
   add_index "supervisor_feedbacks", ["facilitator_id"], name: "index_supervisor_feedbacks_on_facilitator_id", using: :btree
