@@ -6,4 +6,5 @@ class SupervisorFeedback < ActiveRecord::Base
   validates :facilitator, presence: true
   validates :ministry, presence: true
   validates :supervisor, presence: true
+  validates :report_approved, inclusion: [true, false]
 end
