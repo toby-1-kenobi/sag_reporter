@@ -19,8 +19,15 @@
             <% months_in_quarter(quarter).each do |month| %>
               <th colspan="2" class="mdl-data-table__cell--non-numeric">
                 <%= Date::MONTHNAMES[month] %>
-                <button id="sup-feedback-button-<%= lang_stream.facilitator_id %>-<%= month.to_s %>" class="sup-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
+                <% sup_feedback = SupervisorFeedback.find_or_create_by(ministry: lang_stream.ministry, facilitator: lang_stream.facilitator, month: "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}"){ |sf| sf.supervisor = logged_in_user } %>
+                <button
+                  id="sup-feedback-button-<%= lang_stream.facilitator_id %>-<%= month.to_s %>"
+                  class="sup-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
+                  data-sup-feedback-id="<%= sup_feedback.id %>"
+                  <%= 'data-sup-approved' if sup_feedback.report_approved %>
+                >
                   <i class="material-icons">edit</i>
+                  <div hidden class="sup-feedback"><%= sup_feedback.result_feedback %></div>
                 </button>
                 <div class="mdl-tooltip" data-mdl-for="sup-feedback-button-<%= lang_stream.facilitator_id %>-<%= month.to_s %>">
                   Supervisor feedback and approval
@@ -132,7 +139,7 @@
           <textarea class="mdl-textfield__input" type="text" rows="5" name="comment" id="sup-feedback-input"></textarea>
           <label class="mdl-textfield__label" for="sup-feedback-input">Supervisor Feedback</label>
         </div>
-        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="sup-approve-fac-report">
+        <label class="sup-approved mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="sup-approve-fac-report">
           <input type="checkbox" id="sup-approve-fac-report" class="mdl-checkbox__input">
           <span class="mdl-checkbox__label">Approve facilitator's report</span>
         </label>

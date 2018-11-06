@@ -8,6 +8,14 @@ module DatesHelper
     end
   end
 
+  def year_from_app_year(app_year, month)
+    if Rails.configuration.year_cutoff_month >= 6
+      month < Rails.configuration.year_cutoff_month ? app_year : app_year - 1
+    else
+      month >= Rails.configuration.year_cutoff_month ? app_year : app_year + 1
+    end
+  end
+
   def quarter_for_month(month)
     1 + ((month - Rails.configuration.year_cutoff_month) % 12) / 3
   end

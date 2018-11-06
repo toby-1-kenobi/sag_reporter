@@ -160,6 +160,7 @@ class StateLanguagesController < ApplicationController
     respond_to :js
   end
 
+  #TODO: move this to the AggregateMinistryOutputsController, and use the AMO id
   def set_amo_actual
     @amo = AggregateMinistryOutput.find_or_create_by(
         state_language_id: params[:id],

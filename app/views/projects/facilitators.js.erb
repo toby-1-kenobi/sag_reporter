@@ -34,6 +34,12 @@ if (! dialog2.showModal) {
     dialogPolyfill.registerDialog(dialog2);
 }
 $('.sup-feedback-button').on('click', function() {
+    dialog2.querySelector('.sup-feedback').MaterialTextfield.change($(this).find('.sup-feedback').text());
+    if (typeof $(this).data('sup-approved') == 'undefined') {
+        dialog2.querySelector('.sup-approved').MaterialCheckbox.uncheck();
+    } else {
+        dialog2.querySelector('.sup-approved').MaterialCheckbox.check();
+    }
     dialog2.showModal();
 });
 dialog2.querySelector('.close').addEventListener('click', function() {
