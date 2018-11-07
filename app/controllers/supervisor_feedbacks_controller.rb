@@ -21,7 +21,8 @@ class SupervisorFeedbacksController < ApplicationController
             :facilitator_id,
             :supervisor_id,
             :ministry_id,
-            :month
+            :month,
+            :facilitator_progress
         ]
     )
   end
