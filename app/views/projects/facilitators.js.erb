@@ -42,8 +42,6 @@ $('.sup-feedback-button').on('click', function() {
     } else {
         dialog2.querySelector('.sup-approved').MaterialCheckbox.check();
     }
-    console.log(this);
-    console.log($(this).data('fac-progress'));
     dialog2.querySelector('.fac-progress').MaterialExtSelectfield.change($(this).data('fac-progress'));
     dialog2.showModal();
 });
@@ -54,6 +52,7 @@ $(dialog2).find('.sup-feedback').on('change', function(){
         method = 'POST';
         data = {
             supervisor_feedback: {
+                state_language_id: $(this).data('state-lang-id'),
                 ministry_id: $(this).data('stream-id'),
                 facilitator_id: $(this).data('fac-id'),
                 month: $(this).data('month'),
@@ -80,6 +79,7 @@ $(dialog2).find('.sup-approved').on('change', function(){
         method = 'POST';
         data = {
             supervisor_feedback: {
+                state_language_id: $(this).data('state-lang-id'),
                 ministry_id: $(this).data('stream-id'),
                 facilitator_id: $(this).data('fac-id'),
                 month: $(this).data('month'),
@@ -106,6 +106,7 @@ $(dialog2).find('.fac-progress').on('change', function(){
         method = 'POST';
         data = {
             supervisor_feedback: {
+                state_language_id: $(this).data('state-lang-id'),
                 ministry_id: $(this).data('stream-id'),
                 facilitator_id: $(this).data('fac-id'),
                 month: $(this).data('month'),

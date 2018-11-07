@@ -25,6 +25,7 @@
                   id="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>"
                   class="sup-feedback-button mdl-button mdl-js-button mdl-button--icon <%= (sup_feedback and sup_feedback.result_feedback.present?) ? 'mdl-button--primary' : 'mdl-button--accent' %>"
                   data-stream-id="<%= lang_stream.ministry_id %>"
+                  data-state-lang-id="<%= lang_stream.state_language_id %>"
                   data-fac-id="<%= lang_stream.facilitator_id %>"
                   data-month="<%= year_month %>"
                   data-sup-feedback-id="<%= sup_feedback ? sup_feedback.id : 'new' %>"

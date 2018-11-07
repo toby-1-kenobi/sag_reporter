@@ -21,6 +21,7 @@ class SupervisorFeedbacksController < ApplicationController
             :facilitator_id,
             :supervisor_id,
             :ministry_id,
+            :state_language_id,
             :month,
             :facilitator_progress
         ]
