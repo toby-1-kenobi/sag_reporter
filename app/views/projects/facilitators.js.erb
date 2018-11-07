@@ -2,6 +2,7 @@ $('#facs-panel').html('<%= j render 'facilitators' %>');
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-tooltip').get());
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-textfield').get());
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-checkbox').get());
+componentHandler.upgradeElements($('#facs-panel').find('.mdlext-selectfield').get());
 $('#facs-tab').removeClass('dirty');
 
 $('.amo-actual-input').on('input', function(){
@@ -34,13 +35,14 @@ if (! dialog2.showModal) {
     dialogPolyfill.registerDialog(dialog2);
 }
 $('.sup-feedback-button').on('click', function() {
+    $(dialog2).find('.mdl-textfield, .mdl-checkbox').data($(this).data());
     dialog2.querySelector('.sup-feedback').MaterialTextfield.change($(this).find('.sup-feedback').text());
     if (typeof $(this).data('sup-approved') == 'undefined') {
         dialog2.querySelector('.sup-approved').MaterialCheckbox.uncheck();
     } else {
         dialog2.querySelector('.sup-approved').MaterialCheckbox.check();
     }
-    $(dialog2).find('.mdl-textfield, .mdl-checkbox').data($(this).data());
+    dialog2.querySelector('.fac-progress').MaterialExtSelectfield.change($(this).data('fac-progress'));
     dialog2.showModal();
 });
 $(dialog2).find('.sup-feedback').on('change', function(){

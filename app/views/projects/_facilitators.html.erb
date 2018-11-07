@@ -28,7 +28,10 @@
                   data-fac-id="<%= lang_stream.facilitator_id %>"
                   data-month="<%= year_month %>"
                   data-sup-feedback-id="<%= sup_feedback ? sup_feedback.id : 'new' %>"
-                  <%= 'data-sup-approved' if sup_feedback and sup_feedback.report_approved %>
+                  <% if sup_feedback %>
+                    data-fac-progress="<%= sup_feedback.facilitator_progress %>"
+                    <%= 'data-sup-approved' if sup_feedback.report_approved %>
+                  <% end %>
                 >
                   <i class="material-icons">edit</i>
                   <div hidden class="sup-feedback"><%= sup_feedback.result_feedback if sup_feedback %></div>
@@ -147,6 +150,13 @@
           <input type="checkbox" id="sup-approve-fac-report" class="mdl-checkbox__input">
           <span class="mdl-checkbox__label">Approve facilitator's report</span>
         </label>
+        <div class="fac-progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+          <select id="sup-feedback-dialog-fac-progress" class="mdlext-selectfield__select">
+            <option value=""></option>
+            <%= options_for_select(SupervisorFeedback.facilitator_progresses.to_a.map{ |p| p[0] = t "facilitator-progress.#{p[0]}", default: p[0] }) %>
+          </select>
+          <label for="sup-feedback-dialog-fac-progress" class="mdlext-selectfield__label">Facilitator Progress</label>
+        </div>
       </div>
       <div class="mdl-dialog__actions">
         <button type="button" class="mdl-button close">Done</button>
