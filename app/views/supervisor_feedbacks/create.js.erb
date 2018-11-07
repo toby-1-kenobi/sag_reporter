@@ -8,4 +8,4 @@ buttonElement.data('fac-progress', '<%= @supervisor_feedback.facilitator_progres
   buttonElement.data('sup-approved', '');
 <% end %>
 buttonElement.find('.sup-feedback').text('<%= @supervisor_feedback.result_feedback %>');
-$('#sup-feedback-dialog').find('.mdl-textfield, .mdl-checkbox').data('sup-feedback-id', '<%= @supervisor_feedback.id %>');
+$('#sup-feedback-dialog').find('.sup-feedback, .sup-approved, .fac-progress').data('sup-feedback-id', '<%= @supervisor_feedback.id %>');
