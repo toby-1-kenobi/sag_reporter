@@ -1,1 +1,7 @@
-console.log('CREATED: <%= @supervisor_feedback.result_feedback %>');
+var buttonElement = $('#sup-feedback-button-<%= @supervisor_feedback.ministry_id %>-<%= @supervisor_feedback.facilitator_id %>-<%= @supervisor_feedback.month %>');
+buttonElement.attr('data-sup-feedback-id', '<%= @supervisor_feedback.id %>');
+<% if @supervisor_feedback.report_approved? %>
+  buttonElement.attr('data-sup-approved', '');
+<% end %>
+buttonElement.find('.sup-feedback').text('<%= @supervisor_feedback.result_feedback %>');
+$('#sup-feedback-dialog').find('.mdl-textfield, .mdl-checkbox').data('sup-feedback-id', '<%= @supervisor_feedback.id %>');

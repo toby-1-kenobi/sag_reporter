@@ -1,1 +1,5 @@
-console.log('UPDATE: <%= @supervisor_feedback.result_feedback %>');
+var buttonElement = $('.sup-feedback-button[data-sup-feedback-id="<%= @supervisor_feedback.id %>"]');
+<% if @supervisor_feedback.report_approved? %>
+  buttonElement.attr('data-sup-approved');
+<% end %>
+buttonElement.find('.sup-feedback').text('<%= @supervisor_feedback.result_feedback %>');

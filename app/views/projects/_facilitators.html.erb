@@ -22,7 +22,7 @@
                 <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
                 <% sup_feedback = SupervisorFeedback.find_by(ministry: lang_stream.ministry, facilitator: lang_stream.facilitator, month: year_month) %>
                 <button
-                  id="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= month.to_s %>"
+                  id="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>"
                   class="sup-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored"
                   data-stream-id="<%= lang_stream.ministry_id %>"
                   data-fac-id="<%= lang_stream.facilitator_id %>"
@@ -33,7 +33,7 @@
                   <i class="material-icons">edit</i>
                   <div hidden class="sup-feedback"><%= sup_feedback.result_feedback if sup_feedback %></div>
                 </button>
-                <div class="mdl-tooltip" data-mdl-for="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= month.to_s %>">
+                <div class="mdl-tooltip" data-mdl-for="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>">
                   Supervisor feedback and approval
                 </div>
               </th>
