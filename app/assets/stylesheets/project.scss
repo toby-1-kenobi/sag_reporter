@@ -17,6 +17,34 @@
   }
 }
 
+.facilitator-results {
+  th {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    text-align: center !important;
+  }
+  .amo-target { background-color: lightskyblue; }
+  .amo-actual { background-color: deepskyblue; }
+  .quarterly-target { background-color: pink; }
+  .quarterly-actual { background-color: hotpink; }
+  .annual-target { background-color: palegoldenrod; }
+  .annual-actual { background-color: goldenrod; }
+  .amo-target, .quarterly-target, .quarterly-actual, .annual-target, .annual-actual {
+    text-align: center;
+    font-size: larger;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  .mdl-textfield {
+    padding: 0;
+  }
+  .amo-info-button {
+    margin-top: -20px;
+    margin-right: -10px;
+    margin-bottom: -10px;
+  }
+}
+
 #languages-streams-panel .grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

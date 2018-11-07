@@ -85,7 +85,7 @@
       <i class="material-icons">more_vert</i>
     </button>
     <ul id="targets-by-language-menu" class="mdlext-menu">
-      <%= render partial: 'language_menu_item', collection: @project.state_languages %>
+      <%= render partial: 'language_menu_item', collection: @project.state_languages.joins(:language).order('languages.name') %>
     </ul>
   </div>
   <div id="targets-by-language-content"></div>

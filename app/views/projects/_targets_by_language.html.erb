@@ -13,7 +13,7 @@
 </ul>
 <ul id="copy-from-language-menu" class="mdlext-menu">
   <%= render partial: 'projects/language_copy_menu_item',
-             collection: StateLanguage.where.not(id: state_language.id).joins(:project_languages),
+             collection: StateLanguage.joins(:language).where.not(id: state_language.id).joins(:project_languages).order('languages.name'),
              locals: { target_language: state_language }
   %>
 </ul>
@@ -31,11 +31,11 @@
     TR05 TR06 TR08 TR12
 ) %>
 
-<% project.ministries.each do |ministry| %>
+<% project.ministries.order(:code).each do |ministry| %>
   <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
     <thead>
       <tr>
-        <th class="mdl-data-table__cell--non-numeric" rowspan="2"><%= ministry.old_name %></th>
+        <th class="mdl-data-table__cell--non-numeric" rowspan="2"><%= ministry.name.en %></th>
         <th class="mdl-data-table__cell--non-numeric" rowspan="2">Reported by</th>
         <th class="mdl-data-table__cell--non-numeric" rowspan="2">Calculated by</th>
         <% years.each do |year| %>
@@ -52,7 +52,7 @@
       </tr>
     </thead>
     <tbody>
-      <% ministry.deliverables.active.with_translations.order(:number).select{ |d| hidden_deliverables.exclude? d.translation_key }.each do |deliverable| %>
+      <% ministry.deliverables.active.order(:number).select{ |d| hidden_deliverables.exclude? d.translation_key }.each do |deliverable| %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td>
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.reporter.humanize %></td>

@@ -13,10 +13,6 @@ class Ministry < ActiveRecord::Base
   belongs_to :name, class_name: 'TranslationCode', dependent: :destroy
   before_create :create_translation_codes
   after_destroy :delete_translation_codes
-  
-  def old_name
-    I18n.t("ministries.names.#{code.upcase}")
-  end
 
   # Method for reading and writing all translation values (e.g. name_en = "?" or name_value)
   # it has to be a combination of the translation connection name and the actual locale or "value", if the I18n locale shall be used

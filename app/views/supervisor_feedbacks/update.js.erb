@@ -1,0 +1,8 @@
+var buttonElement = $('.sup-feedback-button[data-sup-feedback-id="<%= @supervisor_feedback.id %>"]');
+buttonElement.attr('data-fac-progress', '<%= @supervisor_feedback.facilitator_progress %>');
+buttonElement.data('fac-progress', '<%= @supervisor_feedback.facilitator_progress %>');
+<% if @supervisor_feedback.report_approved? %>
+  buttonElement.attr('data-sup-approved', '');
+  buttonElement.data('sup-approved', '');
+<% end %>
+buttonElement.find('.sup-feedback').text('<%= @supervisor_feedback.result_feedback %>');

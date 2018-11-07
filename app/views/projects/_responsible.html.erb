@@ -1,4 +1,4 @@
-<% project_streams = @project.project_streams.includes(:ministry, :supervisor) %>
+<% project_streams = @project.project_streams.includes(:ministry, :supervisor).order(:ministry_id) %>
 
 <h4>Project Supervisors</h4>
 <ul class="mdl-list" id="project-supervisors-list">
@@ -17,7 +17,7 @@
   <thead>
   <tr>
     <% project_streams.each do |ps| %>
-      <th class="mdl-data-table__cell--non-numeric"><%= ps.ministry.old_name %></th>
+      <th class="mdl-data-table__cell--non-numeric"><%= ps.ministry.name.en %></th>
     <% end %>
   </tr>
   </thead>
@@ -45,7 +45,7 @@
   <tr>
     <th class="mdl-data-table__cell--non-numeric">Language</th>
     <% project_streams.each do |ps| %>
-      <th class="mdl-data-table__cell--non-numeric"><%= ps.ministry.old_name %></th>
+      <th class="mdl-data-table__cell--non-numeric"><%= ps.ministry.name.en %></th>
     <% end %>
   </tr>
   </thead>

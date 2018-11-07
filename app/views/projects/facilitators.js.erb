@@ -1,5 +1,8 @@
 $('#facs-panel').html('<%= j render 'facilitators' %>');
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-tooltip').get());
+componentHandler.upgradeElements($('#facs-panel').find('.mdl-textfield').get());
+componentHandler.upgradeElements($('#facs-panel').find('.mdl-checkbox').get());
+componentHandler.upgradeElements($('#facs-panel').find('.mdlext-selectfield').get());
 $('#facs-tab').removeClass('dirty');
 
 $('.amo-actual-input').on('input', function(){
@@ -7,4 +10,121 @@ $('.amo-actual-input').on('input', function(){
 });
 $('.amo-actual-input').on('change', function(){
     $(this).closest('form').submit();
+});
+
+
+const dialog = document.getElementById('amo-comment');
+if (! dialog.showModal) {
+    dialogPolyfill.registerDialog(dialog);
+}
+$('.amo-info-button').on('click', function() {
+    dialog.querySelector('.mdl-textfield').MaterialTextfield.change($(this).find('.variance-reason').text());
+    $(dialog).find('.mdl-dialog__content input[name="amo_id"]').val($(this).parent().data('amo-id'));
+    dialog.showModal();
+});
+dialog.querySelector('.close').addEventListener('click', function() {
+    dialog.close();
+});
+dialog.querySelector('.submit').addEventListener('click', function() {
+    $(dialog).find('form').submit();
+    dialog.close();
+});
+
+const dialog2 = document.getElementById('sup-feedback-dialog');
+if (! dialog2.showModal) {
+    dialogPolyfill.registerDialog(dialog2);
+}
+$('.sup-feedback-button').on('click', function() {
+    $(dialog2).find('.mdl-textfield, .mdl-checkbox, .fac-progress').data($(this).data());
+    dialog2.querySelector('.sup-feedback').MaterialTextfield.change($(this).find('.sup-feedback').text());
+    if (typeof $(this).data('sup-approved') == 'undefined') {
+        dialog2.querySelector('.sup-approved').MaterialCheckbox.uncheck();
+    } else {
+        dialog2.querySelector('.sup-approved').MaterialCheckbox.check();
+    }
+    console.log(this);
+    console.log($(this).data('fac-progress'));
+    dialog2.querySelector('.fac-progress').MaterialExtSelectfield.change($(this).data('fac-progress'));
+    dialog2.showModal();
+});
+$(dialog2).find('.sup-feedback').on('change', function(){
+    var url, method, data;
+    if($(this).data('sup-feedback-id') == 'new') {
+        url = '<%= supervisor_feedbacks_path %>';
+        method = 'POST';
+        data = {
+            supervisor_feedback: {
+                ministry_id: $(this).data('stream-id'),
+                facilitator_id: $(this).data('fac-id'),
+                month: $(this).data('month'),
+                supervisor_id: <%= logged_in_user.id %>,
+                result_feedback: $(this).find('textarea').val()
+            }
+        };
+    } else {
+        url = '<%= supervisor_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('sup-feedback-id'));
+        method = 'PUT';
+        data = {supervisor_feedback: {result_feedback: $(this).find('textarea').val()}};
+    }
+    $.ajax({
+        url: url,
+        method: method,
+        dataType: 'script',
+        data: data
+    });
+});
+$(dialog2).find('.sup-approved').on('change', function(){
+    var url, method, data;
+    if($(this).data('sup-feedback-id') == 'new') {
+        url = '<%= supervisor_feedbacks_path %>';
+        method = 'POST';
+        data = {
+            supervisor_feedback: {
+                ministry_id: $(this).data('stream-id'),
+                facilitator_id: $(this).data('fac-id'),
+                month: $(this).data('month'),
+                supervisor_id: <%= logged_in_user.id %>,
+                report_approved: $(this).find('input').is(':checked')
+            }
+        };
+    } else {
+        url = '<%= supervisor_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('sup-feedback-id'));
+        method = 'PUT';
+        data = {supervisor_feedback: {report_approved: $(this).find('input').is(':checked')}};
+    }
+    $.ajax({
+        url: url,
+        method: method,
+        dataType: 'script',
+        data: data
+    });
+});
+$(dialog2).find('.fac-progress').on('change', function(){
+    var url, method, data;
+    if($(this).data('sup-feedback-id') == 'new') {
+        url = '<%= supervisor_feedbacks_path %>';
+        method = 'POST';
+        data = {
+            supervisor_feedback: {
+                ministry_id: $(this).data('stream-id'),
+                facilitator_id: $(this).data('fac-id'),
+                month: $(this).data('month'),
+                supervisor_id: <%= logged_in_user.id %>,
+                facilitator_progress: $(this).find('select').val()
+            }
+        };
+    } else {
+        url = '<%= supervisor_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('sup-feedback-id'));
+        method = 'PUT';
+        data = {supervisor_feedback: {facilitator_progress: $(this).find('select').val()}};
+    }
+    $.ajax({
+        url: url,
+        method: method,
+        dataType: 'script',
+        data: data
+    });
+});
+dialog2.querySelector('.close').addEventListener('click', function() {
+    dialog2.close();
 });

@@ -5,3 +5,7 @@
 
 const editedCell = $('.amo-actual[data-state-language="<%= sl %>"][data-deliverable="<%= del %>"][data-month="<%= m %>"][data-fac="<%= fac %>"]');
 editedCell.find('input').removeClass('dirty');
+<% year, month = @amo.month[0..3].to_i, @amo.month[-2..-1].to_i %>
+<% app_year, quarter = app_year(year, month), quarter_for_month(month) %>
+editedCell.siblings('.quarterly-actual[data-quarter="<%= quarter %>"]').text('<%= calculate_fac_quarterly_actual(@amo.state_language, @amo.deliverable, app_year, quarter) %>');
+editedCell.siblings('.annual-actual[data-year="<%= app_year %>"]').text('<%= calculate_fac_annual_actual(@amo.state_language, @amo.deliverable, app_year) %>');
