@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181106013231) do
+ActiveRecord::Schema.define(version: 20181107115557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -259,10 +259,11 @@ ActiveRecord::Schema.define(version: 20181106013231) do
   create_table "external_devices", force: :cascade do |t|
     t.string   "device_id"
     t.string   "name"
-    t.boolean  "registered", default: false, null: false
+    t.boolean  "registered",  default: false, null: false
     t.integer  "user_id"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "app_version"
   end
 
   add_index "external_devices", ["user_id"], name: "index_external_devices_on_user_id", using: :btree
@@ -831,10 +832,13 @@ ActiveRecord::Schema.define(version: 20181106013231) do
     t.integer  "ministry_id",                          null: false
     t.integer  "supervisor_id",                        null: false
     t.boolean  "report_approved",      default: false, null: false
+    t.integer  "state_language_id"
   end
 
   add_index "supervisor_feedbacks", ["facilitator_id"], name: "index_supervisor_feedbacks_on_facilitator_id", using: :btree
+  add_index "supervisor_feedbacks", ["ministry_id", "state_language_id", "facilitator_id", "month"], name: "index_supervisor_feedbacks_uniqueness", unique: true, using: :btree
   add_index "supervisor_feedbacks", ["ministry_id"], name: "index_supervisor_feedbacks_on_ministry_id", using: :btree
+  add_index "supervisor_feedbacks", ["state_language_id"], name: "index_supervisor_feedbacks_on_state_language_id", using: :btree
   add_index "supervisor_feedbacks", ["supervisor_id"], name: "index_supervisor_feedbacks_on_supervisor_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
@@ -1024,6 +1028,7 @@ ActiveRecord::Schema.define(version: 20181106013231) do
   add_foreign_key "state_languages", "languages"
   add_foreign_key "sub_districts", "districts"
   add_foreign_key "supervisor_feedbacks", "ministries"
+  add_foreign_key "supervisor_feedbacks", "state_languages"
   add_foreign_key "supervisor_feedbacks", "users", column: "facilitator_id"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translation_codes"

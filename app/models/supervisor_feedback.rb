@@ -7,6 +7,7 @@ class SupervisorFeedback < ActiveRecord::Base
     good: 3
   }
 
+  belongs_to :state_language
   belongs_to :ministry
   belongs_to :supervisor, class_name: 'User'
   belongs_to :facilitator, class_name: 'User'
