@@ -6,10 +6,24 @@ class SupervisorFeedbacksController < ApplicationController
     respond_to :js
   end
 
+  def create
+    @supervisor_feedback = SupervisorFeedback.create(supervisor_feedback_params)
+    respond_to :js
+  end
+
   private
 
   def supervisor_feedback_params
-    params.require(:supervisor_feedback).permit([:result_feedback, :report_approved])
+    params.require(:supervisor_feedback).permit(
+        [
+            :result_feedback,
+            :report_approved,
+            :facilitator_id,
+            :supervisor_id,
+            :ministry_id,
+            :month
+        ]
+    )
   end
 
 end

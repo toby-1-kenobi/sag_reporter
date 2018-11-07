@@ -40,25 +40,59 @@ $('.sup-feedback-button').on('click', function() {
     } else {
         dialog2.querySelector('.sup-approved').MaterialCheckbox.check();
     }
-    $(dialog2).find('.mdl-textfield, .mdl-checkbox').data('sup-feedback-id', $(this).data('sup-feedback-id'));
+    $(dialog2).find('.mdl-textfield, .mdl-checkbox').data($(this).data());
     dialog2.showModal();
 });
 $(dialog2).find('.sup-feedback').on('change', function(){
-    const url = '<%= supervisor_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('sup-feedback-id'));
+    var url, method, data;
+    if($(this).data('sup-feedback-id') == 'new') {
+        url = '<%= supervisor_feedbacks_path %>';
+        method = 'POST';
+        data = {
+            supervisor_feedback: {
+                ministry_id: $(this).data('stream-id'),
+                facilitator_id: $(this).data('fac-id'),
+                month: $(this).data('month'),
+                supervisor_id: <%= logged_in_user.id %>,
+                result_feedback: $(this).find('textarea').val()
+            }
+        };
+    } else {
+        url = '<%= supervisor_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('sup-feedback-id'));
+        method = 'PUT';
+        data = {supervisor_feedback: {result_feedback: $(this).find('textarea').val()}};
+    }
     $.ajax({
         url: url,
-        method: 'PUT',
+        method: method,
         dataType: 'JSON',
-        data: {supervisor_feedback: {result_feedback: $(this).find('textarea').val()}}
+        data: data
     });
 });
 $(dialog2).find('.sup-approved').on('change', function(){
-    const url = '<%= supervisor_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('sup-feedback-id'));
+    var url, method, data;
+    if($(this).data('sup-feedback-id') == 'new') {
+        url = '<%= supervisor_feedbacks_path %>';
+        method = 'POST';
+        data = {
+            supervisor_feedback: {
+                ministry_id: $(this).data('stream-id'),
+                facilitator_id: $(this).data('fac-id'),
+                month: $(this).data('month'),
+                supervisor_id: <%= logged_in_user.id %>,
+                report_approved: $(this).find('input').is(':checked')
+            }
+        };
+    } else {
+        url = '<%= supervisor_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('sup-feedback-id'));
+        method = 'PUT';
+        data = {supervisor_feedback: {report_approved: $(this).find('input').is(':checked')}};
+    }
     $.ajax({
         url: url,
-        method: 'PUT',
+        method: method,
         dataType: 'JSON',
-        data: {supervisor_feedback: {report_approved: $(this).find('input').is(':checked')}}
+        data: data
     });
 });
 dialog2.querySelector('.close').addEventListener('click', function() {
