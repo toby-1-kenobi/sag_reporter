@@ -9,6 +9,8 @@ class Ministry < ActiveRecord::Base
   has_many :project_streams, dependent: :destroy
   has_many :projects, through: :project_streams
   has_many :supervisors, through: :project_streams, class_name: 'User'
+  has_many :report_streams, dependent: :destroy
+  has_many :reports, through: :report_streams
   belongs_to :topic
   belongs_to :name, class_name: 'TranslationCode', dependent: :destroy
   before_create :create_translation_codes

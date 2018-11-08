@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181106013231) do
+ActiveRecord::Schema.define(version: 20181108104752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -775,6 +775,17 @@ ActiveRecord::Schema.define(version: 20181106013231) do
   add_index "registration_approvals", ["registering_user_id", "approver_id"], name: "index_registering_user_approver", unique: true, using: :btree
   add_index "registration_approvals", ["registering_user_id"], name: "index_registration_approvals_on_registering_user_id", using: :btree
 
+  create_table "report_streams", force: :cascade do |t|
+    t.integer  "report_id",   null: false
+    t.integer  "ministry_id", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "report_streams", ["ministry_id"], name: "index_report_streams_on_ministry_id", using: :btree
+  add_index "report_streams", ["report_id", "ministry_id"], name: "index_report_ministry", unique: true, using: :btree
+  add_index "report_streams", ["report_id"], name: "index_report_streams_on_report_id", using: :btree
+
   create_table "reports", force: :cascade do |t|
     t.integer  "reporter_id",                             null: false
     t.text     "content",                                 null: false
@@ -855,10 +866,13 @@ ActiveRecord::Schema.define(version: 20181106013231) do
     t.integer  "ministry_id",                          null: false
     t.integer  "supervisor_id",                        null: false
     t.boolean  "report_approved",      default: false, null: false
+    t.integer  "state_language_id"
   end
 
   add_index "supervisor_feedbacks", ["facilitator_id"], name: "index_supervisor_feedbacks_on_facilitator_id", using: :btree
+  add_index "supervisor_feedbacks", ["ministry_id", "state_language_id", "facilitator_id", "month"], name: "index_supervisor_feedbacks_uniqueness", unique: true, using: :btree
   add_index "supervisor_feedbacks", ["ministry_id"], name: "index_supervisor_feedbacks_on_ministry_id", using: :btree
+  add_index "supervisor_feedbacks", ["state_language_id"], name: "index_supervisor_feedbacks_on_state_language_id", using: :btree
   add_index "supervisor_feedbacks", ["supervisor_id"], name: "index_supervisor_feedbacks_on_supervisor_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
@@ -1048,6 +1062,8 @@ ActiveRecord::Schema.define(version: 20181106013231) do
   add_foreign_key "quarterly_targets", "state_languages"
   add_foreign_key "registration_approvals", "users", column: "approver_id"
   add_foreign_key "registration_approvals", "users", column: "registering_user_id"
+  add_foreign_key "report_streams", "ministries"
+  add_foreign_key "report_streams", "reports"
   add_foreign_key "reports", "challenge_reports"
   add_foreign_key "reports", "church_ministries"
   add_foreign_key "reports", "events"
@@ -1060,6 +1076,7 @@ ActiveRecord::Schema.define(version: 20181106013231) do
   add_foreign_key "state_languages", "languages"
   add_foreign_key "sub_districts", "districts"
   add_foreign_key "supervisor_feedbacks", "ministries"
+  add_foreign_key "supervisor_feedbacks", "state_languages"
   add_foreign_key "supervisor_feedbacks", "users", column: "facilitator_id"
   add_foreign_key "translation_progresses", "chapters"
   add_foreign_key "translation_progresses", "languages"

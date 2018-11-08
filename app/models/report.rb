@@ -14,6 +14,8 @@ class Report < ActiveRecord::Base
   has_many :pictures, class_name: 'UploadedFile', dependent: :nullify
   has_many :observations, inverse_of: :report, dependent: :destroy
   has_many :observers, through: :observations, source: 'person'
+  has_many :report_streams, dependent: :destroy
+  has_many :ministries, through: :report_streams
   belongs_to :project
   belongs_to :church_ministry
   accepts_nested_attributes_for :pictures,
