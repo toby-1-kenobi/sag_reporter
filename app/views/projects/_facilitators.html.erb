@@ -19,9 +19,12 @@
           <% [last_q, current_q].each do |quarter| %>
             <% months_in_quarter(quarter).each do |month| %>
               <th colspan="2" class="mdl-data-table__cell--non-numeric">
-                <%= Date::MONTHNAMES[month] %>
                 <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
                 <% sup_feedback = SupervisorFeedback.find_by(ministry: lang_stream.ministry, facilitator: lang_stream.facilitator, month: year_month) %>
+                <% img_html_data = {class: 'approved-stamp'} %>
+                <% img_html_data[:hidden] = '' unless sup_feedback and sup_feedback.report_approved? %>
+                <%= image_tag 'approved.png', img_html_data %>
+                <%= Date::MONTHNAMES[month] %>
                 <button
                   id="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>"
                   class="sup-feedback-button mdl-button mdl-js-button mdl-button--icon <%= (sup_feedback and sup_feedback.result_feedback.present?) ? 'mdl-button--primary' : 'mdl-button--accent' %>"
@@ -32,7 +35,7 @@
                   data-sup-feedback-id="<%= sup_feedback ? sup_feedback.id : 'new' %>"
                   <% if sup_feedback %>
                     data-fac-progress="<%= sup_feedback.facilitator_progress %>"
-                    <%= 'data-sup-approved' if sup_feedback.report_approved %>
+                    <%= 'data-sup-approved' if sup_feedback.report_approved? %>
                   <% end %>
                 >
                   <i class="material-icons">edit</i>

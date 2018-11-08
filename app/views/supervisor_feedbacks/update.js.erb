@@ -4,5 +4,10 @@ buttonElement.data('fac-progress', '<%= @supervisor_feedback.facilitator_progres
 <% if @supervisor_feedback.report_approved? %>
   buttonElement.attr('data-sup-approved', '');
   buttonElement.data('sup-approved', '');
+  buttonElement.closest('th').find('.approved-stamp').removeAttr('hidden')
+<% else %>
+  buttonElement.removeAttr('data-sup-approved')
+  buttonElement.removeData('sup-approved');
+  buttonElement.closest('th').find('.approved-stamp').attr('hidden', '')
 <% end %>
 buttonElement.find('.sup-feedback').text('<%= @supervisor_feedback.result_feedback %>');
