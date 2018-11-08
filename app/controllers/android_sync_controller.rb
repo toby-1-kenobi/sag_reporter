@@ -591,7 +591,12 @@ class AndroidSyncController < ApplicationController
         entry = @is_only_test? table.find(id) : table.update(id, hash)
         @id_changes[table.name].merge!({id => entry})
       elsif (old_id = hash.delete "old_id")
+        email = hash.delete("significant")
         new_entry = table.new hash
+        if email&.empty? == false
+          new_entry.significant = true
+          send_mail new_entry, email
+        end
         @id_changes[table.name].merge!({old_id => new_entry})
       else
         raise "Entry needs either an ID value or an 'old ID' value"
@@ -603,6 +608,38 @@ class AndroidSyncController < ApplicationController
         @tempfile.close
         @tempfile.unlink
       end
+    end
+  end
+
+  def send_mail(report, email)
+    # make sure TLS gets used for delivering this email
+    if SendGridV3.enforce_tls
+      recipient = User.find_by_email email
+      recipient ||= email
+      delivery_success = false
+      begin
+        UserMailer.user_report(recipient, report).deliver_now
+        delivery_success = true
+      rescue EOFError,
+            IOError,
+            TimeoutError,
+            Errno::ECONNRESET,
+            Errno::ECONNABORTED,
+            Errno::EPIPE,
+            Errno::ETIMEDOUT,
+            Net::SMTPAuthenticationError,
+            Net::SMTPServerBusy,
+            Net::SMTPSyntaxError,
+            Net::SMTPUnknownError,
+            OpenSSL::SSL::SSLError => e
+        Rails.logger.error e.message
+      end
+      if delivery_success
+        # also send it to the reporter
+        UserMailer.user_report(report.reporter, report).deliver_now
+      end
+    else
+      Rails.logger.error 'Could not enforce TLS with SendGrid'
     end
   end
 
