@@ -27,7 +27,7 @@
                 <%= Date::MONTHNAMES[month] %>
                 <button
                   id="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>"
-                  class="sup-feedback-button mdl-button mdl-js-button mdl-button--icon <%= (sup_feedback and sup_feedback.result_feedback.present?) ? 'mdl-button--primary' : 'mdl-button--accent' %>"
+                  class="<%= 'empty' unless sup_feedback and sup_feedback.result_feedback.present? %> sup-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
                   data-stream-id="<%= lang_stream.ministry_id %>"
                   data-state-lang-id="<%= lang_stream.state_language_id %>"
                   data-fac-id="<%= lang_stream.facilitator_id %>"

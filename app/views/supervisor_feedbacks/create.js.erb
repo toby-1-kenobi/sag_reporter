@@ -12,5 +12,12 @@ buttonElement.data('fac-progress', '<%= @supervisor_feedback.facilitator_progres
   buttonElement.removeData('sup-approved');
   buttonElement.closest('th').find('.approved-stamp').attr('hidden', '')
 <% end %>
-buttonElement.find('.sup-feedback').text('<%= @supervisor_feedback.result_feedback %>');
+
+buttonElement.find('.sup-feedback').text('<%= @supervisor_feedback.result_feedback %>')
+<% if @supervisor_feedback.result_feedback.present? %>
+  buttonElement.removeClass('empty');
+<% else %>
+  buttonElement.addClass('empty');
+<% end %>
+
 $('#sup-feedback-dialog').find('.sup-feedback, .sup-approved, .fac-progress').data('sup-feedback-id', '<%= @supervisor_feedback.id %>');
