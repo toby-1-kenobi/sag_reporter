@@ -61,7 +61,7 @@
         </tr>
       </thead>
       <tbody>
-        <% lang_stream.ministry.deliverables.facilitator.each do |deliverable| %>
+        <% lang_stream.ministry.deliverables.facilitator.order(:number).each do |deliverable| %>
           <tr>
             <td class="mdl-data-table__cell--non-numeric">
               <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>
