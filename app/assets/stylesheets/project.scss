@@ -26,10 +26,10 @@
   .amo-target { background-color: lightskyblue; }
   .amo-actual {
     background-color: deepskyblue;
-    &[data-progress="poor"] { background-color: indianred; }
-    &[data-progress="fair"] { background-color: gold; }
+    &[data-progress="poor"] { background-color: red; }
+    &[data-progress="fair"] { background-color: yellow; }
     &[data-progress="good"] { background-color: palegreen; }
-    &[data-progress="excellent"] { background-color: limegreen; }
+    &[data-progress="excellent"] { background-color: lime; }
   }
   .quarterly-target { background-color: pink; }
   .quarterly-actual { background-color: hotpink; }

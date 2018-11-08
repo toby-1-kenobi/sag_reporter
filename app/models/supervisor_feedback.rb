@@ -1,6 +1,7 @@
 class SupervisorFeedback < ActiveRecord::Base
 
   enum facilitator_progress: {
+    no_progress: 0,
     poor: 1,
     fair: 2,
     good: 3,
