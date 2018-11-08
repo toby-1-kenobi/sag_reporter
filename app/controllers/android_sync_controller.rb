@@ -12,16 +12,16 @@ class AndroidSyncController < ApplicationController
         StateLanguage => %w(geo_state_id language_id project),
         GeoState => %w(name),
         Language => %w(name colour),
-#        Person => %w(name geo_state_id),
+        Person => %w(name geo_state_id),
         Topic => %w(name colour),
-#        ProgressMarker => %w(name topic_id number),
+        ProgressMarker => %w(name topic_id number),
         Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id),
         ImpactReport => %w(translation_impact),
         UploadedFile => %w(report_id),
         MtResource => %w(user_id name language_id cc_share_alike medium status geo_state_id url),
         Organisation => %w(name abbreviation church),
-#        LanguageProgress => %w(progress_marker_id state_language_id),
-#        ProgressUpdate => %w(user_id language_progress_id progress month year),
+        LanguageProgress => %w(progress_marker_id state_language_id),
+        ProgressUpdate => %w(user_id language_progress_id),
         ChurchTeam => %w(organisation_id leader state_language_id),
         ChurchMinistry => %w(church_team_id ministry_id status facilitator_id),
         Ministry => %w(topic_id name_id code),
@@ -73,15 +73,17 @@ class AndroidSyncController < ApplicationController
     @all_restricted_ids = Hash.new
     def restrict(table)
       table_implementation = table.new
-      unless @project_ids# && @state_language_ids && @language_ids && @geo_state_ids
+      unless @project_ids && @state_language_ids && @language_ids && @geo_state_ids
         @project_ids = ProjectStream.where(supervisor: @external_user).map(&:project_id) +
             ProjectSupervisor.where(user: @external_user).map(&:project_id)
-#        @state_language_ids = Project.includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
-#            LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
-#            ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id)
-#        state_languages = StateLanguage.where(id:@state_language_ids)
-#        @language_ids = state_languages.map &:language_id
-#        @geo_state_ids = state_languages.map(&:geo_state_id) + @external_user.geo_state_ids
+        user_geo_state_ids = @external_user.national? ? GeoState.ids : @external_user.geo_state_ids
+        @state_language_ids = Project.includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
+            LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
+            ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id) +
+            StateLanguage.where(geo_state_id: user_geo_state_ids).ids
+        state_languages = StateLanguage.where(id: @state_language_ids)
+        @language_ids = state_languages.map &:language_id
+        @geo_state_ids = state_languages.map(&:geo_state_id)
       end
       restricted_ids =
         case table_implementation
@@ -93,29 +95,29 @@ class AndroidSyncController < ApplicationController
           else
             LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id]
           end
-#        when Language
-#          table.where(id: @language_ids).ids
-#        when GeoState
-#          table.where(id: @geo_state_ids).ids
-#        when Project
-#          table.where(id: @project_ids).ids
-#        when StateLanguage
-#          table.where(id: @state_language_ids).ids
-#        when MtResource
-#          table.where(language_id: @language_ids, geo_state_id: @geo_state_ids).ids
+        when Language
+          table.where(id: @language_ids).ids
+        when GeoState
+          table.where(id: @geo_state_ids).ids
+        when Project
+          table.where(id: @project_ids).ids
+        when StateLanguage
+          table.where(id: @state_language_ids).ids
+        when MtResource
+          table.where(language_id: @language_ids, geo_state_id: @geo_state_ids).ids
         when Report
           table.where("report_date >= ?", Date.new(2018, 1, 1)).where(significant: true)
-#              .where(geo_state_id: @geo_state_ids).language(@language_ids).ids
+              .where(geo_state_id: @geo_state_ids).language(@language_ids).ids
         when UploadedFile
           table.where(report_id: @all_restricted_ids[Report]).ids
-#        when ChurchTeam
-#          table.where(state_language_id: @state_language_ids).ids
+        when ChurchTeam
+          table.where(state_language_id: @state_language_ids).ids
         when ChurchMinistry
           table.where(church_team_id: @all_restricted_ids[ChurchTeam]).ids
-#        when QuarterlyTarget
-#          table.where(state_language_id: @state_language_ids).ids
-#        when AggregateMinistryOutput
-#          table.where(state_language_id: @state_language_ids).ids
+        when QuarterlyTarget
+          table.where(state_language_id: @state_language_ids).ids
+        when AggregateMinistryOutput
+          table.where(state_language_id: @state_language_ids).ids
         when MinistryOutput
           table.where(church_ministry_id: @all_restricted_ids[ChurchMinistry]).ids
         when FacilitatorFeedback
@@ -124,8 +126,8 @@ class AndroidSyncController < ApplicationController
           table.where(project_id: @all_restricted_ids[Project]).ids
         when ProjectSupervisor
           table.where(project_id: @all_restricted_ids[Project]).ids
-#        when LanguageStream
-#          table.where(state_language_id: @state_language_ids).ids
+        when LanguageStream
+          table.where(state_language_id: @state_language_ids).ids
         when ImpactReport
           table.joins(:report).where(reports:{id: @all_restricted_ids[Report]}).ids
         when Person
@@ -134,17 +136,15 @@ class AndroidSyncController < ApplicationController
           table.ids
       end
       unless @external_user.national
-        @user_geo_states ||= @external_user.geo_state_ids + Project.includes(:state_languages).where(id: @project_ids)
-                                                             .map(&:state_languages).flatten.map(&:geo_state_id)
         restricted_ids = case table_implementation
           when StateLanguage
-            table.where(id: restricted_ids, geo_state_id: @user_geo_states).ids
+            table.where(id: restricted_ids, geo_state_id: @geo_state_ids).ids
           when Person
-            table.where(id: restricted_ids, geo_state_id: @user_geo_states).ids
+            table.where(id: restricted_ids, geo_state_id: @geo_state_ids).ids
           when MtResource
-            table.where(id: restricted_ids, geo_state_id: @user_geo_states).ids
+            table.where(id: restricted_ids, geo_state_id: @geo_state_ids).ids
           when Report
-            table.where(id: restricted_ids, geo_state_id: @user_geo_states).ids
+            table.where(id: restricted_ids, geo_state_id: @geo_state_ids).ids
             
           when ChurchTeam
             table.joins(:state_language).where(id: restricted_ids, state_languages: {id: @all_restricted_ids[StateLanguage]}).ids
@@ -282,7 +282,7 @@ class AndroidSyncController < ApplicationController
             file.write deleted_entries.to_json
             deleted_entries.each do |table, ids|
                 puts "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.join ","});"
-                file_2.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.join ","});"
+                file_2.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.select{|id| id < 1000000}.join ","});"
             end
           end
           file.write "}"
@@ -399,9 +399,7 @@ class AndroidSyncController < ApplicationController
               :significant,
               :content,
               :reporter_id,
-              :impact_report,
-              {progress_marker_ids: []},
-              :progress_marker_ids,
+              :impact_report_id,
               {observer_ids: []},
               :observer_ids,
               :client,
@@ -416,7 +414,8 @@ class AndroidSyncController < ApplicationController
                   :id,
                   :old_id,
                   :report_id,
-                  :shareable,
+                  {progress_marker_ids: []},
+                  :progress_marker_ids,
                   :translation_impact
           ],
           organisation: [
@@ -549,7 +548,7 @@ class AndroidSyncController < ApplicationController
   def build(table, hash)
     old_id = nil
     begin
-      if table == Report && hash["reporter_id"] != @external_user && !@external_user.admin
+      if table == Report && hash["reporter_id"] != @external_user.id && !@external_user.admin
         Report.find(hash["id"]).touch if hash["id"]
         raise "User is not allowed to edit report #{hash["id"]}"
       elsif table == UploadedFile
