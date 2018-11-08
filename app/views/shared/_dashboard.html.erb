@@ -123,7 +123,7 @@
   <% if tabs.include? :projects %>
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'projects' %>" id="projects-tab">
       <% projects = defined?(dashboard_object) ? dashboard_object.projects.order(:name).uniq : Project.all.order(:name) %>
-      <% projects = projects.to_a.select{ |p| logged_in_user.can_view_project(p) } unless logged_in_user.admin? %>
+      <% projects = projects.to_a.select{ |p| logged_in_user.can_view_project?(p) } unless logged_in_user.admin? %>
       <button id="project-menu-button" class="mdl-button mdl-js-button mdlext-js-menu-button" aria-controls="project-menu">
         <span>Select a project</span>
         <i class="material-icons">more_vert</i>

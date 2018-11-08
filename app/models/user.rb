@@ -185,13 +185,19 @@ class User < ActiveRecord::Base
   def can_edit_project?(project)
     trusted? and (admin? or
         (zone_admin? and (zones & project.zones).any?) or
-        ProjectSupervisor.exists?(user: id, project: project, role: 'management') or
-        ProjectStream.exists?(supervisor: id, project: project)
+        ProjectSupervisor.exists?(user: id, project: project, role: 'management')
     )
   end
 
+  def can_edit_project_stream?(project, stream)
+    ProjectStream.exists?(project: project, ministry: stream, supervisor: id) or
+        can_edit_project?(project)
+  end
+
   def can_view_project?(project)
-    can_edit_project?(project) or ProjectSupervisor.exists?(user: id, project: project)
+    can_edit_project?(project) or
+        ProjectSupervisor.exists?(project: project, user: id) or
+        ProjectStream.exists?(project: project, supervisor: id)
   end
 
   def can_view_any_of_projects?(projects)

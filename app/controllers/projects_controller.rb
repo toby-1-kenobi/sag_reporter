@@ -6,14 +6,6 @@ class ProjectsController < ApplicationController
     head :forbidden unless logged_in_user.admin? or logged_in_user.zone_admin?
   end
 
-  before_action only: [:edit, :update] do
-    head :forbidden unless logged_in_user.can_edit_project?(@project)
-  end
-
-  before_action do
-    head :forbidden unless logged_in_user.can_view_project?(@project)
-  end
-
   def create
     @project = Project.create(name: "#{Faker::Color.color_name} #{Faker::Lorem.word}".titleize)
     respond_to :js
@@ -21,6 +13,7 @@ class ProjectsController < ApplicationController
 
   def destroy
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     if @project
       @project.destroy
       respond_to :js
@@ -31,17 +24,20 @@ class ProjectsController < ApplicationController
 
   def edit
     @project = Project.includes(:geo_states).find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     respond_to :js
   end
 
   def teams
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_view_project?(@project)
     @teams = ChurchTeam.in_project(@project)
     respond_to :js
   end
 
   def team_deliverables
     @project = Project.includes(:ministries).find(params[:id])
+    head :forbidden unless logged_in_user.can_view_project?(@project)
     @team = ChurchTeam.includes(:ministries, { state_language: [:language, :geo_state] }).find(params[:team_id])
     @common_ministries = @team.ministries.where(id: @project.ministries)
     respond_to :js
@@ -49,6 +45,7 @@ class ProjectsController < ApplicationController
 
   def facilitators
     @project = Project.includes(language_streams: [:facilitator, {state_language: [:language, :geo_state]}, {ministry: {deliverables: :aggregate_ministry_outputs}}]).find(params[:id])
+    head :forbidden unless logged_in_user.can_view_project?(@project)
     @outputs = {}
     @project.language_streams.each do |lang_stream|
       lang_stream.ministry.deliverables.facilitator.each do |deliverable|
@@ -67,22 +64,26 @@ class ProjectsController < ApplicationController
 
   def edit_responsible
     @project = Project.includes(:geo_states).find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     respond_to :js
   end
 
   def update
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     @project.update_attributes(project_params)
     respond_to :js
   end
 
   def show
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_view_project?(@project)
     respond_to :js
   end
 
   def set_language
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     @state_language = StateLanguage.find(params[:state_language])
     if params["sl-#{@state_language.id}"].present?
       @state_language.update_attribute(:project, true)
@@ -96,6 +97,7 @@ class ProjectsController < ApplicationController
 
   def set_stream
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     @stream = Ministry.find(params[:ministry])
     if params["stream-#{@stream.id}"].present?
       @project.ministries << @stream unless @project.ministries.include? @stream
@@ -106,6 +108,8 @@ class ProjectsController < ApplicationController
   end
 
   def add_facilitator
+    @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     @language_stream = LanguageStream.find_or_create_by(
         ministry_id: params[:stream],
         state_language_id: params[:state_language],
@@ -117,6 +121,7 @@ class ProjectsController < ApplicationController
 
   def targets_by_language
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     @state_language = StateLanguage.find(params[:state_language])
     respond_to :js
   end

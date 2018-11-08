@@ -25,25 +25,27 @@
                 <% img_html_data[:hidden] = '' unless sup_feedback and sup_feedback.report_approved? %>
                 <%= image_tag 'approved.png', img_html_data %>
                 <%= Date::MONTHNAMES[month] %>
-                <button
-                  id="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>"
-                  class="<%= 'empty' unless sup_feedback and sup_feedback.result_feedback.present? %> sup-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
-                  data-stream-id="<%= lang_stream.ministry_id %>"
-                  data-state-lang-id="<%= lang_stream.state_language_id %>"
-                  data-fac-id="<%= lang_stream.facilitator_id %>"
-                  data-month="<%= year_month %>"
-                  data-sup-feedback-id="<%= sup_feedback ? sup_feedback.id : 'new' %>"
-                  <% if sup_feedback %>
-                    data-fac-progress="<%= sup_feedback.facilitator_progress %>"
-                    <%= 'data-sup-approved' if sup_feedback.report_approved? %>
-                  <% end %>
-                >
-                  <i class="material-icons">edit</i>
-                  <div hidden class="sup-feedback"><%= sup_feedback.result_feedback if sup_feedback %></div>
-                </button>
-                <div class="mdl-tooltip" data-mdl-for="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>">
-                  Supervisor feedback and approval
-                </div>
+                <% if logged_in_user.can_edit_project_stream?(@project, lang_stream.ministry) %>
+                  <button
+                    id="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>"
+                    class="<%= 'empty' unless sup_feedback and sup_feedback.result_feedback.present? %> sup-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
+                    data-stream-id="<%= lang_stream.ministry_id %>"
+                    data-state-lang-id="<%= lang_stream.state_language_id %>"
+                    data-fac-id="<%= lang_stream.facilitator_id %>"
+                    data-month="<%= year_month %>"
+                    data-sup-feedback-id="<%= sup_feedback ? sup_feedback.id : 'new' %>"
+                    <% if sup_feedback %>
+                      data-fac-progress="<%= sup_feedback.facilitator_progress %>"
+                      <%= 'data-sup-approved' if sup_feedback.report_approved? %>
+                    <% end %>
+                  >
+                    <i class="material-icons">edit</i>
+                    <div hidden class="sup-feedback"><%= sup_feedback.result_feedback if sup_feedback %></div>
+                  </button>
+                  <div class="mdl-tooltip" data-mdl-for="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>">
+                    Supervisor feedback and approval
+                  </div>
+                <% end %>
               </th>
             <% end %>
             <th colspan="2">Quarterly</th>
@@ -95,22 +97,26 @@
                       data-progress="<%= sup_feedback.facilitator_progress %>"
                     <% end %>
                 >
-                  <button id="variance-reason-button-<% counter += 1 %>" class="<%= 'empty' unless variance_reason.present? %> amo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary <%= 'hide' unless actual.present? %>">
-                    <i class="material-icons">info</i>
-                    <div hidden class="variance-reason"><%= variance_reason %></div>
-                  </button>
-                  <div class="mdl-tooltip" data-mdl-for="variance-reason-button-<%= counter %>">
-                    Reason for variance
-                  </div>
-                  <%= form_tag set_amo_actual_in_state_language_path(lang_stream.state_language, deliverable, year_month, lang_stream.facilitator), method: :patch, remote: true do %>
-                    <div class="mdl-textfield mdl-js-textfield amo-actual-input">
-                      <input class="mdl-textfield__input"
-                             type="text"
-                             pattern="[0-9]*(\.[0-9]+)?"
-                             name="actual"
-                             value="<%= actual %>">
-                      <span class="mdl-textfield__error">Enter a number</span>
+                  <% if logged_in_user.can_edit_project_stream?(@project, lang_stream.ministry) %>
+                    <button id="variance-reason-button-<% counter += 1 %>" class="<%= 'empty' unless variance_reason.present? %> amo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary <%= 'hide' unless actual.present? %>">
+                      <i class="material-icons">info</i>
+                      <div hidden class="variance-reason"><%= variance_reason %></div>
+                    </button>
+                    <div class="mdl-tooltip" data-mdl-for="variance-reason-button-<%= counter %>">
+                      Reason for variance
                     </div>
+                    <%= form_tag set_amo_actual_in_state_language_path(lang_stream.state_language, deliverable, year_month, lang_stream.facilitator), method: :patch, remote: true do %>
+                      <div class="mdl-textfield mdl-js-textfield amo-actual-input">
+                        <input class="mdl-textfield__input"
+                               type="text"
+                               pattern="[0-9]*(\.[0-9]+)?"
+                               name="actual"
+                               value="<%= actual %>">
+                        <span class="mdl-textfield__error">Enter a number</span>
+                      </div>
+                    <% end %>
+                  <% else %>
+                    <%= actual %>
                   <% end %>
                 </td>
               <% end %>
