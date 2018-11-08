@@ -257,6 +257,7 @@ class AndroidSyncController < ApplicationController
                 file.write entry_data.to_json
               rescue => e
                 logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
+                logger.error e.backtrace
               end
             end
             unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
@@ -510,6 +511,7 @@ class AndroidSyncController < ApplicationController
             end
           rescue => e
             logger.error e
+            logger.error e.backtrace
             @errors << {"#{table}:#{old_id}" => e.message}
           end
         end
@@ -604,6 +606,7 @@ class AndroidSyncController < ApplicationController
       end
     rescue => e
       logger.error e
+      logger.error e.backtrace
       @errors << {"#{table}:#{old_id}" => e.message}
     ensure
       if @tempfile
@@ -635,6 +638,7 @@ class AndroidSyncController < ApplicationController
             Net::SMTPUnknownError,
             OpenSSL::SSL::SSLError => e
         logger.error e
+        logger.error e.backtrace
       end
       if delivery_success
         # also send it to the reporter
@@ -684,6 +688,7 @@ class AndroidSyncController < ApplicationController
       end
     rescue => e
       logger.error e
+      logger.error e.backtrace
       nil
     end
   end
