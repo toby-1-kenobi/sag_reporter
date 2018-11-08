@@ -400,8 +400,6 @@ class AndroidSyncController < ApplicationController
               :content,
               :reporter_id,
               :impact_report,
-              {progress_marker_ids: []},
-              :progress_marker_ids,
               {observer_ids: []},
               :observer_ids,
               :client,
@@ -416,7 +414,8 @@ class AndroidSyncController < ApplicationController
                   :id,
                   :old_id,
                   :report_id,
-                  :shareable,
+                  {progress_marker_ids: []},
+                  :progress_marker_ids,
                   :translation_impact
           ],
           organisation: [
@@ -549,7 +548,7 @@ class AndroidSyncController < ApplicationController
   def build(table, hash)
     old_id = nil
     begin
-      if table == Report && hash["reporter_id"] != @external_user && !@external_user.admin
+      if table == Report && hash["reporter_id"] != @external_user.id && !@external_user.admin
         Report.find(hash["id"]).touch if hash["id"]
         raise "User is not allowed to edit report #{hash["id"]}"
       elsif table == UploadedFile
