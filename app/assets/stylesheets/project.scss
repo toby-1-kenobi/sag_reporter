@@ -24,7 +24,13 @@
     text-align: center !important;
   }
   .amo-target { background-color: lightskyblue; }
-  .amo-actual { background-color: deepskyblue; }
+  .amo-actual {
+    background-color: deepskyblue;
+    &[data-progress="poor"] { background-color: indianred; }
+    &[data-progress="fair"] { background-color: gold; }
+    &[data-progress="good"] { background-color: palegreen; }
+    &[data-progress="excellent"] { background-color: limegreen; }
+  }
   .quarterly-target { background-color: pink; }
   .quarterly-actual { background-color: hotpink; }
   .annual-target { background-color: palegoldenrod; }

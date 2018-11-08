@@ -83,12 +83,17 @@
                   <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
                 <% end %>
                 <td class="amo-target"><%= target %></td>
+                <% sup_feedback = SupervisorFeedback.find_by(ministry: lang_stream.ministry, facilitator: lang_stream.facilitator, month: year_month) %>
                 <td class="amo-actual"
                     <%= "data-amo-id=#{actual_id}" if actual.present? %>
                     data-state-language="<%= lang_stream.state_language_id %>"
                     data-deliverable="<%= deliverable.id %>"
+                    data-stream="<%= deliverable.ministry_id %>"
                     data-month="<%= year_month %>"
                     data-fac="<%= lang_stream.facilitator_id %>"
+                    <% if sup_feedback %>
+                      data-progress="<%= sup_feedback.facilitator_progress %>"
+                    <% end %>
                 >
                   <button id="variance-reason-button-<% counter += 1 %>" class="<%= 'empty' unless variance_reason.present? %> amo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary <%= 'hide' unless actual.present? %>">
                     <i class="material-icons">info</i>
@@ -158,7 +163,7 @@
             <option value=""></option>
             <%= options_for_select(SupervisorFeedback.facilitator_progresses.to_a.map{ |p| p[0] = t "facilitator-progress.#{p[0]}", default: p[0] }) %>
           </select>
-          <label for="sup-feedback-dialog-fac-progress" class="mdlext-selectfield__label">Facilitator Progress</label>
+          <label for="sup-feedback-dialog-fac-progress" class="mdlext-selectfield__label">Evaluate progress in this month</label>
         </div>
       </div>
       <div class="mdl-dialog__actions">

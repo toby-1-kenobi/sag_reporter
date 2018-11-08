@@ -1,10 +1,10 @@
 class SupervisorFeedback < ActiveRecord::Base
 
   enum facilitator_progress: {
-    no_result: 0,
-    no_progress: 1,
-    needs_attention: 2,
-    good: 3
+    poor: 1,
+    fair: 2,
+    good: 3,
+    excellent: 4
   }
 
   belongs_to :state_language
