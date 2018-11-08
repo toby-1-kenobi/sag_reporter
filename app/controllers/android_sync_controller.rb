@@ -386,7 +386,13 @@ class AndroidSyncController < ApplicationController
               :name,
               :user_id,
               :geo_state_id
-
+          ],
+          impact_report: [
+              :id,
+              :old_id,
+              {progress_marker_ids: []},
+              :progress_marker_ids,
+              :translation_impact
           ],
           report: [
               :id,
@@ -409,14 +415,6 @@ class AndroidSyncController < ApplicationController
               :old_id,
               :data,
               :report_id
-          ],
-          impact_report: [
-                  :id,
-                  :old_id,
-                  :report_id,
-                  {progress_marker_ids: []},
-                  :progress_marker_ids,
-                  :translation_impact
           ],
           organisation: [
                   :id,
