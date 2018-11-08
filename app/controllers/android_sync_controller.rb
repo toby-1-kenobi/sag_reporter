@@ -509,6 +509,7 @@ class AndroidSyncController < ApplicationController
               @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
             end
           rescue => e
+            logger.error e
             @errors << {"#{table}:#{old_id}" => e.message}
           end
         end
@@ -593,7 +594,7 @@ class AndroidSyncController < ApplicationController
       elsif (old_id = hash.delete "old_id")
         email = hash.delete("significant")
         new_entry = table.new hash
-        if email&.empty? == false
+        if table == Report && email&.empty? == false
           new_entry.significant = true
           send_mail new_entry, email
         end
@@ -602,6 +603,7 @@ class AndroidSyncController < ApplicationController
         raise "Entry needs either an ID value or an 'old ID' value"
       end
     rescue => e
+      logger.error e
       @errors << {"#{table}:#{old_id}" => e.message}
     ensure
       if @tempfile
@@ -632,14 +634,14 @@ class AndroidSyncController < ApplicationController
             Net::SMTPSyntaxError,
             Net::SMTPUnknownError,
             OpenSSL::SSL::SSLError => e
-        Rails.logger.error e.message
+        logger.error e
       end
       if delivery_success
         # also send it to the reporter
         UserMailer.user_report(report.reporter, report).deliver_now
       end
     else
-      Rails.logger.error 'Could not enforce TLS with SendGrid'
+      logger.error 'Could not enforce TLS with SendGrid'
     end
   end
 
