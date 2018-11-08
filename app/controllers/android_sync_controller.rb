@@ -399,7 +399,7 @@ class AndroidSyncController < ApplicationController
               :significant,
               :content,
               :reporter_id,
-              :impact_report,
+              :impact_report_id,
               {observer_ids: []},
               :observer_ids,
               :client,
