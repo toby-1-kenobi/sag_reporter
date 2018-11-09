@@ -257,6 +257,7 @@ class AndroidSyncController < ApplicationController
                 file.write entry_data.to_json
               rescue => e
                 logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
+                logger.error e.backtrace
               end
             end
             unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
@@ -386,7 +387,13 @@ class AndroidSyncController < ApplicationController
               :name,
               :user_id,
               :geo_state_id
-
+          ],
+          impact_report: [
+              :id,
+              :old_id,
+              {progress_marker_ids: []},
+              :progress_marker_ids,
+              :translation_impact
           ],
           report: [
               :id,
@@ -409,14 +416,6 @@ class AndroidSyncController < ApplicationController
               :old_id,
               :data,
               :report_id
-          ],
-          impact_report: [
-                  :id,
-                  :old_id,
-                  :report_id,
-                  {progress_marker_ids: []},
-                  :progress_marker_ids,
-                  :translation_impact
           ],
           organisation: [
                   :id,
@@ -511,6 +510,8 @@ class AndroidSyncController < ApplicationController
               @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
             end
           rescue => e
+            logger.error e
+            logger.error e.backtrace
             @errors << {"#{table}:#{old_id}" => e.message}
           end
         end
@@ -593,18 +594,58 @@ class AndroidSyncController < ApplicationController
         entry = @is_only_test? table.find(id) : table.update(id, hash)
         @id_changes[table.name].merge!({id => entry})
       elsif (old_id = hash.delete "old_id")
+        email = hash.delete("significant")
         new_entry = table.new hash
+        if table == Report && email&.empty? == false
+          new_entry.significant = true
+          send_mail new_entry, email
+        end
         @id_changes[table.name].merge!({old_id => new_entry})
       else
         raise "Entry needs either an ID value or an 'old ID' value"
       end
     rescue => e
+      logger.error e
+      logger.error e.backtrace
       @errors << {"#{table}:#{old_id}" => e.message}
     ensure
       if @tempfile
         @tempfile.close
         @tempfile.unlink
       end
+    end
+  end
+
+  def send_mail(report, email)
+    # make sure TLS gets used for delivering this email
+    if SendGridV3.enforce_tls
+      recipient = User.find_by_email email
+      recipient ||= email
+      delivery_success = false
+      begin
+        UserMailer.user_report(recipient, report).deliver_now
+        delivery_success = true
+      rescue EOFError,
+            IOError,
+            TimeoutError,
+            Errno::ECONNRESET,
+            Errno::ECONNABORTED,
+            Errno::EPIPE,
+            Errno::ETIMEDOUT,
+            Net::SMTPAuthenticationError,
+            Net::SMTPServerBusy,
+            Net::SMTPSyntaxError,
+            Net::SMTPUnknownError,
+            OpenSSL::SSL::SSLError => e
+        logger.error e
+        logger.error e.backtrace
+      end
+      if delivery_success
+        # also send it to the reporter
+        UserMailer.user_report(report.reporter, report).deliver_now
+      end
+    else
+      logger.error 'Could not enforce TLS with SendGrid'
     end
   end
 
@@ -647,6 +688,7 @@ class AndroidSyncController < ApplicationController
       end
     rescue => e
       logger.error e
+      logger.error e.backtrace
       nil
     end
   end
