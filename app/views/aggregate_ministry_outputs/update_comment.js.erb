@@ -1,1 +1,6 @@
-$('td[data-amo-id="<%= @amo.id %>"').find('.variance-reason').text('<%= @amo.comment %>');
+$('td[data-amo-id="<%= @amo.id %>"] button').find('.variance-reason').text('<%= @amo.comment %>');
+<% if @amo.comment.present? %>
+  $('td[data-amo-id="<%= @amo.id %>"] button').removeClass('empty');
+<% else %>
+  $('td[data-amo-id="<%= @amo.id %>"] button').addClass('empty');
+<% end %>

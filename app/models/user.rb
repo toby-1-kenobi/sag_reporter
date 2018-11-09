@@ -182,16 +182,29 @@ class User < ActiveRecord::Base
     admin? or lci_board_member? or lci_agency_leader?
   end
 
-  def project_supervisor?
-    ProjectStream.exists?(supervisor: id)
+  def can_edit_project?(project)
+    trusted? and (admin? or
+        (zone_admin? and (zones & project.zones).any?) or
+        ProjectSupervisor.exists?(user: id, project: project, role: 'management')
+    )
   end
 
-  def can_manage_projects?
-    trusted? and (admin? or lci_board_member? or zone_admin?)
+  def can_edit_project_stream?(project, stream)
+    ProjectStream.exists?(project: project, ministry: stream, supervisor: id) or
+        can_edit_project?(project)
   end
 
-  def can_view_projects?
-    can_manage_projects? or project_supervisor?
+  def can_view_project?(project)
+    can_edit_project?(project) or
+        ProjectSupervisor.exists?(project: project, user: id) or
+        ProjectStream.exists?(project: project, supervisor: id)
+  end
+
+  def can_view_any_of_projects?(projects)
+    projects.each do |project|
+      return true if can_view_project?(project)
+    end
+    false
   end
 
   # find out if this user curates for a particular language

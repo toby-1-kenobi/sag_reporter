@@ -285,12 +285,6 @@ describe User do
     _(registering_user).must_be :approved?
   end
 
-  it 'knows if it is a supervisor' do
-    _(user).wont_be :project_supervisor?
-    FactoryBot.create(:project_stream, supervisor: user)
-    _(user).must_be :project_supervisor?
-  end
-
   it 'must update timestamp when a geo_state is added' do
     init_value = user.updated_at
     user.geo_states << FactoryBot.create(:geo_state)

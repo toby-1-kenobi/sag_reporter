@@ -123,13 +123,14 @@
   <% if tabs.include? :projects %>
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'projects' %>" id="projects-tab">
       <% projects = defined?(dashboard_object) ? dashboard_object.projects.order(:name).uniq : Project.all.order(:name) %>
+      <% projects = projects.to_a.select{ |p| logged_in_user.can_view_project?(p) } unless logged_in_user.admin? %>
       <button id="project-menu-button" class="mdl-button mdl-js-button mdlext-js-menu-button" aria-controls="project-menu">
         <span>Select a project</span>
         <i class="material-icons">more_vert</i>
       </button>
       <ul id="project-menu" class="mdlext-menu">
         <%= render partial: 'projects/project_menu_item', collection: projects %>
-        <% if logged_in_user.can_manage_projects? %>
+        <% if logged_in_user.zone_admin? or logged_in_user.admin? %>
           <li class="mdlext-menu__item">
             <%= link_to projects_path, method: :post, remote: true, class: 'mdl-button' do %>
               New Project <i class="material-icons">note_add</i>
@@ -140,7 +141,7 @@
       <% if projects.empty? %>
         <div class="empty-state">
           <p>No projects here.</p>
-          <% if logged_in_user.can_manage_projects? %>
+          <% if logged_in_user.zone_admin? or logged_in_user.admin? %>
             <%= link_to projects_path, method: :post, remote: true, class: 'mdl-button' do %>
               New Project <i class="material-icons">note_add</i>
             <% end %>

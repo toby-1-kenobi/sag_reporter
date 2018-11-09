@@ -1,6 +1,6 @@
 <div class="project-head">
   <h3 class="project-<%= @project.id %>-name"><%= @project.name %></h3>
-  <% if logged_in_user.can_manage_projects? %>
+  <% if logged_in_user.can_edit_project?(@project) %>
     <%= link_to edit_project_path(@project), remote: true, id: 'administer-project-button', class: 'mdl-button mdl-js-button mdl-button--raised' do %>
       Administer <i class="material-icons">settings</i>
     <% end %>

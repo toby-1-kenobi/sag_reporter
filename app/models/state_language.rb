@@ -11,6 +11,7 @@ class StateLanguage < ActiveRecord::Base
   has_many :projects, through: :project_languages
   has_many :aggregate_ministry_outputs, dependent: :restrict_with_error
   has_many :quarterly_targets, dependent: :restrict_with_error
+  has_many :supervisor_feedbacks, dependent: :restrict_with_error
 
   delegate :name, to: :language, prefix: true
   delegate :name, to: :geo_state, prefix: 'state'

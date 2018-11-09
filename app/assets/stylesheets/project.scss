@@ -17,6 +17,16 @@
   }
 }
 
+.project-facilitator-header {
+  cursor: pointer;
+  background-color: lightgrey;
+  padding: 1em;
+  margin-top: 10px;
+  &:hover{
+    background-color: darkgrey;
+  }
+}
+
 .facilitator-results {
   th {
     padding-left: 8px !important;
@@ -24,7 +34,13 @@
     text-align: center !important;
   }
   .amo-target { background-color: lightskyblue; }
-  .amo-actual { background-color: deepskyblue; }
+  .amo-actual {
+    background-color: deepskyblue;
+    &[data-progress="poor"] { background-color: red; }
+    &[data-progress="fair"] { background-color: yellow; }
+    &[data-progress="good"] { background-color: palegreen; }
+    &[data-progress="excellent"] { background-color: lime; }
+  }
   .quarterly-target { background-color: pink; }
   .quarterly-actual { background-color: hotpink; }
   .annual-target { background-color: palegoldenrod; }
@@ -42,6 +58,13 @@
     margin-top: -20px;
     margin-right: -10px;
     margin-bottom: -10px;
+  }
+  .empty i {
+    color: grey;
+  }
+  .approved-stamp {
+    display: block;
+    max-width: 75px;
   }
 }
 

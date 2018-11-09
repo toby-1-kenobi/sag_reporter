@@ -3,12 +3,12 @@
 <% provide(:super_container_class, 'compact') %>
 
 <ul class="breadcrumbs">
-  <li><%=	 link_to 'India', nation_path %></li>
+  <li><%=	link_to 'India', nation_path %></li>
   <li><%= link_to "#{@zone.name} Zone", zone_path(@zone) %></li>
 </ul>
 
 <% tabs = [:progress, :states, :languages, :organisations, :reports] %>
-<% tabs.append(:projects) if logged_in_user.can_view_projects? %>
+<% tabs.append(:projects) if logged_in_user.can_view_any_of_projects?(@zone.projects) %>
 <% tabs.append(:board) if logged_in_user.can_future_plan? %>
 <% @tab ||= 'progress' %>
 

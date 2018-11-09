@@ -2,11 +2,8 @@ class ProjectsController < ApplicationController
 
   before_action :require_login
 
-  before_action except: [:show] do
-    head :forbidden unless logged_in_user.can_manage_projects?
-  end
-  before_action only: [:show] do
-    head :forbidden unless logged_in_user.can_view_projects?
+  before_action only: [:create, :destroy] do
+    head :forbidden unless logged_in_user.admin? or logged_in_user.zone_admin?
   end
 
   def create
@@ -16,6 +13,7 @@ class ProjectsController < ApplicationController
 
   def destroy
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     if @project
       @project.destroy
       respond_to :js
@@ -26,17 +24,20 @@ class ProjectsController < ApplicationController
 
   def edit
     @project = Project.includes(:geo_states).find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     respond_to :js
   end
 
   def teams
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_view_project?(@project)
     @teams = ChurchTeam.in_project(@project)
     respond_to :js
   end
 
   def team_deliverables
     @project = Project.includes(:ministries).find(params[:id])
+    head :forbidden unless logged_in_user.can_view_project?(@project)
     @team = ChurchTeam.includes(:ministries, { state_language: [:language, :geo_state] }).find(params[:team_id])
     @common_ministries = @team.ministries.where(id: @project.ministries)
     respond_to :js
@@ -44,40 +45,33 @@ class ProjectsController < ApplicationController
 
   def facilitators
     @project = Project.includes(language_streams: [:facilitator, {state_language: [:language, :geo_state]}, {ministry: {deliverables: :aggregate_ministry_outputs}}]).find(params[:id])
-    @outputs = {}
-    @project.language_streams.each do |lang_stream|
-      lang_stream.ministry.deliverables.facilitator.each do |deliverable|
-        @outputs[deliverable.id] ||= {}
-        deliverable.aggregate_ministry_outputs.where(state_language: @project.state_languages).where('month >= ?', 6.months.ago.strftime("%Y-%m")).each do |amo|
-          @outputs[deliverable.id][amo.state_language_id] ||= {}
-          @outputs[deliverable.id][amo.state_language_id][amo.creator_id] ||= {}
-          @outputs[deliverable.id][amo.state_language_id][amo.creator_id][amo.month] ||= {}
-          @outputs[deliverable.id][amo.state_language_id][amo.creator_id][amo.month][amo.actual] = [amo.id, amo.value, amo.comment]
-        end
-      end
-    end
+    head :forbidden unless logged_in_user.can_view_project?(@project)
     Rails.logger.debug "outputs: #{@outputs}"
     respond_to :js
   end
 
   def edit_responsible
     @project = Project.includes(:geo_states).find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     respond_to :js
   end
 
   def update
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     @project.update_attributes(project_params)
     respond_to :js
   end
 
   def show
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_view_project?(@project)
     respond_to :js
   end
 
   def set_language
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     @state_language = StateLanguage.find(params[:state_language])
     if params["sl-#{@state_language.id}"].present?
       @state_language.update_attribute(:project, true)
@@ -91,6 +85,7 @@ class ProjectsController < ApplicationController
 
   def set_stream
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     @stream = Ministry.find(params[:ministry])
     if params["stream-#{@stream.id}"].present?
       @project.ministries << @stream unless @project.ministries.include? @stream
@@ -101,6 +96,8 @@ class ProjectsController < ApplicationController
   end
 
   def add_facilitator
+    @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     @language_stream = LanguageStream.find_or_create_by(
         ministry_id: params[:stream],
         state_language_id: params[:state_language],
@@ -112,6 +109,7 @@ class ProjectsController < ApplicationController
 
   def targets_by_language
     @project = Project.find(params[:id])
+    head :forbidden unless logged_in_user.can_edit_project?(@project)
     @state_language = StateLanguage.find(params[:state_language])
     respond_to :js
   end
