@@ -17,13 +17,35 @@
   }
 }
 
-.project-facilitator-header {
-  cursor: pointer;
-  background-color: lightgrey;
-  padding: 1em;
-  margin-top: 10px;
-  &:hover{
-    background-color: darkgrey;
+.fac-header-flex-container {
+  display: flex;
+  div {
+    font-size: large;
+    padding: 1em;
+    margin: 1ex;
+  }
+  .project-facilitator-header {
+    span {
+      font-weight: bold;
+    }
+    flex-grow: 1;
+    cursor: pointer;
+    background-color: lightgrey;
+    &:hover{
+      background-color: darkgrey;
+    }
+  }
+  .recent-progress {
+    background-color: deepskyblue;
+    &[data-progress="poor"] { background-color: red; }
+    &[data-progress="fair"] { background-color: yellow; }
+    &[data-progress="good"] { background-color: palegreen; }
+    &[data-progress="excellent"] { background-color: lime; }
+    .approved-stamp {
+      max-width: 100px;
+      margin: -1.5ex;
+      margin-right: 0;
+    }
   }
 }
 
@@ -133,13 +155,4 @@ td.quarterly-target, td.amo-actual {
 td.annual-target {
   font-size: large;
   font-weight: bold;
-}
-
-.project-facilitator-header {
-  font-size: large;
-  margin: 1ex;
-  margin-top: 3ex;
-  span {
-    font-weight: bold;
-  }
 }

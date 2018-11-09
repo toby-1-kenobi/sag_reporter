@@ -46,4 +46,9 @@ module DatesHelper
     months
   end
 
+  def pretty_month(month)
+    date = Date.new(month[0..3].to_i, month[-2..-1].to_i)
+    date.strftime('%B %Y')
+  end
+
 end
