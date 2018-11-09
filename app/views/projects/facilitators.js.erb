@@ -1,4 +1,5 @@
 $('#facs-panel').html('<%= j render 'facilitators' %>');
+componentHandler.upgradeElements($('#facs-panel').find('.mdlext-accordion').get());
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-tooltip').get());
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-textfield').get());
 componentHandler.upgradeElements($('#facs-panel').find('.mdl-checkbox').get());
