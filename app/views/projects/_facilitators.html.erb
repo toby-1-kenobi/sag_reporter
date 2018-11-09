@@ -1,10 +1,6 @@
 <% if @project.facilitators.any? %>
   <% multi_state = @project.geo_states.uniq.count > 1 %>
-  <% q_year = {} %>
-  <% current_q, q_year[current_q] = quarter_for_month(Date.today.month), FinishLineProgress.get_current_year %>
-  <% last_q = (current_q - 2) % 4 + 1 %>
-  <% q_year[last_q] = last_q < current_q ? q_year[current_q] : q_year[current_q] - 1 %>
-  <% counter = 0 %>
+  <% @counter = 0 %>
   <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
     <% @project.ministries.order(:code).each do |stream| %>
       <li class="mdlext-accordion__panel">
@@ -13,135 +9,14 @@
         </header>
         <section class="mdlext-accordion__tabpanel">
           <% @project.language_streams.where(ministry: stream).order(:state_language_id).each do |lang_stream| %>
-            <div class="project-facilitator-header">
-              <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
-              facilitating for <span class="state-language-name"><%= lang_stream.state_language.name(multi_state) %></span>
+            <%= link_to lang_stream, remote: true do %>
+              <div class="project-facilitator-header" data-lang-stream="<%= lang_stream.id %>">
+                <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
+                facilitating for <span class="state-language-name"><%= lang_stream.state_language.name(multi_state) %></span>
+              </div>
+            <% end %>
+            <div class="project-facilitator-table hide" data-lang-stream="<%= lang_stream.id %>">
             </div>
-            <table class="facilitator-results mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-              <thead>
-                <tr>
-                  <th rowspan="2" class="mdl-data-table__cell--non-numeric">Deliverable</th>
-                  <% col_count = 8 %>
-                  <% [last_q, current_q].each do |quarter| %>
-                    <% months_in_quarter(quarter).each do |month| %>
-                      <th colspan="2" class="mdl-data-table__cell--non-numeric">
-                        <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
-                        <% sup_feedback = SupervisorFeedback.find_by(ministry: lang_stream.ministry, facilitator: lang_stream.facilitator, month: year_month) %>
-                        <% img_html_data = {class: 'approved-stamp'} %>
-                        <% img_html_data[:hidden] = '' unless sup_feedback and sup_feedback.report_approved? %>
-                        <%= image_tag 'approved.png', img_html_data %>
-                        <%= Date::MONTHNAMES[month] %>
-                        <% if logged_in_user.can_edit_project_stream?(@project, lang_stream.ministry) %>
-                          <button
-                            id="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>"
-                            class="<%= 'empty' unless sup_feedback and sup_feedback.result_feedback.present? %> sup-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
-                            data-stream-id="<%= lang_stream.ministry_id %>"
-                            data-state-lang-id="<%= lang_stream.state_language_id %>"
-                            data-fac-id="<%= lang_stream.facilitator_id %>"
-                            data-month="<%= year_month %>"
-                            data-sup-feedback-id="<%= sup_feedback ? sup_feedback.id : 'new' %>"
-                            <% if sup_feedback %>
-                              data-fac-progress="<%= sup_feedback.facilitator_progress %>"
-                              <%= 'data-sup-approved' if sup_feedback.report_approved? %>
-                            <% end %>
-                          >
-                            <i class="material-icons">edit</i>
-                            <div hidden class="sup-feedback"><%= sup_feedback.result_feedback if sup_feedback %></div>
-                          </button>
-                          <div class="mdl-tooltip" data-mdl-for="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>">
-                            Supervisor feedback and approval
-                          </div>
-                        <% end %>
-                      </th>
-                    <% end %>
-                    <th colspan="2">Quarterly</th>
-                    <%# column for annual if we have reached the end of app year %>
-                    <% if quarter == 4 %>
-                      <th colspan="2">Annual</th>
-                      <% col_count += 1 %>
-                    <% end %>
-                  <% end %>
-                </tr>
-                <tr>
-                  <% col_count.times do %>
-                    <th>Target</th><th>Actual</th>
-                  <% end %>
-                </tr>
-              </thead>
-              <tbody>
-                <% lang_stream.ministry.deliverables.facilitator.order(:number).each do |deliverable| %>
-                  <tr>
-                    <td class="mdl-data-table__cell--non-numeric">
-                      <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>
-                    </td>
-                    <% [last_q, current_q].each do |quarter| %>
-                      <% quarterly_actual = 0 %>
-                      <% months = months_in_quarter(quarter) %>
-                      <% months_with_year(months.first, months.last, months.first != Date.today.month).each do |year_month| %>
-                        <% if @outputs[deliverable.id] and
-                            @outputs[deliverable.id][lang_stream.state_language_id] and
-                            @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id] and
-                            @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month] %>
-                          <% _, target, _ = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][false] || [nil, '?', nil] %>
-                          <% actual_id, actual, variance_reason = @outputs[deliverable.id][lang_stream.state_language_id][lang_stream.facilitator_id][year_month][true] || ['', ''] %>
-                        <% else %>
-                          <% target, actual_id, actual, variance_reason = '?', '', '', '' %>
-                        <% end %>
-                        <% if actual.present? %>
-                          <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
-                        <% end %>
-                        <td class="amo-target"><%= target %></td>
-                        <% sup_feedback = SupervisorFeedback.find_by(ministry: lang_stream.ministry, facilitator: lang_stream.facilitator, month: year_month) %>
-                        <td class="amo-actual"
-                            <%= "data-amo-id=#{actual_id}" if actual.present? %>
-                            data-state-language="<%= lang_stream.state_language_id %>"
-                            data-deliverable="<%= deliverable.id %>"
-                            data-stream="<%= deliverable.ministry_id %>"
-                            data-month="<%= year_month %>"
-                            data-fac="<%= lang_stream.facilitator_id %>"
-                            <% if sup_feedback %>
-                              data-progress="<%= sup_feedback.facilitator_progress %>"
-                            <% end %>
-                        >
-                          <% if logged_in_user.can_edit_project_stream?(@project, lang_stream.ministry) %>
-                            <button id="variance-reason-button-<% counter += 1 %>" class="<%= 'empty' unless variance_reason.present? %> amo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary <%= 'hide' unless actual.present? %>">
-                              <i class="material-icons">info</i>
-                              <div hidden class="variance-reason"><%= variance_reason %></div>
-                            </button>
-                            <div class="mdl-tooltip" data-mdl-for="variance-reason-button-<%= counter %>">
-                              Reason for variance
-                            </div>
-                            <%= form_tag set_amo_actual_in_state_language_path(lang_stream.state_language, deliverable, year_month, lang_stream.facilitator), method: :patch, remote: true do %>
-                              <div class="mdl-textfield mdl-js-textfield amo-actual-input">
-                                <input class="mdl-textfield__input"
-                                       type="text"
-                                       pattern="[0-9]*(\.[0-9]+)?"
-                                       name="actual"
-                                       value="<%= actual %>">
-                                <span class="mdl-textfield__error">Enter a number</span>
-                              </div>
-                            <% end %>
-                          <% else %>
-                            <%= actual %>
-                          <% end %>
-                        </td>
-                      <% end %>
-                      <% q_target = QuarterlyTarget.find_by(state_language: lang_stream.state_language, deliverable: deliverable, quarter: "#{q_year[quarter]}-#{quarter}") %>
-                      <td class="quarterly-target"><%= q_target ? q_target.value : '?' %></td>
-                      <td class="quarterly-actual" data-quarter="<%= quarter %>"><%= quarterly_actual %></td>
-                      <%# column for annual if we have reached the end of app year %>
-                      <% if quarter == 4 %>
-                        <td class="annual-target"><%= calculate_annual_target(year_targets(lang_stream.state_language, deliverable, q_year[quarter]), deliverable) %></td>
-                        <td class="annual-actual" data-year="<%= q_year[quarter] %>"><%= calculate_fac_annual_actual(lang_stream.state_language, deliverable, q_year[quarter]) %></td>
-                      <% end %>
-                    <% end %>
-                  </tr>
-                  <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="deliverable-name-<%= deliverable.id %>">
-                    <%= deliverable.result_form.en %>
-                  </div>
-                <% end %>
-              </tbody>
-            </table>
           <% end %>
         </section>
       </li>

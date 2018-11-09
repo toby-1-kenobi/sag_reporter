@@ -46,18 +46,6 @@ class ProjectsController < ApplicationController
   def facilitators
     @project = Project.includes(language_streams: [:facilitator, {state_language: [:language, :geo_state]}, {ministry: {deliverables: :aggregate_ministry_outputs}}]).find(params[:id])
     head :forbidden unless logged_in_user.can_view_project?(@project)
-    @outputs = {}
-    @project.language_streams.each do |lang_stream|
-      lang_stream.ministry.deliverables.facilitator.each do |deliverable|
-        @outputs[deliverable.id] ||= {}
-        deliverable.aggregate_ministry_outputs.where(state_language: @project.state_languages).where('month >= ?', 6.months.ago.strftime("%Y-%m")).each do |amo|
-          @outputs[deliverable.id][amo.state_language_id] ||= {}
-          @outputs[deliverable.id][amo.state_language_id][amo.creator_id] ||= {}
-          @outputs[deliverable.id][amo.state_language_id][amo.creator_id][amo.month] ||= {}
-          @outputs[deliverable.id][amo.state_language_id][amo.creator_id][amo.month][amo.actual] = [amo.id, amo.value, amo.comment]
-        end
-      end
-    end
     Rails.logger.debug "outputs: #{@outputs}"
     respond_to :js
   end

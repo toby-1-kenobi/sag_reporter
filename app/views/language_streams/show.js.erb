@@ -1,0 +1,36 @@
+var container = $('.project-facilitator-table[data-lang-stream="<%= @language_stream.id %>"]');
+if (!$.trim(container.html())) {
+    container.html('<%= j render partial: "fac_table", locals: { lang_stream: @language_stream } %>');
+    componentHandler.upgradeElements(container.find('.mdl-tooltip').get());
+    componentHandler.upgradeElements(container.find('.mdl-textfield').get());
+
+    $('.amo-actual-input').on('input', function(){
+        $(this).find('input').addClass('dirty');
+    });
+    $('.amo-actual-input').on('change', function(){
+        $(this).closest('form').submit();
+    });
+
+    const dialog = document.getElementById('amo-comment');
+    $('.amo-info-button').on('click', function() {
+        dialog.querySelector('.mdl-textfield').MaterialTextfield.change($(this).find('.variance-reason').text());
+        $(dialog).find('.mdl-dialog__content input[name="amo_id"]').val($(this).parent().data('amo-id'));
+        dialog.showModal();
+    });
+
+    const dialog2 = document.getElementById('sup-feedback-dialog');
+    $('.sup-feedback-button').on('click', function() {
+        $(dialog2).find('.mdl-textfield, .mdl-checkbox, .fac-progress').data($(this).data());
+        dialog2.querySelector('.sup-feedback').MaterialTextfield.change($(this).find('.sup-feedback').text());
+        if (typeof $(this).data('sup-approved') == 'undefined') {
+            dialog2.querySelector('.sup-approved').MaterialCheckbox.uncheck();
+        } else {
+            dialog2.querySelector('.sup-approved').MaterialCheckbox.check();
+        }
+        dialog2.querySelector('.fac-progress').MaterialExtSelectfield.change($(this).data('fac-progress'));
+        dialog2.showModal();
+    });
+    container.slideDown();
+} else {
+    container.slideToggle();
+}
