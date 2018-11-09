@@ -17,6 +17,16 @@
   }
 }
 
+.project-facilitator-header {
+  cursor: pointer;
+  background-color: lightgrey;
+  padding: 1em;
+  margin-top: 10px;
+  &:hover{
+    background-color: darkgrey;
+  }
+}
+
 .facilitator-results {
   th {
     padding-left: 8px !important;

@@ -9,12 +9,10 @@
         </header>
         <section class="mdlext-accordion__tabpanel">
           <% @project.language_streams.where(ministry: stream).order(:state_language_id).each do |lang_stream| %>
-            <%= link_to lang_stream, remote: true do %>
-              <div class="project-facilitator-header" data-lang-stream="<%= lang_stream.id %>">
-                <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
-                facilitating for <span class="state-language-name"><%= lang_stream.state_language.name(multi_state) %></span>
-              </div>
-            <% end %>
+            <div class="project-facilitator-header" data-lang-stream="<%= lang_stream.id %>">
+              <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
+              facilitating for <span class="state-language-name"><%= lang_stream.state_language.name(multi_state) %></span>
+            </div>
             <div class="project-facilitator-table hide" data-lang-stream="<%= lang_stream.id %>">
             </div>
           <% end %>

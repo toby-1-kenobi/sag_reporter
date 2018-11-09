@@ -105,3 +105,14 @@ $(dialog2).find('.fac-progress').on('change', function(){
 dialog2.querySelector('.close').addEventListener('click', function() {
     dialog2.close();
 });
+
+$('.project-facilitator-header').on('click', function () {
+    const lang_stream_id = $(this).data('lang-stream');
+    var container = $('.project-facilitator-table[data-lang-stream="' + lang_stream_id + '"]');
+    if (!$.trim(container.html())) {
+        var url = '<%= language_stream_url('placeholder') %>'.replace('placeholder', lang_stream_id)
+        $.ajax(url);
+    } else {
+        container.slideToggle();
+    }
+})
