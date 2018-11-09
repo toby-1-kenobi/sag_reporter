@@ -15,7 +15,7 @@ class AndroidSyncController < ApplicationController
         Person => %w(name geo_state_id),
         Topic => %w(name colour),
         ProgressMarker => %w(name topic_id number),
-        Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id church_ministry_id),
+        Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id),
         ImpactReport => %w(translation_impact),
         UploadedFile => %w(report_id),
         MtResource => %w(user_id name language_id cc_share_alike medium status geo_state_id url),
