@@ -59,12 +59,6 @@ class AndroidSyncController < ApplicationController
         {month: "#{entry.year}-#{sprintf('%02d', entry.month)}"}
       when StateLanguage
         {is_primary: entry.primary}
-      when Report
-        if @version >= "1.4"
-          {church_team_id: entry.church_team_id, ministry_ids: entry.ministry_ids}
-        else
-          {}
-        end
       when User
         additional_entry = entry.id == @external_user.id ? entry : User.new
         additional_entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
@@ -211,6 +205,8 @@ class AndroidSyncController < ApplicationController
     else
       render json: {data: "#{@final_file.path}.txt"}, status: :ok
     end
+    tables[Report] << "church_team_id" if @version > "1.4"
+    join_tables[:Report] << "ministries" if @version > "1.4"
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
