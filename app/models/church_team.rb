@@ -6,6 +6,7 @@ class ChurchTeam < ActiveRecord::Base
   has_many :ministries, through: :church_ministries
   has_many :church_team_memberships, dependent: :destroy
   has_many :users, through: :church_team_memberships
+  has_many :reports, dependent: :nullify
 
   validates :leader, presence: true
   validates :state_language, presence: true
