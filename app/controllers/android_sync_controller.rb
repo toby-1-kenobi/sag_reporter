@@ -7,6 +7,7 @@ class AndroidSyncController < ApplicationController
   before_action :authenticate_external
 
   def send_request
+    # The following tables have to be in the order, that the table-restrictions only depend on the previous ones
     tables = {
         User => %w(name),
         StateLanguage => %w(geo_state_id language_id project),
@@ -268,13 +269,9 @@ class AndroidSyncController < ApplicationController
             file.write "]" if has_entry
             columns << "is_online"
             values.map! {|value| "(#{(value+[1]).join(",")})"}
-            puts "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             file_2.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             join_table_data.each do |join_table_names, data|
-              puts "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).join ","});"
-              file_2.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).join ","});"
-              puts "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
-                       "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
+              file_2.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).uniq.join ","});"
               file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
                        "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
             end
@@ -284,7 +281,6 @@ class AndroidSyncController < ApplicationController
             file.write ",\"deleted\":"
             file.write deleted_entries.to_json
             deleted_entries.each do |table, ids|
-                puts "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.join ","});"
                 file_2.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.select{|id| id < 1000000}.join ","});"
             end
           end
@@ -384,41 +380,6 @@ class AndroidSyncController < ApplicationController
       # The following tables have to be in the order, that they only contain IDs of the previous ones
       safe_params = [
           :is_only_test,
-          person: [
-              :old_id,
-              :name,
-              :user_id,
-              :geo_state_id
-          ],
-          impact_report: [
-              :id,
-              :old_id,
-              {progress_marker_ids: []},
-              :progress_marker_ids,
-              :translation_impact
-          ],
-          report: [
-              :id,
-              :old_id,
-              :geo_state_id,
-              {language_ids: []},
-              :language_ids,
-              :report_date,
-              :translation_impact,
-              :significant,
-              :content,
-              :reporter_id,
-              :impact_report_id,
-              {observer_ids: []},
-              :observer_ids,
-              :client,
-              :version,
-          ],
-          uploaded_file: [
-              :old_id,
-              :data,
-              :report_id
-          ],
           organisation: [
                   :id,
                   :old_id,
@@ -490,6 +451,45 @@ class AndroidSyncController < ApplicationController
               :comment,
               :creator_id,
               :actual
+          ],
+          person: [
+              :old_id,
+              :name,
+              :user_id,
+              :geo_state_id
+          ],
+          impact_report: [
+              :id,
+              :old_id,
+              {progress_marker_ids: []},
+              :progress_marker_ids,
+              :translation_impact
+          ],
+          report: [
+              :id,
+              :old_id,
+              :geo_state_id,
+              {language_ids: []},
+              :language_ids,
+              :report_date,
+              :translation_impact,
+              :significant,
+              :content,
+              :reporter_id,
+              :impact_report_id,
+              {observer_ids: []},
+              :observer_ids,
+              {ministry_ids: []},
+              :ministry_ids,
+              :project_id,
+              :church_team_id,
+              :client,
+              :version,
+          ],
+          uploaded_file: [
+              :old_id,
+              :data,
+              :report_id
           ]
       ]
       receive_request_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
@@ -502,7 +502,6 @@ class AndroidSyncController < ApplicationController
         table = key.to_s.camelcase.constantize
         receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
       end
-      puts @id_changes
       @id_changes.each do |table, entries|
         entries.each do |old_id, new_entry|
           begin
