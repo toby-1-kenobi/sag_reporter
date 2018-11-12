@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181107115557) do
+ActiveRecord::Schema.define(version: 20181112010938) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -480,6 +480,8 @@ ActiveRecord::Schema.define(version: 20181107115557) do
     t.boolean  "oral_traditions_print"
     t.integer  "champion_id"
     t.datetime "champion_prompted"
+    t.integer  "sensitivity",                         default: 1,       null: false
+    t.integer  "egids"
   end
 
   add_index "languages", ["champion_id"], name: "index_languages_on_champion_id", using: :btree

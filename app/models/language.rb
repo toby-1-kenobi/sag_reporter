@@ -11,10 +11,33 @@ class Language < ActiveRecord::Base
       new_testament_published: 4,
       whole_bible_published: 5
   }
+
   enum translation_progress: {
       not_in_progress: 0,
       currently_in_progress: 1,
       in_progress_in_neighbouring_country: 3
+  }
+
+  enum egids: {
+      international: 0,
+      national: 1,
+      provincial: 2,
+      wider_communication: 3,
+      Educational: 4,
+      Developing: 5,
+      vigorous: 6,
+      threatened: 7,
+      shifting: 8,
+      moribund: 9,
+      nearly_extinct: 10,
+      dormant: 11,
+      extinct: 12
+  }
+
+  enum sensitivity: {
+    unrestricted: 0,
+    restricted: 1,
+    confidential: 2
   }
 
   @translation_status_colour = {
