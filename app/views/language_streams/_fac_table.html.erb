@@ -16,7 +16,7 @@
           <% img_html_data[:hidden] = '' unless sup_feedback and sup_feedback.report_approved? %>
           <%= image_tag 'approved.png', img_html_data %>
           <%= Date::MONTHNAMES[month] %>
-          <% if logged_in_user.can_edit_project_stream?(@project, lang_stream.ministry) %>
+          <% if logged_in_user.can_edit_project_stream?(lang_stream.project, lang_stream.ministry) %>
             <button
               id="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>"
               class="<%= 'empty' unless sup_feedback and sup_feedback.result_feedback.present? %> sup-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
@@ -85,7 +85,7 @@
               data-progress="<%= sup_feedback.facilitator_progress %>"
               <% end %>
               >
-            <% if logged_in_user.can_edit_project_stream?(@project, lang_stream.ministry) %>
+            <% if logged_in_user.can_edit_project_stream?(lang_stream.project, lang_stream.ministry) %>
               <button id="variance-reason-button-<% "#{lang_stream.id}-#{deliverable.id}-#{year_month}" %>" class="<%= 'empty' unless variance_reason.present? %> amo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary <%= 'hide' unless actual.present? %>">
                 <i class="material-icons">info</i>
                 <div hidden class="variance-reason"><%= variance_reason %></div>
