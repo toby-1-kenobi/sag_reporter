@@ -21,8 +21,8 @@ class LanguageStreamsController < ApplicationController
   def destroy
     language_stream = LanguageStream.find(params[:id])
     if language_stream
-      if @language_stream.project.present?
-        head :forbidden unless logged_in_user.can_edit_project?(@language_stream.project)
+      if language_stream.project.present?
+        head :forbidden unless logged_in_user.can_edit_project?(language_stream.project)
       end
       language_stream.destroy
     else
