@@ -48,26 +48,28 @@ class AndroidSyncController < ApplicationController
         MtResource: %w(product_categories)
     }
     additional_join_tables = {
+        Report: %w(ministries),
         Deliverable: %w(ministry),
         User: %w(external_devices)
     }
     def additional_tables(entry)
       case entry
-        when ProgressUpdate
-          {month: "#{entry.year}-#{sprintf('%02d', entry.month)}"}
-        when StateLanguage
-          {is_primary: entry.primary}
-        when User
-          if entry.id == @external_user.id
-            entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
-                .merge(external_device_registered: !entry.external_devices.empty?)
-          else
-            {phone: nil, mother_tongue_id: nil, interface_language_id: nil, email: nil,
-             trusted: false, national: false, admin: false, national_curator: false, role_description: nil}
-                .merge(external_device_registered: !entry.external_devices.empty?)
-          end
+      when ProgressUpdate
+        {month: "#{entry.year}-#{sprintf('%02d', entry.month)}"}
+      when StateLanguage
+        {is_primary: entry.primary}
+      when Report
+        if @version >= "1.4"
+          {church_team_id: entry.church_team_id, ministry_ids: entry.ministry_ids}
         else
           {}
+        end
+      when User
+        additional_entry = entry.id == @external_user.id ? entry : User.new
+        additional_entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
+            .merge(external_device_registered: !entry.external_devices.empty?)
+      else
+        {}
       end
     end
     @all_restricted_ids = Hash.new
@@ -200,10 +202,10 @@ class AndroidSyncController < ApplicationController
     ] + tables.map{|table, _| {table.name => []} }
     send_request_params = params.require(:external_device).permit(safe_params)
     
-    version = send_request_params["version"] || ""
+    @version = send_request_params["version"] || ""
     @final_file = Tempfile.new
     @final_file_2 = Tempfile.new
-    if version > "1.3.6"
+    if @version > "1.3.6"
       render json: {data: "#{@final_file_2.path}.txt"}, status: :ok
     else
       render json: {data: "#{@final_file.path}.txt"}, status: :ok
@@ -292,7 +294,7 @@ class AndroidSyncController < ApplicationController
       rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
         logger.error send_message
-        file_path = version > "1.3.6"? @final_file_2.path: @final_file.path
+        file_path = @version > "1.3.6"? @final_file_2.path: @final_file.path
         @final_file.delete
         @final_file_2.delete
         @final_file = File.new file_path, "w"
@@ -301,7 +303,7 @@ class AndroidSyncController < ApplicationController
         @final_file.close unless @final_file.closed?
         @final_file_2.close unless @final_file_2.closed?
         logger.debug "File writing finished"
-        if version > "1.3.6"
+        if @version > "1.3.6"
           File.rename(@final_file_2, "#{@final_file_2.path}.txt")
           @final_file.delete
         else

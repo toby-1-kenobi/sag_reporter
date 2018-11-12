@@ -97,6 +97,7 @@ class AndroidAdditionsController < ApplicationController
           :password,
           :device_id,
           :device_name,
+          :app_version,
           :otp
       ]
       login_params = params.require(:external_device).permit(safe_params)
@@ -112,17 +113,25 @@ class AndroidAdditionsController < ApplicationController
       users_device = user.external_devices.find {|d| d.device_id == login_params["device_id"]}
       if users_device && (users_device.registered || user.authenticate_otp(login_params["otp"], drift: 300))
         users_device.update registered: true unless users_device.registered
-        if users_device.name != login_params["device_name"]
-          users_device.update name: login_params["device_name"]
+        device_name = login_params["device_name"]
+        users_device.update name: device_name unless users_device.name == device_name
+        app_version = login_params["app_version"]
+        users_device.update app_version: app_version unless users_device.app_version == app_version
+        if app_version && app_version < "1.4.0"
+            send_message = {
+                status: "Your App is depreciated. Please update it at\n" +
+                    "https://play.google.com/store/apps/details?id=org.sil.forchurches.rev79"
+            }
+        else
+          payload = {sub: user.id, iat: user.updated_at.to_i, iss: users_device.device_id}
+          send_message = {
+              user: user.id,
+              status: "success",
+              jwt: encode_jwt(payload),
+              database_key: create_database_key(user),
+              now: Time.now.to_i
+          }
         end
-        payload = {sub: user.id, iat: user.updated_at.to_i, iss: users_device.device_id}
-        send_message = {
-            user: user.id,
-            status: "success",
-            jwt: encode_jwt(payload),
-            database_key: create_database_key(user),
-            now: Time.now.to_i
-        }
         logger.debug send_message
         render json: send_message, status: :ok
         return
