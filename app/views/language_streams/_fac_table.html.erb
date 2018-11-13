@@ -11,14 +11,14 @@
       <% months_in_quarter(quarter).each do |month| %>
         <th colspan="2" class="mdl-data-table__cell--non-numeric">
           <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
-          <% sup_feedback = SupervisorFeedback.find_by(ministry: lang_stream.ministry, facilitator: lang_stream.facilitator, month: year_month) %>
+          <% sup_feedback = SupervisorFeedback.find_by(state_language: lang_stream.state_language, ministry: lang_stream.ministry, facilitator: lang_stream.facilitator, month: year_month) %>
           <% img_html_data = {class: 'approved-stamp'} %>
           <% img_html_data[:hidden] = '' unless sup_feedback and sup_feedback.report_approved? %>
           <%= image_tag 'approved.png', img_html_data %>
           <%= Date::MONTHNAMES[month] %>
           <% if logged_in_user.can_edit_project_stream?(lang_stream.project, lang_stream.ministry) %>
             <button
-              id="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>"
+              id="sup-feedback-button-<%= lang_stream.id %>-<%= year_month %>"
               class="<%= 'empty' unless sup_feedback and sup_feedback.result_feedback.present? %> sup-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
               data-stream-id="<%= lang_stream.ministry_id %>"
               data-state-lang-id="<%= lang_stream.state_language_id %>"
@@ -33,7 +33,7 @@
               <i class="material-icons">edit</i>
               <div hidden class="sup-feedback"><%= sup_feedback.result_feedback if sup_feedback %></div>
             </button>
-            <div class="mdl-tooltip" data-mdl-for="sup-feedback-button-<%= lang_stream.ministry_id %>-<%= lang_stream.facilitator_id %>-<%= year_month %>">
+            <div class="mdl-tooltip" data-mdl-for="sup-feedback-button-<%= lang_stream.id %>-<%= year_month %>">
               Supervisor feedback and approval
             </div>
           <% end %>
@@ -73,7 +73,7 @@
             <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
           <% end %>
           <td class="amo-target"><%= target %></td>
-          <% sup_feedback = SupervisorFeedback.find_by(ministry: lang_stream.ministry, facilitator: lang_stream.facilitator, month: year_month) %>
+          <% sup_feedback = SupervisorFeedback.find_by(state_language: lang_stream.state_language, ministry: lang_stream.ministry, facilitator: lang_stream.facilitator, month: year_month) %>
           <td class="amo-actual"
               <%= "data-amo-id=#{actual_id}" if actual.present? %>
               data-state-language="<%= lang_stream.state_language_id %>"
