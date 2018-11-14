@@ -5,7 +5,7 @@
 <% church_team.ministries.each do |stream| %>
   <% church_min = ChurchMinistry.find_by(church_team: church_team, ministry: stream) %>
   <div class="team-stream-header">
-    <%= stream.name.en %>
+    <%= stream.name.en %> results
     <% if church_min.facilitator.present? %>
       facilitated by <%= church_min.facilitator.name %>
     <% end %>
@@ -14,10 +14,9 @@
     <thead>
     <tr>
       <th rowspan="2" class="mdl-data-table__cell--non-numeric">Deliverable</th>
-      <% col_count = 8 %>
       <% [last_q, current_q].each do |quarter| %>
         <% months_in_quarter(quarter).each do |month| %>
-          <th colspan="2" class="mdl-data-table__cell--non-numeric">
+          <th class="mdl-data-table__cell--non-numeric">
             <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
             <% fac_feedback = church_min.facilitator_feedbacks.find_by_month(year_month) %>
             <% img_html_data = {class: 'approved-stamp'} %>
@@ -44,17 +43,11 @@
             <% end %>
           </th>
         <% end %>
-        <th colspan="2">Quarterly</th>
+        <th>Quarterly</th>
         <%# column for annual if we have reached the end of app year %>
         <% if quarter == 4 %>
-          <th colspan="2">Annual</th>
-          <% col_count += 1 %>
+          <th>Annual</th>
         <% end %>
-      <% end %>
-    </tr>
-    <tr>
-      <% col_count.times do %>
-        <th>Target</th><th>Actual</th>
       <% end %>
     </tr>
     </thead>
@@ -68,16 +61,10 @@
           <% quarterly_actual = 0 %>
           <% months = months_in_quarter(quarter) %>
           <% months_with_year(months.first, months.last, months.first != Date.today.month).each do |year_month| %>
-            <% if @outputs[church_min.id][deliverable.id] and @outputs[church_min.id][deliverable.id][year_month] %>
-              <% _, target, _ = @outputs[church_min.id][deliverable.id][year_month][false] || [nil, '?', nil] %>
-              <% actual_id, actual, variance_reason = @outputs[church_min.id][deliverable.id][year_month][true] || ['', ''] %>
-            <% else %>
-              <% target, actual_id, actual, variance_reason = '?', '', '', '' %>
-            <% end %>
+            <% actual_id, actual, variance_reason = @outputs[church_min.id][deliverable.id][year_month] || ['', '', ''] %>
             <% if actual.present? %>
               <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
             <% end %>
-            <td class="mo-target"><%= target %></td>
             <% fac_feedback = church_min.facilitator_feedbacks.find_by_month(year_month) %>
             <td class="mo-actual"
                 <%= "data-amo-id=#{actual_id}" if actual.present? %>
@@ -110,8 +97,6 @@
               <% end %>
             </td>
           <% end %>
-          <% q_target = QuarterlyTarget.find_by(state_language: church_team.state_language, deliverable: deliverable, quarter: "#{q_year[quarter]}-#{quarter}") %>
-          <td class="quarterly-target"><%= q_target ? q_target.value : '?' %></td>
           <td class="quarterly-actual" data-quarter="<%= quarter %>"><%= quarterly_actual %></td>
           <%# column for annual if we have reached the end of app year %>
           <% if quarter == 4 %>

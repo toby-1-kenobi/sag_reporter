@@ -11,9 +11,8 @@ class ChurchTeamsController < ApplicationController
       @outputs[church_min.id] = {}
       church_min.ministry.deliverables.church_team.each do |deliverable|
         @outputs[church_min.id][deliverable.id] = {}
-        deliverable.ministry_outputs.where(church_ministry: church_min).where('month >= ?', 6.months.ago.strftime("%Y-%m")).each do |mo|
-          @outputs[church_min.id][deliverable.id][mo.month] ||= {}
-          @outputs[church_min.id][deliverable.id][mo.month][mo.actual] = [mo.id, mo.value, mo.comment]
+        deliverable.ministry_outputs.where(church_ministry: church_min, actual: true).where('month >= ?', 6.months.ago.strftime("%Y-%m")).each do |mo|
+          @outputs[church_min.id][deliverable.id][mo.month] = [mo.id, mo.value, mo.comment]
         end
       end
     end
