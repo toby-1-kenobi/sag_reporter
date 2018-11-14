@@ -1,4 +1,13 @@
 class FacilitatorFeedback < ActiveRecord::Base
+
+  enum progress: {
+      no_progress: 0,
+      poor: 1,
+      fair: 2,
+      good: 3,
+      excellent: 4
+  }
+
   belongs_to :church_ministry
   belongs_to :plan_team_member, class_name: 'User', inverse_of: :facilitator_plan_responses
   belongs_to :result_team_member, class_name: 'User', inverse_of: :facilitator_result_responses

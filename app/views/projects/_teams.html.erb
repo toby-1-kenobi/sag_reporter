@@ -1,15 +1,74 @@
 <% if @teams.any? %>
-  <ul id="teams-accordion" class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical mdlext-js-ripple-effect">
-    <% @teams.each do |team| %>
+  <% multi_state = @project.geo_states.uniq.count > 1 %>
+  <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
+    <% @project.state_languages.order(:id).each do |state_language| %>
       <li class="mdlext-accordion__panel">
-        <header class="mdlext-accordion__tab dirty" data-team-id="<%= team.id %>">
-          <span class="mdlext-accordion__tab__caption"><%= team.name %></span>
+        <header class="mdlext-accordion__tab">
+          <span class="mdlext-accordion__tab__caption"><%= state_language.name(multi_state) %></span>
         </header>
-        <section class="team-deliverables-panel mdlext-accordion__tabpanel" data-team-id="<%= team.id %>">
+        <section class="mdlext-accordion__tabpanel">
+          <% @teams.where(state_language: state_language).each do |team| %>
+            <div class="team-header-flex-container">
+              <div class="project-team-header" data-lang-team="<%= team.id %>">
+                <%= team.full_name %>
+              </div>
+              <% @project.ministries.each do |stream| %>
+                <% fac_feedback = team.facilitator_feedbacks.
+                    where('church_ministries.ministry_id = ?', stream.id).
+                    where('result_feedback IS NOT NULL OR progress IS NOT NULL').
+                    order(:month).last
+                %>
+                <div class="recent-progress" data-progress="<%= fac_feedback.progress if fac_feedback %>">
+                  <% img_html_data = {class: 'approved-stamp'} %>
+                  <% img_html_data[:hidden] = '' %>
+                  <%= image_tag('approved.png', img_html_data) %>
+                  <span class="stream"><%= stream.name.en if fac_feedback %></span>
+                  <span class="month"><%= pretty_month(fac_feedback.month) if fac_feedback %></span>
+                </div>
+              <% end %>
+            </div>
+            <div class="project-team-table hide" data-team="<%= team.id %>">
+            </div>
+          <% end %>
         </section>
       </li>
     <% end %>
   </ul>
+
+  <dialog id="mo-comment" class="mdl-dialog">
+    <div class="mdl-dialog__content">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <textarea class="mdl-textfield__input" type="text" rows="5" name="comment" id="variance-reason"></textarea>
+        <label class="mdl-textfield__label" for="variance-reason">Reason for variance</label>
+      </div>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button close">Done</button>
+    </div>
+  </dialog>
+
+  <dialog id="fac-feedback-dialog" class="mdl-dialog">
+    <div class="mdl-dialog__content">
+      <div class="fac-feedback mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <textarea class="mdl-textfield__input" type="text" rows="5" name="comment" id="fac-feedback-input"></textarea>
+        <label class="mdl-textfield__label" for="fac-feedback-input">Facilitator Feedback</label>
+      </div>
+      <label class="sup-approved mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="sup-approve-team-report">
+        <input type="checkbox" id="sup-approve-team-report" class="mdl-checkbox__input">
+        <span class="mdl-checkbox__label">Approve team's report</span>
+      </label>
+      <div class="team-progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <select id="fac-feedback-team-progress" class="mdlext-selectfield__select">
+          <option value=""></option>
+          <%= options_for_select(FacilitatorFeedback.progresses.to_a.map{ |p| p[0] = t "progress.#{p[0]}", default: p[0] }) %>
+        </select>
+        <label for="fac-feedback-team-progress" class="mdlext-selectfield__label">Evaluate progress in this month</label>
+      </div>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button close">Done</button>
+    </div>
+  </dialog>
 <% else %>
   <p>There are no church teams in this project.</p>
 <% end %>
