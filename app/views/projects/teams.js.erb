@@ -2,12 +2,16 @@ $('#teams-panel').html('<%= j render 'teams' %>');
 componentHandler.upgradeElements($('#teams-panel').find('.mdlext-accordion').get());
 $('#teams-tab').removeClass('dirty');
 
-$('#teams-accordion').on('toggle', function(event) {
-    if (event.detail.state == 'open' && $(event.detail.tab).hasClass('dirty')) {
-        const teamId = $(event.detail.tab).data('team-id');
-        var ajaxUrl = '<%= team_deliverables_in_project_url(@project, 'teamidplaceholder') %>'
-        ajaxUrl = ajaxUrl.replace('teamidplaceholder', teamId);
-        $.ajax({url: ajaxUrl});
-        $(event.detail.tab).removeClass('dirty');
+
+$('.project-team-header').on('click', function () {
+    const team_id = $(this).data('team');
+    var container = $('.project-facilitator-table[data-team="' + team_id + '"]');
+    if (!$.trim(container.html())) {
+        var url = '<%= table_for_church_team_url('team_placeholder', 'project_placeholder') %>';
+        url = url.replace('team_placeholder', team_id);
+        url = url.replace('project_placeholder', <%= @project.id %>);
+        $.ajax(url);
+    } else {
+        container.slideToggle();
     }
 });

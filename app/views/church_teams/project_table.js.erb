@@ -1,0 +1,7 @@
+var container = $('.project-team-table[data-team="<%= @church_team.id %>"]');
+container.html('<%= j render @church_team %>');
+
+componentHandler.upgradeElements(container.find('.mdl-tooltip').get());
+componentHandler.upgradeElements(container.find('.mdl-textfield').get());
+
+container.slideDown();

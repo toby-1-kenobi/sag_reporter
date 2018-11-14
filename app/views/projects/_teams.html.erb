@@ -9,7 +9,7 @@
         <section class="mdlext-accordion__tabpanel">
           <% @teams.where(state_language: state_language).each do |team| %>
             <div class="team-header-flex-container">
-              <div class="project-team-header" data-lang-team="<%= team.id %>">
+              <div class="project-team-header" data-team="<%= team.id %>">
                 <%= team.full_name %>
               </div>
               <% @project.ministries.each do |stream| %>

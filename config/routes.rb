@@ -29,6 +29,12 @@ Rails.application.routes.draw do
 
   get 'states/autocomplete_sub_district_name/:district_id' => 'districts#autocomplete_sub_district_name', as: 'autocomplete_sub_district_name_district'
 
+  resources :church_teams, only: [] do
+    member do
+      get 'project_table/:project_id', action: :project_table, as: 'table_for'
+    end
+  end
+
   resources :edits, only: [:create, :destroy] do
     collection do
       get 'curate'
