@@ -12,7 +12,7 @@
               <div class="project-team-header" data-team="<%= team.id %>">
                 <%= team.full_name %>
               </div>
-              <% @project.ministries.each do |stream| %>
+              <% team.ministries.each do |stream| %>
                 <% fac_feedback = team.facilitator_feedbacks.
                     where('church_ministries.ministry_id = ?', stream.id).
                     where('result_feedback IS NOT NULL OR progress IS NOT NULL').
@@ -22,7 +22,7 @@
                   <% img_html_data = {class: 'approved-stamp'} %>
                   <% img_html_data[:hidden] = '' unless fac_feedback and fac_feedback.report_approved? %>
                   <%= image_tag('approved.png', img_html_data) %>
-                  <span class="stream"><%= stream.name.en if fac_feedback %></span>
+                  <span class="stream"><%= stream.name.en if fac_feedback %></span><br>
                   <span class="month"><%= pretty_month(fac_feedback.month) if fac_feedback %></span>
                 </div>
               <% end %>
