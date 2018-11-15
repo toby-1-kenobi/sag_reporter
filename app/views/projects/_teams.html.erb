@@ -20,7 +20,7 @@
                 %>
                 <div class="recent-progress" data-progress="<%= fac_feedback.progress if fac_feedback %>">
                   <% img_html_data = {class: 'approved-stamp'} %>
-                  <% img_html_data[:hidden] = '' %>
+                  <% img_html_data[:hidden] = '' unless fac_feedback and fac_feedback.report_approved? %>
                   <%= image_tag('approved.png', img_html_data) %>
                   <span class="stream"><%= stream.name.en if fac_feedback %></span>
                   <span class="month"><%= pretty_month(fac_feedback.month) if fac_feedback %></span>

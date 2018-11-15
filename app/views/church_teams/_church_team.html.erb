@@ -20,7 +20,7 @@
             <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
             <% fac_feedback = church_min.facilitator_feedbacks.find_by_month(year_month) %>
             <% img_html_data = {class: 'approved-stamp'} %>
-            <% img_html_data[:hidden] = '' %>
+            <% img_html_data[:hidden] = '' unless fac_feedback and fac_feedback.report_approved? %>
             <%= image_tag 'approved.png', img_html_data %>
             <%= Date::MONTHNAMES[month] %>
             <% if logged_in_user.can_edit_project_stream?(@project, stream) %>
@@ -32,7 +32,7 @@
                 data-fac-feedback-id="<%= fac_feedback ? fac_feedback.id : 'new' %>"
                 <% if fac_feedback %>
                 data-team-progress="<%= fac_feedback.progress %>"
-                <%= 'data-fac-approved' if fac_feedback.report_approved? %>
+                <%= 'data-sup-approved' if fac_feedback.report_approved? %>
                 <% end %>
                 >
                 <i class="material-icons">edit</i>
@@ -62,7 +62,7 @@
           <% quarterly_actual = 0 %>
           <% months = months_in_quarter(quarter) %>
           <% months_with_year(months.first, months.last, months.first != Date.today.month).each do |year_month| %>
-            <% actual_id, actual, variance_reason = @outputs[church_min.id][deliverable.id][year_month] || ['', '', ''] %>
+            <% actual_id, actual, _ = @outputs[church_min.id][deliverable.id][year_month] || ['', '', ''] %>
             <% if actual.present? %>
               <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
             <% end %>
@@ -77,13 +77,6 @@
                 <% end %>
                 >
               <% if logged_in_user.can_edit_project_stream?(@project, stream) %>
-                <button id="variance-reason-button-<% "#{church_min.id}-#{deliverable.id}-#{year_month}" %>" class="<%= 'empty' unless variance_reason.present? %> mo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary <%= 'hide' unless actual.present? %>">
-                  <i class="material-icons">info</i>
-                  <div hidden class="variance-reason"><%= variance_reason %></div>
-                </button>
-                <div class="mdl-tooltip" data-mdl-for="variance-reason-button-<%= "#{church_min.id}-#{deliverable.id}-#{year_month}" %>">
-                  Reason for variance
-                </div>
                 <% path = actual_id.present? ? ministry_output_path(actual_id) : ministry_outputs_path %>
                 <% method = actual_id.present? ? :patch : :post %>
                 <%= form_tag path, method: method, remote: true do %>
