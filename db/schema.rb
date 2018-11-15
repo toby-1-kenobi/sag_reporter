@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181112010938) do
+ActiveRecord::Schema.define(version: 20181115004643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -292,18 +292,19 @@ ActiveRecord::Schema.define(version: 20181112010938) do
   add_index "external_devices", ["user_id"], name: "index_external_devices_on_user_id", using: :btree
 
   create_table "facilitator_feedbacks", force: :cascade do |t|
-    t.integer  "church_ministry_id",    null: false
-    t.string   "month",                 null: false
+    t.integer  "church_ministry_id",                    null: false
+    t.string   "month",                                 null: false
     t.text     "plan_feedback"
     t.integer  "plan_team_member_id"
     t.text     "plan_response"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
     t.text     "facilitator_plan"
     t.text     "result_feedback"
     t.text     "result_response"
     t.integer  "result_team_member_id"
     t.integer  "progress"
+    t.boolean  "report_approved",       default: false, null: false
   end
 
   add_index "facilitator_feedbacks", ["church_ministry_id"], name: "index_facilitator_feedbacks_on_church_ministry_id", using: :btree

@@ -14,6 +14,7 @@ class FacilitatorFeedback < ActiveRecord::Base
 
   validates :church_ministry, presence: true
   validates :month, presence: true, format: { with: /\A[2-9]\d{3}-(0|1)[0-9]\z/, message: "should be in the format 'YYYY-MM'"}
+  validates :report_approved, inclusion: [true, false]
   validate :year_in_range
   validate :month_in_range
 
