@@ -26,7 +26,7 @@
             <% if logged_in_user.can_edit_project_stream?(@project, stream) %>
               <button
                 id="fac-feedback-button-<%= church_min.id %>-<%= year_month %>"
-                class="<%= 'empty' unless fac_feedback and fac_feedback.result_feedback.present? %> sup-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
+                class="<%= 'empty' unless fac_feedback and fac_feedback.result_feedback.present? %> fac-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
                 data-church-min-id="<%= church_min.id %>"
                 data-month="<%= year_month %>"
                 data-fac-feedback-id="<%= fac_feedback ? fac_feedback.id : 'new' %>"
@@ -72,26 +72,36 @@
                 data-deliverable="<%= deliverable.id %>"
                 data-month="<%= year_month %>"
                 <% if fac_feedback %>
-                data-progress="<%= fac_feedback.progress %>"
+                  data-progress="<%= fac_feedback.progress %>"
                 <% end %>
                 >
-              <%# if logged_in_user.can_edit_project_stream?(@project, stream) %>
-              <% if false %>
-                <button id="variance-reason-button-<% "#{church_min.id}-#{deliverable.id}-#{year_month}" %>" class="<%= 'empty' unless variance_reason.present? %> amo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary <%= 'hide' unless actual.present? %>">
+              <% if logged_in_user.can_edit_project_stream?(@project, stream) %>
+                <button id="variance-reason-button-<% "#{church_min.id}-#{deliverable.id}-#{year_month}" %>" class="<%= 'empty' unless variance_reason.present? %> mo-info-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary <%= 'hide' unless actual.present? %>">
                   <i class="material-icons">info</i>
                   <div hidden class="variance-reason"><%= variance_reason %></div>
                 </button>
                 <div class="mdl-tooltip" data-mdl-for="variance-reason-button-<%= "#{church_min.id}-#{deliverable.id}-#{year_month}" %>">
                   Reason for variance
                 </div>
-                <div class="mdl-textfield mdl-js-textfield amo-actual-input">
-                  <input class="mdl-textfield__input"
-                         type="text"
-                         pattern="[0-9]*(\.[0-9]+)?"
-                         name="actual"
-                         value="<%= actual %>">
-                  <span class="mdl-textfield__error">Enter a number</span>
-                </div>
+                <% path = actual_id.present? ? ministry_output_path(actual_id) : ministry_outputs_path %>
+                <% method = actual_id.present? ? :patch : :post %>
+                <%= form_tag path, method: method, remote: true do %>
+                  <div class="mdl-textfield mdl-js-textfield mo-actual-input">
+                    <input class="mdl-textfield__input"
+                           type="text"
+                           pattern="[0-9]*(\.[0-9]+)?"
+                           name="ministry_output[value]"
+                           value="<%= actual %>">
+                    <span class="mdl-textfield__error">Enter a number</span>
+                  </div>
+                  <% if actual_id.blank? %>
+                    <%= hidden_field_tag 'ministry_output[church_ministry_id]', church_min.id %>
+                    <%= hidden_field_tag 'ministry_output[deliverable_id]', deliverable.id %>
+                    <%= hidden_field_tag 'ministry_output[creator_id]', logged_in_user.id %>
+                    <%= hidden_field_tag 'ministry_output[month]', year_month %>
+                    <%= hidden_field_tag 'ministry_output[actual]', true %>
+                  <% end %>
+                <% end %>
               <% else %>
                 <%= actual %>
               <% end %>
@@ -100,7 +110,6 @@
           <td class="quarterly-actual" data-quarter="<%= quarter %>"><%= quarterly_actual %></td>
           <%# column for annual if we have reached the end of app year %>
           <% if quarter == 4 %>
-            <td class="annual-target"><%= calculate_annual_target(year_targets(church_team.state_language, deliverable, q_year[quarter]), deliverable) %></td>
             <td class="annual-actual" data-year="<%= q_year[quarter] %>"><%# calculate_fac_annual_actual(church_team.state_language, deliverable, q_year[quarter]) %></td>
           <% end %>
         <% end %>

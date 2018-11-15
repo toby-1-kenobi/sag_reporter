@@ -116,6 +116,8 @@ Rails.application.routes.draw do
 
   resources :language_streams, only: [:show, :destroy]
 
+  resources :ministry_outputs, only: [:update, :create]
+
   resources :mt_resources
   get 'language/resources/:language_id' => 'mt_resources#language_overview'
 

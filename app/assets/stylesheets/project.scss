@@ -49,14 +49,14 @@
   }
 }
 
-.facilitator-results {
+.facilitator-results, .team-results {
   th {
     padding-left: 8px !important;
     padding-right: 8px !important;
     text-align: center !important;
   }
   .amo-target { background-color: lightskyblue; }
-  .amo-actual {
+  .amo-actual, .mo-actual {
     background-color: deepskyblue;
     &[data-progress="poor"] { background-color: red; }
     &[data-progress="fair"] { background-color: yellow; }
@@ -76,7 +76,7 @@
   .mdl-textfield {
     padding: 0;
   }
-  .amo-info-button {
+  .amo-info-button, .mo-info-button {
     margin-top: -20px;
     margin-right: -10px;
     margin-bottom: -10px;
@@ -141,10 +141,10 @@ table.supervisors .supervisor-name {
   }
 }
 
-td.quarterly-target, td.amo-actual {
+td.quarterly-target, td.amo-actual, td.mo-actual {
   padding-left: 8px !important;
   padding-right: 8px !important;
-  .quarterly-target-input, .amo-actual-input {
+  .quarterly-target-input, .amo-actual-input, .mo-actual-input {
     width: 40px !important;
     input.dirty {
       background-color: beige;
