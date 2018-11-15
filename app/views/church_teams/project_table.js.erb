@@ -11,4 +11,24 @@ $('.mo-actual-input').on('change', function(){
     $(this).closest('form').submit();
 });
 
+const dialog = document.getElementById('mo-comment');
+$('.mo-info-button').on('click', function() {
+    dialog.querySelector('.mdl-textfield').MaterialTextfield.change($(this).find('.variance-reason').text());
+    $(dialog).find('.mdl-dialog__content input[name="mo_id"]').val($(this).parent().data('mo-id'));
+    dialog.showModal();
+});
+
+const dialog2 = document.getElementById('fac-feedback-dialog');
+$('.fac-feedback-button').on('click', function() {
+    $(dialog2).find('.mdl-textfield, .mdl-checkbox, .team-progress').data($(this).data());
+    dialog2.querySelector('.fac-feedback').MaterialTextfield.change($(this).find('.fac-feedback').text());
+    if (typeof $(this).data('sup-approved') == 'undefined') {
+        dialog2.querySelector('.sup-approved').MaterialCheckbox.uncheck();
+    } else {
+        dialog2.querySelector('.sup-approved').MaterialCheckbox.check();
+    }
+    dialog2.querySelector('.team-progress').MaterialExtSelectfield.change($(this).data('progress'));
+    dialog2.showModal();
+});
+
 container.slideDown();

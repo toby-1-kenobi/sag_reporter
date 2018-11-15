@@ -32,10 +32,11 @@
                 data-fac-feedback-id="<%= fac_feedback ? fac_feedback.id : 'new' %>"
                 <% if fac_feedback %>
                 data-fac-progress="<%= fac_feedback.progress %>"
+                <%= 'data-fac-approved' if fac_feedback.report_approved? %>
                 <% end %>
                 >
                 <i class="material-icons">edit</i>
-                <div hidden class="sup-feedback"><%= fac_feedback.result_feedback if fac_feedback %></div>
+                <div hidden class="fac-feedback"><%= fac_feedback.result_feedback if fac_feedback %></div>
               </button>
               <div class="mdl-tooltip" data-mdl-for="fac-feedback-button-<%= church_min.id %>-<%= year_month %>">
                 Facilitator feedback and approval

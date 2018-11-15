@@ -1,7 +1,99 @@
 $('#teams-panel').html('<%= j render 'teams' %>');
 componentHandler.upgradeElements($('#teams-panel').find('.mdlext-accordion').get());
+componentHandler.upgradeElements($('#teams-panel').find('.mdl-textfield').get());
+componentHandler.upgradeElements($('#teams-panel').find('.mdl-checkbox').get());
+componentHandler.upgradeElements($('#teams-panel').find('.mdlext-selectfield').get());
 $('#teams-tab').removeClass('dirty');
 
+const dialog = document.getElementById('mo-comment');
+if (! dialog.showModal) {
+    dialogPolyfill.registerDialog(dialog);
+}
+dialog.querySelector('.close').addEventListener('click', function() {
+    dialog.close();
+});
+
+const dialog2 = document.getElementById('fac-feedback-dialog');
+if (! dialog2.showModal) {
+    dialogPolyfill.registerDialog(dialog2);
+}
+$(dialog2).find('.fac-feedback').on('change', function(){
+    var url, method, data;
+    if($(this).data('fac-feedback-id') == 'new') {
+        url = '<%= facilitator_feedbacks_path %>';
+        method = 'POST';
+        data = {
+            facilitator_feedback: {
+                church_ministry_id: $(this).data('church-min-id'),
+                month: $(this).data('month'),
+                result_feedback: $(this).find('textarea').val()
+            }
+        };
+    } else {
+        url = '<%= facilitator_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('fac-feedback-id'));
+        method = 'PUT';
+        data = {facilitator_feedback: {result_feedback: $(this).find('textarea').val()}};
+    }
+    $.ajax({
+        url: url,
+        method: method,
+        dataType: 'script',
+        data: data
+    });
+});
+$(dialog2).find('.sup-approved').on('change', function(){
+    var url, method, data;
+    if($(this).data('fac-feedback-id') == 'new') {
+        url = '<%= facilitator_feedbacks_path %>';
+        method = 'POST';
+        data = {
+            facilitator_feedback: {
+                church_ministry_id: $(this).data('church-min-id'),
+                month: $(this).data('month'),
+                report_approved: $(this).find('input').is(':checked')
+            }
+        };
+    } else {
+        url = '<%= facilitator_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('fac-feedback-id'));
+        method = 'PUT';
+        data = {facilitator_feedback: {report_approved: $(this).find('input').is(':checked')}};
+    }
+    $.ajax({
+        url: url,
+        method: method,
+        dataType: 'script',
+        data: data
+    });
+});
+$(dialog2).find('.team-progress').on('change', function(){
+    var url, method, data;
+    if($(this).data('fac-feedback-id') == 'new') {
+        url = '<%= facilitator_feedbacks_path %>';
+        method = 'POST';
+        data = {
+            facilitator_feedback: {
+                church_ministry_id: $(this).data('church-min-id'),
+                month: $(this).data('month'),
+                progress: $(this).find('select').val()
+            }
+        };
+    } else {
+        url = '<%= facilitator_feedback_path('sf-placeholder') %>'.replace('sf-placeholder', $(this).data('fac-feedback-id'));
+        method = 'PUT';
+        data = {facilitator_feedback: {progress: $(this).find('select').val()}};
+    }
+    console.log(url);
+    $.ajax({
+        url: url,
+        method: method,
+        dataType: 'script',
+        data: data
+    });
+});
+dialog2.querySelector('.close').addEventListener('click', function() {
+    dialog2.close();
+});
+console.log('E');
 
 $('.project-team-header').on('click', function () {
     const team_id = $(this).data('team');

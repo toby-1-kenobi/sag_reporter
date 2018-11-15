@@ -53,6 +53,8 @@ Rails.application.routes.draw do
   end
 
   get 'events/new'
+
+  resources :facilitator_feedbacks, only: [:create, :update]
   
   resources :geo_states, only: [:show] do
     member do
