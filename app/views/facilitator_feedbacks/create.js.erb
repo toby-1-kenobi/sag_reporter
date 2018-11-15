@@ -1,0 +1,26 @@
+var buttonElement = $('#fac-feedback-button-<%= @facilitator_feedback.church_ministry_id %>-<%= @facilitator_feedback.month %>');
+buttonElement.attr('data-fac-feedback-id', '<%= @facilitator_feedback.id %>');
+buttonElement.data('fac-feedback-id', '<%= @facilitator_feedback.id %>');
+buttonElement.attr('data-team-progress', '<%= @facilitator_feedback.progress %>');
+buttonElement.data('team-progress', '<%= @facilitator_feedback.progress %>');
+
+$('.mo-actual[data-church-min="<%= @facilitator_feedback.church_ministry_id %>"][data-month="<%= @facilitator_feedback.month %>"]').attr('data-progress', '<%= @facilitator_feedback.progress %>');
+
+<% if @facilitator_feedback.report_approved? %>
+buttonElement.attr('data-sup-approved', '');
+buttonElement.data('sup-approved', '');
+buttonElement.closest('th').find('.approved-stamp').removeAttr('hidden');
+<% else %>
+buttonElement.removeAttr('data-sup-approved');
+buttonElement.removeData('sup-approved');
+buttonElement.closest('th').find('.approved-stamp').attr('hidden', '');
+<% end %>
+
+buttonElement.find('.fac-feedback').text('<%= @facilitator_feedback.result_feedback %>')
+<% if @facilitator_feedback.result_feedback.present? %>
+buttonElement.removeClass('empty');
+<% else %>
+buttonElement.addClass('empty');
+<% end %>
+
+$('#fac-feedback-dialog').find('.fac-feedback, .sup-approved, .team-progress').data('fac-feedback-id', '<%= @facilitator_feedback.id %>');

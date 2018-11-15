@@ -31,7 +31,7 @@
                 data-month="<%= year_month %>"
                 data-fac-feedback-id="<%= fac_feedback ? fac_feedback.id : 'new' %>"
                 <% if fac_feedback %>
-                data-fac-progress="<%= fac_feedback.progress %>"
+                data-team-progress="<%= fac_feedback.progress %>"
                 <%= 'data-fac-approved' if fac_feedback.report_approved? %>
                 <% end %>
                 >
