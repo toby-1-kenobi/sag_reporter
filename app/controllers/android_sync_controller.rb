@@ -199,22 +199,15 @@ class AndroidSyncController < ApplicationController
     
     @version = send_request_params["version"] || ""
     @final_file = Tempfile.new
-    @final_file_2 = Tempfile.new
-    if @version > "1.3.6"
-      render json: {data: "#{@final_file_2.path}.txt"}, status: :ok
-    else
-      render json: {data: "#{@final_file.path}.txt"}, status: :ok
-    end
+    render json: {data: "#{@final_file.path}.txt"}, status: :ok
     tables[Report] << "church_team_id" if @version > "1.4"
     join_tables[:Report] << "ministries" if @version > "1.4"
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
-          File.open(@final_file_2, "w") do |file_2|
           last_sync = Time.at send_request_params["last_sync"]
           this_sync = 5.seconds.ago
-          file.write "{\"last_sync\":#{this_sync.to_i}"
-          file_2.write "UPDATE app SET last_sync = #{this_sync.to_i};"
+          file.write "UPDATE app SET last_sync = #{this_sync.to_i};"
           raise "No last sync variable" unless send_request_params["last_sync"]
           deleted_entries = Hash.new
           tables.each do |table, attributes|
@@ -225,7 +218,6 @@ class AndroidSyncController < ApplicationController
 
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
-            has_entry = false
             restricted_ids = restrict(table)
             logger.debug "Update #{table.name} at: #{restricted_ids}. Those are offline already: #{offline_ids}"
             table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
@@ -246,14 +238,6 @@ class AndroidSyncController < ApplicationController
                 entry_data.merge! additions
                 entry_values += additions.map{|k,v| columns << k.to_s; convert_value(v)}
                 values << entry_values
-                if has_entry
-                  file.write(",")
-                else
-                  logger.debug "First entry: #{entry_data}"
-                  file.write ",\"#{table_name}\":["
-                end
-                has_entry = true
-                file.write entry_data.to_json
               rescue => e
                 logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
                 logger.error e.backtrace
@@ -262,46 +246,36 @@ class AndroidSyncController < ApplicationController
             unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
               deleted_entries[table_name] = offline_ids - restricted_ids
             end
-            file.write "]" if has_entry
             columns << "is_online"
             values.map! {|value| "(#{(value+[1]).join(",")})"}
-            file_2.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
+            file.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             join_table_data.each do |join_table_names, data|
-              file_2.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).uniq.join ","});"
-              file_2.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
-                       "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
+              file.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{data.map(&:first).uniq.join ","});"
+              file.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
+                               "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
             end
             ActiveRecord::Base.connection.query_cache.clear
           end
           unless deleted_entries.empty?
-            file.write ",\"deleted\":"
-            file.write deleted_entries.to_json
             deleted_entries.each do |table, ids|
-                file_2.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.select{|id| id < 1000000}.join ","});"
+              file.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.select{|id| id < 1000000}.join ","});"
             end
-          end
-          file.write "}"
           end
         end
       rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
         logger.error send_message
-        file_path = @version > "1.3.6"? @final_file_2.path: @final_file.path
+        file_path = @final_file.path
         @final_file.delete
-        @final_file_2.delete
         @final_file = File.new file_path, "w"
         @final_file.write send_message
       ensure
         @final_file.close unless @final_file.closed?
-        @final_file_2.close unless @final_file_2.closed?
         logger.debug "File writing finished"
-        if @version > "1.3.6"
-          File.rename(@final_file_2, "#{@final_file_2.path}.txt")
-          @final_file.delete
-        else
-          File.rename(@final_file, "#{@final_file.path}.txt")
-          @final_file_2.delete
-        end
+        @final_file.open
+        logger.debug @final_file.read
+        @final_file.close
+        File.rename(@final_file, "#{@final_file.path}.txt")
         ActiveRecord::Base.connection.close
       end
     end
