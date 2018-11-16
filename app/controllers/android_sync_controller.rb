@@ -202,6 +202,7 @@ class AndroidSyncController < ApplicationController
     render json: {data: "#{@final_file.path}.txt"}, status: :ok
     tables[Report] << "church_team_id" if @version > "1.4"
     join_tables[:Report] << "ministries" if @version > "1.4"
+    tables.merge!(ProjectProgress => %w(project_stream_id month progress comment approve)) if @version >= "1.4.1"
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
@@ -422,7 +423,17 @@ class AndroidSyncController < ApplicationController
               :creator_id,
               :actual
           ],
+          project_progress: [
+              :id,
+              :old_id,
+              :project_stream_id,
+              :month,
+              :progress,
+              :comment,
+              :approved
+          ],
           person: [
+              :id,
               :old_id,
               :name,
               :user_id,
