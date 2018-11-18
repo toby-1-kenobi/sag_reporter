@@ -60,7 +60,7 @@
       <div class="team-progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
         <select id="fac-feedback-team-progress" class="mdlext-selectfield__select">
           <option value=""></option>
-          <%= options_for_select(FacilitatorFeedback.progresses.to_a.map{ |p| p[0] = t "progress.#{p[0]}", default: p[0] }) %>
+          <%= options_for_select(FacilitatorFeedback.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0]), p[0]] }) %>
         </select>
         <label for="fac-feedback-team-progress" class="mdlext-selectfield__label">Evaluate progress in this month</label>
       </div>

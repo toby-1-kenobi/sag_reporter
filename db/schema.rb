@@ -824,11 +824,11 @@ ActiveRecord::Schema.define(version: 20181115102437) do
     t.string   "version",             default: "unknown", null: false
     t.boolean  "significant",         default: false,     null: false
     t.integer  "project_id"
-    t.integer  "church_ministry_id"
+    t.integer  "church_team_id"
   end
 
   add_index "reports", ["challenge_report_id"], name: "index_reports_on_challenge_report_id", using: :btree
-  add_index "reports", ["church_ministry_id"], name: "index_reports_on_church_ministry_id", using: :btree
+  add_index "reports", ["church_team_id"], name: "index_reports_on_church_team_id", using: :btree
   add_index "reports", ["event_id"], name: "index_reports_on_event_id", using: :btree
   add_index "reports", ["geo_state_id"], name: "index_reports_on_geo_state_id", using: :btree
   add_index "reports", ["impact_report_id"], name: "index_reports_on_impact_report_id", using: :btree
@@ -1082,7 +1082,7 @@ ActiveRecord::Schema.define(version: 20181115102437) do
   add_foreign_key "report_streams", "ministries"
   add_foreign_key "report_streams", "reports"
   add_foreign_key "reports", "challenge_reports"
-  add_foreign_key "reports", "church_ministries"
+  add_foreign_key "reports", "church_teams"
   add_foreign_key "reports", "events"
   add_foreign_key "reports", "geo_states"
   add_foreign_key "reports", "impact_reports"
