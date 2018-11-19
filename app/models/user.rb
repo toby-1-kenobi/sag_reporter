@@ -87,6 +87,8 @@ class User < ActiveRecord::Base
 
   scope :facilitators, ->{ joins(:language_streams) }
 
+  scope :with_projects, -> { includes(:project_supervisions,:project_streams) }
+
   scope :visible_to, ->(user) { user.national? ? approved : approved.joins(:geo_states).where('geo_states.id' => user.geo_states).uniq }
 
   # Returns the hash digest of the given string.
@@ -205,6 +207,14 @@ class User < ActiveRecord::Base
       return true if can_view_project?(project)
     end
     false
+  end
+
+  def project_ids
+    project_supervisions.map(&:project_id) + project_streams.map(&:project_id)
+  end
+
+  def projects
+    project_supervisions.map(&:project) + project_streams.map(&:project)
   end
 
   # find out if this user curates for a particular language
