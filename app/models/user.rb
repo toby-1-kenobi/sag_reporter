@@ -214,7 +214,7 @@ class User < ActiveRecord::Base
   end
 
   def projects
-    project_supervisions.map(&:project) + project_streams.map(&:project)
+    Project.where(id: project_ids)
   end
 
   # find out if this user curates for a particular language
