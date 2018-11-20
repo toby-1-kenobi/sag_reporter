@@ -393,6 +393,7 @@ class AndroidSyncController < ApplicationController
               :old_id,
               :facilitator_id,
               :supervisor_id,
+              :state_language_id,
               :ministry_id,
               :month,
               :plan_feedback,
