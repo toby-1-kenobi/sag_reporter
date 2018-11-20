@@ -16,12 +16,12 @@ module QuarterlyTargetsHelper
     end
   end
 
-  def calculate_fac_annual_actual(state_language, deliverable, year)
+  def calculate_fac_annual_actual(state_language, facilitator, deliverable, year)
     year += 1 if Rails.configuration.year_cutoff_month < 6
     last_month = Date.new(year, Rails.configuration.year_cutoff_month) - 1.month
     first_month = last_month - 11.months
     amos = state_language.aggregate_ministry_outputs.
-        where(deliverable: deliverable, actual: true).
+        where(deliverable: deliverable, actual: true, creator: facilitator).
         where('month >= ?', first_month.strftime("%Y-%m")).
         where('month <= ?', last_month.strftime("%Y-%m")).
         order(:month)
@@ -32,12 +32,12 @@ module QuarterlyTargetsHelper
     end
   end
 
-  def calculate_fac_quarterly_actual(state_language, deliverable, year, quarter)
+  def calculate_fac_quarterly_actual(state_language, facilitator, deliverable, year, quarter)
     year -= 1 if Rails.configuration.year_cutoff_month >= 6
     first_month = Date.new(year, Rails.configuration.year_cutoff_month) + ((quarter - 1) * 3).months
     last_month = first_month + 2.months
     amos = state_language.aggregate_ministry_outputs.
-        where(deliverable: deliverable, actual: true).
+        where(deliverable: deliverable, actual: true, creator: facilitator).
         where('month >= ?', first_month.strftime("%Y-%m")).
         where('month <= ?', last_month.strftime("%Y-%m")).
         order(:month)

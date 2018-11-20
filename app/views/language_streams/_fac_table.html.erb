@@ -114,7 +114,7 @@
         <%# column for annual if we have reached the end of app year %>
         <% if quarter == 4 %>
           <td class="annual-target"><%= calculate_annual_target(year_targets(lang_stream.state_language, deliverable, q_year[quarter]), deliverable) %></td>
-          <td class="annual-actual" data-year="<%= q_year[quarter] %>"><%= calculate_fac_annual_actual(lang_stream.state_language, deliverable, q_year[quarter]) %></td>
+          <td class="annual-actual" data-year="<%= q_year[quarter] %>"><%= calculate_fac_annual_actual(lang_stream.state_language, lang_stream.facilitator, deliverable, q_year[quarter]) %></td>
         <% end %>
       <% end %>
     </tr>
