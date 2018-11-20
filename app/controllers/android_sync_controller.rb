@@ -34,6 +34,7 @@ class AndroidSyncController < ApplicationController
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
         ProjectSupervisor => %w(project_id user_id role),
+        ProjectProgress => nil,
         AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
@@ -202,7 +203,7 @@ class AndroidSyncController < ApplicationController
     render json: {data: "#{@final_file.path}.txt"}, status: :ok
     tables[Report] << "church_team_id" if @version > "1.4"
     join_tables[:Report] << "ministries" if @version > "1.4"
-    tables.merge!(ProjectProgress => %w(project_stream_id month progress comment approved)) if @version >= "1.4.1"
+    tables[ProjectProgress] = %w(project_stream_id month progress comment approved) if @version >= "1.4.1"
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
@@ -212,6 +213,7 @@ class AndroidSyncController < ApplicationController
           raise "No last sync variable" unless send_request_params["last_sync"]
           deleted_entries = Hash.new
           tables.each do |table, attributes|
+            next unless attributes
 
             join_table_data = Hash.new
             columns = Set.new ["id"] + attributes
