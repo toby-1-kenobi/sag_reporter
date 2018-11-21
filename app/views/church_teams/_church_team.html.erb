@@ -2,8 +2,8 @@
 <% current_q, q_year[current_q] = quarter_for_month(Date.today.month), FinishLineProgress.get_current_year %>
 <% last_q = (current_q - 2) % 4 + 1 %>
 <% q_year[last_q] = last_q < current_q ? q_year[current_q] : q_year[current_q] - 1 %>
-<% church_team.ministries.each do |stream| %>
-  <% church_min = ChurchMinistry.find_by(church_team: church_team, ministry: stream) %>
+<% church_team.church_ministries.active.each do |church_min| %>
+  <% stream = church_min.ministry %>
   <div class="team-stream-header">
     <%= stream.name.en %> results
     <% if church_min.facilitator.present? %>

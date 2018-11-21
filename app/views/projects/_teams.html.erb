@@ -12,7 +12,7 @@
               <div class="project-team-header" data-team="<%= team.id %>">
                 <%= team.full_name %>
               </div>
-              <% team.ministries.each do |stream| %>
+              <% team.ministries.where('church_ministries.status = ?', 0).each do |stream| %>
                 <% fac_feedback = team.facilitator_feedbacks.
                     where('church_ministries.ministry_id = ?', stream.id).
                     where('result_feedback IS NOT NULL OR progress IS NOT NULL').
