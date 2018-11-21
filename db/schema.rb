@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181115102437) do
+ActiveRecord::Schema.define(version: 20181119114234) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -882,7 +882,7 @@ ActiveRecord::Schema.define(version: 20181115102437) do
     t.integer  "ministry_id",                          null: false
     t.integer  "supervisor_id",                        null: false
     t.boolean  "report_approved",      default: false, null: false
-    t.integer  "state_language_id"
+    t.integer  "state_language_id",                    null: false
   end
 
   add_index "supervisor_feedbacks", ["facilitator_id"], name: "index_supervisor_feedbacks_on_facilitator_id", using: :btree

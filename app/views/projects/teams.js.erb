@@ -93,11 +93,10 @@ $(dialog2).find('.team-progress').on('change', function(){
 dialog2.querySelector('.close').addEventListener('click', function() {
     dialog2.close();
 });
-console.log('E');
 
 $('.project-team-header').on('click', function () {
     const team_id = $(this).data('team');
-    var container = $('.project-facilitator-table[data-team="' + team_id + '"]');
+    var container = $('.project-team-table[data-team="' + team_id + '"]');
     if (!$.trim(container.html())) {
         var url = '<%= table_for_church_team_url('team_placeholder', 'project_placeholder') %>';
         url = url.replace('team_placeholder', team_id);
