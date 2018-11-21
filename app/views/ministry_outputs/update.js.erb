@@ -1,1 +1,12 @@
-console.log('<%= @ministry_output.id %>');
+<% cm = @ministry_output.church_ministry_id %>
+<% del = @ministry_output.deliverable_id %>
+<% m = @ministry_output.month %>
+
+const editedCell = $('.mo-actual[data-church-min="<%= cm %>"][data-deliverable="<%= del %>"][data-month="<%= m %>"]');
+editedCell.find('input').removeClass('dirty');
+editedCell.find('button').removeClass('hide');
+editedCell.attr('data-mo-id', '<%= @ministry_output.id %>')
+<% year, month = @ministry_output.month[0..3].to_i, @ministry_output.month[-2..-1].to_i %>
+<% app_year, quarter = app_year(year, month), quarter_for_month(month) %>
+editedCell.siblings('.quarterly-actual[data-quarter="<%= quarter %>"]').text('<%= calculate_ct_quarterly_actual(@ministry_output.church_ministry, @ministry_output.deliverable, app_year, quarter) %>');
+editedCell.siblings('.annual-actual[data-year="<%= app_year %>"]').text('<%= calculate_ct_annual_actual(@ministry_output.church_ministry, @ministry_output.deliverable, app_year) %>');

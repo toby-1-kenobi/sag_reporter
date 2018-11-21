@@ -68,7 +68,7 @@
             <% end %>
             <% fac_feedback = church_min.facilitator_feedbacks.find_by_month(year_month) %>
             <td class="mo-actual"
-                <%= "data-amo-id=#{actual_id}" if actual.present? %>
+                <%= "data-mo-id=#{actual_id}" if actual.present? %>
                 data-church-min="<%= church_min.id %>"
                 data-deliverable="<%= deliverable.id %>"
                 data-month="<%= year_month %>"
@@ -104,7 +104,7 @@
           <td class="quarterly-actual" data-quarter="<%= quarter %>"><%= quarterly_actual %></td>
           <%# column for annual if we have reached the end of app year %>
           <% if quarter == 4 %>
-            <td class="annual-actual" data-year="<%= q_year[quarter] %>"><%# calculate_fac_annual_actual(church_team.state_language, deliverable, q_year[quarter]) %></td>
+            <td class="annual-actual" data-year="<%= q_year[quarter] %>"><%= calculate_ct_annual_actual(church_min, deliverable, q_year[quarter]) %></td>
           <% end %>
         <% end %>
       </tr>
