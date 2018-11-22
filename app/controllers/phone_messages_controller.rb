@@ -64,6 +64,7 @@ class PhoneMessagesController < ApplicationController
         response = { 'status' => true }
       elsif msg.error_messages.present?
         response = { 'status' => msg.error_messages }
+        SmsAdminMailer.sms_server_fail(msg).deliver_later
       else
         response = { 'status' => 'pending' }
       end
