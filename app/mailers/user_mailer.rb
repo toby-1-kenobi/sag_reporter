@@ -4,9 +4,6 @@ require 'base64'
 class UserMailer < ActionMailer::Base
 
   include ActionView::Helpers::DateHelper
-  require 'sendgrid-ruby'
-  include SendGrid
-  default :from => 'info@lci-india.org'
 
   def user_email_confirmation(user)
   	headers['X-SMTPAPI'] = {

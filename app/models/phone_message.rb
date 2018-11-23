@@ -5,6 +5,13 @@ class PhoneMessage < ActiveRecord::Base
   validate :user_has_phone
 
   scope :pending, ->{ where(sent_at: nil).where(error_messages: nil) }
+  scope :expired, ->{ where('expiration < ?', Time.now) }
+
+  def self.update_expired
+    self.pending.expired.each do |message|
+      message.update_attribute(:error_messages, 'Expired without sending')
+    end
+  end
 
   private
 

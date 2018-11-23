@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-</head>
-<body>
 <h1>Hi <%= defined?(@recipient) ? @recipient.name : @recipient_name %></h1>
 
 <% if defined?(@recipient) and @recipient == @report.reporter %>
@@ -42,5 +36,3 @@
     <p>Log in to the LCI app to see the <%= link_to 'report pictures', @report %></p>
   <% end %>
 <% end %>
-</body>
-</html>

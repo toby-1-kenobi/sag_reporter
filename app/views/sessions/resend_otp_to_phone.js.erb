@@ -21,14 +21,12 @@ function poll(ticket) {
                     else if (data.status == true) {
                         console.log("success");
                         stillWaiting = false;
-                        $('.otp_msg').html('Login code sent to phone');
-                        $('.otp_msg').hide().fadeIn();
+                        $('.flash-message').html('Login code sent to phone').hide().fadeIn();
                     }
                     else {
                         console.log("failure");
                         stillWaiting = false;
-                        $('.otp_msg').html('Could not send the login code to your phone!');
-                        $('.otp_msg').hide().fadeIn();
+                        $('.flash-message').html('Could not send the login code to your phone! ' + data.status).hide().fadeIn();
                     }
                 },
                 dataType: "json",

@@ -11,6 +11,9 @@ class PhoneMessagesController < ApplicationController
     head :forbidden unless hmac_authorise
   end
 
+  before_action only: [:pending, :poll] do
+    PhoneMessage.update_expired
+  end
 
   def pending
     respond_to do |format|
@@ -61,6 +64,7 @@ class PhoneMessagesController < ApplicationController
         response = { 'status' => true }
       elsif msg.error_messages.present?
         response = { 'status' => msg.error_messages }
+        SmsAdminMailer.sms_server_fail(msg).deliver_later
       else
         response = { 'status' => 'pending' }
       end

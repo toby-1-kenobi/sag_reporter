@@ -245,7 +245,7 @@ class AndroidAdditionsController < ApplicationController
   def send_otp_on_phone(user, otp_code)
     begin
       logger.debug "Sending otp to #{user.name}, otp: #{otp_code}"
-      msg = PhoneMessage.create(user: user, content: "#{otp_code} is your Rev79 login code")
+      msg = PhoneMessage.create(user: user, content: "#{otp_code} is your Rev79 login code", expiration: 1.minute.from_now)
       msg.id
     rescue => e
       logger.error "Couldn't send OTP to phone: #{e.message}"
