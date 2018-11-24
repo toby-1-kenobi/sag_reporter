@@ -1,5 +1,7 @@
 class SupervisorFeedbacksController < ApplicationController
 
+  before_action :require_login
+
   def update
     @supervisor_feedback = SupervisorFeedback.find params[:id]
     @supervisor_feedback.update_attributes(supervisor_feedback_params)

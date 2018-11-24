@@ -163,6 +163,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :project_progresses, only: [:update, :create]
+
   patch 'project_streams/:id/set_supervisor/:supervisor', to: 'project_streams#set_supervisor', as: 'set_supervisor_in_project_stream'
 
   resources :project_supervisors, only: [:create, :destroy, :update]

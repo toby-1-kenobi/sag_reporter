@@ -110,13 +110,85 @@ const dialog3 = document.getElementById('stream-eval-dialog');
 if (! dialog3.showModal) {
     dialogPolyfill.registerDialog(dialog3);
 }
+$(dialog3).find('.comment').on('change', function(){
+    var url, method, data;
+    if($(this).data('proj-prog-id') == 'new') {
+        url = '<%= project_progresses_path %>';
+        method = 'POST';
+        data = {
+            project_progress: {
+                project_stream_id: $(this).data('proj-stream-id'),
+                month: $(this).data('month'),
+                comment: $(this).find('textarea').val()
+            }
+        };
+    } else {
+        url = '<%= project_progress_path('pp-placeholder') %>'.replace('pp-placeholder', $(this).data('proj-prog-id'));
+        method = 'PUT';
+        data = {project_progress: {comment: $(this).find('textarea').val()}};
+    }
+    $.ajax({
+        url: url,
+        method: method,
+        dataType: 'script',
+        data: data
+    });
+});
+$(dialog3).find('.stream-approved').on('change', function(){
+    var url, method, data;
+    if($(this).data('proj-prog-id') == 'new') {
+        url = '<%= project_progresses_path %>';
+        method = 'POST';
+        data = {
+            project_progress: {
+                project_stream_id: $(this).data('proj-stream-id'),
+                month: $(this).data('month'),
+                approved: $(this).find('input').is(':checked')
+            }
+        };
+    } else {
+        url = '<%= project_progress_path('pp-placeholder') %>'.replace('pp-placeholder', $(this).data('proj-prog-id'));
+        method = 'PUT';
+        data = {project_progress: {approved: $(this).find('input').is(':checked')}};
+    }
+    $.ajax({
+        url: url,
+        method: method,
+        dataType: 'script',
+        data: data
+    });
+});
+$(dialog3).find('.progress').on('change', function(){
+    var url, method, data;
+    if($(this).data('proj-prog-id') == 'new') {
+        url = '<%= project_progresses_path %>';
+        method = 'POST';
+        data = {
+            project_progress: {
+                project_stream_id: $(this).data('proj-stream-id'),
+                month: $(this).data('month'),
+                progress: $(this).find('select').val()
+            }
+        };
+    } else {
+        url = '<%= project_progress_path('pp-placeholder') %>'.replace('pp-placeholder', $(this).data('proj-prog-id'));
+        method = 'PUT';
+        data = {project_progress: {progress: $(this).find('select').val()}};
+    }
+    $.ajax({
+        url: url,
+        method: method,
+        dataType: 'script',
+        data: data
+    });
+});
 dialog3.querySelector('.close').addEventListener('click', function() {
     dialog3.close();
 });
 $('.stream-eval-button').on('click', function() {
     $(dialog3).find('.mdl-textfield, .mdl-checkbox, .progress').data($(this).data());
     dialog3.querySelector('.comment').MaterialTextfield.change($(this).find('.stream-eval-comment').text());
-    if (typeof $(this).data('stream-approved') == 'undefined') {
+    if (typeof $(this).data('approved') == 'undefined') {
         dialog3.querySelector('.stream-approved').MaterialCheckbox.uncheck();
     } else {
         dialog3.querySelector('.stream-approved').MaterialCheckbox.check();

@@ -20,16 +20,19 @@
                   <div data-month="<%= year_month %>">
                     <% stream_eval = @project.project_streams.find_by(ministry: stream).project_progresses.where(month: year_month).last %>
                     <% img_html_data = {class: 'approved-stamp'} %>
-                    <% img_html_data[:hidden] = '' unless stream_eval and stream_eval.report_approved? %>
+                    <% img_html_data[:hidden] = '' unless stream_eval and stream_eval.approved? %>
                     <%= image_tag 'approved.png', img_html_data %>
                     <%= Date::MONTHNAMES[month] %>
                     <button
                       id="stream-eval-button-<%= stream.id %>-<%= year_month %>"
                       class="<%= 'empty' unless stream_eval and stream_eval.comment.present? %> stream-eval-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
                       data-proj-prog-id="<%= stream_eval ? stream_eval.id : 'new' %>"
+                      data-month="<%= year_month %>"
                       <% if stream_eval %>
                         data-progress="<%= stream_eval.progress %>"
                         <%= 'data-approved' if stream_eval.approved? %>
+                      <% else %>
+                        data-proj-stream-id="<%= ProjectStream.find_by(project: @project, ministry: stream).id %>"
                       <% end %>
                     >
                       <i class="material-icons">edit</i>
