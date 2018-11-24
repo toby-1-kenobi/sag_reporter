@@ -1,5 +1,13 @@
 class ProjectProgress < ActiveRecord::Base
 
+  enum progress: {
+      no_progress: 0,
+      poor: 1,
+      fair: 2,
+      good: 3,
+      excellent: 4
+  }
+
   belongs_to :project_stream
 
   validates :project_stream, presence: true

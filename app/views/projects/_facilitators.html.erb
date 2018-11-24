@@ -1,4 +1,8 @@
 <% if @project.facilitators.any? %>
+  <% q_year = {} %>
+  <% current_q, q_year[current_q] = quarter_for_month(Date.today.month), FinishLineProgress.get_current_year %>
+  <% last_q = (current_q - 2) % 4 + 1 %>
+  <% q_year[last_q] = last_q < current_q ? q_year[current_q] : q_year[current_q] - 1 %>
   <% multi_state = @project.geo_states.uniq.count > 1 %>
   <% @counter = 0 %>
   <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
@@ -8,6 +12,37 @@
           <span class="mdlext-accordion__tab__caption"><%= stream.name.en %></span>
         </header>
         <section class="mdlext-accordion__tabpanel">
+          <% if logged_in_user.admin? or @project.project_supervisors.management.exists?(user: logged_in_user) %>
+            <div class="project-stream-evaluation" data-stream="<%= stream.id %>">
+              <% [last_q, current_q].each do |quarter| %>
+                <% months_in_quarter(quarter).each do |month| %>
+                  <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
+                  <div data-month="<%= year_month %>">
+                    <% stream_eval = @project.project_streams.find_by(ministry: stream).project_progresses.where(month: year_month).last %>
+                    <% img_html_data = {class: 'approved-stamp'} %>
+                    <% img_html_data[:hidden] = '' unless stream_eval and stream_eval.report_approved? %>
+                    <%= image_tag 'approved.png', img_html_data %>
+                    <%= Date::MONTHNAMES[month] %>
+                    <button
+                      id="stream-eval-button-<%= stream.id %>-<%= year_month %>"
+                      class="<%= 'empty' unless stream_eval and stream_eval.comment.present? %> stream-eval-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
+                      data-proj-prog-id="<%= stream_eval ? stream_eval.id : 'new' %>"
+                      <% if stream_eval %>
+                        data-progress="<%= stream_eval.progress %>"
+                        <%= 'data-approved' if stream_eval.approved? %>
+                      <% end %>
+                    >
+                      <i class="material-icons">edit</i>
+                      <div hidden class="stream-eval-comment"><%= stream_eval.comment if stream_eval %></div>
+                    </button>
+                    <div class="mdl-tooltip" data-mdl-for="stream-eval-button-<%= stream.id %>-<%= year_month %>">
+                      Evaluate Project Stream
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
           <% @project.language_streams.where(ministry: stream).order(:state_language_id).each do |lang_stream| %>
             <% sup_feedback = SupervisorFeedback.
                 where(ministry: stream, state_language: lang_stream.state_language, facilitator: lang_stream.facilitator).
@@ -71,6 +106,29 @@
       <div class="mdl-dialog__actions">
         <button type="button" class="mdl-button close">Done</button>
       </div>
+  </dialog>
+
+  <dialog id="stream-eval-dialog" class="mdl-dialog">
+    <div class="mdl-dialog__content">
+      <div class="comment mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <textarea class="mdl-textfield__input" type="text" rows="5" name="comment" id="stream-comment-input"></textarea>
+        <label class="mdl-textfield__label" for="stream-comment-input">Evaluation Comment</label>
+      </div>
+      <label class="stream-approved mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="stream-approved-input">
+        <input type="checkbox" id="stream-approved-input" class="mdl-checkbox__input">
+        <span class="mdl-checkbox__label">Approve this month's reports</span>
+      </label>
+      <div class="progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <select id="stream-eval-dialog-progress" class="mdlext-selectfield__select">
+          <option value=""></option>
+          <%= options_for_select(ProjectProgress.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0]), p[0]] }) %>
+        </select>
+        <label for="stream-eval-dialog-progress" class="mdlext-selectfield__label">Evaluate progress in this month</label>
+      </div>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button close">Done</button>
+    </div>
   </dialog>
 
 <% else %>

@@ -106,6 +106,25 @@ dialog2.querySelector('.close').addEventListener('click', function() {
     dialog2.close();
 });
 
+const dialog3 = document.getElementById('stream-eval-dialog');
+if (! dialog3.showModal) {
+    dialogPolyfill.registerDialog(dialog3);
+}
+dialog3.querySelector('.close').addEventListener('click', function() {
+    dialog3.close();
+});
+$('.stream-eval-button').on('click', function() {
+    $(dialog3).find('.mdl-textfield, .mdl-checkbox, .progress').data($(this).data());
+    dialog3.querySelector('.comment').MaterialTextfield.change($(this).find('.stream-eval-comment').text());
+    if (typeof $(this).data('stream-approved') == 'undefined') {
+        dialog3.querySelector('.stream-approved').MaterialCheckbox.uncheck();
+    } else {
+        dialog3.querySelector('.stream-approved').MaterialCheckbox.check();
+    }
+    dialog3.querySelector('.progress').MaterialExtSelectfield.change($(this).data('progress'));
+    dialog3.showModal();
+});
+
 $('.project-facilitator-header').on('click', function () {
     const lang_stream_id = $(this).data('lang-stream');
     var container = $('.project-facilitator-table[data-lang-stream="' + lang_stream_id + '"]');
