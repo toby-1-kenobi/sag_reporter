@@ -1,0 +1,25 @@
+var buttonElement = $('#stream-eval-button-<%= @project_progress.project_stream.ministry_id %>-<%= @project_progress.month %>');
+buttonElement.attr('data-proj-prod-id', '<%= @project_progress.id %>');
+buttonElement.data('proj-prod-id', '<%= @project_progress.id %>');
+buttonElement.attr('data-progress', '<%= @project_progress.progress %>');
+buttonElement.data('progress', '<%= @project_progress.progress %>');
+buttonElement.closest('.evaluation').attr('data-progress', '<%= @project_progress.progress %>')
+
+<% if @project_progress.approved? %>
+buttonElement.attr('data-approved', '');
+buttonElement.data('approved', '');
+buttonElement.closest('.evaluation').find('.approved-stamp').removeAttr('hidden');
+<% else %>
+buttonElement.removeAttr('data-approved');
+buttonElement.removeData('approved');
+buttonElement.closest('.evaluation').find('.approved-stamp').attr('hidden', '');
+<% end %>
+
+buttonElement.find('.stream-eval-comment').text('<%= @project_progress.comment %>')
+<% if @project_progress.comment.present? %>
+buttonElement.removeClass('empty');
+<% else %>
+buttonElement.addClass('empty');
+<% end %>
+
+$('#stream-eval-dialog').find('.comment, .stream-approved, .progress').data('proj-prog-id', '<%= @project_progress.id %>');
