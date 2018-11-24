@@ -17,6 +17,9 @@
   }
 }
 
+.project-stream-evaluation {
+  background-color: whitesmoke;
+}
 .fac-header-flex-container, .team-header-flex-container, .project-stream-evaluation {
   display: flex;
   div {
@@ -35,7 +38,7 @@
       background-color: darkgrey;
     }
   }
-  .recent-progress {
+  .recent-progress, .evaluation {
     background-color: deepskyblue;
     &[data-progress="poor"] { background-color: red; }
     &[data-progress="fair"] { background-color: yellow; }
@@ -51,6 +54,15 @@
       float: right;
       margin-top: 8px;
       margin-bottom: -12px;
+    }
+  }
+  .evaluation {
+    flex-grow: 1;
+    .empty i {
+      color: grey;
+    }
+    .approved-stamp {
+      margin-left: 0;
     }
   }
 }

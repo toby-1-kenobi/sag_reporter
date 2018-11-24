@@ -13,15 +13,14 @@
         </header>
         <section class="mdlext-accordion__tabpanel">
           <% if logged_in_user.admin? or @project.project_supervisors.management.exists?(user: logged_in_user) %>
-            <div class="project-stream-evaluation" data-stream="<%= stream.id %>">
+            <div class="project-stream-evaluation mdl-shadow--2dp" data-stream="<%= stream.id %>">
               <% [last_q, current_q].each do |quarter| %>
                 <% months_in_quarter(quarter).each do |month| %>
                   <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
-                  <div data-month="<%= year_month %>">
-                    <% stream_eval = @project.project_streams.find_by(ministry: stream).project_progresses.where(month: year_month).last %>
+                  <% stream_eval = @project.project_streams.find_by(ministry: stream).project_progresses.where(month: year_month).last %>
+                  <div class="evaluation" data-month="<%= year_month %>" data-progress="<%= stream_eval.progress if stream_eval %>">
                     <% img_html_data = {class: 'approved-stamp'} %>
                     <% img_html_data[:hidden] = '' unless stream_eval and stream_eval.approved? %>
-                    <%= image_tag 'approved.png', img_html_data %>
                     <%= Date::MONTHNAMES[month] %>
                     <button
                       id="stream-eval-button-<%= stream.id %>-<%= year_month %>"
@@ -41,6 +40,7 @@
                     <div class="mdl-tooltip" data-mdl-for="stream-eval-button-<%= stream.id %>-<%= year_month %>">
                       Evaluate Project Stream
                     </div>
+                    <%= image_tag 'approved.png', img_html_data %>
                   </div>
                 <% end %>
               <% end %>
