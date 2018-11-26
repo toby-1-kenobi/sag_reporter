@@ -1,4 +1,6 @@
 class Project < ActiveRecord::Base
+
+  has_many :sub_projects, dependent: :destroy
   has_many :project_languages, dependent: :destroy
   has_many :state_languages, through: :project_languages
   has_many :geo_states, through: :state_languages
@@ -11,6 +13,7 @@ class Project < ActiveRecord::Base
   has_many :stream_supervisors, through: :project_streams, class_name: 'User', source: 'supervisor'
   has_many :language_streams, dependent: :nullify
   has_many :facilitators, through: :language_streams, class_name: 'User'
+
   validates :name, presence: true, uniqueness: true
 
 end
