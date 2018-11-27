@@ -1,0 +1,4 @@
+$('input#sub_project_name').val('');
+<% if @sub_project.persisted? %>
+  $('#sub-project-list').append('<%= j render @sub_project %>')
+<% end %>

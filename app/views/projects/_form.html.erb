@@ -36,6 +36,9 @@
   <div class="mdl-tabs__panel" id="languages-streams-panel">
     <div class="grid-container">
       <div id="define-sub-projects">
+        <ul id="sub-project-list">
+          <%= render @project.sub_projects %>
+        </ul>
         <%= form_for @project.sub_projects.new, remote: true do |f| %>
           <%=	f.hidden_field :project_id %>
           <%= f.text_field :name %>
