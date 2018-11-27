@@ -50,6 +50,11 @@ class ProjectsController < ApplicationController
     respond_to :js
   end
 
+  def quarterly
+    @project = Project.find(params[:id])
+    respond_to :js
+  end
+
   def edit_responsible
     @project = Project.includes(:geo_states).find(params[:id])
     head :forbidden unless logged_in_user.can_edit_project?(@project)

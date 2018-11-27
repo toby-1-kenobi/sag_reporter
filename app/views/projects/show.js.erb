@@ -8,3 +8,7 @@ $('#teams-tab.dirty').on('click', function(){
 $('#facs-tab.dirty').on('click', function(){
     $.ajax({url: '<%= facilitators_project_url(@project) %>'});
 });
+
+$('#quarterly-tab.dirty').on('click', function(){
+    $.ajax({url: '<%= quarterly_project_url(@project) %>'});
+});

@@ -20,6 +20,10 @@ module DatesHelper
     1 + ((month - Rails.configuration.year_cutoff_month) % 12) / 3
   end
 
+  def app_quarter(year, month)
+    "#{app_year(year, month)}-#{quarter_for_month(month)}"
+  end
+
   def months_in_quarter(q)
     start = (q - 1)*3 + Rails.configuration.year_cutoff_month
     [start, start + 1, start + 2].map{ |m| (m - 1) % 12 + 1 }
@@ -49,6 +53,17 @@ module DatesHelper
   def pretty_month(month)
     date = Date.new(month[0..3].to_i, month[-2..-1].to_i)
     date.strftime('%B %Y')
+  end
+
+  def years_of_quarters(years)
+    current_year = app_year(Date.today.year, Date.today.month)
+    quarters = []
+    ((current_year - years + 1)..current_year).each do |year|
+      (1..4).each do |quarter|
+        quarters << ["#{year} quarter #{quarter}", "#{year}-#{quarter}"]
+      end
+    end
+    quarters
   end
 
 end

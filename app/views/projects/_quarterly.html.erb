@@ -1,0 +1,21 @@
+<% if @project.sub_projects.any? %>
+  <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+    <select id="quarterly-sub-project-select" class="mdlext-selectfield__select">
+      <option value=""></option>
+      <option value="-1"><%= @project.name %></option>
+      <%= options_for_select(@project.sub_projects.pluck(:name, :id)) %>
+    </select>
+    <label for="quarterly-sub-project-select" class="mdlext-selectfield__label">Choose a Sub-Project</label>
+  </div>
+<% end %>
+
+<div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+  <select id="quarter-select" class="mdlext-selectfield__select">
+    <% q_date = 2.months.ago %>
+    <%= options_for_select(years_of_quarters(2), selected: app_quarter(q_date.year, q_date.month)) %>
+  </select>
+  <label for="quarter-select" class="mdlext-selectfield__label">Choose a Quarter</label>
+</div>
+
+<div id="quarterly-report"></div>
+

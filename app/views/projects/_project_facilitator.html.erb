@@ -2,8 +2,10 @@
   <span class="mdl-list__item-primary-content">
     <%= project_facilitator.facilitator.name %>
   </span>
-  <%= form_for project_facilitator, remote: true do |f| %>
-    <%= f.collection_select(:sub_project_id, @project.sub_projects, :id, :name, {prompt: 'no sub-project'}, {class: 'set-sub-project'}) %>
+  <% if @project.sub_projects.any? %>
+    <%= form_for project_facilitator, remote: true do |f| %>
+      <%= f.collection_select(:sub_project_id, @project.sub_projects, :id, :name, {prompt: 'no sub-project'}, {class: 'set-sub-project'}) %>
+    <% end %>
   <% end %>
   <span class="mdl-list__item-secondary-action">
     <%= link_to project_facilitator, method: :delete, remote: true, class: 'mdl-button mdl-js-button mdl-button--icon' do %>
