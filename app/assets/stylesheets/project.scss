@@ -115,8 +115,12 @@
   grid-row-gap: 0.5em;
   grid-column-gap: 2em;
   grid-template-areas:
+          "sub-projects sub-projects sub-projects"
           "states languages streams";
 
+  #define-sub-projects {
+    grid-area: sub-projects;
+  }
   #project-states {
     grid-area: states;
   }

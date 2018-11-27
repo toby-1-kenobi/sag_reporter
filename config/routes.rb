@@ -207,6 +207,8 @@ Rails.application.routes.draw do
   get 'outcomes/get_chart/:id' => 'state_languages#get_chart', as: 'outcomes_chart'
   get 'outcomes/table/:id' => 'state_languages#get_table', as: 'outcomes_table'
 
+  resources :sub_projects, only: [:create, :destroy]
+
   resources :supervisor_feedbacks, only: [:update, :create]
 
   get 'outcomes/:state_language_id/:months' => 'topics#assess_progress', as: 'assess_progress'

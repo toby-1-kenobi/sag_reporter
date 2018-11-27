@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181126041840) do
+ActiveRecord::Schema.define(version: 20181126044004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -414,6 +414,7 @@ ActiveRecord::Schema.define(version: 20181126041840) do
     t.integer  "project_id"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+    t.integer  "sub_project_id"
   end
 
   add_index "language_streams", ["facilitator_id"], name: "index_language_streams_on_facilitator_id", using: :btree
@@ -421,6 +422,7 @@ ActiveRecord::Schema.define(version: 20181126041840) do
   add_index "language_streams", ["ministry_id"], name: "index_language_streams_on_ministry_id", using: :btree
   add_index "language_streams", ["project_id"], name: "index_language_streams_on_project_id", using: :btree
   add_index "language_streams", ["state_language_id"], name: "index_language_streams_on_state_language_id", using: :btree
+  add_index "language_streams", ["sub_project_id"], name: "index_language_streams_on_sub_project_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
     t.string   "name",                                                  null: false
@@ -1051,6 +1053,7 @@ ActiveRecord::Schema.define(version: 20181126041840) do
   add_foreign_key "language_streams", "ministries"
   add_foreign_key "language_streams", "projects"
   add_foreign_key "language_streams", "state_languages"
+  add_foreign_key "language_streams", "sub_projects"
   add_foreign_key "language_streams", "users", column: "facilitator_id"
   add_foreign_key "languages", "data_sources", column: "pop_source_id"
   add_foreign_key "languages", "language_families", column: "family_id"
