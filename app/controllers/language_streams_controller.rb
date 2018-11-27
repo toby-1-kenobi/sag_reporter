@@ -32,4 +32,16 @@ class LanguageStreamsController < ApplicationController
     respond_to :js
   end
 
+  def update
+    @language_stream = LanguageStream.find(params[:id])
+    @language_stream.update_attributes(language_stream_params)
+    respond_to :js
+  end
+
+  private
+
+  def language_stream_params
+    params.require(:language_stream).permit(:sub_project_id)
+  end
+
 end

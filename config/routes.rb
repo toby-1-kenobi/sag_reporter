@@ -116,7 +116,7 @@ Rails.application.routes.draw do
   get 'add_finish_line_progress' => 'languages#add_finish_line_progress', as: 'add_finish_line_progress'
   get 'change_future_year' => 'languages#change_future_year'
 
-  resources :language_streams, only: [:show, :destroy]
+  resources :language_streams, only: [:show, :destroy, :update]
 
   resources :ministry_outputs, only: [:update, :create]
 
