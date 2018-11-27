@@ -1,3 +1,4 @@
-<li>
+<li data-sub-project-id="<%= sub_project.id %>">
   <%= sub_project.name %>
+  <%= link_to 'delete', sub_project, method: :delete, remote: true %>
 </li>

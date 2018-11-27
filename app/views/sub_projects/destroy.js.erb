@@ -1,0 +1,3 @@
+<% unless SubProject.exists?(@sub_project_id) %>
+  $('#sub-project-list [data-sub-project-id="<%= @sub_project_id %>"]').remove();
+<% end %>
