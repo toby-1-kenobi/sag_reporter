@@ -208,7 +208,9 @@ Rails.application.routes.draw do
   get 'outcomes/get_chart/:id' => 'state_languages#get_chart', as: 'outcomes_chart'
   get 'outcomes/table/:id' => 'state_languages#get_table', as: 'outcomes_table'
 
-  resources :sub_projects, only: [:create, :destroy]
+  resources :sub_projects, only: [:create, :destroy] do
+    get :quarterly_report, on: :member
+  end
 
   resources :supervisor_feedbacks, only: [:update, :create]
 
