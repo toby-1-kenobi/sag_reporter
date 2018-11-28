@@ -1,4 +1,8 @@
-<li data-sub-project-id="<%= sub_project.id %>">
-  <%= sub_project.name %>
-  <%= link_to 'delete', sub_project, method: :delete, remote: true %>
+<li data-sub-project-id="<%= sub_project.id %>" class="mdl-list__item">
+  <span class="mdl-list__item-primary-content"><%= sub_project.name %></span>
+  <span class="mdl-list__item-secondary-action">
+    <%= link_to sub_project, method: :delete, remote: true, class: 'mdl-button mdl-js-button mdl-button--icon' do %>
+      <i class="material-icons">cancel</i>
+    <% end %>
+  </span>
 </li>

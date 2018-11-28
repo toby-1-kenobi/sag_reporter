@@ -36,13 +36,19 @@
   <div class="mdl-tabs__panel" id="languages-streams-panel">
     <div class="grid-container">
       <div id="define-sub-projects">
-        <ul id="sub-project-list">
+        <h4>Sub-Projects</h4>
+        <ul id="sub-project-list", class="mdl-list">
           <%= render @project.sub_projects %>
         </ul>
         <%= form_for @project.sub_projects.new, remote: true do |f| %>
           <%=	f.hidden_field :project_id %>
-          <%= f.text_field :name %>
-          <%= f.submit %>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <%= f.text_field :name, class: 'mdl-textfield__input' %>
+            <%= f.label :name, 'Add Sub-Project', class: 'mdl-textfield__label' %>
+          </div>
+          <%= button_tag(class: 'mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab') do %>
+            <i class="material-icons">add</i>
+          <% end %>
         <% end %>
       </div>
       <div id="project-states">

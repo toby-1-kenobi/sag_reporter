@@ -8,7 +8,7 @@
         </header>
         <section class="mdlext-accordion__tabpanel">
           <% @teams.where(state_language: state_language).each do |team| %>
-            <div class="team-header-flex-container">
+            <div class="header-flex-container">
               <div class="project-team-header" data-team="<%= team.id %>">
                 <%= team.full_name %>
               </div>

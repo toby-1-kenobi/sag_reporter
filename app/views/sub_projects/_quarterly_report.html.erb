@@ -20,7 +20,9 @@
           <% streams = @project.ministries.order(:code) %>
         <% end %>
         <% streams.each do |stream| %>
-          <div class="quarterly-stream-header" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>"><%= stream.name.en %></div>
+          <div class="header-flex-container">
+            <div class="quarterly-stream-header" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>"><%= stream.name.en %></div>
+          </div>
           <div class="quarterly-stream-content" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>">
           </div>
         <% end %>

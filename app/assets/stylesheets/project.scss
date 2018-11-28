@@ -20,14 +20,14 @@
 .project-stream-evaluation {
   background-color: whitesmoke;
 }
-.fac-header-flex-container, .team-header-flex-container, .project-stream-evaluation {
+.header-flex-container, .project-stream-evaluation {
   display: flex;
   div {
     font-size: large;
     padding: 1em;
     margin: 1ex;
   }
-  .project-facilitator-header, .project-team-header {
+  .project-facilitator-header, .project-team-header, .quarterly-stream-header {
     span {
       font-weight: bold;
     }
@@ -115,7 +115,7 @@
   grid-row-gap: 0.5em;
   grid-column-gap: 2em;
   grid-template-areas:
-          "sub-projects sub-projects sub-projects"
+          "sub-projects empty empty"
           "states languages streams";
 
   #define-sub-projects {

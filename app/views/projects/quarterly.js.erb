@@ -1,8 +1,8 @@
 $('#quarterly-panel').html('<%= j render 'quarterly' %>');
 componentHandler.upgradeElements($('#quarterly-panel').find('.mdlext-selectfield').get());
-$('#quarterly-sub-project-select').on('change', function () {
+$('#quarterly-sub-project-select, #quarter-select').on('change', function () {
     var url = '<%= quarterly_report_sub_project_url('sp_placeholder') %>';
-    var id = $(this).val();
+    var id = $('#quarterly-sub-project-select').val();
     if(parseInt(id) < 0) {
         id = 'p<%= @project.id %>'
     }

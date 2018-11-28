@@ -52,7 +52,7 @@
                 where("result_feedback IS NOT NULL OR facilitator_progress IS NOT NULL OR report_approved = true").
                 order(:month).last
             %>
-            <div class="fac-header-flex-container">
+            <div class="header-flex-container">
               <div class="project-facilitator-header" data-lang-stream="<%= lang_stream.id %>">
                 <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
                 facilitating for <span class="state-language-name"><%= lang_stream.state_language.name(multi_state) %></span>
