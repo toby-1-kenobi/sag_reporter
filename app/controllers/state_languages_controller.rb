@@ -199,6 +199,13 @@ class StateLanguagesController < ApplicationController
     end
   end
 
+  def quarterly_report
+    @state_language_id = params[:id]
+    @stream = Ministry.find(params[:stream])
+    @quarter = params[:quarter]
+    respond_to :js
+  end
+
   private
 
   def collect_transformation_data

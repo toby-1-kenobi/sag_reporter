@@ -1,2 +1,15 @@
 $('#quarterly-report').html('<%= j render 'quarterly_report' %>');
 componentHandler.upgradeElements($('#quarterly-report').find('.mdlext-accordion').get());
+$('.quarterly-stream-header').on('click', function () {
+    const state_lang_id = $(this).data('lang');
+    const stream_id = $(this).data('stream');
+    var container = $('.quarterly-table[data-lang="' + state_lang_id + '"][data-stream="' + stream_id + '"]');
+    if (!$.trim(container.html())) {
+        var quarter = $('#quarter-select').val();
+        var url = '<%= quarterly_report_state_language_url('sl_placeholder', 's_placeholder', 'q_placeholder') %>';
+        url = url.replace('sl_placeholder', state_lang_id).replace('s_placeholder', stream_id).replace('q_placeholder', quarter);
+        $.ajax(url);
+    } else {
+        container.slideToggle();
+    }
+});

@@ -9,4 +9,8 @@ $('#quarterly-sub-project-select').on('change', function () {
     url = url.replace('sp_placeholder', id);
     $.ajax(url);
 })
-$('#quarterly-sub-project-select').focus();
+<% if @project.sub_projects.any? %>
+  $('#quarterly-sub-project-select').focus();
+<% else %>
+  $.ajax('<%= quarterly_report_sub_project_url("p#{@project.id}") %>');
+<% end %>
