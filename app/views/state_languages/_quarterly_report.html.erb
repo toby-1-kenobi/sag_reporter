@@ -1,4 +1,4 @@
-<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+<table class="quarterly-results-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <tr><th>Deliverable</th><th>Target</th><th>Actual</th></tr>
   <% @stream.deliverables.order(:number).each do |deliverable| %>
     <tr>
@@ -9,3 +9,24 @@
     </tr>
   <% end %>
 </table>
+<div class="narrative-questions mdl-shadow--2dp"><h4>Narrative Questions</h4></div>
+<div class="selected-impact-story mdl-shadow--2dp">
+  <button class="mdl-button mdl-button--colored mdl-button--raised">Select impact story</button>
+</div>
+<div class="quarterly-evaluation mdl-shadow--2dp">
+  <div class="comment mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <textarea class="mdl-textfield__input" type="text" rows="5" name="comment" id="stream-comment-input"></textarea>
+    <label class="mdl-textfield__label" for="stream-comment-input">Evaluation Comment</label>
+  </div>
+  <div class="progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+    <select id="stream-eval-dialog-progress" class="mdlext-selectfield__select">
+      <option value=""></option>
+      <%= options_for_select(ProjectProgress.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0]), p[0]] }) %>
+    </select>
+    <label for="stream-eval-dialog-progress" class="mdlext-selectfield__label">Evaluate progress</label>
+  </div>
+  <label class="stream-approved mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="stream-approved-input">
+    <input type="checkbox" id="stream-approved-input" class="mdl-checkbox__input">
+    <span class="mdl-checkbox__label">Approve this quarter</span>
+  </label>
+</div>

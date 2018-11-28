@@ -1,1 +1,6 @@
-$('.quarterly-table[data-lang="<%= @state_language_id %>"][data-stream="<%= @stream.id %>"]').html('<%= j render 'quarterly_report'  %>').slideDown();
+var container = $('.quarterly-stream-content[data-lang="<%= @state_language_id %>"][data-stream="<%= @stream.id %>"]');
+container.html('<%= j render 'quarterly_report'  %>');
+componentHandler.upgradeElements(container.find('.mdl-textfield').get());
+componentHandler.upgradeElements(container.find('.mdl-checkbox').get());
+componentHandler.upgradeElements(container.find('.mdlext-selectfield').get());
+container.slideDown();

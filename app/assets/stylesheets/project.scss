@@ -178,3 +178,34 @@ td.annual-target {
   font-size: large;
   font-weight: bold;
 }
+
+.quarterly-stream-content {
+  display: grid;
+  grid-template-columns: 3fr 2fr 2fr;
+  grid-template-rows: 1fr 1fr;
+  grid-column-gap: 2em;
+  grid-row-gap: 1ex;
+  grid-template-areas:
+          "results-table questions impact"
+          "results-table questions evaluate";
+
+  .quarterly-results-table {
+    grid-area: results-table;
+  }
+  .narrative-questions {
+    grid-area: questions;
+    padding: 1.5em;
+  }
+  .selected-impact-story {
+    grid-area: impact;
+    display: flex;
+    padding: 1em;
+    button {
+      margin: auto;
+    }
+  }
+  .quarterly-evaluation {
+    grid-area: evaluate;
+    padding: 1.5em;
+  }
+}

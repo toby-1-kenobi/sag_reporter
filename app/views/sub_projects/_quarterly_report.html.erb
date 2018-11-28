@@ -21,7 +21,7 @@
         <% end %>
         <% streams.each do |stream| %>
           <div class="quarterly-stream-header" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>"><%= stream.name.en %></div>
-          <div class="quarterly-table hide" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>">
+          <div class="quarterly-stream-content" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>">
           </div>
         <% end %>
       </section>
