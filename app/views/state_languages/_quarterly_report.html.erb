@@ -5,7 +5,7 @@
       <td><%= deliverable.short_form.en %></td>
       <% target = QuarterlyTarget.find_by(state_language_id: @state_language_id, deliverable: deliverable, quarter: @quarter) %>
       <td><%= target ? target.value : '?' %></td>
-      <td></td>
+      <td><%= quarterly_actual(@state_language_id, deliverable, @quarter, nil, nil) %></td>
     </tr>
   <% end %>
 </table>
