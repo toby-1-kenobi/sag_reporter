@@ -11,6 +11,7 @@ class Ministry < ActiveRecord::Base
   has_many :supervisors, through: :project_streams, class_name: 'User'
   has_many :report_streams, dependent: :destroy
   has_many :reports, through: :report_streams
+  has_many :quarterly_evaluations, dependent: :restrict_with_error
   belongs_to :topic
   belongs_to :name, class_name: 'TranslationCode', dependent: :destroy
   before_create :create_translation_codes

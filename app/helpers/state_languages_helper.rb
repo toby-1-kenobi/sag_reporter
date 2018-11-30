@@ -33,8 +33,11 @@ module StateLanguagesHelper
       if outputs.empty?
         '-'
       else
-        deliverable.most_recent? ? outputs.order(:month).last.value : outputs.inject(0) { |sum, mo| sum + mo.value }
-      end
+        if deliverable.most_recent?
+          month = outputs.order(:month).last.month
+          outputs = outputs.where(month: month)
+        end
+        outputs.inject(0) { |sum, mo| sum + mo.value }      end
     when 'facilitator'
       lang_streams = LanguageStream.where(project: project, state_language_id: state_language_id, ministry: deliverable.ministry)
       if sub_project

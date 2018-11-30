@@ -18,6 +18,7 @@ class Report < ActiveRecord::Base
   has_many :ministries, through: :report_streams
   belongs_to :project
   belongs_to :church_team
+  has_many :quarterly_evaluations, dependent: :nullify
   accepts_nested_attributes_for :pictures,
                                 allow_destroy: true,
                                 reject_if: :all_blank

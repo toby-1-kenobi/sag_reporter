@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181126044004) do
+ActiveRecord::Schema.define(version: 20181130035501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -769,6 +769,31 @@ ActiveRecord::Schema.define(version: 20181126044004) do
     t.datetime "updated_at",  null: false
   end
 
+  create_table "quarterly_evaluations", force: :cascade do |t|
+    t.integer  "project_id",                        null: false
+    t.integer  "sub_project_id"
+    t.integer  "state_language_id",                 null: false
+    t.integer  "ministry_id",                       null: false
+    t.string   "quarter",                           null: false
+    t.text     "comment"
+    t.text     "question_1"
+    t.text     "question_2"
+    t.text     "question_3"
+    t.text     "question_4"
+    t.integer  "progress"
+    t.integer  "report_id"
+    t.boolean  "approved",          default: false, null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
+
+  add_index "quarterly_evaluations", ["ministry_id"], name: "index_quarterly_evaluations_on_ministry_id", using: :btree
+  add_index "quarterly_evaluations", ["project_id"], name: "index_quarterly_evaluations_on_project_id", using: :btree
+  add_index "quarterly_evaluations", ["quarter"], name: "index_quarterly_evaluations_on_quarter", using: :btree
+  add_index "quarterly_evaluations", ["report_id"], name: "index_quarterly_evaluations_on_report_id", using: :btree
+  add_index "quarterly_evaluations", ["state_language_id"], name: "index_quarterly_evaluations_on_state_language_id", using: :btree
+  add_index "quarterly_evaluations", ["sub_project_id"], name: "index_quarterly_evaluations_on_sub_project_id", using: :btree
+
   create_table "quarterly_targets", force: :cascade do |t|
     t.integer  "state_language_id", null: false
     t.integer  "deliverable_id",    null: false
@@ -1089,6 +1114,11 @@ ActiveRecord::Schema.define(version: 20181126044004) do
   add_foreign_key "project_streams", "users", column: "supervisor_id"
   add_foreign_key "project_supervisors", "projects"
   add_foreign_key "project_supervisors", "users"
+  add_foreign_key "quarterly_evaluations", "ministries"
+  add_foreign_key "quarterly_evaluations", "projects"
+  add_foreign_key "quarterly_evaluations", "reports"
+  add_foreign_key "quarterly_evaluations", "state_languages"
+  add_foreign_key "quarterly_evaluations", "sub_projects"
   add_foreign_key "quarterly_targets", "deliverables"
   add_foreign_key "quarterly_targets", "state_languages"
   add_foreign_key "registration_approvals", "users", column: "approver_id"
