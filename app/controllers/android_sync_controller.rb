@@ -35,6 +35,8 @@ class AndroidSyncController < ApplicationController
         ProjectStream => %w(project_id ministry_id supervisor_id),
         ProjectSupervisor => %w(project_id user_id role),
         ProjectProgress => nil,
+        FinishLineMarker => nil,
+        FinishLineProgress => nil,
         AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
@@ -204,6 +206,8 @@ class AndroidSyncController < ApplicationController
     tables[Report] << "church_team_id" if @version > "1.4"
     join_tables[:Report] << "ministries" if @version > "1.4"
     tables[ProjectProgress] = %w(project_stream_id month progress comment approved) if @version >= "1.4.1"
+    tables[FinishLineMarker] = %w(name description number) if @version >= "1.4.2"
+    tables[FinishLineProgress] = %w(language_id finish_line_marker_id status year) if @version >= "1.4.2"
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
