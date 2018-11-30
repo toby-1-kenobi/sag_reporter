@@ -200,9 +200,14 @@ class StateLanguagesController < ApplicationController
   end
 
   def quarterly_report
-    @state_language_id = params[:id]
-    @stream = Ministry.find(params[:stream])
-    @quarter = params[:quarter]
+    sp_id = (params[:sub_project].to_i > 0) ? params[:sub_project] : nil
+    @quarterly_evaluation = QuarterlyEvaluation.find_or_create_by(
+        project_id: params[:project],
+        sub_project_id: sp_id,
+        state_language_id: params[:id],
+        ministry_id: params[:stream],
+        quarter: params[:quarter]
+    )
     respond_to :js
   end
 

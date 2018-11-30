@@ -1,11 +1,11 @@
 <table class="quarterly-results-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <tr><th>Deliverable</th><th>Target</th><th>Actual</th></tr>
-  <% @stream.deliverables.order(:number).each do |deliverable| %>
+  <% @quarterly_evaluation.ministry.deliverables.order(:number).each do |deliverable| %>
     <tr>
       <td><%= deliverable.short_form.en %></td>
-      <% target = QuarterlyTarget.find_by(state_language_id: @state_language_id, deliverable: deliverable, quarter: @quarter) %>
+      <% target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: @quarterly_evaluation.quarter) %>
       <td><%= target ? target.value : '?' %></td>
-      <td><%= quarterly_actual(@state_language_id, deliverable, @quarter, nil, nil) %></td>
+      <td><%= quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %></td>
     </tr>
   <% end %>
 </table>

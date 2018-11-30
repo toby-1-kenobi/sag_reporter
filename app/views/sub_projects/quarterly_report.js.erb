@@ -7,7 +7,7 @@ $('.quarterly-stream-header').on('click', function () {
     var container = $('.quarterly-stream-content[data-lang="' + state_lang_id + '"][data-stream="' + stream_id + '"]');
     if (!$.trim(container.html())) {
         var quarter = $('#quarter-select').val();
-        var url = '<%= quarterly_report_state_language_url('sl_placeholder', 's_placeholder', 'q_placeholder') %>';
+        var url = '<%= quarterly_report_state_language_url('sl_placeholder', @project.id, @sub_project ? @sub_project.id : -1, 's_placeholder', 'q_placeholder') %>';
         url = url.replace('sl_placeholder', state_lang_id).replace('s_placeholder', stream_id).replace('q_placeholder', quarter);
         $.ajax(url);
     } else {

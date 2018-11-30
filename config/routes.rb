@@ -196,7 +196,7 @@ Rails.application.routes.draw do
       patch 'set_target/:deliverable/:quarter', action: 'set_target', as: 'set_target_in'
       patch 'set_amo_actual/:deliverable/:month/:facilitator', action: 'set_amo_actual', as: 'set_amo_actual_in'
       patch 'copy_targets_from/:source/:project', action: 'copy_targets', as: 'copy_targets_to'
-      get 'quarterly_report/:stream/:quarter', action: 'quarterly_report', as: 'quarterly_report'
+      get 'quarterly_report/:project/:sub_project/:stream/:quarter', action: 'quarterly_report', as: 'quarterly_report'
     end
   end
   get 'finish_line_marker_spreadsheet' => 'state_languages#finish_line_marker_spreadsheet', as: 'finish_line_marker_spreadsheet'

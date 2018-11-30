@@ -1,4 +1,4 @@
-var container = $('.quarterly-stream-content[data-lang="<%= @state_language_id %>"][data-stream="<%= @stream.id %>"]');
+var container = $('.quarterly-stream-content[data-lang="<%= @quarterly_evaluation.state_language_id %>"][data-stream="<%= @quarterly_evaluation.ministry_id %>"]');
 container.html('<%= j render 'quarterly_report'  %>');
 componentHandler.upgradeElements(container.find('.mdl-textfield').get());
 componentHandler.upgradeElements(container.find('.mdl-checkbox').get());
