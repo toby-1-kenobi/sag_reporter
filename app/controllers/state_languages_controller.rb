@@ -200,7 +200,16 @@ class StateLanguagesController < ApplicationController
   end
 
   def quarterly_report
-    sp_id = (params[:sub_project].to_i > 0) ? params[:sub_project] : nil
+    # if sub_project_id is not valid then no sub_project is specified
+    # if there's only one sub_project that covers this language-stream use that
+    # otherwise the quarterly evaluation will be anchored at the project level
+    if params[:sub_project].to_i <= 0
+      project = Project.find params[:project]
+      sp_ids = project.language_streams.where(state_language_id: params[:id], ministry_id: params[:stream]).pluck(:sub_project_id).uniq
+      sp_id = sp_ids.length == 1 ? sp_ids[0] : nil
+    else
+      sp_id = params[:sub_project]
+    end
     @quarterly_evaluation = QuarterlyEvaluation.find_or_create_by(
         project_id: params[:project],
         sub_project_id: sp_id,
