@@ -40,7 +40,7 @@
 </table>
 
 <h4>Facilitators</h4>
-<table class="mdl-data-table mdl-js-data-table">
+<table id="set-facilitator-table" class="mdl-data-table mdl-js-data-table">
   <thead>
   <tr>
     <th class="mdl-data-table__cell--non-numeric">Language</th>
@@ -52,11 +52,11 @@
   <tbody>
   <% @project.state_languages.each do |state_language| %>
     <tr>
-      <td class="mdl-data-table__cell--non-numeric">
+      <td class="language-name mdl-data-table__cell--non-numeric">
         <%= state_language.name(@project.geo_states.uniq.count > 1) %>
       </td>
       <% project_streams.each do |ps| %>
-        <td data-ministry="<%= ps.ministry.id %>" data-state-language="<%= state_language.id %>" >
+        <td data-ministry="<%= ps.ministry.id %>" data-state-language="<%= state_language.id %>" class="mdl-data-table__cell--non-numeric">
           <ul class="mdl-list facilitator-list">
             <%= render partial: 'project_facilitator',
                        collection: @project.language_streams.where(ministry: ps.ministry, state_language: state_language),

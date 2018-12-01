@@ -212,3 +212,28 @@ td.annual-target {
     padding: 1.5em;
   }
 }
+
+#set-facilitator-table {
+  td.language-name {
+    max-width: 6em;
+    white-space: normal !important;
+  }
+  .add-facilitator-controls .mdl-textfield {
+    max-width: 12em;
+  }
+  .facilitator-list .sub-project-select {
+    padding: 0 !important;
+    max-width: 10em;
+  }
+}
+
+.quarterly-stream-header {
+  margin: 0.5ex !important;
+  padding-top: 0.5ex !important;
+  padding-bottom: 0.5ex !important;
+}
+
+.quarterly-stream-content {
+  margin: 1ex;
+  margin-bottom: 1em;
+}

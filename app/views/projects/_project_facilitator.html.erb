@@ -1,12 +1,16 @@
-<li class="mdl-list__item" id="facilitator-list-item-<%= project_facilitator.id %>">
+<li class="mdl-list__item mdl-list__item--two-line" id="facilitator-list-item-<%= project_facilitator.id %>">
   <span class="mdl-list__item-primary-content">
     <%= project_facilitator.facilitator.name %>
-  </span>
-  <% if @project.sub_projects.any? %>
-    <%= form_for project_facilitator, remote: true do |f| %>
-      <%= f.collection_select(:sub_project_id, @project.sub_projects, :id, :name, {prompt: 'no sub-project'}, {class: 'set-sub-project'}) %>
+    <% if @project.sub_projects.any? %>
+      <span class="mdl-list__item-sub-title">
+        <%= form_for project_facilitator, remote: true do |f| %>
+          <div class="sub-project-select mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+            <%= f.collection_select(:sub_project_id, @project.sub_projects, :id, :name, {prompt: 'no sub-project'}, {class: 'set-sub-project mdlext-selectfield__select'}) %>
+          </div>
+        <% end %>
+      </span>
     <% end %>
-  <% end %>
+  </span>
   <span class="mdl-list__item-secondary-action">
     <%= link_to project_facilitator, method: :delete, remote: true, class: 'mdl-button mdl-js-button mdl-button--icon' do %>
       <i class="material-icons">cancel</i>
