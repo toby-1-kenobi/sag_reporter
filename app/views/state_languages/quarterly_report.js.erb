@@ -3,4 +3,7 @@ container.html('<%= j render 'quarterly_report'  %>');
 componentHandler.upgradeElements(container.find('.mdl-textfield').get());
 componentHandler.upgradeElements(container.find('.mdl-checkbox').get());
 componentHandler.upgradeElements(container.find('.mdlext-selectfield').get());
+container.find('input, textarea').on('change', function () {
+    $(this).closest('form').submit();
+});
 container.slideDown();

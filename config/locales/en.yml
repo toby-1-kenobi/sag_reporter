@@ -20,6 +20,11 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  narrative_questions:
+    q1_html: "What were the <em>highlights</em> for this stream in this quarter?"
+    q2_html: "For any quarterly targets that were <em>not met</em>, what were the reasons why that happened?"
+    q3_html: "What <em>general changes or capacity improvements</em> will increase the impact of this stream?"
+    q4_html: "What <em>specific changes or plans</em> will you make for the next quarter so that the impact increases?"
   progress_markers:
     descriptions:
       pm_01: "Local Christian leaders from different churches are praying in unity for God’s direction and blessing to fulfil the LCI outcomes"

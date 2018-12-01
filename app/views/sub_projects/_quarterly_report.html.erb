@@ -1,9 +1,7 @@
 <% if @sub_project %>
   <% state_languages = @project.state_languages.order(:id).to_a.select{ |sl| @sub_project.language_streams.exists?(state_language_id: sl.id) } %>
-  <p><%= @sub_project.name %></p>
 <% else %>
   <% state_languages = @project.state_languages.order(:id) %>
-  <p><%= @project.name %></p>
 <% end %>
 
 <% multi_state = @project.geo_states.uniq.count > 1 %>

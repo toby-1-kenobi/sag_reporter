@@ -1,32 +1,40 @@
-<table class="quarterly-results-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-  <tr><th>Deliverable</th><th>Target</th><th>Actual</th></tr>
-  <% @quarterly_evaluation.ministry.deliverables.order(:number).each do |deliverable| %>
-    <tr>
-      <td><%= deliverable.short_form.en %></td>
-      <% target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: @quarterly_evaluation.quarter) %>
-      <td><%= target ? target.value : '?' %></td>
-      <td><%= quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %></td>
-    </tr>
-  <% end %>
-</table>
-<div class="narrative-questions mdl-shadow--2dp"><h4>Narrative Questions</h4></div>
-<div class="selected-impact-story mdl-shadow--2dp">
-  <button class="mdl-button mdl-button--colored mdl-button--raised">Select impact story</button>
-</div>
-<div class="quarterly-evaluation mdl-shadow--2dp">
-  <div class="comment mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-    <textarea class="mdl-textfield__input" type="text" rows="5" name="comment" id="stream-comment-input"></textarea>
-    <label class="mdl-textfield__label" for="stream-comment-input">Evaluation Comment</label>
+<%= form_for @quarterly_evaluation, remote: true do |f| %>
+  <table class="quarterly-results-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    <tr><th>Deliverable</th><th>Target</th><th>Actual</th></tr>
+    <% @quarterly_evaluation.ministry.deliverables.order(:number).each do |deliverable| %>
+      <tr>
+        <td><%= deliverable.short_form.en %></td>
+        <% target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: @quarterly_evaluation.quarter) %>
+        <td><%= target ? target.value : '?' %></td>
+        <td><%= quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %></td>
+      </tr>
+    <% end %>
+  </table>
+  <div class="narrative-questions mdl-shadow--2dp">
+    <h4>Narrative Questions</h4>
+    <% (1..4).each do |i| %>
+      <%= f.label "question_#{i}".to_sym, t("narrative_questions.q#{i}_html") %>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <i class="material-icons mdl-textfield__icon">question_answer</i>
+        <%= f.text_area "question_#{i}".to_sym, class: 'mdl-textfield__input' %>
+      </div>
+    <% end %>
   </div>
-  <div class="progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-    <select id="stream-eval-dialog-progress" class="mdlext-selectfield__select">
-      <option value=""></option>
-      <%= options_for_select(ProjectProgress.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0]), p[0]] }) %>
-    </select>
-    <label for="stream-eval-dialog-progress" class="mdlext-selectfield__label">Evaluate progress</label>
+  <div class="selected-impact-story mdl-shadow--2dp">
+    <button class="mdl-button mdl-button--colored mdl-button--raised">Select impact story</button>
   </div>
-  <label class="stream-approved mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="stream-approved-input">
-    <input type="checkbox" id="stream-approved-input" class="mdl-checkbox__input">
-    <span class="mdl-checkbox__label">Approve this quarter</span>
-  </label>
-</div>
+  <div class="quarterly-evaluation mdl-shadow--2dp">
+    <div class="comment mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      <%= f.text_area :comment, class: 'mdl-textfield__input', rows: '5' %>
+      <%=	 f.label :comment, 'Evaluation Comment', class: 'mdl-textfield__label' %>
+    </div>
+    <div class="progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+      <%= f.select :progress, options_for_select(QuarterlyEvaluation.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0].humanize), p[1]] }, QuarterlyEvaluation.progresses[@quarterly_evaluation.progress]), { prompt: '' }, { class: 'mdlext-selectfield__select'} %>
+      <%= f.label :progress, 'Evaluate progress', class: 'mdlext-selectfield__label' %>
+    </div>
+    <%= f.label :approved, class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
+      <%= f.check_box(:approved, class: 'mdl-checkbox__input') %>
+      <span class="mdl-checkbox__label">Approve this quarter</span>
+    <% end %>
+  </div>
+<% end %>

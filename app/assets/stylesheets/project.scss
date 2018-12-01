@@ -179,7 +179,7 @@ td.annual-target {
   font-weight: bold;
 }
 
-.quarterly-stream-content {
+.quarterly-stream-content form {
   display: grid;
   grid-template-columns: 3fr 2fr 2fr;
   grid-template-rows: 1fr 1fr;
@@ -195,6 +195,9 @@ td.annual-target {
   .narrative-questions {
     grid-area: questions;
     padding: 1.5em;
+    label {
+      display: block;
+    }
   }
   .selected-impact-story {
     grid-area: impact;

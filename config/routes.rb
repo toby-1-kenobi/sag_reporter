@@ -170,6 +170,8 @@ Rails.application.routes.draw do
 
   resources :project_supervisors, only: [:create, :destroy, :update]
 
+  resources :quarterly_evaluations, only: [:update]
+
   resources :reports do
     collection do
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
