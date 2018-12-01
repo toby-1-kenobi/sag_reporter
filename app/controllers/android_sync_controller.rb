@@ -132,6 +132,8 @@ class AndroidSyncController < ApplicationController
           table.joins(:report).where(reports:{id: @all_restricted_ids[Report]}).ids
         when Person
           table.joins(:reports).where(reports:{id: @all_restricted_ids[Report]}).ids
+        when FinishLineProgress
+          table.where(language_id: @language_ids).ids
         else
           table.ids
       end
