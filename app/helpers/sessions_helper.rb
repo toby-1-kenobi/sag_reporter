@@ -90,7 +90,12 @@ module SessionsHelper
   #Update user last login date
   def update_login_dt(user)
     if user
-      user.update_attribute(:user_last_login_dt, Date.today)
+      ActiveRecord::Base.record_timestamps = false
+      begin
+        user.update_attribute(:user_last_login_dt, Date.today)
+      ensure
+        ActiveRecord::Base.record_timestamps = true
+      end
     end
   end
 end
