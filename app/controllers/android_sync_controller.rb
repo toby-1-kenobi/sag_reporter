@@ -37,6 +37,7 @@ class AndroidSyncController < ApplicationController
         ProjectProgress => nil,
         FinishLineMarker => nil,
         FinishLineProgress => nil,
+        Edit => nil,
         AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
@@ -134,6 +135,8 @@ class AndroidSyncController < ApplicationController
           table.joins(:reports).where(reports:{id: @all_restricted_ids[Report]}).ids
         when FinishLineProgress
           table.where(language_id: @language_ids).ids
+        when Edit
+          table.pending.where(user: @external_user)
         else
           table.ids
       end
@@ -210,6 +213,7 @@ class AndroidSyncController < ApplicationController
     tables[ProjectProgress] = %w(project_stream_id month progress comment approved) if @version >= "1.4.1"
     tables[FinishLineMarker] = %w(name description number) if @version >= "1.4.2"
     tables[FinishLineProgress] = %w(language_id finish_line_marker_id status year) if @version >= "1.4.2"
+    tables[FinishLineProgress] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:82"
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
@@ -480,6 +484,24 @@ class AndroidSyncController < ApplicationController
               :old_id,
               :data,
               :report_id
+          ]
+          edit: [
+              :id,
+              :old_id,
+              :model_klass_name,
+              :record_id,
+              :attribute_name,
+              :old_value,
+              :new_value,
+              :user_id,
+              :status,
+              :curation_date,
+              :second_curation_date,
+              :record_errors,
+              :curated_by_id,
+              :relationship,
+              :creator_comment,
+              :curator_comment,
           ]
       ]
       receive_request_params = params.deep_transform_keys!(&:underscore).require(:external_device).permit(safe_params)
