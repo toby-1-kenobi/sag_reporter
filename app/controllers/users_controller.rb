@@ -40,7 +40,7 @@ class UsersController < ApplicationController
   end
 
   def index
-  	@users = User.approved.order('LOWER(name)').paginate(page: params[:page])
+  	@users = User.order('LOWER(name)').paginate(page: params[:page])
   end
 
   def create
@@ -132,17 +132,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def destroy
-    name = @user.name
-    if @user.destroy
-      flash[:success] = "User #{name} deleted"
-    else
-      flash[:error] = "Unable to delete #{name}"
-      flash[:error] += ': '+ @user.errors.messages.values.join(', ') if @user.errors.any?
-    end
-    redirect_to users_url
-  end
-
   def reports
 
     # admin users can see the reports of other users
@@ -218,16 +207,24 @@ class UsersController < ApplicationController
     respond_to :js
   end
 
-  def disabled_users
-    render 'users/disabled_users'
+  def disable
+    @user = User.find_by(id: params[:id])
+    if @user
+      @user.update_attribute(:registration_status, 'disabled')
+    end
+    respond_to do |format|
+      format.js { render 'replace' }
+    end
   end
 
-  def enable_user
+  def enable
     @user = User.find_by(id: params[:id])
     if @user
       @user.update_attributes(:user_disabled => false, :user_last_login_dt => Date.today)
     end
-    respond_to :js
+    respond_to do |format|
+      format.js { render 'replace' }
+    end
   end
 
   private

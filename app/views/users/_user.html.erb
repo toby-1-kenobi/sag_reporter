@@ -1,14 +1,25 @@
-    <li class="collection-item" id="user-<%= user.id %>">
-      <i class="material-icons">person</i>
-      <% if logged_in_user.trusted? or logged_in_user?(user) %>
-        <% user_name = user.name %>
-      <% else %>
-          <% user_name = "user ##{user.id}" %>
-      <% end %>
-      <%= link_to user_name, user %>
-      <% if logged_in_user.admin? && !logged_in_user?(user) %>
-        <%= link_to user, method: :delete, class: "waves-effect waves-red btn-flat", data: { confirm: "Delete #{user_name}?" } do %>
-        <i class="material-icons">delete</i>
+    <li class="mdl-list__item <%= 'hide' unless user.approved? %>" id="user-<%= user.id %>" data-status="<%= user.registration_status %>">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons mdl-list__item-avatar">person</i>
+        <% if logged_in_user.trusted? or logged_in_user?(user) %>
+          <% user_name = user.name %>
+        <% else %>
+            <% user_name = "user ##{user.id}" %>
         <% end %>
+        <%= link_to user_name, user %>
+      </span>
+      <% if logged_in_user.admin? && !user.admin? && !logged_in_user?(user) %>
+        <span class="mdl-list__item-secondary-action">
+          <% if user.approved? %>
+            <%= link_to disable_user_path(user), method: :patch, remote: true, class: "mdl-button mdl-js-button mdl-button--icon", data: { confirm: "Disable account for #{user_name}?" } do %>
+              <i class="material-icons">close</i>
+            <% end %>
+          <% end %>
+          <% if user.disabled? %>
+            <%= link_to enable_user_path(user), method: :patch, remote: true, class: "mdl-button mdl-js-button mdl-button--icon", data: { confirm: "Enable account for #{user_name}?" } do %>
+              <i class="material-icons">close</i>
+            <% end %>
+          <% end %>
+        </span>
       <% end %>
     </li>

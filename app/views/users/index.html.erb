@@ -1,15 +1,16 @@
 <% provide(:title, 'All users') %>
-<h1><i class="material-icons large">people</i>
- All users</h1>
+<% provide(:context_title, 'Users') %>
 
 <%= will_paginate %>
 
-<ul class="users collection">
+<ul class="users mdl-list">
   <%= render @users %>
 </ul>
 
 <%= will_paginate %>
 
 <% if logged_in_user.admin? %>
-  <%= link_to "Add user", new_user_path, class: "btn waves-effect" %>
+  <%= link_to new_user_path, id: 'add-user-button', class: "mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" do %>
+    <i class="material-icons">add</i>
+  <% end %>
 <% end %>

@@ -224,10 +224,12 @@ Rails.application.routes.draw do
 
   get 'about' => 'static_pages#about'
 
-  resources :users do
+  resources :users, except: [:destroy] do
     member do
       get :confirm_email
       get :reports
+      patch :disable
+      patch :enable
     end
   end
   get 're_send_to_confirm_email' => 'users#re_confirm_email'
@@ -252,14 +254,6 @@ Rails.application.routes.draw do
   get 'nation/load_flt_summary' => 'zones#load_flt_summary', as: 'load_national_flt_summary'
   get 'nation/load_language_flm_table' => 'zones#load_language_flm_table', as: 'load_national_language_flm_table'
   get 'nation/load_board_report' => 'zones#load_board_report', as: 'load_national_board_report'
-
-
-
-
-
-
-  get 'disabled_users' => 'users#disabled_users'
-  get 'enable_user' => 'users#enable_user'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
