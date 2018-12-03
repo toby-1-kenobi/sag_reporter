@@ -1,4 +1,4 @@
-    <li class="mdl-list__item <%= 'hide' unless user.approved? %>" id="user-<%= user.id %>" data-status="<%= user.registration_status %>">
+    <li class="user mdl-list__item filterable-item" id="user-<%= user.id %>" data-filter-label="status" data-status="<%= filter_status user.registration_status %>">
       <span class="mdl-list__item-primary-content">
         <i class="material-icons mdl-list__item-avatar">person</i>
         <% if logged_in_user.trusted? or logged_in_user?(user) %>
@@ -17,7 +17,7 @@
           <% end %>
           <% if user.disabled? %>
             <%= link_to enable_user_path(user), method: :patch, remote: true, class: "mdl-button mdl-js-button mdl-button--icon", data: { confirm: "Enable account for #{user_name}?" } do %>
-              <i class="material-icons">close</i>
+              <i class="material-icons">thumb_up</i>
             <% end %>
           <% end %>
         </span>

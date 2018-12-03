@@ -1,6 +1,19 @@
 <% provide(:title, 'All users') %>
 <% provide(:context_title, 'Users') %>
 
+<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="show-active-user-accounts">
+  <input type="checkbox" id="show-active-user-accounts" class="mdl-switch__input filter-trigger" data-filter-trigger-label="status" value="active" checked>
+  <span class="mdl-switch__label">Show active accounts</span>
+</label>
+<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="show-disabled-user-accounts">
+  <input type="checkbox" id="show-disabled-user-accounts" class="mdl-switch__input filter-trigger" data-filter-trigger-label="status" value="disabled">
+  <span class="mdl-switch__label">Show disabled accounts</span>
+</label>
+<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="show-pending-user-accounts">
+  <input type="checkbox" id="show-pending-user-accounts" class="mdl-switch__input filter-trigger" data-filter-trigger-label="status" value="pending">
+  <span class="mdl-switch__label">Show pending accounts</span>
+</label>
+
 <%= will_paginate %>
 
 <ul class="users mdl-list">

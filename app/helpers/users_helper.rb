@@ -23,5 +23,17 @@ module UsersHelper
       false
     end
   end
+
+  def filter_status(status)
+    case status
+    when 'approved'
+      'active'
+    when 'disabled'
+      'disabled'
+    else
+      'pending'
+    end
+  end
+
 end
 
