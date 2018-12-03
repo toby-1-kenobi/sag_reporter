@@ -1,4 +1,4 @@
-    <li class="user mdl-list__item filterable-item" id="user-<%= user.id %>" data-filter-label="status" data-status="<%= filter_status user.registration_status %>">
+    <li class="user mdl-list__item mdl-list__item--two-line filterable-item" id="user-<%= user.id %>" data-filter-label="status" data-status="<%= filter_status user.registration_status %>">
       <span class="mdl-list__item-primary-content">
         <i class="material-icons mdl-list__item-avatar">person</i>
         <% if logged_in_user.trusted? or logged_in_user?(user) %>
@@ -7,6 +7,7 @@
             <% user_name = "user ##{user.id}" %>
         <% end %>
         <%= link_to user_name, user %>
+        <span class="mdl-list__item-sub-title">Last login: <%= time_ago_in_words(user.user_last_login_dt) %> ago</span>
       </span>
       <% if logged_in_user.admin? && !user.admin? && !logged_in_user?(user) %>
         <span class="mdl-list__item-secondary-action">
