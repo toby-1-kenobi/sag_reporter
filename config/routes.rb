@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  root 'static_pages#home'
+  root 'zones#index'
 
   patch 'aggregate_ministry_outputs/update_comment'
 
