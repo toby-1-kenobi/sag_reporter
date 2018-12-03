@@ -6,3 +6,21 @@
   margin: 20px;
   width: 500px !important;
 }
+
+.landing-page-links {
+  float: right;
+  .urgent {
+    background-color: orange;
+  }
+}
+
+#landing-page-charts {
+  margin-top: 1em;
+  display: flex;
+  #progress-chart-panel {
+    width: 50%;
+  }
+  #nt-pie-chart-panel {
+    width: 50%;
+  }
+}

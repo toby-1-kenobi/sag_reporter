@@ -1,14 +1,14 @@
 <% provide(:title, 'Strategic Zones') %>
-
 <% provide(:context_title, 'Choose a Strategic Zone') %>
+
+<% pwd_reset_users = reset_pwd_users %>
+
 <% if logged_in_user.national? %>
-  <ul class="zone-list mdl-list">
-    <li class="mdl-list__item">
-      <%= link_to nation_path do %>
-        <span class="mdl-list__item-primary-content">All India</span>
-      <% end %>
-    </li>
-  </ul>
+  <div>
+  <%= link_to nation_path do %>
+    All India
+  <% end %>
+  </div>
 <% end %>
 
 <%= image_tag 'LCI_zonal_map.png', alt: 'Strategic Zones', usemap: '#zone-map', width: 800 %>
@@ -43,7 +43,183 @@
   <% end %>
 </map>
 
+<ul class="landing-page-links mdl-list">
 
-<map name="image-map">
-  <area target="" alt="Hindi Zone" title="Hindi Zone" href="hz" coords="412,154,542,147,540,241,571,254,535,300,461,299,457,313,443,304,356,283,353,260,315,223,325,161,388,205" shape="poly">
-</map>
+  <li class="mdl-list__item">
+    <span class="mdl-list__item-primary-content" id="report-tasks-trigger">
+      <i class="material-icons mdl-list__item-icon">info</i>
+      <%= link_to about_path, class: 'mdl-button mdl-js-button mdl-js-ripple-effect' do %>
+        What is LCI?
+      <% end %>
+    </span>
+  </li>
+
+  <li class="mdl-list__item">
+    <span class="mdl-list__item-primary-content" id="report-tasks-trigger">
+      <i class="material-icons mdl-list__item-icon">create</i>
+      <button class="mdl-button mdl-js-button mdl-js-ripple-effect">Enter and view reports</button>
+    </span>
+  </li>
+
+  <li class="mdl-list__item">
+    <span class="mdl-list__item-primary-content" id="progress-tasks-trigger">
+      <i class="material-icons mdl-list__item-icon">show_chart</i>
+      <button class="mdl-button mdl-js-button mdl-js-ripple-effect">Update and assess progress</button>
+    </span>
+  </li>
+
+  <li class="mdl-list__item">
+    <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">collections_bookmark</i>
+      <% link_path = logged_in_user.national? ? nation_path({tab: 'languages', flm: 6}) : zone_path(logged_in_user.zones.first, {tab: 'languages', flm: 6}) %>
+      <%= link_to link_path, class: 'mdl-button mdl-js-button mdl-js-ripple-effect' do %>
+        Zoom to NT statistics
+      <% end %>
+    </span>
+  </li>
+
+  <li class="mdl-list__item">
+    <span class="mdl-list__item-primary-content">
+      <i class="material-icons mdl-list__item-icon">watch_later</i>
+      <% link_path = logged_in_user.national? ? nation_path({filter: '1_2_5_6-0123456-0123456-0123456-12', tab: 'languages'}) : zone_path(logged_in_user.zones.first, {filter: '1_2_5_6-0123456-0123456-0123456-12', tab: 'languages'}) %>
+      <%= link_to 'Countdown to Zero', link_path, class: 'mdl-button mdl-js-button mdl-js-ripple-effect' %>
+    </span>
+  </li>
+
+  <% edit_count = get_edit_count %>
+  <% if edit_count > 0 %>
+    <li class="mdl-list__item urgent">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons mdl-list__item-icon">done_all</i>
+        <span class="mdl-badge mdl-badge--overlap" data-badge="<%= edit_count %>">
+          <%= link_to 'Curate Edits', curate_edits_path, class: 'mdl-button mdl-js-button mdl-js-ripple-effect' %>
+        </span>
+      </span>
+    </li>
+  <% end %>
+
+  <% registrations_count = get_registrations_count %>
+  <% if registrations_count > 0 %>
+    <li class="mdl-list__item urgent">
+      <span class="mdl-list__item-primary-content">
+        <i class="material-icons mdl-list__item-icon">person_add</i>
+        <span class="mdl-badge mdl-badge--overlap" data-badge="<%= registrations_count %>">
+          <%= link_to 'Curate Registrations', user_approval_path, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect' %>
+        </span>
+      </span>
+    </li>
+  <% end %>
+
+  <% if logged_in_user.admin? %>
+
+    <% if pwd_reset_users.any? %>
+      <li class="mdl-list__item urgent">
+        <span class="mdl-list__item-primary-content" id="reset-password-trigger">
+          <i class="material-icons mdl-list__item-icon">vpn_key</i>
+          <span class="mdl-badge mdl-badge--overlap" data-badge="<%= pwd_reset_users.length %>">
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect">Password reset requests</button>
+          </span>
+        </span>
+      </li>
+    <% end %>
+
+    <li class="mdl-list__item">
+      <span class="mdl-list__item-primary-content" id="admin-tasks-trigger">
+        <i class="material-icons mdl-list__item-icon">settings</i>
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect">Admin tasks</button>
+      </span>
+    </li>
+
+  <% end %>
+
+</ul>
+
+<div id="landing-page-charts">
+  <div id="progress-chart-panel">
+    <div class="chart-title">Transformation across <span class="language-count"></span> languages</div>
+    <div id="national-progress-chart">
+      <div class="mdl-spinner mdl-js-spinner is-active"></div>
+      <%= link_to "progress chart", national_outcomes_chart_path, remote: true, method: 'GET', id: 'get-national-chart-link' %>
+    </div>
+  </div>
+
+  <div id="nt-pie-chart-panel">
+    <div class="chart-title">NT Availability</div>
+    <%
+      nt_data = Rails.cache.fetch('NT finish line data', expires_in: 3.days, backup: true) do
+        nt_marker = FinishLineMarker.find_by_number 6
+        data = build_finish_line_table(Language.all, [nt_marker])[nt_marker]
+        data.except(:nothing)
+      end
+    %>
+    <%= pie_chart nt_data.map{ |k, v| [k.to_s.humanize, v]}.to_h,
+                  id: 'nt-pie-chart',
+                  width: '300px',
+                  height: '300px',
+                  library: {backgroundColor: "transparent", is3D: true, legend: {position: 'none'}},
+                  colors: colours_for_finish_line_data(nt_data) %>
+  </div>
+</div>
+
+<% grouped_links = landing_page_links.select{ |link| link[:condition] }.group_by{ |link| link[:category] } %>
+<% grouped_links.each do |category, links| %>
+  <dialog class="mdl-dialog" id="<%= category %>-dialog">
+    <h4 class="mdl-dialog__title"><%= dialog_titles[category] %></h4>
+    <div class="mdl-dialog__content">
+      <ul class="mdl-list">
+        <% links.each do |link_data| %>
+          <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+              <%= link_to link_data[:path], class: 'mdl-button mdl-js-button mdl-js-ripple-effect' do %>
+                <i class="material-icons mdl-list__item-icon"><%= link_data[:icon] %></i>
+                <%= link_data[:text] %>
+              <% end %>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button close">Cancel</button>
+    </div>
+  </dialog>
+<% end %>
+
+
+<dialog class="mdl-dialog" id="resetpassword-dialog">
+  <h4 class="mdl-dialog__title">Password Resets</h4>
+  <div class="mdl-dialog__content">
+    <% if pwd_reset_users.any? %>
+      <ul class="mdl-list">
+        <% pwd_reset_users.each do |pr_user| %>
+          <li id="reset-password-request-<%= pr_user.id %>" class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+              <%= link_to pr_user.name, pr_user %>
+            </span>
+            <span class="mdl-list__item-secondary-action">
+              <%= button_to update_reset_path(id: pr_user.id),
+                            id: "pwd-reset-approve-#{pr_user.id}",
+                            class: 'mdl-button mdl-js-button mdl-button--icon mdl-button--colored',
+                            remote: true,
+                            method: :get do %>
+                <i class="material-icons">thumb_up</i>
+              <% end %>
+              <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="pwd-reset-approve-<%= pr_user.id %>">Approve</div>
+              <%= button_to update_reset_path(id: pr_user.id),
+                            id: "pwd-reset-reject-#{pr_user.id}",
+                            class: 'mdl-button mdl-js-button mdl-button--icon',
+                            remote: true,
+                            method: :patch do %>
+                <i class="material-icons">thumb_down</i>
+              <% end %>
+              <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="pwd-reset-reject-<%= pr_user.id %>">Reject</div>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button type="button" class="mdl-button close">Close</button>
+  </div>
+</dialog>
