@@ -220,7 +220,7 @@ class UsersController < ApplicationController
   def enable
     @user = User.find_by(id: params[:id])
     if @user
-      @user.update_attributes(:user_disabled => false, :user_last_login_dt => Date.today)
+      @user.update_attributes(registration_status: 'approved', user_last_login_dt: Date.today)
     end
     respond_to do |format|
       format.js { render 'replace' }

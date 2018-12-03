@@ -113,8 +113,7 @@ class User < ActiveRecord::Base
   end
 
   def User.disable_stale_accounts
-    cut_off = 180.days.ago.strftime('%Y-%m-%d')
-    approved.where('user_last_login_dt < ?', cut_off).update_all registration_status: 3
+    approved.where('user_last_login_dt < ?', 180.days.ago).update_all registration_status: 3
   end
 
   # Remembers a user in the database for use in persistent sessions.

@@ -1,1 +1,2 @@
 $('#user-<%= @user.id %>').replaceWith('<%= j render @user %>');
+$('.filter-trigger').trigger('change');
