@@ -25,17 +25,22 @@
     <button class="mdl-button mdl-button--colored mdl-button--raised">Select impact story</button>
   </div>
   <div class="quarterly-evaluation mdl-shadow--2dp">
-    <div class="comment mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-      <%= f.text_area :comment, class: 'mdl-textfield__input', rows: '5', disabled: !user_can_edit %>
-      <%=	 f.label :comment, 'Evaluation Comment', class: 'mdl-textfield__label' %>
-    </div>
     <div class="progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-      <%= f.select :progress, options_for_select(QuarterlyEvaluation.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0].humanize), p[1]] }, QuarterlyEvaluation.progresses[@quarterly_evaluation.progress]), { prompt: '' }, { class: 'mdlext-selectfield__select', disabled: !user_can_edit} %>
+      <%= f.select :progress, options_for_select(QuarterlyEvaluation.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0].humanize), p[0]] }, @quarterly_evaluation.progress), { prompt: '' }, { class: 'mdlext-selectfield__select', disabled: !user_can_edit} %>
       <%= f.label :progress, 'Evaluate progress', class: 'mdlext-selectfield__label' %>
     </div>
-    <%= f.label :approved, class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
-      <%= f.check_box(:approved, class: 'mdl-checkbox__input', disabled: !user_can_edit) %>
-      <span class="mdl-checkbox__label">Approve this quarter</span>
+    <% if @quarterly_evaluation.project.supervisors.where(project_supervisors: { role: 'management' }).include?(logged_in_user) %>
+      <%= f.label :approved, class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
+        <%= f.check_box(:approved, class: 'mdl-checkbox__input', disabled: !user_can_edit) %>
+        <span class="mdl-checkbox__label">Manager approval for this quarterly report</span>
+      <% end %>
+    <% else %>
+      <% if @quarterly_evaluation.approved? %>
+        <%= image_tag :approved, class: 'qr-approved-stamp' %>
+        <p>Quarterly report approved by manager.</p>
+      <% else %>
+        <p>This quarterly report pending manager approval.</p>
+      <% end %>
     <% end %>
   </div>
 <% end %>

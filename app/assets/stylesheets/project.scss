@@ -182,7 +182,7 @@ td.annual-target {
 .quarterly-stream-content form {
   display: grid;
   grid-template-columns: 3fr 2fr 2fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 2fr 1fr;
   grid-column-gap: 2em;
   grid-row-gap: 1ex;
   grid-template-areas:
@@ -236,4 +236,8 @@ td.annual-target {
 .quarterly-stream-content {
   margin: 1ex;
   margin-bottom: 1em;
+}
+
+.qr-approved-stamp {
+  max-width: 15em;
 }
