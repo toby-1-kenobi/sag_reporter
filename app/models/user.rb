@@ -118,13 +118,8 @@ class User < ActiveRecord::Base
 
   # Remembers a user in the database for use in persistent sessions.
   def remember
-    ActiveRecord::Base.record_timestamps = false
-    begin
-      self.remember_token = User.new_token
-      update_attribute(:remember_digest, User.digest(remember_token))
-    ensure
-      ActiveRecord::Base.record_timestamps = true
-    end
+    self.remember_token = User.new_token
+    update_attribute(:remember_digest, User.digest(remember_token))
   end
 
   # Returns true if the given token matches the digest.
