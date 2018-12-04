@@ -41,10 +41,10 @@ module ApplicationHelper
         zones: 'Zones',
         states: 'States',
         languages: 'Languages',
-				projects: 'My Projects',
+				projects: @dashboard_type == :nation ? 'Projects' : 'My Projects',
         organisations: 'Agencies',
         reports: 'Impact Stories',
-        board: 'LCI Board Report'
+        board: 'All Access Report'
     }
   end
 
