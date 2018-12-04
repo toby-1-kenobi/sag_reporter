@@ -21,10 +21,10 @@
 
 en:
   narrative_questions:
-    q1_html: "HIGHLIGHTS:<br>During this quarter, what were the highlights for this stream in this language?<br>Why were they special?"
-    q2_html: "ANY MISSED TARGETS:<br>For any quarterly targets that were not met, what were the reasons why that happened?<br>When will the team complete those missed goals?"
-    q3_html: "HOW TO IMPROVE:<br>What new training, tools, processes or changes would improve the productivity of this team?"
-    q4_html: "NEXT QUARTER:<br>What action steps is this team willing to take in the next quarter, so as to increase productivity?"
+    q1_html: "ANY GOOD RESULTS:<br>If you were able to exceed any target, what was the positive reason?"
+    q2_html: "ANY MISSED TARGETS:<br>For any quarterly targets that were not met, what were the reasons?<br>When will the team complete those goals?"
+    q3_html: "PRAYER POINTS:<br>What should we pray for this team, language and ministry?"
+    q4_html: "IMPROVEMENTS:<br>What new steps is this team willing to take in the next quarter, to improve productivity?"
   progress_markers:
     descriptions:
       pm_01: "Local Christian leaders from different churches are praying in unity for God’s direction and blessing to fulfil the LCI outcomes"
