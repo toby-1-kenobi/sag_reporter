@@ -18,12 +18,12 @@ module StateLanguagesHelper
       church_mins = ChurchMinistry.joins(:church_team).
           where('church_teams.state_language_id = ?', state_language_id).
           where(ministry: deliverable.ministry)
-      if sub_project
-        fac_ids = sub_project.language_streams.
-            where(state_language_id: state_language_id, ministry_id: deliverable.ministry_id).
-            pluck :facilitator_id
-        church_mins = church_mins.where(facilitator_id: fac_ids)
-      end
+      # if sub_project
+      #   fac_ids = sub_project.language_streams.
+      #       where(state_language_id: state_language_id, ministry_id: deliverable.ministry_id).
+      #       pluck :facilitator_id
+      #   church_mins = church_mins.where(facilitator_id: fac_ids)
+      # end
       outputs = MinistryOutput.
           where(actual: true, church_ministry: church_mins, deliverable: deliverable).
           where('month >= ?', first_month).
