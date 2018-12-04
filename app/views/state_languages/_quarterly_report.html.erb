@@ -21,14 +21,14 @@
       </div>
     <% end %>
   </div>
-  <div class="selected-impact-story mdl-shadow--2dp">
+  <div class="selected-impact-story mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>">
     <div class="story">
       <% if @quarterly_evaluation.report %>
         <%= render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>
       <% end %>
     </div>
     <% if @reports.any? %>
-      <button id="select-story-button" class="mdl-button mdl-button--colored mdl-button--raised">Select impact story</button>
+      <button class="select-story-button mdl-button mdl-button--colored mdl-button--raised" data-qe="<%= @quarterly_evaluation.id %>">Select impact story</button>
     <% else %>
       <p>No impact stories recorded.</p>
     <% end %>
@@ -56,7 +56,7 @@
 
 <% report_count = @reports.count %>
 <% @reports.each_with_index do |report, i| %>
-  <dialog class="mdl-dialog report-select-dialog" data-index="<%= i %>">
+  <dialog class="mdl-dialog report-select-dialog" data-index="<%= i %>" data-qe="<%= @quarterly_evaluation.id %>">
     <h4 class="mdl-dialog__title">Select an impact story</h4>
     <div class="mdl-dialog__content">
       <h5 class="report-count"><%= "#{i + 1} of #{report_count}" %></h5>

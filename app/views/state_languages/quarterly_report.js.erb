@@ -18,16 +18,17 @@ container.find('dialog').each(function () {
         dialogPolyfill.registerDialog(dialog);
     }
 });
-$('#select-story-button').on('click', function () {
-    $('.report-select-dialog[data-index="0"]').get(0).showModal();
+$('.select-story-button').on('click', function () {
+    console.log('.report-select-dialog[data-index="0"][data-qe="' + $(this).data('qe') + '"]');
+    $('.report-select-dialog[data-index="0"][data-qe="' + $(this).data('qe') + '"]').get(0).showModal();
 });
 $('.report-select-dialog .close').on('click', function () {
     $(this).closest('dialog').get(0).close();
 });
 $('.report-select-dialog .next, .report-select-dialog .prev').on('click', function () {
-   const index = $(this).data('index');
-   console.log(index);
+    const index = $(this).data('index');
+    const qe = $(this).closest('dialog').data('qe');
     $(this).closest('dialog').get(0).close();
-    $('.report-select-dialog[data-index="' + index + '"]').get(0).showModal();
+    $('.report-select-dialog[data-index="' + index + '"][data-qe="' + qe + '"]').get(0).showModal();
 });
 container.slideDown();
