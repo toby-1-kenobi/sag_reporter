@@ -217,6 +217,7 @@ class StateLanguagesController < ApplicationController
         ministry_id: params[:stream],
         quarter: params[:quarter]
     )
+    @reports = Report.joins(:languages).where('languages.id = ?', @quarterly_evaluation.state_language.language)
     respond_to :js
   end
 

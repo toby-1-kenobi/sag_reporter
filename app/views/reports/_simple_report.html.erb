@@ -1,0 +1,4 @@
+<p><%= simple_format simple_report.content %></p>
+<% simple_report.pictures.each do |picture| %>
+  <%= image_tag picture.ref_url if picture.ref? %>
+<% end %>

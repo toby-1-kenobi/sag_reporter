@@ -1,0 +1,4 @@
+$('dialog').each(function () {
+    this.close();
+});
+$('.selected-impact-story .story').html('<%= j render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>');

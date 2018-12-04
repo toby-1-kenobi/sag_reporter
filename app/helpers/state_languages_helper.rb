@@ -12,9 +12,7 @@ module StateLanguagesHelper
   end
 
   def quarterly_actual(state_language_id, deliverable, quarter, project, sub_project)
-    months = months_in_quarter(quarter[-1].to_i)
-    first_month = "#{year_from_app_year(quarter[0..3].to_i, months.first)}-#{months.first.to_s.rjust(2, '0')}"
-    last_month = "#{year_from_app_year(quarter[0..3].to_i, months.last)}-#{months.last.to_s.rjust(2, '0')}"
+    first_month, last_month = quarter_to_range(quarter)
     case deliverable.reporter
     when 'church_team'
       church_mins = ChurchMinistry.joins(:church_team).

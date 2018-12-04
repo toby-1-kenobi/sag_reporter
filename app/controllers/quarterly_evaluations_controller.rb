@@ -8,6 +8,13 @@ class QuarterlyEvaluationsController < ApplicationController
     respond_to :js
   end
 
+  def select_report
+    @quarterly_evaluation = QuarterlyEvaluation.find(params[:id])
+    @quarterly_evaluation.report_id = params[:report]
+    Rails.logger.error(@quarterly_evaluation.errors.full_messages) unless @quarterly_evaluation.save
+    respond_to :js
+  end
+
   private
 
   def quarterly_evaluation_params
@@ -16,8 +23,6 @@ class QuarterlyEvaluationsController < ApplicationController
         :question_2,
         :question_3,
         :question_4,
-        :report_id,
-        :comment,
         :progress,
         :approved
     )

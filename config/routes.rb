@@ -170,7 +170,11 @@ Rails.application.routes.draw do
 
   resources :project_supervisors, only: [:create, :destroy, :update]
 
-  resources :quarterly_evaluations, only: [:update]
+  resources :quarterly_evaluations, only: [:update] do
+    member do
+      patch 'select_report/:report', action: 'select_report', as: 'select_report_for'
+    end
+  end
 
   resources :reports do
     collection do

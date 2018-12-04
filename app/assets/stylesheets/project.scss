@@ -202,7 +202,11 @@ td.annual-target {
   .selected-impact-story {
     grid-area: impact;
     display: flex;
+    flex-direction: column;
     padding: 1em;
+    img {
+      width: 100%;
+    }
     button {
       margin: auto;
     }
@@ -240,4 +244,14 @@ td.annual-target {
 
 .qr-approved-stamp {
   max-width: 15em;
+}
+
+.report-select-dialog {
+  width: 500px !important;
+  img {
+    max-width: 475px;
+  }
+  .report-count {
+    float: right;
+  }
 }

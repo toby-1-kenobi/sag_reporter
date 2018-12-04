@@ -29,6 +29,13 @@ module DatesHelper
     [start, start + 1, start + 2].map{ |m| (m - 1) % 12 + 1 }
   end
 
+  def quarter_to_range(quarter)
+    months = months_in_quarter(quarter[-1].to_i)
+    first_month = "#{year_from_app_year(quarter[0..3].to_i, months.first)}-#{months.first.to_s.rjust(2, '0')}"
+    last_month = "#{year_from_app_year(quarter[0..3].to_i, months.last)}-#{months.last.to_s.rjust(2, '0')}"
+    [first_month, last_month]
+  end
+
   # take an initial month and final month, return an array with year values added to each month
   # format of array element is "YYYY-MM"
   # Assume months are nearby current date.
