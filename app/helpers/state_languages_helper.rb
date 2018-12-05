@@ -63,6 +63,7 @@ module StateLanguagesHelper
 
   def auto_actuals(state_language, deliverable, first_month, last_month)
     raise ArgumentError.new("deliverable not auto-calculated") unless deliverable.auto?
+    raise ArgumentError.new("first month must not be after last month") if first_month > last_month
     case "#{deliverable.ministry.code}#{deliverable.number}"
     when 'SU11', 'SC4', 'ET2', 'ST3', 'ES3', 'TR8' # Impact stories through this stream
       first_day = Date.new(first_month[0..3].to_i, first_month[-2..-1].to_i, 1)
@@ -73,15 +74,20 @@ module StateLanguagesHelper
           where('report_date >= ?', first_day).where('report_date <= ?', last_day).
           count
     when 'CH1' # Active church teams
-      # assume active if recording any actuals in the last month
-      query = ChurchTeam.joins(church_ministries: :ministry_outputs).where(state_language: state_language)
-      prev_month = 1.month.ago.strftime('%Y-%m')
-      if (prev_month < last_month)
-        query = query.where('ministry_outputs.month >= ?', prev_month)
-      else
-        query = query.where('ministry_outputs.month = ?', last_month)
+      # assume active if recording any actuals in the month
+      # report the best month of the latest 3
+      results = []
+      month = Date.new(last_month[0..3].to_i, last_month[-2..-1].to_i) - 2.months
+      index_month = month.strftime('%Y-%m')
+      while index_month <= last_month
+        results << ChurchTeam.joins(church_ministries: :ministry_outputs).
+            where(state_language: state_language).
+            where('ministry_outputs.month = ?', index_month).
+            select('church_teams.id').distinct.count
+        month = month + 1.month
+        index_month = month.strftime('%Y-%m')
       end
-      query.select('church_teams.id').distinct.count
+      results.max
     else
       Rails.logger.error "Auto calculation for deliverable #{deliverable.id} not implemented."
       nil
