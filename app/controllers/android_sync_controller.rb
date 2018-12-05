@@ -214,12 +214,35 @@ class AndroidSyncController < ApplicationController
     tables[FinishLineMarker] = %w(name description number) if @version >= "1.4.2"
     tables[FinishLineProgress] = %w(language_id finish_line_marker_id status year) if @version >= "1.4.2"
     tables[FinishLineProgress] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:82"
+    formatted_evaluation_info = ""
+    formatted_evaluation_info = ", ministry_benchmark_criteria = COUNT(CASE " +
+        "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
+        "WHEN deliverable_id = 6 AND value > 5 THEN 1 " +
+        "WHEN deliverable_id = 8 AND value > 0 THEN 1 " +
+        "WHEN deliverable_id = 9 AND value > 5 THEN 1 " +
+        "WHEN deliverable_id = 10 AND value > 0 THEN 1 " +
+        "WHEN deliverable_id = 11 AND value > 5 THEN 1 " +
+        "WHEN deliverable_id = 14 AND value > 2 THEN 1 " +
+        "WHEN deliverable_id = 15 AND value > 0 THEN 1 " +
+        "WHEN deliverable_id = 1 AND value > 2 THEN 1 " +
+        "END) AS not_red, " +
+        "COUNT(CASE " +
+        "WHEN deliverable_id = 5 AND value > 1 THEN 1 " +
+        "WHEN deliverable_id = 6 AND value > 10 THEN 1 " +
+        "WHEN deliverable_id = 8 AND value > 1 THEN 1 " +
+        "WHEN deliverable_id = 9 AND value > 10 THEN 1 " +
+        "WHEN deliverable_id = 10 AND value > 1 THEN 1 " +
+        "WHEN deliverable_id = 11 AND value > 10 THEN 1 " +
+        "WHEN deliverable_id = 14 AND value > 4 THEN 1 " +
+        "WHEN deliverable_id = 15 AND value > 1 THEN 1 " +
+        "WHEN deliverable_id = 1 AND value > 9 THEN 1 " +
+        "END) AS green " if @version >= "1.4.2:84"
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
           last_sync = Time.at send_request_params["last_sync"]
           this_sync = 5.seconds.ago
-          file.write "UPDATE app SET last_sync = #{this_sync.to_i};"
+          file.write "UPDATE app SET last_sync = #{this_sync.to_i}#{formatted_evaluation_info};"
           raise "No last sync variable" unless send_request_params["last_sync"]
           deleted_entries = Hash.new
           tables.each do |table, attributes|
