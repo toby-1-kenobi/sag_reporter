@@ -14,8 +14,8 @@ class Ministry < ActiveRecord::Base
   has_many :quarterly_evaluations, dependent: :restrict_with_error
   belongs_to :topic
   belongs_to :name, class_name: 'TranslationCode', dependent: :destroy
+  belongs_to :short_form, class_name: 'TranslationCode', dependent: :destroy
   before_create :create_translation_codes
-  after_destroy :delete_translation_codes
 
   # Method for reading and writing all translation values (e.g. name_en = "?" or name_value)
   # it has to be a combination of the translation connection name and the actual locale or "value", if the I18n locale shall be used
@@ -45,7 +45,7 @@ class Ministry < ActiveRecord::Base
   end
 
   scope :with_values, -> do
-    translation_code_names = [:name_id]
+    translation_code_names = [:name_id, :short_form_id]
     translation_code_ids = select(translation_code_names).map do |t|
       translation_code_names.map {|name| t.send(name)}
     end.flatten
@@ -57,8 +57,9 @@ class Ministry < ActiveRecord::Base
 
   def translations
     @@translations ||= []
-    unless @@translations.find{|translation| translation.translation_code_id == name_id}
-      @@translations.push(*Translation.where(translation_code_id: name_id))
+    all_translation_code_ids = [name_id, short_form_id]
+    unless @@translations.find{|translation| translation.translation_code_id.in? all_translation_code_ids}
+      @@translations.push(*Translation.where(translation_code_id: all_translation_code_ids))
     end
     @@translations
   end
@@ -73,10 +74,6 @@ class Ministry < ActiveRecord::Base
 
   def create_translation_codes
     self.name ||= TranslationCode.create
+    self.short_form ||= TranslationCode.create
   end
-
-  def delete_translation_codes
-    self.name.delete
-  end
-
 end

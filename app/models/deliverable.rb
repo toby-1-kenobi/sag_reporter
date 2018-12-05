@@ -23,7 +23,6 @@ class Deliverable < ActiveRecord::Base
   validates :ministry, presence: true
   validates :number, presence: true, uniqueness: { scope: :ministry }
   before_create :create_translation_codes
-  after_destroy :delete_translation_codes
 
   # Method for reading and writing all translation values (e.g. short_form_en = "?" or plan_form_value)
   # it has to be a combination of the translation connection name and the locale or "value", if the actual I18n locale shall be used
@@ -75,8 +74,9 @@ class Deliverable < ActiveRecord::Base
 
   def translations
     @@translations ||= []
-    unless @@translations.find{|translation| translation.translation_code_id == short_form_id}
-      @@translations.push(*Translation.where(translation_code_id: [short_form_id, plan_form_id, result_form_id]))
+    all_translation_code_ids = [short_form_id, plan_form_id, result_form_id]
+    unless @@translations.find{|translation| translation.translation_code_id.in? all_translation_code_ids}
+      @@translations.push(*Translation.where(translation_code_id: all_translation_code_ids))
     end
     @@translations
   end
@@ -94,11 +94,4 @@ class Deliverable < ActiveRecord::Base
     self.plan_form ||= TranslationCode.create
     self.result_form ||= TranslationCode.create
   end
-
-  def delete_translation_codes
-    self.short_form.delete
-    self.plan_form.delete
-    self.result_form.delete
-  end
-
 end
