@@ -4,12 +4,14 @@
     <tr><th colspan="3"><%= pretty_quarter @quarterly_evaluation.quarter %></th></tr>
     <tr><th>Deliverable</th><th>Target</th><th>Actual</th></tr>
     <% @quarterly_evaluation.ministry.deliverables.order(:number).each do |deliverable| %>
-      <tr>
-        <td><%= deliverable.short_form.en %></td>
-        <% target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: @quarterly_evaluation.quarter) %>
-        <td><%= target ? target.value : '?' %></td>
-        <td><%= quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %></td>
-      </tr>
+      <% unless deliverable.disabled? %>
+        <tr>
+          <td><%= deliverable.short_form.en %></td>
+          <% target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: @quarterly_evaluation.quarter) %>
+          <td><%= target ? target.value : '?' %></td>
+          <td><%= quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %></td>
+        </tr>
+      <% end %>
     <% end %>
   </table>
   <div class="narrative-questions mdl-shadow--2dp">
