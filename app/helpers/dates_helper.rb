@@ -62,12 +62,24 @@ module DatesHelper
     date.strftime('%B %Y')
   end
 
+  def pretty_quarter(quarter, abbr = false)
+    months = months_in_quarter(quarter[-1].to_i)
+    year = quarter[0..3].to_i
+    first_month = Date.new(year_from_app_year(year, months.first), months.first)
+    last_month = Date.new(year_from_app_year(year, months.last), months.last)
+    m = abbr ? '%b' : '%B'
+    last_form = "#{m} %Y"
+    first_form = first_month.year == last_month.year ? m : last_form
+    "#{first_month.strftime(first_form)} to #{last_month.strftime(last_form)}"
+  end
+
   def years_of_quarters(years)
     current_year = app_year(Date.today.year, Date.today.month)
     quarters = []
     ((current_year - years + 1)..current_year).each do |year|
-      (1..4).each do |quarter|
-        quarters << ["#{year} quarter #{quarter}", "#{year}-#{quarter}"]
+      (1..4).each do |q|
+        quarter = "#{year}-#{q}"
+        quarters << [pretty_quarter(quarter, true), quarter]
       end
     end
     quarters

@@ -1,6 +1,7 @@
 <% user_can_edit = can_edit(@quarterly_evaluation, logged_in_user) %>
 <%= form_for @quarterly_evaluation, namespace: @quarterly_evaluation.id.to_s, remote: true do |f| %>
   <table class="quarterly-results-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    <tr><th colspan="3"><%= pretty_quarter @quarterly_evaluation.quarter %></th></tr>
     <tr><th>Deliverable</th><th>Target</th><th>Actual</th></tr>
     <% @quarterly_evaluation.ministry.deliverables.order(:number).each do |deliverable| %>
       <tr>
