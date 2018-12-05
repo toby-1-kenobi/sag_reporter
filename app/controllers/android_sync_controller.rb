@@ -236,7 +236,8 @@ class AndroidSyncController < ApplicationController
         "WHEN deliverable_id = 14 AND value > 4 THEN 1 " +
         "WHEN deliverable_id = 15 AND value > 1 THEN 1 " +
         "WHEN deliverable_id = 1 AND value > 9 THEN 1 " +
-        "END) AS green " if @version >= "1.4.2:84"
+        "END) AS green FROM ministry_Output " +
+        "WHERE deliverable_id IN (5, 6, 8, 9, 10, 11, 14, 15, 1) " if @version >= "1.4.2:84"
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
