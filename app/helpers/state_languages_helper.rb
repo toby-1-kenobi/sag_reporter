@@ -55,19 +55,19 @@ module StateLanguagesHelper
         outputs.inject(0) { |sum, mo| sum + mo.value }
       end
     when 'auto'
-      auto_atuals(StateLanguage.find(state_language_id), deliverable, first_month, last_month) or '!'
+      auto_actuals(StateLanguage.find(state_language_id), deliverable, first_month, last_month) or '!'
     else
       '?'
     end
   end
 
-  def auto_atuals(state_language, deliverable, first_month, last_month)
+  def auto_actuals(state_language, deliverable, first_month, last_month)
     raise ArgumentError.new("deliverable not auto-calculated") unless deliverable.auto?
     case "#{deliverable.ministry.code}#{deliverable.number}"
     when 'SU11', 'SC4', 'ET2', 'ST3', 'ES3', 'TR8' # Impact stories through this stream
-      first_day = Date.new(first_month[0..3], first_month[-2..1], 1)
-      last_day = Date.new(last_month[0..3], last_month[-2..-1]).end_of_month
-      Report.joins(:impact_report, :languages, :report_Streams).
+      first_day = Date.new(first_month[0..3].to_i, first_month[-2..-1].to_i, 1)
+      last_day = Date.new(last_month[0..3].to_i, last_month[-2..-1].to_i).end_of_month
+      Report.joins(:impact_report, :languages, :report_streams).
           where(languages: {id: state_language.language_id}, geo_state_id: state_language.geo_state_id).
           where(report_streams: {ministry_id: deliverable.ministry_id}).
           where('report_date >= ?', first_day).where('report_date <= ?', last_day).
