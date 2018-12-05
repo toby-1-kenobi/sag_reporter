@@ -3,7 +3,7 @@ componentHandler.upgradeElements($('#quarterly-panel').find('.mdlext-selectfield
 $('#quarterly-sub-project-select, #quarter-select').on('change', function () {
     var url = '<%= quarterly_report_sub_project_url('sp_placeholder') %>';
     var id = $('#quarterly-sub-project-select').val();
-    if(parseInt(id) < 0) {
+    if(typeof(id) == 'undefined' || id < 0) {
         id = 'p<%= @project.id %>'
     }
     url = url.replace('sp_placeholder', id);

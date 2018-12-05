@@ -74,6 +74,8 @@ module StateLanguagesHelper
           count
     when 'CH1' # Active church teams
       # assume active if recording any actuals in the last month
+      this_month = Date.today.strftime('%Y-%m')
+      last_month = [this_month, last_month].min
       ChurchTeam.joins(church_ministries: :ministry_outputs).where('ministry_outputs.month = ?', last_month).
           select('church_teams.id').distinct.count
     else
