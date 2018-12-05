@@ -484,7 +484,7 @@ class AndroidSyncController < ApplicationController
               :old_id,
               :data,
               :report_id
-          ]
+          ],
           edit: [
               :id,
               :old_id,

@@ -13,8 +13,8 @@ class Ministry < ActiveRecord::Base
   has_many :reports, through: :report_streams
   belongs_to :topic
   belongs_to :name, class_name: 'TranslationCode', dependent: :destroy
+  belongs_to :short_form, class_name: 'TranslationCode', dependent: :destroy
   before_create :create_translation_codes
-  after_destroy :delete_translation_codes
 
   # Method for reading and writing all translation values (e.g. name_en = "?" or name_value)
   # it has to be a combination of the translation connection name and the actual locale or "value", if the I18n locale shall be used
@@ -72,10 +72,6 @@ class Ministry < ActiveRecord::Base
 
   def create_translation_codes
     self.name ||= TranslationCode.create
+    self.short_form ||= TranslationCode.create
   end
-
-  def delete_translation_codes
-    self.name.delete
-  end
-
 end
