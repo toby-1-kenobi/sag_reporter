@@ -215,7 +215,7 @@ class AndroidSyncController < ApplicationController
     tables[FinishLineProgress] = %w(language_id finish_line_marker_id status year) if @version >= "1.4.2"
     tables[FinishLineProgress] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:82"
     formatted_evaluation_info = ""
-    formatted_evaluation_info = ", ministry_benchmark_criteria = COUNT(CASE " +
+    formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
         "WHEN deliverable_id = 6 AND value > 5 THEN 1 " +
         "WHEN deliverable_id = 8 AND value > 0 THEN 1 " +
@@ -237,7 +237,7 @@ class AndroidSyncController < ApplicationController
         "WHEN deliverable_id = 15 AND value > 1 THEN 1 " +
         "WHEN deliverable_id = 1 AND value > 9 THEN 1 " +
         "END) AS green FROM ministry_Output " +
-        "WHERE deliverable_id IN (5, 6, 8, 9, 10, 11, 14, 15, 1) " if @version >= "1.4.2:84"
+        "WHERE deliverable_id IN (5, 6, 8, 9, 10, 11, 14, 15, 1) '" if @version >= "1.4.2:85"
     Thread.new do
       begin
         File.open(@final_file, "w") do |file|
