@@ -44,7 +44,7 @@ class Ministry < ActiveRecord::Base
   end
 
   scope :with_values, -> do
-    translation_code_names = [:name_id]
+    translation_code_names = [:name_id, :short_form_id]
     translation_code_ids = select(translation_code_names).map do |t|
       translation_code_names.map {|name| t.send(name)}
     end.flatten
@@ -56,8 +56,9 @@ class Ministry < ActiveRecord::Base
 
   def translations
     @@translations ||= []
-    unless @@translations.find{|translation| translation.translation_code_id == name_id}
-      @@translations.push(*Translation.where(translation_code_id: name_id))
+    all_translation_code_ids = [name_id, short_form_id]
+    unless @@translations.find{|translation| translation.translation_code_id.in? all_translation_code_ids}
+      @@translations.push(*Translation.where(translation_code_id: all_translation_code_ids))
     end
     @@translations
   end

@@ -74,8 +74,9 @@ class Deliverable < ActiveRecord::Base
 
   def translations
     @@translations ||= []
-    unless @@translations.find{|translation| translation.translation_code_id == short_form_id}
-      @@translations.push(*Translation.where(translation_code_id: [short_form_id, plan_form_id, result_form_id]))
+    all_translation_code_ids = [short_form_id, plan_form_id, result_form_id]
+    unless @@translations.find{|translation| translation.translation_code_id.in? all_translation_code_ids}
+      @@translations.push(*Translation.where(translation_code_id: all_translation_code_ids))
     end
     @@translations
   end
