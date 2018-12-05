@@ -214,6 +214,7 @@ class AndroidSyncController < ApplicationController
     tables[FinishLineMarker] = %w(name description number) if @version >= "1.4.2"
     tables[FinishLineProgress] = %w(language_id finish_line_marker_id status year) if @version >= "1.4.2"
     tables[FinishLineProgress] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:82"
+    tables[Ministry] << %w(short_form_id) if @version >= "1.4.2:85"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
