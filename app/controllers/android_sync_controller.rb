@@ -617,7 +617,7 @@ class AndroidSyncController < ApplicationController
             @id_changes.dig(foreign_table, element) || foreign_table.constantize.find(element)
           end
           hash.delete k
-        elsif k.last(3) == "_id" && !not_connected_table.includes(k)
+        elsif k.last(3) == "_id" && !not_connected_table.include?(k)
           foreign_table = k.remove("_id")
           foreign_table = foreign_key_names(foreign_table)
           foreign_table = foreign_table.camelcase
