@@ -607,6 +607,7 @@ class AndroidSyncController < ApplicationController
                                  })
       end
       # Go through all the entries to check, whether it has an ID from another uploaded entry
+      not_connected_table = %w(old_id record_id)
       hash.clone.each do |k, v|
         if k.last(4) == "_ids" && v.is_a?(Array)
           foreign_table = k.remove("_ids")
@@ -616,7 +617,7 @@ class AndroidSyncController < ApplicationController
             @id_changes.dig(foreign_table, element) || foreign_table.constantize.find(element)
           end
           hash.delete k
-        elsif k.last(3) == "_id" && k != "old_id"
+        elsif k.last(3) == "_id" && !not_connected_table.include?(k)
           foreign_table = k.remove("_id")
           foreign_table = foreign_key_names(foreign_table)
           foreign_table = foreign_table.camelcase
