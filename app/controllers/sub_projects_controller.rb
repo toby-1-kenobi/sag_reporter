@@ -15,6 +15,29 @@ class SubProjectsController < ApplicationController
   end
 
   def quarterly_report
+    find_sub_or_project
+    respond_to :js
+  end
+
+  def download_quarterly_report
+    find_sub_or_project
+    project_name = @sub_project ? @sub_project.name : @project.name
+    @quarter = params[:quarter]
+    respond_to do |format|
+      format.pdf do
+        pdf = QuarterlyReportPdf.new(@project, @sub_project, @quarter)
+        send_data pdf.render, filename: "#{project_name}_quarterly_report.pdf", type: 'application/pdf'
+      end
+    end
+  end
+
+  private
+
+  def sub_project_params
+    params.require(:sub_project).permit(:project_id, :name)
+  end
+
+  def find_sub_or_project
     if SubProject.exists?(params[:id])
       @sub_project = SubProject.includes(:project).find(params[:id])
       @project = @sub_project.project
@@ -22,13 +45,6 @@ class SubProjectsController < ApplicationController
       # if no sub-project has been selected the id will be the project id prefixed with a single character
       @project = Project.find(params[:id][1..-1])
     end
-    respond_to :js
-  end
-
-  private
-
-  def sub_project_params
-    params.require(:sub_project).permit(:project_id, :name)
   end
 
 end
