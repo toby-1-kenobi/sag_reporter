@@ -94,4 +94,25 @@ module StateLanguagesHelper
     end
   end
 
+  def assessment(target, actual)
+    begin
+      target = Integer(target)
+      actual = Integer(actual)
+    rescue ArgumentError
+      return ''
+    end
+    diff = actual - target
+    percent = 100.0 * diff / target
+    case percent
+    when -20.0..20.0
+      'on-pace'
+    when 20.0..Float::INFINITY
+      'ahead'
+    when -40.0..20.0
+      'somewhat-behind'
+    else
+      'behind'
+    end
+  end
+
 end

@@ -40,10 +40,6 @@
   }
   .recent-progress, .evaluation {
     background-color: deepskyblue;
-    &[data-progress="poor"] { background-color: red; }
-    &[data-progress="fair"] { background-color: yellow; }
-    &[data-progress="good"] { background-color: palegreen; }
-    &[data-progress="excellent"] { background-color: lime; }
     .approved-stamp {
       max-width: 100px;
       margin: -1.5ex;
@@ -76,10 +72,6 @@
   .amo-target { background-color: lightskyblue; }
   .amo-actual, .mo-actual {
     background-color: deepskyblue;
-    &[data-progress="poor"] { background-color: red; }
-    &[data-progress="fair"] { background-color: yellow; }
-    &[data-progress="good"] { background-color: palegreen; }
-    &[data-progress="excellent"] { background-color: lime; }
   }
   .quarterly-target { background-color: pink; }
   .quarterly-actual { background-color: hotpink; }
@@ -255,3 +247,8 @@ td.annual-target {
     float: right;
   }
 }
+
+[data-progress=poor], [data-assessment=behind] { background-color: red !important; }
+[data-progress=fair], [data-assessment=somewhat-behind] { background-color: yellow !important; }
+[data-progress=good], [data-assessment=on-pace] { background-color: palegreen !important; }
+[data-progress=excellent], [data-assessment=ahead] { background-color: lime !important; }

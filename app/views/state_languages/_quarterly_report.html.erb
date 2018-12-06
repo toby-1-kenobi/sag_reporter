@@ -8,8 +8,10 @@
         <tr>
           <td><%= deliverable.short_form.en %></td>
           <% target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: @quarterly_evaluation.quarter) %>
-          <td><%= target ? target.value : '?' %></td>
-          <td><%= quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %></td>
+          <% target_value = target ? target.value : '?' %>
+          <td><%= target_value %></td>
+          <% actual = quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %>
+          <td data-assessment="<%= assessment target_value, actual %>"><%= actual %></td>
         </tr>
       <% end %>
     <% end %>
@@ -36,7 +38,7 @@
       <p>No impact stories recorded.</p>
     <% end %>
   </div>
-  <div class="quarterly-evaluation mdl-shadow--2dp">
+  <div class="quarterly-evaluation mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>" data-progress="<%= @quarterly_evaluation.progress %>">
     <div class="progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
       <%= f.select :progress, options_for_select(QuarterlyEvaluation.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0].humanize), p[0]] }, @quarterly_evaluation.progress), { prompt: '' }, { class: 'mdlext-selectfield__select', disabled: !user_can_edit} %>
       <%= f.label :progress, 'Evaluate progress', class: 'mdlext-selectfield__label' %>
