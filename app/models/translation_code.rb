@@ -1,10 +1,13 @@
 class TranslationCode < ActiveRecord::Base
 
   has_many :translations, dependent: :destroy
-  has_one :ministry, foreign_key: 'name_id', inverse_of: :name
 
   def deliverable
     Deliverable.where("short_form_id = ? OR plan_form_id = ? OR result_form_id = ?", id, id, id).first
+  end
+
+  def ministry
+    Ministry.where("name_id = ? OR short_form_id = ?", id, id).first
   end
   
   def connected_entry
