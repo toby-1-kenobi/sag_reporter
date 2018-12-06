@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181130035501) do
+ActiveRecord::Schema.define(version: 20181205203200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -510,14 +510,16 @@ ActiveRecord::Schema.define(version: 20181130035501) do
   add_index "languages_users", ["user_id", "language_id"], name: "index_languages_users_on_user_id_and_language_id", unique: true, using: :btree
 
   create_table "ministries", force: :cascade do |t|
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "topic_id",   default: 1, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.integer  "topic_id",      default: 1, null: false
     t.string   "code"
-    t.integer  "name_id",                null: false
+    t.integer  "name_id",                   null: false
+    t.integer  "short_form_id",             null: false
   end
 
   add_index "ministries", ["name_id"], name: "index_ministries_on_name_id", using: :btree
+  add_index "ministries", ["short_form_id"], name: "index_ministries_on_short_form_id", using: :btree
   add_index "ministries", ["topic_id"], name: "index_ministries_on_topic_id", using: :btree
 
   create_table "ministry_outputs", force: :cascade do |t|
@@ -1085,6 +1087,7 @@ ActiveRecord::Schema.define(version: 20181130035501) do
   add_foreign_key "languages", "users", column: "champion_id"
   add_foreign_key "ministries", "topics"
   add_foreign_key "ministries", "translation_codes", column: "name_id"
+  add_foreign_key "ministries", "translation_codes", column: "short_form_id"
   add_foreign_key "ministry_outputs", "church_ministries"
   add_foreign_key "ministry_outputs", "deliverables"
   add_foreign_key "ministry_outputs", "users", column: "creator_id"
