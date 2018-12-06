@@ -1,5 +1,3 @@
-<li id="project-<%= project_menu_item.id %>" class="mdlext-menu__item">
-  <%= link_to project_menu_item, remote: true, class: 'mdl-button' do %>
-    <span class="project-<%= project_menu_item.id %>-name"><%= project_menu_item.name %></span>
-  <% end %>
+<li id="project-<%= project_menu_item.id %>" class="mdlext-menu__item" data-ajax-url="<%= project_path(project_menu_item) %>">
+  <span class="project-<%= project_menu_item.id %>-name"><%= project_menu_item.name %></span>
 </li>

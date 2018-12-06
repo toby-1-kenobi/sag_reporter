@@ -1,4 +1,6 @@
 $(document).on "ready page:change", ->
-  $('#new-project-list-item').find('input').on 'change', ->
-    $(this).closest('form').submit()
+  document.querySelector('#project-menu-button').addEventListener 'menuselect', (e) ->
+    $.ajax url: $(e.detail.source).data('ajax-url'), method: $(e.detail.source).data('method')
+    return
+
 
