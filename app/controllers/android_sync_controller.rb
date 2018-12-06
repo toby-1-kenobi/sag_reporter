@@ -67,6 +67,8 @@ class AndroidSyncController < ApplicationController
         additional_entry = entry.id == @external_user.id ? entry : User.new
         additional_entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
             .merge(external_device_registered: !entry.external_devices.empty?)
+      when Edit
+        {created_at: entry.created_at.to_i}
       else
         {}
       end
@@ -215,6 +217,7 @@ class AndroidSyncController < ApplicationController
     tables[FinishLineProgress] = %w(language_id finish_line_marker_id status year) if @version >= "1.4.2"
     tables[FinishLineProgress] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:82"
     tables[Ministry] << "short_form_id" if @version >= "1.4.2:85"
+    tables[Edit] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:87"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
