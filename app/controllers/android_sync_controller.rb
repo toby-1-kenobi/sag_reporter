@@ -260,7 +260,7 @@ class AndroidSyncController < ApplicationController
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
             restricted_ids = restrict(table)
-            logger.debug "Update #{table.name} at: #{restricted_ids}. Those are offline already: #{offline_ids}"
+            logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
             table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
                         last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
                 .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
@@ -313,9 +313,9 @@ class AndroidSyncController < ApplicationController
       ensure
         @final_file.close unless @final_file.closed?
         logger.debug "File writing finished"
-        @final_file.open
-        logger.debug @final_file.read
-        @final_file.close
+        #@final_file.open
+        #logger.debug @final_file.read
+        #@final_file.close
         File.rename(@final_file, "#{@final_file.path}.txt")
         ActiveRecord::Base.connection.close
       end
