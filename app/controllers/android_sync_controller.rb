@@ -215,7 +215,6 @@ class AndroidSyncController < ApplicationController
     tables[ProjectProgress] = %w(project_stream_id month progress comment approved) if @version >= "1.4.1"
     tables[FinishLineMarker] = %w(name description number) if @version >= "1.4.2"
     tables[FinishLineProgress] = %w(language_id finish_line_marker_id status year) if @version >= "1.4.2"
-    tables[FinishLineProgress] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:82"
     tables[Ministry] << "short_form_id" if @version >= "1.4.2:85"
     tables[Edit] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:87"
     formatted_evaluation_info = ""
