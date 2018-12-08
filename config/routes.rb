@@ -118,6 +118,10 @@ Rails.application.routes.draw do
 
   resources :language_streams, only: [:show, :destroy, :update]
 
+  resource :ministries, only: [] do
+    get ':id/projects_overview/:quarter', on: :member, action: 'projects_overview', as: 'projects_overview_for'
+  end
+
   resources :ministry_outputs, only: [:update, :create]
 
   resources :mt_resources

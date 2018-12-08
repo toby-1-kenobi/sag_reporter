@@ -9,7 +9,7 @@
 </ul>
 
 <% tabs = [:progress, :zones, :states, :languages] %>
-<% tabs.append(:projects) if logged_in_user.can_view_any_of_projects?(Project.all) %>
+<% tabs += [:projects, :projects_overview] if logged_in_user.can_view_any_of_projects?(Project.all) %>
 <% tabs.append(:board) if logged_in_user.can_future_plan? %>
 <% @tab ||= 'progress' %>
 

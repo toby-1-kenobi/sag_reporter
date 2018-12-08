@@ -42,6 +42,7 @@ module ApplicationHelper
         states: 'States',
         languages: 'Languages',
 				projects: @dashboard_type == :nation ? 'Projects' : 'My Projects',
+				projects_overview: 'Projects Overview',
         organisations: 'Agencies',
         reports: 'Impact Stories',
         board: 'All Access Report'

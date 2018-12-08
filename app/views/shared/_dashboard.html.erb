@@ -151,8 +151,34 @@
     </div>
   <% end %>
 
+  <% if tabs.include? :projects_overview %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'projects-overview' %>" id="projects_overview-tab">
+      <button id="quarter-menu-button" class="mdl-button mdl-js-button mdlext-js-menu-button" aria-controls="quarter-menu">
+        <span>Select a quarter</span>
+        <i class="material-icons">calendar_today</i>
+      </button>
+      <ul id="quarter-menu" class="mdlext-menu">
+        <% years_of_quarters(2).each do |pretty_quarter, quarter| %>
+          <li data-quarter="<%= quarter %>" class="mdlext-menu__item">
+            <%= pretty_quarter %>
+          </li>
+        <% end %>
+      </ul>
+      <ul id="projects-overview" class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
+        <% Ministry.all.each do |stream| %>
+          <li class="mdlext-accordion__panel">
+            <header class="mdlext-accordion__tab">
+              <span class="mdlext-accordion__tab__caption"><%= stream.name.en %></span>
+            </header>
+            <section class="mdlext-accordion__tabpanel projects-overview-container" data-stream="<%= stream.id %>">
+            </section>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <% if tabs.include? :reports %>
-    <% Rails.logger.debug 'reports tab' %>
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'reports' %>" id="reports-tab">
       <%= form_tag({controller: @dashboard_type == :state ? 'geo_states' : 'zones', action: 'reports'}, method: 'get', remote: true, id: 'report-view-filters') do %>
         <div class="mdl-grid">
