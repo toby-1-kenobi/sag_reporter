@@ -88,6 +88,10 @@ module StateLanguagesHelper
         index_month = month.strftime('%Y-%m')
       end
       results.max
+    when 'CH12' # Hours by Volunteer leaders
+      # sum of ST8,
+      total_hours = 0
+      total_hours
     else
       Rails.logger.error "Auto calculation for deliverable #{deliverable.id} not implemented."
       nil

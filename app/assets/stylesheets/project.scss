@@ -247,6 +247,9 @@ td.annual-target {
     float: right;
   }
 }
+.projects-overview-container th {
+  min-width: 10em;
+}
 
 #projects-overview-selected-quarter {
   font-size: large;
