@@ -19,7 +19,6 @@ class AndroidSyncController < ApplicationController
         Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id),
         ImpactReport => %w(translation_impact),
         UploadedFile => %w(report_id),
-        MtResource => %w(user_id name language_id cc_share_alike medium status geo_state_id url),
         Organisation => %w(name abbreviation church),
         LanguageProgress => %w(progress_marker_id state_language_id),
         ProgressUpdate => %w(user_id language_progress_id),
@@ -30,7 +29,7 @@ class AndroidSyncController < ApplicationController
         TranslationCode => %w(),
         Translation => %w(language_id content translation_code_id),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
-        ProductCategory => %w(number),
+        ProductCategory => nil,
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
         ProjectSupervisor => %w(project_id user_id role),
@@ -38,6 +37,7 @@ class AndroidSyncController < ApplicationController
         FinishLineMarker => nil,
         FinishLineProgress => nil,
         Edit => nil,
+        Tool => nil,
         AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
@@ -50,7 +50,7 @@ class AndroidSyncController < ApplicationController
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
         Project: %w(state_languages),
-        MtResource: %w(product_categories)
+        Tool: %w(product_categories)
     }
     additional_join_tables = {
         Report: %w(ministries),
@@ -217,6 +217,8 @@ class AndroidSyncController < ApplicationController
     tables[FinishLineProgress] = %w(language_id finish_line_marker_id status year) if @version >= "1.4.2"
     tables[Ministry] << "short_form_id" if @version >= "1.4.2:85"
     tables[Edit] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:87"
+    tables[ProductCategory] = %w(name_id) if @version >= "1.4.2:90"
+    tables[Tool] = %w(language_id url description creator_id status) if @version >= "1.4.2:90"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
