@@ -5,6 +5,7 @@ class StateLanguage < ActiveRecord::Base
   has_many :language_progresses, dependent: :destroy
   has_many :progress_updates, through: :language_progresses
   has_many :church_teams, dependent: :restrict_with_error
+  has_many :ministry_outputs, through: :church_teams
   has_many :language_streams, dependent: :destroy
   has_many :facilitators, through: :language_streams, class_name: 'User'
   has_many :project_languages, dependent: :destroy

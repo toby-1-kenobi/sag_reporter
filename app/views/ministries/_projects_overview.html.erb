@@ -1,7 +1,17 @@
-<table>
+<% data = projects_overview_data(@zones, @ministry, @quarter) %>
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <tr>
+    <th><%= @ministry.name.en %></th>
     <% @zones.each do |zone| %>
-      <th><%= zone.name %></th>
+      <th class="mdl-data-table__cell--non-numeric"><%= zone.name %></th>
+    <% end %>
+    <% @ministry.deliverables.each do |deliverable| %>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td>
+      <% data.values.each do |deliverable_values| %>
+        <td><%= deliverable_values[deliverable.id] %></td>
+      <% end %>
+    </tr>
     <% end %>
   </tr>
 </table>

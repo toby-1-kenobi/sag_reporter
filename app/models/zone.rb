@@ -11,6 +11,8 @@ class Zone < ActiveRecord::Base
   has_many :users, through: :geo_states
   has_many :languages, through: :geo_states
   has_many :state_languages, through: :geo_states
+  has_many :aggregate_ministry_outputs, through: :state_languages
+  has_many :ministry_outputs, through: :state_languages
   has_many :engaged_organisations, through: :geo_states
   has_many :translating_organisations, through: :geo_states
   has_many :projects, through: :geo_states

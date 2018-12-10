@@ -4,6 +4,7 @@ class ChurchTeam < ActiveRecord::Base
   belongs_to :state_language
   has_many :church_ministries, dependent: :destroy
   has_many :ministries, through: :church_ministries
+  has_many :ministry_outputs, through: :church_ministries
   has_many :facilitator_feedbacks, through: :church_ministries
   has_many :church_team_memberships, dependent: :destroy
   has_many :users, through: :church_team_memberships
