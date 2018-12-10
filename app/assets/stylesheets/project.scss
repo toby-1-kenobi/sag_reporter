@@ -248,6 +248,12 @@ td.annual-target {
   }
 }
 
+#projects-overview-selected-quarter {
+  font-size: large;
+  font-weight: bold;
+  padding-left: 2em;
+}
+
 [data-progress=poor], [data-assessment=behind] { background-color: red !important; }
 [data-progress=fair], [data-assessment=somewhat-behind] { background-color: yellow !important; }
 [data-progress=good], [data-assessment=on-pace] { background-color: palegreen !important; }

@@ -1,9 +1,16 @@
 $(document).on "ready page:change", ->
-  projectMenuButton = document.getElementById("project-menu-button");
-  if projectMenuButton
-    projectMenuButton.addEventListener 'menuselect', (e) ->
-      $.ajax url: $(e.detail.source).data('ajax-url'), method: $(e.detail.source).data('method')
-      return
+
+  $('#project-menu-button').on 'menuselect', (e) ->
+    $.ajax url: $(e.detail.source).data('ajax-url'), method: $(e.detail.source).data('method')
+    return
+
+  $('#quarter-menu-button').on 'menuselect', (e) ->
+    selected = this.MaterialExtMenuButton.getSelectedMenuItem()
+    accordion = document.querySelector('#projects-overview')
+    accordion.MaterialExtAccordion.command({action: 'close'})
+    $('#projects-overview-selected-quarter').html($(selected).html())
+    $('.projects-overview-container').empty()
+    return
 
   $('#projects-overview').on 'toggle', (e) ->
     if e.detail.state == 'open'
