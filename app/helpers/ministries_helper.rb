@@ -50,4 +50,12 @@ module MinistriesHelper
     data
   end
 
+  def aggregate_targets(zones, stream, quarter)
+    targets = {}
+    zones.each do |zone|
+      targets[zone.id] = zone.quarterly_targets.where(quarter: quarter, deliverable: stream.deliverables).group(:deliverable_id).sum(:value)
+    end
+    targets
+  end
+
 end

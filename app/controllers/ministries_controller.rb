@@ -4,7 +4,7 @@ class MinistriesController < ApplicationController
 
   def projects_overview
     @ministry = Ministry.includes(:deliverables).find params[:id]
-    @zones = Zone.includes(:aggregate_ministry_outputs, :ministry_outputs)
+    @zones = Zone.includes(:aggregate_ministry_outputs, :ministry_outputs, :quarterly_targets)
     @quarter = params[:quarter]
     respond_to :js
   end

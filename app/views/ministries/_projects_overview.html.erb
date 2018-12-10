@@ -1,4 +1,5 @@
 <% data = projects_overview_data(@zones, @ministry, @quarter) %>
+<% targets = aggregate_targets(@zones, @ministry, @quarter) %>
 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <tr>
     <th><%= @ministry.name.en %></th>
@@ -6,12 +7,23 @@
       <th class="mdl-data-table__cell--non-numeric"><%= zone.name %></th>
     <% end %>
     <% @ministry.deliverables.each do |deliverable| %>
-    <tr>
-      <td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td>
-      <% data.values.each do |deliverable_values| %>
-        <td><%= deliverable_values[deliverable.id] %></td>
+      <% unless deliverable.disabled? %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td>
+          <% data.each do |zone, deliverable_values| %>
+            <td id="overview-<%= @ministry.id %>-<%= zone.id %>-<%= deliverable.id %>" data-assessment="<%= assessment(targets[zone.id][deliverable.id], deliverable_values[deliverable.id]) if targets[zone.id][deliverable.id] and deliverable_values[deliverable.id] %>">
+              <%= deliverable_values[deliverable.id] %>
+            </td>
+          <% end %>
+        </tr>
       <% end %>
-    </tr>
     <% end %>
   </tr>
 </table>
+<% targets.each do |zone_id, zone_targets| %>
+  <% zone_targets.each do |deliverable_id, target| %>
+    <div class="mdl-tooltip" data-mdl-for="overview-<%= @ministry.id %>-<%= zone_id %>-<%= deliverable_id %>">
+      Target: <%= target %>
+    </div>
+  <% end %>
+<% end %>

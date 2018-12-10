@@ -1,1 +1,3 @@
-$('.projects-overview-container[data-stream="<%= @ministry.id %>"]').html('<%= j render 'projects_overview' %>');
+var container = $('.projects-overview-container[data-stream="<%= @ministry.id %>"]');
+container.html('<%= j render 'projects_overview' %>');
+componentHandler.upgradeElements(container.find('.mdl-tooltip').get());
