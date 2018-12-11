@@ -514,7 +514,7 @@ class AndroidSyncController < ApplicationController
               :data,
               :report_id
           ],
-          edit: [
+          tool: [
               :id,
               :old_id,
 	      :language_id,
