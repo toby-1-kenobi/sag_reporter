@@ -34,4 +34,11 @@ class AggregateMinistryOutput < ActiveRecord::Base
     errors.add(:month, "out of range") unless month_int >=1 and month_int <= 12
   end
 
+  def check_for_duplicates(entry)
+    entries = where(month: entry.month, actual: entry.actual, creator_id: entry.creator_id, state_language_id: entry.state_language_id, deliverable_id: entry.deliverable_id)
+    if entries.size > 0
+      entry.id = entries.first.id
+      entries[1..-1].each &:destroy
+    end
+  end
 end
