@@ -522,8 +522,8 @@ class AndroidSyncController < ApplicationController
 	      :url,
 	      :description,
 	      :status,
-	      {product_categorie_ids: []},
-	      :product_categorie_ids
+	      {product_category_ids: []},
+	      :product_category_ids
           ],
           edit: [
               :id,
