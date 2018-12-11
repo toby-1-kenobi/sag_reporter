@@ -16,7 +16,7 @@ class AggregateMinistryOutput < ActiveRecord::Base
 
   def check_for_duplicates
     entry = self
-    entries = where(month: entry.month, actual: entry.actual, creator_id: entry.creator_id, state_language_id: entry.state_language_id, deliverable_id: entry.deliverable_id)
+    entries = AggregateMinistryOutput.where(month: entry.month, actual: entry.actual, creator_id: entry.creator_id, state_language_id: entry.state_language_id, deliverable_id: entry.deliverable_id)
     if entries.size > 0
       entry.id = entries.first.id
       entries[1..-1].each &:destroy
