@@ -16,8 +16,7 @@ module StateLanguagesHelper
     case deliverable.reporter
     when 'church_team'
       church_mins = ChurchMinistry.joins(:church_team).
-          where('church_teams.state_language_id = ?', state_language_id).
-          where(ministry: deliverable.ministry)
+          where(church_teams: {state_language_id: state_language_id}, ministry: deliverable.ministry)
       # if sub_project
       #   fac_ids = sub_project.language_streams.
       #       where(state_language_id: state_language_id, ministry_id: deliverable.ministry_id).
@@ -35,7 +34,8 @@ module StateLanguagesHelper
           month = outputs.order(:month).last.month
           outputs = outputs.where(month: month)
         end
-        outputs.inject(0) { |sum, mo| sum + mo.value }      end
+        outputs.inject(0) { |sum, mo| sum + mo.value }
+      end
     when 'facilitator'
       lang_streams = LanguageStream.where(project: project, state_language_id: state_language_id, ministry: deliverable.ministry)
       if sub_project
@@ -89,8 +89,17 @@ module StateLanguagesHelper
       end
       results.max
     when 'CH12' # Hours by Volunteer leaders
-      # sum of ST8,
+      # sum of LT10, ST8, ES9, SC8, TR12
       total_hours = 0
+      deliverable_ids = Deliverable.joins(:ministry).where(ministries: {code: 'LT'}, number: 10).pluck :id
+      deliverable_ids += Deliverable.joins(:ministry).where(ministries: {code: 'ST'}, number: 8).pluck :id
+      deliverable_ids += Deliverable.joins(:ministry).where(ministries: {code: 'ES'}, number: 9).pluck :id
+      deliverable_ids += Deliverable.joins(:ministry).where(ministries: {code: 'SC'}, number: 8).pluck :id
+      deliverable_ids += Deliverable.joins(:ministry).where(ministries: {code: 'TR'}, number: 12).pluck :id
+      outputs = MinistryOutput.joins(church_ministry: :church_team).
+          where(actual: true, church_teams: {state_language_id: state_language.id}, deliverable: deliverable_ids).
+          where('month >= ?', first_month).where('month <= ?', last_month)
+      total_hours += outputs.inject(0) { |sum, mo| sum + mo.value }
       total_hours
     else
       Rails.logger.error "Auto calculation for deliverable #{deliverable.id} not implemented."
