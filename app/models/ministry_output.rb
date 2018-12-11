@@ -17,7 +17,7 @@ class MinistryOutput < ActiveRecord::Base
 
   def check_for_duplicates
     entry = self
-    entries = MinistryOutput.where(month: entry.month, actual: entry.actual, state_language_id: entry.state_language_id, deliverable_id: entry.deliverable_id).order(updated_at: :desc)
+    entries = MinistryOutput.where(month: entry.month, actual: entry.actual, curch_ministry_id: entry.church_ministry_id, deliverable_id: entry.deliverable_id).order(updated_at: :desc)
     if entries.size > 0
       entry.id = entries.first.id
       entries.each &:destroy
