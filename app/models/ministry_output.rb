@@ -13,6 +13,17 @@ class MinistryOutput < ActiveRecord::Base
   validate :deliverable_ministry_belongs_to_church_ministry
   validate :year_in_range
   validate :month_in_range
+  before_create :check_for_duplicates
+
+  def check_for_duplicates
+    entry = self
+    entries = MinistryOutput.where(month: entry.month, actual: entry.actual, curch_ministry_id: entry.church_ministry_id, deliverable_id: entry.deliverable_id).order(updated_at: :desc)
+    if entries.size > 0
+      entry.id = entries.first.id
+      entries.each &:destroy
+    end
+  end
+
 
   private
 
