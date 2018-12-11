@@ -13,13 +13,14 @@ class AggregateMinistryOutput < ActiveRecord::Base
   validate :deliverable_is_not_for_church_team_assessment
   validate :year_in_range
   validate :month_in_range
+  before_create :check_for_duplicates
 
   def check_for_duplicates
     entry = self
     entries = AggregateMinistryOutput.where(month: entry.month, actual: entry.actual, creator_id: entry.creator_id, state_language_id: entry.state_language_id, deliverable_id: entry.deliverable_id)
     if entries.size > 0
       entry.id = entries.first.id
-      entries[1..-1].each &:destroy
+      entries.each &:destroy
     end
   end
 
