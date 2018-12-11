@@ -19,7 +19,6 @@ class AndroidSyncController < ApplicationController
         Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id),
         ImpactReport => %w(translation_impact),
         UploadedFile => %w(report_id),
-        MtResource => %w(user_id name language_id cc_share_alike medium status geo_state_id url),
         Organisation => %w(name abbreviation church),
         LanguageProgress => %w(progress_marker_id state_language_id),
         ProgressUpdate => %w(user_id language_progress_id),
@@ -30,7 +29,7 @@ class AndroidSyncController < ApplicationController
         TranslationCode => %w(),
         Translation => %w(language_id content translation_code_id),
         MinistryOutput => %w(deliverable_id month value actual church_ministry_id creator_id comment),
-        ProductCategory => %w(number),
+        ProductCategory => nil,
         Project => %w(name),
         ProjectStream => %w(project_id ministry_id supervisor_id),
         ProjectSupervisor => %w(project_id user_id role),
@@ -38,6 +37,7 @@ class AndroidSyncController < ApplicationController
         FinishLineMarker => nil,
         FinishLineProgress => nil,
         Edit => nil,
+        Tool => nil,
         AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
         LanguageStream => %w(state_language_id ministry_id facilitator_id project_id),
@@ -50,7 +50,7 @@ class AndroidSyncController < ApplicationController
         ImpactReport: %w(progress_markers),
         ChurchTeam: %w(users),
         Project: %w(state_languages),
-        MtResource: %w(product_categories)
+        Tool: %w(product_categories)
     }
     additional_join_tables = {
         Report: %w(ministries),
@@ -67,6 +67,8 @@ class AndroidSyncController < ApplicationController
         additional_entry = entry.id == @external_user.id ? entry : User.new
         additional_entry.attributes.slice(*%w(phone mother_tongue_id interface_language_id email trusted national admin national_curator role_description))
             .merge(external_device_registered: !entry.external_devices.empty?)
+      when Edit
+        {created_at: entry.created_at.to_i}
       else
         {}
       end
@@ -213,8 +215,10 @@ class AndroidSyncController < ApplicationController
     tables[ProjectProgress] = %w(project_stream_id month progress comment approved) if @version >= "1.4.1"
     tables[FinishLineMarker] = %w(name description number) if @version >= "1.4.2"
     tables[FinishLineProgress] = %w(language_id finish_line_marker_id status year) if @version >= "1.4.2"
-    tables[FinishLineProgress] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:82"
     tables[Ministry] << "short_form_id" if @version >= "1.4.2:85"
+    tables[Edit] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:87"
+    tables[ProductCategory] = %w(name_id) if @version >= "1.4.2:90"
+    tables[Tool] = %w(language_id url description creator_id status) if @version >= "1.4.2:90"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
@@ -257,7 +261,7 @@ class AndroidSyncController < ApplicationController
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
             restricted_ids = restrict(table)
-            logger.debug "Update #{table.name} at: #{restricted_ids}. Those are offline already: #{offline_ids}"
+            logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
             table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
                         last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
                 .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
@@ -310,9 +314,9 @@ class AndroidSyncController < ApplicationController
       ensure
         @final_file.close unless @final_file.closed?
         logger.debug "File writing finished"
-        @final_file.open
-        logger.debug @final_file.read
-        @final_file.close
+        #@final_file.open
+        #logger.debug @final_file.read
+        #@final_file.close
         File.rename(@final_file, "#{@final_file.path}.txt")
         ActiveRecord::Base.connection.close
       end
@@ -509,6 +513,17 @@ class AndroidSyncController < ApplicationController
               :old_id,
               :data,
               :report_id
+          ],
+          tool: [
+              :id,
+              :old_id,
+	      :language_id,
+              :creator_id,
+	      :url,
+	      :description,
+	      :status,
+	      {product_categorie_ids: []},
+	      :product_categorie_ids
           ],
           edit: [
               :id,
