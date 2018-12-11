@@ -517,6 +517,17 @@ class AndroidSyncController < ApplicationController
           edit: [
               :id,
               :old_id,
+	      :language_id,
+              :creator_id,
+	      :url,
+	      :description,
+	      :status,
+	      {product_categorie_ids: []},
+	      :product_categorie_ids
+          ],
+          edit: [
+              :id,
+              :old_id,
               :model_klass_name,
               :record_id,
               :attribute_name,
