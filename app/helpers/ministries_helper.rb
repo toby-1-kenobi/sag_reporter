@@ -46,6 +46,10 @@ module MinistriesHelper
           data[zone][del_id] += mo_sub_list.select{ |mo| mo.month == max_month }.sum(&:value)
         end
       end
+      # auto calculated deliverables
+      stream.deliverables.auto.each do |deliverable|
+        data[zone][deliverable.id] = auto_actuals(zone, nil, deliverable, first_month, last_month)
+      end
     end
     data
   end
