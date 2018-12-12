@@ -37,7 +37,7 @@ class SubProjectsController < ApplicationController
     @quarter = params[:quarter]
     respond_to do |format|
       format.pdf do
-        pdf = QuarterlyReportPdf.new(@project, @sub_project, @quarter)
+        pdf = QuarterlyReportPdf.new(@project, @sub_project, @quarter, view_context)
         send_data pdf.render, filename: "#{project_name}_quarterly_report.pdf", type: 'application/pdf'
       end
     end
