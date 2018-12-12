@@ -4,10 +4,9 @@ class QuarterlyReportPdf < Prawn::Document
     super(page_layout: :portrait, top_margin: 60)
     @view = view_context
     header("#{quarter} (#{@view.pretty_quarter(quarter, true)})", sub_project ? sub_project.name : project.name, "printed #{Date.today.strftime('%Y-%m-%d')}")
+    state_languages = project.state_languages.order(:id)
     if sub_project
-      state_languages = sub_project.quarterly_evaluations.group_by(&:state_language)
-    else
-      state_languages = project.quarterly_evaluations.group_by(&:state_language)
+      state_languages = state_languages.to_a.select{ |sl| sub_project.language_streams.exists?(state_language_id: sl.id) }
     end
     multi_state = project.geo_states.uniq.count > 1
     text "Quarterly Report for #{project.name}, #{quarter[0..3]} quarter #{quarter[-1]}", size: 20
@@ -16,13 +15,46 @@ class QuarterlyReportPdf < Prawn::Document
     text @view.pretty_quarter(quarter), size: 16
     move_down 15
     first_language_loop = true
-    state_languages.each do |state_language, evaluations|
+    state_languages.each do |state_language|
       start_new_page unless first_language_loop
       text state_language.name(multi_state), size: 16
-      evaluations.each do |quarterly_evaluation|
+      streams = project.ministries.order(:code)
+      if sub_project
+        streams = streams.to_a.select {|s| sub_project.language_streams.exists?(state_language_id: state_language.id, ministry_id: s.id)}
+      end
+      streams.each do |stream|
         move_down 3
-        text "<b>#{quarterly_evaluation.ministry.name.en}</b>", inline_format: true
-        quarterly_report(quarterly_evaluation)
+        text "<b>#{stream.name.en}</b>", inline_format: true
+
+        values_table = []
+        stream.deliverables.order(:number).each do |deliverable|
+          unless deliverable.disabled?
+            target = QuarterlyTarget.find_by(state_language: state_language, deliverable: deliverable, quarter: quarter)
+            target_value = target ? target.value : '?'
+            actual = @view.quarterly_actual(state_language.id, deliverable, quarter, project, sub_project)
+            values_table << [deliverable.short_form.en, target_value, actual]
+          end
+        end
+
+        if sub_project
+          sp_id = sub_project.id
+        else
+          sp_ids = project.language_streams.where(state_language: state_language, ministry: stream).pluck(:sub_project_id).uniq
+          sp_id = sp_ids.length == 1 ? sp_ids[0] : nil
+        end
+        quarterly_evaluation = QuarterlyEvaluation.find_by(
+            project: project,
+            sub_project_id: sp_id,
+            state_language: state_language,
+            ministry: stream,
+            quarter: quarter
+        )
+
+        if quarterly_evaluation
+          quarterly_report(values_table, quarterly_evaluation)
+        else
+          table values_table, width: 290
+        end
       end
       first_language_loop = false
     end
@@ -41,25 +73,25 @@ class QuarterlyReportPdf < Prawn::Document
     end
   end
 
-  def quarterly_report(quarterly_evaluation)
-
-    values_table = []
-    quarterly_evaluation.ministry.deliverables.order(:number).each do |deliverable|
-      unless deliverable.disabled?
-        target = QuarterlyTarget.find_by(state_language: quarterly_evaluation.state_language, deliverable: deliverable, quarter: quarterly_evaluation.quarter)
-        target_value = target ? target.value : '?'
-        actual = @view.quarterly_actual(quarterly_evaluation.state_language_id, deliverable, quarterly_evaluation.quarter, quarterly_evaluation.project, quarterly_evaluation.sub_project)
-        values_table << [deliverable.short_form.en, target_value, actual]
-      end
-    end
-    left = make_table values_table, width: 180
+  def quarterly_report(values_table, quarterly_evaluation)
 
     narrative_questions = []
     (1..4).each do |i|
-      narrative_questions << [I18n.t("narrative_questions.q#{i}_html")]
-      narrative_questions << [quarterly_evaluation.send("question_#{i}")]
+      answer = quarterly_evaluation.send("question_#{i}")
+      if answer.present?
+        narrative_questions << [I18n.t("narrative_questions.q#{i}_html")]
+        narrative_questions << [answer]
+      end
     end
-    middle = make_table narrative_questions, cell_style: {borders: [], inline_format: true}, width: 200, row_colors: ["F0F0F0", "FFFFCC"]
+    if narrative_questions.any?
+      middle = make_table narrative_questions, cell_style: {borders: [], inline_format: true}, width: 200, row_colors: ["F0F0F0", "FFFFCC"]
+      left_width, right_width = [180, 160]
+    else
+      middle = ''
+      left_width, right_width = [290, 240]
+    end
+
+    left = make_table values_table, width: left_width
 
     report = []
     if quarterly_evaluation.report.present?
@@ -67,12 +99,12 @@ class QuarterlyReportPdf < Prawn::Document
       quarterly_evaluation.report.pictures.each do |picture|
         if Rails.env.production?
           begin
-            report << [{ image: open(picture.ref_url), image_width: 160 }] if picture.ref?
+            report << [{ image: open(picture.ref_url), image_width: right_width }] if picture.ref?
           rescue OpenURI::HTTPError => e
             report << ['image missing']
           end
         else
-          report << [{ image: "#{Rails.root}/public#{picture.ref_url}", image_width: 160 }] if picture.ref?
+          report << [{ image: "#{Rails.root}/public#{picture.ref_url}", image_width: right_width }] if picture.ref?
         end
       end
     end
@@ -82,8 +114,7 @@ class QuarterlyReportPdf < Prawn::Document
     else
       report << ['pending approval by manager']
     end
-    Rails.logger.debug report
-    right = make_table report, cell_style: {borders: []}, width: 160
+    right = make_table report, cell_style: {borders: []}, width: right_width
 
     table [[left, middle, right]], cell_style: {borders: []}
   end
