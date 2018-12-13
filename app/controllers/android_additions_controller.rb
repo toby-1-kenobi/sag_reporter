@@ -117,7 +117,7 @@ class AndroidAdditionsController < ApplicationController
         users_device.update name: device_name unless users_device.name == device_name
         app_version = login_params["app_version"]
         users_device.update app_version: app_version unless users_device.app_version == app_version
-        if !app_version || app_version < "1.4.0:67"
+        if !app_version || app_version < "1.4.2:91"
             send_message = {
                 status: "Your App version is out of date and must be updated:\n" +
                     "https://play.google.com/store/apps/details?id=org.sil.forchurches.rev79"
