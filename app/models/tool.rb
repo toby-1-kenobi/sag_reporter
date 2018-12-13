@@ -7,6 +7,7 @@ class Tool < ActiveRecord::Base
 
   belongs_to :creator, class_name: 'User'
   belongs_to :language
+  belongs_to :finish_line_marker
   has_and_belongs_to_many :product_categories, after_add: :update_self, after_remove: :update_self
 
   validates :url, presence: true
