@@ -219,6 +219,7 @@ class AndroidSyncController < ApplicationController
     tables[Edit] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:87"
     tables[ProductCategory] = %w(name_id) if @version >= "1.4.2:90"
     tables[Tool] = %w(language_id url description creator_id status) if @version >= "1.4.2:90"
+    tables[Tool] << "finish_line_marker_id" if @version >= "1.4.2:92"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
@@ -517,13 +518,14 @@ class AndroidSyncController < ApplicationController
           tool: [
               :id,
               :old_id,
-	      :language_id,
+              :language_id,
               :creator_id,
-	      :url,
-	      :description,
-	      :status,
-	      {product_category_ids: []},
-	      :product_category_ids
+              :url,
+              :description,
+              :status,
+              :finish_line_marker_id,
+              {product_category_ids: []},
+              :product_category_ids
           ],
           edit: [
               :id,
