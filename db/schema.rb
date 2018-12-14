@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181205203200) do
+ActiveRecord::Schema.define(version: 20181210124549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -672,7 +672,17 @@ ActiveRecord::Schema.define(version: 20181205203200) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "number",     null: false
+    t.integer  "name_id",    null: false
   end
+
+  add_index "product_categories", ["name_id"], name: "index_product_categories_on_name_id", using: :btree
+
+  create_table "product_categories_tools", id: false, force: :cascade do |t|
+    t.integer "tool_id",             null: false
+    t.integer "product_category_id", null: false
+  end
+
+  add_index "product_categories_tools", ["tool_id", "product_category_id"], name: "index_tools_product_categories_on_t_and_pc", unique: true, using: :btree
 
   create_table "progress_markers", force: :cascade do |t|
     t.string   "name"
@@ -931,6 +941,19 @@ ActiveRecord::Schema.define(version: 20181205203200) do
   add_index "supervisor_feedbacks", ["state_language_id"], name: "index_supervisor_feedbacks_on_state_language_id", using: :btree
   add_index "supervisor_feedbacks", ["supervisor_id"], name: "index_supervisor_feedbacks_on_supervisor_id", using: :btree
 
+  create_table "tools", force: :cascade do |t|
+    t.integer  "language_id",             null: false
+    t.integer  "creator_id",              null: false
+    t.text     "url",                     null: false
+    t.text     "description",             null: false
+    t.integer  "status",      default: 0, null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "tools", ["creator_id"], name: "index_tools_on_creator_id", using: :btree
+  add_index "tools", ["language_id"], name: "index_tools_on_language_id", using: :btree
+
   create_table "topics", force: :cascade do |t|
     t.string   "name",                                               null: false
     t.text     "description"
@@ -1106,6 +1129,7 @@ ActiveRecord::Schema.define(version: 20181205203200) do
   add_foreign_key "people", "users"
   add_foreign_key "phone_messages", "users"
   add_foreign_key "populations", "languages"
+  add_foreign_key "product_categories", "translation_codes", column: "name_id"
   add_foreign_key "progress_markers", "topics"
   add_foreign_key "progress_updates", "language_progresses"
   add_foreign_key "progress_updates", "users"
@@ -1143,6 +1167,8 @@ ActiveRecord::Schema.define(version: 20181205203200) do
   add_foreign_key "supervisor_feedbacks", "ministries"
   add_foreign_key "supervisor_feedbacks", "state_languages"
   add_foreign_key "supervisor_feedbacks", "users", column: "facilitator_id"
+  add_foreign_key "tools", "languages"
+  add_foreign_key "tools", "users", column: "creator_id"
   add_foreign_key "translation_progresses", "chapters"
   add_foreign_key "translation_progresses", "languages"
   add_foreign_key "translations", "languages"
