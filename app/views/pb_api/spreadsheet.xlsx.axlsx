@@ -1,0 +1,2 @@
+wb = xlsx_package.workbook
+render :partial => 'languages_sheet', :locals => {:wb => wb}

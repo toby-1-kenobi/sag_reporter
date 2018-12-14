@@ -139,6 +139,7 @@ Rails.application.routes.draw do
   scope :pb, controller: 'pb_api' do
     post 'authenticate', action: :jwt
     get 'language/:iso', action: :language_details
+    get 'spreadsheet', action: :spreadsheet, as: 'pb_spreadsheet'
   end
 
   resources :people do

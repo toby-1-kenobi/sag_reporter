@@ -1,0 +1,5 @@
+wb.add_worksheet(name: 'Languages') do |sheet|
+  @languages.each do |language|
+    sheet.add_row [language.iso, language.name]
+  end
+end

@@ -58,6 +58,11 @@ gem 'prawn'
 gem 'prawn-table'
 gem 'prawn-graph'
 
+# Output excel files
+gem 'rubyzip', '~> 1.1.0'
+gem 'axlsx', '2.1.0.pre'
+gem 'axlsx_rails'
+
 # Custom icon fonts
 gem 'fontcustom'
 

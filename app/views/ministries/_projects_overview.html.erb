@@ -10,8 +10,8 @@
       <% unless deliverable.disabled? %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td>
-          <% data.each do |zone, deliverable_values| %>
-            <td id="overview-<%= @ministry.id %>-<%= zone.id %>-<%= deliverable.id %>" data-assessment="<%= assessment(targets[zone.id][deliverable.id], deliverable_values[deliverable.id]) if targets[zone.id][deliverable.id] and deliverable_values[deliverable.id] %>">
+          <% data.each do |zone_id, deliverable_values| %>
+            <td id="overview-<%= @ministry.id %>-<%= zone_id %>-<%= deliverable.id %>" data-assessment="<%= assessment(targets[zone_id][deliverable.id], deliverable_values[deliverable.id]) if targets[zone_id][deliverable.id] and deliverable_values[deliverable.id] %>">
               <%= deliverable_values[deliverable.id] %>
             </td>
           <% end %>

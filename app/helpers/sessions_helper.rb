@@ -59,6 +59,9 @@ module SessionsHelper
         format.pdf do
           redirect_to login_url
         end
+        format.xlsx do
+          redirect_to login_url
+        end
       end
     end
   end
