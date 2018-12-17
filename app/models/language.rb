@@ -17,7 +17,7 @@ class Language < ActiveRecord::Base
       currently_in_progress: 1,
       in_progress_in_neighbouring_country: 3
   }
-
+@languages
   enum egids: {
       international: 0,
       national: 1,

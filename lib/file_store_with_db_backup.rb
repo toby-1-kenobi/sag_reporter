@@ -32,11 +32,16 @@ class FileStoreWithDbBackup < ActiveSupport::Cache::FileStore
     now = Time.now
     CacheBackup.where('expires > ? OR expires IS NULL', now).find_each do |entry|
       if entry.name and entry.value
-        if entry.expires.present?
-          expires_in_seconds = entry.expires - now
-          write(entry.name, YAML::load(entry.value), epires_in: expires_in_seconds.seconds)
-        else
-          write(entry.name, YAML::load(entry.value))
+        begin
+          if entry.expires.present?
+            expires_in_seconds = entry.expires - now
+            write(entry.name, YAML::load(entry.value), expires_in: expires_in_seconds.seconds)
+          else
+            write(entry.name, YAML::load(entry.value))
+          end
+        rescue ArgumentError => e
+          Rails.logger.error "Failed to load cached value from database"
+          Rails.logger.error "Row ID: #{entry.id}, error: #{e.message}"
         end
       end
     end

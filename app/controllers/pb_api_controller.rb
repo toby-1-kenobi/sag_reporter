@@ -42,4 +42,19 @@ class PbApiController < ApplicationController
     }
   end
 
+  def spreadsheet
+    require_login
+    if logged_in_user.national? and logged_in_user.trusted?
+      @languages = Language.where.not(iso: nil)
+      respond_to do |format|
+        format.xlsx {
+          response.headers['Content-Disposition'] = 'attachment; filename="LCI_language_data.xlsx"'
+        }
+      end
+    else
+      flash['error'] = 'insufficient privileges'
+      redirect_to root_path
+    end
+  end
+
 end

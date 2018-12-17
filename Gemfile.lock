@@ -44,6 +44,13 @@ GEM
     arel (6.0.4)
     autoprefixer-rails (9.1.1)
       execjs
+    axlsx (2.1.0.pre)
+      htmlentities (~> 4.3.1)
+      nokogiri (>= 1.4.1)
+      rubyzip (~> 1.1.7)
+    axlsx_rails (0.5.2)
+      actionpack (>= 3.1)
+      axlsx (>= 2.0.1)
     backports (3.11.3)
     bcrypt (3.1.12)
     binding_of_caller (0.8.0)
@@ -160,6 +167,7 @@ GEM
       signet (~> 0.7)
     groupdate (4.0.1)
       activesupport (>= 4.2)
+    htmlentities (4.3.4)
     httparty (0.16.2)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
@@ -302,6 +310,7 @@ GEM
     ruby-progressbar (1.10.0)
     ruby_dep (1.5.0)
     ruby_http_client (3.3.0)
+    rubyzip (1.1.7)
     sass (3.5.7)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -371,6 +380,8 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_otp
+  axlsx (= 2.1.0.pre)
+  axlsx_rails
   bcrypt (~> 3.1.7)
   byebug
   capybara_minitest_spec (= 1.0.6)
@@ -409,6 +420,7 @@ DEPENDENCIES
   rails4-autocomplete
   rails_12factor
   recaptcha
+  rubyzip (~> 1.1.0)
   sassc-rails
   sdoc (~> 0.4.0)
   sendgrid_actionmailer_adapter

@@ -8,19 +8,8 @@ $(document).on "ready page:change", ->
 
   $('#get-national-chart-link').click()
 
-  $('.home-link').on 'mouseover', ->
-    $(this).removeClass('z-depth-2').addClass('z-depth-3 lighten-2')
-    return
-
-  $('.home-link').on 'mouseout', ->
-    $(this).removeClass('z-depth-3 lighten-2').addClass('z-depth-2')
-    return
-
-  $('.home-link').on 'click', ->
-    $(this).removeClass('z-depth-3')
-    return
-
   $('#report-tasks-trigger').on 'click', ->
+    console.log 'report tasks'
     $('#report-dialog')[0].showModal()
     return
 
@@ -29,6 +18,7 @@ $(document).on "ready page:change", ->
     return
 
   $('#progress-tasks-trigger').on 'click', ->
+    console.log 'progress tasks'
     $('#progress-dialog')[0].showModal()
     return
 
