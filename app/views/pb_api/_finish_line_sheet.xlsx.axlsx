@@ -1,0 +1,9 @@
+wb.add_worksheet(name: 'Finish Line Status') do |sheet|
+  title = sheet.styles.add_style(b: true)
+  sheet.add_row ['Language', 'Marker', 'Status'], style: title
+  @languages.each do |language|
+    language.finish_line_progresses.where(year: nil).each do |flp|
+      sheet.add_row [language.iso, flp.finish_line_marker.name, flp.status.humanize]
+    end
+  end
+end

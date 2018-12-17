@@ -1,5 +1,7 @@
 wb.add_worksheet(name: 'Languages') do |sheet|
+  title = sheet.styles.add_style(b: true)
+  sheet.add_row ['ISO code', 'Name', 'Sensitivity'], style: title
   @languages.each do |language|
-    sheet.add_row [language.iso, language.name]
+    sheet.add_row [language.iso, language.name, language.sensitivity.humanize]
   end
 end
