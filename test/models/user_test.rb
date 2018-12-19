@@ -59,19 +59,6 @@ describe User do
     value(user).must_be :persisted?
   end
 
-  it 'wont be destroyed with event' do
-    event = Event.new(
-        event_label: 'hi',
-        event_date: Time.now,
-        geo_state: FactoryBot.build(:geo_state),
-        participant_amount: 0,
-        record_creator: user
-    )
-    event.save!
-    user.destroy
-    value(user).must_be :persisted?
-  end
-
   it 'wont be destroyed with person' do
     person = Person.new(name: 'jpu = oe', record_creator: user, geo_state: FactoryBot.build(:geo_state))
     person.save!
@@ -287,6 +274,7 @@ describe User do
 
   it 'must update timestamp when a geo_state is added' do
     init_value = user.updated_at
+    travel 1.day
     user.geo_states << FactoryBot.create(:geo_state)
     user.reload
     _(user.updated_at).must_be :>, init_value
@@ -297,6 +285,7 @@ describe User do
     user.geo_states << state
     user.reload
     init_value = user.updated_at
+    travel 1.day
     user.geo_states.delete state
     user.reload
     _(user.updated_at).must_be :>, init_value

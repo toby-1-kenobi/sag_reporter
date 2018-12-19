@@ -20,6 +20,7 @@ describe ProjectLanguage do
     project = FactoryBot.create(:project)
     project_language = FactoryBot.create(:project_language, project: project)
     init_value = project.updated_at
+    travel 1.day
     project_language.destroy
     project.reload
     _(project.updated_at).must_be :>, init_value
@@ -29,6 +30,7 @@ describe ProjectLanguage do
     project = FactoryBot.create(:project)
     project_language = FactoryBot.create(:project_language, project: project)
     init_value = project.updated_at
+    travel 1.day
     project_language.state_language = FactoryBot.create(:state_language)
     project_language.save
     project.reload

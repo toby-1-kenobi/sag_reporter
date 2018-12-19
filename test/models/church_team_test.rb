@@ -11,6 +11,7 @@ describe ChurchTeam do
   it "must update timestamp when a user is added" do
     church_team.save
     init_value = church_team.updated_at
+    travel 1.day
     church_team.users << FactoryBot.create(:user)
     church_team.reload
     _(church_team.updated_at).must_be :>, init_value
@@ -22,6 +23,7 @@ describe ChurchTeam do
     church_team.users << user
     church_team.reload
     init_value = church_team.updated_at
+    travel 1.day
     church_team.users.destroy user
     church_team.reload
     _(church_team.updated_at).must_be :>, init_value

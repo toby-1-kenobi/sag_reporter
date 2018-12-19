@@ -13,6 +13,7 @@ describe MtResource do
   it "must update timestamp when category is added" do
     mt_resource.save
     init_value = mt_resource.updated_at
+    travel 1.day
     mt_resource.product_categories << FactoryBot.create(:product_category)
     mt_resource.reload
     _(mt_resource.updated_at).must_be :>, init_value
@@ -24,6 +25,7 @@ describe MtResource do
     mt_resource.product_categories << cat
     mt_resource.reload
     init_value = mt_resource.updated_at
+    travel 1.day
     mt_resource.product_categories.destroy cat
     mt_resource.reload
     _(mt_resource.updated_at).must_be :>, init_value
