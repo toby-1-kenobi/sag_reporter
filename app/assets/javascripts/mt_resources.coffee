@@ -6,7 +6,7 @@ personCount = 0
 
 addField = ->
   personCount += 1
-  newField = $('<input type="text" name="person__' + personCount + '" value="" data-autocomplete="/events/autocomplete_person_name" />')
+  newField = $('<input type="text" name="person__' + personCount + '" value="" data-autocomplete="/reports/autocomplete_person_name" />')
   $(this).off 'keypress', addField
   newField.on 'keypress', addField
   newField.hide()

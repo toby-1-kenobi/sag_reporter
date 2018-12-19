@@ -5,7 +5,6 @@ module ReportType
   included do
     delegate :content, to: :report
     delegate :reporter, to: :report
-    delegate :event, to: :report
     delegate :report_date, to: :report
     delegate :geo_state, to: :report
     delegate :languages, to: :report

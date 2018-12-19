@@ -5,7 +5,6 @@ class Report < ActiveRecord::Base
 	enum status: [ :active, :archived ]
 
 	belongs_to :reporter, class_name: 'User'
-	belongs_to :event
   belongs_to :planning_report, inverse_of: :report, dependent: :destroy
   belongs_to :impact_report, inverse_of: :report, touch: true, dependent: :destroy
   belongs_to :challenge_report, inverse_of: :report, dependent: :destroy
@@ -217,7 +216,7 @@ class Report < ActiveRecord::Base
   private
 
   def date_init
-    self.report_date ||= self.event ? self.event.event_date : Date.current
+    self.report_date ||= Date.current
   end
 
   def at_least_one_subtype

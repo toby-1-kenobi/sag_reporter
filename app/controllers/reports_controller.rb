@@ -32,6 +32,8 @@ class ReportsController < ApplicationController
     head :forbidden unless logged_in_user.trusted? or logged_in_user?(@report.reporter)
   end
 
+  autocomplete :person, :name
+
   def new
   	@report = Report.new
     # build some things for the nested forms to hang from

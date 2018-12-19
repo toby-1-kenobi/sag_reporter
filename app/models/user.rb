@@ -11,7 +11,6 @@ class User < ActiveRecord::Base
 
 
   has_many :reports, foreign_key: 'reporter_id', inverse_of: :reporter, dependent: :restrict_with_error
-  has_many :events, inverse_of: :record_creator, dependent: :restrict_with_error
   has_many :people, inverse_of: :record_creator, dependent: :restrict_with_error
   has_many :progress_updates, dependent: :restrict_with_error
   belongs_to :mother_tongue, class_name: 'Language', foreign_key: 'mother_tongue_id'

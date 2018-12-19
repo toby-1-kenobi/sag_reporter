@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181219015353) do
+ActiveRecord::Schema.define(version: 20181219043934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -216,34 +216,6 @@ ActiveRecord::Schema.define(version: 20181219015353) do
   end
 
   add_index "edits_geo_states", ["edit_id", "geo_state_id"], name: "index_edits_geo_states_on_edit_id_and_geo_state_id", unique: true, using: :btree
-
-  create_table "events", force: :cascade do |t|
-    t.integer  "user_id",            null: false
-    t.string   "event_label",        null: false
-    t.date     "event_date",         null: false
-    t.integer  "participant_amount"
-    t.integer  "purpose"
-    t.text     "content"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-    t.string   "district_name"
-    t.string   "sub_district_name"
-    t.string   "village"
-    t.integer  "geo_state_id",       null: false
-    t.integer  "sub_district_id"
-  end
-
-  add_index "events", ["event_date"], name: "index_events_on_event_date", using: :btree
-  add_index "events", ["geo_state_id"], name: "index_events_on_geo_state_id", using: :btree
-  add_index "events", ["sub_district_id"], name: "index_events_on_sub_district_id", using: :btree
-  add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
-
-  create_table "events_languages", id: false, force: :cascade do |t|
-    t.integer "event_id",    null: false
-    t.integer "language_id", null: false
-  end
-
-  add_index "events_languages", ["event_id", "language_id"], name: "index_events_languages", unique: true, using: :btree
 
   create_table "external_devices", force: :cascade do |t|
     t.string   "device_id"
@@ -809,7 +781,6 @@ ActiveRecord::Schema.define(version: 20181219015353) do
     t.boolean  "mt_church"
     t.boolean  "needs_society"
     t.boolean  "needs_church"
-    t.integer  "event_id"
     t.integer  "geo_state_id",                            null: false
     t.date     "report_date",                             null: false
     t.integer  "planning_report_id"
@@ -827,7 +798,6 @@ ActiveRecord::Schema.define(version: 20181219015353) do
 
   add_index "reports", ["challenge_report_id"], name: "index_reports_on_challenge_report_id", using: :btree
   add_index "reports", ["church_team_id"], name: "index_reports_on_church_team_id", using: :btree
-  add_index "reports", ["event_id"], name: "index_reports_on_event_id", using: :btree
   add_index "reports", ["geo_state_id"], name: "index_reports_on_geo_state_id", using: :btree
   add_index "reports", ["impact_report_id"], name: "index_reports_on_impact_report_id", using: :btree
   add_index "reports", ["planning_report_id"], name: "index_reports_on_planning_report_id", using: :btree
@@ -1040,8 +1010,6 @@ ActiveRecord::Schema.define(version: 20181219015353) do
   add_foreign_key "districts", "geo_states"
   add_foreign_key "edits", "users"
   add_foreign_key "edits", "users", column: "curated_by_id"
-  add_foreign_key "events", "geo_states"
-  add_foreign_key "events", "users"
   add_foreign_key "external_devices", "users"
   add_foreign_key "facilitator_feedbacks", "church_ministries"
   add_foreign_key "facilitator_feedbacks", "users", column: "plan_team_member_id"
@@ -1106,7 +1074,6 @@ ActiveRecord::Schema.define(version: 20181219015353) do
   add_foreign_key "report_streams", "reports"
   add_foreign_key "reports", "challenge_reports"
   add_foreign_key "reports", "church_teams"
-  add_foreign_key "reports", "events"
   add_foreign_key "reports", "geo_states"
   add_foreign_key "reports", "impact_reports"
   add_foreign_key "reports", "planning_reports"
