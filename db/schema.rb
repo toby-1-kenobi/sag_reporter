@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181219000214) do
+ActiveRecord::Schema.define(version: 20181219013126) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -255,15 +255,6 @@ ActiveRecord::Schema.define(version: 20181219000214) do
   end
 
   add_index "events_languages", ["event_id", "language_id"], name: "index_events_languages", unique: true, using: :btree
-
-  create_table "events_purposes", id: false, force: :cascade do |t|
-    t.integer "event_id"
-    t.integer "purpose_id"
-  end
-
-  add_index "events_purposes", ["event_id", "purpose_id"], name: "index_events_purposes_on_event_id_and_purpose_id", unique: true, using: :btree
-  add_index "events_purposes", ["event_id"], name: "index_events_purposes_on_event_id", using: :btree
-  add_index "events_purposes", ["purpose_id"], name: "index_events_purposes_on_purpose_id", using: :btree
 
   create_table "external_devices", force: :cascade do |t|
     t.string   "device_id"
@@ -760,13 +751,6 @@ ActiveRecord::Schema.define(version: 20181219000214) do
 
   add_index "projects", ["name"], name: "index_projects_on_name", using: :btree
 
-  create_table "purposes", force: :cascade do |t|
-    t.string   "name",        null: false
-    t.string   "description", null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
   create_table "quarterly_evaluations", force: :cascade do |t|
     t.integer  "project_id",                        null: false
     t.integer  "sub_project_id"
@@ -1071,8 +1055,6 @@ ActiveRecord::Schema.define(version: 20181219000214) do
   add_foreign_key "edits", "users", column: "curated_by_id"
   add_foreign_key "events", "geo_states"
   add_foreign_key "events", "users"
-  add_foreign_key "events_purposes", "events"
-  add_foreign_key "events_purposes", "purposes"
   add_foreign_key "external_devices", "users"
   add_foreign_key "facilitator_feedbacks", "church_ministries"
   add_foreign_key "facilitator_feedbacks", "users", column: "plan_team_member_id"
