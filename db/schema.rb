@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181219013126) do
+ActiveRecord::Schema.define(version: 20181219015353) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,17 +39,6 @@ ActiveRecord::Schema.define(version: 20181219013126) do
   end
 
   add_index "app_benefits", ["name"], name: "index_app_benefits_on_name", using: :btree
-
-  create_table "attendances", force: :cascade do |t|
-    t.integer  "person_id",  null: false
-    t.integer  "event_id",   null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "attendances", ["event_id", "person_id"], name: "index_attendances_on_event_id_and_person_id", unique: true, using: :btree
-  add_index "attendances", ["event_id"], name: "index_attendances_on_event_id", using: :btree
-  add_index "attendances", ["person_id"], name: "index_attendances_on_person_id", using: :btree
 
   create_table "books", force: :cascade do |t|
     t.string   "name",         null: false
@@ -1031,8 +1020,6 @@ ActiveRecord::Schema.define(version: 20181219013126) do
   add_foreign_key "aggregate_ministry_outputs", "deliverables"
   add_foreign_key "aggregate_ministry_outputs", "state_languages"
   add_foreign_key "aggregate_ministry_outputs", "users", column: "creator_id"
-  add_foreign_key "attendances", "events"
-  add_foreign_key "attendances", "people"
   add_foreign_key "chapters", "books"
   add_foreign_key "church_ministries", "church_teams"
   add_foreign_key "church_ministries", "ministries"
