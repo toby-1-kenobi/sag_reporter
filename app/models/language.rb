@@ -54,7 +54,6 @@ class Language < ActiveRecord::Base
   has_many :mt_resources, dependent: :restrict_with_error
   has_and_belongs_to_many :user_speakers, class_name: 'User'
   has_and_belongs_to_many :reports
-  has_and_belongs_to_many :events
   has_many :state_languages, dependent: :destroy
   has_many :language_progresses, through: :state_languages
   has_many :progress_markers, through: :language_progresses

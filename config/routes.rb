@@ -48,10 +48,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :events do
-    get :autocomplete_person_name, :on => :collection
-  end
-
   get 'events/new'
 
   resources :facilitator_feedbacks, only: [:create, :update]
@@ -184,6 +180,7 @@ Rails.application.routes.draw do
   resources :reports do
     collection do
       post 'spreadsheet', to: 'reports#spreadsheet', as: 'spreadsheet'
+      get :autocomplete_person_name
     end
     member do
       patch 'archive'
