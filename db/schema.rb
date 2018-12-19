@@ -11,24 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181210124549) do
+ActiveRecord::Schema.define(version: 20181219000214) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "action_points", force: :cascade do |t|
-    t.text     "content",                       null: false
-    t.integer  "responsible_id",                null: false
-    t.integer  "status",            default: 0, null: false
-    t.integer  "record_creator_id"
-    t.integer  "event_id"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
-  end
-
-  add_index "action_points", ["event_id"], name: "index_action_points_on_event_id", using: :btree
-  add_index "action_points", ["record_creator_id"], name: "index_action_points_on_record_creator_id", using: :btree
-  add_index "action_points", ["responsible_id"], name: "index_action_points_on_responsible_id", using: :btree
 
   create_table "aggregate_ministry_outputs", force: :cascade do |t|
     t.string   "month",             null: false
@@ -1058,9 +1044,6 @@ ActiveRecord::Schema.define(version: 20181210124549) do
   add_index "zones", ["name"], name: "index_zones_on_name", using: :btree
   add_index "zones", ["pm_description_type"], name: "index_zones_on_pm_description_type", using: :btree
 
-  add_foreign_key "action_points", "events"
-  add_foreign_key "action_points", "people", column: "responsible_id"
-  add_foreign_key "action_points", "users", column: "record_creator_id"
   add_foreign_key "aggregate_ministry_outputs", "deliverables"
   add_foreign_key "aggregate_ministry_outputs", "state_languages"
   add_foreign_key "aggregate_ministry_outputs", "users", column: "creator_id"

@@ -8,11 +8,6 @@ class Event < ActiveRecord::Base
   has_many :attendances, dependent: :destroy
   has_many :people, through: :attendances
   has_many :reports
-  has_many :action_points
-
-  accepts_nested_attributes_for :action_points,
-                                allow_destroy: true,
-                                reject_if: :all_blank
 
   accepts_nested_attributes_for :reports,
                                 reject_if: :all_blank
