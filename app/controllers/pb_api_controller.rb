@@ -45,7 +45,7 @@ class PbApiController < ApplicationController
   def spreadsheet
     require_login
     if logged_in_user.national? and logged_in_user.trusted?
-      @languages = Language.where.not(iso: nil)
+      @languages = Language.includes(:engaged_organisations, :translating_organisations, finish_line_progresses: [:finish_line_marker]).where.not(iso: nil).order(:iso)
       respond_to do |format|
         format.xlsx {
           response.headers['Content-Disposition'] = 'attachment; filename="LCI_language_data.xlsx"'
