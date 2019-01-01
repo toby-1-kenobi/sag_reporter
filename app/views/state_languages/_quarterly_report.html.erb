@@ -22,7 +22,7 @@
       <%= f.label "question_#{i}".to_sym, t("narrative_questions.q#{i}_html") %>
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
         <i class="material-icons mdl-textfield__icon">question_answer</i>
-        <%= f.text_area "question_#{i}".to_sym, class: 'mdl-textfield__input', disabled: !user_can_edit %>
+        <%= f.text_area "question_#{i}".to_sym, rows: '4', class: 'mdl-textfield__input', disabled: !user_can_edit %>
       </div>
     <% end %>
   </div>

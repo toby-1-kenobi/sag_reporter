@@ -173,7 +173,7 @@ td.annual-target {
 
 .quarterly-stream-content form {
   display: grid;
-  grid-template-columns: 3fr 2fr 2fr;
+  grid-template-columns: 2fr 3fr 2fr;
   grid-template-rows: 2fr 1fr;
   grid-column-gap: 2em;
   grid-row-gap: 1ex;
@@ -189,6 +189,9 @@ td.annual-target {
     padding: 1.5em;
     label {
       display: block;
+    }
+    .mdl-textfield {
+      width: 100%;
     }
   }
   .selected-impact-story {
