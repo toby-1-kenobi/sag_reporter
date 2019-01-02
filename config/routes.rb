@@ -174,6 +174,7 @@ Rails.application.routes.draw do
   resources :quarterly_evaluations, only: [:update] do
     member do
       patch 'select_report/:report', action: 'select_report', as: 'select_report_for'
+      post 'add_report', action: 'add_report', as: 'add_report_for'
     end
   end
 

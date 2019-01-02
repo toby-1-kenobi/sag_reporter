@@ -1,4 +1,8 @@
 <% user_can_edit = can_edit(@quarterly_evaluation, logged_in_user) %>
+
+<% Rails.logger.debug 'reports exist' if @reports.any? %>
+<% Rails.logger.debug 'no reports exist' if @reports.empty? %>
+<% Rails.logger.debug @reports.count %>
 <%= form_for @quarterly_evaluation, namespace: @quarterly_evaluation.id.to_s, remote: true do |f| %>
   <table class="quarterly-results-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
     <tr><th colspan="3"><%= pretty_quarter @quarterly_evaluation.quarter %></th></tr>
@@ -36,8 +40,14 @@
         <% end %>
       <% end %>
     </div>
-    <% if @reports.any? %>
+    <% if user_can_edit and @reports.any? %>
       <button class="select-story-button mdl-button mdl-button--colored mdl-button--raised" data-qe="<%= @quarterly_evaluation.id %>">Select impact story</button>
+    <% elsif @reports.any? %>
+      <p>No impact stories linked to this report</p>
+    <% elsif user_can_edit %>
+      <%= link_to add_report_for_quarterly_evaluation_path(@quarterly_evaluation), method: :post, remote: true, class: 'add-story-button mdl-button mdl-button--colored mdl-button--raised' do %>
+        <i class="material-icons">add</i> Add new impact story
+      <% end %>
     <% else %>
       <p>No impact stories recorded.</p>
     <% end %>
@@ -63,21 +73,26 @@
   </div>
 <% end %>
 
-<% report_count = @reports.count %>
-<% @reports.each_with_index do |report, i| %>
-  <dialog class="mdl-dialog report-select-dialog" data-index="<%= i %>" data-qe="<%= @quarterly_evaluation.id %>">
-    <h4 class="mdl-dialog__title">Select an impact story</h4>
-    <div class="mdl-dialog__content">
-      <h5 class="report-count"><%= "#{i + 1} of #{report_count}" %></h5>
-      <%= render partial: 'reports/simple_report', object: report %>
-    </div>
-    <div class="mdl-dialog__actions">
-      <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab next" data-index="<%= i + 1 %>" <%= 'disabled' if i + 1 >= report_count %>><i class="material-icons">arrow_forward</i></button>
-      <%= link_to select_report_for_quarterly_evaluation_path(@quarterly_evaluation, report), method: :patch, remote: true, class: 'mdl-button mdl-js-button mdl-button--colored' do %>
-        <i class="material-icons">check</i> Select
-      <% end %>
-      <button type="button" class="mdl-button mdl-js-button close">Cancel</button>
-      <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab prev" data-index="<%= i - 1 %>" <%= 'disabled' if i <= 0 %>><i class="material-icons">arrow_back</i></button>
-    </div>
-  </dialog>
+<% if user_can_edit and @reports.any? %>
+  <% report_count = @reports.count %>
+  <% @reports.each_with_index do |report, i| %>
+    <dialog class="mdl-dialog report-select-dialog" data-index="<%= i %>" data-qe="<%= @quarterly_evaluation.id %>">
+      <h4 class="mdl-dialog__title">Select an impact story</h4>
+      <div class="mdl-dialog__content">
+        <h5 class="report-count"><%= "#{i + 1} of #{report_count}" %></h5>
+        <%= render partial: 'reports/simple_report', object: report %>
+      </div>
+      <div class="mdl-dialog__actions">
+        <%= link_to add_report_for_quarterly_evaluation_path(@quarterly_evaluation), method: :post, remote: true, class: 'mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab close' do %>
+          <i class="material-icons">add</i>
+        <% end %>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab next" data-index="<%= i + 1 %>" <%= 'disabled' if i + 1 >= report_count %>><i class="material-icons">arrow_forward</i></button>
+        <%= link_to select_report_for_quarterly_evaluation_path(@quarterly_evaluation, report), method: :patch, remote: true, class: 'mdl-button mdl-js-button mdl-button--colored close' do %>
+          <i class="material-icons">check</i> Select
+        <% end %>
+        <button type="button" class="mdl-button mdl-js-button close">Cancel</button>
+        <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab prev" data-index="<%= i - 1 %>" <%= 'disabled' if i <= 0 %>><i class="material-icons">arrow_back</i></button>
+      </div>
+    </dialog>
+  <% end %>
 <% end %>

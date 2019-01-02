@@ -2,7 +2,7 @@
 first_month, last_month = quarter_to_range(@quarterly_evaluation.quarter)
 first_day = Date.new(first_month[0..3].to_i, first_month[-2..-1].to_i, 1)
 last_day = Date.new(last_month[0..3].to_i, last_month[-2..-1].to_i).end_of_month
-@reports = @reports.where('reports.created_at >= ?', first_day).where('reports.created_at <= ?', last_day)
+@reports = @reports.where('reports.report_date >= ?', first_day).where('reports.report_date <= ?', last_day)
 %>
 var container = $('.quarterly-stream-content[data-lang="<%= @quarterly_evaluation.state_language_id %>"][data-stream="<%= @quarterly_evaluation.ministry_id %>"]');
 container.html('<%= j render 'quarterly_report'  %>');
@@ -19,7 +19,6 @@ container.find('dialog').each(function () {
     }
 });
 $('.select-story-button').on('click', function () {
-    console.log('.report-select-dialog[data-index="0"][data-qe="' + $(this).data('qe') + '"]');
     $('.report-select-dialog[data-index="0"][data-qe="' + $(this).data('qe') + '"]').get(0).showModal();
 });
 $('.report-select-dialog .close').on('click', function () {

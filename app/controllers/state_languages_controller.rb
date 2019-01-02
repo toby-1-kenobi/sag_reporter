@@ -218,6 +218,7 @@ class StateLanguagesController < ApplicationController
         quarter: params[:quarter]
     )
     @reports = Report.joins(:languages).where('languages.id = ?', @quarterly_evaluation.state_language.language)
+    Rails.logger.debug "reports for #{@quarterly_evaluation.state_language.language_name}: #{@reports.count}"
     respond_to :js
   end
 

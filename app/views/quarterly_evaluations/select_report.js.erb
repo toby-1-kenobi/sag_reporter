@@ -1,4 +1,5 @@
-$('dialog').each(function () {
-    this.close();
-});
-$('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] .story').html('<%= j render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>');
+<% if can_edit(@quarterly_evaluation, logged_in_user) %>
+$('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] .story').html('<%= j render partial: 'reports/simple_form', object: @quarterly_evaluation.report %>');
+<% else %>
+  $('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] .story').html('<%= j render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>');
+<% end %>
