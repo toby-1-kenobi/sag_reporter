@@ -1,0 +1,18 @@
+<dialog class="mdl-dialog report-select-dialog" data-index="<%= i %>" data-qe="<%= @quarterly_evaluation.id %>">
+  <h4 class="mdl-dialog__title">Select an impact story</h4>
+  <div class="mdl-dialog__content">
+    <h5 class="report-count"><%= "#{i + 1} of #{report_count}" %></h5>
+    <%= render partial: 'reports/simple_report', object: select_dialog %>
+  </div>
+  <div class="mdl-dialog__actions">
+    <%= link_to add_report_for_quarterly_evaluation_path(@quarterly_evaluation), method: :post, remote: true, class: 'mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab close' do %>
+      <i class="material-icons">add</i>
+    <% end %>
+    <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab next" data-index="<%= i + 1 %>" <%= 'disabled' if i + 1 >= report_count %>><i class="material-icons">arrow_forward</i></button>
+    <%= link_to select_report_for_quarterly_evaluation_path(@quarterly_evaluation, select_dialog), method: :patch, remote: true, class: 'mdl-button mdl-js-button mdl-button--colored close' do %>
+      <i class="material-icons">check</i> Select
+    <% end %>
+    <button type="button" class="mdl-button mdl-js-button close">Cancel</button>
+    <button type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab prev" data-index="<%= i - 1 %>" <%= 'disabled' if i <= 0 %>><i class="material-icons">arrow_back</i></button>
+  </div>
+</dialog>

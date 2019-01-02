@@ -1,5 +1,35 @@
-<% if can_edit(@quarterly_evaluation, logged_in_user) %>
-$('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] .story').html('<%= j render partial: 'reports/simple_form', object: @quarterly_evaluation.report %>');
+<%
+if can_edit(@quarterly_evaluation, logged_in_user)
+  if @reports
+    Rails.logger.debug "report count #{@reports.count}"
+    first_month, last_month = quarter_to_range(@quarterly_evaluation.quarter)
+    first_day = Date.new(first_month[0..3].to_i, first_month[-2.. - 1].to_i, 1)
+    last_day = Date.new(last_month[0..3].to_i, last_month[-2.. - 1].to_i).end_of_month
+    @reports = @reports.where('reports.report_date >= ?', first_day).where('reports.report_date <= ?', last_day)
+    Rails.logger.debug "report count #{@reports.count}"
+%>
+    $('.story-select-dialogs').empty();
+    <% @reports.each_with_index do |report, i| %>
+      $('.story-select-dialogs').append('<%= j render(partial: 'reports/select_dialog', object: report, locals: {i: i, report_count: @reports.count}) %>');
+    <% end %>
+
+    $('.report-select-dialog .close').on('click', function () {
+        $(this).closest('dialog').get(0).close();
+    });
+    $('.report-select-dialog .next, .report-select-dialog .prev').on('click', function () {
+        const index = $(this).data('index');
+        const qe = $(this).closest('dialog').data('qe');
+        $(this).closest('dialog').get(0).close();
+        $('.report-select-dialog[data-index="' + index + '"][data-qe="' + qe + '"]').get(0).showModal();
+    });
+
+    $('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] .actions').html('<button class="select-story-button mdl-button mdl-button--colored mdl-button--raised" data-qe="<%= @quarterly_evaluation.id %>">Select impact story</button>');
+    $('.select-story-button').on('click', function () {
+        $('.report-select-dialog[data-index="0"][data-qe="' + $(this).data('qe') + '"]').get(0).showModal();
+    });
+  <% end %>
+  $('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] .story').html('<%= j render partial: 'reports/simple_form', object: @quarterly_evaluation.report %>');
 <% else %>
   $('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] .story').html('<%= j render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>');
 <% end %>
+

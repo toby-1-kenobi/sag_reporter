@@ -36,6 +36,7 @@ class QuarterlyEvaluationsController < ApplicationController
       Rails.logger.error("unable to create a new report for quarterly evaluation #{@quarterly_evaluation.id}")
       Rails.logger.error(report.errors.full_messages)
     end
+    @reports = Report.joins(:languages).where('languages.id = ?', @quarterly_evaluation.state_language.language)
     render 'select_report'
   end
 
