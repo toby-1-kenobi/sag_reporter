@@ -3,10 +3,10 @@ wb.add_worksheet(name: 'Agencies') do |sheet|
   sheet.add_row ['Language', 'Agency', 'Type'], style: title
   @languages.each do |language|
     language.translating_organisations.each do |agency|
-      sheet.add_row [language.iso, agency.name_with_abbr, 'Translating']
+      sheet.add_row [language.iso, agency.id, 'Translating']
     end
     language.engaged_organisations.each do |agency|
-      sheet.add_row [language.iso, agency.name_with_abbr, 'Engaged']
+      sheet.add_row [language.iso, agency.id, 'Engaged']
     end
   end
 end
