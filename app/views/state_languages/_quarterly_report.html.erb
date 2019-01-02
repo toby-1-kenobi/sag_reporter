@@ -29,7 +29,11 @@
   <div class="selected-impact-story mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>">
     <div class="story">
       <% if @quarterly_evaluation.report %>
-        <%= render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>
+        <% if user_can_edit %>
+          <%= render partial: 'reports/simple_form', object: @quarterly_evaluation.report %>
+        <% else %>
+          <%= render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>
+        <% end %>
       <% end %>
     </div>
     <% if @reports.any? %>

@@ -5,6 +5,9 @@ class QuarterlyEvaluationsController < ApplicationController
   def update
     @quarterly_evaluation = QuarterlyEvaluation.find(params[:id])
     @quarterly_evaluation.update_attributes(quarterly_evaluation_params)
+    if params['report_content']
+      @quarterly_evaluation.report.update_attributes(content: params['report_content'])
+    end
     respond_to :js
   end
 
