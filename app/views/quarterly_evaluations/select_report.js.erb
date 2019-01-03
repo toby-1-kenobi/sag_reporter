@@ -10,9 +10,8 @@ if can_edit(@quarterly_evaluation, logged_in_user)
 %>
     var container = $('.quarterly-stream-content[data-lang="<%= @quarterly_evaluation.state_language_id %>"][data-stream="<%= @quarterly_evaluation.ministry_id %>"]');
     container.find('.story-select-dialogs').empty();
-    console.log('refreshing story select dialogs');
+
     <% @reports.each_with_index do |report, i| %>
-      console.log('<%= i %>');
       container.find('.story-select-dialogs').append('<%= j render(partial: 'reports/select_dialog', object: report, locals: {i: i, report_count: @reports.count}) %>');
     <% end %>
 
@@ -23,7 +22,6 @@ if can_edit(@quarterly_evaluation, logged_in_user)
         }
     });
 
-    console.log('rebinding dialog buttons');
     container.find('.report-select-dialog .close').on('click', function () {
         $(this).closest('dialog').get(0).close();
     });
@@ -39,19 +37,18 @@ if can_edit(@quarterly_evaluation, logged_in_user)
         $('.report-select-dialog[data-index="0"][data-qe="' + $(this).data('qe') + '"]').get(0).showModal();
     });
   <% end %>
-  console.log('inserting the new impact story');
+
   $('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] .story').html('<%= j render partial: 'reports/simple_form', object: @quarterly_evaluation.report %>');
   componentHandler.upgradeElements(container.find('.mdl-textfield').get());
-  console.log('rebinding form submission for impact story text');
+
   $('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] textarea').on('change', function () {
       $(this).closest('form').submit();
   });
   $('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] textarea.impact-story-content').each(function () {
-      this.parent().setAttribute('style', 'height:' + (this.scrollHeight + 5) + 'px;overflow-y:hidden;');
+      this.setAttribute('style', 'height:' + (this.scrollHeight + 5) + 'px;overflow-y:hidden;');
   }).on('input', function () {
-      console.log(this.scrollHeight + 5);
-      this.parent().style.height = 'auto';
-      this.parent().style.height = (this.scrollHeight + 5) + 'px';
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight + 5) + 'px';
   })
 <% else %>
   $('.selected-impact-story[data-qe="<%= @quarterly_evaluation.id %>"] .story').html('<%= j render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>');

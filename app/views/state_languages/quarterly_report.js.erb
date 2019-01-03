@@ -30,11 +30,12 @@ container.find('.report-select-dialog .next, .report-select-dialog .prev').on('c
     $(this).closest('dialog').get(0).close();
     $('.report-select-dialog[data-index="' + index + '"][data-qe="' + qe + '"]').get(0).showModal();
 });
-container.find('textarea.impact-story-content').each(function () {
-    this.parent().setAttribute('style', 'height:' + (this.scrollHeight + 5) + 'px;overflow-y:hidden;');
-}).on('input', function () {
-    console.log(this.scrollHeight + 5);
-    this.parent().style.height = 'auto';
-    this.parent().style.height = (this.scrollHeight + 5) + 'px';
-});
+
 container.slideDown();
+
+container.find('textarea.impact-story-content').each(function () {
+    this.setAttribute('style', 'height:' + (this.scrollHeight + 5) + 'px;overflow-y:hidden;');
+}).on('input', function () {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight + 5) + 'px';
+});

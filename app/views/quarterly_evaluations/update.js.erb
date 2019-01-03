@@ -1,6 +1,2 @@
-console.log('qe: <%= @quarterly_evaluation.id  %>');
-console.log('qe_report: <%= @quarterly_evaluation.report  %>');
 $('.quarterly-evaluation[data-qe="<%= @quarterly_evaluation.id %>"]').attr('data-progress', '<%= @quarterly_evaluation.progress %>');
 $('.report-<%= @quarterly_evaluation.report_id %>-content').html('<%= j simple_format @quarterly_evaluation.report.content %>');
-console.log('.report-<%= @quarterly_evaluation.report_id %>-content');
-console.log('<%= j simple_format @quarterly_evaluation.report.content %>');
