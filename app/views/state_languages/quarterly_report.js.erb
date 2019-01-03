@@ -18,16 +18,23 @@ container.find('dialog').each(function () {
         dialogPolyfill.registerDialog(dialog);
     }
 });
-$('.select-story-button').on('click', function () {
+container.find('.select-story-button').on('click', function () {
     $('.report-select-dialog[data-index="0"][data-qe="' + $(this).data('qe') + '"]').get(0).showModal();
 });
-$('.report-select-dialog .close').on('click', function () {
+container.find('.report-select-dialog .close').on('click', function () {
     $(this).closest('dialog').get(0).close();
 });
-$('.report-select-dialog .next, .report-select-dialog .prev').on('click', function () {
+container.find('.report-select-dialog .next, .report-select-dialog .prev').on('click', function () {
     const index = $(this).data('index');
     const qe = $(this).closest('dialog').data('qe');
     $(this).closest('dialog').get(0).close();
     $('.report-select-dialog[data-index="' + index + '"][data-qe="' + qe + '"]').get(0).showModal();
+});
+container.find('textarea.impact-story-content').each(function () {
+    this.parent().setAttribute('style', 'height:' + (this.scrollHeight + 5) + 'px;overflow-y:hidden;');
+}).on('input', function () {
+    console.log(this.scrollHeight + 5);
+    this.parent().style.height = 'auto';
+    this.parent().style.height = (this.scrollHeight + 5) + 'px';
 });
 container.slideDown();

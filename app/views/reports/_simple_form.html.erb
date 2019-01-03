@@ -1,5 +1,5 @@
 <div class="mdl-textfield mdl-js-textfield">
-  <textarea class="impact-story-content mdl-textfield__input" type="text" rows="6" name="report_content"><%= simple_form.content %></textarea>
+  <textarea class="impact-story-content mdl-textfield__input" type="text" name="report_content"><%= simple_form.content %></textarea>
 </div>
 <% simple_form.pictures.each do |picture| %>
   <%= image_tag picture.ref_url if picture.ref? %>
