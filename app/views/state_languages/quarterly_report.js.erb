@@ -31,6 +31,16 @@ container.find('.report-select-dialog .next, .report-select-dialog .prev').on('c
     $('.report-select-dialog[data-index="' + index + '"][data-qe="' + qe + '"]').get(0).showModal();
 });
 
+container.find('.partnering-churches li').on('click', function () {
+    const dataElement = $(this).closest('.partnering-churches');
+    var url = '<%= quarterly_table_for_church_team_url('t_placeholder', 'p_placeholder', 's_placeholder', 'fm_placeholder') %>';
+    url = url.replace('t_placeholder', $(this).data('team'));
+    url = url.replace('p_placeholder', dataElement.data('project'));
+    url = url.replace('s_placeholder', dataElement.data('stream'));
+    url = url.replace('fm_placeholder', dataElement.data('first-month'));
+    $.ajax(url);
+});
+
 container.slideDown();
 
 container.find('textarea.impact-story-content').each(function () {

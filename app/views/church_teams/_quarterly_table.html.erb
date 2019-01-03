@@ -1,0 +1,15 @@
+<% month = Date.new(@first_month[0..3].to_i, @first_month[-2..-1].to_i) %>
+<table class="mdl-data-table mdl-js-data-table">
+  <thead>
+  <tr>
+    <th class="mdl-data-table__cell--non-numeric">Deliverable</th>
+    <% (0..2).each do |m| %>
+      <th class="mdl-data-table__cell--non-numeric"><%= m.months.since(month).strftime('%B') %></th>
+    <% end %>
+    <th>Quarter</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  </tbody>
+</table>

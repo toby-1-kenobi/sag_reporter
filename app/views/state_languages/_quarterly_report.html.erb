@@ -18,11 +18,17 @@
     <% end %>
   </table>
   <% if @church_teams.any? %>
-    <div class="partnering-churches">
+    <div class="partnering-churches"
+         data-project="<%= @quarterly_evaluation.project_id %>"
+         data-stream="<%= @quarterly_evaluation.ministry_id %>"
+         data-first-month="<%= quarter_to_range(@quarterly_evaluation.quarter)[0] %>"
+    >
       <h4>Partnering Churches</h4>
       <ul class="mdl-list">
-        <% @church_teams.each do |church| %>
-          <li class="mdl-list__item"><%= church.full_name %></li>
+        <% @church_teams.each do |team| %>
+          <li class="mdl-list__item" data-team="<%= team.id %>">
+            <span class="mdl-list__item-primary-content"><%= team.full_name %></span>
+          </li>
         <% end %>
       </ul>
     </div>

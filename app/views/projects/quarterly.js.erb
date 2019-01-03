@@ -1,5 +1,16 @@
 $('#quarterly-panel').html('<%= j render 'quarterly' %>');
 componentHandler.upgradeElements($('#quarterly-panel').find('.mdlext-selectfield').get());
+
+$('#quarterly-panel').find('dialog').each(function () {
+    var dialog = $(this).get(0);
+    if (! dialog.showModal) {
+        dialogPolyfill.registerDialog(dialog);
+    }
+});
+$('#church-team-details-dialog .close').on('click', function () {
+    $(this).closest('dialog').get(0).close();
+});
+
 $('#quarterly-sub-project-select, #quarter-select').on('change', function () {
     var url = '<%= quarterly_report_sub_project_url('sp_placeholder') %>';
     var id = $('#quarterly-sub-project-select').val();

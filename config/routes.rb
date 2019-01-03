@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   resources :church_teams, only: [] do
     member do
       get 'project_table/:project_id', action: :project_table, as: 'table_for'
+      get 'qr_table/:project_id/:stream_id/:first_month', action: :quarterly_table, as: 'quarterly_table_for'
     end
   end
 
