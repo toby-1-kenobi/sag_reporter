@@ -186,10 +186,14 @@ td.annual-target {
   }
   .partnering-churches {
     grid-area: churches;
+    padding: 0 1.5em 1.5em;
+    li {
+      cursor: pointer;
+    }
   }
   .narrative-questions {
     grid-area: questions;
-    padding: 1.5em;
+    padding: 0 1.5em 1.5em;
     label {
       display: block;
     }
@@ -208,8 +212,9 @@ td.annual-target {
     img {
       width: 100%;
     }
-    button {
-      margin: auto;
+    .actions {
+      display: flex;
+      justify-content: center;
     }
   }
   .quarterly-evaluation {
@@ -264,6 +269,10 @@ td.annual-target {
   font-size: large;
   font-weight: bold;
   padding-left: 2em;
+}
+
+#church-team-details-dialog {
+  width: fit-content;
 }
 
 [data-progress=poor], [data-assessment=behind] { background-color: red !important; }

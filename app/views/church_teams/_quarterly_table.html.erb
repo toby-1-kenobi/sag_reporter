@@ -10,6 +10,22 @@
   </tr>
   </thead>
   <tbody>
-
+  <% @stream.deliverables.church_team.order(:number).each do |deliverable| %>
+    <tr>
+      <td class="mdl-data-table__cell--non-numeric">
+        <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>
+      </td>
+      <% quarterly_actual = 0 %>
+      <% (0..2).each do |m| %>
+        <% year_month = m.months.since(month).strftime('%Y-%m') %>
+        <% actual = @outputs[deliverable.id][year_month] || '' %>
+        <% if actual.present? %>
+          <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
+        <% end %>
+        <td><%= actual %></td>
+      <% end %>
+      <td class="quarterly-actual"><%= quarterly_actual %></td>
+    </tr>
+  <% end %>
   </tbody>
 </table>

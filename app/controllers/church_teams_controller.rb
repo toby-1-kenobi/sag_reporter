@@ -22,15 +22,15 @@ class ChurchTeamsController < ApplicationController
   def quarterly_table
     project = Project.find params[:project_id]
     head :forbidden unless logged_in_user.can_view_project?(project)
-    stream = Ministry.find params[:stream_id]
-    church_min = ChurchMinistry.find_by(church_team_id: params[:id], ministry_id: stream.id)
+    @stream = Ministry.find params[:stream_id]
+    @church_min = ChurchMinistry.find_by(church_team_id: params[:id], ministry_id: @stream.id)
     @first_month = params[:first_month]
     last_month = 3.months.since(Date.new(@first_month[0..3].to_i, @first_month[-2..-1].to_i)).strftime('%Y-%m')
     @outputs = {}
-    stream.deliverables.church_team.each do |deliverable|
+    @stream.deliverables.church_team.each do |deliverable|
       @outputs[deliverable.id] = {}
-      deliverable.ministry_outputs.where(church_ministry: church_min, actual: true).where('month >= ?', @first_month).where('month < ?', last_month).each do |mo|
-        @outputs[deliverable.id][mo.month] = [mo.id, mo.value, mo.comment]
+      deliverable.ministry_outputs.where(church_ministry: @church_min, actual: true).where('month >= ?', @first_month).where('month < ?', last_month).each do |mo|
+        @outputs[deliverable.id][mo.month] = [mo.id, mo.value]
       end
     end
     respond_to :js

@@ -18,7 +18,7 @@
     <% end %>
   </table>
   <% if @church_teams.any? %>
-    <div class="partnering-churches"
+    <div class="partnering-churches mdl-shadow--2dp"
          data-project="<%= @quarterly_evaluation.project_id %>"
          data-stream="<%= @quarterly_evaluation.ministry_id %>"
          data-first-month="<%= quarter_to_range(@quarterly_evaluation.quarter)[0] %>"
