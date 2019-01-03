@@ -218,7 +218,7 @@ class StateLanguagesController < ApplicationController
         quarter: params[:quarter]
     )
     @reports = Report.joins(:languages).where('languages.id = ?', @quarterly_evaluation.state_language.language)
-    Rails.logger.debug "reports for #{@quarterly_evaluation.state_language.language_name}: #{@reports.count}"
+    @church_teams = ChurchTeam.joins(:church_ministries).where(state_language_id: params[:id], church_ministries: {ministry_id: params[:stream]}).uniq
     respond_to :js
   end
 

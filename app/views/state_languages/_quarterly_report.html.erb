@@ -17,6 +17,16 @@
       <% end %>
     <% end %>
   </table>
+  <% if @church_teams.any? %>
+    <div class="partnering-churches">
+      <h4>Partnering Churches</h4>
+      <ul class="mdl-list">
+        <% @church_teams.each do |church| %>
+          <li class="mdl-list__item"><%= church.full_name %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
   <div class="narrative-questions mdl-shadow--2dp">
     <h4>Narrative Questions</h4>
     <% (1..4).each do |i| %>

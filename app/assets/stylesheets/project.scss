@@ -174,15 +174,18 @@ td.annual-target {
 .quarterly-stream-content form {
   display: grid;
   grid-template-columns: 2fr 3fr 2fr;
-  grid-template-rows: 2fr 1fr;
+  grid-template-rows: auto;
   grid-column-gap: 2em;
   grid-row-gap: 1ex;
   grid-template-areas:
           "results-table questions impact"
-          "results-table questions evaluate";
+          "churches questions evaluate";
 
   .quarterly-results-table {
     grid-area: results-table;
+  }
+  .partnering-churches {
+    grid-area: churches;
   }
   .narrative-questions {
     grid-area: questions;
