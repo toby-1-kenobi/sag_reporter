@@ -179,13 +179,12 @@ td.annual-target {
   grid-row-gap: 1ex;
   grid-template-areas:
           "results-table questions impact"
-          "churches questions evaluate";
+          "results-table questions evaluate";
 
   .quarterly-results-table {
     grid-area: results-table;
   }
   .partnering-churches {
-    grid-area: churches;
     padding: 0 1.5em 1.5em;
     li {
       cursor: pointer;
@@ -251,7 +250,8 @@ td.annual-target {
   padding-top: 0.5ex !important;
   padding-bottom: 0.5ex !important;
   .progress {
-    margin-left: 2em;
+    float: right;
+    margin-right: 1ex;
   }
 }
 
@@ -285,6 +285,9 @@ td.annual-target {
 
 #church-team-details-dialog {
   width: fit-content;
+  .mdl-data-table {
+    color: black !important;
+  }
 }
 
 [data-progress=no_progress] { background-color: mediumslateblue !important; }
