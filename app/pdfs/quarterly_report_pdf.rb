@@ -13,11 +13,14 @@ class QuarterlyReportPdf < Prawn::Document
     text "(Sub-project #{sub_project.name})", size: 16 if sub_project
     move_down 5
     text @view.pretty_quarter(quarter), size: 16
-
     move_down 15
-    first_language_loop = true
+
+    break_next = false
     state_languages.each do |state_language|
-      start_new_page unless first_language_loop
+      if break_next
+        start_new_page
+        break_next = false
+      end
       text state_language.name(multi_state), size: 18
       streams = project.ministries.order(:code)
       if sub_project
@@ -39,9 +42,14 @@ class QuarterlyReportPdf < Prawn::Document
             quarter: quarter
         )
 
-        move_down 15
+        if break_next
+          start_new_page
+        else
+          move_down 15
+          break_next = true
+        end
         if quarterly_evaluation and quarterly_evaluation.progress.present?
-          fill_color progress_colour(quarterly_evaluation)
+          fill_color progress_colour(quarterly_evaluation.progress)
           fill_rectangle [0, cursor + 5], bounds.width, 40
           fill_color "000000"
         end
@@ -53,46 +61,52 @@ class QuarterlyReportPdf < Prawn::Document
             if File.file?(@view.image_url('approved.png'))
               image @view.image_url('approved.png'), width: 150, align: :right
             else
+              move_down 8
               text 'Quarterly report approved by manager.', align: :right
             end
           else
+            move_down 8
             text 'pending approval by manager', align: :right
           end
         end
 
-        values_table = []
-        values_table << ['Deliverable', 'Target', 'Actual']
-        stream.deliverables.order(:number).each do |deliverable|
-          unless deliverable.disabled?
-            target = QuarterlyTarget.find_by(state_language: state_language, deliverable: deliverable, quarter: quarter)
-            target_value = target ? target.value : '?'
-            actual = @view.quarterly_actual(state_language.id, deliverable, quarter, project, sub_project)
-            values_table << [deliverable.short_form.en, target_value, actual]
+        measurables_data = measurables(stream, state_language, quarter, project, sub_project)
+        move_down 5
+        text 'Measurables', size: 14
+        table measurables_data, width: bounds.width do |t|
+          (0..measurables_data.length - 1).each do |row|
+            target = t.cells[row, 1]
+            actual = t.cells[row, 2]
+            unless target.content == '?' or actual.content == '-'
+              actual.background_color = progress_colour(view_context.assessment(target.content, actual.content))
+            end
           end
         end
-
-        move_down 5
-        text 'Measureables', size: 14
-        table values_table, width: bounds.width
 
         church_table = partnering_churches(state_language.id, stream.id)
         if church_table.any?
           move_down 10
           text 'Partnering churches', size: 14
-          table church_table, cell_style: {borders: []}, width: bounds.width
+          table church_table, cell_style: {borders: [], background_color: "FFFFCC"}, width: bounds.width
         end
 
         if quarterly_evaluation
-          move_down 10
-          narrative_questions(quarterly_evaluation)
+          narrative_data = narrative_questions(quarterly_evaluation)
+          if narrative_data.any?
+            move_down 10
+            table narrative_data, cell_style: {borders: [], inline_format: true}, row_colors: ["F0F0F0", "FFFFCC"], width: bounds.width
+          end
           if quarterly_evaluation.report.present?
             move_down 10
             report(quarterly_evaluation)
           end
         end
       end
-      first_language_loop = false
     end
+    options = { :at => [bounds.right - 150, 0],
+                :width => 150,
+                :align => :right }
+    number_pages "page <page> of <total>", options
   end
 
   def header(left, centre, right)
@@ -108,20 +122,49 @@ class QuarterlyReportPdf < Prawn::Document
     end
   end
 
-  def progress_colour(quarterly_evaluation)
-    case quarterly_evaluation.progress
+  def progress_colour(progress)
+    case progress
     when 'no_progress'
       "7B68EE"
-    when 'poor'
+    when 'poor', 'behind'
       "FF0000"
-    when 'fair'
+    when 'fair', 'somewhat-behind'
       "FFFF00"
-    when 'good'
+    when 'good', 'on-pace'
       "98FB98"
-    when 'excellent'
+    when 'excellent', 'ahead'
       "00FF00"
     else
       "FFFFFF"
+    end
+  end
+
+  def measurables(stream, state_language, quarter, project, sub_project)
+    targets = QuarterlyTarget.joins(:deliverable).
+        where(deliverables: {ministry_id: stream.id}, state_language: state_language).
+        where('quarter BETWEEN ? AND ?', quarter, next_quarter(quarter)).to_a
+    values_table = []
+    values_table << ['Deliverable', 'Target', 'Actual', 'Next Target']
+    stream.deliverables.order(:number).each do |deliverable|
+      unless deliverable.disabled?
+        target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == quarter }.first
+        target_value = target ? target.value : '?'
+        actual = @view.quarterly_actual(state_language.id, deliverable, quarter, project, sub_project)
+        next_target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == next_quarter(quarter) }.first
+        next_target_value = next_target ? next_target.value : '?'
+        values_table << [deliverable.short_form.en, target_value, actual, next_target_value]
+      end
+    end
+    values_table
+  end
+
+  def next_quarter(quarter)
+    q = quarter[-1].to_i + 1
+    if q > 4
+      y = quarter[0..3].to_i
+      "#{y}-1"
+    else
+      "#{quarter[0..3]}-#{q}"
     end
   end
 
@@ -141,9 +184,7 @@ class QuarterlyReportPdf < Prawn::Document
         narrative_questions << [answer]
       end
     end
-    if narrative_questions.any?
-      table narrative_questions, cell_style: {borders: [], inline_format: true}, row_colors: ["F0F0F0", "FFFFCC"], width: bounds.width
-    end
+    narrative_questions
   end
 
   def report(quarterly_evaluation)

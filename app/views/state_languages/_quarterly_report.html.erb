@@ -13,7 +13,7 @@
             <% target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: @quarterly_evaluation.quarter) %>
             <% target_value = target ? target.value : '?' %>
             <td><%= target_value %></td>
-          </div>  <% actual = quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %>
+            <% actual = quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %>
             <td data-assessment="<%= assessment target_value, actual %>"><%= actual %></td>
           </tr>
         <% end %>
