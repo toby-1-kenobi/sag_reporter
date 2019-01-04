@@ -34,7 +34,7 @@ class SubProjectsController < ApplicationController
     end
     @state_language_id = params[:state_language]
     if sub_project
-      streams = project.ministries.to_a.select {|s| sub_project.language_streams.exists?(state_language_id: @state_language_id, ministry_id: s.id)}
+      streams = sub_project.project.ministries.to_a.select {|s| sub_project.language_streams.exists?(state_language_id: @state_language_id, ministry_id: s.id)}
     else
       streams = project.ministries
     end
