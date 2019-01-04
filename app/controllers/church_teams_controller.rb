@@ -30,7 +30,7 @@ class ChurchTeamsController < ApplicationController
     @stream.deliverables.church_team.each do |deliverable|
       @outputs[deliverable.id] = {}
       deliverable.ministry_outputs.where(church_ministry: @church_min, actual: true).where('month >= ?', @first_month).where('month < ?', last_month).each do |mo|
-        @outputs[deliverable.id][mo.month] = [mo.id, mo.value]
+        @outputs[deliverable.id][mo.month] = mo.value
       end
     end
     respond_to :js
