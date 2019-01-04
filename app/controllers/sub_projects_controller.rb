@@ -27,12 +27,36 @@ class SubProjectsController < ApplicationController
 
   def populate_stream_headers
     if SubProject.exists?(params[:id])
-      @sub_project = SubProject.includes(:project).find(params[:id])
+      sub_project = SubProject.includes(:project).find(params[:id])
     else
       # if no sub-project has been selected the id will be the project id prefixed with a single character
-      @project = Project.find(params[:id][1..-1])
+      project = Project.find(params[:id][1..-1])
     end
-    @state_language = StateLanguage.find params[:state_language]
+    @state_language_id = params[:state_language]
+    if sub_project
+      streams = project.ministries.to_a.select {|s| sub_project.language_streams.exists?(state_language_id: @state_language_id, ministry_id: s.id)}
+    else
+      streams = project.ministries
+    end
+    @qes = {}
+    streams.each do |stream|
+      if sub_project
+        sp_id = sub_project.id
+        p_id = sub_project.project_id
+      else
+        sp_ids = project.language_streams.where(state_language_id: @state_language_id, ministry_id: stream.id).pluck(:sub_project_id).uniq
+        sp_id = sp_ids.length == 1 ? sp_ids[0] : nil
+        p_id = project.id
+      end
+       qe = QuarterlyEvaluation.find_by(
+          project_id: p_id,
+          sub_project_id: sp_id,
+          state_language_id: @state_language_id,
+          ministry_id: stream.id,
+          quarter: params[:quarter]
+      )
+      @qes[stream.id] = qe if qe
+    end
     respond_to :js
   end
 

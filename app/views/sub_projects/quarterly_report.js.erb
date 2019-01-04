@@ -6,8 +6,9 @@ $('#qr-language-accordion').on('toggle', function(e){
     if (e.detail.state === "open" && typeof $(e.detail.tabpanel).data('populated') === 'undefined') {
         const projectId = '<%= @sub_project ? @sub_project.id : "p#{@project.id}" %>';
         const stateLangId = $(e.detail.tabpanel).data('lang');
-        var url = '<%= populate_stream_headers_for_sub_project_url('sp_placeholder', 'sl_placeholder') %>';
-        url = url.replace('sp_placeholder', projectId).replace('sl_placeholder', stateLangId);
+        const quarter = $('#quarter-select').val();
+        var url = '<%= populate_stream_headers_for_sub_project_url('sp_placeholder', 'sl_placeholder', 'q_placeholder') %>';
+        url = url.replace('sp_placeholder', projectId).replace('sl_placeholder', stateLangId).replace('q_placeholder', quarter);
         $.ajax(url);
     }
 });

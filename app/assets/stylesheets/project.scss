@@ -237,10 +237,18 @@ td.annual-target {
   }
 }
 
+#qr-language-accordion .approved-stamp {
+  height: 4em;
+  margin-bottom: -1.5em;
+}
+
 .quarterly-stream-header {
   margin: 0.5ex !important;
   padding-top: 0.5ex !important;
   padding-bottom: 0.5ex !important;
+  .progress {
+    margin-left: 2em;
+  }
 }
 
 .quarterly-stream-content {

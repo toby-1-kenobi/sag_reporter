@@ -1,1 +1,9 @@
-$('.mdlext-accordion__tabpanel[data-lang="<%= @state_language.id %>"]').attr('data-populated', '');
+var container = $('.mdlext-accordion__tabpanel[data-lang="<%= @state_language_id %>"]');
+container.attr('data-populated', '');
+<% @qes.each do |stream_id, qe| %>
+  container.find('.quarterly-stream-header[data-stream="<%= stream_id %>"]').attr('data-progress', '<%= qe.progress %>');
+  container.find('.quarterly-stream-header[data-stream="<%= stream_id %>"] .progress').text('<%= qe.progress %>');
+  <% if qe.approved? %>
+    container.find('.quarterly-stream-header[data-stream="<%= stream_id %>"] + .approved-stamp').removeAttr('hidden');
+  <% end %>
+<% end %>

@@ -222,7 +222,7 @@ Rails.application.routes.draw do
   resources :sub_projects, only: [:create, :destroy] do
     get :quarterly_report, on: :member
     get 'download_report/:quarter', on: :member, action: :download_quarterly_report, as: 'download_report_for'
-    get 'populate-stream_headers/:state_language', on: :member, action: :populate_stream_headers, as: 'populate_stream_headers_for'
+    get 'populate-stream_headers/:state_language/:quarter', on: :member, action: :populate_stream_headers, as: 'populate_stream_headers_for'
   end
 
   resources :supervisor_feedbacks, only: [:update, :create]

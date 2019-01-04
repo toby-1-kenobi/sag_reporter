@@ -24,7 +24,8 @@
         <% end %>
         <% streams.each do |stream| %>
           <div class="header-flex-container">
-            <div class="quarterly-stream-header" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>"><%= stream.name.en %></div>
+            <div class="quarterly-stream-header" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>"><%= stream.name.en %> <span class="progress"></span></div>
+            <%= image_tag('approved.png', class: 'approved-stamp', hidden: '') %>
           </div>
           <div class="quarterly-stream-content" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>">
           </div>
