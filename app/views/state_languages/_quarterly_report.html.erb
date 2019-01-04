@@ -24,10 +24,11 @@
          data-first-month="<%= quarter_to_range(@quarterly_evaluation.quarter)[0] %>"
     >
       <h4>Partnering Churches</h4>
+      <p>Click for details</p>
       <ul class="mdl-list">
         <% @church_teams.each do |team| %>
           <li class="mdl-list__item" data-team="<%= team.id %>">
-            <span class="mdl-list__item-primary-content"><%= team.full_name %></span>
+            <span class="mdl-list__item-primary-content"><a><%= team.full_name %></a></span>
           </li>
         <% end %>
       </ul>
