@@ -39,10 +39,15 @@ class QuarterlyReportPdf < Prawn::Document
             quarter: quarter
         )
 
-        move_down 5
-        text "<b>#{stream.name.en}</b> in #{state_language.language_name}", inline_format: true, size: 16
+        move_down 15
+        if quarterly_evaluation and quarterly_evaluation.progress.present?
+          fill_color progress_colour(quarterly_evaluation)
+          fill_rectangle [0, cursor + 5], bounds.width, 40
+          fill_color "000000"
+        end
+        indent(10){ text "<b>#{stream.name.en}</b> in #{state_language.language_name}", inline_format: true, size: 16 }
         if quarterly_evaluation
-          text "progress this quarter: #{quarterly_evaluation.progress.humanize}" if quarterly_evaluation.progress.present?
+          text "progress this quarter: #{quarterly_evaluation.progress.humanize}", align: :center if quarterly_evaluation.progress.present?
 
           if quarterly_evaluation.approved?
             if File.file?(@view.image_url('approved.png'))
@@ -70,6 +75,13 @@ class QuarterlyReportPdf < Prawn::Document
         text 'Measureables', size: 14
         table values_table, width: bounds.width
 
+        church_table = partnering_churches(state_language.id, stream.id)
+        if church_table.any?
+          move_down 10
+          text 'Partnering churches', size: 14
+          table church_table, cell_style: {borders: []}, width: bounds.width
+        end
+
         if quarterly_evaluation
           move_down 10
           narrative_questions(quarterly_evaluation)
@@ -94,6 +106,30 @@ class QuarterlyReportPdf < Prawn::Document
       end
       move_down 10
     end
+  end
+
+  def progress_colour(quarterly_evaluation)
+    case quarterly_evaluation.progress
+    when 'no_progress'
+      "7B68EE"
+    when 'poor'
+      "FF0000"
+    when 'fair'
+      "FFFF00"
+    when 'good'
+      "98FB98"
+    when 'excellent'
+      "00FF00"
+    else
+      "FFFFFF"
+    end
+  end
+
+  def partnering_churches(state_language_id, stream_id)
+    church_teams = ChurchTeam.joins(:church_ministries).where(state_language_id: state_language_id, church_ministries: {ministry_id: stream_id, status: 0}).uniq
+    churches_table = []
+    church_teams.each{ |ct| churches_table << [ct.full_name]}
+    churches_table
   end
 
   def narrative_questions(quarterly_evaluation)
