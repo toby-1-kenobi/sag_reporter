@@ -25,6 +25,17 @@ class SubProjectsController < ApplicationController
     respond_to :js
   end
 
+  def populate_stream_headers
+    if SubProject.exists?(params[:id])
+      @sub_project = SubProject.includes(:project).find(params[:id])
+    else
+      # if no sub-project has been selected the id will be the project id prefixed with a single character
+      @project = Project.find(params[:id][1..-1])
+    end
+    @state_language = StateLanguage.find params[:state_language]
+    respond_to :js
+  end
+
   def download_quarterly_report
     if SubProject.exists?(params[:id])
       @sub_project = SubProject.includes(quarterly_evaluations: [:state_language, ministry: :deliverables]).find(params[:id])

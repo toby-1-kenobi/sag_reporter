@@ -10,13 +10,13 @@
 </button>
 
 <% multi_state = @project.geo_states.uniq.count > 1 %>
-<ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
+<ul id="qr-language-accordion" class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
   <% state_languages.each do |state_language| %>
     <li class="mdlext-accordion__panel">
       <header class="mdlext-accordion__tab">
         <span class="mdlext-accordion__tab__caption"><%= state_language.name(multi_state) %></span>
       </header>
-      <section class="mdlext-accordion__tabpanel">
+      <section class="mdlext-accordion__tabpanel" data-lang="<%= state_language.id %>">
         <% if @sub_project %>
           <% streams = @project.ministries.order(:code).to_a.select {|s| @sub_project.language_streams.exists?(state_language_id: state_language.id, ministry_id: s.id)} %>
         <% else %>
