@@ -863,16 +863,18 @@ ActiveRecord::Schema.define(version: 20181219053525) do
   add_index "supervisor_feedbacks", ["supervisor_id"], name: "index_supervisor_feedbacks_on_supervisor_id", using: :btree
 
   create_table "tools", force: :cascade do |t|
-    t.integer  "language_id",             null: false
-    t.integer  "creator_id",              null: false
-    t.text     "url",                     null: false
-    t.text     "description",             null: false
-    t.integer  "status",      default: 0, null: false
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.integer  "language_id",                       null: false
+    t.integer  "creator_id",                        null: false
+    t.text     "url",                               null: false
+    t.text     "description",                       null: false
+    t.integer  "status",                default: 0, null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "finish_line_marker_id"
   end
 
   add_index "tools", ["creator_id"], name: "index_tools_on_creator_id", using: :btree
+  add_index "tools", ["finish_line_marker_id"], name: "index_tools_on_finish_line_marker_id", using: :btree
   add_index "tools", ["language_id"], name: "index_tools_on_language_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
@@ -1067,6 +1069,7 @@ ActiveRecord::Schema.define(version: 20181219053525) do
   add_foreign_key "supervisor_feedbacks", "ministries"
   add_foreign_key "supervisor_feedbacks", "state_languages"
   add_foreign_key "supervisor_feedbacks", "users", column: "facilitator_id"
+  add_foreign_key "tools", "finish_line_markers"
   add_foreign_key "tools", "languages"
   add_foreign_key "tools", "users", column: "creator_id"
   add_foreign_key "translation_progresses", "chapters"

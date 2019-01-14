@@ -5,7 +5,8 @@
   <div class="quarterly-results-table">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
       <tr><th colspan="3"><%= pretty_quarter @quarterly_evaluation.quarter %></th></tr>
-      <tr><th>Deliverable</th><th>Target</th><th>Actual</th></tr>
+      <tr><th>Deliverable</th><th>Target</th><th>Actual</th><th>Next Qtr</th></tr>
+      <% next_quarter = next_quarter(@quarterly_evaluation.quarter) %>
       <% @quarterly_evaluation.ministry.deliverables.order(:number).each do |deliverable| %>
         <% unless deliverable.disabled? %>
           <tr>
@@ -15,6 +16,10 @@
             <td><%= target_value %></td>
             <% actual = quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %>
             <td data-assessment="<%= assessment target_value, actual %>"><%= actual %></td>
+            <% next_target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: next_quarter) %>
+            <td>
+              <%= next_target ? next_target.value : '' %>
+            </td>
           </tr>
         <% end %>
       <% end %>

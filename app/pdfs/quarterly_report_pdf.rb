@@ -142,7 +142,7 @@ class QuarterlyReportPdf < Prawn::Document
   def measurables(stream, state_language, quarter, project, sub_project)
     targets = QuarterlyTarget.joins(:deliverable).
         where(deliverables: {ministry_id: stream.id}, state_language: state_language).
-        where('quarter BETWEEN ? AND ?', quarter, next_quarter(quarter)).to_a
+        where('quarter BETWEEN ? AND ?', quarter, @view.next_quarter(quarter)).to_a
     values_table = []
     values_table << ['Deliverable', 'Target', 'Actual', 'Next Target']
     stream.deliverables.order(:number).each do |deliverable|
@@ -150,22 +150,12 @@ class QuarterlyReportPdf < Prawn::Document
         target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == quarter }.first
         target_value = target ? target.value : '?'
         actual = @view.quarterly_actual(state_language.id, deliverable, quarter, project, sub_project)
-        next_target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == next_quarter(quarter) }.first
+        next_target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == @view.next_quarter(quarter) }.first
         next_target_value = next_target ? next_target.value : '?'
         values_table << [deliverable.short_form.en, target_value, actual, next_target_value]
       end
     end
     values_table
-  end
-
-  def next_quarter(quarter)
-    q = quarter[-1].to_i + 1
-    if q > 4
-      y = quarter[0..3].to_i
-      "#{y}-1"
-    else
-      "#{quarter[0..3]}-#{q}"
-    end
   end
 
   def partnering_churches(state_language_id, stream_id)

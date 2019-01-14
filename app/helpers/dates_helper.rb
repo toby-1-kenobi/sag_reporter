@@ -85,4 +85,14 @@ module DatesHelper
     quarters
   end
 
+  def next_quarter(quarter)
+    q = quarter[-1].to_i + 1
+    if q > 4
+      y = quarter[0..3].to_i
+      "#{y}-1"
+    else
+      "#{quarter[0..3]}-#{q}"
+    end
+  end
+
 end
