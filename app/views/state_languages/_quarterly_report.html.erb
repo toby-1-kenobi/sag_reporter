@@ -17,22 +17,26 @@
             <% actual = quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %>
             <td data-assessment="<%= assessment target_value, actual %>"><%= actual %></td>
             <% next_target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: next_quarter) %>
-            <td class="quarterly-target"
-                data-state-language="<%= @quarterly_evaluation.state_language_id %>"
-                data-deliverable="<%= deliverable.id %>"
-                data-quarter="<%= next_quarter %>"
-            >
-              <%= form_tag set_target_in_state_language_path(@quarterly_evaluation.state_language_id, deliverable, next_quarter), method: :patch, remote: true do %>
-                <div class="mdl-textfield mdl-js-textfield quarterly-target-input">
-                  <input class="mdl-textfield__input"
-                         type="text"
-                         pattern="[0-9]*(\.[0-9]+)?"
-                         name="target"
-                         value="<%= next_target ? next_target.value : '' %>">
-                  <span class="mdl-textfield__error">Enter a number</span>
-                </div>
-              <% end %>
-            </td>
+            <% if logged_in_user.can_edit_project?(@quarterly_evaluation.project)  %>
+              <td class="quarterly-target"
+                  data-state-language="<%= @quarterly_evaluation.state_language_id %>"
+                  data-deliverable="<%= deliverable.id %>"
+                  data-quarter="<%= next_quarter %>"
+              >
+                <%= form_tag set_target_in_state_language_path(@quarterly_evaluation.state_language_id, deliverable, next_quarter), method: :patch, remote: true do %>
+                  <div class="mdl-textfield mdl-js-textfield quarterly-target-input">
+                    <input class="mdl-textfield__input"
+                           type="text"
+                           pattern="[0-9]*(\.[0-9]+)?"
+                           name="target"
+                           value="<%= next_target ? next_target.value : '' %>">
+                    <span class="mdl-textfield__error">Enter a number</span>
+                  </div>
+                <% end %>
+              </td>
+            <% else %>
+              <td><%= next_target ? next_target.value : '' %></td>
+            <% end %>
           </tr>
         <% end %>
       <% end %>
