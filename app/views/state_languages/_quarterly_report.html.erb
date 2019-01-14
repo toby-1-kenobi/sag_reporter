@@ -1,6 +1,6 @@
 <% user_can_edit = can_edit(@quarterly_evaluation, logged_in_user) %>
 
-<%= form_for @quarterly_evaluation, namespace: @quarterly_evaluation.id.to_s, remote: true do |f| %>
+<div class="container">
 
   <div class="quarterly-results-table">
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
@@ -17,8 +17,21 @@
             <% actual = quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %>
             <td data-assessment="<%= assessment target_value, actual %>"><%= actual %></td>
             <% next_target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: next_quarter) %>
-            <td>
-              <%= next_target ? next_target.value : '' %>
+            <td class="quarterly-target"
+                data-state-language="<%= @quarterly_evaluation.state_language_id %>"
+                data-deliverable="<%= deliverable.id %>"
+                data-quarter="<%= next_quarter %>"
+            >
+              <%= form_tag set_target_in_state_language_path(@quarterly_evaluation.state_language_id, deliverable, next_quarter), method: :patch, remote: true do %>
+                <div class="mdl-textfield mdl-js-textfield quarterly-target-input">
+                  <input class="mdl-textfield__input"
+                         type="text"
+                         pattern="[0-9]*(\.[0-9]+)?"
+                         name="target"
+                         value="<%= next_target ? next_target.value : '' %>">
+                  <span class="mdl-textfield__error">Enter a number</span>
+                </div>
+              <% end %>
             </td>
           </tr>
         <% end %>
@@ -42,61 +55,62 @@
       </div>
     <% end %>
   </div>
-
-  <div class="narrative-questions mdl-shadow--2dp">
-    <h4>Narrative Questions</h4>
-    <% (1..4).each do |i| %>
-      <%= f.label "question_#{i}".to_sym, t("narrative_questions.q#{i}_html") %>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        <i class="material-icons mdl-textfield__icon">question_answer</i>
-        <%= f.text_area "question_#{i}".to_sym, rows: '4', class: 'mdl-textfield__input', disabled: !user_can_edit %>
+  <%= form_for @quarterly_evaluation, namespace: @quarterly_evaluation.id.to_s, remote: true, class: 'qe-form' do |f| %>
+    <div class="narrative-questions mdl-shadow--2dp">
+      <h4>Narrative Questions</h4>
+      <% (1..4).each do |i| %>
+        <%= f.label "question_#{i}".to_sym, t("narrative_questions.q#{i}_html") %>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <i class="material-icons mdl-textfield__icon">question_answer</i>
+          <%= f.text_area "question_#{i}".to_sym, rows: '4', class: 'mdl-textfield__input', disabled: !user_can_edit %>
+        </div>
+      <% end %>
+    </div>
+    <div class="selected-impact-story mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>">
+      <div class="story">
+        <% if @quarterly_evaluation.report %>
+          <% if user_can_edit %>
+            <%= render partial: 'reports/simple_form', object: @quarterly_evaluation.report %>
+          <% else %>
+            <%= render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>
+          <% end %>
+        <% end %>
       </div>
-    <% end %>
-  </div>
-  <div class="selected-impact-story mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>">
-    <div class="story">
-      <% if @quarterly_evaluation.report %>
-        <% if user_can_edit %>
-          <%= render partial: 'reports/simple_form', object: @quarterly_evaluation.report %>
+      <div class="actions">
+        <% if user_can_edit and @reports.any? %>
+          <button class="select-story-button mdl-button mdl-button--colored mdl-button--raised" data-qe="<%= @quarterly_evaluation.id %>">Select impact story</button>
+        <% elsif @reports.any? %>
+          <p>No impact stories linked to this report</p>
+        <% elsif user_can_edit %>
+          <%= link_to add_report_for_quarterly_evaluation_path(@quarterly_evaluation), method: :post, remote: true, class: 'add-story-button mdl-button mdl-button--colored mdl-button--raised' do %>
+            <i class="material-icons">add</i> Add new impact story
+          <% end %>
         <% else %>
-          <%= render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>
+          <p>No impact stories recorded.</p>
+        <% end %>
+      </div>
+    </div>
+    <div class="quarterly-evaluation mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>" data-progress="<%= @quarterly_evaluation.progress %>">
+      <div class="progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
+        <%= f.select :progress, options_for_select(QuarterlyEvaluation.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0].humanize), p[0]] }, @quarterly_evaluation.progress), { prompt: '' }, { class: 'mdlext-selectfield__select', disabled: !user_can_edit} %>
+        <%= f.label :progress, 'Evaluate progress', class: 'mdlext-selectfield__label' %>
+      </div>
+      <% if @quarterly_evaluation.project.supervisors.where(project_supervisors: { role: 'management' }).include?(logged_in_user) %>
+        <%= f.label :approved, class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
+          <%= f.check_box(:approved, class: 'mdl-checkbox__input', disabled: !user_can_edit) %>
+          <span class="mdl-checkbox__label">Manager approval for this quarterly report</span>
+        <% end %>
+      <% else %>
+        <% if @quarterly_evaluation.approved? %>
+          <%= image_tag :approved, class: 'qr-approved-stamp' %>
+          <p>Quarterly report approved by manager.</p>
+        <% else %>
+          <p>This quarterly report pending manager approval.</p>
         <% end %>
       <% end %>
     </div>
-    <div class="actions">
-      <% if user_can_edit and @reports.any? %>
-        <button class="select-story-button mdl-button mdl-button--colored mdl-button--raised" data-qe="<%= @quarterly_evaluation.id %>">Select impact story</button>
-      <% elsif @reports.any? %>
-        <p>No impact stories linked to this report</p>
-      <% elsif user_can_edit %>
-        <%= link_to add_report_for_quarterly_evaluation_path(@quarterly_evaluation), method: :post, remote: true, class: 'add-story-button mdl-button mdl-button--colored mdl-button--raised' do %>
-          <i class="material-icons">add</i> Add new impact story
-        <% end %>
-      <% else %>
-        <p>No impact stories recorded.</p>
-      <% end %>
-    </div>
-  </div>
-  <div class="quarterly-evaluation mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>" data-progress="<%= @quarterly_evaluation.progress %>">
-    <div class="progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-      <%= f.select :progress, options_for_select(QuarterlyEvaluation.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0].humanize), p[0]] }, @quarterly_evaluation.progress), { prompt: '' }, { class: 'mdlext-selectfield__select', disabled: !user_can_edit} %>
-      <%= f.label :progress, 'Evaluate progress', class: 'mdlext-selectfield__label' %>
-    </div>
-    <% if @quarterly_evaluation.project.supervisors.where(project_supervisors: { role: 'management' }).include?(logged_in_user) %>
-      <%= f.label :approved, class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
-        <%= f.check_box(:approved, class: 'mdl-checkbox__input', disabled: !user_can_edit) %>
-        <span class="mdl-checkbox__label">Manager approval for this quarterly report</span>
-      <% end %>
-    <% else %>
-      <% if @quarterly_evaluation.approved? %>
-        <%= image_tag :approved, class: 'qr-approved-stamp' %>
-        <p>Quarterly report approved by manager.</p>
-      <% else %>
-        <p>This quarterly report pending manager approval.</p>
-      <% end %>
-    <% end %>
-  </div>
-<% end %>
+  <% end %>
+</div>
 
 <div class="story-select-dialogs" data-qe="<%= @quarterly_evaluation.id %>">
   <% if user_can_edit and @reports.any? %>

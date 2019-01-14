@@ -41,6 +41,13 @@ container.find('.partnering-churches li').on('click', function () {
     $.ajax(url);
 });
 
+container.find('.quarterly-target-input').on('input', function(){
+    $(this).find('input').addClass('dirty');
+});
+container.find('.quarterly-target-input').on('change', function(){
+    $(this).closest('form').submit();
+});
+
 container.slideDown();
 
 container.find('textarea').each(function () {
