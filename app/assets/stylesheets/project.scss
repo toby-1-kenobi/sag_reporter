@@ -27,7 +27,7 @@
     padding: 1em;
     margin: 1ex;
   }
-  .project-facilitator-header, .project-team-header, .quarterly-stream-header {
+  .project-facilitator-header, .project-team-header, .quarterly-stream-header, .quarterly-stream-summary-header {
     span {
       font-weight: bold;
     }
@@ -245,7 +245,7 @@ td.annual-target {
   margin-bottom: -1.5em;
 }
 
-.quarterly-stream-header {
+.quarterly-stream-header, .quarterly-stream-summary-header {
   margin: 0.5ex !important;
   padding-top: 0.5ex !important;
   padding-bottom: 0.5ex !important;

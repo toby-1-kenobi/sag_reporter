@@ -1,0 +1,3 @@
+var container = $('.quarterly-stream-summary-content[data-stream="<%= @stream_id %>"]');
+container.html('<%= j render 'quarterly_stream_summary'  %>');
+container.slideDown();
