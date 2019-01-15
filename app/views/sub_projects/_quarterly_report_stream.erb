@@ -14,7 +14,7 @@
 <ul id="qr-language-accordion" class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
   <% streams.each do |stream| %>
     <li class="mdlext-accordion__panel">
-      <header class="mdlext-accordion__tab">
+      <header class="mdlext-accordion__tab" data-category="stream">
         <span class="mdlext-accordion__tab__caption"><%= stream.name.en %></span>
       </header>
       <section class="mdlext-accordion__tabpanel" data-stream="<%= stream.id %>">

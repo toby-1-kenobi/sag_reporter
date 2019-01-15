@@ -60,6 +60,41 @@ class SubProjectsController < ApplicationController
     respond_to :js
   end
 
+  def populate_lang_headers
+    if SubProject.exists?(params[:id])
+      sub_project = SubProject.includes(:project).find(params[:id])
+    else
+      # if no sub-project has been selected the id will be the project id prefixed with a single character
+      project = Project.find(params[:id][1..-1])
+    end
+    @stream_id = params[:stream]
+    if sub_project
+      state_languages = sub_project.project.state_languages.to_a.select {|sl| sub_project.language_streams.exists?(state_language_id: sl.id, ministry_id: @stream_id)}
+    else
+      state_languages = project.state_languages
+    end
+    @qes = {}
+    state_languages.each do |state_language|
+      if sub_project
+        sp_id = sub_project.id
+        p_id = sub_project.project_id
+      else
+        sp_ids = project.language_streams.where(state_language_id: state_language.id, ministry_id: @stream_id).pluck(:sub_project_id).uniq
+        sp_id = sp_ids.length == 1 ? sp_ids[0] : nil
+        p_id = project.id
+        end
+      qe = QuarterlyEvaluation.find_by(
+          project_id: p_id,
+          sub_project_id: sp_id,
+          state_language_id: state_language.id,
+          ministry_id: @stream_id,
+          quarter: params[:quarter]
+      )
+      @qes[state_language.id] = qe if qe
+    end
+    respond_to :js
+  end
+
   def download_quarterly_report
     if SubProject.exists?(params[:id])
       @sub_project = SubProject.includes(quarterly_evaluations: [:state_language, ministry: :deliverables]).find(params[:id])
