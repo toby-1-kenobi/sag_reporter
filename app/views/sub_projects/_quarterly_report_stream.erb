@@ -1,0 +1,37 @@
+
+<% if @sub_project %>
+  <% streams = @project.ministries.order(:code).to_a.select {|s| @sub_project.language_streams.exists?(ministry_id: s.id)} %>
+<% else %>
+  <% streams = @project.ministries.order(:code) %>
+<% end %>
+
+<button id="download-quarterly-report" class="mdl-button">
+  <i class="material-icons">file_download</i>
+  Download report
+</button>
+
+<% multi_state = @project.geo_states.uniq.count > 1 %>
+<ul id="qr-language-accordion" class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
+  <% streams.each do |stream| %>
+    <li class="mdlext-accordion__panel">
+      <header class="mdlext-accordion__tab">
+        <span class="mdlext-accordion__tab__caption"><%= stream.name.en %></span>
+      </header>
+      <section class="mdlext-accordion__tabpanel" data-stream="<%= stream.id %>">
+        <% if @sub_project %>
+          <% state_languages = @project.state_languages.order(:id).to_a.select {|sl| @sub_project.language_streams.exists?(state_language_id: sl.id, ministry_id: stream.id)} %>
+        <% else %>
+          <% state_languages = @project.state_languages.order(:id) %>
+        <% end %>
+        <% state_languages.each do |state_language| %>
+          <div class="header-flex-container">
+            <div class="quarterly-stream-header" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>"><%= state_language.name(multi_state) %> <span class="progress"></span></div>
+            <%= image_tag('approved.png', class: 'approved-stamp', hidden: '') %>
+          </div>
+          <div class="quarterly-stream-content" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>">
+          </div>
+        <% end %>
+      </section>
+    </li>
+  <% end %>
+</ul>
