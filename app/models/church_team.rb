@@ -16,7 +16,12 @@ class ChurchTeam < ActiveRecord::Base
   scope :in_project, ->(project) { joins(:ministries).where(church_ministries: {status: 0}).where('ministries.id in (?)', project.ministries.pluck(:id)).where(state_language: project.state_languages).uniq }
 
   def full_name
-    church_name = "#{organisation.name} with #{leader}"
+    if organisation.present?
+      org_name = organisation.name
+    else
+      org_name = 'Independant'
+    end
+    church_name = "#{org_name} with #{leader}"
     if name.present?
       "#{church_name} - #{name}"
     else
