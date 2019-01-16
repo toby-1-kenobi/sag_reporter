@@ -1,1 +1,187 @@
-docx.h1 'Quarterly Report'
+
+
+def header(left, centre, right)
+  repeat :all do
+    bounding_box [bounds.left, bounds.top + 30], :width  => bounds.width do
+      font "Helvetica"
+      text_box left
+      text_box centre, :align => :center
+      text right, :align => :right
+      stroke_horizontal_rule
+    end
+    move_down 10
+  end
+end
+
+def progress_colour(progress)
+  case progress
+  when 'no_progress'
+    "7B68EE"
+  when 'poor', 'behind'
+    "FF0000"
+  when 'fair', 'somewhat-behind'
+    "FFFF00"
+  when 'good', 'on-pace'
+    "98FB98"
+  when 'excellent', 'ahead'
+    "00FF00"
+  else
+    "FFFFFF"
+  end
+end
+
+def measurables(stream, state_language, quarter, project, sub_project)
+  targets = QuarterlyTarget.joins(:deliverable).
+      where(deliverables: {ministry_id: stream.id}, state_language: state_language).
+      where('quarter BETWEEN ? AND ?', quarter, next_quarter(quarter)).to_a
+  values_table = []
+  values_table << ['Deliverable', 'Target', 'Actual', 'Next Target']
+  stream.deliverables.order(:number).each do |deliverable|
+    unless deliverable.disabled?
+      target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == quarter }.first
+      target_value = target ? target.value : '?'
+      actual = quarterly_actual(state_language.id, deliverable, quarter, project, sub_project)
+      next_target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == next_quarter(quarter) }.first
+      next_target_value = next_target ? next_target.value : '?'
+      values_table << [deliverable.short_form.en, target_value, actual, next_target_value]
+    end
+  end
+  values_table
+end
+
+def narrative_questions(quarterly_evaluation)
+  narrative_questions = []
+  (1..4).each do |i|
+    answer = quarterly_evaluation.send("question_#{i}")
+    if answer.present?
+      narrative_questions << [I18n.t("narrative_questions.q#{i}_html")]
+      narrative_questions << [answer]
+    end
+  end
+  narrative_questions
+end
+
+def report(quarterly_evaluation, docx)
+
+  docx.p 'Sample impact story:'
+  docx.p quarterly_evaluation.report.content
+  quarterly_evaluation.report.pictures.each do |picture|
+    if Rails.env.production?
+      begin
+        if picture.ref?
+          docx.img picture.ref_url do
+            width   400
+            heigth  400
+            align   :right
+            top     10
+            bottom  10
+            left    10
+            right   10
+          end
+        end
+      rescue OpenURI::HTTPError => e
+        docx.p '<image missing>'
+      end
+    else
+      if picture.ref?
+        docx.img "#{Rails.root}/public#{picture.ref_url}" do
+          width   400
+          height  400
+          align   :right
+          top     10
+          bottom  10
+          left    10
+          right   10
+        end
+      end
+    end
+  end
+end
+
+docx.h1 "Quarterly Report for #{@project.name}, #{@quarter[0..3]} quarter #{@quarter[-1]}"
+docx.h2 "(Sub-project: #{@sub_project.name})" if @sub_project
+docx.p
+docx.h3 pretty_quarter(@quarter)
+
+state_languages = @project.state_languages.order(:id)
+if @sub_project
+  state_languages = state_languages.to_a.select{ |sl| @sub_project.language_streams.exists?(state_language_id: sl.id) }
+end
+
+multi_state = @project.geo_states.uniq.count > 1
+
+break_next = false
+state_languages.each do |state_language|
+  if break_next
+    docx.page
+    break_next = false
+  end
+  docx.h2 state_language.name(multi_state)
+  streams = @project.ministries.order(:code)
+  if @sub_project
+    streams = streams.to_a.select {|s| @sub_project.language_streams.exists?(state_language_id: state_language.id, ministry_id: s.id)}
+  end
+  streams.each do |stream|
+
+    if @sub_project
+      sp_id = @sub_project.id
+    else
+      sp_ids = @project.language_streams.where(state_language: state_language, ministry: stream).pluck(:sub_project_id).uniq
+      sp_id = sp_ids.length == 1 ? sp_ids[0] : nil
+    end
+    quarterly_evaluation = QuarterlyEvaluation.find_by(
+        project: @project,
+        sub_project_id: sp_id,
+        state_language: state_language,
+        ministry: stream,
+        quarter: @quarter
+    )
+
+    if break_next
+      docx.page
+    else
+      docx.p
+      break_next = true
+    end
+    if quarterly_evaluation and quarterly_evaluation.progress.present?
+      # fill_color progress_colour(quarterly_evaluation.progress)
+      # fill_rectangle [0, cursor + 5], bounds.width, 40
+      # fill_color "000000"
+    end
+    docx.h3 "#{stream.name.en} in #{state_language.language_name}"
+    if quarterly_evaluation
+      if quarterly_evaluation.progress.present?
+        p("progress this quarter: #{quarterly_evaluation.progress.humanize}"){ align :center }
+      end
+
+      if quarterly_evaluation.approved?
+        if File.file?(image_url('approved.png'))
+          docx.img image_url('approved.png') do
+            width 150
+            align :right
+          end
+        else
+          docx.p('Quarterly report approved by manager.'){ align :right }
+        end
+      else
+        docx.p('pending approval by manager'){ align :right }
+      end
+    end
+
+    measurables_data = measurables(stream, state_language, @quarter, @project, @sub_project)
+    docx.h3 'Measurables'
+    docx.table measurables_data
+
+    if quarterly_evaluation
+      narrative_data = narrative_questions(quarterly_evaluation)
+      if narrative_data.any?
+        docx.p
+        docx.table narrative_data
+      end
+      if quarterly_evaluation.report.present?
+        docx.p
+        report(quarterly_evaluation, docx)
+      end
+    end
+  end
+end
