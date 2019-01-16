@@ -38,3 +38,9 @@ $('#download-quarterly-report').on('click', function () {
     var url = '<%= download_report_for_sub_project_url(@sub_project ? @sub_project.id : "p#{@project.id}", 'q_placeholder') %>';
     window.location = url.replace('q_placeholder', quarter) + '.pdf';
 })
+
+$('#funders-quarterly-report').on('click', function () {
+    const quarter = $('#quarter-select').val();
+    var url = '<%= funders_report_for_sub_project_url(@sub_project ? @sub_project.id : "p#{@project.id}", 'q_placeholder') %>';
+    window.location = url.replace('q_placeholder', quarter) + '.docx';
+})

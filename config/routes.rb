@@ -222,6 +222,7 @@ Rails.application.routes.draw do
   resources :sub_projects, only: [:create, :destroy] do
     get :quarterly_report, on: :member
     get 'download_report/:quarter', on: :member, action: :download_quarterly_report, as: 'download_report_for'
+    get 'funders_report/:quarter', on: :member, action: :funders_quarterly_report, as: 'funders_report_for', format: 'docx'
     get 'populate_stream_headers/:state_language/:quarter', on: :member, action: :populate_stream_headers, as: 'populate_stream_headers_for'
     get 'populate_lang_headers/:stream/:quarter', on: :member, action: :populate_lang_headers, as: 'populate_lang_headers_for'
   end
