@@ -71,7 +71,7 @@ def report(quarterly_evaluation, docx)
         if picture.ref?
           docx.img picture.ref_url do
             width   400
-            heigth  400
+            height  400
             align   :right
             top     10
             bottom  10

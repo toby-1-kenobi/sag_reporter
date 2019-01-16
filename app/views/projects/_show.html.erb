@@ -13,7 +13,6 @@
     <a id="facs-tab" href="#facs-panel" class="mdl-tabs__tab dirty">Facilitators</a>
     <% if logged_in_user.admin? or @project.supervisors.include?(logged_in_user) or @project.stream_supervisors.include?(logged_in_user) %>
       <a id="quarterly-tab" href="#quarterly-panel" class="mdl-tabs__tab dirty">Quarterly Report</a>
-      <a href="#overview-panel" class="mdl-tabs__tab">Overview</a>
     <% end %>
   </div>
 
@@ -24,9 +23,6 @@
   </div>
 
   <div class="mdl-tabs__panel" id="quarterly-panel">
-  </div>
-
-  <div class="mdl-tabs__panel" id="overview-panel">
   </div>
 
 </div>
