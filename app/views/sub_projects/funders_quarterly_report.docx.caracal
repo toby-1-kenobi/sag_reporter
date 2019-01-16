@@ -98,6 +98,19 @@ def report(quarterly_evaluation, docx)
   end
 end
 
+docx.style do
+  id              'StreamHead'  # sets the internal identifier for the style.
+  name            'stream heading' # sets the friendly name of the style.
+  type            'paragraph' # sets the style type. accepts `paragraph` or `character`
+  size            28          # sets the font size. units in half points.
+  bold            true
+  align           :left       # sets the alignment. accepts :left, :center, :right, and :both.
+  top             100         # sets the spacing above the paragraph. units in twips.
+  bottom          0           # sets the spacing below the paragraph. units in twips.
+  indent_left     300         # sets the left indent. units in twips.
+  indent_right    300         # sets the rights indent. units in twips.
+end
+
 docx.h1 "Quarterly Report for #{@project.name}, #{@quarter[0..3]} quarter #{@quarter[-1]}"
 docx.h2 "(Sub-project: #{@sub_project.name})" if @sub_project
 docx.p
@@ -144,33 +157,39 @@ state_languages.each do |state_language|
       break_next = true
     end
     if quarterly_evaluation and quarterly_evaluation.progress.present?
-      # fill_color progress_colour(quarterly_evaluation.progress)
-      # fill_rectangle [0, cursor + 5], bounds.width, 40
-      # fill_color "000000"
+      prog_colour = progress_colour(quarterly_evaluation.progress)
+    else
+      prog_colour = 'FFFFFF'
     end
-    docx.h3 "#{stream.name.en} in #{state_language.language_name}"
+    docx.p "#{stream.name.en} in #{state_language.language_name}          ", style: 'StreamHead', bgcolor: prog_colour
     if quarterly_evaluation
       if quarterly_evaluation.progress.present?
-        p("progress this quarter: #{quarterly_evaluation.progress.humanize}"){ align :center }
+        docx.p "progress this quarter: #{quarterly_evaluation.progress.humanize}", align: :center, bgcolor: prog_colour
       end
 
       if quarterly_evaluation.approved?
         if File.file?(image_url('approved.png'))
           docx.img image_url('approved.png') do
             width 150
+            height 30
             align :right
           end
         else
-          docx.p('Quarterly report approved by manager.'){ align :right }
+          docx.p 'Report approved by manager.', align: :right
         end
       else
-        docx.p('pending approval by manager'){ align :right }
+        docx.p 'Pending approval by manager', align: :right
       end
     end
 
     measurables_data = measurables(stream, state_language, @quarter, @project, @sub_project)
+    measurable_colours = measurables_data.map{ |row| (row == 0 or row[1] == '?' or row[2] == '-') ? 'FFFFFF' : progress_colour(assessment(row[1], row[2])) }
     docx.h3 'Measurables'
-    docx.table measurables_data
+    docx.table measurables_data do
+      (0..measurables_data.length - 1).each do |row|
+        cell_style rows[row][2], background: measurable_colours[row]
+      end
+    end
 
     if quarterly_evaluation
       narrative_data = narrative_questions(quarterly_evaluation)
