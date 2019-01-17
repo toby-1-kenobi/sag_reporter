@@ -35,7 +35,7 @@ $('.quarterly-stream-header').on('click', function () {
 
 $('.quarterly-stream-summary-header').on('click', function () {
     const stream_id = $(this).data('stream');
-    var container = $('.quarterly-stream-content[data-stream="' + stream_id + '"]');
+    var container = $('.quarterly-stream-summary-content[data-stream="' + stream_id + '"]');
     if (!$.trim(container.html())) {
         var quarter = $('#quarter-select').val();
         var url = '<%= stream_summary_for_sub_project_url(@sub_project ? @sub_project.id : "p#{@project.id}", 's_placeholder', 'q_placeholder') %>';

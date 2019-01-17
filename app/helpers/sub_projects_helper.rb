@@ -1,17 +1,24 @@
 module SubProjectsHelper
 
   def quarterly_summary(stream, outputs, aggregate_outputs, start_month, targets, quarter)
+    Rails.logger.debug aggregate_outputs.inject(''){ |a, x| a + " #{x.id}" }
     table_data = []
     stream.deliverables.active.order(:number).each do |deliverable|
       row = [deliverable.short_form.en]
       case deliverable.reporter
       when 'church_team'
         (0..2).each do |m|
-          row << outputs.select{ |o| o.month == m.months.since(start_month).strftime('%Y-%m') and o.deliverable_id = deliverable.id }.sum{ |o| o.value }
+          row << outputs.select{ |o| o.month == m.months.since(start_month).strftime('%Y-%m') and o.deliverable_id == deliverable.id }.sum{ |o| o.value }
         end
       when 'facilitator'
         (0..2).each do |m|
-          row << aggregate_outputs.select{ |o| o.month == m.months.since(start_month).strftime('%Y-%m') and o.deliverable_id = deliverable.id }.sum{ |o| o.value }
+          Rails.logger.debug deliverable.id
+          Rails.logger.debug aggregate_outputs.select{ |o| o.month == m.months.since(start_month).strftime('%Y-%m') and o.deliverable_id == deliverable.id }.inject(''){ |a, x| a + " #{x.id}" }
+          row << aggregate_outputs.select{ |o| o.month == m.months.since(start_month).strftime('%Y-%m') and o.deliverable_id == deliverable.id }.sum{ |o| o.value }
+        end
+      else
+        3.times do
+          row << ''
         end
       end
       row << targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == quarter }.sum{ |t| t.value }
