@@ -95,6 +95,38 @@ class SubProjectsController < ApplicationController
     respond_to :js
   end
 
+  def stream_summary
+    if SubProject.exists?(params[:id])
+      sub_project = SubProject.includes(:project).find(params[:id])
+    else
+      # if no sub-project has been selected the id will be the project id prefixed with a single character
+      project = Project.find(params[:id][1..-1])
+    end
+    @stream = Ministry.find params[:stream]
+
+    # get church team outputs
+    if sub_project
+      state_languages = sub_project.project.state_languages.pluck(:id).select {|sl_id| sub_project.language_streams.exists?(state_language_id: sl_id, ministry_id: @stream.id)}
+    else
+      state_languages = project.state_languages.pluck :id
+    end
+    @quarter = params[:quarter]
+    church_mins = ChurchMinistry.joins(:church_team).
+        where(church_teams: {state_language_id: state_languages}, ministry: @stream)
+    @outputs = MinistryOutput.where(actual: true, church_ministry: church_mins)
+
+    # get facilitator outputs
+    if sub_project
+      lang_streams = LanguageStream.where(sub_project: sub_project, state_language_id: state_languages, ministry: @stream)
+    else
+      lang_streams = LanguageStream.where(project: project, state_language_id: state_languages, ministry: @stream)
+    end
+    @aggregate_outputs = AggregateMinistryOutput.
+        where(actual: true, state_language_id: state_languages, creator_id: lang_streams.pluck(:facilitator_id))
+    @targets = QuarterlyTarget.includes(:deliverable).where(state_language_id: state_languages, deliverables: {ministry_id: @stream.id}).to_a
+    respond_to :js
+  end
+
   def download_quarterly_report
     if SubProject.exists?(params[:id])
       @sub_project = SubProject.includes(quarterly_evaluations: [:state_language, ministry: :deliverables]).find(params[:id])

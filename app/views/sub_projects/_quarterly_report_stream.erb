@@ -27,6 +27,10 @@
         <% else %>
           <% state_languages = @project.state_languages.order(:id) %>
         <% end %>
+        <div class="header-flex-container">
+          <div class="quarterly-stream-summary-header" data-stream="<%= stream.id %>"><%= stream.name.en %> summary</div>
+        </div>
+        <div class="quarterly-stream-summary-content" data-stream="<%= stream.id %>"></div>
         <% state_languages.each do |state_language| %>
           <div class="header-flex-container">
             <div class="quarterly-stream-header" data-lang="<%= state_language.id %>" data-stream="<%= stream.id %>"><%= state_language.name(multi_state) %> <span class="progress"></span></div>
