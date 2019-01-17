@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190117050357) do
+ActiveRecord::Schema.define(version: 20190117053417) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -416,6 +416,7 @@ ActiveRecord::Schema.define(version: 20190117050357) do
     t.datetime "champion_prompted"
     t.integer  "sensitivity",                         default: 1,       null: false
     t.integer  "egids"
+    t.string   "pseudonym"
   end
 
   add_index "languages", ["champion_id"], name: "index_languages_on_champion_id", using: :btree

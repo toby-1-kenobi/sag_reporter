@@ -132,7 +132,11 @@ state_languages.each do |state_language|
     docx.page
     break_next = false
   end
-  docx.h2 state_language.name(multi_state)
+  if state_language.language.pseudonym.present?
+    docx.h2 "#{state_language.language_name} (#{state_language.pseudonym})"
+  else
+    docx.h2 state_language.name(multi_state)
+  end
   streams = @project.ministries.order(:code).to_a
   if @sub_project
     streams = streams.select {|s| @sub_project.language_streams.exists?(state_language_id: state_language.id, ministry_id: s.id)}

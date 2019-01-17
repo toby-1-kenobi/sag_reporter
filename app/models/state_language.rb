@@ -19,6 +19,7 @@ class StateLanguage < ActiveRecord::Base
   delegate :name, to: :geo_state, prefix: 'state'
   delegate :colour, to: :language, prefix: true
   delegate :zone, to: :geo_state
+  delegate :pseudonym, to: :language
 
   validates :geo_state, presence: true
   validates :language, presence: true
