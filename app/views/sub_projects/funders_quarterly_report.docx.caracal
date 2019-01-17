@@ -204,6 +204,8 @@ state_languages.each do |state_language|
     end
     docx.h3 'Measurables'
     docx.table measurables_data, border_size: 1 do
+      cell_style rows[0], bold: true
+      cell_style rows[1], bold: true
       (2..measurables_data.length - 1).each do |row|
         cell_style rows[row][2], background: measurable_colours[row]
       end
