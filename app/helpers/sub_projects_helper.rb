@@ -20,6 +20,10 @@ module SubProjectsHelper
       else
         row << row[3]
       end
+      3.times do
+        quarter = next_quarter(quarter)
+        row << targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == quarter }.sum{ |t| t.value }
+      end
       table_data << row
     end
     table_data

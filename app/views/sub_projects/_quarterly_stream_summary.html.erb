@@ -2,11 +2,16 @@
   <thead>
     <tr>
       <th>Deliverable</th>
-      <th><%= @start_month.strftime("%b") %> Actual</th>
-      <th><%= 1.month.since(@start_month).strftime("%b") %> Actual</th>
-      <th><%= 2.months.since(@start_month).strftime("%b") %> Actual</th>
-      <th><%= "#{@start_month.strftime("%b")}-#{2.months.since(@start_month).strftime("%b")} Target" %></th>
-      <th><%= "#{@start_month.strftime("%b")}-#{2.months.since(@start_month).strftime("%b")} Actual" %></th>
+      <th><%= @start_month.strftime("%b") %><br>Actual</th>
+      <th><%= 1.month.since(@start_month).strftime("%b") %><br>Actual</th>
+      <th><%= 2.months.since(@start_month).strftime("%b") %><br>Actual</th>
+      <th><%= pretty_quarter(@quarter, true) %><br>Target</th>
+      <th><%= pretty_quarter(@quarter, true) %><br>Actual</th>
+      <% q = @quarter %>
+      <% 3.times do %>
+        <% q = next_quarter(q) %>
+        <th><%= pretty_quarter(q, true) %><br>Target</th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
