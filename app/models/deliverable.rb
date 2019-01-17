@@ -22,6 +22,7 @@ class Deliverable < ActiveRecord::Base
   has_many :quarterly_targets, dependent: :restrict_with_error
   validates :ministry, presence: true
   validates :number, presence: true, uniqueness: { scope: :ministry }
+  validates :funder_interest, inclusion: [true, false]
   before_create :create_translation_codes
 
   # Method for reading and writing all translation values (e.g. short_form_en = "?" or plan_form_value)

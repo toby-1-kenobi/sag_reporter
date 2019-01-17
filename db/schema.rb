@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181219053525) do
+ActiveRecord::Schema.define(version: 20190117050357) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -138,15 +138,16 @@ ActiveRecord::Schema.define(version: 20181219053525) do
   add_index "data_sources", ["name"], name: "index_data_sources_on_name", unique: true, using: :btree
 
   create_table "deliverables", force: :cascade do |t|
-    t.integer  "ministry_id",                    null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
-    t.integer  "number",                         null: false
-    t.integer  "calculation_method", default: 0, null: false
-    t.integer  "reporter",           default: 0, null: false
-    t.integer  "short_form_id",                  null: false
-    t.integer  "plan_form_id",                   null: false
-    t.integer  "result_form_id",                 null: false
+    t.integer  "ministry_id",                       null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "number",                            null: false
+    t.integer  "calculation_method", default: 0,    null: false
+    t.integer  "reporter",           default: 0,    null: false
+    t.integer  "short_form_id",                     null: false
+    t.integer  "plan_form_id",                      null: false
+    t.integer  "result_form_id",                    null: false
+    t.boolean  "funder_interest",    default: true, null: false
   end
 
   add_index "deliverables", ["ministry_id"], name: "index_deliverables_on_ministry_id", using: :btree
