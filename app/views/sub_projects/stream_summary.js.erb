@@ -1,3 +1,10 @@
-var container = $('.quarterly-stream-summary-content[data-stream="<%= @stream_id %>"]');
+<%
+  first_month, last_month = quarter_to_range(@quarter)
+  @start_month = Date.new(first_month[0..3].to_i, first_month[-2..-1].to_i)
+  @outputs = @outputs.where('month BETWEEN ? AND ?', first_month, last_month).to_a
+  @aggregate_outputs = @aggregate_outputs.where('month BETWEEN ? AND ?', first_month, last_month).to_a
+%>
+
+var container = $('.quarterly-stream-summary-content[data-stream="<%= @stream.id %>"]');
 container.html('<%= j render 'quarterly_stream_summary'  %>');
 container.slideDown();
