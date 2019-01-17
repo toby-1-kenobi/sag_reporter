@@ -23,8 +23,8 @@ def measurables(stream, state_language, quarter, project, sub_project)
       where(deliverables: {ministry_id: stream.id}, state_language: state_language).
       where('quarter BETWEEN ? AND ?', quarter, next_quarter(quarter)).to_a
   values_table = []
-  values_table << ['', pq, pq, next_pq]
-  values_table << ['', "Target", "Actual", "Next Target"]
+  values_table << ['', pq, pq, 'Verses Completed', next_pq]
+  values_table << ['', 'Target', 'Actual', 'for each step', 'Next Target']
   stream.deliverables.where(funder_interest: true).order(:number).each do |deliverable|
     unless deliverable.disabled?
       target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == quarter }.first
@@ -32,9 +32,11 @@ def measurables(stream, state_language, quarter, project, sub_project)
       actual = quarterly_actual(state_language.id, deliverable, quarter, project, sub_project)
       next_target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == next_quarter(quarter) }.first
       next_target_value = next_target ? next_target.value : ''
-      values_table << [deliverable.short_form.en, target_value, actual, next_target_value]
+      values_table << [deliverable.short_form.en, target_value, actual, '', next_target_value]
     end
   end
+  # verses completed column is only for translation stream
+  values_table.each{ |row| row.delete_at(3) } unless stream.code == 'TR'
   values_table
 end
 
@@ -196,11 +198,17 @@ state_languages.each do |state_language|
 
     measurables_data = measurables(stream, state_language, @quarter, @project, @sub_project)
     measurable_colours = measurables_data.map{ |row| progress_colour(assessment(row[1], row[2])) }
-    measurables_data = measurables_data.map{ |row| row.map{ |col| col.blank? ? 'No specific target' : col } }
+    measurables_data = measurables_data.each do |row|
+      row[1] = row[1].blank? ? 'No specific target' : row[1]
+      row[-1] = row[-1].blank? ? 'No specific target' : row[-1]
+    end
     docx.h3 'Measurables'
     docx.table measurables_data, border_size: 1 do
       (2..measurables_data.length - 1).each do |row|
         cell_style rows[row][2], background: measurable_colours[row]
+      end
+      (1..measurables_data[0].length - 1).each do |col|
+        cell_style cols[col], align: :center
       end
     end
 
@@ -224,4 +232,4 @@ state_languages.each do |state_language|
   end
 end
 
-docx.page_numbers true, align: :center
+docx.page_numbers true, align: :center, label: "#{@sub_project ? @sub_project.name : @project.name}\tPage "
