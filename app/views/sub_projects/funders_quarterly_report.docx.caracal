@@ -1,18 +1,4 @@
 
-
-def header(left, centre, right)
-  repeat :all do
-    bounding_box [bounds.left, bounds.top + 30], :width  => bounds.width do
-      font "Helvetica"
-      text_box left
-      text_box centre, :align => :center
-      text right, :align => :right
-      stroke_horizontal_rule
-    end
-    move_down 10
-  end
-end
-
 def progress_colour(progress)
   case progress
   when 'no_progress'
@@ -31,22 +17,33 @@ def progress_colour(progress)
 end
 
 def measurables(stream, state_language, quarter, project, sub_project)
+  pq = pretty_quarter(quarter, true)
+  next_pq = pretty_quarter(next_quarter(quarter), true)
   targets = QuarterlyTarget.joins(:deliverable).
       where(deliverables: {ministry_id: stream.id}, state_language: state_language).
       where('quarter BETWEEN ? AND ?', quarter, next_quarter(quarter)).to_a
   values_table = []
-  values_table << ['Deliverable', 'Target', 'Actual', 'Next Target']
+  values_table << ['', "#{pq}\nTarget", "#{pq}\nActual", "#{next_pq}\nNext Target"]
   stream.deliverables.order(:number).each do |deliverable|
     unless deliverable.disabled?
       target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == quarter }.first
-      target_value = target ? target.value : '?'
+      target_value = target ? target.value : ''
       actual = quarterly_actual(state_language.id, deliverable, quarter, project, sub_project)
       next_target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == next_quarter(quarter) }.first
-      next_target_value = next_target ? next_target.value : '?'
+      next_target_value = next_target ? next_target.value : ''
       values_table << [deliverable.short_form.en, target_value, actual, next_target_value]
     end
   end
   values_table
+end
+
+def clean_narrative_q(i)
+  question = I18n.t("narrative_questions.q#{i}_html")
+  if question.include?('<br>')
+    question.split('<br>').drop(1).join(' ')
+  else
+    question
+  end
 end
 
 def narrative_questions(quarterly_evaluation)
@@ -54,7 +51,7 @@ def narrative_questions(quarterly_evaluation)
   (1..4).each do |i|
     answer = quarterly_evaluation.send("question_#{i}")
     if answer.present?
-      narrative_questions << [I18n.t("narrative_questions.q#{i}_html")]
+      narrative_questions << [clean_narrative_q(i)]
       narrative_questions << [answer]
     end
   end
@@ -63,8 +60,8 @@ end
 
 def report(quarterly_evaluation, docx)
 
-  docx.p 'Sample impact story:'
-  docx.p quarterly_evaluation.report.content
+  docx.h3 "Impact story for #{quarterly_evaluation.ministry.name.en} in #{quarterly_evaluation.state_language.language_name}:"
+  docx.p quarterly_evaluation.report.content, bgcolor: 'FFF9E7'
   quarterly_evaluation.report.pictures.each do |picture|
     if Rails.env.production?
       begin
@@ -111,15 +108,15 @@ docx.style do
   indent_right    300         # sets the rights indent. units in twips.
 end
 
-docx.h1 "Quarterly Report for #{@project.name}, #{@quarter[0..3]} quarter #{@quarter[-1]}"
-docx.h2 "(Sub-project: #{@sub_project.name})" if @sub_project
-docx.p
-docx.h3 pretty_quarter(@quarter)
-
 state_languages = @project.state_languages.order(:id)
 if @sub_project
   state_languages = state_languages.to_a.select{ |sl| @sub_project.language_streams.exists?(state_language_id: sl.id) }
 end
+
+docx.h1 "Quarterly Report for #{@sub_project ? @sub_project.name : @project.name}"
+docx.p
+docx.h3 "Period: #{pretty_quarter(@quarter)}"
+docx.p "Management Supervisors: #{@project.project_supervisors.management.map{ |ps| ps.name }.to_sentence}"
 
 multi_state = @project.geo_states.uniq.count > 1
 
@@ -183,10 +180,11 @@ state_languages.each do |state_language|
     end
 
     measurables_data = measurables(stream, state_language, @quarter, @project, @sub_project)
-    measurable_colours = measurables_data.map{ |row| (row == 0 or row[1] == '?' or row[2] == '-') ? 'FFFFFF' : progress_colour(assessment(row[1], row[2])) }
+    measurable_colours = measurables_data.map{ |row| (row == 0 or row[1].blank? or row[2] == '-') ? 'FFFFFF' : progress_colour(assessment(row[1], row[2])) }
+    measurables_data = measurables_data.map{ |row| row.map{ |col| col.blank? ? 'No specific target' : col } }
     docx.h3 'Measurables'
     docx.table measurables_data do
-      (0..measurables_data.length - 1).each do |row|
+      (1..measurables_data.length - 1).each do |row|
         cell_style rows[row][2], background: measurable_colours[row]
       end
     end
@@ -195,12 +193,20 @@ state_languages.each do |state_language|
       narrative_data = narrative_questions(quarterly_evaluation)
       if narrative_data.any?
         docx.p
-        docx.table narrative_data
+        docx.table narrative_data do
+          (0..narrative_data.length - 1).each do |row|
+            cell_style rows[row], background: row.even? ? 'F2F2F2' : 'FFF9E7'
+          end
+        end
       end
       if quarterly_evaluation.report.present?
         docx.p
         report(quarterly_evaluation, docx)
       end
     end
+    docx.p
+    docx.hr size: 10
   end
 end
+
+docx.page_numbers true, align: :center
