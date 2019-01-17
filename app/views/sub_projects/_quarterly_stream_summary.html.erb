@@ -10,11 +10,15 @@
     </tr>
   </thead>
   <tbody>
-  <% table_data = quarterly_summary(@stream, @outputs, @aggregate_outputs, @start_month) %>
+  <% table_data = quarterly_summary(@stream, @outputs, @aggregate_outputs, @start_month, @targets, @quarter) %>
   <% table_data.each do |row| %>
     <tr>
-      <% row.each do |col| %>
-        <td><%= col %></td>
+      <% row.each_with_index do |col, i| %>
+        <% if i == 5 %>
+          <td data-assessment="<%= assessment row[i-1], col %>"><%= col %></td>
+        <% else %>
+          <td><%= col %></td>
+        <% end %>
       <% end %>
     </tr>
   <% end %>

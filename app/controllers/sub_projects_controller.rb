@@ -123,7 +123,7 @@ class SubProjectsController < ApplicationController
     end
     @aggregate_outputs = AggregateMinistryOutput.
         where(actual: true, state_language_id: state_languages, creator_id: lang_streams.pluck(:facilitator_id))
-    @targets = QuarterlyTarget.includes(:deliverable).where(state_language_id: state_languages, deliverable: {ministry_id: @stream.id})
+    @targets = QuarterlyTarget.includes(:deliverable).where(state_language_id: state_languages, deliverables: {ministry_id: @stream.id}).to_a
     respond_to :js
   end
 
