@@ -59,9 +59,14 @@ def narrative_questions(quarterly_evaluation)
 end
 
 def report(quarterly_evaluation, docx)
-
-  docx.h3 "Impact story for #{quarterly_evaluation.ministry.name.en} in #{quarterly_evaluation.state_language.language_name}:"
-  docx.p quarterly_evaluation.report.content, bgcolor: 'FFF9E7'
+  table_data = [
+      ["Impact story for #{quarterly_evaluation.ministry.name.en} in #{quarterly_evaluation.state_language.language_name}:"],
+      [quarterly_evaluation.report.content]
+  ]
+  docx.table table_data, border_line: :none do
+    cell_style rows[0], style: 'Heading3', background: 'F2F2F2'
+    cell_style rows[1], background: 'FFF9E7'
+  end
   quarterly_evaluation.report.pictures.each do |picture|
     if Rails.env.production?
       begin
@@ -127,10 +132,12 @@ state_languages.each do |state_language|
     break_next = false
   end
   docx.h2 state_language.name(multi_state)
-  streams = @project.ministries.order(:code)
+  streams = @project.ministries.order(:code).to_a
   if @sub_project
-    streams = streams.to_a.select {|s| @sub_project.language_streams.exists?(state_language_id: state_language.id, ministry_id: s.id)}
+    streams = streams.select {|s| @sub_project.language_streams.exists?(state_language_id: state_language.id, ministry_id: s.id)}
   end
+  # put translation and storying first
+  streams = streams.select{ |s| s.code == 'TR' } + streams.select{ |s| s.code == 'ST' } + streams.select{ |s| s.code != 'TR' and s.code != 'ST' }
   streams.each do |stream|
 
     if @sub_project
@@ -158,32 +165,35 @@ state_languages.each do |state_language|
     else
       prog_colour = 'FFFFFF'
     end
-    docx.p "#{stream.name.en} in #{state_language.language_name}          ", style: 'StreamHead', bgcolor: prog_colour
-    if quarterly_evaluation
-      if quarterly_evaluation.progress.present?
-        docx.p "progress this quarter: #{quarterly_evaluation.progress.humanize}", align: :center, bgcolor: prog_colour
-      end
 
-      if quarterly_evaluation.approved?
-        if File.file?(image_url('approved.png'))
-          docx.img image_url('approved.png') do
-            width 150
-            height 30
-            align :right
-          end
-        else
-          docx.p 'Report approved by manager.', align: :right
+    head = [["#{stream.name.en} in #{state_language.language_name}"]]
+    if quarterly_evaluation and quarterly_evaluation.progress.present?
+      head << ["progress this quarter: #{quarterly_evaluation.progress.humanize}"]
+    end
+    docx.table head, border_line: :none do
+      cell_style rows[0], style: 'StreamHead', background: prog_colour
+      cell_style rows[1], align: :center, background: prog_colour
+    end
+
+    if quarterly_evaluation and quarterly_evaluation.approved?
+      if File.file?(image_url('approved.png'))
+        docx.img image_url('approved.png') do
+          width 150
+          height 30
+          align :right
         end
       else
-        docx.p 'Pending approval by manager', align: :right
+        docx.p 'Report approved by manager.', align: :right
       end
+    else
+      docx.p 'Pending approval by manager', align: :right
     end
 
     measurables_data = measurables(stream, state_language, @quarter, @project, @sub_project)
     measurable_colours = measurables_data.map{ |row| (row == 0 or row[1].blank? or row[2] == '-') ? 'FFFFFF' : progress_colour(assessment(row[1], row[2])) }
     measurables_data = measurables_data.map{ |row| row.map{ |col| col.blank? ? 'No specific target' : col } }
     docx.h3 'Measurables'
-    docx.table measurables_data do
+    docx.table measurables_data, border_size: 1 do
       (1..measurables_data.length - 1).each do |row|
         cell_style rows[row][2], background: measurable_colours[row]
       end
@@ -193,7 +203,7 @@ state_languages.each do |state_language|
       narrative_data = narrative_questions(quarterly_evaluation)
       if narrative_data.any?
         docx.p
-        docx.table narrative_data do
+        docx.table narrative_data, border_size: 1 do
           (0..narrative_data.length - 1).each do |row|
             cell_style rows[row], background: row.even? ? 'F2F2F2' : 'FFF9E7'
           end
