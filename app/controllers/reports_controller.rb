@@ -108,18 +108,25 @@ class ReportsController < ApplicationController
   end
 
   def update
-    updater = Report::Updater.new(@report)
-  	if updater.update_report(report_params)
-      flash['success'] = 'Report Updated!'
-      redirect_to @report
-    else
-      if updater.error
-        flash['error'] = "Report update failed: #{updater.error.message}"
+    respond_to do |format|
+      format.html do
+        updater = Report::Updater.new(@report)
+        if updater.update_report(report_params)
+          flash['success'] = 'Report Updated!'
+          redirect_to @report
+        else
+          if updater.error
+            flash['error'] = "Report update failed: #{updater.error.message}"
+          end
+          @geo_states = @report.available_geo_states(logged_in_user)
+          @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states)
+          @topics = Topic.all
+          render 'edit'
+        end
       end
-      @geo_states = @report.available_geo_states(logged_in_user)
-      @project_languages = StateLanguage.in_project.includes(:language, :geo_state).where(geo_state: logged_in_user.geo_states)
-      @topics = Topic.all
-      render 'edit'
+      format.js do
+        @report.update_attributes(report_params)
+      end
     end
   end
 

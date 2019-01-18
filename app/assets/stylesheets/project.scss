@@ -172,8 +172,22 @@ td.annual-target {
 }
 
 .quarterly-stream-content .container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 25fr 42fr 33fr;
+  grid-template-rows: auto;
+  grid-column-gap: 2em;
+  grid-row-gap: 1ex;
+  grid-template-areas:
+          "measurables measurables impact"
+          "partners questions impact"
+          "partners questions evaluate";
+
+  .quarterly-results-table {
+    grid-area: measurables;
+  }
+
   .partnering-churches {
+    grid-area: partners;
     padding: 0 1.5em 1.5em;
     li {
       cursor: pointer;
@@ -183,46 +197,38 @@ td.annual-target {
       }
     }
   }
-  > form {
-    margin-left: 2em;
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    grid-template-rows: auto;
-    grid-column-gap: 2em;
-    grid-row-gap: 1ex;
-    grid-template-areas:
-            "questions impact"
-            "questions evaluate";
-    .narrative-questions {
-      grid-area: questions;
-      padding: 0 1.5em 1.5em;
-      label {
-        display: block;
-      }
-      label {
-        font-weight: bold;
-      }
-      .mdl-textfield {
-        width: 100%;
-      }
+
+  .narrative-questions {
+    grid-area: questions;
+    padding: 0 1.5em 1.5em;
+    label {
+      display: block;
     }
-    .selected-impact-story {
-      grid-area: impact;
+    label {
+      font-weight: bold;
+    }
+    .mdl-textfield {
+      width: 100%;
+    }
+  }
+
+  .selected-impact-story {
+    grid-area: impact;
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    img {
+      width: 100%;
+    }
+    .actions {
       display: flex;
-      flex-direction: column;
-      padding: 1em;
-      img {
-        width: 100%;
-      }
-      .actions {
-        display: flex;
-        justify-content: center;
-      }
+      justify-content: center;
     }
-    .quarterly-evaluation {
-      grid-area: evaluate;
-      padding: 1.5em;
-    }
+  }
+
+  .quarterly-evaluation {
+    grid-area: evaluate;
+    padding: 1.5em;
   }
 }
 

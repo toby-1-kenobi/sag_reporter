@@ -1,6 +1,8 @@
-<div class="mdl-textfield mdl-js-textfield">
-  <textarea class="impact-story-content mdl-textfield__input" type="text" name="report_content"><%= simple_form.content %></textarea>
-</div>
+<%= form_for simple_form, namespace: "#{@quarterly_evaluation.id}a", remote: true do |f| %>
+  <div class="mdl-textfield mdl-js-textfield">
+    <%= f.text_area :content, class: 'impact-story-content mdl-textfield__input' %>
+  </div>
+<% end %>
 <% simple_form.pictures.each do |picture| %>
   <%= image_tag picture.ref_url if picture.ref? %>
 <% end %>

@@ -2,65 +2,65 @@
 
 <div class="container">
 
-  <div class="quarterly-results-table">
-    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-      <tr><th colspan="3"><%= pretty_quarter @quarterly_evaluation.quarter %></th></tr>
-      <tr><th>Deliverable</th><th>Target</th><th>Actual</th><th>Next Qtr</th></tr>
-      <% next_quarter = next_quarter(@quarterly_evaluation.quarter) %>
-      <% @quarterly_evaluation.ministry.deliverables.order(:number).each do |deliverable| %>
-        <% unless deliverable.disabled? %>
-          <tr>
-            <td><%= deliverable.short_form.en %></td>
-            <% target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: @quarterly_evaluation.quarter) %>
-            <% target_value = target ? target.value : '?' %>
-            <td><%= target_value %></td>
-            <% actual = quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %>
-            <td data-assessment="<%= assessment target_value, actual %>"><%= actual %></td>
-            <% next_target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: next_quarter) %>
-            <% if logged_in_user.can_edit_project?(@quarterly_evaluation.project)  %>
-              <td class="quarterly-target"
-                  data-state-language="<%= @quarterly_evaluation.state_language_id %>"
-                  data-deliverable="<%= deliverable.id %>"
-                  data-quarter="<%= next_quarter %>"
-              >
-                <%= form_tag set_target_in_state_language_path(@quarterly_evaluation.state_language_id, deliverable, next_quarter), method: :patch, remote: true do %>
-                  <div class="mdl-textfield mdl-js-textfield quarterly-target-input">
-                    <input class="mdl-textfield__input"
-                           type="text"
-                           pattern="[0-9]*(\.[0-9]+)?"
-                           name="target"
-                           value="<%= next_target ? next_target.value : '' %>">
-                    <span class="mdl-textfield__error">Enter a number</span>
-                  </div>
-                <% end %>
-              </td>
-            <% else %>
-              <td><%= next_target ? next_target.value : '' %></td>
-            <% end %>
-          </tr>
-        <% end %>
-      <% end %>
-    </table>
-    <% if @church_teams.any? %>
-      <div class="partnering-churches mdl-shadow--2dp"
-           data-project="<%= @quarterly_evaluation.project_id %>"
-           data-stream="<%= @quarterly_evaluation.ministry_id %>"
-           data-first-month="<%= quarter_to_range(@quarterly_evaluation.quarter)[0] %>"
-      >
-        <h4>Partnering Churches</h4>
-        <p>Click for details</p>
-        <ul class="mdl-list">
-          <% @church_teams.each do |team| %>
-            <li class="mdl-list__item" data-team="<%= team.id %>">
-              <span class="mdl-list__item-primary-content"><a><%= team.full_name %></a></span>
-            </li>
+  <table class="quarterly-results-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    <tr><th colspan="3"><%= pretty_quarter @quarterly_evaluation.quarter %></th></tr>
+    <tr><th>Deliverable</th><th>Target</th><th>Actual</th><th>Next Qtr</th></tr>
+    <% next_quarter = next_quarter(@quarterly_evaluation.quarter) %>
+    <% @quarterly_evaluation.ministry.deliverables.order(:number).each do |deliverable| %>
+      <% unless deliverable.disabled? %>
+        <tr>
+          <td><%= deliverable.short_form.en %></td>
+          <% target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: @quarterly_evaluation.quarter) %>
+          <% target_value = target ? target.value : '?' %>
+          <td><%= target_value %></td>
+          <% actual = quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %>
+          <td data-assessment="<%= assessment target_value, actual %>"><%= actual %></td>
+          <% next_target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: next_quarter) %>
+          <% if logged_in_user.can_edit_project?(@quarterly_evaluation.project)  %>
+            <td class="quarterly-target"
+                data-state-language="<%= @quarterly_evaluation.state_language_id %>"
+                data-deliverable="<%= deliverable.id %>"
+                data-quarter="<%= next_quarter %>"
+            >
+              <%= form_tag set_target_in_state_language_path(@quarterly_evaluation.state_language_id, deliverable, next_quarter), method: :patch, remote: true do %>
+                <div class="mdl-textfield mdl-js-textfield quarterly-target-input">
+                  <input class="mdl-textfield__input"
+                         type="text"
+                         pattern="[0-9]*(\.[0-9]+)?"
+                         name="target"
+                         value="<%= next_target ? next_target.value : '' %>">
+                  <span class="mdl-textfield__error">Enter a number</span>
+                </div>
+              <% end %>
+            </td>
+          <% else %>
+            <td><%= next_target ? next_target.value : '' %></td>
           <% end %>
-        </ul>
-      </div>
+        </tr>
+      <% end %>
     <% end %>
-  </div>
-  <%= form_for @quarterly_evaluation, namespace: @quarterly_evaluation.id.to_s, remote: true, class: 'qe-form' do |f| %>
-    <div class="narrative-questions mdl-shadow--2dp">
+  </table>
+
+  <% if @church_teams.any? %>
+    <div class="partnering-churches mdl-shadow--2dp"
+         data-project="<%= @quarterly_evaluation.project_id %>"
+         data-stream="<%= @quarterly_evaluation.ministry_id %>"
+         data-first-month="<%= quarter_to_range(@quarterly_evaluation.quarter)[0] %>"
+    >
+      <h4>Partnering Churches</h4>
+      <p>Click for details</p>
+      <ul class="mdl-list">
+        <% @church_teams.each do |team| %>
+          <li class="mdl-list__item" data-team="<%= team.id %>">
+            <span class="mdl-list__item-primary-content"><a><%= team.full_name %></a></span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="narrative-questions mdl-shadow--2dp">
+    <%= form_for @quarterly_evaluation, namespace: "#{@quarterly_evaluation.id}a", remote: true, class: 'qe-form' do |f| %>
       <h4>Narrative Questions</h4>
       <% (1..4).each do |i| %>
         <%= f.label "question_#{i}".to_sym, t("narrative_questions.q#{i}_html") %>
@@ -69,32 +69,36 @@
           <%= f.text_area "question_#{i}".to_sym, rows: '4', class: 'mdl-textfield__input', disabled: !user_can_edit %>
         </div>
       <% end %>
-    </div>
-    <div class="selected-impact-story mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>">
-      <div class="story">
-        <% if @quarterly_evaluation.report %>
-          <% if user_can_edit %>
-            <%= render partial: 'reports/simple_form', object: @quarterly_evaluation.report %>
-          <% else %>
-            <%= render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>
-          <% end %>
-        <% end %>
-      </div>
-      <div class="actions">
-        <% if user_can_edit and @reports.any? %>
-          <button class="select-story-button mdl-button mdl-button--colored mdl-button--raised" data-qe="<%= @quarterly_evaluation.id %>">Select impact story</button>
-        <% elsif @reports.any? %>
-          <p>No impact stories linked to this report</p>
-        <% elsif user_can_edit %>
-          <%= link_to add_report_for_quarterly_evaluation_path(@quarterly_evaluation), method: :post, remote: true, class: 'add-story-button mdl-button mdl-button--colored mdl-button--raised' do %>
-            <i class="material-icons">add</i> Add new impact story
-          <% end %>
+    <% end %>
+  </div>
+
+  <div class="selected-impact-story mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>">
+    <div class="story">
+      <% if @quarterly_evaluation.report %>
+        <% if user_can_edit %>
+          <%= render partial: 'reports/simple_form', object: @quarterly_evaluation.report %>
         <% else %>
-          <p>No impact stories recorded.</p>
+          <%= render partial: 'reports/simple_report', object: @quarterly_evaluation.report %>
         <% end %>
-      </div>
+      <% end %>
     </div>
-    <div class="quarterly-evaluation mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>" data-progress="<%= @quarterly_evaluation.progress %>">
+    <div class="actions">
+      <% if user_can_edit and @reports.any? %>
+        <button class="select-story-button mdl-button mdl-button--colored mdl-button--raised" data-qe="<%= @quarterly_evaluation.id %>">Select impact story</button>
+      <% elsif @reports.any? %>
+        <p>No impact stories linked to this report</p>
+      <% elsif user_can_edit %>
+        <%= link_to add_report_for_quarterly_evaluation_path(@quarterly_evaluation), method: :post, remote: true, class: 'add-story-button mdl-button mdl-button--colored mdl-button--raised' do %>
+          <i class="material-icons">add</i> Add new impact story
+        <% end %>
+      <% else %>
+        <p>No impact stories recorded.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="quarterly-evaluation mdl-shadow--2dp" data-qe="<%= @quarterly_evaluation.id %>" data-progress="<%= @quarterly_evaluation.progress %>">
+    <%= form_for @quarterly_evaluation, namespace: "#{@quarterly_evaluation.id}c", remote: true, class: 'qe-form' do |f| %>
       <div class="progress mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
         <%= f.select :progress, options_for_select(QuarterlyEvaluation.progresses.to_a.map{ |p| [t("progress.#{p[0]}", default: p[0].humanize), p[0]] }, @quarterly_evaluation.progress), { prompt: '' }, { class: 'mdlext-selectfield__select', disabled: !user_can_edit} %>
         <%= f.label :progress, 'Evaluate progress', class: 'mdlext-selectfield__label' %>
@@ -112,8 +116,9 @@
           <p>This quarterly report pending manager approval.</p>
         <% end %>
       <% end %>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
+
 </div>
 
 <div class="story-select-dialogs" data-qe="<%= @quarterly_evaluation.id %>">
