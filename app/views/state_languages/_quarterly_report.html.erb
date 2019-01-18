@@ -3,42 +3,54 @@
 <div class="container">
 
   <table class="quarterly-results-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-    <tr><th colspan="3"><%= pretty_quarter @quarterly_evaluation.quarter %></th></tr>
-    <tr><th>Deliverable</th><th>Target</th><th>Actual</th><th>Next Qtr</th></tr>
-    <% next_quarter = next_quarter(@quarterly_evaluation.quarter) %>
-    <% @quarterly_evaluation.ministry.deliverables.order(:number).each do |deliverable| %>
-      <% unless deliverable.disabled? %>
-        <tr>
-          <td><%= deliverable.short_form.en %></td>
-          <% target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: @quarterly_evaluation.quarter) %>
-          <% target_value = target ? target.value : '?' %>
-          <td><%= target_value %></td>
-          <% actual = quarterly_actual(@quarterly_evaluation.state_language_id, deliverable, @quarterly_evaluation.quarter, @quarterly_evaluation.project, @quarterly_evaluation.sub_project) %>
-          <td data-assessment="<%= assessment target_value, actual %>"><%= actual %></td>
-          <% next_target = QuarterlyTarget.find_by(state_language: @quarterly_evaluation.state_language, deliverable: deliverable, quarter: next_quarter) %>
-          <% if logged_in_user.can_edit_project?(@quarterly_evaluation.project)  %>
-            <td class="quarterly-target"
-                data-state-language="<%= @quarterly_evaluation.state_language_id %>"
-                data-deliverable="<%= deliverable.id %>"
-                data-quarter="<%= next_quarter %>"
-            >
-              <%= form_tag set_target_in_state_language_path(@quarterly_evaluation.state_language_id, deliverable, next_quarter), method: :patch, remote: true do %>
-                <div class="mdl-textfield mdl-js-textfield quarterly-target-input">
-                  <input class="mdl-textfield__input"
-                         type="text"
-                         pattern="[0-9]*(\.[0-9]+)?"
-                         name="target"
-                         value="<%= next_target ? next_target.value : '' %>">
-                  <span class="mdl-textfield__error">Enter a number</span>
-                </div>
-              <% end %>
-            </td>
-          <% else %>
-            <td><%= next_target ? next_target.value : '' %></td>
-          <% end %>
-        </tr>
+    <thead>
+    <% data, meta = measurables_data(@quarterly_evaluation) %>
+    <tr>
+      <th rowspan="2">Deliverable</th>
+      <th><%= meta[:start_month].strftime("%b") %></th>
+      <th><%= 1.month.since(meta[:start_month]).strftime("%b") %></th>
+      <th><%= 2.months.since(meta[:start_month]).strftime("%b") %></th>
+      <th colspan="2"><%= pretty_quarter(meta[:quarter][0], true) %></th>
+      <% (1..3).each do |q| %>
+        <th><%= pretty_quarter(meta[:quarter][q], true) %></th>
       <% end %>
+    </tr>
+    <tr>
+      <th>Actual</th><th>Actual</th><th>Actual</th>
+      <th>Target</th><th>Actual</th>
+      <th>Target</th><th>Target</th><th>Target</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% data.each do |del_id, row| %>
+    <tr>
+      <% row.each_with_index do |col, i| %>
+        <% if i == 5 %>
+          <td data-assessment="<%= assessment row[i-1], col %>"><%= col %></td>
+        <% elsif i > 5 and logged_in_user.can_edit_project?(@quarterly_evaluation.project) %>
+          <td class="quarterly-target"
+              data-state-language="<%= @quarterly_evaluation.state_language_id %>"
+              data-deliverable="<%= del_id %>"
+              data-quarter="<%= meta[:quarter][i-5] %>"
+          >
+            <%= form_tag set_target_in_state_language_path(@quarterly_evaluation.state_language_id, del_id, meta[:quarter][i-5]), method: :patch, remote: true do %>
+              <div class="mdl-textfield mdl-js-textfield quarterly-target-input">
+                <input class="mdl-textfield__input"
+                       type="text"
+                       pattern="[0-9]*(\.[0-9]+)?"
+                       name="target"
+                       value="<%= col %>">
+                <span class="mdl-textfield__error">Enter a number</span>
+              </div>
+            <% end %>
+          </td>
+        <% else %>
+          <td><%= col %></td>
+        <% end %>
+      <% end %>
+    </tr>
     <% end %>
+    </tbody>
   </table>
 
   <% if @church_teams.any? %>

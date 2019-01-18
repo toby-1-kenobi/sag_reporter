@@ -1,21 +1,25 @@
 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <thead>
     <tr>
-      <th>Deliverable</th>
-      <th><%= @start_month.strftime("%b") %><br>Actual</th>
-      <th><%= 1.month.since(@start_month).strftime("%b") %><br>Actual</th>
-      <th><%= 2.months.since(@start_month).strftime("%b") %><br>Actual</th>
-      <th><%= pretty_quarter(@quarter, true) %><br>Target</th>
-      <th><%= pretty_quarter(@quarter, true) %><br>Actual</th>
+      <th rowspan="2">Deliverable</th>
+      <th><%= @start_month.strftime("%b") %></th>
+      <th><%= 1.month.since(@start_month).strftime("%b") %></th>
+      <th><%= 2.months.since(@start_month).strftime("%b") %></th>
+      <th colspan="2"><%= pretty_quarter(@quarter, true) %></th>
       <% q = @quarter %>
       <% 3.times do %>
         <% q = next_quarter(q) %>
-        <th><%= pretty_quarter(q, true) %><br>Target</th>
+        <th><%= pretty_quarter(q, true) %></th>
       <% end %>
+    </tr>
+    <tr>
+      <th>Actual</th><th>Actual</th><th>Actual</th>
+      <th>Target</th><th>Actual</th>
+      <th>Target</th><th>Target</th><th>Target</th>
     </tr>
   </thead>
   <tbody>
-  <% table_data = quarterly_summary(@stream, @outputs, @aggregate_outputs, @start_month, @targets, @quarter) %>
+  <% table_data = quarterly_summary(@stream, @outputs, @aggregate_outputs, @state_languages, @start_month, @targets, @quarter) %>
   <% table_data.each do |row| %>
     <tr>
       <% row.each_with_index do |col, i| %>

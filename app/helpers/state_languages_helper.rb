@@ -55,27 +55,31 @@ module StateLanguagesHelper
         outputs.inject(0) { |sum, mo| sum + mo.value }
       end
     when 'auto'
-      auto_actuals(nil, StateLanguage.find(state_language_id), deliverable, first_month, last_month) or '!'
+      auto_actuals(nil, [state_language_id], deliverable, first_month, last_month) or '!'
     else
       '?'
     end
   end
 
-  # if state_language is not nil zone is ignored, and scope is to state_language
-  # if state_language is nil scope is to zone
-  # if both zone and state_language are nil scope is to nation
-  def auto_actuals(zone, state_language, deliverable, first_month, last_month)
-    raise ArgumentError.new("deliverable not auto-calculated") unless deliverable.auto?
-    raise ArgumentError.new("first month must not be after last month") if first_month > last_month
+  # state_languages is an array of ids
+  # if state_languages is not nil zone is ignored, and scope is to state_languages
+  # if state_languages is nil scope is to zone
+  # if both zone and state_languages are nil scope is to nation
+  def auto_actuals(zone, state_languages, deliverable, first_month, last_month)
+    raise ArgumentError.new('deliverable not auto-calculated') unless deliverable.auto?
+    raise ArgumentError.new('first month must not be after last month') if first_month > last_month
     case "#{deliverable.ministry.code}#{deliverable.number}"
     when 'SU11', 'SC4', 'ET2', 'ST3', 'ES3', 'TR8' # Impact stories through this stream
       first_day = Date.new(first_month[0..3].to_i, first_month[-2..-1].to_i, 1)
       last_day = Date.new(last_month[0..3].to_i, last_month[-2..-1].to_i).end_of_month
       query = Report.joins(:impact_report, :geo_state, :languages, :report_streams).
           where(report_streams: {ministry_id: deliverable.ministry_id}).
-          where('report_date >= ?', first_day).where('report_date <= ?', last_day)
-      if state_language
-        query = query.where(languages: { id: state_language.language_id }, geo_state_id: state_language.geo_state_id)
+          where('report_date BETWEEN ? AND ?', first_day, last_day)
+      if state_languages
+        a = StateLanguage.where(id: state_languages).pluck :language_id, :geo_state_id
+        langs = a.map{ |x| x[0] }
+        states = a.map{ |x| x[1] }
+        query = query.where(languages: { id: langs }, geo_state_id: states)
       elsif zone
         query = query.where(geo_states: { zone_id: zone.id })
       end
@@ -89,8 +93,8 @@ module StateLanguagesHelper
       while index_month <= last_month
         query = ChurchTeam.joins({ state_language: :geo_state }, { church_ministries: :ministry_outputs }).
             where(ministry_outputs: { month: index_month })
-        if state_language
-          query = query.where(state_language: state_language)
+        if state_languages
+          query = query.where(state_language_id: state_languages)
         elsif zone
           query = query.where(geo_states: { zone_id: zone.id })
         end
@@ -110,12 +114,12 @@ module StateLanguagesHelper
       outputs = MinistryOutput.joins(church_ministry: { church_team: { state_language: :geo_state } }).
           where(actual: true, deliverable: deliverable_ids).
           where('month >= ?', first_month).where('month <= ?', last_month)
-      if state_language
-        outputs = outputs.where(church_teams: { state_language_id: state_language.id })
+      if state_languages
+        outputs = outputs.where(church_teams: { state_language_id: state_languages })
       elsif zone
         outputs = outputs.where(geo_states: { zone_id: zone.id })
       end
-      total_hours += outputs.inject(0) { |sum, mo| sum + mo.value }
+      total_hours += outputs.inject(0){ |sum, mo| sum + mo.value }
       total_hours
     else
       Rails.logger.error "Auto calculation for deliverable #{deliverable.id} not implemented."
@@ -130,6 +134,7 @@ module StateLanguagesHelper
     rescue ArgumentError
       return ''
     end
+    return '' if actual == 0 and target == 0
     diff = actual - target
     percent = 100.0 * diff / target
     case percent
