@@ -184,6 +184,28 @@ td.annual-target {
 
   .quarterly-results-table {
     grid-area: measurables;
+    th {
+      padding-left: 6px;
+      padding-right: 6px;
+      text-align: center;
+      &.target {
+        background-color: lightcyan;
+      }
+    }
+    td {
+      padding: 6px;
+      .mdl-textfield {
+        padding: 0;
+      }
+      text-align: center;
+      border-right: 1px dotted lightgrey;
+      &.target {
+        background-color: lightcyan;
+      }
+    }
+    tr:hover .target{
+      background-color: lightblue;
+    }
   }
 
   .partnering-churches {
@@ -294,6 +316,13 @@ td.annual-target {
   .mdl-data-table {
     color: black !important;
   }
+}
+
+.table-head-row-bottom th {
+  padding-top: 0 !important;
+}
+.table-head-row-top th {
+  padding-bottom: 0 !important;
 }
 
 [data-progress=no_progress] { background-color: mediumslateblue !important; }

@@ -1,6 +1,6 @@
 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <thead>
-    <tr>
+    <tr class="table-head-row-top">
       <th rowspan="2">Deliverable</th>
       <th><%= @start_month.strftime("%b") %></th>
       <th><%= 1.month.since(@start_month).strftime("%b") %></th>
@@ -12,7 +12,7 @@
         <th><%= pretty_quarter(q, true) %></th>
       <% end %>
     </tr>
-    <tr>
+    <tr class="table-head-row-bottom">
       <th>Actual</th><th>Actual</th><th>Actual</th>
       <th>Target</th><th>Actual</th>
       <th>Target</th><th>Target</th><th>Target</th>
