@@ -34,15 +34,15 @@ module QuarterlyEvaluationsHelper
       case deliverable.reporter
       when 'church_team'
         (0..2).each do |m|
-          row << ct_outputs.select{ |o| o.month == m.months.since(start_month).strftime('%Y-%m') and o.deliverable_id == deliverable.id }.sum{ |o| o.value }
+          row << ct_outputs.select{ |o| o.month == m.months.since(meta[:start_month]).strftime('%Y-%m') and o.deliverable_id == deliverable.id }.sum{ |o| o.value }
         end
       when 'facilitator'
         (0..2).each do |m|
-          row << fac_outputs.select{ |o| o.month == m.months.since(start_month).strftime('%Y-%m') and o.deliverable_id == deliverable.id }.sum{ |o| o.value }
+          row << fac_outputs.select{ |o| o.month == m.months.since(meta[:start_month]).strftime('%Y-%m') and o.deliverable_id == deliverable.id }.sum{ |o| o.value }
         end
       when 'auto'
         (0..2).each do |m|
-          row << auto_actuals(nil, [qe.state_language_id], deliverable, m.months.since(start_month).strftime('%Y-%m'), m.months.since(start_month).strftime('%Y-%m'))
+          row << auto_actuals(nil, [qe.state_language_id], deliverable, m.months.since(meta[:start_month]).strftime('%Y-%m'), m.months.since(meta[:start_month]).strftime('%Y-%m'))
         end
       else
         row += ['', '', '']
