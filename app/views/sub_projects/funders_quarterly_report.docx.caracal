@@ -55,7 +55,12 @@ def narrative_questions(quarterly_evaluation)
     answer = quarterly_evaluation.send("question_#{i}")
     if answer.present?
       narrative_questions << [clean_narrative_q(i)]
-      narrative_questions << [answer]
+      narrative_answer = Caracal::Core::Models::TableCellModel.new do
+        answer.split("\r\n").each do |txt|
+          p txt
+        end
+      end
+      narrative_questions << [narrative_answer]
     end
   end
   narrative_questions
@@ -64,11 +69,16 @@ end
 def report(quarterly_evaluation, docx)
   table_data = [
       ["Impact story for #{quarterly_evaluation.ministry.name.en} in #{quarterly_evaluation.state_language.language_name}:"],
-      [quarterly_evaluation.report.content]
   ]
+  report_content = Caracal::Core::Models::TableCellModel.new do
+    background 'FFF9E7'
+    quarterly_evaluation.report.content.split("\r\n").each do |txt|
+      p txt
+    end
+  end
+  table_data << [report_content]
   docx.table table_data, border_line: :none do
     cell_style rows[0], style: 'Heading3', background: 'F2F2F2'
-    cell_style rows[1], background: 'FFF9E7'
   end
   quarterly_evaluation.report.pictures.each do |picture|
     if Rails.env.production?
