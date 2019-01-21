@@ -23,8 +23,8 @@ def measurables(stream, state_language, quarter, project, sub_project)
       where(deliverables: {ministry_id: stream.id}, state_language: state_language).
       where('quarter BETWEEN ? AND ?', quarter, next_quarter(quarter)).to_a
   values_table = []
-  values_table << ['', pq, pq, 'Verses Completed', next_pq]
-  values_table << ['', 'Target', 'Actual', 'for each step', 'Next Target']
+  values_table << ['', pq, pq, 'Names', next_pq]
+  values_table << ['', 'Target', 'Actual', 'of Stories', 'Next Target']
   stream.deliverables.where(funder_interest: true).order(:number).each do |deliverable|
     unless deliverable.disabled?
       target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == quarter }.first
@@ -35,8 +35,13 @@ def measurables(stream, state_language, quarter, project, sub_project)
       values_table << [deliverable.short_form.en, target_value, actual, '', next_target_value]
     end
   end
-  # verses completed column is only for translation stream
-  values_table.each{ |row| row.delete_at(3) } unless stream.code == 'TR'
+  # story names column is only for storying and esther streams
+  # verses completed is for translation stream
+  values_table.each{ |row| row.delete_at(3) } unless ['TR', 'ES', 'ST'].include? stream.code
+  if stream.code == 'TR'
+    values_table[0][3] = 'Verses completed'
+    values_table[1][3] = 'for each step'
+  end
   values_table
 end
 
