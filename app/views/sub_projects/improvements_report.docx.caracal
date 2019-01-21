@@ -1,0 +1,112 @@
+
+def progress_colour(progress)
+  case progress
+  when 'no_progress'
+    "7B68EE"
+  when 'poor', 'behind'
+    "FF0000"
+  when 'fair', 'somewhat-behind'
+    "FFFF00"
+  when 'good', 'on-pace'
+    "98FB98"
+  when 'excellent', 'ahead'
+    "00FF00"
+  else
+    "FFFFFF"
+  end
+end
+
+def clean_narrative_q(i)
+  question = I18n.t("narrative_questions.q#{i}_html")
+  if question.include?('<br>')
+    question.split('<br>').drop(1).join(' ')
+  else
+    question
+  end
+end
+
+docx.style do
+  id              'StreamHead'  # sets the internal identifier for the style.
+  name            'stream heading' # sets the friendly name of the style.
+  type            'paragraph' # sets the style type. accepts `paragraph` or `character`
+  size            28          # sets the font size. units in half points.
+  bold            true
+  align           :left       # sets the alignment. accepts :left, :center, :right, and :both.
+  top             100         # sets the spacing above the paragraph. units in twips.
+  bottom          0           # sets the spacing below the paragraph. units in twips.
+  indent_left     300         # sets the left indent. units in twips.
+  indent_right    300         # sets the rights indent. units in twips.
+end
+
+state_languages = @project.state_languages.order(:id)
+if @sub_project
+  state_languages = state_languages.to_a.select{ |sl| @sub_project.language_streams.exists?(state_language_id: sl.id) }
+end
+
+docx.h1 "Quarterly Report for #{@sub_project ? @sub_project.name : @project.name}"
+docx.p
+
+streams = @project.ministries.order(:code).to_a
+if @sub_project
+  streams = streams.select {|s| @sub_project.language_streams.exists?(state_language_id: state_language.id, ministry_id: s.id)}
+end
+
+next_q = next_quarter(@quarter)
+
+streams.each do |stream|
+  docx.h2 "#{stream.name.en} Stream: Improvements for #{pretty_quarter(next_q, true)}"
+  docx.p
+
+  state_languages.each do |state_language|
+
+    if @sub_project
+      sp_id = @sub_project.id
+    else
+      sp_ids = @project.language_streams.where(state_language: state_language, ministry: stream).pluck(:sub_project_id).uniq
+      sp_id = sp_ids.length == 1 ? sp_ids[0] : nil
+    end
+    quarterly_evaluation = QuarterlyEvaluation.find_by(
+        project: @project,
+        sub_project_id: sp_id,
+        state_language: state_language,
+        ministry: stream,
+        quarter: @quarter
+    )
+
+    if quarterly_evaluation and quarterly_evaluation.progress.present?
+      prog_colour = progress_colour(quarterly_evaluation.progress)
+    else
+      prog_colour = 'FFFFFF'
+    end
+
+    head = [["#{stream.name.en} in #{state_language.language_name}"]]
+    if quarterly_evaluation and quarterly_evaluation.progress.present?
+      head << ["progress this quarter: #{quarterly_evaluation.progress.humanize}"]
+    end
+
+    if quarterly_evaluation and quarterly_evaluation.question_4.present?
+      head << [clean_narrative_q(4)]
+      narrative_answer = Caracal::Core::Models::TableCellModel.new do
+        quarterly_evaluation.question_4.split("\r\n").each do |txt|
+          p txt
+        end
+      end
+      head << [narrative_answer]
+    end
+
+    docx.table head, border_line: :none do
+      cell_style rows[0], style: 'StreamHead', background: prog_colour
+      cell_style rows[1], align: :center, background: prog_colour
+      if quarterly_evaluation
+        cell_style rows[2], background: 'F2F2F2'
+        cell_style rows[3], background: 'FFF9E7'
+      end
+    end
+    docx.p
+
+  end
+  docx.p
+  docx.hr size: 10
+end
+
+docx.page_numbers true, align: :center, label: "#{@sub_project ? @sub_project.name : @project.name}\tPage "
