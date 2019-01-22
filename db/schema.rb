@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190117053417) do
+ActiveRecord::Schema.define(version: 20190122130442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 20190117053417) do
     t.integer  "state_language_id", null: false
   end
 
+  add_index "church_teams", ["leader", "state_language_id", "organisation_id"], name: "index_church_team_unique", unique: true, using: :btree
   add_index "church_teams", ["leader"], name: "index_church_teams_on_leader", using: :btree
   add_index "church_teams", ["organisation_id"], name: "index_church_teams_on_organisation_id", using: :btree
   add_index "church_teams", ["state_language_id"], name: "index_church_teams_on_state_language_id", using: :btree
@@ -481,11 +482,11 @@ ActiveRecord::Schema.define(version: 20190117053417) do
     t.integer  "medium",                         null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.integer  "geo_state_id",                   null: false
     t.integer  "status",         default: 0,     null: false
     t.integer  "publish_year"
     t.string   "url"
     t.text     "how_to_access"
-    t.integer  "geo_state_id"
   end
 
   add_index "mt_resources", ["created_at"], name: "index_mt_resources_on_created_at", using: :btree
@@ -946,15 +947,15 @@ ActiveRecord::Schema.define(version: 20190117053417) do
     t.boolean  "national_curator",         default: false,        null: false
     t.string   "role_description"
     t.datetime "curator_prompted"
+    t.boolean  "reset_password",           default: false
     t.boolean  "lci_board_member",         default: false,        null: false
     t.boolean  "lci_agency_leader",        default: false,        null: false
-    t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
     t.boolean  "forward_planning_curator", default: false,        null: false
+    t.date     "user_last_login_dt",       default: '2018-11-20'
     t.integer  "registration_status",      default: 2,            null: false
     t.boolean  "zone_admin",               default: false,        null: false
     t.string   "organisation"
-    t.date     "user_last_login_dt",       default: '2018-10-20'
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
