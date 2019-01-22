@@ -20,6 +20,12 @@ class QuarterlyEvaluation < ActiveRecord::Base
   validates :quarter, presence: true, format: { with: /\A[2-9]\d{3}-[1-4]\z/, message: "should be in the format 'YYYY-Q'" }
   validate :sub_project_in_project
 
+  def unused?
+    question_1.blank? and question_2.blank? and
+        question_1.blank? and question_3.blank? and
+        not approved? and report_id.blank? and progress.blank?
+  end
+
   private
 
   def sub_project_in_project
