@@ -1,4 +1,6 @@
 class ChurchTeam < ActiveRecord::Base
+  
+  has_paper_trail
 
   belongs_to :organisation
   belongs_to :state_language

@@ -3,6 +3,8 @@ class LanguageProgress < ActiveRecord::Base
   # This model corresponds to the outcome progress
   # on a particular progress marker for a particular language in a state.
 
+  has_paper_trail
+
   belongs_to :state_language
   belongs_to :progress_marker
   has_many :progress_updates, dependent: :destroy

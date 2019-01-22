@@ -1,5 +1,7 @@
 class FinishLineProgress < ActiveRecord::Base
 
+  has_paper_trail
+
   enum status: {
       # 0-3 are options for not done markers
       no_need: 0,

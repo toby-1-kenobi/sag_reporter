@@ -2,6 +2,8 @@ class Report < ActiveRecord::Base
 
   include LocationBased
 
+  has_paper_trail
+
 	enum status: [ :active, :archived ]
 
 	belongs_to :reporter, class_name: 'User'

@@ -1,5 +1,7 @@
 class FacilitatorFeedback < ActiveRecord::Base
 
+  has_paper_trail
+
   enum progress: {
       no_progress: 0,
       poor: 1,

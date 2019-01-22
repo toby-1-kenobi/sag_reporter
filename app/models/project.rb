@@ -1,5 +1,7 @@
 class Project < ActiveRecord::Base
 
+  has_paper_trail
+
   has_many :sub_projects, dependent: :destroy
   has_many :project_languages, dependent: :destroy
   has_many :state_languages, through: :project_languages

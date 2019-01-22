@@ -1,5 +1,7 @@
 class ChurchMinistry < ActiveRecord::Base
 
+  has_paper_trail
+
   enum status: {
     active: 0,
     deleted: 1

@@ -3,6 +3,8 @@ class Language < ActiveRecord::Base
     attr_reader :translation_status_colour
   end
 
+  has_paper_trail
+
   enum translation_need: {
       survey_required: 0,
       no_translation_need: 1,

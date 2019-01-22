@@ -1,5 +1,7 @@
 class LanguageStream < ActiveRecord::Base
 
+  has_paper_trail
+
   belongs_to :ministry
   belongs_to :state_language
   belongs_to :facilitator, class_name: 'User'

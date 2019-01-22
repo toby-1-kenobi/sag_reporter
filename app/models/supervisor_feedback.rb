@@ -1,5 +1,7 @@
 class SupervisorFeedback < ActiveRecord::Base
 
+  has_paper_trail
+
   enum facilitator_progress: {
     no_progress: 0,
     poor: 1,

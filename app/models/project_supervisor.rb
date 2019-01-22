@@ -1,5 +1,7 @@
 class ProjectSupervisor < ActiveRecord::Base
 
+  has_paper_trail
+
   enum role: {
       management: 0,
       organisational_leadership: 1,

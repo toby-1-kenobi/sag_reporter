@@ -1,4 +1,6 @@
 class AggregateMinistryOutput < ActiveRecord::Base
+  
+  has_paper_trail
 
   belongs_to :deliverable
   belongs_to :state_language
