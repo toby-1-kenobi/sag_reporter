@@ -24,6 +24,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # Let Paper Trail record the user making changes
+  def user_for_paper_trail
+    logged_in? ? logged_in_user.id : 'Public user'
+  end
+  before_action :set_paper_trail_whodunnit
+
   private
 
     def combine_colour(params)

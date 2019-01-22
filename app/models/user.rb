@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
 
   include ContactDetails
 
+  has_paper_trail ignore: [:remember_digest, :user_last_login_dt, :confirm_token, :reset_password_token]
+
   enum registration_status: {
       unapproved: 0,
       zone_approved: 1,

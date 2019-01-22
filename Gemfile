@@ -53,6 +53,9 @@ gem 'rails4-autocomplete'
 # Use PostgreSQL as the database for Active Record
 gem 'pg', '~> 0.20.0'
 
+# Track changes to models
+gem 'paper_trail'
+
 # Output PDF files
 gem 'prawn'
 gem 'prawn-table'
