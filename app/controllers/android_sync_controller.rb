@@ -219,6 +219,8 @@ class AndroidSyncController < ApplicationController
     tables[Edit] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:87"
     tables[ProductCategory] = %w(name_id) if @version >= "1.4.2:90"
     tables[Tool] = %w(language_id url description creator_id status) if @version >= "1.4.2:90"
+    tables[Tool] << "finish_line_marker_id" if @version >= "1.4.2:92"
+    tables[ChurchTeam] << "status" if @version >= "1.4.2:94"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
@@ -292,7 +294,7 @@ class AndroidSyncController < ApplicationController
             values.map! {|value| "(#{(value+[1]).join(",")})"}
             file.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             join_table_data.each do |join_table_names, data|
-              file.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{values.map(&:id).uniq.join ","});"
+		    file.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{values.map{|e|e.split(',')[0].split('(')[1]}.uniq.join ","});"
               file.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
                                "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
             end
@@ -405,6 +407,7 @@ class AndroidSyncController < ApplicationController
               :user_ids,
               :organisation_id,
               :leader,
+              :status,
               :state_language_id
           ],
           church_ministry: [
@@ -517,13 +520,14 @@ class AndroidSyncController < ApplicationController
           tool: [
               :id,
               :old_id,
-	      :language_id,
+              :language_id,
               :creator_id,
-	      :url,
-	      :description,
-	      :status,
-	      {product_category_ids: []},
-	      :product_category_ids
+              :url,
+              :description,
+              :status,
+              :finish_line_marker_id,
+              {product_category_ids: []},
+              :product_category_ids
           ],
           edit: [
               :id,

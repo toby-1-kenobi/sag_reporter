@@ -2,6 +2,11 @@ class ChurchTeam < ActiveRecord::Base
   
   has_paper_trail
 
+  enum status: {
+    active: 0,
+    deleted: 1
+  }
+
   belongs_to :organisation
   belongs_to :state_language
   has_many :church_ministries, dependent: :destroy
