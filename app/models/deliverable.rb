@@ -10,7 +10,8 @@ class Deliverable < ActiveRecord::Base
       facilitator: 1,
       supervisor: 2,
       auto: 3,
-      disabled: 4
+      disabled: 4,
+      translation_progress: 6
   }
 
   belongs_to :ministry
