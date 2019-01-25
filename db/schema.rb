@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190122130442) do
+ActiveRecord::Schema.define(version: 20190123104855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,10 +98,11 @@ ActiveRecord::Schema.define(version: 20190122130442) do
   create_table "church_teams", force: :cascade do |t|
     t.string   "name"
     t.integer  "organisation_id"
-    t.string   "leader",            null: false
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
-    t.integer  "state_language_id", null: false
+    t.string   "leader",                        null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.integer  "state_language_id",             null: false
+    t.integer  "status",            default: 0, null: false
   end
 
   add_index "church_teams", ["leader", "state_language_id", "organisation_id"], name: "index_church_team_unique", unique: true, using: :btree
@@ -484,11 +485,11 @@ ActiveRecord::Schema.define(version: 20190122130442) do
     t.integer  "medium",                         null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
-    t.integer  "geo_state_id",                   null: false
     t.integer  "status",         default: 0,     null: false
     t.integer  "publish_year"
     t.string   "url"
     t.text     "how_to_access"
+    t.integer  "geo_state_id"
   end
 
   add_index "mt_resources", ["created_at"], name: "index_mt_resources_on_created_at", using: :btree
@@ -900,13 +901,19 @@ ActiveRecord::Schema.define(version: 20190122130442) do
   create_table "translation_progresses", force: :cascade do |t|
     t.integer  "language_id"
     t.integer  "chapter_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.integer  "deliverable_id",                 null: false
+    t.integer  "translation_method", default: 0, null: false
+    t.integer  "translation_tool",   default: 0, null: false
+    t.string   "month"
   end
 
   add_index "translation_progresses", ["chapter_id"], name: "index_translation_progresses_on_chapter_id", using: :btree
+  add_index "translation_progresses", ["deliverable_id"], name: "index_translation_progresses_on_deliverable_id", using: :btree
   add_index "translation_progresses", ["language_id", "chapter_id"], name: "index_language_chapter", unique: true, using: :btree
   add_index "translation_progresses", ["language_id"], name: "index_translation_progresses_on_language_id", using: :btree
+  add_index "translation_progresses", ["month", "chapter_id", "language_id", "deliverable_id"], name: "index_translation_progress_unique", unique: true, using: :btree
 
   create_table "translations", force: :cascade do |t|
     t.integer  "language_id",         null: false
@@ -949,15 +956,15 @@ ActiveRecord::Schema.define(version: 20190122130442) do
     t.boolean  "national_curator",         default: false,        null: false
     t.string   "role_description"
     t.datetime "curator_prompted"
-    t.boolean  "reset_password",           default: false
     t.boolean  "lci_board_member",         default: false,        null: false
     t.boolean  "lci_agency_leader",        default: false,        null: false
+    t.boolean  "reset_password",           default: false
     t.string   "reset_password_token"
     t.boolean  "forward_planning_curator", default: false,        null: false
-    t.date     "user_last_login_dt",       default: '2018-11-20'
     t.integer  "registration_status",      default: 2,            null: false
     t.boolean  "zone_admin",               default: false,        null: false
     t.string   "organisation"
+    t.date     "user_last_login_dt",       default: '2018-10-20'
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
@@ -1091,6 +1098,7 @@ ActiveRecord::Schema.define(version: 20190122130442) do
   add_foreign_key "tools", "languages"
   add_foreign_key "tools", "users", column: "creator_id"
   add_foreign_key "translation_progresses", "chapters"
+  add_foreign_key "translation_progresses", "deliverables"
   add_foreign_key "translation_progresses", "languages"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translation_codes"

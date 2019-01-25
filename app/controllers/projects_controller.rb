@@ -31,14 +31,14 @@ class ProjectsController < ApplicationController
   def teams
     @project = Project.find(params[:id])
     head :forbidden unless logged_in_user.can_view_project?(@project)
-    @teams = ChurchTeam.in_project(@project)
+    @teams = ChurchTeam.active.in_project(@project)
     respond_to :js
   end
 
   def team_deliverables
     @project = Project.includes(:ministries).find(params[:id])
     head :forbidden unless logged_in_user.can_view_project?(@project)
-    @team = ChurchTeam.includes(:ministries, { state_language: [:language, :geo_state] }).find(params[:team_id])
+    @team = ChurchTeam.active.includes(:ministries, { state_language: [:language, :geo_state] }).find(params[:team_id])
     @common_ministries = @team.ministries.where(id: @project.ministries)
     respond_to :js
   end

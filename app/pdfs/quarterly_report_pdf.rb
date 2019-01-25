@@ -159,7 +159,7 @@ class QuarterlyReportPdf < Prawn::Document
   end
 
   def partnering_churches(state_language_id, stream_id)
-    church_teams = ChurchTeam.joins(:church_ministries).where(state_language_id: state_language_id, church_ministries: {ministry_id: stream_id, status: 0}).uniq
+    church_teams = ChurchTeam.active.joins(:church_ministries).where(state_language_id: state_language_id, church_ministries: {ministry_id: stream_id, status: 0}).uniq
     churches_table = []
     church_teams.each{ |ct| churches_table << [ct.full_name]}
     churches_table
