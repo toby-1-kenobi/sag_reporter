@@ -17,7 +17,7 @@ class ChurchTeam < ActiveRecord::Base
   has_many :users, through: :church_team_memberships
   has_many :reports, dependent: :nullify
 
-  validates :leader, presence: true
+  validates :leader, presence: true, uniqueness: { scope: [:state_language_id, :organisation_id] }
   validates :state_language, presence: true
 
   scope :in_project, ->(project) { joins(:ministries).where(church_ministries: {status: 0}).where('ministries.id in (?)', project.ministries.pluck(:id)).where(state_language: project.state_languages).uniq }

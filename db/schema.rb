@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190125050908) do
+ActiveRecord::Schema.define(version: 20190129234700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 20190125050908) do
   end
 
   add_index "church_teams", ["leader", "state_language_id", "organisation_id"], name: "index_church_team_unique", unique: true, using: :btree
+  add_index "church_teams", ["leader", "state_language_id"], name: "index_church_team_unique_org_null", unique: true, where: "(organisation_id IS NULL)", using: :btree
   add_index "church_teams", ["leader"], name: "index_church_teams_on_leader", using: :btree
   add_index "church_teams", ["organisation_id"], name: "index_church_teams_on_organisation_id", using: :btree
   add_index "church_teams", ["state_language_id"], name: "index_church_teams_on_state_language_id", using: :btree
