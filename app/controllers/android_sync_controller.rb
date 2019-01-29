@@ -220,7 +220,7 @@ class AndroidSyncController < ApplicationController
     tables[ProductCategory] = %w(name_id) if @version >= "1.4.2:90"
     tables[Tool] = %w(language_id url description creator_id status) if @version >= "1.4.2:90"
     tables[Tool] << "finish_line_marker_id" if @version >= "1.4.2:92"
-    tables[ChurchTeam] << "status" if @version >= "1.4.2:94"
+    tables[ChurchTeam] << "status" if @version >= "1.4.2:96"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
