@@ -16,6 +16,47 @@ def progress_colour(progress)
   end
 end
 
+def summary_table(stream, quarter, project, sub_project, state_languages)
+  first_month, last_month = quarter_to_range(quarter)
+  church_mins = ChurchMinistry.joins(:church_team).
+      where(church_teams: { status: 0, state_language_id: state_languages }, ministry: stream)
+  outputs = MinistryOutput.where(actual: true, church_ministry: church_mins)
+  if sub_project
+    lang_streams = LanguageStream.where(sub_project: sub_project, state_language_id: state_languages, ministry: stream)
+  else
+    lang_streams = LanguageStream.where(project: project, state_language_id: state_languages, ministry: stream)
+  end
+  aggregate_outputs = AggregateMinistryOutput.
+      where(actual: true, state_language_id: state_languages, creator_id: lang_streams.pluck(:facilitator_id))
+  targets = QuarterlyTarget.includes(:deliverable).where(quarter: quarter, state_language_id: state_languages, deliverables: { ministry_id: stream.id, funder_interest: true }).to_a
+  values_table = []
+  values_table << [pretty_quarter(quarter, true), 'Target', 'Actuals']
+  stream.deliverables.active.where(funder_interest: true).order(:number).each do |deliverable|
+    row = [deliverable.short_form.en]
+    row << targets.select{ |t| t.deliverable_id == deliverable.id }.sum{ |t| t.value }
+    case deliverable.reporter
+    when 'church_team'
+      if deliverable.sum_of_all?
+        row << outputs.select{ |o| o.deliverable_id == deliverable.id && o.month >= first_month && o.month <= last_month }.sum{ |o| o.value }
+      else
+        row << outputs.select{ |o| o.deliverable_id == deliverable.id && o.month == last_month }.sum{ |o| o.value }
+      end
+    when 'facilitator'
+      if deliverable.sum_of_all?
+        row << aggregate_outputs.select{ |o| o.deliverable_id == deliverable.id && o.month >= first_month && o.month <= last_month }.sum{ |o| o.value }
+      else
+        row << aggregate_outputs.select{ |o| o.deliverable_id == deliverable.id && o.month == last_month }.sum{ |o| o.value }
+      end
+    when 'auto'
+      row << auto_actuals(nil, state_languages, deliverable, first_month, last_month)
+    else
+      row << ''
+    end
+    values_table << row
+  end
+  values_table
+end
+
 def measurables(stream, state_language, quarter, project, sub_project)
   pq = pretty_quarter(quarter, true)
   next_pq = pretty_quarter(next_quarter(quarter), true)
@@ -140,6 +181,21 @@ docx.h1 "Quarterly Report for #{@sub_project ? @sub_project.name : @project.name
 docx.p
 docx.h3 "Period: #{pretty_quarter(@quarter)}"
 docx.p "Management Supervisors: #{@project.project_supervisors.management.map{ |ps| ps.name }.to_sentence}"
+
+tr_stream = Ministry.find_by_code('TR')
+if @sub_project && @sub_project.language_streams.exists?(ministry_id: tr_stream.id) or @project.ministries.include?(tr_stream)
+  docx.h3 "Summary for translation in #{@sub_project ? @sub_project.name : @project.name}"
+  summary_data = summary_table(tr_stream, @quarter, @project, @sub_project, state_languages)
+  docx.table summary_data
+end
+
+st_stream = Ministry.find_by_code('ST')
+if @sub_project && @sub_project.language_streams.exists?(ministry_id: st_stream.id) or @project.ministries.include?(st_stream)
+  docx.h3 "Summary for storying in #{@sub_project ? @sub_project.name : @project.name}"
+  summary_data = summary_table(st_stream, @quarter, @project, @sub_project, state_languages)
+  docx.table summary_data
+  docx.p
+end
 
 multi_state = @project.geo_states.uniq.count > 1
 
