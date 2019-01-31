@@ -426,8 +426,6 @@ table td.check {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   grid-template-rows: auto;
-  grid-row-gap: 0.5em;
-  grid-column-gap: 1em;
   grid-template-areas:
           "header header counters"
           "controls controls counters"
@@ -460,5 +458,16 @@ table td.check {
     display: flex;
     flex-direction: column;
   }
-  .books { grid-area: books; }
+  .books {
+    grid-area: books;
+    .mdl-tabs__panel {
+      max-height: 400px;
+      overflow: auto;
+    }
+    .mdlext-accordion__tabpanel {
+      display: flex;
+      flex-wrap: wrap;
+      .mdl-checkbox { width: 5em; }
+    }
+  }
 }

@@ -1,0 +1,32 @@
+
+<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+
+  <div class="mdl-tabs__tab-bar">
+    <a href="#ot-panel" class="mdl-tabs__tab is-active">Old Testament</a>
+    <a href="#nt-panel" class="mdl-tabs__tab">New Testament</a>
+  </div>
+
+  <% [false, true].each do |nt| %>
+    <div class="mdl-tabs__panel is-active" id="<%= nt ? 'nt' : 'ot' %>-panel">
+      <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical mdlext-js-ripple-effect"
+          role="tablist">
+        <% Book.where(nt: nt).each do |book| %>
+          <li class="mdlext-accordion__panel" role="presentation">
+            <header class="mdlext-accordion__tab" role="tab">
+              <span class="mdlext-accordion__tab__caption"><%= book.name %></span>
+            </header>
+            <section class="mdlext-accordion__tabpanel" role="tabpanel" aria-hidden="true">
+              <% book.chapters.order(:number).each do |chapter| %>
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chapter-<%= chapter.id %>">
+                  <input type="checkbox" id="chapter-<%= chapter.id %>" class="mdl-checkbox__input">
+                  <span class="mdl-checkbox__label"><%= chapter.number %></span>
+                </label>
+              <% end %>
+            </section>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+</div>

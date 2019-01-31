@@ -5,25 +5,26 @@
   <div class="controls">
     <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
       <select id="translation-progress-month-select" class="mdlext-selectfield__select">
-        <option value=""></option>
         <%= (0..5).each do |m| %>
           <option value="<%= m.months.ago.strftime('%Y-%m') %>"><%= m.months.ago.strftime('%B %Y') %></option>
         <% end %>
+        <option value="none">Undated</option>
       </select>
       <label for="translation-progress-method-select" class="mdlext-selectfield__label">Month</label>
     </div>
     <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
       <select id="translation-progress-month-select" class="mdlext-selectfield__select">
-        <option value="written">Written</option>
-        <option value="oral">Oral</option>
+        <% TranslationProgress.translation_methods.keys.each do |trans_method| %>
+          <option value="<%= trans_method %>"><%= trans_method.humanize %></option>
+        <% end %>
       </select>
       <label for="translation-progress-method-select" class="mdlext-selectfield__label">Method</label>
     </div>
     <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
       <select id="translation-progress-tool-select" class="mdlext-selectfield__select">
-        <option value="paratext">Paratext</option>
-        <option value="render">Render</option>
-        <option value="other">Other</option>
+        <% TranslationProgress.translation_tools.keys.each do |trans_tool| %>
+          <option value="<%= trans_tool %>"><%= trans_tool.humanize %></option>
+        <% end %>
       </select>
       <label for="translation-progress-tool-select" class="mdlext-selectfield__label">Tool</label>
     </div>
@@ -38,26 +39,12 @@
 
   <div class="measurables">
     <% Deliverable.translation_progress.each do |deliverable| %>
-      <button class="mdl-button mdl-js-button" data-deliverable="<%= deliverable.id %>"><%= deliverable.short_form.en %></button>
+      <button class="mdl-button mdl-js-button mdl-button--raised" data-deliverable="<%= deliverable.id %>"><%= deliverable.short_form.en %></button>
     <% end %>
   </div>
 
   <div class="books">
-    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
-
-      <div class="mdl-tabs__tab-bar">
-        <a href="#ot-panel" class="mdl-tabs__tab is-active">Old Testament</a>
-        <a href="#nt-panel" class="mdl-tabs__tab">New Testament</a>
-      </div>
-
-      <div class="mdl-tabs__panel is-active" id="ot-panel">
-
-      </div>
-
-      <div class="mdl-tabs__panel" id="nt-panel">
-
-      </div>
-    </div>
+    <%= render 'languages/translation_progress_chapters' %>
   </div>
 
 </div>
