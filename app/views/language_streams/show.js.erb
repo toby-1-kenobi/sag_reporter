@@ -4,8 +4,6 @@ container.html('<%= j render partial: "fac_table", locals: { lang_stream: @langu
 componentHandler.upgradeElements(container.find('.mdl-tooltip').get());
 componentHandler.upgradeElements(container.find('.mdl-textfield').get());
 componentHandler.upgradeElements(container.find('.mdlext-selectfield').get());
-componentHandler.upgradeElements(container.find('.mdl-tabs').get());
-componentHandler.upgradeElements(container.find('.mdlext-accordion').get());
 
 $('.amo-actual-input').on('input', function(){
     $(this).find('input').addClass('dirty');
@@ -34,3 +32,11 @@ $('.sup-feedback-button').on('click', function() {
     dialog2.showModal();
 });
 container.slideDown();
+
+$('.translation-progress .measurables .mdl-button').on('click', function() {
+    $(this).find('i').removeAttr('hidden');
+    const langId = $(this).closest('.translation-progress').data('language');
+    var lang_books = $('.translation-progress[data-language="' + langId + '"] .books');
+    lang_books.html("<%= j render 'shared/active_spinner' %>");
+    componentHandler.upgradeElements(lang_books.find('.mdl-spinner').get());
+});

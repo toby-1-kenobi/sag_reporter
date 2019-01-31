@@ -1,0 +1,7 @@
+var transProgContainer = $('.translation-progress[data-language="<%= @lang_id %>"]');
+transProgContainer.find('.books').html("<%= j render 'translation_progress_chapters' %>");
+componentHandler.upgradeElements(transProgContainer.find('.books .mdl-tabs').get());
+componentHandler.upgradeElements(transProgContainer.find('.books .mdlext-accordion').get());
+
+transProgContainer.find('.measurables .mdl-button[data-deliverable!="<%= @deliverable_id %>"] i').attr('hidden', '');
+transProgContainer.find('.measurables .mdl-button[data-deliverable="<%= @deliverable_id %>"] i').removeAttr('hidden');

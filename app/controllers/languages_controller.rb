@@ -371,6 +371,14 @@ class LanguagesController < ApplicationController
     end
   end
 
+  def translation_progress
+    @lang_id = params[:id]
+    @deliverable_id = params[:deliverable]
+    # @this_month = TranslationProgress.where(language_id: @lang_id, deliverable_id: @deliverable_id, month: month).pluck :chapter_id
+    # @other_month = TranslationProgress.where(language_id: @lang_id, deliverable_id: @deliverable_id).where.not(month: month).pluck :chapter_id
+    respond_to :js
+  end
+
   private
 
   def lang_params
