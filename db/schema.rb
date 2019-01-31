@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190125050908) do
+ActiveRecord::Schema.define(version: 20190131044923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 20190125050908) do
   end
 
   add_index "church_teams", ["leader", "state_language_id", "organisation_id"], name: "index_church_team_unique", unique: true, using: :btree
+  add_index "church_teams", ["leader", "state_language_id"], name: "index_church_team_unique_org_null", unique: true, where: "(organisation_id IS NULL)", using: :btree
   add_index "church_teams", ["leader"], name: "index_church_teams_on_leader", using: :btree
   add_index "church_teams", ["organisation_id"], name: "index_church_teams_on_organisation_id", using: :btree
   add_index "church_teams", ["state_language_id"], name: "index_church_teams_on_state_language_id", using: :btree
@@ -150,12 +151,10 @@ ActiveRecord::Schema.define(version: 20190125050908) do
     t.integer  "plan_form_id",                      null: false
     t.integer  "result_form_id",                    null: false
     t.boolean  "funder_interest",    default: true, null: false
-    t.integer  "parent_id"
   end
 
   add_index "deliverables", ["ministry_id"], name: "index_deliverables_on_ministry_id", using: :btree
   add_index "deliverables", ["number", "ministry_id"], name: "index_deliverables_number_ministry", unique: true, using: :btree
-  add_index "deliverables", ["parent_id"], name: "index_deliverables_on_parent_id", using: :btree
   add_index "deliverables", ["plan_form_id"], name: "index_deliverables_on_plan_form_id", using: :btree
   add_index "deliverables", ["result_form_id"], name: "index_deliverables_on_result_form_id", using: :btree
   add_index "deliverables", ["short_form_id"], name: "index_deliverables_on_short_form_id", using: :btree
@@ -909,6 +908,7 @@ ActiveRecord::Schema.define(version: 20190125050908) do
     t.string   "month"
   end
 
+  add_index "translation_progresses", ["chapter_id", "language_id", "deliverable_id"], name: "index_translation_progress_uniq_month_null", unique: true, where: "(month IS NULL)", using: :btree
   add_index "translation_progresses", ["chapter_id"], name: "index_translation_progresses_on_chapter_id", using: :btree
   add_index "translation_progresses", ["deliverable_id"], name: "index_translation_progresses_on_deliverable_id", using: :btree
   add_index "translation_progresses", ["language_id"], name: "index_translation_progresses_on_language_id", using: :btree
@@ -1008,7 +1008,6 @@ ActiveRecord::Schema.define(version: 20190125050908) do
   add_foreign_key "creations", "people"
   add_foreign_key "curatings", "geo_states"
   add_foreign_key "curatings", "users"
-  add_foreign_key "deliverables", "deliverables", column: "parent_id"
   add_foreign_key "deliverables", "ministries"
   add_foreign_key "deliverables", "translation_codes", column: "plan_form_id"
   add_foreign_key "deliverables", "translation_codes", column: "result_form_id"
