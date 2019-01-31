@@ -97,7 +97,7 @@ end
 
 def narrative_questions(quarterly_evaluation)
   narrative_questions = []
-  (1..4).each do |i|
+  [1, 3, 4].each do |i|
     answer = quarterly_evaluation.send("question_#{i}")
     if answer.present?
       narrative_questions << [clean_narrative_q(i)]
@@ -183,7 +183,7 @@ docx.h3 "Period: #{pretty_quarter(@quarter)}"
 docx.p "Management Supervisors: #{@project.project_supervisors.management.map{ |ps| ps.name }.to_sentence}"
 
 tr_stream = Ministry.find_by_code('TR')
-if @sub_project && @sub_project.language_streams.exists?(ministry_id: tr_stream.id) or @project.ministries.include?(tr_stream)
+if @sub_project && @sub_project.language_streams.exists?(ministry_id: tr_stream.id) or @sub_project.blank? && @project.ministries.include?(tr_stream)
   docx.h3 "Summary for translation in #{@sub_project ? @sub_project.name : @project.name}"
   summary_data = summary_table(tr_stream, @quarter, @project, @sub_project, state_languages)
   summary_colours = summary_data.map{ |row| progress_colour(assessment(row[1], row[2])) }
@@ -200,7 +200,7 @@ if @sub_project && @sub_project.language_streams.exists?(ministry_id: tr_stream.
 end
 
 st_stream = Ministry.find_by_code('ST')
-if @sub_project && @sub_project.language_streams.exists?(ministry_id: st_stream.id) or @project.ministries.include?(st_stream)
+if @sub_project && @sub_project.language_streams.exists?(ministry_id: st_stream.id) or @sub_project.blank? && @project.ministries.include?(st_stream)
   docx.h3 "Summary for storying in #{@sub_project ? @sub_project.name : @project.name}"
   summary_data = summary_table(st_stream, @quarter, @project, @sub_project, state_languages)
   summary_colours = summary_data.map{ |row| progress_colour(assessment(row[1], row[2])) }
