@@ -240,7 +240,7 @@ Rails.application.routes.draw do
 
   resources :translation_progresses, only: [:create, :destroy] do
     collection do
-      get 'language/:language/deliverable/:deliverable', action: 'language_deliverable', as: 'language'
+      get 'language/:language/deliverable/:deliverable/:lang_stream', action: 'language_deliverable', as: 'language'
     end
   end
 

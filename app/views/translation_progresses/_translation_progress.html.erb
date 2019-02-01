@@ -1,4 +1,5 @@
-<div class="translation-progress mdl-shadow--2dp" data-language="<%= language.id %>">
+<% language = language_stream.state_language.language %>
+<div class="translation-progress mdl-shadow--2dp" data-language="<%= language.id %>" data-lang-stream="<%= language_stream.id %>">
 
   <div class="header">Translation Progress for <%= language.name %></div>
 
@@ -39,7 +40,7 @@
 
   <div class="measurables">
     <% Deliverable.translation_progress.each do |deliverable| %>
-      <%= link_to language_translation_progresses_path(language, deliverable), class: 'mdl-button mdl-js-button mdl-button--raised', data: { deliverable: deliverable.id }, remote: true do %>
+      <%= link_to language_translation_progresses_path(language, deliverable, language_stream), class: 'mdl-button mdl-js-button mdl-button--raised', data: { deliverable: deliverable.id }, remote: true do %>
         <%= deliverable.short_form.en %>
         <i class="material-icons">chevron_right</i>
       <% end %>
