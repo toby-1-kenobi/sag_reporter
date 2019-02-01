@@ -5,29 +5,29 @@
 
   <div class="controls">
     <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-      <select id="translation-progress-month-select" class="mdlext-selectfield__select">
+      <select id="translation-progress-month-select-<%= language_stream.id %>" class="mdlext-selectfield__select">
         <%= (0..5).each do |m| %>
           <option value="<%= m.months.ago.strftime('%Y-%m') %>"><%= m.months.ago.strftime('%B %Y') %></option>
         <% end %>
         <option value="none">Undated</option>
       </select>
-      <label for="translation-progress-method-select" class="mdlext-selectfield__label">Month</label>
+      <label for="translation-progress-month-select-<%= language_stream.id %>" class="mdlext-selectfield__label">Month</label>
     </div>
     <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-      <select id="translation-progress-month-select" class="mdlext-selectfield__select">
+      <select id="translation-progress-method-select-<%= language_stream.id %>" class="mdlext-selectfield__select">
         <% TranslationProgress.translation_methods.keys.each do |trans_method| %>
           <option value="<%= trans_method %>"><%= trans_method.humanize %></option>
         <% end %>
       </select>
-      <label for="translation-progress-method-select" class="mdlext-selectfield__label">Method</label>
+      <label for="translation-progress-method-select-<%= language_stream.id %>" class="mdlext-selectfield__label">Method</label>
     </div>
     <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-      <select id="translation-progress-tool-select" class="mdlext-selectfield__select">
+      <select id="translation-progress-tool-select-<%= language_stream.id %>" class="mdlext-selectfield__select">
         <% TranslationProgress.translation_tools.keys.each do |trans_tool| %>
           <option value="<%= trans_tool %>"><%= trans_tool.humanize %></option>
         <% end %>
       </select>
-      <label for="translation-progress-tool-select" class="mdlext-selectfield__label">Tool</label>
+      <label for="translation-progress-tool-select-<%= language_stream.id %>" class="mdlext-selectfield__label">Tool</label>
     </div>
   </div>
 
