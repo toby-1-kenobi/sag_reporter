@@ -908,11 +908,10 @@ ActiveRecord::Schema.define(version: 20190131044923) do
     t.string   "month"
   end
 
-  add_index "translation_progresses", ["chapter_id", "language_id", "deliverable_id"], name: "index_translation_progress_uniq_month_null", unique: true, where: "(month IS NULL)", using: :btree
+  add_index "translation_progresses", ["chapter_id", "language_id", "deliverable_id"], name: "index_translation_progress_unique", unique: true, using: :btree
   add_index "translation_progresses", ["chapter_id"], name: "index_translation_progresses_on_chapter_id", using: :btree
   add_index "translation_progresses", ["deliverable_id"], name: "index_translation_progresses_on_deliverable_id", using: :btree
   add_index "translation_progresses", ["language_id"], name: "index_translation_progresses_on_language_id", using: :btree
-  add_index "translation_progresses", ["month", "chapter_id", "language_id", "deliverable_id"], name: "index_translation_progress_unique", unique: true, using: :btree
 
   create_table "translations", force: :cascade do |t|
     t.integer  "language_id",         null: false
