@@ -15,10 +15,14 @@
             <header class="mdlext-accordion__tab" role="tab">
               <span class="mdlext-accordion__tab__caption"><%= book.name %></span>
             </header>
-            <section class="mdlext-accordion__tabpanel" role="tabpanel" aria-hidden="true">
+            <section data-book="<%= book.id %>" class="mdlext-accordion__tabpanel" role="tabpanel" aria-hidden="true">
               <% book.chapters.order(:number).each do |chapter| %>
                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chapter-<%= chapter.id %>">
-                  <input type="checkbox" id="chapter-<%= chapter.id %>" class="mdl-checkbox__input">
+                  <input type="checkbox" id="chapter-<%= chapter.id %>" class="mdl-checkbox__input"
+                         data-chapter="<%= chapter.id %>"
+                         data-language="<%= language_id %>"
+                         data-deliverable="<%= deliverable_id %>"
+                  >
                   <span class="mdl-checkbox__label"><%= chapter.number %></span>
                 </label>
               <% end %>

@@ -39,9 +39,9 @@
 
   <div class="measurables">
     <% Deliverable.translation_progress.each do |deliverable| %>
-      <%= link_to translation_progress_for_language_path(language, deliverable), class: 'mdl-button mdl-js-button mdl-button--raised', data: { deliverable: deliverable.id }, remote: true do %>
+      <%= link_to language_translation_progresses_path(language, deliverable), class: 'mdl-button mdl-js-button mdl-button--raised', data: { deliverable: deliverable.id }, remote: true do %>
         <%= deliverable.short_form.en %>
-        <i class="material-icons" hidden>chevron_right</i>
+        <i class="material-icons">chevron_right</i>
       <% end %>
     <% end %>
   </div>

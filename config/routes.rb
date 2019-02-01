@@ -105,7 +105,6 @@ Rails.application.routes.draw do
       # This is a hack to work around something I haven't worked out yet.
       get 'set_finish_line_progress/:marker/:progress', to: 'languages#show'
       get 'populations'
-      get 'translation_progress/:deliverable', action: 'translation_progress', as: 'translation_progress_for'
     end
   end
   get 'outcomes/get_language_chart/:id' => 'languages#get_chart', as: 'language_outcomes_chart'
@@ -238,6 +237,12 @@ Rails.application.routes.draw do
   get 'outcomes/select' => 'topics#assess_progress_select', as: 'select_to_assess'
 
   get 'about' => 'static_pages#about'
+
+  resources :translation_progresses, only: [:create, :destroy] do
+    collection do
+      get 'language/:language/deliverable/:deliverable', action: 'language_deliverable', as: 'language'
+    end
+  end
 
   resources :users, except: [:destroy] do
     member do

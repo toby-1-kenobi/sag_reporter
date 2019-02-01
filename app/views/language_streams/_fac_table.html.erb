@@ -126,5 +126,5 @@
 </table>
 
 <% if lang_stream.ministry.code == 'TR' %>
-  <%= render partial: 'languages/translation_progress', locals: { language: lang_stream.state_language.language } %>
+  <%= render partial: 'translation_progresses/translation_progress', locals: { language: lang_stream.state_language.language } %>
 <% end %>

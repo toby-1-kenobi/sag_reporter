@@ -457,6 +457,8 @@ table td.check {
     padding-top: 48px;
     display: flex;
     flex-direction: column;
+    .mdl-button i { display: none; }
+    .mdl-button.selected i { display: inline; }
   }
   .books {
     grid-area: books;
