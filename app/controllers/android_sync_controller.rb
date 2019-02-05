@@ -4,7 +4,7 @@ class AndroidSyncController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_external, except: [:get_uploaded_file_new]
+  before_action :authenticate_external
 
   def send_request
     # The following tables have to be in the order, that the table-restrictions only depend on the previous ones
@@ -427,7 +427,7 @@ class AndroidSyncController < ApplicationController
         all_data.write send_message
       ensure
         all_data.close
-        File.rename(@all_data, "#{@all_data.path}.txt")
+        File.rename(all_data, "#{all_data.path}.txt")
       end
     end
   end
