@@ -4,7 +4,7 @@ class AndroidSyncController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-  before_action except: [:get_uploaded_file_new] :authenticate_external
+  before_action :authenticate_external, except: [:get_uploaded_file_new]
 
   def send_request
     # The following tables have to be in the order, that the table-restrictions only depend on the previous ones
