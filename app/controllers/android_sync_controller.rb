@@ -402,8 +402,8 @@ class AndroidSyncController < ApplicationController
     render json: {data: "#{all_data.path}.txt"}, status: :ok
     Thread.new do
       begin
+        errors = []
         get_uploaded_file_params["uploaded_files"].each do |uploaded_file_id|
-          errors = []
           uploaded_file = UploadedFile.find(uploaded_file_id)
           image_data = if uploaded_file&.ref.file.exists?
                          Base64.encode64(uploaded_file.ref.read)
