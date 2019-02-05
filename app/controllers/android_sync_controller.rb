@@ -4,7 +4,7 @@ class AndroidSyncController < ApplicationController
   include ParamsHelper
 
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_external
+  before_action except: [:get_uploaded_file_new] :authenticate_external
 
   def send_request
     # The following tables have to be in the order, that the table-restrictions only depend on the previous ones
@@ -387,6 +387,47 @@ class AndroidSyncController < ApplicationController
         [@all_data, pictures_data, errors].each &:close
         File.rename(@all_data, "#{@all_data.path}.txt")
         [pictures_data, errors].each &:delete
+      end
+    end
+  end
+
+  def get_uploaded_file_new
+    @external_user ||= User.find(221)
+    safe_params = [
+        uploaded_files: [],
+    ]
+    get_uploaded_file_params = params.require(:external_device).permit(safe_params)
+
+    all_data = Tempfile.new
+    render json: {data: "#{all_data.path}.txt"}, status: :ok
+    Thread.new do
+      begin
+        get_uploaded_file_params["uploaded_files"].each do |uploaded_file_id|
+          errors = []
+          uploaded_file = UploadedFile.find(uploaded_file_id)
+          image_data = if uploaded_file&.ref.file.exists?
+                         Base64.encode64(uploaded_file.ref.read)
+                       else
+                         ""
+                       end
+          if @external_user.trusted? || uploaded_file.report.reporter == @external_user
+            all_data.write({
+                                    id: uploaded_file.id,
+                                    data: image_data
+                                }.to_json)
+          else
+            errors << "Permission denied: uploaded_file(#{uploaded_file.id})"
+          end
+          ActiveRecord::Base.connection.query_cache.clear
+        end
+        all_data.write({ errors: errors }.to_json) unless errors.size == 0
+      rescue => e
+        send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
+        logger.error send_message
+        all_data.write send_message
+      ensure
+        all_data.close
+        File.rename(@all_data, "#{@all_data.path}.txt")
       end
     end
   end
