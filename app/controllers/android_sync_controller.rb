@@ -392,14 +392,13 @@ class AndroidSyncController < ApplicationController
   end
 
   def get_uploaded_file_new
-    @external_user ||= User.find(221)
     safe_params = [
         :uploaded_file
     ]
     get_uploaded_file_params = params.require(:external_device).permit(safe_params)
 
     begin
-      uploaded_file = UploadedFile.new#find(get_uploaded_file_params["uploaded_file"])
+      uploaded_file = UploadedFile.find(get_uploaded_file_params["uploaded_file"])
       unless uploaded_file&.ref.file&.exists?
         send_file Tempfile.new, status: :ok
         return
