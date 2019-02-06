@@ -399,7 +399,7 @@ class AndroidSyncController < ApplicationController
 
     begin
       uploaded_file = UploadedFile.find(get_uploaded_file_params["uploaded_file"])
-      unless uploaded_file&.ref.file&.exists?
+      unless uploaded_file&.ref&.file&.exists?
         send_file Tempfile.new, status: :ok
         return
       end
@@ -410,7 +410,8 @@ class AndroidSyncController < ApplicationController
         render json: send_message, status: :forbidden
         return
       end
-      send_file uploaded_file&.ref.path, status: :ok
+      data = uploaded_file.ref
+      send_data data.read, type: data.content_type, status: :ok
     rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
         logger.error send_message
