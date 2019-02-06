@@ -394,41 +394,28 @@ class AndroidSyncController < ApplicationController
   def get_uploaded_file_new
     @external_user ||= User.find(221)
     safe_params = [
-        uploaded_files: [],
+        :uploaded_file
     ]
     get_uploaded_file_params = params.require(:external_device).permit(safe_params)
 
-    all_data = Tempfile.new
-    render json: {data: "#{all_data.path}.txt"}, status: :ok
-    Thread.new do
-      begin
-        errors = []
-        get_uploaded_file_params["uploaded_files"].each do |uploaded_file_id|
-          uploaded_file = UploadedFile.find(uploaded_file_id)
-          image_data = if uploaded_file&.ref.file.exists?
-                         Base64.encode64(uploaded_file.ref.read)
-                       else
-                         ""
-                       end
-          if @external_user.trusted? || uploaded_file.report.reporter == @external_user
-            all_data.write({
-                                    id: uploaded_file.id,
-                                    data: image_data
-                                }.to_json)
-          else
-            errors << "Permission denied: uploaded_file(#{uploaded_file.id})"
-          end
-          ActiveRecord::Base.connection.query_cache.clear
-        end
-        all_data.write({ errors: errors }.to_json) unless errors.size == 0
-      rescue => e
+    begin
+      uploaded_file = UploadedFile.new#find(get_uploaded_file_params["uploaded_file"])
+      unless uploaded_file&.ref.file&.exists?
+        send_file Tempfile.new, status: :ok
+        return
+      end
+      unless @external_user.trusted? || uploaded_file.report.reporter == @external_user
+        errors << {"uploaded_file:#{uploaded_file.id}" => ""}
+        send_message = {error: "permission denied for UploadedFile(#{uploaded_file.id})"}.to_json
+        logger.error send_message
+        render json: send_message, status: :forbidden
+        return
+      end
+      send_file uploaded_file&.ref.path, status: :ok
+    rescue => e
         send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
         logger.error send_message
-        all_data.write send_message
-      ensure
-        all_data.close
-        File.rename(all_data, "#{all_data.path}.txt")
-      end
+        render json: send_message, status: :internal_server_error
     end
   end
 
