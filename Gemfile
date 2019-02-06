@@ -85,6 +85,9 @@ gem 'recaptcha', require: 'recaptcha/rails'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+# Database - i18n connection
+gem 'i18n'
+gem 'rails-i18n'
 gem 'i18n-active_record', :require => 'i18n/active_record'
 
 group :development, :test do
