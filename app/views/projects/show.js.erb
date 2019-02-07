@@ -2,13 +2,22 @@ $('#project-content').html('<%= j render(partial: 'show') %>');
 componentHandler.upgradeElements($('#project-content').find('.mdl-tabs').get());
 
 $('#teams-tab.dirty').on('click', function(){
-    $.ajax({url: '<%= teams_project_url(@project) %>'});
+    $.ajax({
+        url: '<%= teams_project_url(@project) %>',
+        headers: {Accept: "text/javascript"}
+    });
 });
 
 $('#facs-tab.dirty').on('click', function(){
-    $.ajax({url: '<%= facilitators_project_url(@project) %>'});
+    $.ajax({
+        url: '<%= facilitators_project_url(@project) %>',
+        headers: { Accept: "text/javascript" }
+    });
 });
 
 $('#quarterly-tab.dirty').on('click', function(){
-    $.ajax({url: '<%= quarterly_project_url(@project) %>'});
+    $.ajax({
+        url: '<%= quarterly_project_url(@project) %>',
+        headers: {Accept: "text/javascript"}
+    });
 });

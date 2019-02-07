@@ -5,5 +5,8 @@
   const menu = menuButton.MaterialExtMenuButton.getMenuElement();
   menuButton.MaterialExtMenuButton.setSelectedMenuItem(menu.children[0]);
   $('.empty-state').remove()
-  $.ajax({url: '<%= edit_project_path(@project) %>'});
+  $.ajax({
+      url: '<%= edit_project_path(@project) %>',
+      headers: {Accept: "text/javascript"}
+  });
 <% end -%>

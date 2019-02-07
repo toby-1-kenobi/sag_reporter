@@ -38,7 +38,10 @@ container.find('.partnering-churches li').on('click', function () {
     url = url.replace('p_placeholder', dataElement.data('project'));
     url = url.replace('s_placeholder', dataElement.data('stream'));
     url = url.replace('fm_placeholder', dataElement.data('first-month'));
-    $.ajax(url);
+    $.ajax({
+        url: url,
+        headers: {Accept: "text/javascript"}
+    });
 });
 
 container.find('.quarterly-target-input').on('input', function(){

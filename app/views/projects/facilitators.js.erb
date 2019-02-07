@@ -44,6 +44,7 @@ $(dialog2).find('.sup-feedback').on('change', function(){
     $.ajax({
         url: url,
         method: method,
+        headers: {Accept: "text/javascript"},
         dataType: 'script',
         data: data
     });
@@ -71,6 +72,7 @@ $(dialog2).find('.sup-approved').on('change', function(){
     $.ajax({
         url: url,
         method: method,
+        headers: {Accept: "text/javascript"},
         dataType: 'script',
         data: data
     });
@@ -98,6 +100,7 @@ $(dialog2).find('.fac-progress').on('change', function(){
     $.ajax({
         url: url,
         method: method,
+        headers: {Accept: "text/javascript"},
         dataType: 'script',
         data: data
     });
@@ -130,6 +133,7 @@ $(dialog3).find('.comment').on('change', function(){
     $.ajax({
         url: url,
         method: method,
+        headers: {Accept: "text/javascript"},
         dataType: 'script',
         data: data
     });
@@ -154,6 +158,7 @@ $(dialog3).find('.stream-approved').on('change', function(){
     $.ajax({
         url: url,
         method: method,
+        headers: {Accept: "text/javascript"},
         dataType: 'script',
         data: data
     });
@@ -178,6 +183,7 @@ $(dialog3).find('.progress').on('change', function(){
     $.ajax({
         url: url,
         method: method,
+        headers: {Accept: "text/javascript"},
         dataType: 'script',
         data: data
     });
@@ -202,7 +208,10 @@ $('.project-facilitator-header').on('click', function () {
     var container = $('.project-facilitator-table[data-lang-stream="' + lang_stream_id + '"]');
     if (!$.trim(container.html())) {
         var url = '<%= language_stream_url('placeholder') %>'.replace('placeholder', lang_stream_id)
-        $.ajax(url);
+        $.ajax({
+            url: url,
+            headers: {Accept: "text/javascript"}
+        });
     } else {
         container.slideToggle();
     }

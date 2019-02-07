@@ -18,7 +18,10 @@ $('#quarterly-sub-project-select, #quarter-select').on('change', function () {
         id = 'p<%= @project.id %>'
     }
     url = url.replace('sp_placeholder', id);
-    $.ajax(url);
+    $.ajax({
+        url: url,
+        headers: {Accept: "text/javascript"}
+    });
 })
 <% if @project.sub_projects.any? %>
   $('#quarterly-sub-project-select').focus();

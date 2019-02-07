@@ -37,6 +37,7 @@ $(dialog2).find('.fac-feedback').on('change', function(){
     $.ajax({
         url: url,
         method: method,
+        headers: {Accept: "text/javascript"},
         dataType: 'script',
         data: data
     });
@@ -61,6 +62,7 @@ $(dialog2).find('.sup-approved').on('change', function(){
     $.ajax({
         url: url,
         method: method,
+        headers: {Accept: "text/javascript"},
         dataType: 'script',
         data: data
     });
@@ -86,6 +88,7 @@ $(dialog2).find('.team-progress').on('change', function(){
     $.ajax({
         url: url,
         method: method,
+        headers: {Accept: "text/javascript"},
         dataType: 'script',
         data: data
     });
@@ -101,7 +104,10 @@ $('.project-team-header').on('click', function () {
         var url = '<%= table_for_church_team_url('team_placeholder', 'project_placeholder') %>';
         url = url.replace('team_placeholder', team_id);
         url = url.replace('project_placeholder', <%= @project.id %>);
-        $.ajax(url);
+        $.ajax({
+            url: url,
+            headers: {Accept: "text/javascript"}
+        });
     } else {
         container.slideToggle();
     }
