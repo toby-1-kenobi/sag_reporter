@@ -1,5 +1,4 @@
 checkbox = $('input[data-language="<%= @translation_progress.language_id %>"][data-chapter="<%= @translation_progress.chapter_id %>"]');
-console.log('lang <%= @translation_progress.language_id %> chap <%= @translation_progress.chapter_id %>');
 <% if @translation_progress.persisted? %>
   checkbox.data('id', '<%= @translation_progress.id %>');
 <% else %>

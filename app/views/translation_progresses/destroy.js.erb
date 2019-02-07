@@ -1,0 +1,5 @@
+checkbox = $('input').filter(function(){
+    return $(this).data('id') === '<%= @translation_progress_id %>';
+});
+checkbox.removeData('id');
+checkbox.closest('.mdl-checkbox').removeClass('dirty');

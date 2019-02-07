@@ -11,7 +11,7 @@ specTransProgContainer.find('.measurables .mdl-button[data-deliverable="<%= @del
 
 specTransProgContainer.find('.books input').on('click', function() {
     $(this).closest('.mdl-checkbox').addClass('dirty')
-   if ($(this).prop('checked')) {
+    if ($(this).prop('checked')) {
        const data = $(this).data();
        var tpData = {};
        for (var key in data) {
@@ -27,5 +27,12 @@ specTransProgContainer.find('.books input').on('click', function() {
            type: 'post',
            data: {translation_progress: tpData}
        });
-   }
+    } else {
+        console.log($(this).data('id'));
+        $.ajax({
+            url: '<%= translation_progress_path %>',
+            type: 'delete',
+            data: {id: $(this).data('id')}
+        });
+    }
 });

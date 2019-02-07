@@ -8,6 +8,9 @@ class TranslationProgressesController < ApplicationController
   end
 
   def destroy
+    @translation_progress_id = params[:id]
+    TranslationProgress.find(@translation_progress_id).destroy
+    respond_to :js
   end
 
   def language_deliverable
