@@ -46,7 +46,7 @@
               <% end %>
             </div>
           <% end %>
-          <% @project.language_streams.where(ministry: stream).order(:state_language_id).each do |lang_stream| %>
+          <% @project.language_streams.where(ministry: stream).to_a.sort_by{ |ls| ls.facilitator.name.downcase }.each do |lang_stream| %>
             <% sup_feedback = SupervisorFeedback.
                 where(ministry: stream, state_language: lang_stream.state_language, facilitator: lang_stream.facilitator).
                 where("result_feedback IS NOT NULL OR facilitator_progress IS NOT NULL OR report_approved = true").

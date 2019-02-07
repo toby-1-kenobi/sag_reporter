@@ -27,9 +27,9 @@
       </header>
       <section class="mdlext-accordion__tabpanel" data-stream="<%= stream.id %>">
         <% if @sub_project %>
-          <% state_languages = @project.state_languages.to_a.select {|sl| @sub_project.language_streams.exists?(state_language_id: sl.id, ministry_id: stream.id)}.sort_by{ |sl| sl.language_name } %>
+          <% state_languages = @project.state_languages.to_a.select {|sl| @sub_project.language_streams.exists?(state_language_id: sl.id, ministry_id: stream.id)}.sort_by{ |sl| sl.language_name.downcase } %>
         <% else %>
-          <% state_languages = @project.state_languages.to_a.sort_by{ |sl| sl.language_name } %>
+          <% state_languages = @project.state_languages.to_a.sort_by{ |sl| sl.language_name.downcase } %>
         <% end %>
         <div class="header-flex-container">
           <div class="quarterly-stream-summary-header" data-stream="<%= stream.id %>"><%= stream.name.en %> summary</div>
