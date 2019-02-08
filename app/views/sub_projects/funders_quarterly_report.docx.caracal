@@ -216,6 +216,23 @@ if @sub_project && @sub_project.language_streams.exists?(ministry_id: st_stream.
   docx.p
 end
 
+st_stream = Ministry.find_by_code('ES')
+if @sub_project && @sub_project.language_streams.exists?(ministry_id: st_stream.id) or @sub_project.blank? && @project.ministries.include?(st_stream)
+  docx.h3 "Summary for Esther in #{@sub_project ? @sub_project.name : @project.name}"
+  summary_data = summary_table(st_stream, @quarter, @project, @sub_project, state_languages)
+  summary_colours = summary_data.map{ |row| progress_colour(assessment(row[1], row[2])) }
+  docx.table summary_data, border_size: 1 do
+    cell_style rows[0], bold: true
+    (1..summary_data.length - 1).each do |row|
+      cell_style rows[row][2], background: summary_colours[row]
+    end
+    (1..summary_data[0].length - 1).each do |col|
+      cell_style cols[col], align: :center
+    end
+  end
+  docx.p
+end
+
 docx.h3 'Priority Impact story for the Project'
 docx.p 'Copy from the main section of this report and paste here, the impact story you think is most important for your funding partner to see this quarter.'
 
@@ -236,8 +253,15 @@ state_languages.each do |state_language|
   if @sub_project
     streams = streams.select {|s| @sub_project.language_streams.exists?(state_language_id: state_language.id, ministry_id: s.id)}
   end
-  # put translation and storying first
-  streams = streams.select{ |s| s.code == 'TR' } + streams.select{ |s| s.code == 'ST' } + streams.select{ |s| s.code != 'TR' and s.code != 'ST' }
+  # put translation, storying and Esther first
+  streams.sort_by! do |s|
+    case s.code
+    when 'TR' then 0
+    when 'ST' then 1
+    when 'ES' then 1
+    else 3
+    end
+  end
   streams.each do |stream|
 
     if @sub_project
@@ -289,7 +313,7 @@ state_languages.each do |state_language|
       docx.p 'Pending approval by manager', align: :right
     end
 
-    if ['TR', 'ST'].include? stream.code
+    if ['TR', 'ST', 'ES'].include? stream.code
       measurables_data = measurables(stream, state_language, @quarter, @project, @sub_project)
       measurable_colours = measurables_data.map{ |row| progress_colour(assessment(row[1], row[2])) }
       measurables_data = measurables_data.each do |row|
