@@ -115,7 +115,7 @@ class AndroidSyncController < ApplicationController
         when MtResource
           table.where(language_id: @language_ids, geo_state_id: @geo_state_ids).ids
         when Report
-          table.where("report_date >= ?", Date.new(2018, 1, 1))
+          table.where("report_date >= ?", Date.new(2018, 9, 1))
               .where(geo_state_id: @geo_state_ids).language(@language_ids).ids
         when UploadedFile
           table.where(report_id: @all_restricted_ids[Report]).ids
