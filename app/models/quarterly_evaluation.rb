@@ -28,6 +28,10 @@ class QuarterlyEvaluation < ActiveRecord::Base
         not approved? and report_id.blank? and progress.blank?
   end
 
+  def used?
+    not unused?
+  end
+
   private
 
   def sub_project_in_project
