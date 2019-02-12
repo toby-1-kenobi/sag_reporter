@@ -80,6 +80,7 @@ class User < ActiveRecord::Base
   validate :interface_language_must_have_locale_tag
 
   after_save :send_confirmation_email
+  before_update :update_timestamp_if_password_changed
 
   scope :curating, ->(edit) { joins(:curated_states).where('geo_states.id' => edit.geo_states) }
 
@@ -314,6 +315,10 @@ class User < ActiveRecord::Base
       logger.debug 'sending email verification email'
       UserMailer.user_email_confirmation(self).deliver_now
     end
+  end
+
+  def update_timestamp_if_password_changed
+    self.password_changed = Time.now if self.password_digest_changed?
   end
 
   def tokenize(string_to_split)

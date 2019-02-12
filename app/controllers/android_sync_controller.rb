@@ -774,7 +774,7 @@ class AndroidSyncController < ApplicationController
       @jwt_user_id = payload["sub"]
       user = User.find_by_id @jwt_user_id
       users_device = ExternalDevice.find_by device_id: payload["iss"], user_id: @jwt_user_id
-      if user.updated_at.to_i == payload["iat"]
+      if user.password_changed.to_i == payload["iat"]
         user if users_device
       else
         users_device.update registered: false if users_device&.registered

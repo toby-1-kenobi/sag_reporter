@@ -123,7 +123,7 @@ class AndroidAdditionsController < ApplicationController
                     "https://play.google.com/store/apps/details?id=org.sil.forchurches.rev79"
             }
         else
-          payload = {sub: user.id, iat: user.updated_at.to_i, iss: users_device.device_id}
+          payload = {sub: user.id, iat: user.password_changed.to_i, iss: users_device.device_id}
           send_message = {
               user: user.id,
               status: "success",
@@ -300,7 +300,7 @@ class AndroidAdditionsController < ApplicationController
       @jwt_user_id = payload["sub"]
       user = User.find_by_id @jwt_user_id
       users_device = ExternalDevice.find_by device_id: payload["iss"], user_id: @jwt_user_id
-      if user.updated_at.to_i == payload["iat"] && users_device && users_device.updated_at + 7.days < Time.now
+      if user.password_changed.to_i == payload["iat"] && users_device && users_device.updated_at + 7.days < Time.now
         user if users_device
       else
         users_device.update registered: false if users_device&.registered
