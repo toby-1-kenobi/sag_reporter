@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     collection do
       post 'send_request'
       post 'get_uploaded_file'
+      post 'get_uploaded_file_new'
       post 'receive_request'
       post 'get_file'
     end
