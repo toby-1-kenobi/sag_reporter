@@ -112,7 +112,6 @@ class AndroidAdditionsController < ApplicationController
       # check, whether user device exists and is registered (= successful login)
       users_device = user.external_devices.find {|d| d.device_id == login_params["device_id"]}
       if users_device && (users_device.registered || user.authenticate_otp(login_params["otp"], drift: 300))
-        users_device.update registered: true unless users_device.registered
         device_name = login_params["device_name"]
         users_device.update name: device_name unless users_device.name == device_name
         app_version = login_params["app_version"]
@@ -123,6 +122,7 @@ class AndroidAdditionsController < ApplicationController
                     "https://play.google.com/store/apps/details?id=org.sil.forchurches.rev79"
             }
         else
+          users_device.update registered: true unless users_device.registered
           payload = {sub: user.id, iat: user.password_changed.to_i, iss: users_device.device_id}
           send_message = {
               user: user.id,
