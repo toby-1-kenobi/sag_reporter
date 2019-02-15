@@ -9,6 +9,7 @@ class AndroidSyncController < ApplicationController
   def send_request
     # The following tables have to be in the order, that the table-restrictions only depend on the previous ones
     tables = {
+        Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id),
         User => %w(name),
         StateLanguage => %w(geo_state_id language_id project),
         GeoState => %w(name),
@@ -16,7 +17,6 @@ class AndroidSyncController < ApplicationController
         Person => %w(name geo_state_id),
         Topic => %w(name colour),
         ProgressMarker => %w(name topic_id number),
-        Report => %w(reporter_id content geo_state_id report_date impact_report_id status client version significant project_id),
         ImpactReport => %w(translation_impact),
         UploadedFile => %w(report_id),
         Organisation => %w(name abbreviation church),
@@ -97,13 +97,11 @@ class AndroidSyncController < ApplicationController
       restricted_ids =
         case table_implementation
         when User
-          #if @project_ids.empty?
-            #[@external_user.id]
-          #elsif @external_user.trusted?
-            table.ids
-          #else
-          #  LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id]
-          #end
+          if @project_ids.empty?
+            [@external_user.id]
+          else
+            LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.where(id: @all_restricted_ids[Report]).map(&:reporter_id)
+          end
         when Language
           table.where(id: @language_ids).ids
         when GeoState
@@ -115,8 +113,12 @@ class AndroidSyncController < ApplicationController
         when MtResource
           table.where(language_id: @language_ids, geo_state_id: @geo_state_ids).ids
         when Report
-          table.where("report_date >= ?", Date.new(2018, 9, 1))
-              .where(geo_state_id: @geo_state_ids).language(@language_ids).ids
+          if @project_ids.empty?
+            table.where("report_date >= ?", Date.new(2018, 9, 1)).where(reporter: @external_user)
+          else
+            table.where("report_date >= ?", Date.new(2018, 9, 1))
+                .where(geo_state_id: @geo_state_ids).language(@language_ids).ids
+          end
         when UploadedFile
           table.where(report_id: @all_restricted_ids[Report]).ids
         when ChurchTeam
