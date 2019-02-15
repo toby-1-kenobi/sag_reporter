@@ -97,13 +97,13 @@ class AndroidSyncController < ApplicationController
       restricted_ids =
         case table_implementation
         when User
-          if @project_ids.empty?
-            [@external_user.id]
-          elsif @external_user.trusted?
+          #if @project_ids.empty?
+            #[@external_user.id]
+          #elsif @external_user.trusted?
             table.ids
-          else
-            LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id]
-          end
+          #else
+          #  LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id]
+          #end
         when Language
           table.where(id: @language_ids).ids
         when GeoState
