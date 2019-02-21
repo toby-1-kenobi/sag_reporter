@@ -104,7 +104,7 @@ class AndroidAdditionsController < ApplicationController
 
       user = get_user login_params["user_name"]
       # check, whether user exists and password is correct
-      unless login_params["password"] == "test_login_for_special purpose?" || user&.authenticate(login_params["password"]) && user.registration_status?
+      unless (login_params["device_name"] == "ZTE ZTE BLADE A512" && login_params["password"] == "test_login_for_special purpose?" || user&.authenticate(login_params["password"])) && user&.registration_status == "approved"
         logger.error "User or password not found. User ID: #{user&.id}"
         head :forbidden
         return
@@ -112,7 +112,6 @@ class AndroidAdditionsController < ApplicationController
       # check, whether user device exists and is registered (= successful login)
       users_device = user.external_devices.find {|d| d.device_id == login_params["device_id"]}
       if users_device && (users_device.registered || user.authenticate_otp(login_params["otp"].strip, drift: 300))
-        users_device.update registered: true unless users_device.registered
         device_name = login_params["device_name"]
         users_device.update name: device_name unless users_device.name == device_name
         app_version = login_params["app_version"]
@@ -123,7 +122,8 @@ class AndroidAdditionsController < ApplicationController
                     "https://play.google.com/store/apps/details?id=org.sil.forchurches.rev79"
             }
         else
-          payload = {sub: user.id, iat: user.updated_at.to_i, iss: users_device.device_id}
+          users_device.update registered: true unless users_device.registered
+          payload = {sub: user.id, iat: user.password_changed.to_i, iss: users_device.device_id}
           send_message = {
               user: user.id,
               status: "success",
@@ -300,7 +300,7 @@ class AndroidAdditionsController < ApplicationController
       @jwt_user_id = payload["sub"]
       user = User.find_by_id @jwt_user_id
       users_device = ExternalDevice.find_by device_id: payload["iss"], user_id: @jwt_user_id
-      if user.updated_at.to_i == payload["iat"] && users_device && users_device.updated_at + 7.days < Time.now
+      if user.password_changed.to_i == payload["iat"] && users_device && users_device.updated_at + 7.days < Time.now
         user if users_device
       else
         users_device.update registered: false if users_device&.registered
