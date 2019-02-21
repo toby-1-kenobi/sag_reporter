@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190129234700) do
+ActiveRecord::Schema.define(version: 20190212125711) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -908,17 +908,22 @@ ActiveRecord::Schema.define(version: 20190129234700) do
     t.string   "month"
   end
 
+  add_index "translation_progresses", ["chapter_id", "language_id", "deliverable_id"], name: "index_translation_progress_unique", unique: true, using: :btree
   add_index "translation_progresses", ["chapter_id"], name: "index_translation_progresses_on_chapter_id", using: :btree
   add_index "translation_progresses", ["deliverable_id"], name: "index_translation_progresses_on_deliverable_id", using: :btree
   add_index "translation_progresses", ["language_id"], name: "index_translation_progresses_on_language_id", using: :btree
-  add_index "translation_progresses", ["month", "chapter_id", "language_id", "deliverable_id"], name: "index_translation_progress_unique", unique: true, using: :btree
 
   create_table "translations", force: :cascade do |t|
-    t.integer  "language_id",         null: false
-    t.text     "content",             null: false
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
-    t.integer  "translation_code_id", null: false
+    t.integer  "language_id",                         null: false
+    t.text     "content",                             null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.integer  "translation_code_id",                 null: false
+    t.string   "key"
+    t.string   "locale"
+    t.text     "value"
+    t.string   "interpolations"
+    t.boolean  "is_proc",             default: false, null: false
   end
 
   add_index "translations", ["language_id", "translation_code_id"], name: "index_language_translation_code", unique: true, using: :btree
@@ -963,6 +968,7 @@ ActiveRecord::Schema.define(version: 20190129234700) do
     t.boolean  "zone_admin",               default: false,        null: false
     t.string   "organisation"
     t.date     "user_last_login_dt",       default: '2018-10-20'
+    t.datetime "password_changed",                                null: false
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree

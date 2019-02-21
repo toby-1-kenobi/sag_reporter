@@ -76,6 +76,7 @@ class User < ActiveRecord::Base
   validates :national, inclusion: [true, false]
   validates :admin, inclusion: [true, false]
   validates :national_curator, inclusion: [true, false]
+  validates :password_changed, presence: true
   validate :interface_language_must_have_locale_tag
 
   after_save :send_confirmation_email
