@@ -263,52 +263,54 @@ class AndroidSyncController < ApplicationController
           file.write "UPDATE app SET last_sync = #{this_sync.to_i}#{formatted_evaluation_info};"
           raise "No last sync variable" unless send_request_params["last_sync"]
           deleted_entries = Hash.new
-          tables.each do |table, attributes|
-            next unless attributes
+          ActiveRecord::Base.logger.silence do
+            tables.each do |table, attributes|
+              next unless attributes
 
-            join_table_data = Hash.new
-            columns = Set.new ["id"] + attributes
-            values = Array.new
+              join_table_data = Hash.new
+              columns = Set.new ["id"] + attributes
+              values = Array.new
 
-            table_name = table.name.to_sym
-            offline_ids = send_request_params[table.name] || [0]
-            restricted_ids = restrict(table)
-            logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
-            table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
-                        last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
-                .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
-              entry_data = Hash.new
-              begin
-                entry_values = entry.attributes.slice(*(["id"] + attributes)).values.map {|e| convert_value e}
-                entry_data.merge!(entry.attributes.slice(*(["id"] + attributes)))
-                join_tables[table_name]&.each do |join_table|
-                  foreign_ids = entry.send(join_table.singularize.foreign_key.pluralize)
-                  entry_data.merge!({join_table => foreign_ids})
-                  identifier = [table.name.underscore, join_table]
-                  join_table_data[identifier] ||= Array.new
-                  join_table_data[identifier] += foreign_ids.map{|foreign_id| [entry.id,foreign_id]}
+              table_name = table.name.to_sym
+              offline_ids = send_request_params[table.name] || [0]
+              restricted_ids = restrict(table)
+              logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
+              table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
+                          last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
+                  .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
+                entry_data = Hash.new
+                begin
+                  entry_values = entry.attributes.slice(*(["id"] + attributes)).values.map {|e| convert_value e}
+                  entry_data.merge!(entry.attributes.slice(*(["id"] + attributes)))
+                  join_tables[table_name]&.each do |join_table|
+                    foreign_ids = entry.send(join_table.singularize.foreign_key.pluralize)
+                    entry_data.merge!({join_table => foreign_ids})
+                    identifier = [table.name.underscore, join_table]
+                    join_table_data[identifier] ||= Array.new
+                    join_table_data[identifier] += foreign_ids.map{|foreign_id| [entry.id,foreign_id]}
+                  end
+                  additions = additional_tables(entry)
+                  entry_data.merge! additions
+                  entry_values += additions.map{|k,v| columns << k.to_s; convert_value(v)}
+                  values << entry_values
+                rescue => e
+                  logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
+                  logger.error e.backtrace
                 end
-                additions = additional_tables(entry)
-                entry_data.merge! additions
-                entry_values += additions.map{|k,v| columns << k.to_s; convert_value(v)}
-                values << entry_values
-              rescue => e
-                logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
-                logger.error e.backtrace
               end
+              unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
+                deleted_entries[table_name] = offline_ids - restricted_ids
+              end
+              columns << "is_online"
+              values.map! {|value| "(#{(value+[1]).join(",")})"}
+              file.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
+              join_table_data.each do |join_table_names, data|
+          file.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{values.map{|e|e.split(',')[0].split('(')[1]}.uniq.join ","});"
+                file.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
+                                 "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
+              end
+              ActiveRecord::Base.connection.query_cache.clear
             end
-            unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
-              deleted_entries[table_name] = offline_ids - restricted_ids
-            end
-            columns << "is_online"
-            values.map! {|value| "(#{(value+[1]).join(",")})"}
-            file.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
-            join_table_data.each do |join_table_names, data|
-		    file.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{values.map{|e|e.split(',')[0].split('(')[1]}.uniq.join ","});"
-              file.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
-                               "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
-            end
-            ActiveRecord::Base.connection.query_cache.clear
           end
           unless deleted_entries.empty?
             deleted_entries.each do |table, ids|
