@@ -3,7 +3,7 @@
   <% current_q, q_year[current_q] = quarter_for_month(Date.today.month), FinishLineProgress.get_current_year %>
   <% last_q = (current_q - 2) % 4 + 1 %>
   <% q_year[last_q] = last_q < current_q ? q_year[current_q] : q_year[current_q] - 1 %>
-  <% multi_state = @project.geo_states.uniq.count > 1 %>
+  <% state_language_names = @project.state_languages.includes(:language, :geo_state).map{ |sl| [sl.id, sl.name(@project.geo_states.uniq.count > 1)]}.to_h %>
   <% @counter = 0 %>
   <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
     <% @streams.each do |stream| %>
@@ -47,20 +47,19 @@
               <% end %>
             </div>
           <% end %>
-          <% @project.language_streams.where(language_streams: {ministry_id: stream[:id]}).to_a.sort_by{ |ls| ls.facilitator.name.downcase }.each do |lang_stream| %>
-            <% sup_feedback = SupervisorFeedback.
-                where(ministry_id: stream[:id], state_language: lang_stream.state_language, facilitator: lang_stream.facilitator).
-                where("result_feedback IS NOT NULL OR facilitator_progress IS NOT NULL OR report_approved = true").
-                order(:month).last
+          <% @language_streams.select{ |ls| ls.ministry_id == stream[:id] }.sort_by{ |ls| @fac_names[ls.facilitator_id].downcase }.each do |lang_stream| %>
+            <% sup_feedback = @sup_feedbacks.
+                select{ |sf| sf.ministry_id == stream[:id] && sf.state_language_id == lang_stream.state_language_id && sf.facilitator_id == lang_stream.facilitator_id }.
+                max_by{ |sf| sf.month }
             %>
             <div class="header-flex-container">
               <div class="project-facilitator-header" data-lang-stream="<%= lang_stream.id %>">
-                <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
-                facilitating for <span class="state-language-name"><%= lang_stream.state_language.name(multi_state) %></span>
+                <span class="facilitator-name"><%= @fac_names[lang_stream.facilitator_id] %></span>
+                facilitating for <span class="state-language-name"><%= state_language_names[lang_stream.state_language_id] %></span>
               </div>
               <div class="recent-progress" data-progress="<%= sup_feedback.facilitator_progress if sup_feedback %>">
                 <% img_html_data = {class: 'approved-stamp'} %>
-                <% img_html_data[:hidden] = '' unless sup_feedback and sup_feedback.report_approved? %>
+                <% img_html_data[:hidden] = '' unless sup_feedback and sup_feedback.report_approved %>
                 <%= image_tag('approved.png', img_html_data) %>
                 <span class="month"><%= pretty_month(sup_feedback.month) if sup_feedback %></span>
               </div>
