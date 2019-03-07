@@ -32,7 +32,7 @@
                         data-progress="<%= stream_eval.progress %>"
                         <%= 'data-approved' if stream_eval.approved %>
                       <% else %>
-                        data-proj-stream-id="<%= ProjectStream.find_by(project: @project, ministry_id: stream[:id]).id %>"
+                        data-proj-stream-id="<%= @project_streams.select{ |ps| ps.ministry_id == stream[:id] }.first.id %>"
                       <% end %>
                     >
                       <i class="material-icons">edit</i>
