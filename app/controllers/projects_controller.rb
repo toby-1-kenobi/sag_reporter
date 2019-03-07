@@ -49,9 +49,12 @@ class ProjectsController < ApplicationController
   end
 
   def facilitators
+    locale = logged_in_user.interface_language.locale_tag
     @project = Project.includes(language_streams: [:facilitator, {state_language: [:language, :geo_state]}, {ministry: {deliverables: :aggregate_ministry_outputs}}]).find(params[:id])
     head :forbidden unless logged_in_user.can_view_project?(@project)
-    Rails.logger.debug "outputs: #{@outputs}"
+    @streams = @project.ministries.pluck(:id).map{ |s| {id: s, name: Ministry.stream_name(s, locale)} }.sort_by{ |s| s[:name] }
+    @project_streams = @project.project_streams.pluck_to_struct :id, :ministry_id
+    @project_progresses = ProjectProgress.where(project_stream: @project_streams.map{ |ps| ps.id }).pluck_to_struct :id, :project_stream_id, :month, :progress, :approved, :comment, :updated_at
     respond_to :js
   end
 

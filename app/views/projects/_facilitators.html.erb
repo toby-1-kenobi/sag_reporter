@@ -6,38 +6,39 @@
   <% multi_state = @project.geo_states.uniq.count > 1 %>
   <% @counter = 0 %>
   <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
-    <% @project.ministries.order(:code).each do |stream| %>
+    <% @streams.each do |stream| %>
       <li class="mdlext-accordion__panel">
         <header class="mdlext-accordion__tab">
-          <span class="mdlext-accordion__tab__caption"><%= stream.name.en %></span>
+          <span class="mdlext-accordion__tab__caption"><%= stream[:name] %></span>
         </header>
+        <% project_stream = @project_streams.select{ |ps| ps.ministry_id == stream[:id] }.first %>
         <section class="mdlext-accordion__tabpanel">
           <% if logged_in_user.admin? or @project.project_supervisors.management.exists?(user: logged_in_user) %>
-            <div class="project-stream-evaluation mdl-shadow--2dp" data-stream="<%= stream.id %>">
+            <div class="project-stream-evaluation mdl-shadow--2dp" data-stream="<%= stream[:id] %>">
               <% [last_q, current_q].each do |quarter| %>
                 <% months_in_quarter(quarter).each do |month| %>
                   <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
-                  <% stream_eval = @project.project_streams.find_by(ministry: stream).project_progresses.where(month: year_month).last %>
+                  <% stream_eval = @project_progresses.select{ |pp| pp.project_stream_id == project_stream.id && pp.month == year_month }.max_by(&:updated_at) %>
                   <div class="evaluation" data-month="<%= year_month %>" data-progress="<%= stream_eval.progress if stream_eval %>">
                     <% img_html_data = {class: 'approved-stamp'} %>
-                    <% img_html_data[:hidden] = '' unless stream_eval and stream_eval.approved? %>
+                    <% img_html_data[:hidden] = '' unless stream_eval and stream_eval.approved %>
                     <%= Date::MONTHNAMES[month] %>
                     <button
-                      id="stream-eval-button-<%= stream.id %>-<%= year_month %>"
+                      id="stream-eval-button-<%= stream[:id] %>-<%= year_month %>"
                       class="<%= 'empty' unless stream_eval and stream_eval.comment.present? %> stream-eval-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
                       data-proj-prog-id="<%= stream_eval ? stream_eval.id : 'new' %>"
                       data-month="<%= year_month %>"
                       <% if stream_eval %>
                         data-progress="<%= stream_eval.progress %>"
-                        <%= 'data-approved' if stream_eval.approved? %>
+                        <%= 'data-approved' if stream_eval.approved %>
                       <% else %>
-                        data-proj-stream-id="<%= ProjectStream.find_by(project: @project, ministry: stream).id %>"
+                        data-proj-stream-id="<%= ProjectStream.find_by(project: @project, ministry_id: stream[:id]).id %>"
                       <% end %>
                     >
                       <i class="material-icons">edit</i>
                       <div hidden class="stream-eval-comment"><%= stream_eval.comment if stream_eval %></div>
                     </button>
-                    <div class="mdl-tooltip" data-mdl-for="stream-eval-button-<%= stream.id %>-<%= year_month %>">
+                    <div class="mdl-tooltip" data-mdl-for="stream-eval-button-<%= stream[:id] %>-<%= year_month %>">
                       Evaluate Project Stream
                     </div>
                     <%= image_tag 'approved.png', img_html_data %>
@@ -46,9 +47,9 @@
               <% end %>
             </div>
           <% end %>
-          <% @project.language_streams.where(ministry: stream).to_a.sort_by{ |ls| ls.facilitator.name.downcase }.each do |lang_stream| %>
+          <% @project.language_streams.where(language_streams: {ministry_id: stream[:id]}).to_a.sort_by{ |ls| ls.facilitator.name.downcase }.each do |lang_stream| %>
             <% sup_feedback = SupervisorFeedback.
-                where(ministry: stream, state_language: lang_stream.state_language, facilitator: lang_stream.facilitator).
+                where(ministry_id: stream[:id], state_language: lang_stream.state_language, facilitator: lang_stream.facilitator).
                 where("result_feedback IS NOT NULL OR facilitator_progress IS NOT NULL OR report_approved = true").
                 order(:month).last
             %>
