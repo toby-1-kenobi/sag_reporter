@@ -20,7 +20,7 @@ class Ministry < ActiveRecord::Base
   # This is a class method that caches the names
   # so we don't have to hit the db every time we need to look up a name
   def self.stream_name(id, locale)
-    Rails.cache.fetch("stream_name_#{id}_#{locale}", expires_in: 1.day) do
+    Rails.cache.fetch("stream_name_#{id}_#{locale}", expires_in: 2.hours) do
       Ministry.find(id).name.send(locale)
     end
   end

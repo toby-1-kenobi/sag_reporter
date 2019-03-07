@@ -1,30 +1,31 @@
 <% if @teams.any? %>
   <% multi_state = @project.geo_states.uniq.count > 1 %>
   <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
-    <% @project.state_languages.order(:id).each do |state_language| %>
+    <% @project.state_languages.includes(:language, :geo_state).order(:id).each do |state_language| %>
       <li class="mdlext-accordion__panel">
         <header class="mdlext-accordion__tab">
           <span class="mdlext-accordion__tab__caption"><%= state_language.name(multi_state) %></span>
         </header>
         <section class="mdlext-accordion__tabpanel">
-          <% @teams.where(state_language: state_language).each do |team| %>
+          <% @teams.select{ |t| t.state_language_id == state_language.id }.each do |team| %>
             <div class="header-flex-container">
               <div class="project-team-header" data-team="<%= team.id %>">
-                <%= team.full_name %>
+                <%= @team_names[team.id]  %>
               </div>
-              <% team.ministries.where('church_ministries.status = ?', 0).each do |stream| %>
-                <% fac_feedback = team.facilitator_feedbacks.
-                    where('church_ministries.ministry_id = ?', stream.id).
-                    where('result_feedback IS NOT NULL OR progress IS NOT NULL').
-                    order(:month).last
+              <% @church_min.select{ |cm| cm.church_team_id == team.id }.each do |church_min| %>
+                <% fac_feedback = @fac_feedbacks.
+                    select{ |ff| ff.church_ministry_id == church_min.id }.
+                    max_by{ |ff| ff.month }
                 %>
-                <div class="recent-progress" data-progress="<%= fac_feedback.progress if fac_feedback %>">
-                  <% img_html_data = {class: 'approved-stamp'} %>
-                  <% img_html_data[:hidden] = '' unless fac_feedback and fac_feedback.report_approved? %>
-                  <%= image_tag('approved.png', img_html_data) %>
-                  <span class="stream"><%= stream.name.en if fac_feedback %></span><br>
-                  <span class="month"><%= pretty_month(fac_feedback.month) if fac_feedback %></span>
-                </div>
+                <% if fac_feedback.present? %>
+                  <div class="recent-progress" data-progress="<%= fac_feedback.progress %>">
+                    <% img_html_data = {class: 'approved-stamp'} %>
+                    <% img_html_data[:hidden] = '' unless fac_feedback.report_approved %>
+                    <%= image_tag('approved.png', img_html_data) %>
+                    <span class="stream"><%= Ministry.stream_name(church_min.ministry_id, logged_in_user.interface_language.locale_tag) %></span><br>
+                    <span class="month"><%= pretty_month(fac_feedback.month) %></span>
+                  </div>
+                <% end %>
               <% end %>
             </div>
             <div class="project-team-table hide" data-team="<%= team.id %>">

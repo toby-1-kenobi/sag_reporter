@@ -31,7 +31,12 @@ class ProjectsController < ApplicationController
   def teams
     @project = Project.find(params[:id])
     head :forbidden unless logged_in_user.can_view_project?(@project)
-    @teams = ChurchTeam.active.in_project(@project)
+    project_teams = ChurchTeam.active.in_project(@project)
+    @team_names = {}
+    project_teams.includes(:organisation).find_each{ |pt| @team_names[pt.id] = pt.full_name }
+    @teams = project_teams.pluck_to_struct :id, :state_language_id
+    @church_min = ChurchMinistry.active.where(church_team_id: @teams.map{ |t| t[0] }).pluck_to_struct :id, :church_team_id, :ministry_id
+    @fac_feedbacks = FacilitatorFeedback.not_empty.where(church_ministry_id: @church_min.map{ |cm| cm[0] }).pluck_to_struct :church_ministry_id, :progress, :report_approved, :month
     respond_to :js
   end
 

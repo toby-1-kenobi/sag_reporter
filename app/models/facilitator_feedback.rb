@@ -20,7 +20,10 @@ class FacilitatorFeedback < ActiveRecord::Base
   validate :year_in_range
   validate :month_in_range
 
+  scope :not_empty, -> { where('result_feedback IS NOT NULL OR progress IS NOT NULL') }
+
   private
+
   def year_in_range
     # valid year range starts at 2018 (the year this was implemented)
     # and goes until next

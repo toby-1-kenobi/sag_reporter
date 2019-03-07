@@ -56,6 +56,9 @@ gem 'pg', '~> 0.20.0'
 # Track changes to models
 gem 'paper_trail'
 
+# convenience
+gem 'pluck_to_hash'
+
 # Output PDF files
 gem 'prawn'
 gem 'prawn-table'
