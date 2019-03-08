@@ -239,7 +239,7 @@ Rails.application.routes.draw do
 
   get 'about' => 'static_pages#about'
 
-  resources :tools, only: [:update, :create, :destroy]
+  resources :tools, except: [:index]
 
   resources :users, except: [:destroy] do
     member do

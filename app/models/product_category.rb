@@ -9,4 +9,19 @@ class ProductCategory < ActiveRecord::Base
     self.name ||= TranslationCode.create
   end
 
+  # allow getting the name with one method call like 'name_en' instead of 'name.en'
+  def method_missing(method_id, *args)
+    if match = matches_dynamic_locale_check?(method_id)
+      name.send(match.captures.first)
+    else
+      super
+    end
+  end
+
+  private
+
+  def matches_dynamic_locale_check?(method_id)
+    /\Aname_([a-z]{2})\z/.match(method_id.to_s)
+  end
+
 end

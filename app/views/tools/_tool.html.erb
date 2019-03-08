@@ -10,7 +10,11 @@
       <% end %>
     </span>
   </span>
-  <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+  <%= link_to edit_tool_path(tool), remote: true, class: 'mdl-list__item-secondary-action' do %>
+    <button class="mdl-button mdl-js-button mdl-button--icon">
+      <i class="material-icons">edit</i>
+    </button>
+  <% end %>
   <%= link_to tool, method: :delete, remote: true, class: 'mdl-list__item-secondary-action' do %>
     <button class="mdl-button mdl-js-button mdl-button--icon">
       <i class="material-icons">delete</i>

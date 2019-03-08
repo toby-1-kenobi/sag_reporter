@@ -609,4 +609,14 @@
   </div>
 </div>
 
+<dialog id="general-language-dialog" class="mdl-dialog" data-language="<%= @language.id %>" data-language-name="<%= @language.name %>">
+  <h4 class="mdl-dialog__title"></h4>
+  <div class="mdl-dialog__content ">
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button submit">Submit</button>
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+</dialog>
+
 <%= render 'edit_dialogs' if @editable %>
