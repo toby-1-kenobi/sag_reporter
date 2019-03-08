@@ -3,10 +3,10 @@
     <a href="<%= tool.url %>" tabindex="-1"><%= tool.description %></a>
     <span class="mdl-list__item-sub-title">
       <% if tool.finish_line_marker.present? %>
-        <span class="tool-finish-line-marker"><%= tool.finish_line_marker.name %></span>
+        <div class="tool-finish-line-marker"><%= tool.finish_line_marker.name %></div>
       <% end %>
       <% tool.product_categories.each do |category| %>
-        <span class="tool-category"><%= category.name.send(logged_in_user.interface_language.locale_tag) %></span>
+        <div class="tool-category"><%= category.name.send(logged_in_user.interface_language.locale_tag) %></div>
       <% end %>
     </span>
   </span>
