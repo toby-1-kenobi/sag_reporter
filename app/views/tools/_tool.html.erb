@@ -1,4 +1,4 @@
-<li class="mdl-list__item mdl-list__item--two-line">
+<li class="mdl-list__item mdl-list__item--two-line" id="tool-<%= tool.id %>">
   <span class="mdl-list__item-primary-content">
     <a href="<%= tool.url %>" tabindex="-1"><%= tool.description %></a>
     <span class="mdl-list__item-sub-title">
@@ -11,5 +11,9 @@
     </span>
   </span>
   <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
-  <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
+  <%= link_to tool, method: :delete, remote: true, class: 'mdl-list__item-secondary-action' do %>
+    <button class="mdl-button mdl-js-button mdl-button--icon">
+      <i class="material-icons">delete</i>
+    </button>
+  <% end %>
 </li>
