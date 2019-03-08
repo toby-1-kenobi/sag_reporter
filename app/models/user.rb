@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   has_many :zones, through: :geo_states
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :nullify
+  has_many :tools, dependent: :restrict_with_error, inverse_of: :creator, foreign_key: 'creator_id'
   has_many :curatings, dependent: :destroy
   has_many :curated_states, through: :curatings, class_name: 'GeoState', source: 'geo_state', inverse_of: :curators
   has_many :edits, dependent: :destroy

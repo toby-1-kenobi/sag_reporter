@@ -1,0 +1,15 @@
+<li class="mdl-list__item mdl-list__item--two-line">
+  <span class="mdl-list__item-primary-content">
+    <a href="<%= tool.url %>" tabindex="-1"><%= tool.description %></a>
+    <span class="mdl-list__item-sub-title">
+      <% if tool.finish_line_marker.present? %>
+        <span class="tool-finish-line-marker"><%= tool.finish_line_marker.name %></span>
+      <% end %>
+      <% tool.product_categories.each do |category| %>
+        <span class="tool-category"><%= category.name.send(logged_in_user.interface_language.locale_tag) %></span>
+      <% end %>
+    </span>
+  </span>
+  <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">edit</i></a>
+  <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
+</li>
