@@ -2,11 +2,19 @@ class ToolsController < ApplicationController
 
   before_action :require_login
 
-  def edit
-    @tool = Tool.find params[:id]
+  def new
+    @tool = Tool.new
+    render 'edit'
   end
 
   def create
+    @tool = Tool.new(tool_params)
+    @tool.creator = logged_in_user
+    render 'edit' unless @tool.save
+  end
+
+  def edit
+    @tool = Tool.find params[:id]
   end
 
   def update

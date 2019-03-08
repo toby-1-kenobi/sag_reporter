@@ -315,9 +315,11 @@
     <% else %>
         <p>None recorded</p>
     <% end %>
-    <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-      <i class="material-icons">add</i>
-    </button>
+    <%= link_to new_tool_path, remote: true do %>
+      <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+        <i class="material-icons">add</i>
+      </button>
+    <% end %>
 
     <h3>Religion</h3>
     <table class="language-data">
