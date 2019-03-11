@@ -25,13 +25,91 @@ zone_ids = []
 # Each zone has between 3 and 9 states
 # here's 45 randomly generated names to choose from
 state_names = %w(Icelake Fayelf Deepland Clearhollow Meadowbush Prydell Corvale Westercrystal Eriton Eastfort Violetdell Stoneden Wildefay Aldfog Brightpine Newwell Stonehill Aelfield Summermoor Goldspring Starrymarsh Mallowsnow Wayholt Lorwynne Newbutter Rayvale Vertland Prywynne Swynbeach Crystaldell Stoneshore Glassden Merrowville Redice Courtmere Havenhollow Winterfield Wheatlake Faydeer Lightpond Whitehill Ashmarsh Dracmeadow Byhedge Aldapple).shuffle
-state_ids = []
+state_ids_by_zone = {}
 zone_ids.each do |z_id|
-  rand(3..9).times{ state_ids << GeoState.create(zone_id: z_id, name: state_names.shift).id }
+  state_ids_by_zone[z_id] = []
+  rand(3..9).times{ state_ids_by_zone[z_id] << GeoState.create(zone_id: z_id, name: state_names.shift).id }
 end
 
-# Lets create between 510 and 520 languages
-language_ids = []
+# set up an interface language "English"
+ui_lang_id = Language.create(name: 'English', locale_tag: 'en').id
+
+# now create around 680 users
+user_ids = []
+rand(660..700).times do
+  password = Faker::Internet.password
+  u = User.new(
+      name: Faker::Name.name,
+      password: password,
+      password_confirmation: password,
+      password_changed: Time.now,
+      interface_language_id: ui_lang_id,
+      user_last_login_dt: Date.today - rand(0..500).days,
+      # registration_status unapproved means it wont try to send out confirmation emails
+      # all get changed to approved after all users created
+      registration_status: 'unapproved'
+  )
+  zone = zone_ids.sample
+  states = Set.new
+  if rand < 0.2
+    # some users are in more than one state
+    states.merge state_ids_by_zone[zone].sample(rand(2..5))
+    if rand < 0.1
+      # some are even in more than one zone
+      zone = zone_ids.sample
+      states.merge state_ids_by_zone[zone].sample(rand(1..3))
+    end
+  else
+    states << state_ids_by_zone[zone].sample
+  end
+  puts states
+  u.geo_state_ids = states.to_a
+  u.phone = Faker::Number.number(10) if rand < 0.85
+  # only use safe fake emails, so we're not accidentally sending real people emails.
+  u.email = Faker::Internet.safe_email(u.name.underscore + rand(99).to_s) if u.phone.blank? || rand < 0.96
+  u.email_confirmed = true if u.email.present? and rand < 0.6
+  # realistic probability of each combo of booleans occurring is maintained
+  # admin, national, trusted, lci_board, lci_agency, forward_planning_curator, zone_admin
+  combo = case rand * 1000
+          when (0..382)
+            7.times.map{ false }
+          when (383..643)
+            [false, false, true] + 4.times.map{ false }
+          when (644..829)
+            [false, true, true] + 4.times.map{ false }
+          when (830..955)
+            [false, true] + 5.times.map{ false }
+          when (956..971)
+            [false, true, true, true, false, false, false]
+          when (972..985)
+            [false, true, true, true, true, false, false]
+          else
+            7.times.map{ true }
+          end
+  u.admin = combo.shift
+  u.national = combo.shift
+  u.trusted = combo.shift
+  u.lci_board_member = combo.shift
+  u.lci_agency_leader = combo.shift
+  u.forward_planning_curator = combo.shift
+  u.zone_admin = combo.shift
+  u.role_description = Faker::Lorem.sentence if rand < 0.3
+  if u.save
+    user_ids << u.id
+  else
+    @errors << u.errors.full_messages
+  end
+end
+User.update_all(registration_status: 'approved')
+
+# Language families
+family_ids = []
+%w(Elvish Dwarfish Orkish Mannish Entish).each do |family|
+  family_ids << LanguageFamily.create(name: family).id
+end
+
+# create between 510 and 520 languages
+language_names = {}
 rand(510..520).times do
   l = Language.new(name: unique_name)
   # 5% chance the language name has a second word
@@ -132,10 +210,21 @@ rand(510..520).times do
   l.poetry_print = true if rand < 0.05
   l.oral_traditions_print = true if rand < 0.02
   l.sensitivity = 0 if rand < 0.05
-  #TODO: classification, ethnic groups in area, lexical similarity, believers, l2_literacy, pseudonym
+  l.champion_id = user_ids.sample if rand < 0.3
+  l.champion_prompted = Date.today - rand(10..80).days
+  l.family_id = family_ids.sample if rand < 0.9
+  l.genetic_classification = ([l.family.name] + Faker::Lorem.words(rand(1..5), true)).join(', ') if l.family_id.present? and rand < 0.9
+  #TODO: ethnic groups in area, lexical similarity, believers, l2_literacy, pseudonym
   if l.save
-    language_ids << l.id
+    language_names[l.id] = l.name
   else
     @errors << l.errors.full_messages
   end
+end
+
+if @errors.any?
+  puts 'errors encountered creating sandbox data:'
+  @errors.each{ |e| puts e }
+else
+  puts 'no errors creating sandbox data'
 end
