@@ -30,6 +30,9 @@ class Utils
 
 end
 
+# set short_seed to true to reduce the number of records seeded
+short_seed = Rails.env.development?
+
 starting_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 this_year = Time.now.year
 @errors = []
@@ -64,8 +67,9 @@ end
 ui_lang_id = Language.create(name: 'English', locale_tag: 'en').id
 
 # now create around 680 users
+user_count = short_seed ? 60 : rand(660..700)
 user_ids = []
-rand(660..700).times do
+user_count.times do
   password = Faker::Internet.password
   u = User.new(
       name: Faker::Name.unique.name,
@@ -138,8 +142,9 @@ family_ids = []
 end
 
 # create between 510 and 520 languages
+language_count = short_seed ? 50 : rand(510..520)
 language_names = {}
-rand(510..520).times do
+language_count.times do
   l = Language.new(name: unique_name)
   # 5% chance the language name has a second word
   l.name += " #{unique_name}" if rand < 0.05
@@ -425,4 +430,4 @@ else
   puts 'no errors'
 end
 ending_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-puts "#{Util.seconds_to_string((ending_time - starting_time).floor)} elapsed during seeding"
+puts "#{Utils.seconds_to_string((ending_time - starting_time).floor)} elapsed during seeding"

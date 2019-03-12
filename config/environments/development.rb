@@ -8,8 +8,8 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
-  # Set the cache store to my own which alows a backup of entries int the database.
-  config.cache_store = FileStoreWithDbBackup.new Rails.root.join('tmp', 'cache').to_s
+  # Set the cache store to my own which allows a backup of entries into the database.
+  config.cache_store = FileStoreWithDbBackup.new Rails.root.join('tmp', 'cache').to_s unless ENV['REV79_VARIETY'].downcase == 'sandbox'
 
   # Do not eager load code on boot.
   config.eager_load = false
