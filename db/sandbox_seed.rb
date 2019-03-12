@@ -2,6 +2,35 @@
 # The idea is to fill the database with nonsensical data that
 # resembles the data that would exist in reality during use of the app
 
+class Utils
+
+  # human readable time froms seconds
+  def self.seconds_to_string(s)
+
+    # d = days, h = hours, m = minutes, s = seconds
+    m = (s / 60).floor
+    s = s % 60
+    h = (m / 60).floor
+    m = m % 60
+    d = (h / 24).floor
+    h = h % 24
+
+    output = "#{s} second#{Utils.pluralize(s)}" if (s > 0)
+    output = "#{m} minute#{Utils.pluralize(m)}, #{s} second#{Utils.pluralize(s)}" if (m > 0)
+    output = "#{h} hour#{Utils.pluralize(h)}, #{m} minute#{Utils.pluralize(m)}, #{s} second#{Utils.pluralize(s)}" if (h > 0)
+    output = "#{d} day#{Utils.pluralize(d)}, #{h} hour#{Utils.pluralize(h)}, #{m} minute#{Utils.pluralize(m)}, #{s} second#{Utils.pluralize(s)}" if (d > 0)
+
+    return output
+  end
+
+  def self.pluralize number
+    return "s" unless number == 1
+    return ""
+  end
+
+end
+
+starting_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 this_year = Time.now.year
 @errors = []
 
@@ -39,7 +68,7 @@ user_ids = []
 rand(660..700).times do
   password = Faker::Internet.password
   u = User.new(
-      name: Faker::Name.name,
+      name: Faker::Name.unique.name,
       password: password,
       password_confirmation: password,
       password_changed: Time.now,
@@ -93,14 +122,14 @@ rand(660..700).times do
   u.lci_agency_leader = combo.shift
   u.forward_planning_curator = combo.shift
   u.zone_admin = combo.shift
-  u.role_description = Faker::Lorem.sentence if rand < 0.3
+  u.role_description = Faker::Job.title if rand < 0.3
   if u.save
     user_ids << u.id
   else
     @errors << u.errors.full_messages
   end
 end
-User.update_all(registration_status: 'approved')
+User.update_all(registration_status: User.registration_statuses['approved'])
 
 # Language families
 family_ids = []
@@ -222,9 +251,178 @@ rand(510..520).times do
   end
 end
 
+# State Languages
+language_names.keys.each do |l_id|
+  zone = zone_ids.sample
+  states = Set.new
+  if rand < 0.3
+    # 30% of languages are in more than one state
+    states.merge state_ids_by_zone[zone].sample(rand(2..4))
+    if rand < 0.4
+      # some are even in more than one zone
+      zone = zone_ids.sample
+      states.merge state_ids_by_zone[zone].sample(rand(1..3))
+    end
+  else
+    states << state_ids_by_zone[zone].sample
+  end
+  states = states.to_a
+  sl = StateLanguage.new(language_id: l_id, geo_state_id: states.shift, primary: true)
+  sl.project = true if rand < 0.37
+  sl.save
+  while states.any?
+    sl = StateLanguage.new(language_id: l_id, geo_state_id: states.shift, primary: false)
+    sl.project = true if rand < 0.16
+    sl.save
+  end
+end
+
+# Finish Line Markers
+flm_ids = []
+(1..rand(9..13)).each do |n|
+  flm_ids << FinishLineMarker.create(
+      name: "#{Faker::Verb.past_participle} #{Faker::Dessert.variety}",
+      description: Faker::Lorem.question,
+      number: n
+  ).id
+end
+
+# Finish Line Progresses
+def flm_current_from_plan(l_id, flm_id, status)
+  current_status = case status
+                   when "no_need"
+                     rand < 0.06 ? "survey_needed" : "no_need"
+                   when "not_accessible"
+                     rand < 0.15 ? "survey_needed" : "not_accessible"
+                   when "survey_needed"
+                     rand < 0.02 ? "in_progress" : "survey_needed"
+                   when "in_progress"
+                     rand < 0.27 ? "survey_needed" : "in_progress"
+                   when "completed"
+                     rand < 0.13 ? "in_progress" : "completed"
+                   when "further_work_in_progress"
+                     rand < 0.1 ? "in_progress" : "further_work_in_progress"
+                   else
+                     status
+                   end
+  FinishLineProgress.create(
+      language_id: l_id,
+      finish_line_marker_id: flm_id,
+      status: current_status,
+      year: nil
+  )
+end
+
+language_names.keys.each do |l_id|
+  flp_years = (2019..(this_year + 16)).to_a
+  # 70% of languages have planning values for finish line progress
+  if rand < 0.7
+    year = flp_years.shift
+    previous = {}
+    flm_ids.each do |flm_id|
+      # probabilities of each status in first planning year
+      status = case rand * 3818
+               when (0..454)
+                 "no_need"
+               when (455..580)
+                 "not_accessible"
+               when (581..2426)
+                 "survey_needed"
+               when (2427..2546)
+                 "confirmed_need"
+               when (2547..3028)
+                 "in_progress"
+               when (3029..3031)
+                 "outside_india_in_progress"
+               when (3031..3638)
+                 "completed"
+               when (3639..3693)
+                 "further_needs_expressed"
+               else
+                 "further_work_in_progress"
+               end
+      FinishLineProgress.create(
+          language_id: l_id,
+          finish_line_marker_id: flm_id,
+          status: status,
+          year: year
+      )
+      previous[flm_id] = status
+      # current year corresponds to this year of planning
+      flm_current_from_plan(l_id, flm_id, status) if year == this_year
+    end
+    # as the panning years progress leave behind 20% of languages each time
+    while flp_years.any? and rand < 0.8
+      year = flp_years.shift
+      flm_ids.each do |flm_id|
+        # probabilities than one status will convert to the next in any given year
+        status = case previous[flm_id]
+                 when "no_need"
+                   rand < 0.004 ? "survey_needed" : "no_need"
+                 when "not_accessible"
+                   rand < 0.01 ? "survey_needed" : "not_accessible"
+                 when "survey_needed"
+                   rand < 0.02 ? "in_progress" : "survey_needed"
+                 when "confirmed_need"
+                   rand < 0.1 ? "in_progress" : "confirmed_need"
+                 when "in_progress"
+                   rand < 0.2 ? "completed" : "in_progress"
+                 when "outside_india_in_progress"
+                   rand < 0.2 ? "completed" : "outside_india_in_progress"
+                 when "completed"
+                   rand < 0.004 ? "further_work_in_progress" : "completed"
+                 when "further_needs_expressed"
+                   rand < 0.1 ? "further_work_in_progress" : "further_needs_expressed"
+                 else
+                   rand < 0.1 ? "completed" : "further_work_in_progress"
+                 end
+        FinishLineProgress.create(
+            language_id: l_id,
+            finish_line_marker_id: flm_id,
+            status: status,
+            year: year
+        )
+        previous[flm_id] = status
+        # current year corresponds to this year of planning
+        flm_current_from_plan(l_id, flm_id, status) if year == this_year
+      end
+    end
+  else
+    # languages that have no planning finish line progress
+    # still have current status
+    flm_ids.each do |flm_id|
+      status = case rand * 1617
+               when (0..82)
+                 'no_need'
+               when (83..1093)
+                 'survey_needed'
+               when (1094..1108)
+                 'confirmed_need'
+               when (1109..1224)
+                 'in_progress'
+               when (1225..1609)
+                 'completed'
+               when (1610..1613)
+                 'further_needs_expressed'
+               else
+                 'further_work_in_progress'
+               end
+
+      FinishLineProgress.create(
+          language_id: l_id,
+          finish_line_marker_id: flm_id,
+          status: status,
+          year: nil
+      )
+    end
+  end
+end
+
 if @errors.any?
   puts 'errors encountered creating sandbox data:'
   @errors.each{ |e| puts e }
 else
-  puts 'no errors creating sandbox data'
+  puts 'no errors'
 end
+ending_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+puts "#{Util.seconds_to_string((ending_time - starting_time).floor)} elapsed during seeding"
