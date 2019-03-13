@@ -36,6 +36,7 @@ short_seed = Rails.env.development?
 starting_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 this_year = Time.now.year
 @errors = []
+@info = []
 
 # don't keep a record of changes while inserting seed data
 PaperTrail.enabled = false
@@ -69,13 +70,14 @@ zone_ids = []
 %w(North South East West Central).each{ |name| zone_ids << Zone.create(name: name).id }
 
 # Each zone has between 3 and 9 states
-# here's 45 randomly generated names to choose from
-state_names = %w(Icelake Fayelf Deepland Clearhollow Meadowbush Prydell Corvale Westercrystal Eriton Eastfort Violetdell Stoneden Wildefay Aldfog Brightpine Newwell Stonehill Aelfield Summermoor Goldspring Starrymarsh Mallowsnow Wayholt Lorwynne Newbutter Rayvale Vertland Prywynne Swynbeach Crystaldell Stoneshore Glassden Merrowville Redice Courtmere Havenhollow Winterfield Wheatlake Faydeer Lightpond Whitehill Ashmarsh Dracmeadow Byhedge Aldapple).shuffle
+# here's 45 randomly generated names to choose from (with some LoTR mixed in)
+state_names = %w(Icelake Fayelf Deepland Clearhollow Meadowbush Prydell Mordor Westercrystal Gondor Eastfort Rohan Stoneden Wildefay Aldfog Brightpine Newwell Stonehill Aelfield Summermoor Goldspring Starrymarsh Mallowsnow Wayholt Lorwynne Newbutter Arnor Haradwaith Prywynne Swynbeach Crystaldell Stoneshore Glassden Merrowville Redice Courtmere Havenhollow Winterfield Wheatlake Shire Eriador Whitehill Ashmarsh Dracmeadow Byhedge Aldapple).shuffle
 state_ids_by_zone = {}
 zone_ids.each do |z_id|
   state_ids_by_zone[z_id] = []
   rand(3..9).times{ state_ids_by_zone[z_id] << GeoState.create(zone_id: z_id, name: state_names.shift).id }
 end
+@info << "#{GeoState.count} states"
 
 # set up an interface language "English"
 ui_lang_id = Language.create(name: 'English', locale_tag: 'en').id
@@ -144,10 +146,22 @@ user_count.times do
   if u.save
     user_ids << u.id
   else
-    @errors << u.errors.full_messages
+    @errors << "user #{u.errors.full_messages}"
   end
 end
 User.update_all(registration_status: User.registration_statuses['approved'])
+@info << "#{User.count} users"
+
+# at least one user curating in each state
+GeoState.find_each do |gs|
+  u_id = gs.user_ids.sample
+  Curating.create(user_id: u_id, geo_state: gs)
+  if rand < 0.5
+    states = state_ids_by_zone[gs.zone_id].sample(rand(1..8))
+    states.delete(gs.id)
+    states.each{ |state| Curating.create(user_id: u_id, geo_state_id: state) }
+  end
+end
 
 # Language families
 family_ids = []
@@ -266,12 +280,21 @@ language_count.times do
   if l.save
     language_names[l.id] = l.name
   else
-    @errors << l.errors.full_messages
+    @errors << "language #{l.errors.full_messages}"
+  end
+end
+@info << "#{Language.count} languages"
+
+# dialects
+language_names.keys.each do |l_id|
+  if rand < 0.3
+    rand(1..7).times{ Dialect.create(language_id: l_id, name: unique_name) }
   end
 end
 
 # State Languages
 state_language_ids_by_state = {}
+language_ids_by_state = {}
 language_names.keys.each do |l_id|
   zone = zone_ids.sample
   states = Set.new
@@ -293,6 +316,8 @@ language_names.keys.each do |l_id|
   sl.save
   state_language_ids_by_state[state] ||= []
   state_language_ids_by_state[state] << sl.id
+  language_ids_by_state[state] ||= []
+  language_ids_by_state[state] << l_id
   while states.any?
     state = states.shift
     sl = StateLanguage.new(language_id: l_id, geo_state_id: state, primary: false)
@@ -300,19 +325,24 @@ language_names.keys.each do |l_id|
     sl.save
     state_language_ids_by_state[state] ||= []
     state_language_ids_by_state[state] << sl.id
+    language_ids_by_state[state] ||= []
+    language_ids_by_state[state] << l_id
   end
 end
+@info << "#{StateLanguage.count} state-languages"
 
 # add a language to any state that doesn't have one
 state_ids_by_zone.values.each do |states|
   states.each do |state|
     unless state_language_ids_by_state[state]
+      l_id = language_names.keys.sample
       sl_id = StateLanguage.create(
-          language_id: language_names.keys.sample,
+          language_id: l_id,
           geo_state_id: state,
           primary: false
       ).id
       state_language_ids_by_state[state] = [sl_id]
+      language_ids_by_state[state] = [l_id]
     end
   end
 end
@@ -353,6 +383,7 @@ def flm_current_from_plan(l_id, flm_id, status)
   )
 end
 
+# finish line progress for each language
 language_names.keys.each do |l_id|
   flp_years = (2019..(this_year + 16)).to_a
   # 70% of languages have planning values for finish line progress
@@ -456,6 +487,7 @@ language_names.keys.each do |l_id|
     end
   end
 end
+@info << "#{FinishLineProgress.count} Finish Line progress records"
 
 # 5 outcome areas
 topic_ids = []
@@ -524,6 +556,21 @@ org_count.times do
       church: rand < 0.33 ? false : true,
   ).id
 end
+@info << "#{Organisation.count} organisations"
+
+# connecting organisations to languages
+language_names.keys.each do |l_id|
+  if rand < 0.5
+    orgs = org_ids.sample(3)
+    OrganisationTranslation.create(language_id: l_id, organisation_id: orgs.shift)
+    if rand < 0.35
+      OrganisationTranslation.create(language_id: l_id, organisation_id: orgs.shift)
+      OrganisationTranslation.create(language_id: l_id, organisation_id: orgs.shift) if rand < 0.17
+    end
+    orgs = org_ids.sample(rand(1..7))
+    orgs.each{ |o| OrganisationEngagement.create(language_id: l_id, organisation_id: o) }
+  end
+end
 
 # Projects
 sub_project_ids_by_project = {}
@@ -539,6 +586,7 @@ rand(25..30).times do
     end
   end
 end
+@info << "#{Project.count} projects"
 project_ids = sub_project_ids_by_project.keys
 
 project_rel_ids = {}
@@ -612,6 +660,7 @@ proj_sl = ProjectLanguage.pluck(:state_language_id).uniq
 
 # Church Teams
 church_team_count = short_seed ? 100 : rand(1900..2100)
+team_ids = []
 church_team_count.times do
   ct_id = ChurchTeam.create(
       leader: Faker::Name.name,
@@ -637,7 +686,33 @@ church_team_count.times do
   stream_ids.sample(stream_count).each do |s_id|
     ChurchMinistry.create(church_team_id: ct_id, ministry_id: s_id)
   end
+  team_ids << ct_id
 end
+@info << "#{ChurchTeam.count} church teams"
+
+# Reports
+report_count = short_seed ? 300 : rand(11000..12000)
+report_count.times do
+  state = state_ids_by_zone[zone_ids.sample].sample
+  ir = ImpactReport.new(shareable: rand < 0.06 ? true : false)
+  r = Report.new(
+      content: Faker::Lorem.paragraph(rand(1..10)),
+      impact_report: ir,
+      reporter_id: user_ids.sample,
+      geo_state_id: state,
+      project_id: rand < 0.01 ? project_ids.sample : nil,
+      church_team_id: rand < 0.08 ? team_ids.sample : nil,
+      significant: rand < 0.22 ? true : false,
+      report_date: Date.today - rand(1100).days
+  )
+  if r.save
+    language_count = rand < 0.1 ? 2 : 1
+    r.language_ids = language_ids_by_state[state].sample(language_count)
+  else
+    @errors << "report #{r.errors.full_messages}"
+  end
+end
+@info << "#{Report.count} reports"
 
 PaperTrail.enabled = true
 
@@ -647,5 +722,6 @@ if @errors.any?
 else
   puts 'no errors'
 end
+@info.each{ |i| puts i }
 ending_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 puts "#{Utils.seconds_to_string((ending_time - starting_time).floor)} elapsed during seeding"
