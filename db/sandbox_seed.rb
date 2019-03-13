@@ -286,7 +286,7 @@ end
 flm_ids = []
 (1..rand(9..13)).each do |n|
   flm_ids << FinishLineMarker.create(
-      name: "#{Faker::Verb.past_participle} #{Faker::Dessert.variety}",
+      name: "#{Faker::Verb.past_participle.titlecase} #{Faker::Dessert.variety}",
       description: Faker::Lorem.question,
       number: n
   ).id
@@ -418,6 +418,36 @@ language_names.keys.each do |l_id|
           finish_line_marker_id: flm_id,
           status: status,
           year: nil
+      )
+    end
+  end
+end
+
+# 5 outcome areas
+topic_ids = []
+colours = %w(amber yellow pink lime green).shuffle
+(1..5).each do |n|
+  topic_ids << Topic.create(
+      name: "#{Faker::Food.vegetables} #{Faker::Verb.ing_form}",
+      description: Faker::Lorem.sentence,
+      number: n,
+      colour: colours.shift
+  ).id
+end
+
+# Progress Markers
+# number of pms of each weight per outcome area
+pm_pattern = { 1 => 3, 2 => 3, 3 => 2 }
+pm_number = 0
+topic_ids.each do |t_id|
+  pm_pattern.each do |weight, count|
+    count.times do
+      pm_number += 1
+      ProgressMarker.create(
+          name: Faker::Company.bs,
+          topic_id: t_id,
+          weight: weight,
+          number: pm_number
       )
     end
   end
