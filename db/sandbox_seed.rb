@@ -67,7 +67,7 @@ end
 ui_lang_id = Language.create(name: 'English', locale_tag: 'en').id
 
 # now create around 680 users
-user_count = short_seed ? 60 : rand(660..700)
+user_count = short_seed ? 50 : rand(660..700)
 user_ids = []
 user_count.times do
   password = Faker::Internet.password
@@ -103,7 +103,7 @@ user_count.times do
   u.email_confirmed = true if u.email.present? and rand < 0.6
   # realistic probability of each combo of booleans occurring is maintained
   # admin, national, trusted, lci_board, lci_agency, forward_planning_curator, zone_admin
-  combo = case rand * 1000
+  combo = case rand 1000
           when (0..382)
             7.times.map{ false }
           when (383..643)
@@ -155,7 +155,7 @@ language_count.times do
   # 1% chance it has a slash
   l.name += " / #{unique_name}" if rand < 0.01
   # 92% chance it has an iso code
-  l.iso = Faker::Lorem.unique.characters(3) if rand < 0.92
+  l.iso = ('a'..'z').to_a.sample(3).join if rand < 0.92
   # 30% have a description
   l.description = Faker::Lorem.paragraph(2, true, 4) if rand < 0.5
   # 90% have a location
@@ -257,6 +257,7 @@ language_count.times do
 end
 
 # State Languages
+state_language_ids_by_state = {}
 language_names.keys.each do |l_id|
   zone = zone_ids.sample
   states = Set.new
@@ -272,13 +273,19 @@ language_names.keys.each do |l_id|
     states << state_ids_by_zone[zone].sample
   end
   states = states.to_a
-  sl = StateLanguage.new(language_id: l_id, geo_state_id: states.shift, primary: true)
+  state = states.shift
+  sl = StateLanguage.new(language_id: l_id, geo_state_id: state, primary: true)
   sl.project = true if rand < 0.37
   sl.save
+  state_language_ids_by_state[state] ||= []
+  state_language_ids_by_state[state] << sl.id
   while states.any?
-    sl = StateLanguage.new(language_id: l_id, geo_state_id: states.shift, primary: false)
+    state = states.shift
+    sl = StateLanguage.new(language_id: l_id, geo_state_id: state, primary: false)
     sl.project = true if rand < 0.16
     sl.save
+    state_language_ids_by_state[state] ||= []
+    state_language_ids_by_state[state] << sl.id
   end
 end
 
@@ -326,7 +333,7 @@ language_names.keys.each do |l_id|
     previous = {}
     flm_ids.each do |flm_id|
       # probabilities of each status in first planning year
-      status = case rand * 3818
+      status = case rand 3818
                when (0..454)
                  "no_need"
                when (455..580)
@@ -356,8 +363,7 @@ language_names.keys.each do |l_id|
       # current year corresponds to this year of planning
       flm_current_from_plan(l_id, flm_id, status) if year == this_year
     end
-    # as the panning years progress leave behind 20% of languages each time
-    while flp_years.any? and rand < 0.8
+    while flp_years.any?
       year = flp_years.shift
       flm_ids.each do |flm_id|
         # probabilities than one status will convert to the next in any given year
@@ -367,13 +373,13 @@ language_names.keys.each do |l_id|
                  when "not_accessible"
                    rand < 0.01 ? "survey_needed" : "not_accessible"
                  when "survey_needed"
-                   rand < 0.02 ? "in_progress" : "survey_needed"
+                   rand < 0.3 ? "in_progress" : "survey_needed"
                  when "confirmed_need"
-                   rand < 0.1 ? "in_progress" : "confirmed_need"
+                   rand < 0.5 ? "in_progress" : "confirmed_need"
                  when "in_progress"
-                   rand < 0.2 ? "completed" : "in_progress"
+                   rand < 0.4 ? "completed" : "in_progress"
                  when "outside_india_in_progress"
-                   rand < 0.2 ? "completed" : "outside_india_in_progress"
+                   rand < 0.3 ? "completed" : "outside_india_in_progress"
                  when "completed"
                    rand < 0.004 ? "further_work_in_progress" : "completed"
                  when "further_needs_expressed"
@@ -452,6 +458,127 @@ topic_ids.each do |t_id|
     end
   end
 end
+
+# Streams
+stream_ids = []
+rand(8..10).times do
+  name = "#{Faker::Verb.ing_form} #{Faker::Food.fruits}".titlecase
+  m = Ministry.create(topic_id: topic_ids.sample, code: ('A'..'Z').to_a.sample(2).join)
+  m.name_en = name
+  m.short_form_en = name.gsub(/[^A-Z]/, '') # get acronym of name
+  stream_ids << m.id
+end
+
+# Measurables
+stream_ids.each do |s_id|
+  (1..rand(4..12)).each do |n|
+    d = Deliverable.create(
+        ministry_id: s_id,
+        number: n,
+        calculation_method: rand < 0.2 ? 0 : 1,
+        reporter: rand < 0.3 ? 0 : 1,
+        funder_interest: rand < 0.5 ? false : true
+    )
+    d.short_form_en = Faker::Company.bs
+    d.result_form_en = Faker::Lorem.question
+    d.plan_form_en = Faker::Lorem.question
+  end
+end
+
+# Organisations
+org_count = short_seed ? 140 : rand(1400..1450)
+org_ids = []
+org_count.times do
+  org_name = Faker::Company.name
+  org_ids << Organisation.create(
+      name: org_name,
+      abbreviation: org_name.gsub(/[^A-Z]/, ''),
+      church: rand < 0.33 ? false : true,
+  ).id
+end
+
+# Projects
+sub_project_ids_by_project = {}
+rand(25..30).times do
+  p = Project.create(name: Faker::Lorem.sentence(2))
+  sub_project_ids_by_project[p.id] = []
+  if rand < 0.5
+    rand(2..4).times do
+      sub_project_ids_by_project[p.id] << SubProject.create(
+          project: p,
+          name: "#{Faker::Color.color_name} #{Faker::Food.ingredient}"
+      ).id
+    end
+  end
+end
+project_ids = sub_project_ids_by_project.keys
+
+project_rel_ids = {}
+project_ids.each do |p_id|
+  project_rel_ids[p_id] = {}
+
+  # connect projects with languages
+  states = state_ids_by_zone.values.sample.shuffle
+  state_languages = state_language_ids_by_state[states.shift].sample(rand(1..14))
+  state_languages.each{ |sl| ProjectLanguage.create(project_id: p_id, state_language_id: sl) }
+  project_rel_ids[p_id][:state_languages] = state_languages
+  # 20% of projects are in more than one state
+  if rand < 0.2
+    (1..rand(1..3)).each do |n|
+      state_languages = state_language_ids_by_state[states.shift].sample(rand(1..14/n))
+      state_languages.each{ |sl| ProjectLanguage.create(project_id: p_id, state_language_id: sl) }
+      project_rel_ids[p_id][:state_languages] += state_languages
+    end
+  end
+
+  # connect projects with supervisors
+  supervisors = user_ids.sample(rand(3..12))
+  supervisors.each do |sup_id|
+    role = case rand 243
+           when (0..106)
+             0
+           when (107..136)
+             1
+           else
+             2
+           end
+    ProjectSupervisor.create(project_id: p_id, user_id: sup_id, role: role)
+  end
+
+  # connect projects with streams
+  project_rel_ids[p_id][:streams] = stream_ids.sample(rand(1..stream_ids.length))
+  project_rel_ids[p_id][:streams].each do |s_id|
+    ProjectStream.create(project_id: p_id, ministry_id: s_id, supervisor_id: rand < 0.3 ? nil : user_ids.sample)
+  end
+
+  # connect with facilitators
+  sub_proj = sub_project_ids_by_project[p_id]
+  project_rel_ids[p_id][:streams].each do |s_id|
+    project_rel_ids[p_id][:state_languages].each do |sl_id|
+      fac_count = case rand 1026
+                  when (0..493)
+                    0
+                  when (494..963)
+                    1
+                  when (964..1016)
+                    2
+                  else
+                    3
+                  end
+      user_ids.sample(fac_count).each do |u_id|
+        LanguageStream.create(
+            project_id: p_id,
+            ministry_id: s_id,
+            state_language_id: sl_id,
+            facilitator_id: u_id,
+            sub_project_id: sub_proj.any? ? sub_proj.sample : nil
+        )
+      end
+    end
+  end
+
+end
+
 
 if @errors.any?
   puts 'errors encountered creating sandbox data:'

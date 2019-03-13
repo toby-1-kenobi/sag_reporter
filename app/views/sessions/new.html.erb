@@ -33,8 +33,10 @@
           u.phone = '0000000000'
           u.password = 'rev79sandbox'
           u.password_confirmation = 'rev79sandbox'
+          u.admin = true
           u.national = true
           u.trusted = true
+          u.forward_planning_curator = true
           u.geo_states << GeoState.take
           u.user_last_login_dt = Time.now
           u.password_changed = Time.now

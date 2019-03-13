@@ -155,7 +155,7 @@ module LanguagesHelper
     future_years.push(nil)
     if logged_in_user.can_future_plan? or logged_in_user?(language.champion)
       years = FinishLineProgress.where(language: language).where.not(year: nil).where("year > #{cur_year}").distinct.pluck(:year)
-      years.each do |year|
+      years.sort.each do |year|
         future_years.push(year)
       end
     end
