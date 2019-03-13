@@ -231,6 +231,8 @@ class AndroidSyncController < ApplicationController
     tables[ChurchTeam] << "status" if @version >= "1.4.2:96"
     tables[ProgressMarker] << "status" if @version >= "1.4.4:102"
     tables[ImpactReport] << "shareable" if @version >= "1.4.4:102"
+    tables[Book] = %w(name abbreviation number nt) if @version >= "1.5"
+    tables[Chapter] = %w(book_id number verses) if @version >= "1.5"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
