@@ -37,6 +37,7 @@
           u.national = true
           u.trusted = true
           u.forward_planning_curator = true
+          u.interface_language = Language.find_by_locale_tag 'en'
           u.geo_states << GeoState.take
           u.user_last_login_dt = Time.now
           u.password_changed = Time.now

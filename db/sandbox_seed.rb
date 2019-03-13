@@ -37,6 +37,9 @@ starting_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 this_year = Time.now.year
 @errors = []
 
+# don't keep a record of changes while inserting seed data
+PaperTrail.enabled = false
+
 # generate a unique name
 @used_names = Set.new
 @vowels = %w(a e i o u)
@@ -48,6 +51,17 @@ def unique_name
   name = @used_names.include?(name) ? unique_name : name
   @used_names << name
   name
+end
+
+# generate a unique iso code
+@used_isos = Set.new
+def unique_iso
+  iso = []
+  3.times{ iso << ('a'..'z').to_a.sample }
+  iso = iso.join
+  iso = @used_isos.include?(iso) ? unique_iso : iso
+  @used_isos << iso
+  iso
 end
 
 # Start with 5 zones
@@ -155,7 +169,7 @@ language_count.times do
   # 1% chance it has a slash
   l.name += " / #{unique_name}" if rand < 0.01
   # 92% chance it has an iso code
-  l.iso = ('a'..'z').to_a.sample(3).join if rand < 0.92
+  l.iso = unique_iso if rand < 0.92
   # 30% have a description
   l.description = Faker::Lorem.paragraph(2, true, 4) if rand < 0.5
   # 90% have a location
@@ -286,6 +300,20 @@ language_names.keys.each do |l_id|
     sl.save
     state_language_ids_by_state[state] ||= []
     state_language_ids_by_state[state] << sl.id
+  end
+end
+
+# add a language to any state that doesn't have one
+state_ids_by_zone.values.each do |states|
+  states.each do |state|
+    unless state_language_ids_by_state[state]
+      sl_id = StateLanguage.create(
+          language_id: language_names.keys.sample,
+          geo_state_id: state,
+          primary: false
+      ).id
+      state_language_ids_by_state[state] = [sl_id]
+    end
   end
 end
 
@@ -524,7 +552,8 @@ project_ids.each do |p_id|
   project_rel_ids[p_id][:state_languages] = state_languages
   # 20% of projects are in more than one state
   if rand < 0.2
-    (1..rand(1..3)).each do |n|
+    state_count = [rand(1..3), states.length].min
+    (1..state_count).each do |n|
       state_languages = state_language_ids_by_state[states.shift].sample(rand(1..14/n))
       state_languages.each{ |sl| ProjectLanguage.create(project_id: p_id, state_language_id: sl) }
       project_rel_ids[p_id][:state_languages] += state_languages
@@ -579,6 +608,38 @@ project_ids.each do |p_id|
 
 end
 
+proj_sl = ProjectLanguage.pluck(:state_language_id).uniq
+
+# Church Teams
+church_team_count = short_seed ? 100 : rand(1900..2100)
+church_team_count.times do
+  ct_id = ChurchTeam.create(
+      leader: Faker::Name.name,
+      organisation_id: org_ids.sample,
+      state_language_id: proj_sl.sample
+  ).id
+  stream_count = case rand 2017
+                 when (0..9)
+                   1
+                 when (10..508)
+                   2
+                 when (509..837)
+                   3
+                 when (838..1119)
+                   4
+                 when (1120..1351)
+                   5
+                 when (1352..1591)
+                   6
+                 else
+                   7
+                 end
+  stream_ids.sample(stream_count).each do |s_id|
+    ChurchMinistry.create(church_team_id: ct_id, ministry_id: s_id)
+  end
+end
+
+PaperTrail.enabled = true
 
 if @errors.any?
   puts 'errors encountered creating sandbox data:'
