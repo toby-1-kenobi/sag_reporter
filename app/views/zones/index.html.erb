@@ -11,37 +11,64 @@
   </div>
 <% end %>
 
-<%= image_tag 'LCI_zonal_map.png', alt: 'Strategic Zones', usemap: '#zone-map', width: 800 %>
-<map name="zone-map" id="zone-map">
-  <% south_zone = Zone.find_by_name 'South' %>
-  <% if logged_in_user.national? or logged_in_user.zones.include? south_zone %>
-    <area alt="South Zone" href="<%= zone_path(south_zone) %>" shape="poly" coords="730,733,702,733,664,702,310,710,182,631,237,541,241,498,316,455,337,416,377,424,382,446,417,464,465,434,479,442,492,435,404,633,651,634,676,551,706,559,714,617">
-  <% end %>
-  <% ct_zone = Zone.find_by_name 'Central Tribal' %>
-  <% if logged_in_user.national? or logged_in_user.zones.include? ct_zone %>
-    <area alt="Central Tribal Zone" href="<%= zone_path(ct_zone) %>" shape="poly" coords="224,516,243,498,312,454,336,411,375,421,383,444,415,457,434,437,427,411,453,385,482,338,461,316,444,317,438,301,351,288,359,313,333,312,336,283,353,266,339,250,308,268,324,289,279,319,260,292,229,391,199,433,2,440,3,498,217,496,222,507">
-  <% end %>
-  <% west_zone = Zone.find_by_name 'West' %>
-  <% if logged_in_user.national? or logged_in_user.zones.include? west_zone %>
-    <area alt="West Zone" href="<%= zone_path(west_zone) %>" shape="poly" coords="334,248,306,271,310,282,279,309,258,285,242,333,204,410,148,399,90,320,115,289,0,277,0,222,143,217,229,164">
-  <% end %>
-  <% nw_zone = Zone.find_by_name 'North West' %>
-  <% if logged_in_user.national? or logged_in_user.zones.include? nw_zone %>
+<% if ENV['REV79_VARIETY'].downcase == 'sandbox' %>
+  <%= image_tag 'sandbox_map.png', alt: 'Strategic Zones', usemap: '#sandbox-zone-map', width: 800 %>
+  <map name="sandbox-zone-map" id="sandbox-zone-map">
+    <% central_zone = Zone.find_by_name 'Central' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? central_zone %>
+      <area alt="Central Zone" href="<%= zone_path(central_zone) %>" shape="poly" coords="256,208,611,191,613,451,254,486">
+    <% end %>
+    <% north_zone = Zone.find_by_name 'North' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? north_zone %>
+      <area alt="North Zone" href="<%= zone_path(north_zone) %>" shape="poly" coords="59,27,256,201,612,187,789,18">
+    <% end %>
+    <% east_zone = Zone.find_by_name 'East' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? east_zone %>
+      <area alt="East Zone" href="<%= zone_path(east_zone) %>" shape="poly" coords="785,25,620,189,627,518,785,703">
+    <% end %>
+    <% west_zone = Zone.find_by_name 'West' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? west_zone %>
+      <area alt="West Zone" href="<%= zone_path(west_zone) %>" shape="poly" coords="13,12,240,209,237,563,13,720">
+    <% end %>
+    <% south_zone = Zone.find_by_name 'South' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? south_zone %>
+      <area alt="South Zone" href="<%= zone_path(south_zone) %>" shape="poly" coords="47,714,246,566,257,502,602,462,604,524,773,709">
+    <% end %>
+  </map>
+<% else %>
+  <%= image_tag 'LCI_zonal_map.png', alt: 'Strategic Zones', usemap: '#zone-map', width: 800 %>
+  <map name="zone-map" id="zone-map">
+    <% south_zone = Zone.find_by_name 'South' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? south_zone %>
+      <area alt="South Zone" href="<%= zone_path(south_zone) %>" shape="poly" coords="730,733,702,733,664,702,310,710,182,631,237,541,241,498,316,455,337,416,377,424,382,446,417,464,465,434,479,442,492,435,404,633,651,634,676,551,706,559,714,617">
+    <% end %>
+    <% ct_zone = Zone.find_by_name 'Central Tribal' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? ct_zone %>
+      <area alt="Central Tribal Zone" href="<%= zone_path(ct_zone) %>" shape="poly" coords="224,516,243,498,312,454,336,411,375,421,383,444,415,457,434,437,427,411,453,385,482,338,461,316,444,317,438,301,351,288,359,313,333,312,336,283,353,266,339,250,308,268,324,289,279,319,260,292,229,391,199,433,2,440,3,498,217,496,222,507">
+    <% end %>
+    <% west_zone = Zone.find_by_name 'West' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? west_zone %>
+      <area alt="West Zone" href="<%= zone_path(west_zone) %>" shape="poly" coords="334,248,306,271,310,282,279,309,258,285,242,333,204,410,148,399,90,320,115,289,0,277,0,222,143,217,229,164">
+    <% end %>
+    <% nw_zone = Zone.find_by_name 'North West' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? nw_zone %>
       <area alt="North West Zone" href="<%= zone_path(nw_zone) %>" shape="poly" coords="242,149,55,149,54,95,222,91,192,4,277,2,320,34,387,21,404,160,388,195,324,155,301,185,312,221,232,161">
-  <% end %>
-  <% hindi_zone = Zone.find_by_name 'Hindi' %>
-  <% if logged_in_user.national? or logged_in_user.zones.include? hindi_zone %>
+    <% end %>
+    <% hindi_zone = Zone.find_by_name 'Hindi' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? hindi_zone %>
       <area alt="Hindi Zone" href="<%= zone_path(hindi_zone) %>" shape="poly" coords="412,154,542,147,540,241,571,254,535,300,461,299,457,313,443,304,356,283,353,260,315,223,325,161,388,205">
-  <% end %>
-  <% east_zone = Zone.find_by_name 'East' %>
-  <% if logged_in_user.national? or logged_in_user.zones.include? east_zone %>
+    <% end %>
+    <% east_zone = Zone.find_by_name 'East' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? east_zone %>
       <area alt="East Zone" href="<%= zone_path(east_zone) %>" shape="poly" coords="678,436,502,429,481,436,464,428,436,441,432,408,461,384,485,333,461,304,536,306,574,265,594,287,611,374,677,382">
-  <% end %>
-  <% ne_zone = Zone.find_by_name 'North East' %>
-  <% if logged_in_user.national? or logged_in_user.zones.include? ne_zone %>
+    <% end %>
+    <% ne_zone = Zone.find_by_name 'North East' %>
+    <% if logged_in_user.national? or logged_in_user.zones.include? ne_zone %>
       <area alt="North East Zone" href="<%= zone_path(ne_zone) %>" shape="poly" coords="617,120,789,128,798,208,798,246,696,378,565,238">
-  <% end %>
-</map>
+    <% end %>
+  </map>
+<% end %>
+
 
 <ul class="landing-page-links mdl-list">
 

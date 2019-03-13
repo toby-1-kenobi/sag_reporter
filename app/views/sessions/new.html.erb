@@ -26,7 +26,27 @@
 
 <div class="mdl-card instructions">
   <div class="mdl-card__supporting-text">
-      <i class="small material-icons">info_outline</i>
+    <i class="small material-icons">info_outline</i>
+    <% if ENV['REV79_VARIETY'].downcase == 'sandbox' %>
+      <%
+        User.find_or_create_by(name: 'Sandbox Administrator') do |u|
+          u.phone = '0000000000'
+          u.password = 'rev79sandbox'
+          u.password_confirmation = 'rev79sandbox'
+          u.national = true
+          u.trusted = true
+          u.geo_states << GeoState.take
+          u.user_last_login_dt = Time.now
+          u.password_changed = Time.now
+        end
+      %>
+      Rev79 is in Sandbox mode. Though the functionality is the same as live Rev79, the data is not real.
+      You can change the data as much as you like. The data may be reset on occasion.
+      You can login as an administrator with these credentials:<br>
+      <em>username:</em> <strong>0000000000</strong><br>
+      <em>password:</em> <strong>rev79sandbox</strong>
+    <% else %>
       If you don't know how to log in, please contact your project supervisor for instructions.
+    <% end %>
   </div>
 </div>
