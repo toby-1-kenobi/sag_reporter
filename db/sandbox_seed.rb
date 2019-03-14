@@ -292,9 +292,41 @@ language_names.keys.each do |l_id|
   end
 end
 
+# 5 outcome areas
+topic_ids = []
+colours = %w(amber yellow pink lime green).shuffle
+(1..5).each do |n|
+  topic_ids << Topic.create(
+      name: "#{Faker::Food.vegetables} #{Faker::Verb.ing_form}",
+      description: Faker::Lorem.sentence,
+      number: n,
+      colour: colours.shift
+  ).id
+end
+
+# Progress Markers
+# number of pms of each weight per outcome area
+pm_ids = []
+pm_pattern = { 1 => 3, 2 => 3, 3 => 2 }
+pm_number = 0
+topic_ids.each do |t_id|
+  pm_pattern.each do |weight, count|
+    count.times do
+      pm_number += 1
+      pm_ids << ProgressMarker.create(
+          name: Faker::Company.bs,
+          topic_id: t_id,
+          weight: weight,
+          number: pm_number
+      ).id
+    end
+  end
+end
+
 # State Languages
 state_language_ids_by_state = {}
 language_ids_by_state = {}
+lp_ids_by_state_language = {}
 language_names.keys.each do |l_id|
   zone = zone_ids.sample
   states = Set.new
@@ -318,6 +350,10 @@ language_names.keys.each do |l_id|
   state_language_ids_by_state[state] << sl.id
   language_ids_by_state[state] ||= []
   language_ids_by_state[state] << l_id
+  if sl.project?
+    lp_ids_by_state_language[sl] = []
+    pm_ids.each{ |pm_id| lp_ids_by_state_language[sl] << LanguageProgress.create(progress_marker_id: pm_id, state_language_id: sl.id).id }
+  end
   while states.any?
     state = states.shift
     sl = StateLanguage.new(language_id: l_id, geo_state_id: state, primary: false)
@@ -327,6 +363,10 @@ language_names.keys.each do |l_id|
     state_language_ids_by_state[state] << sl.id
     language_ids_by_state[state] ||= []
     language_ids_by_state[state] << l_id
+    if sl.project?
+      lp_ids_by_state_language[sl] = []
+      pm_ids.each{ |pm_id| lp_ids_by_state_language[sl] << LanguageProgress.create(progress_marker_id: pm_id, state_language_id: sl.id).id }
+    end
   end
 end
 @info << "#{StateLanguage.count} state-languages"
@@ -385,7 +425,7 @@ end
 
 # finish line progress for each language
 language_names.keys.each do |l_id|
-  flp_years = (2019..(this_year + 16)).to_a
+  flp_years = (2019..(this_year + 10)).to_a
   # 70% of languages have planning values for finish line progress
   if rand < 0.7
     year = flp_years.shift
@@ -488,36 +528,6 @@ language_names.keys.each do |l_id|
   end
 end
 @info << "#{FinishLineProgress.count} Finish Line progress records"
-
-# 5 outcome areas
-topic_ids = []
-colours = %w(amber yellow pink lime green).shuffle
-(1..5).each do |n|
-  topic_ids << Topic.create(
-      name: "#{Faker::Food.vegetables} #{Faker::Verb.ing_form}",
-      description: Faker::Lorem.sentence,
-      number: n,
-      colour: colours.shift
-  ).id
-end
-
-# Progress Markers
-# number of pms of each weight per outcome area
-pm_pattern = { 1 => 3, 2 => 3, 3 => 2 }
-pm_number = 0
-topic_ids.each do |t_id|
-  pm_pattern.each do |weight, count|
-    count.times do
-      pm_number += 1
-      ProgressMarker.create(
-          name: Faker::Company.bs,
-          topic_id: t_id,
-          weight: weight,
-          number: pm_number
-      )
-    end
-  end
-end
 
 # Streams
 stream_ids = []
@@ -703,7 +713,8 @@ report_count.times do
       project_id: rand < 0.01 ? project_ids.sample : nil,
       church_team_id: rand < 0.08 ? team_ids.sample : nil,
       significant: rand < 0.22 ? true : false,
-      report_date: Date.today - rand(1100).days
+      report_date: Date.today - rand(1100).days,
+      archived: rand < 0.01 ? 1 : 0
   )
   if r.save
     language_count = rand < 0.1 ? 2 : 1
@@ -713,6 +724,62 @@ report_count.times do
   end
 end
 @info << "#{Report.count} reports"
+
+cat_ids = []
+[
+    "Discipleship resources (books, audio)",
+    "Educational resources (books, charts)",
+    "Songs (audio)",
+    "Academic resources about this language",
+    "Cultural resources (books, audio)"
+].each_with_index do |category_name, n|
+  pc = ProductCategory.create(number: n)
+  pc.name.en = category_name
+  cat_ids << pc.id
+end
+
+# tools
+language_names.keys.each do |l_id|
+  if rand < 0.7
+    rand(1..6).times do
+      t = Tool.create(
+          language_id: l_id,
+          creator_id: user_ids.sample,
+          description: Faker::Lorem.sentence,
+          finish_line_marker_id: flm_ids.sample,
+          url: "https://example.com"
+      )
+      t.product_category_ids = cat_ids.sample(rand(1..2))
+    end
+  end
+end
+
+# progress updates
+tracking_langs = StateLanguage.in_project.pluck(:id)
+# we'll need an upward trend so use different lambdas for getting the random value
+trends = [
+    lambda{ |n| rand(rand(rand(n..3)+1)+1) },
+    lambda{ |n| rand(rand(n..3)+1) },
+    lambda{ |n| rand(n..3) }
+]
+# update on a quarterly basis across 3 years
+((this_year - 3)..(this_year - 1)).each do |year|
+  trend = trends.shift
+  [3, 6, 9, 12].each_with_index do |month, i|
+    # only quarter of the languages included on any given update
+    tracking_langs.sample(tracking_langs.length / 4).each do |sl_id|
+      lp_ids_by_state_language[sl_id].each do |lp_id|
+        ProgressUpdate.create(
+            year: year,
+            month: month,
+            language_progress_id: lp_id,
+            user_id: user_ids.sample,
+            progress: trend.call(i)
+        )
+      end
+    end
+  end
+end
 
 PaperTrail.enabled = true
 

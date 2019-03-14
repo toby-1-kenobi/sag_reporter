@@ -24,7 +24,7 @@ class Zone < ActiveRecord::Base
 
   def self.national_outcome_chart_data
     Rails.cache.fetch('national-outcome-chart-data', expires_in: 1.month, backup: true) do
-      from_date = 12.months.ago
+      from_date = 3.years.ago
       to_date = Date.today
       tracked_language_count = StateLanguage.in_project.count
       table_data = Hash.new
