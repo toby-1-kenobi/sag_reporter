@@ -4,7 +4,7 @@ require 'base64'
 class UserMailer < ActionMailer::Base
 
   include ActionView::Helpers::DateHelper
-  default :from => 'info@lci-india.org'
+  default :from => app_email
 
   def user_email_confirmation(user)
   	headers['X-SMTPAPI'] = {

@@ -3,10 +3,10 @@
 
 <h1>How to edit language data</h1>
 <ul>
-  <li>Go to the <%= link_to 'main page', root_path %> of the app (https://reporter.lci-india.org)</li>
+  <li>Go to the <%= link_to 'main page', root_path %> of the app (<%= root_url %>)</li>
   <li>
     If you are not logged in the app will ask you to do that.
-    If you don't have an account ask your LCI supervisor or write to <span class="email">email hidden</span>
+    If you don't have an account ask your LCI supervisor or write to <%= app_email %>
     <ol>
       <li>Use your mobile number (no spaces) as your user name.
         Your password should have been provided to you when your account was created.</li>
@@ -15,13 +15,13 @@
     </ol>
   </li>
   <li>
-    The main page of the app has three or four panels with actions. One panel is called <strong>"Down to zero"</strong>
+    The main page of the app shows a map of <%= SagReporter::Application::NATION %>
     <ol>
-      <li>Click on "zoom in to my area" in the "down to zero" panel.</li>
       <li>Click on the zone you work in.</li>
       <li>Click on the languages tab.</li>
       <li>Select a language community you know about in your zone or state.</li>
     </ol>
+    <strong>Or</strong> you can simply search for your language by name using the search bar at the top of the screen
   </li>
   <li>
     The finish line markers show progress for this language.
@@ -73,13 +73,3 @@
     for the people groups represented here. Keeping the information in LCI App up to date
   is extremely important to help others to plan and work effectively.</li>
 </ul>
-
-<%# email address obfuscation %>
-<script>
-    var e = ["g",
-        "r", "o", ".", "a", "i", "d", "n",
-        "i", "-", "i", "c", "l", "@", "o",
-        "f", "n", "i"];
-
-    $(".email").text( e.reverse().join("") );
-</script>

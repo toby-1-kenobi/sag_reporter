@@ -140,7 +140,7 @@ class StateLanguagesController < ApplicationController
     else
       Rails.logger.debug('nation')
       @state_languages = StateLanguage.in_project
-      @head_data = "All India"
+      @head_data = "All #{SagReporter::Application::NATION}"
     end
     respond_to do |format|
       format.csv do

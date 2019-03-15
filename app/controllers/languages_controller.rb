@@ -309,7 +309,7 @@ class LanguagesController < ApplicationController
       else
         Rails.logger.debug('nation')
         @languages = Language.includes({geo_states: :zone}, :family, {finish_line_progresses: :finish_line_marker}).user_limited(logged_in_user)
-        @head_data = "All India"
+        @head_data = "All #{SagReporter::Application::NATION}"
     end
     @languages = @languages.order(:name)
     @flms = FinishLineMarker.order(:number)

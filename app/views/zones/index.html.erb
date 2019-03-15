@@ -6,7 +6,7 @@
 <% if logged_in_user.national? %>
   <div>
   <%= link_to nation_path do %>
-    All India
+    All <%= SagReporter::Application::NATION %>
   <% end %>
   </div>
 <% end %>

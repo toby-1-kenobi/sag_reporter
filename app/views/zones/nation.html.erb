@@ -1,11 +1,11 @@
 <% provide(:title, 'National Dashboard') %>
-<% provide(:context_title, 'All India') %>
+<% provide(:context_title, "All #{SagReporter::Application::NATION}") %>
 <% provide(:super_container_class, 'compact') %>
 
 <!-- breadcrumbs will go here -->
-<!-- India | previously navigated Zone | previously navigated state | previously navigated language -->
+<!-- Nation | previously navigated Zone | previously navigated state | previously navigated language -->
 <ul class="breadcrumbs">
-  <li><%= link_to 'India', nation_path %></li>
+  <li><%= link_to SagReporter::Application::NATION, nation_path %></li>
 </ul>
 
 <% tabs = [:progress, :zones, :states, :languages] %>
