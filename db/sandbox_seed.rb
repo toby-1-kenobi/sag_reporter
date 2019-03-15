@@ -351,8 +351,8 @@ language_names.keys.each do |l_id|
   language_ids_by_state[state] ||= []
   language_ids_by_state[state] << l_id
   if sl.project?
-    lp_ids_by_state_language[sl] = []
-    pm_ids.each{ |pm_id| lp_ids_by_state_language[sl] << LanguageProgress.create(progress_marker_id: pm_id, state_language_id: sl.id).id }
+    lp_ids_by_state_language[sl.id] = []
+    pm_ids.each{ |pm_id| lp_ids_by_state_language[sl.id] << LanguageProgress.create(progress_marker_id: pm_id, state_language_id: sl.id).id }
   end
   while states.any?
     state = states.shift
@@ -364,8 +364,8 @@ language_names.keys.each do |l_id|
     language_ids_by_state[state] ||= []
     language_ids_by_state[state] << l_id
     if sl.project?
-      lp_ids_by_state_language[sl] = []
-      pm_ids.each{ |pm_id| lp_ids_by_state_language[sl] << LanguageProgress.create(progress_marker_id: pm_id, state_language_id: sl.id).id }
+      lp_ids_by_state_language[sl.id] = []
+      pm_ids.each{ |pm_id| lp_ids_by_state_language[sl.id] << LanguageProgress.create(progress_marker_id: pm_id, state_language_id: sl.id).id }
     end
   end
 end
@@ -540,7 +540,9 @@ rand(8..10).times do
 end
 
 # Measurables
+measurable_ids_by_stream = {}
 stream_ids.each do |s_id|
+  measurable_ids_by_stream[s_id] = []
   (1..rand(4..12)).each do |n|
     d = Deliverable.create(
         ministry_id: s_id,
@@ -552,6 +554,7 @@ stream_ids.each do |s_id|
     d.short_form_en = Faker::Company.bs
     d.result_form_en = Faker::Lorem.question
     d.plan_form_en = Faker::Lorem.question
+    measurable_ids_by_stream[s_id] << d.id
   end
 end
 
@@ -714,7 +717,7 @@ report_count.times do
       church_team_id: rand < 0.08 ? team_ids.sample : nil,
       significant: rand < 0.22 ? true : false,
       report_date: Date.today - rand(1100).days,
-      archived: rand < 0.01 ? 1 : 0
+      status: rand < 0.01 ? 1 : 0
   )
   if r.save
     language_count = rand < 0.1 ? 2 : 1
@@ -855,6 +858,55 @@ bible.each do |abr, x|
   b = Book.create(name: x.shift, abbreviation: abr, number: n, nt: n > 39)
   x.each_with_index{ |c, i| Chapter.create(book: b, verses: c, number: i + 1) }
   n += 1
+end
+
+# quarterly targets
+# assign an average value to each deliverable
+# and an average growth rate
+averages = {}
+Deliverable.pluck(:id).each do |d|
+  averages[d] = [rand(5..50), 1.125 + (rand * 0.2) - 0.1]
+  averages[d][0] *= 10 if rand < 0.4
+end
+
+# get the language-stream combos in all projects
+ls_combos = {}
+pl = ProjectLanguage.pluck :project_id, :state_language_id
+ps = ProjectStream.pluck :project_id, :ministry_id
+pl.each do |l|
+  ls_combos[l[1]] ||= Set.new
+  ls_combos[l[1]].merge ps.select{ |s| s[0] == l[0] }.map{ |s| s[1] }
+end
+
+ls_combos.each do |sl_id, streams|
+  # each language may be consistently above or below average
+  # by amount and growth rate independently
+  lang_amt_offset = rand + 0.5
+  lang_rate_offset = 1+ ((rand * 0.2) - 0.1)
+  streams.each do |s|
+    # only 50% of the available combos ill be filled
+    if rand < 0.5
+      measurable_ids_by_stream[s].each do |d_id|
+        prev = nil
+        (2019..rand(2020..2022)).each do |year|
+          (1..4).each do |q|
+            # if there's a previous quarter multiply that value by the rates and rate offset to get the current
+            # otherwise use the measurable average multiplied by the relevant offsets as starting value
+            value = prev ?
+                        prev * averages[d_id][1] * lang_rate_offset :
+                        averages[d_id][0] * (1 + ((rand * 0.4) - 0.2)) * lang_amt_offset
+            prev = value
+            QuarterlyTarget.create(
+                state_language_id: sl_id,
+                deliverable_id: d_id,
+                value: value,
+                quarter: "#{year}-#{q}"
+            )
+          end
+        end
+      end
+    end
+  end
 end
 
 PaperTrail.enabled = true
