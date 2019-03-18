@@ -325,6 +325,11 @@ td.annual-target {
   padding-bottom: 0 !important;
 }
 
+label.improvements p {
+  margin: 0 2em;
+  color: darkblue;
+}
+
 [data-progress=no_progress] { background-color: mediumslateblue !important; }
 [data-progress=poor], [data-assessment=behind] { background-color: red !important; }
 [data-progress=fair], [data-assessment=somewhat-behind] { background-color: yellow !important; }

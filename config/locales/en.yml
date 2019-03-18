@@ -21,7 +21,7 @@
 
 en:
   narrative_questions:
-    improvements_html: "IMPROVEMENTS SINCE LAST QUARTER<br>Three months ago, you planned to improve the work in this language through the following actions:<br>%{previous}<br>Did you follow through with this plan and what improvements did you see this quarter?"
+    improvements_html: "IMPROVEMENTS SINCE LAST QUARTER<br>Three months ago, you planned to improve the work in this language through the following actions:%{previous}Did you follow through with this plan and what improvements did you see this quarter?"
     q1_html: "ANY GOOD RESULTS:<br>If you were able to exceed any target, what was the positive reason?"
     q2_html: "ANY MISSED TARGETS:<br>For any quarterly targets that were not met, what were the reasons?<br>When will the team complete those goals?"
     q3_html: "PRAYER POINTS:<br>What should we pray for this team, language and ministry?"

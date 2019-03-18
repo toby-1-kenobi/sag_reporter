@@ -83,7 +83,7 @@
           quarter: previous_quarter(@quarterly_evaluation.quarter)
       ) %>
       <% if prev_qe&.question_4.present? %>
-        <%= f.label :improvements, t("narrative_questions.improvements_html", previous: prev_qe.question_4) %>
+        <%= f.label :improvements, t("narrative_questions.improvements_html", previous: simple_format(prev_qe.question_4)), class: 'improvements' %>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           <i class="material-icons mdl-textfield__icon">question_answer</i>
           <%= f.text_area :improvements, rows: '4', class: 'mdl-textfield__input', disabled: !user_can_edit %>
