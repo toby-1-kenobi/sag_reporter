@@ -95,4 +95,14 @@ module DatesHelper
     end
   end
 
+  def previous_quarter(quarter)
+    q = quarter[-1].to_i - 1
+    if q < 1
+      y = quarter[0..3].to_i - 1
+      "#{y}-4"
+    else
+      "#{quarter[0..3]}-#{q}"
+    end
+  end
+
 end

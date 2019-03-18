@@ -165,9 +165,30 @@ class QuarterlyReportPdf < Prawn::Document
     churches_table
   end
 
+  def previous_quarter(quarter)
+    q = quarter[-1].to_i - 1
+    if q < 1
+      y = quarter[0..3].to_i - 1
+      "#{y}-4"
+    else
+      "#{quarter[0..3]}-#{q}"
+    end
+  end
+
   def narrative_questions(quarterly_evaluation)
+    prev_qe = QuarterlyEvaluation.find_by(
+        project_id: quarterly_evaluation.project_id,
+        sub_project_id: quarterly_evaluation.sub_project_id,
+        state_language_id: quarterly_evaluation.state_language_id,
+        quarter: previous_quarter(quarterly_evaluation.quarter)
+    )
     narrative_questions = []
-    (1..4).each do |i|
+    answer = quarterly_evaluation.improvements
+    if answer.present?
+      narrative_questions << [I18n.t("narrative_questions.improvements_html", previous: prev_qe&.question_4)]
+      narrative_questions << [answer]
+    end
+    (2..4).each do |i|
       answer = quarterly_evaluation.send("question_#{i}")
       if answer.present?
         narrative_questions << [I18n.t("narrative_questions.q#{i}_html")]

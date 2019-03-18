@@ -23,8 +23,8 @@ class QuarterlyEvaluation < ActiveRecord::Base
   validate :sub_project_in_project
 
   def unused?
-    question_1.blank? and question_2.blank? and
-        question_1.blank? and question_3.blank? and
+    improvements.blank? and question_2.blank? and
+        question_3.blank? and question_4.blank? and
         not approved? and report_id.blank? and progress.blank?
   end
 
