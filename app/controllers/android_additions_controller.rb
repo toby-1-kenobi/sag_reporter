@@ -195,7 +195,7 @@ class AndroidAdditionsController < ApplicationController
         if users_device
           render json: {error: "Device not registered"}, status: :unauthorized
         else
-          render json: {error: "Device not found"}, status: :forbidden
+          render json: {error: "Device not found"}, status: :unauthorized
         end
         return
       end
