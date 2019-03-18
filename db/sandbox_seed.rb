@@ -31,7 +31,7 @@ class Utils
 end
 
 # set short_seed to true to reduce the number of records seeded
-short_seed = Rails.env.development?
+short_seed = ENV['REV79_SEED_SIZE'].downcase == 'short'
 
 starting_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 this_year = Time.now.year
@@ -783,6 +783,7 @@ trends = [
     end
   end
 end
+@info << "#{ProgressUpdate.count} finish line progress updates"
 
 # Books of the Bible in order with number of verses for each chapter
 bible = {
@@ -908,6 +909,8 @@ ls_combos.each do |sl_id, streams|
     end
   end
 end
+
+@info << "#{QuarterlyTarget.count} quarterly targets"
 
 PaperTrail.enabled = true
 
