@@ -15,8 +15,8 @@ octopus:
   production:
     follower:
       adapter: postgresql
-      database: <%= (follower_db_uri.path || "").split("/")[1] %>
-      username: <%= follower_db_uri.user %>
-      password: "<%= follower_db_uri.password %>"
-      host: <%= follower_db_uri.host %>
-      port: <%= follower_db_uri.port %>
+      database: <%= (follower_db_uri&.path || "").split("/")[1] %>
+      username: <%= follower_db_uri&.user %>
+      password: "<%= follower_db_uri&.password %>"
+      host: <%= follower_db_uri&.host %>
+      port: <%= follower_db_uri&.port %>
