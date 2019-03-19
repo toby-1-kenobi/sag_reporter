@@ -87,6 +87,9 @@ gem 'momentjs-rails', '~> 2.11', '>= 2.11.1'
 # image manipulation
 gem 'mini_magick'
 
+# database sharding
+gem 'ar-octopus'
+
 # simplify http requests
 gem 'httparty'
 gem 'active_model_otp'
