@@ -16,7 +16,7 @@ module QuarterlyEvaluationsHelper
     meta[:first_month], meta[:last_month] = quarter_to_range(meta[:quarter][0])
     meta[:start_month] = Date.new(meta[:first_month][0..3].to_i, meta[:first_month][-2..-1].to_i)
     church_mins = ChurchMinistry.joins(:church_team).
-        where(church_teams: {state_language_id: qe.state_language_id}, ministry: qe.ministry)
+        where(church_teams: { status: 0, state_language_id: qe.state_language_id }, ministry: qe.ministry)
     ct_outputs = MinistryOutput.
         where(actual: true, church_ministry: church_mins).
         where('month BETWEEN ? AND ?', meta[:first_month], meta[:last_month])

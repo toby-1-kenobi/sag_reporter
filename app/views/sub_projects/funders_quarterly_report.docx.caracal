@@ -16,6 +16,47 @@ def progress_colour(progress)
   end
 end
 
+def summary_table(stream, quarter, project, sub_project, state_languages)
+  first_month, last_month = quarter_to_range(quarter)
+  church_mins = ChurchMinistry.joins(:church_team).
+      where(church_teams: { status: 0, state_language_id: state_languages }, ministry: stream)
+  outputs = MinistryOutput.where(actual: true, church_ministry: church_mins)
+  if sub_project
+    lang_streams = LanguageStream.where(sub_project: sub_project, state_language_id: state_languages, ministry: stream)
+  else
+    lang_streams = LanguageStream.where(project: project, state_language_id: state_languages, ministry: stream)
+  end
+  aggregate_outputs = AggregateMinistryOutput.
+      where(actual: true, state_language_id: state_languages, creator_id: lang_streams.pluck(:facilitator_id))
+  targets = QuarterlyTarget.includes(:deliverable).where(quarter: quarter, state_language_id: state_languages, deliverables: { ministry_id: stream.id, funder_interest: true }).to_a
+  values_table = []
+  values_table << [pretty_quarter(quarter, true), 'Target', 'Actuals']
+  stream.deliverables.active.where(funder_interest: true).order(:number).each do |deliverable|
+    row = [deliverable.short_form.en]
+    row << targets.select{ |t| t.deliverable_id == deliverable.id }.sum{ |t| t.value }
+    case deliverable.reporter
+    when 'church_team'
+      if deliverable.sum_of_all?
+        row << outputs.select{ |o| o.deliverable_id == deliverable.id && o.month >= first_month && o.month <= last_month }.sum{ |o| o.value }
+      else
+        row << outputs.select{ |o| o.deliverable_id == deliverable.id && o.month == last_month }.sum{ |o| o.value }
+      end
+    when 'facilitator'
+      if deliverable.sum_of_all?
+        row << aggregate_outputs.select{ |o| o.deliverable_id == deliverable.id && o.month >= first_month && o.month <= last_month }.sum{ |o| o.value }
+      else
+        row << aggregate_outputs.select{ |o| o.deliverable_id == deliverable.id && o.month == last_month }.sum{ |o| o.value }
+      end
+    when 'auto'
+      row << auto_actuals(nil, state_languages, deliverable, first_month, last_month)
+    else
+      row << ''
+    end
+    values_table << row
+  end
+  values_table
+end
+
 def measurables(stream, state_language, quarter, project, sub_project)
   pq = pretty_quarter(quarter, true)
   next_pq = pretty_quarter(next_quarter(quarter), true)
@@ -56,7 +97,7 @@ end
 
 def narrative_questions(quarterly_evaluation)
   narrative_questions = []
-  (1..4).each do |i|
+  [3, 4].each do |i|
     answer = quarterly_evaluation.send("question_#{i}")
     if answer.present?
       narrative_questions << [clean_narrative_q(i)]
@@ -141,9 +182,63 @@ docx.p
 docx.h3 "Period: #{pretty_quarter(@quarter)}"
 docx.p "Management Supervisors: #{@project.project_supervisors.management.map{ |ps| ps.name }.to_sentence}"
 
+tr_stream = Ministry.find_by_code('TR')
+if @sub_project && @sub_project.language_streams.exists?(ministry_id: tr_stream.id) or @sub_project.blank? && @project.ministries.include?(tr_stream)
+  docx.h3 "Summary for translation in #{@sub_project ? @sub_project.name : @project.name}"
+  summary_data = summary_table(tr_stream, @quarter, @project, @sub_project, state_languages)
+  summary_colours = summary_data.map{ |row| progress_colour(assessment(row[1], row[2])) }
+  docx.table summary_data, border_size: 1 do
+    cell_style rows[0], bold: true
+    (1..summary_data.length - 1).each do |row|
+      cell_style rows[row][2], background: summary_colours[row]
+    end
+    (1..summary_data[0].length - 1).each do |col|
+      cell_style cols[col], align: :center
+    end
+  end
+  docx.p
+end
+
+st_stream = Ministry.find_by_code('ST')
+if @sub_project && @sub_project.language_streams.exists?(ministry_id: st_stream.id) or @sub_project.blank? && @project.ministries.include?(st_stream)
+  docx.h3 "Summary for storying in #{@sub_project ? @sub_project.name : @project.name}"
+  summary_data = summary_table(st_stream, @quarter, @project, @sub_project, state_languages)
+  summary_colours = summary_data.map{ |row| progress_colour(assessment(row[1], row[2])) }
+  docx.table summary_data, border_size: 1 do
+    cell_style rows[0], bold: true
+    (1..summary_data.length - 1).each do |row|
+      cell_style rows[row][2], background: summary_colours[row]
+    end
+    (1..summary_data[0].length - 1).each do |col|
+      cell_style cols[col], align: :center
+    end
+  end
+  docx.p
+end
+
+st_stream = Ministry.find_by_code('ES')
+if @sub_project && @sub_project.language_streams.exists?(ministry_id: st_stream.id) or @sub_project.blank? && @project.ministries.include?(st_stream)
+  docx.h3 "Summary for Esther in #{@sub_project ? @sub_project.name : @project.name}"
+  summary_data = summary_table(st_stream, @quarter, @project, @sub_project, state_languages)
+  summary_colours = summary_data.map{ |row| progress_colour(assessment(row[1], row[2])) }
+  docx.table summary_data, border_size: 1 do
+    cell_style rows[0], bold: true
+    (1..summary_data.length - 1).each do |row|
+      cell_style rows[row][2], background: summary_colours[row]
+    end
+    (1..summary_data[0].length - 1).each do |col|
+      cell_style cols[col], align: :center
+    end
+  end
+  docx.p
+end
+
+docx.h3 'Priority Impact story for the Project'
+docx.p 'Copy from the main section of this report and paste here, the impact story you think is most important for your funding partner to see this quarter.'
+
 multi_state = @project.geo_states.uniq.count > 1
 
-break_next = false
+break_next = true
 state_languages.each do |state_language|
   if break_next
     docx.page
@@ -158,8 +253,9 @@ state_languages.each do |state_language|
   if @sub_project
     streams = streams.select {|s| @sub_project.language_streams.exists?(state_language_id: state_language.id, ministry_id: s.id)}
   end
-  # put translation and storying first
-  streams = streams.select{ |s| s.code == 'TR' } + streams.select{ |s| s.code == 'ST' } + streams.select{ |s| s.code != 'TR' and s.code != 'ST' }
+  # put translation, storying and Esther first
+  important_streams = {'TR' => 0, 'ST' => 1, 'ES' => 2}
+  streams.sort_by!{ |s| important_streams.keys.include?(s.code) ? important_streams[s.code] : important_streams.length }
   streams.each do |stream|
 
     if @sub_project
@@ -176,76 +272,82 @@ state_languages.each do |state_language|
         quarter: @quarter
     )
 
-    if break_next
-      docx.page
-    else
-      docx.p
-      break_next = true
-    end
-    if quarterly_evaluation and quarterly_evaluation.progress.present?
-      prog_colour = progress_colour(quarterly_evaluation.progress)
-    else
-      prog_colour = 'FFFFFF'
-    end
+    if important_streams.keys.include?(stream.code) or quarterly_evaluation&.used?
 
-    head = [["#{stream.name.en} in #{state_language.language_name}"]]
-    if quarterly_evaluation and quarterly_evaluation.progress.present?
-      head << ["progress this quarter: #{quarterly_evaluation.progress.humanize}"]
-    end
-    docx.table head, border_line: :none do
-      cell_style rows[0], style: 'StreamHead', background: prog_colour
-      cell_style rows[1], align: :center, background: prog_colour
-    end
+      if break_next
+        docx.page
+      else
+        docx.p
+        break_next = true
+      end
+      if quarterly_evaluation&.progress.present?
+        prog_colour = progress_colour(quarterly_evaluation.progress)
+      else
+        prog_colour = 'FFFFFF'
+      end
 
-    if quarterly_evaluation and quarterly_evaluation.approved?
-      if File.file?(image_url('approved.png'))
-        docx.img image_url('approved.png') do
-          width 150
-          height 30
-          align :right
+      head = [["#{stream.name.en} in #{state_language.language_name}"]]
+      if quarterly_evaluation&.progress.present?
+        head << ["progress this quarter: #{quarterly_evaluation.progress.humanize}"]
+      end
+      docx.table head, border_line: :none do
+        cell_style rows[0], style: 'StreamHead', background: prog_colour
+        cell_style rows[1], align: :center, background: prog_colour
+      end
+
+      if quarterly_evaluation&.approved?
+        if File.file?(image_url('approved.png'))
+          docx.img image_url('approved.png') do
+            width 150
+            height 30
+            align :right
+          end
+        else
+          docx.p 'Report approved by manager.', align: :right
         end
       else
-        docx.p 'Report approved by manager.', align: :right
+        docx.p 'Pending approval by manager', align: :right
       end
-    else
-      docx.p 'Pending approval by manager', align: :right
-    end
 
-    measurables_data = measurables(stream, state_language, @quarter, @project, @sub_project)
-    measurable_colours = measurables_data.map{ |row| progress_colour(assessment(row[1], row[2])) }
-    measurables_data = measurables_data.each do |row|
-      row[1] = row[1].blank? ? 'No specific target' : row[1]
-      row[-1] = row[-1].blank? ? 'No specific target' : row[-1]
-    end
-    docx.h3 'Measurables'
-    docx.table measurables_data, border_size: 1 do
-      cell_style rows[0], bold: true
-      cell_style rows[1], bold: true
-      (2..measurables_data.length - 1).each do |row|
-        cell_style rows[row][2], background: measurable_colours[row]
-      end
-      (1..measurables_data[0].length - 1).each do |col|
-        cell_style cols[col], align: :center
-      end
-    end
-
-    if quarterly_evaluation
-      narrative_data = narrative_questions(quarterly_evaluation)
-      if narrative_data.any?
-        docx.p
-        docx.table narrative_data, border_size: 1 do
-          (0..narrative_data.length - 1).each do |row|
-            cell_style rows[row], background: row.even? ? 'F2F2F2' : 'FFF9E7'
+      if important_streams.keys.include? stream.code
+        measurables_data = measurables(stream, state_language, @quarter, @project, @sub_project)
+        measurable_colours = measurables_data.map{ |row| progress_colour(assessment(row[1], row[2])) }
+        measurables_data = measurables_data.each do |row|
+          row[1] = row[1].blank? ? 'No specific target' : row[1]
+          row[-1] = row[-1].blank? ? 'No specific target' : row[-1]
+        end
+        docx.h3 'Measurables'
+        docx.table measurables_data, border_size: 1 do
+          cell_style rows[0], bold: true
+          cell_style rows[1], bold: true
+          (2..measurables_data.length - 1).each do |row|
+            cell_style rows[row][2], background: measurable_colours[row]
+          end
+          (1..measurables_data[0].length - 1).each do |col|
+            cell_style cols[col], align: :center
           end
         end
       end
-      if quarterly_evaluation.report.present?
-        docx.p
-        report(quarterly_evaluation, docx)
+
+      if quarterly_evaluation
+        narrative_data = narrative_questions(quarterly_evaluation)
+        if narrative_data.any?
+          docx.p
+          docx.table narrative_data, border_size: 1 do
+            (0..narrative_data.length - 1).each do |row|
+              cell_style rows[row], background: row.even? ? 'F2F2F2' : 'FFF9E7'
+            end
+          end
+        end
+        if quarterly_evaluation.report.present?
+          docx.p
+          report(quarterly_evaluation, docx)
+        end
       end
+      docx.p
+      docx.hr size: 10
     end
-    docx.p
-    docx.hr size: 10
+
   end
 end
 

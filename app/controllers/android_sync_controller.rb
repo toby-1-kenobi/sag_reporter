@@ -69,6 +69,12 @@ class AndroidSyncController < ApplicationController
             .merge(external_device_registered: !entry.external_devices.empty?)
       when Edit
         {created_at: entry.created_at.to_i}
+      when ProgressMarker
+        if @version >= "1.4.4:102"
+          {user_description: entry.description_for(@external_user)}
+        else
+          {}
+        end
       else
         {}
       end
@@ -109,7 +115,7 @@ class AndroidSyncController < ApplicationController
         when MtResource
           table.where(language_id: @language_ids, geo_state_id: @geo_state_ids).ids
         when Report
-          table.where("report_date >= ?", Date.new(2018, 1, 1))
+          table.where("report_date >= ?", Date.new(2018, 9, 1))
               .where(geo_state_id: @geo_state_ids).language(@language_ids).ids
         when UploadedFile
           table.where(report_id: @all_restricted_ids[Report]).ids
@@ -219,6 +225,10 @@ class AndroidSyncController < ApplicationController
     tables[Edit] = %w(model_klass_name record_id attribute_name old_value new_value user_id status curation_date second_curation_date record_errors curated_by_id relationship creator_comment curator_comment) if @version >= "1.4.2:87"
     tables[ProductCategory] = %w(name_id) if @version >= "1.4.2:90"
     tables[Tool] = %w(language_id url description creator_id status) if @version >= "1.4.2:90"
+    tables[Tool] << "finish_line_marker_id" if @version >= "1.4.2:92"
+    tables[ChurchTeam] << "status" if @version >= "1.4.2:96"
+    tables[ProgressMarker] << "status" if @version >= "1.4.4:102"
+    tables[ImpactReport] << "shareable" if @version >= "1.4.4:102"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
@@ -292,7 +302,7 @@ class AndroidSyncController < ApplicationController
             values.map! {|value| "(#{(value+[1]).join(",")})"}
             file.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
             join_table_data.each do |join_table_names, data|
-              file.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{values.map(&:id).uniq.join ","});"
+		    file.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{values.map{|e|e.split(',')[0].split('(')[1]}.uniq.join ","});"
               file.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
                                "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
             end
@@ -387,6 +397,34 @@ class AndroidSyncController < ApplicationController
     end
   end
 
+  def get_uploaded_file_new
+    safe_params = [
+        :uploaded_file
+    ]
+    get_uploaded_file_params = params.require(:external_device).permit(safe_params)
+
+    begin
+      uploaded_file = UploadedFile.find(get_uploaded_file_params["uploaded_file"])
+      unless uploaded_file&.ref&.file&.exists?
+        send_file Tempfile.new, status: :ok
+        return
+      end
+      unless @external_user.trusted? || uploaded_file.report.reporter == @external_user
+        errors << {"uploaded_file:#{uploaded_file.id}" => ""}
+        send_message = {error: "permission denied for UploadedFile(#{uploaded_file.id})"}.to_json
+        logger.error send_message
+        render json: send_message, status: :forbidden
+        return
+      end
+      data = uploaded_file.ref
+      send_data data.read, type: data.content_type, status: :ok
+    rescue => e
+        send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
+        logger.error send_message
+        render json: send_message, status: :internal_server_error
+    end
+  end
+
   def receive_request
     begin
       # The following tables have to be in the order, that they only contain IDs of the previous ones
@@ -405,6 +443,7 @@ class AndroidSyncController < ApplicationController
               :user_ids,
               :organisation_id,
               :leader,
+              :status,
               :state_language_id
           ],
           church_ministry: [
@@ -517,13 +556,14 @@ class AndroidSyncController < ApplicationController
           tool: [
               :id,
               :old_id,
-	      :language_id,
+              :language_id,
               :creator_id,
-	      :url,
-	      :description,
-	      :status,
-	      {product_category_ids: []},
-	      :product_category_ids
+              :url,
+              :description,
+              :status,
+              :finish_line_marker_id,
+              {product_category_ids: []},
+              :product_category_ids
           ],
           edit: [
               :id,
@@ -734,7 +774,7 @@ class AndroidSyncController < ApplicationController
       @jwt_user_id = payload["sub"]
       user = User.find_by_id @jwt_user_id
       users_device = ExternalDevice.find_by device_id: payload["iss"], user_id: @jwt_user_id
-      if user.updated_at.to_i == payload["iat"]
+      if user.password_changed.to_i == payload["iat"] && user.registration_status == "approved"
         user if users_device
       else
         users_device.update registered: false if users_device&.registered

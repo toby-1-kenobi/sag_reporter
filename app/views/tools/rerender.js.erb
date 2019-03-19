@@ -1,0 +1,5 @@
+<% if @tool.active? %>
+$('#tool-<%= @tool.id %>').replaceWith('<%= j render @tool %>');
+<% else %>
+$('#tool-<%= @tool.id %>').remove();
+<% end %>

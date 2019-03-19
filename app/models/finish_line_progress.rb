@@ -107,7 +107,7 @@ class FinishLineProgress < ActiveRecord::Base
       when 'in_progress'
         'In progress, not completed'
       when 'outside_india_in_progress'
-        'Outside India in progress'
+        "Outside #{SagReporter::Application::NATION} in progress"
       when 'completed'
         case marker_number
         when 2, 3, 4, 8, 9, 10

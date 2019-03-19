@@ -308,25 +308,18 @@
     </table>
 
     <a name="mt-resources"><h3>Resources</h3></a>
-    <% if @language.mt_resources.any? %>
-        <ul class="mdl-list">
-          <% @language.mt_resources.each do |resource| %>
-              <li class="mdl-list__item mdl-list__item--two-line">
-                <span class="mdl-list__item-primary-content">
-                <% if resource.url %>
-                  <a href="<%= resource.url %>" tabindex="-1"><%= resource.name %></a>
-                <% else %>
-                  <%= resource.name %>
-                <% end %>
-                  <span class="mdl-list__item-sub-title"><%= resource.description %></span>
-                </span>
-              </li>
-          <% end %>
-        </ul>
+    <% if @language.tools.active.any? %>
+      <ul class="mdl-list tools-list">
+        <%= render partial: 'tools/tool', collection: @language.tools.active.includes(:product_categories) %>
+      </ul>
     <% else %>
         <p>None recorded</p>
     <% end %>
-    <%= link_to 'Add resource', new_mt_resource_path(language: @language.id) %>
+    <%= link_to new_tool_path, remote: true do %>
+      <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+        <i class="material-icons">add</i>
+      </button>
+    <% end %>
 
     <h3>Religion</h3>
     <table class="language-data">
@@ -617,5 +610,15 @@
     <% end %>
   </div>
 </div>
+
+<dialog id="general-language-dialog" class="mdl-dialog" data-language="<%= @language.id %>" data-language-name="<%= @language.name %>">
+  <h4 class="mdl-dialog__title"></h4>
+  <div class="mdl-dialog__content ">
+  </div>
+  <div class="md-dialog__actions">
+    <button type="button" class="mdl-button submit">Submit</button>
+    <button type="button" class="mdl-button cancel">Cancel</button>
+  </div>
+</dialog>
 
 <%= render 'edit_dialogs' if @editable %>

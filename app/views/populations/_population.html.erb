@@ -3,7 +3,7 @@
       <span><%= population %></span>
     </span>
   <span class="mdl-list__item-secondary-content">
-      <%= population.international? ? 'in all countries' : 'in India' %>
+      <%= population.international? ? 'in all countries' : "in #{SagReporter::Application::NATION}" %>
       <span class="mdl-list__item-secondary-info">Data entered: <%= time_ago_in_words(population.created_at) %> ago</span>
     </span>
 </li>

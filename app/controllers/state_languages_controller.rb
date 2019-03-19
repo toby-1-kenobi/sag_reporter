@@ -140,7 +140,7 @@ class StateLanguagesController < ApplicationController
     else
       Rails.logger.debug('nation')
       @state_languages = StateLanguage.in_project
-      @head_data = "All India"
+      @head_data = "All #{SagReporter::Application::NATION}"
     end
     respond_to do |format|
       format.csv do
@@ -218,7 +218,7 @@ class StateLanguagesController < ApplicationController
         quarter: params[:quarter]
     )
     @reports = Report.joins(:languages).where('languages.id = ?', @quarterly_evaluation.state_language.language)
-    @church_teams = ChurchTeam.joins(:church_ministries).where(state_language_id: params[:id], church_ministries: {ministry_id: params[:stream], status: 0}).uniq
+    @church_teams = ChurchTeam.active.joins(:church_ministries).where(state_language_id: params[:id], church_ministries: {ministry_id: params[:stream], status: 0}).uniq
     respond_to :js
   end
 

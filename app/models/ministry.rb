@@ -17,6 +17,14 @@ class Ministry < ActiveRecord::Base
   belongs_to :short_form, class_name: 'TranslationCode', dependent: :destroy
   before_create :create_translation_codes
 
+  # This is a class method that caches the names
+  # so we don't have to hit the db every time we need to look up a name
+  def self.stream_name(id, locale)
+    Rails.cache.fetch("stream_name_#{id}_#{locale}", expires_in: 2.hours) do
+      Ministry.find(id).name.send(locale)
+    end
+  end
+
   # Method for reading and writing all translation values (e.g. name_en = "?" or name_value)
   # it has to be a combination of the translation connection name and the actual locale or "value", if the I18n locale shall be used
   # if it can't find a value in a specific language, it takes English, if it exists; doesn't work for not defined locales

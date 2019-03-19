@@ -1,4 +1,4 @@
-<th class="mdl-data-table__cell--non-numeric">Population <%= pop.international? ? 'in all countries' : 'in India' %></th>
+<th class="mdl-data-table__cell--non-numeric">Population <%= pop.international? ? 'in all countries' : "in #{SagReporter::Application::NATION}" %></th>
 <td>
   <span class="editable <%= 'pending-field' if @pending_attributes.include? 'population' %>" id="language-population">
     <%= pop %>

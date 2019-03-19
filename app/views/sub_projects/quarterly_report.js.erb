@@ -15,7 +15,10 @@ $('#qr-language-accordion').on('toggle', function(e){
             var url = '<%= populate_stream_headers_for_sub_project_url('sp_placeholder', 'sl_placeholder', 'q_placeholder') %>';
             url = url.replace('sp_placeholder', projectId).replace('sl_placeholder', stateLangId).replace('q_placeholder', quarter);
         }
-        $.ajax(url);
+        $.ajax({
+            url: url,
+            headers: {Accept: "text/javascript"}
+        });
     }
 });
 
@@ -27,7 +30,10 @@ $('.quarterly-stream-header').on('click', function () {
         var quarter = $('#quarter-select').val();
         var url = '<%= quarterly_report_state_language_url('sl_placeholder', @project.id, @sub_project ? @sub_project.id : -1, 's_placeholder', 'q_placeholder') %>';
         url = url.replace('sl_placeholder', state_lang_id).replace('s_placeholder', stream_id).replace('q_placeholder', quarter);
-        $.ajax(url);
+        $.ajax({
+            url: url,
+            headers: {Accept: "text/javascript"}
+        });
     } else {
         container.slideToggle();
     }
@@ -40,7 +46,10 @@ $('.quarterly-stream-summary-header').on('click', function () {
         var quarter = $('#quarter-select').val();
         var url = '<%= stream_summary_for_sub_project_url(@sub_project ? @sub_project.id : "p#{@project.id}", 's_placeholder', 'q_placeholder') %>';
         url = url.replace('s_placeholder', stream_id).replace('q_placeholder', quarter);
-        $.ajax(url);
+        $.ajax({
+            url: url,
+            headers: {Accept: "text/javascript"}
+        });
     } else {
         container.slideToggle();
     }

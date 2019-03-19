@@ -1,0 +1,9 @@
+$('#general-language-dialog .mdl-dialog__title').text($('#general-language-dialog').data('language-name') + ' Resource');
+$('#general-language-dialog .mdl-dialog__content').html('<%= j render 'form' %>');
+componentHandler.upgradeElements($('#general-language-dialog .mdl-dialog__content').find('.mdl-checkbox').get());
+componentHandler.upgradeElements($('#general-language-dialog .mdl-dialog__content').find('.mdl-textfield').get());
+componentHandler.upgradeElements($('#general-language-dialog .mdl-dialog__content').find('.mdlext-selectfield').get());
+<% if @tool.language.blank? %>
+  $('#tool_language_id').val($('#general-language-dialog').data('language'));
+<% end %>
+document.getElementById('general-language-dialog').showModal();

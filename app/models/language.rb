@@ -54,12 +54,14 @@ class Language < ActiveRecord::Base
   has_many :user_mt_speakers, class_name: 'User', foreign_key: 'mother_tongue_id', dependent: :nullify
   has_many :output_counts
   has_many :mt_resources, dependent: :restrict_with_error
+  has_many :tools, dependent: :restrict_with_error
   has_and_belongs_to_many :user_speakers, class_name: 'User'
   has_and_belongs_to_many :reports
   has_many :state_languages, dependent: :destroy
   has_many :language_progresses, through: :state_languages
   has_many :progress_markers, through: :language_progresses
   has_many :geo_states, through: :state_languages
+  has_many :zones, through: :geo_states
   has_many :organisation_engagements, dependent: :destroy
   has_many :engaged_organisations, through: :organisation_engagements, source: :organisation
   has_many :organisation_translations, dependent: :destroy

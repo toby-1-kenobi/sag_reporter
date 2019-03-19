@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190131044923) do
+ActiveRecord::Schema.define(version: 20190318043004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -151,10 +151,12 @@ ActiveRecord::Schema.define(version: 20190131044923) do
     t.integer  "plan_form_id",                      null: false
     t.integer  "result_form_id",                    null: false
     t.boolean  "funder_interest",    default: true, null: false
+    t.integer  "parent_id"
   end
 
   add_index "deliverables", ["ministry_id"], name: "index_deliverables_on_ministry_id", using: :btree
   add_index "deliverables", ["number", "ministry_id"], name: "index_deliverables_number_ministry", unique: true, using: :btree
+  add_index "deliverables", ["parent_id"], name: "index_deliverables_on_parent_id", using: :btree
   add_index "deliverables", ["plan_form_id"], name: "index_deliverables_on_plan_form_id", using: :btree
   add_index "deliverables", ["result_form_id"], name: "index_deliverables_on_result_form_id", using: :btree
   add_index "deliverables", ["short_form_id"], name: "index_deliverables_on_short_form_id", using: :btree
@@ -725,6 +727,7 @@ ActiveRecord::Schema.define(version: 20190131044923) do
     t.boolean  "approved",          default: false, null: false
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
+    t.text     "improvements"
   end
 
   add_index "quarterly_evaluations", ["ministry_id"], name: "index_quarterly_evaluations_on_ministry_id", using: :btree
@@ -914,11 +917,16 @@ ActiveRecord::Schema.define(version: 20190131044923) do
   add_index "translation_progresses", ["language_id"], name: "index_translation_progresses_on_language_id", using: :btree
 
   create_table "translations", force: :cascade do |t|
-    t.integer  "language_id",         null: false
-    t.text     "content",             null: false
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
-    t.integer  "translation_code_id", null: false
+    t.integer  "language_id",                         null: false
+    t.text     "content",                             null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.integer  "translation_code_id",                 null: false
+    t.string   "key"
+    t.string   "locale"
+    t.text     "value"
+    t.string   "interpolations"
+    t.boolean  "is_proc",             default: false, null: false
   end
 
   add_index "translations", ["language_id", "translation_code_id"], name: "index_language_translation_code", unique: true, using: :btree
@@ -963,6 +971,7 @@ ActiveRecord::Schema.define(version: 20190131044923) do
     t.boolean  "zone_admin",               default: false,        null: false
     t.string   "organisation"
     t.date     "user_last_login_dt",       default: '2018-10-20'
+    t.datetime "password_changed",                                null: false
   end
 
   add_index "users", ["interface_language_id"], name: "index_users_on_interface_language_id", using: :btree
@@ -1007,6 +1016,7 @@ ActiveRecord::Schema.define(version: 20190131044923) do
   add_foreign_key "creations", "people"
   add_foreign_key "curatings", "geo_states"
   add_foreign_key "curatings", "users"
+  add_foreign_key "deliverables", "deliverables", column: "parent_id"
   add_foreign_key "deliverables", "ministries"
   add_foreign_key "deliverables", "translation_codes", column: "plan_form_id"
   add_foreign_key "deliverables", "translation_codes", column: "result_form_id"

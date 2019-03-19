@@ -30,14 +30,6 @@ module StaticPagesHelper
             category: 'report'
         },
         {
-            condition: true,
-            path: new_mt_resource_path,
-            text: 'Report on a completed resource',
-            icon: 'build',
-            colour: 'brown',
-            category: 'report'
-        },
-        {
             condition: logged_in_user.reports.any?,
             path: my_reports_path,
             text: 'My reports',

@@ -7,6 +7,7 @@ function poll(ticket) {
         $.ajax(
             {
                 url: "<%= poll_phone_message_path('999') %>".replace('999', ticket),
+                headers: {Accept: "text/javascript"},
                 success: function(data) {
                     console.log("polling got: " + JSON.stringify(data));
                     if (data.status == "invalid ticket") {

@@ -3,6 +3,7 @@ class User::Factory
   attr_reader :instance
 
   def build_user(params)
+    params[:password_changed] = Time.now
     champion = params.delete(:champion)
     speaks = params.delete(:speaks)
     geo_states = params.delete(:geo_states)

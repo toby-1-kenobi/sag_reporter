@@ -1,7 +1,8 @@
 $(document).on "ready page:change", ->
 
   $('#project-menu-button').on 'menuselect', (e) ->
-    $.ajax url: $(e.detail.source).data('ajax-url'), method: $(e.detail.source).data('method')
+    $.ajax url: $(e.detail.source).data('ajax-url'), method: $(e.detail.source).data('method'),
+      headers: {Accept: "text/javascript"}
     return
 
   $('#quarter-menu-button').on 'menuselect', (e) ->
@@ -19,7 +20,7 @@ $(document).on "ready page:change", ->
         quarterButton = document.querySelector('#quarter-menu-button')
         selectedQuarter = quarterButton.MaterialExtMenuButton.getSelectedMenuItem()
         quarter = $(selectedQuarter).data('quarter')
-        $.ajax "ministries/#{panel.data('stream')}/projects_overview/#{quarter}"
+        $.ajax url: "ministries/#{panel.data('stream')}/projects_overview/#{quarter}", headers: {Accept: "text/javascript"}
     return
 
   return

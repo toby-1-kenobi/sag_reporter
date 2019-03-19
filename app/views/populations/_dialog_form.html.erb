@@ -19,7 +19,7 @@
         </div>
         <%= label_tag 'population[international]', class: 'population-international mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
             <%= f.check_box :international, class: 'mdl-checkbox__input' %>
-            <span class="mdl-checkbox__label">Includes people living outside India</span>
+            <span class="mdl-checkbox__label">Includes people living outside <%= SagReporter::Application::NATION %></span>
         <% end %>
     <% end %>
   </div>

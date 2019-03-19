@@ -7,7 +7,7 @@ class ChurchTeamsController < ApplicationController
     @project = Project.find params[:project_id]
     head :forbidden unless logged_in_user.can_view_project?(@project)
     @outputs = {}
-    @church_team.church_ministries.each do |church_min|
+    @church_team.church_ministries.active.each do |church_min|
       @outputs[church_min.id] = {}
       church_min.ministry.deliverables.church_team.each do |deliverable|
         @outputs[church_min.id][deliverable.id] = {}

@@ -26,11 +26,12 @@ module MinistriesHelper
         end
       end
       # church team, sum of all
-      zone.ministry_outputs.joins(:deliverable).
+      ct_values = zone.ministry_outputs.joins(:deliverable).
           where('ministry_outputs.month >= ?', first_month).
           where('ministry_outputs.month <= ?', last_month).
           where(actual: true, deliverables: {ministry_id: stream, reporter: 0, calculation_method: 1}).
           group(:deliverable_id).sum(:value)
+      data[zone.id].merge!(ct_values)
       # church team, most recent
       # we must find the most recent month reported in each state-language and sum those
       mos = zone.ministry_outputs.includes(:deliverable, church_ministry: :church_team).
@@ -43,7 +44,7 @@ module MinistriesHelper
         data[zone.id][del_id] = 0
         grouped_amo_list.values.each do |mo_sub_list|
           max_month = mo_sub_list.max_by{ |mo| mo.month }.month
-          data[zone][del_id] += mo_sub_list.select{ |mo| mo.month == max_month }.sum(&:value)
+          data[zone.id][del_id] += mo_sub_list.select{ |mo| mo.month == max_month }.sum(&:value)
         end
       end
       # auto calculated deliverables

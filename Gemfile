@@ -56,6 +56,9 @@ gem 'pg', '~> 0.20.0'
 # Track changes to models
 gem 'paper_trail'
 
+# convenience
+gem 'pluck_to_hash'
+
 # Output PDF files
 gem 'prawn'
 gem 'prawn-table'
@@ -84,6 +87,9 @@ gem 'momentjs-rails', '~> 2.11', '>= 2.11.1'
 # image manipulation
 gem 'mini_magick'
 
+# database sharding
+gem 'ar-octopus'
+
 # simplify http requests
 gem 'httparty'
 gem 'active_model_otp'
@@ -95,6 +101,11 @@ gem 'recaptcha', require: 'recaptcha/rails'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+
+# Database - i18n connection
+gem 'i18n'
+gem 'rails-i18n'
+gem 'i18n-active_record', :require => 'i18n/active_record'
 
 group :development, :test do
 

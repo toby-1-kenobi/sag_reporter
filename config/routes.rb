@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     collection do
       post 'send_request'
       post 'get_uploaded_file'
+      post 'get_uploaded_file_new'
       post 'receive_request'
       post 'get_file'
     end
@@ -237,6 +238,8 @@ Rails.application.routes.draw do
   get 'outcomes/select' => 'topics#assess_progress_select', as: 'select_to_assess'
 
   get 'about' => 'static_pages#about'
+
+  resources :tools, except: [:index]
 
   resources :translation_progresses, only: [:create, :destroy] do
     collection do

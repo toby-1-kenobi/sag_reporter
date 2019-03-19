@@ -2,6 +2,11 @@ class ChurchTeam < ActiveRecord::Base
   
   has_paper_trail
 
+  enum status: {
+    active: 0,
+    deleted: 1
+  }
+
   belongs_to :organisation
   belongs_to :state_language
   has_many :church_ministries, dependent: :destroy
@@ -12,7 +17,7 @@ class ChurchTeam < ActiveRecord::Base
   has_many :users, through: :church_team_memberships
   has_many :reports, dependent: :nullify
 
-  validates :leader, presence: true
+  validates :leader, presence: true, uniqueness: { scope: [:state_language_id, :organisation_id] }
   validates :state_language, presence: true
 
   scope :in_project, ->(project) { joins(:ministries).where(church_ministries: {status: 0}).where('ministries.id in (?)', project.ministries.pluck(:id)).where(state_language: project.state_languages).uniq }

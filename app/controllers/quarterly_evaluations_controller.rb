@@ -41,6 +41,7 @@ class QuarterlyEvaluationsController < ApplicationController
 
   def quarterly_evaluation_params
     params.require(:quarterly_evaluation).permit(
+        :improvements,
         :question_1,
         :question_2,
         :question_3,

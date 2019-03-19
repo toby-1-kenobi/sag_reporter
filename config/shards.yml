@@ -1,0 +1,22 @@
+<%
+  def follower_db_uri
+    @cached_follower_db_uri ||=
+      begin
+        follower_db_env_key = ENV['DB_FOLLOWER']
+        if follower_db_env_key.present? && ENV[follower_db_env_key]
+          URI.parse(ENV[follower_db_env_key])
+        end
+      end
+  end
+%>
+octopus:
+  replicated: true
+  fully_replicated: false
+  production:
+    follower:
+      adapter: postgresql
+      database: <%= (follower_db_uri.path || "").split("/")[1] %>
+      username: <%= follower_db_uri.user %>
+      password: "<%= follower_db_uri.password %>"
+      host: <%= follower_db_uri.host %>
+      port: <%= follower_db_uri.port %>

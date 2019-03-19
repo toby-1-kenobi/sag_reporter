@@ -16,7 +16,7 @@ module StateLanguagesHelper
     case deliverable.reporter
     when 'church_team'
       church_mins = ChurchMinistry.joins(:church_team).
-          where(church_teams: {state_language_id: state_language_id}, ministry: deliverable.ministry)
+          where(church_teams: {state_language_id: state_language_id, status: 0}, ministry: deliverable.ministry)
       # if sub_project
       #   fac_ids = sub_project.language_streams.
       #       where(state_language_id: state_language_id, ministry_id: deliverable.ministry_id).
@@ -91,7 +91,7 @@ module StateLanguagesHelper
       month = Date.new(last_month[0..3].to_i, last_month[-2..-1].to_i) - 2.months
       index_month = month.strftime('%Y-%m')
       while index_month <= last_month
-        query = ChurchTeam.joins({ state_language: :geo_state }, { church_ministries: :ministry_outputs }).
+        query = ChurchTeam.active.joins({ state_language: :geo_state }, { church_ministries: :ministry_outputs }).
             where(ministry_outputs: { month: index_month })
         if state_languages
           query = query.where(state_language_id: state_languages)
@@ -112,7 +112,7 @@ module StateLanguagesHelper
       deliverable_ids += Deliverable.joins(:ministry).where(ministries: {code: 'SC'}, number: 8).pluck :id
       deliverable_ids += Deliverable.joins(:ministry).where(ministries: {code: 'TR'}, number: 12).pluck :id
       outputs = MinistryOutput.joins(church_ministry: { church_team: { state_language: :geo_state } }).
-          where(actual: true, deliverable: deliverable_ids).
+          where(actual: true, deliverable: deliverable_ids, church_teams: { status: 0 }).
           where('month >= ?', first_month).where('month <= ?', last_month)
       if state_languages
         outputs = outputs.where(church_teams: { state_language_id: state_languages })

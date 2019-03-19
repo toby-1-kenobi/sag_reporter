@@ -31,22 +31,39 @@ class ProjectsController < ApplicationController
   def teams
     @project = Project.find(params[:id])
     head :forbidden unless logged_in_user.can_view_project?(@project)
-    @teams = ChurchTeam.in_project(@project)
+    project_teams = ChurchTeam.active.in_project(@project)
+    @team_names = {}
+    project_teams.includes(:organisation).find_each{ |pt| @team_names[pt.id] = pt.full_name }
+    @teams = project_teams.pluck_to_struct :id, :state_language_id
+    @church_min = ChurchMinistry.active.where(church_team_id: @teams.map{ |t| t[0] }).pluck_to_struct :id, :church_team_id, :ministry_id
+    @fac_feedbacks = FacilitatorFeedback.not_empty.where(church_ministry_id: @church_min.map{ |cm| cm[0] }).
+        pluck_to_struct(:church_ministry_id, :progress, :report_approved, :month).
+        each{ |ff| ff.progress = FacilitatorFeedback.progresses.key(ff.progress) }
     respond_to :js
   end
 
   def team_deliverables
     @project = Project.includes(:ministries).find(params[:id])
     head :forbidden unless logged_in_user.can_view_project?(@project)
-    @team = ChurchTeam.includes(:ministries, { state_language: [:language, :geo_state] }).find(params[:team_id])
+    @team = ChurchTeam.active.includes(:ministries, { state_language: [:language, :geo_state] }).find(params[:team_id])
     @common_ministries = @team.ministries.where(id: @project.ministries)
     respond_to :js
   end
 
   def facilitators
-    @project = Project.includes(language_streams: [:facilitator, {state_language: [:language, :geo_state]}, {ministry: {deliverables: :aggregate_ministry_outputs}}]).find(params[:id])
+    locale = logged_in_user.interface_language.locale_tag
+    @project = Project.find(params[:id])
     head :forbidden unless logged_in_user.can_view_project?(@project)
-    Rails.logger.debug "outputs: #{@outputs}"
+    @streams = @project.ministries.pluck(:id).map{ |s| {id: s, name: Ministry.stream_name(s, locale)} }.sort_by{ |s| s[:name] }
+    @project_streams = @project.project_streams.pluck_to_struct :id, :ministry_id
+    @project_progresses = ProjectProgress.where(project_stream: @project_streams.map{ |ps| ps.id }).
+        pluck_to_struct(:id, :project_stream_id, :month, :progress, :approved, :comment, :updated_at).
+        each{ |pp| pp.progress = ProjectProgress.progresses.key(pp.progress) }
+    @language_streams = @project.language_streams.pluck_to_struct :id, :ministry_id, :facilitator_id, :state_language_id
+    @fac_names = User.where(id: @language_streams.map{ |ls| ls.facilitator_id }).pluck(:id, :name).to_h
+    @sup_feedbacks = SupervisorFeedback.not_empty.
+        pluck_to_struct(:ministry_id, :state_language_id, :facilitator_id, :facilitator_progress, :report_approved, :month).
+        each { |sf| sf.facilitator_progress = SupervisorFeedback.facilitator_progresses.key(sf.facilitator_progress)}
     respond_to :js
   end
 

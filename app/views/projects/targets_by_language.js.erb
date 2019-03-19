@@ -10,5 +10,9 @@ $('.quarterly-target-input').on('change', function(){
 });
 
 document.querySelector('#copy-from-language-button').addEventListener('menuselect', function(e) {
-    $.ajax({url: $(e.detail.source).attr('data-ajax-url'), method: 'PATCH'});
+    $.ajax({
+        url: $(e.detail.source).attr('data-ajax-url'),
+        method: 'PATCH',
+        headers: {Accept: "text/javascript"}
+    });
 });

@@ -3,7 +3,7 @@
 <% provide(:super_container_class, 'compact') %>
 
 <ul class="breadcrumbs">
-  <li><%=	link_to 'India', nation_path %></li>
+  <li><%=	link_to SagReporter::Application::NATION, nation_path %></li>
   <li><%= link_to "#{@zone.name} Zone", zone_path(@zone) %></li>
 </ul>
 

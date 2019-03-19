@@ -70,14 +70,14 @@
     <tr class="divider"></tr>
     <% @chart_style_need = false %>
     <tr>
-      <th class="mdl-data-table__cell--non-numeric">Work done or not needed in India</th>
+      <th class="mdl-data-table__cell--non-numeric">Work done or not needed in <%= SagReporter::Application::NATION %></th>
       <th>No. of languages (of <%= @language_data.count %>)</th>
       <th>Total Population</th>
     </tr>
     <% done_block = {
         inaccessible: 'Inaccessible',
         no_need: 'No mother tongue translation needed',
-        outside_india: 'Being done outside India',
+        outside_india: "Being done outside #{SagReporter::Application::NATION}",
         nt_available: 'NT available',
         bible_available: 'Whole Bible available'
     } %>

@@ -39,8 +39,8 @@ class SessionsController < ApplicationController
         # otherwise we'll assume it's their phone number
         @user = User.find_by(phone: username)
       end
-      # skip authentication for the development environment
-      if @user and Rails.env.development?
+      # skip authentication for the development environment and sandbox
+      if @user and (Rails.env.development? or ENV['REV79_VARIETY'].downcase == 'sandbox')
         log_in @user
         remember @user
         redirect_back_or root_path and return
@@ -118,7 +118,7 @@ class SessionsController < ApplicationController
     end
     user = User.find session[:temp_user]
 
-    if user and user.authenticate_otp(params[:session][:otp_code], drift: 300)
+    if user and user.authenticate_otp(params[:session][:otp_code].strip, drift: 300)
         session[:temp_user] = nil
         log_in user
         remember user

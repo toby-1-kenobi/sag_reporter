@@ -20,15 +20,16 @@ module SubProjectsHelper
       else
         row += ['', '', '']
       end
-      row << targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == quarter }.sum{ |t| t.value }
+      current_quarter = quarter
+      row << targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == current_quarter }.sum{ |t| t.value }
       if deliverable.sum_of_all?
         row << row[1..3].inject(:+)
       else
         row << row[3]
       end
       3.times do
-        quarter = next_quarter(quarter)
-        row << targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == quarter }.sum{ |t| t.value }
+        current_quarter = next_quarter(current_quarter)
+        row << targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == current_quarter }.sum{ |t| t.value }
       end
       table_data << row
     end

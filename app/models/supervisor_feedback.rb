@@ -21,4 +21,6 @@ class SupervisorFeedback < ActiveRecord::Base
   validates :supervisor, presence: true
   validates :report_approved, inclusion: [true, false]
 
+  scope :not_empty, -> { where('result_feedback IS NOT NULL OR facilitator_progress IS NOT NULL OR report_approved = true') }
+
 end

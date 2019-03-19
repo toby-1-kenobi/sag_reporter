@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   has_many :zones, through: :geo_states
   belongs_to :interface_language, class_name: 'Language', foreign_key: 'interface_language_id'
   has_many :mt_resources, dependent: :nullify
+  has_many :tools, dependent: :restrict_with_error, inverse_of: :creator, foreign_key: 'creator_id'
   has_many :curatings, dependent: :destroy
   has_many :curated_states, through: :curatings, class_name: 'GeoState', source: 'geo_state', inverse_of: :curators
   has_many :edits, dependent: :destroy
@@ -76,9 +77,11 @@ class User < ActiveRecord::Base
   validates :national, inclusion: [true, false]
   validates :admin, inclusion: [true, false]
   validates :national_curator, inclusion: [true, false]
+  validates :password_changed, presence: true
   validate :interface_language_must_have_locale_tag
 
   after_save :send_confirmation_email
+  before_update :update_timestamp_if_password_changed
 
   scope :curating, ->(edit) { joins(:curated_states).where('geo_states.id' => edit.geo_states) }
 
@@ -309,6 +312,10 @@ class User < ActiveRecord::Base
       logger.debug 'sending email verification email'
       UserMailer.user_email_confirmation(self).deliver_now
     end
+  end
+
+  def update_timestamp_if_password_changed
+    self.password_changed = Time.now if self.password_digest_changed?
   end
 
   def tokenize(string_to_split)

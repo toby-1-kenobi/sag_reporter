@@ -3,41 +3,42 @@
   <% current_q, q_year[current_q] = quarter_for_month(Date.today.month), FinishLineProgress.get_current_year %>
   <% last_q = (current_q - 2) % 4 + 1 %>
   <% q_year[last_q] = last_q < current_q ? q_year[current_q] : q_year[current_q] - 1 %>
-  <% multi_state = @project.geo_states.uniq.count > 1 %>
+  <% state_language_names = @project.state_languages.includes(:language, :geo_state).map{ |sl| [sl.id, sl.name(@project.geo_states.uniq.count > 1)]}.to_h %>
   <% @counter = 0 %>
   <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
-    <% @project.ministries.order(:code).each do |stream| %>
+    <% @streams.each do |stream| %>
       <li class="mdlext-accordion__panel">
         <header class="mdlext-accordion__tab">
-          <span class="mdlext-accordion__tab__caption"><%= stream.name.en %></span>
+          <span class="mdlext-accordion__tab__caption"><%= stream[:name] %></span>
         </header>
+        <% project_stream = @project_streams.select{ |ps| ps.ministry_id == stream[:id] }.first %>
         <section class="mdlext-accordion__tabpanel">
           <% if logged_in_user.admin? or @project.project_supervisors.management.exists?(user: logged_in_user) %>
-            <div class="project-stream-evaluation mdl-shadow--2dp" data-stream="<%= stream.id %>">
+            <div class="project-stream-evaluation mdl-shadow--2dp" data-stream="<%= stream[:id] %>">
               <% [last_q, current_q].each do |quarter| %>
                 <% months_in_quarter(quarter).each do |month| %>
                   <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
-                  <% stream_eval = @project.project_streams.find_by(ministry: stream).project_progresses.where(month: year_month).last %>
+                  <% stream_eval = @project_progresses.select{ |pp| pp.project_stream_id == project_stream.id && pp.month == year_month }.max_by(&:updated_at) %>
                   <div class="evaluation" data-month="<%= year_month %>" data-progress="<%= stream_eval.progress if stream_eval %>">
                     <% img_html_data = {class: 'approved-stamp'} %>
-                    <% img_html_data[:hidden] = '' unless stream_eval and stream_eval.approved? %>
+                    <% img_html_data[:hidden] = '' unless stream_eval and stream_eval.approved %>
                     <%= Date::MONTHNAMES[month] %>
                     <button
-                      id="stream-eval-button-<%= stream.id %>-<%= year_month %>"
+                      id="stream-eval-button-<%= stream[:id] %>-<%= year_month %>"
                       class="<%= 'empty' unless stream_eval and stream_eval.comment.present? %> stream-eval-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
                       data-proj-prog-id="<%= stream_eval ? stream_eval.id : 'new' %>"
                       data-month="<%= year_month %>"
                       <% if stream_eval %>
                         data-progress="<%= stream_eval.progress %>"
-                        <%= 'data-approved' if stream_eval.approved? %>
+                        <%= 'data-approved' if stream_eval.approved %>
                       <% else %>
-                        data-proj-stream-id="<%= ProjectStream.find_by(project: @project, ministry: stream).id %>"
+                        data-proj-stream-id="<%= @project_streams.select{ |ps| ps.ministry_id == stream[:id] }.first.id %>"
                       <% end %>
                     >
                       <i class="material-icons">edit</i>
                       <div hidden class="stream-eval-comment"><%= stream_eval.comment if stream_eval %></div>
                     </button>
-                    <div class="mdl-tooltip" data-mdl-for="stream-eval-button-<%= stream.id %>-<%= year_month %>">
+                    <div class="mdl-tooltip" data-mdl-for="stream-eval-button-<%= stream[:id] %>-<%= year_month %>">
                       Evaluate Project Stream
                     </div>
                     <%= image_tag 'approved.png', img_html_data %>
@@ -46,20 +47,19 @@
               <% end %>
             </div>
           <% end %>
-          <% @project.language_streams.where(ministry: stream).order(:state_language_id).each do |lang_stream| %>
-            <% sup_feedback = SupervisorFeedback.
-                where(ministry: stream, state_language: lang_stream.state_language, facilitator: lang_stream.facilitator).
-                where("result_feedback IS NOT NULL OR facilitator_progress IS NOT NULL OR report_approved = true").
-                order(:month).last
+          <% @language_streams.select{ |ls| ls.ministry_id == stream[:id] }.sort_by{ |ls| @fac_names[ls.facilitator_id].downcase }.each do |lang_stream| %>
+            <% sup_feedback = @sup_feedbacks.
+                select{ |sf| sf.ministry_id == stream[:id] && sf.state_language_id == lang_stream.state_language_id && sf.facilitator_id == lang_stream.facilitator_id }.
+                max_by{ |sf| sf.month }
             %>
             <div class="header-flex-container">
               <div class="project-facilitator-header" data-lang-stream="<%= lang_stream.id %>">
-                <span class="facilitator-name"><%= lang_stream.facilitator.name %></span>
-                facilitating for <span class="state-language-name"><%= lang_stream.state_language.name(multi_state) %></span>
+                <span class="facilitator-name"><%= @fac_names[lang_stream.facilitator_id] %></span>
+                facilitating for <span class="state-language-name"><%= state_language_names[lang_stream.state_language_id] %></span>
               </div>
               <div class="recent-progress" data-progress="<%= sup_feedback.facilitator_progress if sup_feedback %>">
                 <% img_html_data = {class: 'approved-stamp'} %>
-                <% img_html_data[:hidden] = '' unless sup_feedback and sup_feedback.report_approved? %>
+                <% img_html_data[:hidden] = '' unless sup_feedback and sup_feedback.report_approved %>
                 <%= image_tag('approved.png', img_html_data) %>
                 <span class="month"><%= pretty_month(sup_feedback.month) if sup_feedback %></span>
               </div>

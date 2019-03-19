@@ -10,11 +10,17 @@ $('#project-name-input').on('input', function(){
 });
 
 $('#responsible-tab.dirty').on('click', function(){
-    $.ajax({url: '<%= edit_responsible_project_url(@project) %>'});
+    $.ajax({
+        url: '<%= edit_responsible_project_url(@project) %>',
+        headers: {Accept: "text/javascript"}
+    });
 });
 
 document.querySelector('#targets-by-language-button').addEventListener('menuselect', function(e) {
-    $.ajax({url: $(e.detail.source).attr('data-ajax-url')});
+    $.ajax({
+        url: $(e.detail.source).attr('data-ajax-url'),
+        headers: {Accept: "text/javascript"}
+    });
 });
 
 window.bindFilters();
