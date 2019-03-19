@@ -29,10 +29,11 @@ specTransProgContainer.find('.books input').on('click', function() {
        });
     } else {
         console.log($(this).data('id'));
+        var path = '<%= translation_progress_path('id_placeholder') %>';
+        path = path.replace('id_placeholder', $(this).data('id'));
         $.ajax({
-            url: '<%= translation_progress_path %>',
-            type: 'delete',
-            data: {id: $(this).data('id')}
+            url: path,
+            type: 'delete'
         });
     }
 });
