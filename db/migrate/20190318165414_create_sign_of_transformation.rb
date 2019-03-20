@@ -6,6 +6,8 @@ class CreateSignOfTransformation < ActiveRecord::Migration
       t.boolean :actual, null: false
       t.references :progress_marker, index: true, foreign_key: true
       t.string :other
+
+      t.timestamps null: false
     end
   end
 end

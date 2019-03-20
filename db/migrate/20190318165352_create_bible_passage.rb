@@ -5,6 +5,8 @@ class CreateBiblePassage < ActiveRecord::Migration
       t.references :chapter, index: true, foreign_key: true, null: false
       t.string :month, null: false
       t.integer :verse, null: false
+
+      t.timestamps null: false
     end
   end
 end
