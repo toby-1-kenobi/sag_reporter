@@ -1,4 +1,6 @@
 
+<% done = TranslationProgress.where(language_id: language_id, deliverable_id: deliverable_id).pluck(:chapter_id, :month).map{ |x| [x[0], x[1] || 'none'] }.to_h %>
+
 <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 
   <div class="mdl-tabs__tab-bar">
@@ -22,6 +24,7 @@
                          data-chapter="<%= chapter.id %>"
                          data-language="<%= language_id %>"
                          data-deliverable="<%= deliverable_id %>"
+                         <%= 'checked' if done[chapter.id] %>
                   >
                   <span class="mdl-checkbox__label"><%= chapter.number %></span>
                 </label>
