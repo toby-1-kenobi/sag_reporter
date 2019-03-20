@@ -233,6 +233,8 @@ class AndroidSyncController < ApplicationController
     tables[ImpactReport] << "shareable" if @version >= "1.4.4:102"
     tables[Book] = %w(name abbreviation number nt) if @version >= "1.5"
     tables[Chapter] = %w(book_id number verses) if @version >= "1.5"
+    tables[SignOfTransformation] = %w(church_ministry_id month progress_marker_id other) if @version >= "1.5"
+    tables[BiblePassage] = %w(church_ministry_id chapter_id verse month) if @version >= "1.5"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
@@ -570,6 +572,18 @@ class AndroidSyncController < ApplicationController
               :finish_line_marker_id,
               {product_category_ids: []},
               :product_category_ids
+          ],
+          sign_of_transformation: [
+              :church_ministry_id,
+              :progress_marker_id,
+              :other,
+              :month
+          ],
+          bible_passage: [
+              :church_ministry_id,
+              :chapter_id,
+              :verse,
+              :month
           ],
           edit: [
               :id,
