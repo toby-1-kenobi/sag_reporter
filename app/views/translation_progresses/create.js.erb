@@ -1,3 +1,4 @@
+<%= render 'verse_count' %>
 checkbox = $('input[data-language="<%= @translation_progress.language_id %>"][data-chapter="<%= @translation_progress.chapter_id %>"]');
 <% if @translation_progress.persisted? %>
   checkbox.data('id', '<%= @translation_progress.id %>');
@@ -7,3 +8,4 @@ checkbox = $('input[data-language="<%= @translation_progress.language_id %>"][da
   checkbox.closest('.mdl-checkbox').get(0).MaterialCheckbox.uncheck();
 <% end %>
 checkbox.closest('.mdl-checkbox').removeClass('dirty');
+updateCounts(<%= @translation_progress.language_id %>);

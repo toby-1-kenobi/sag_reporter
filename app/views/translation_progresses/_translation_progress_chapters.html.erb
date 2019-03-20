@@ -12,13 +12,13 @@
     <div class="mdl-tabs__panel is-active" id="<%= nt ? 'nt' : 'ot' %>-panel">
       <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical mdlext-js-ripple-effect"
           role="tablist">
-        <% Book.where(nt: nt).each do |book| %>
+        <% Book.includes(:chapters).where(nt: nt).each do |book| %>
           <li class="mdlext-accordion__panel" role="presentation">
             <header class="mdlext-accordion__tab" role="tab">
               <span class="mdlext-accordion__tab__caption"><%= book.name %></span>
             </header>
             <section data-book="<%= book.id %>" class="mdlext-accordion__tabpanel" role="tabpanel" aria-hidden="true">
-              <% book.chapters.order(:number).each do |chapter| %>
+              <% book.chapters.to_a.sort_by{ |c| c.number }.each do |chapter| %>
                 <label id="chapter-label-<%= chapter.id %>"
                        class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
                        for="chapter-<%= chapter.id %>"

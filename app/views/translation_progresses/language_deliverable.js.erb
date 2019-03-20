@@ -1,5 +1,6 @@
+<%= render 'verse_count' %>
+
 function disableChapters(container, month) {
-    console.log(month)
     container.find('.mdl-checkbox[data-month]').each(function(){
         this.MaterialCheckbox.disable();
     });
@@ -20,6 +21,8 @@ disableChapters(specTransProgContainer.find('.books'), $('#translation-progress-
 
 transProgContainer.find('.measurables .mdl-button').removeClass('selected mdl-button--colored');
 specTransProgContainer.find('.measurables .mdl-button[data-deliverable="<%= @deliverable_id %>"]').addClass('selected mdl-button--colored');
+
+updateCounts(<%= @lang_id %>);
 
 specTransProgContainer.find('.books input').on('click', function() {
     $(this).closest('.mdl-checkbox').addClass('dirty')
@@ -54,4 +57,5 @@ $('#translation-progress-month-select-<%= @lang_stream_id %>').on('change', func
     var month = $(this).val();
     var container = $('.translation-progress[data-lang-stream="<%= @lang_stream_id %>"] .books')
     disableChapters(container, month);
+    updateMonthVerseCounts(<%= @lang_id %>);
 })

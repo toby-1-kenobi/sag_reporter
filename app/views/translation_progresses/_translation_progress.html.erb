@@ -33,9 +33,12 @@
 
   <div class="counters">
     <div><strong>Verse count</strong></div>
-    <div>Done in total: <%= 0 %></div>
-    <div>Done this month: <%= 0 %></div>
-    <div>Remaining: <%= 0 %></div>
+    <table>
+      <tr><th></th><th>OT</th><th>NT</th></tr>
+      <tr><td>Done in total:</td><td class="total-verse-count-ot"></td><td class="total-verse-count-nt"></td></tr>
+      <tr><td>Done this month:</td><td class="month-verse-count-ot"></td><td class="month-verse-count-nt"></td></tr>
+      <tr><td>Remaining:</td><td class="remaining-verse-count-ot"><td class="remaining-verse-count-nt"></td></tr>
+    </table>
   </div>
 
   <div class="measurables">
