@@ -574,12 +574,16 @@ class AndroidSyncController < ApplicationController
               :product_category_ids
           ],
           sign_of_transformation: [
+              :id,
+              :old_id,
               :church_ministry_id,
               :progress_marker_id,
               :other,
               :month
           ],
           bible_passage: [
+              :id,
+              :old_id,
               :church_ministry_id,
               :chapter_id,
               :verse,
