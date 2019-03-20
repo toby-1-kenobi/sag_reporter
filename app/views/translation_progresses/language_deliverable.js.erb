@@ -1,3 +1,13 @@
+function disableChapters(container, month) {
+    console.log(month)
+    container.find('.mdl-checkbox[data-month]').each(function(){
+        this.MaterialCheckbox.disable();
+    });
+    container.find('.mdl-checkbox[data-month="' + month + '"]').each(function(){
+        this.MaterialCheckbox.enable();
+    });
+}
+
 var transProgContainer = $('.translation-progress[data-language="<%= @lang_id %>"]');
 var specTransProgContainer = $('.translation-progress[data-lang-stream="<%= @lang_stream_id %>"]');
 transProgContainer.find('.books').empty();
@@ -5,6 +15,8 @@ specTransProgContainer.find('.books').html("<%= j render partial: 'translation_p
 componentHandler.upgradeElements(specTransProgContainer.find('.books .mdl-tabs').get());
 componentHandler.upgradeElements(specTransProgContainer.find('.books .mdlext-accordion').get());
 componentHandler.upgradeElements(specTransProgContainer.find('.books .mdl-checkbox').get());
+
+disableChapters(specTransProgContainer.find('.books'), $('#translation-progress-month-select-<%= @lang_stream_id %>').val());
 
 transProgContainer.find('.measurables .mdl-button').removeClass('selected mdl-button--colored');
 specTransProgContainer.find('.measurables .mdl-button[data-deliverable="<%= @deliverable_id %>"]').addClass('selected mdl-button--colored');
@@ -37,3 +49,9 @@ specTransProgContainer.find('.books input').on('click', function() {
         });
     }
 });
+
+$('#translation-progress-month-select-<%= @lang_stream_id %>').on('change', function () {
+    var month = $(this).val();
+    var container = $('.translation-progress[data-lang-stream="<%= @lang_stream_id %>"] .books')
+    disableChapters(container, month);
+})

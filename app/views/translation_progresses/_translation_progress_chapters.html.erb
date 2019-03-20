@@ -19,7 +19,10 @@
             </header>
             <section data-book="<%= book.id %>" class="mdlext-accordion__tabpanel" role="tabpanel" aria-hidden="true">
               <% book.chapters.order(:number).each do |chapter| %>
-                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chapter-<%= chapter.id %>">
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
+                       for="chapter-<%= chapter.id %>"
+                       <% if done[chapter.id] then %> data-month="<%= done[chapter.id] %>" <% end %>
+                >
                   <input type="checkbox" id="chapter-<%= chapter.id %>" class="mdl-checkbox__input"
                          data-chapter="<%= chapter.id %>"
                          data-language="<%= language_id %>"
