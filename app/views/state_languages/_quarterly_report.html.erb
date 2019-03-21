@@ -80,6 +80,7 @@
           project_id: @quarterly_evaluation.project_id,
           sub_project_id: @quarterly_evaluation.sub_project_id,
           state_language_id: @quarterly_evaluation.state_language_id,
+          ministry_id: @quarterly_evaluation.ministry_id,
           quarter: previous_quarter(@quarterly_evaluation.quarter)
       ) %>
       <% if prev_qe&.question_4.present? %>
