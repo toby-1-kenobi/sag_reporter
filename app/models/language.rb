@@ -76,6 +76,8 @@ class Language < ActiveRecord::Base
   has_many :populations, dependent: :destroy, inverse_of: :language
   has_many :translation_progresses, dependent: :destroy
   has_many :chapters, through: :translation_progresses
+  has_many :translation_distributions, dependent: :destroy
+  has_many :distribution_methods, through: :translation_distributions
 
   delegate :name, to: :family, prefix: true, allow_nil: true
 

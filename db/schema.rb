@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190318043004) do
+ActiveRecord::Schema.define(version: 20190321053831) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -151,12 +151,10 @@ ActiveRecord::Schema.define(version: 20190318043004) do
     t.integer  "plan_form_id",                      null: false
     t.integer  "result_form_id",                    null: false
     t.boolean  "funder_interest",    default: true, null: false
-    t.integer  "parent_id"
   end
 
   add_index "deliverables", ["ministry_id"], name: "index_deliverables_on_ministry_id", using: :btree
   add_index "deliverables", ["number", "ministry_id"], name: "index_deliverables_number_ministry", unique: true, using: :btree
-  add_index "deliverables", ["parent_id"], name: "index_deliverables_on_parent_id", using: :btree
   add_index "deliverables", ["plan_form_id"], name: "index_deliverables_on_plan_form_id", using: :btree
   add_index "deliverables", ["result_form_id"], name: "index_deliverables_on_result_form_id", using: :btree
   add_index "deliverables", ["short_form_id"], name: "index_deliverables_on_short_form_id", using: :btree
@@ -171,6 +169,14 @@ ActiveRecord::Schema.define(version: 20190318043004) do
   add_index "dialects", ["language_id", "name"], name: "language_dialect_names", unique: true, using: :btree
   add_index "dialects", ["language_id"], name: "index_dialects_on_language_id", using: :btree
   add_index "dialects", ["name"], name: "index_dialects_on_name", using: :btree
+
+  create_table "distribution_methods", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "distribution_methods", ["name"], name: "index_distribution_methods_on_name", using: :btree
 
   create_table "districts", force: :cascade do |t|
     t.string   "name",         null: false
@@ -900,6 +906,17 @@ ActiveRecord::Schema.define(version: 20190318043004) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "translation_distributions", force: :cascade do |t|
+    t.integer  "distribution_method_id", null: false
+    t.integer  "language_id",            null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "translation_distributions", ["distribution_method_id", "language_id"], name: "index_translation_distribution_uniq", unique: true, using: :btree
+  add_index "translation_distributions", ["distribution_method_id"], name: "index_translation_distributions_on_distribution_method_id", using: :btree
+  add_index "translation_distributions", ["language_id"], name: "index_translation_distributions_on_language_id", using: :btree
+
   create_table "translation_progresses", force: :cascade do |t|
     t.integer  "language_id"
     t.integer  "chapter_id"
@@ -1016,7 +1033,6 @@ ActiveRecord::Schema.define(version: 20190318043004) do
   add_foreign_key "creations", "people"
   add_foreign_key "curatings", "geo_states"
   add_foreign_key "curatings", "users"
-  add_foreign_key "deliverables", "deliverables", column: "parent_id"
   add_foreign_key "deliverables", "ministries"
   add_foreign_key "deliverables", "translation_codes", column: "plan_form_id"
   add_foreign_key "deliverables", "translation_codes", column: "result_form_id"
@@ -1104,6 +1120,8 @@ ActiveRecord::Schema.define(version: 20190318043004) do
   add_foreign_key "tools", "finish_line_markers"
   add_foreign_key "tools", "languages"
   add_foreign_key "tools", "users", column: "creator_id"
+  add_foreign_key "translation_distributions", "distribution_methods"
+  add_foreign_key "translation_distributions", "languages"
   add_foreign_key "translation_progresses", "chapters"
   add_foreign_key "translation_progresses", "deliverables"
   add_foreign_key "translation_progresses", "languages"
