@@ -1,9 +1,18 @@
-
 <% provide(:title, "#{@language.name} Dashboard") %>
 <% provide(:context_title, @language.name) %>
 <% provide(:container_class, 'no-iso') if @language.iso.blank? %>
 
-<% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
+<% sl = StateLanguage.where(language: @language, primary: true).take %>
+<% if sl %>
+  <ul class="breadcrumbs">
+    <li><%=	link_to SagReporter::Application::NATION, nation_path %></li>
+    <li><%= link_to "#{sl.geo_state.zone_name} Zone", zone_path(sl.geo_state.zone) %></li>
+    <li><%= link_to sl.state_name, geo_state_path(sl.geo_state) %></li>
+    <li><%= link_to @language.name, language_path(@language) %></li>
+  </ul>
+<% end %>
+
+<% editable = true %>
 
 <div id="edit-response"></div>
 <div id="pending-edits" class="mdl-grid">
