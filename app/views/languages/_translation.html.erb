@@ -36,6 +36,4 @@
   </label>
 <% end %>
 
-<%# since the following partial was written to operate in the facilitators tab of "my projects" it requires a LanguageStream passed to it %>
-<% lang_stream = @language.language_streams.take %>
-<%= render partial: 'translation_progresses/translation_progress', locals: { language_stream: lang_stream } %>
+<%= render partial: 'translation_progresses/translation_progress', locals: { language_stream: nil } %>
