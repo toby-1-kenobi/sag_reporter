@@ -106,6 +106,8 @@ Rails.application.routes.draw do
       # This is a hack to work around something I haven't worked out yet.
       get 'set_finish_line_progress/:marker/:progress', to: 'languages#show'
       get 'populations'
+      get :load_flm_overview
+      get :load_transformation_chart
     end
   end
   get 'outcomes/get_language_chart/:id' => 'languages#get_chart', as: 'language_outcomes_chart'

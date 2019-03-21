@@ -1,0 +1,68 @@
+<div id="flm-table" class="finish-line-status">
+  <table class="finish-line-status mdl-data-table mdl-js-data-table" id="finish-line-status-table">
+    <thead>
+    <tr id="title_row_id">
+      <th class="mdl-data-table__cell--non-numeric" colspan="2" id="finish-line-status-title">Finish Line Status</th>
+      <th>
+        <% if logged_in_user.can_future_plan? or logged_in_user?(@language.champion) %>
+          <%= link_to add_finish_line_progress_path(language_id: @language.id), method: :get, remote: true do %>
+            <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
+              Add Year
+            </button>
+          <% end %>
+        <% end %>
+      </th>
+      <% if logged_in_user.can_future_plan? or logged_in_user?(@language.champion) %>
+        <% @future_years.each do |fy| %>
+          <% if fy != nil %>
+            <th></th>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tr>
+    <tr id="head_row_id">
+      <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
+      <th class="mdl-data-table__cell--non-numeric">Category</th>
+      <th class="mdl-data-table__cell--non-numeric">Status</th>
+      <% if logged_in_user.can_future_plan? or logged_in_user?(@language.champion) %>
+        <% @future_years.each do |fy| %>
+          <% if fy != nil %>
+            <th class="mdl-data-table__cell--non-numeric"><%= fy %></th>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+    <% FinishLineMarker.order(:number).each do |marker| %>
+      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil)%>
+      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
+        <td id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
+          <%= link_to marker.name, show_details_language_path(@language, anchor: marker.name.parameterize('-')), class: "finish-line-marker-#{marker.number}-name" %>
+        </td>
+        <td class="mdl-data-table__cell--non-numeric">
+          <button class="mdl-button mdl-js-button mdl-button--icon finish-line-progress-icon <%= 'church-engagement' if marker.number == 0 %>">
+            <%= finish_line_progress_icon(progress.category) %>
+          </button>
+        </td>
+        <% @future_years.each do |fy| %>
+          <% if logged_in_user.can_future_plan? or fy == nil or logged_in_user?(@language.champion) %>
+            <% future_progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: fy) %>
+            <% if future_progress %>
+              <td
+                id="finish-line-progress-status-<%= marker.number %><%= fy %>"
+                class="finish-line-progress-status mdl-data-table__cell--non-numeric editable <%= 'church-engagement' if marker.number == 0 %>"
+                data-status-category="<%= future_progress.category.to_s %>">
+                <%= future_progress.simple_human_status %><%= render 'shared/edit_icon' %>
+              </td>
+            <% else %>
+              <td><!-- Missing Finish Line Progress (this shouldn't happen) --></td>
+            <% end %>
+          <% end %>
+        <% end %>
+      </tr>
+      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
+    <% end %>
+    </tbody>
+  </table>
+</div>

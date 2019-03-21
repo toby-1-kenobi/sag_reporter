@@ -10,6 +10,9 @@
   <% if tabs.include? :progress %>
     <%
       case @dashboard_type
+      when :language
+        flm_summary_path = load_flm_overview_language_path(@language)
+        flt_summary_path = load_transformation_chart_language_path(@language)
       when :state
         flm_summary_path = load_flm_summary_geo_state_path(@geo_state)
         flt_summary_path = load_flt_summary_geo_state_path(@geo_state)
@@ -88,12 +91,14 @@
     <% Rails.logger.debug 'org tab' %>
     <%
       case @dashboard_type
+      when :language
+        local = {language_id: @language.id}
       when :state
         local = {geo_state_id: @geo_state.id}
       when :zone
         local = {zone_id: @zone.id}
       else
-        Rails.logger.warning "not expecting #{@dashboard_type} to include agencies tab"
+        Rails.logger.warn "not expecting #{@dashboard_type} to include agencies tab"
         local = {}
       end
       if dashboard_object
@@ -194,7 +199,9 @@
               <% states = logged_in_user.national? ? @zone.geo_states : @zone.geo_states.where(id: logged_in_user.geo_states) %>
               <%= render partial: 'reports/filter_states', locals: {states: states.order(:name)} %>
             <% end %>
-            <%= render partial: 'reports/filter_languages', locals: {languages: dashboard_object.languages.order(:name).uniq} %>
+            <% unless @dashboard_type == :language %>
+              <%= render partial: 'reports/filter_languages', locals: {languages: dashboard_object.languages.order(:name).uniq} %>
+            <% end %>
             <%= render partial: 'reports/filter_progress_markers' %>
             <%= render partial: 'reports/filter_projects' %>
           </div>
@@ -242,6 +249,15 @@
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'board' %>" id="board-tab">
       <div id="board-report-container">
         <%= link_to 'get CLI board report', report_path, remote: true, class: 'content-fetch-trigger' %>
+        <div class="mdl-spinner mdl-js-spinner"></div>
+      </div>
+    </div>
+  <% end %>
+
+  <% if tabs.include? :details %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'details' %>" id="details-tab">
+      <div id="language-details-container">
+        <%= link_to 'get CLI board report', show_details_language_path(@language), remote: true, class: 'content-fetch-trigger' %>
         <div class="mdl-spinner mdl-js-spinner"></div>
       </div>
     </div>

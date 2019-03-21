@@ -41,11 +41,13 @@ module ApplicationHelper
         zones: 'Zones',
         states: 'States',
         languages: 'Languages',
+				translation: 'Translation',
 				projects: @dashboard_type == :nation ? 'Projects' : 'My Projects',
 				projects_overview: 'Projects Overview',
         organisations: 'Agencies',
         reports: 'Impact Stories',
-        board: 'All Access Report'
+        board: 'All Access Report',
+				details: 'Details'
     }
   end
 

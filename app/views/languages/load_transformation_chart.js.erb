@@ -1,0 +1,10 @@
+<% require 'securerandom' %>
+$('#flt-table').after('<%= j render('transformation_chart') %>');
+$('#flt-table').empty();
+<% @language.state_languages.in_project.each do |state_language| %>
+  <% if chart_data = state_language.outcome_chart_data(logged_in_user, from_date: 2.years.ago) %>
+    $('.chart-<%= state_language.id %>').html("<%= escape_javascript(line_chart chart_data, id: SecureRandom.uuid) %>");
+  <% else %>
+    $('.chart-<%= state_language.id %>').html('no outcome progress recorded');
+  <% end %>
+<% end %>

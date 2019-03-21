@@ -42,6 +42,8 @@ class LanguagesController < ApplicationController
     # attributes with pending edits should be visually distinct in the form
     @pending_attributes = @user_pending_edits.pluck :attribute_name
     @future_years = get_future_years(@language)
+    @filters = {since: 3.month.ago.strftime('%d %B, %Y'), until: Date.today.strftime('%d %B, %Y')}
+    @tab = params[:tab]
   end
 
   def show_details
@@ -77,6 +79,7 @@ class LanguagesController < ApplicationController
       @pending_flm_ids << flp.finish_line_marker_id
     end
     @future_years = get_future_years(@language)
+    respond_to :js
   end
 
   def reports
@@ -116,6 +119,18 @@ class LanguagesController < ApplicationController
     else
       head :no_content
     end
+  end
+
+  def load_flm_overview
+    @language = Language.find(params[:id])
+    @future_years = get_future_years(@language)
+    respond_to :js
+  end
+
+  def load_transformation_chart
+    @language = Language.find(params[:id])
+    @outcome_areas = Topic.all
+    respond_to :js
   end
 
   def get_chart
