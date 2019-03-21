@@ -88,7 +88,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :languages, except: [:index, :edit, :update] do
+  resources :languages, except: [:index, :edit] do
     collection do
       get :autocomplete_user_name
       get 'search'

@@ -153,5 +153,22 @@ $(document).on "ready page:change", ->
   $('#language-project-select').on 'change', ->
     $(this).closest('form').submit()
     $('#project-input-row').slideUp()
+    return
+
+  $('.language-translation-controls [data-auto-update]').on 'input', ->
+    $(this).addClass('dirty')
+    return
+
+  $('.language-translation-controls [data-auto-update]').on 'change', ->
+    field = $(this).data('field')
+    data = {language: {}}
+    data['language'][field] = $(this).val()
+    url = $(this).closest('language-translation-controls').data('update-path')
+    $.ajax(
+      url,
+      method: 'PATCH'
+      data: data
+    )
+    return
 
   return

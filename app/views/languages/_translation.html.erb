@@ -1,3 +1,41 @@
+<div class="language-translation-controls" data-update-url="<%= language_path @language %>">
+  <% text_fields = {
+      'translation_office_location' => 'Location of the project office',
+      'survey_findings' => 'Details of Research/Survey findings done if any',
+      'translation_orthography' => 'Details of Orthography considered in translation'
+  } %>
+  <% text_fields.each do |field, label| %>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      <textarea class="mdl-textfield__input" type="text" rows= "2" id="<%= field.dasherize %>" data-field="<%= field %>" data-auto-update><%= @language.send(field) %></textarea>
+      <label class="mdl-textfield__label" for="<%= field.dasherize %>">
+        <%= label %>
+      </label>
+    </div>
+    <br>
+  <% end %>
+
+  <% text_fields = {
+      'translation_publisher' => 'Proposed Publisher',
+      'translation_copyright' => 'Copyright policy and to be held by'
+  } %>
+  <% text_fields.each do |field, label| %>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      <input class="mdl-textfield__input" type="text" id="<%= field.dasherize %>" data-field="<%= field %>" data-auto-update value="<%= @language.send(field) %>">
+      <label class="mdl-textfield__label" for="<%= field.dasherize %>">
+        <%= label %>
+      </label>
+    </div>
+    <br>
+  <% end %>
+</div>
+<h4>Distribution Plans</h4>
+<% DistributionMethod.find_each do |dist_method| %>
+  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="distriution-method-<%= dist_method.id %>">
+    <input type="checkbox" id="<%= dist_method.id %>" class="mdl-checkbox__input">
+    <span class="mdl-checkbox__label"><%= dist_method.name %></span>
+  </label>
+<% end %>
+
 <%# since the following partial was written to operate in the facilitators tab of "my projects" it requires a LanguageStream passed to it %>
 <% lang_stream = @language.language_streams.take %>
 <%= render partial: 'translation_progresses/translation_progress', locals: { language_stream: lang_stream } %>
