@@ -171,7 +171,7 @@ end
 
 # distribution methods
 %w(Print Audio Web Mobile\ app Other).each do |dist|
-  DistibutionMethod.create(name: dist)
+  DistributionMethod.create(name: dist)
 end
 
 # create between 510 and 520 languages
