@@ -87,6 +87,9 @@
     </div>
   <% end %>
 
+  <% if tabs.include? :translation %>
+  <% end %>
+
   <% if tabs.include? :organisations %>
     <% Rails.logger.debug 'org tab' %>
     <%
