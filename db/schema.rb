@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190321235720) do
+ActiveRecord::Schema.define(version: 20190322000657) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -367,22 +367,22 @@ ActiveRecord::Schema.define(version: 20190321235720) do
   add_index "language_streams", ["sub_project_id"], name: "index_language_streams_on_sub_project_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
-    t.string   "name",                                                    null: false
+    t.string   "name",                                                  null: false
     t.text     "description"
     t.boolean  "lwc"
-    t.datetime "created_at",                                              null: false
-    t.datetime "updated_at",                                              null: false
-    t.string   "colour",                                default: "white", null: false
-    t.string   "iso",                         limit: 3
+    t.datetime "created_at",                                            null: false
+    t.datetime "updated_at",                                            null: false
+    t.string   "colour",                              default: "white", null: false
+    t.string   "iso",                       limit: 3
     t.integer  "family_id"
-    t.integer  "population",                  limit: 8
+    t.integer  "population",                limit: 8
     t.integer  "pop_source_id"
     t.text     "location"
     t.integer  "number_of_translations"
     t.text     "info"
     t.text     "translation_info"
-    t.integer  "translation_need",                      default: 0,       null: false
-    t.integer  "translation_progress",                  default: 0,       null: false
+    t.integer  "translation_need",                    default: 0,       null: false
+    t.integer  "translation_progress",                default: 0,       null: false
     t.string   "locale_tag"
     t.integer  "population_all_countries"
     t.string   "population_concentration"
@@ -425,14 +425,9 @@ ActiveRecord::Schema.define(version: 20190321235720) do
     t.boolean  "oral_traditions_print"
     t.integer  "champion_id"
     t.datetime "champion_prompted"
-    t.integer  "sensitivity",                           default: 1,       null: false
+    t.integer  "sensitivity",                         default: 1,       null: false
     t.integer  "egids"
     t.string   "pseudonym"
-    t.text     "translation_office_location"
-    t.text     "survey_findings"
-    t.text     "translation_orthography"
-    t.string   "translation_publisher"
-    t.string   "translation_copyright"
   end
 
   add_index "languages", ["champion_id"], name: "index_languages_on_champion_id", using: :btree
