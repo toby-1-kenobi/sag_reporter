@@ -82,12 +82,6 @@ class LanguagesController < ApplicationController
     respond_to :js
   end
 
-  def update
-    @language = Language.find(params[:id])
-    @language.update_attributes(lang_translation_params)
-    respond_to :js
-  end
-
   def reports
     @language = Language.find(params[:id])
 
@@ -421,11 +415,6 @@ class LanguagesController < ApplicationController
 
   def lang_translation_params
     params.require(:language).permit(
-        :translation_office_location,
-        :survey_findings,
-        :translation_orthography,
-        :translation_publisher,
-        :translation_copyright
     )
   end
 

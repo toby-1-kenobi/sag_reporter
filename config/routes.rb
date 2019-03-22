@@ -88,7 +88,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :languages, except: [:index, :edit] do
+  resources :languages, except: [:index, :edit, :update] do
     collection do
       get :autocomplete_user_name
       get 'search'
@@ -248,6 +248,8 @@ Rails.application.routes.draw do
       get 'language/:language/deliverable/:deliverable/:lang_stream', action: 'language_deliverable', as: 'language'
     end
   end
+
+  resources :translation_projects, only: [:create, :show, :update]
 
   resources :users, except: [:destroy] do
     member do
