@@ -4,3 +4,16 @@ var tabsElement = $('.translation-projects').get(0);
 componentHandler.downgradeElements(tabsElement);
 componentHandler.upgradeElement(tabsElement);
 componentHandler.upgradeElements($('.mdl-textfield, .mdl-checkbox').get());
+
+
+$('.translation-project-controls [data-auto-update]').on('input', function() {
+    $(this).addClass('dirty');
+});
+
+$('.translation-project-controls [data-auto-update]').on('change', function() {
+    const field = $(this).data('field');
+    var data = {translation_project: {}};
+    data['translation_project'][field] = $(this).val();
+    const url = $(this).closest('.translation-project-controls').data('update-path');
+    $.ajax(url, {method: "PATCH", data: data});
+});
