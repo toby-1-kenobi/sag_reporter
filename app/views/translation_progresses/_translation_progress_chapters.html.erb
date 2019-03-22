@@ -1,5 +1,5 @@
 
-<% done = TranslationProgress.where(language_id: language_id, deliverable_id: deliverable_id).pluck(:chapter_id, :month, :id).map{ |x| [x[0], { month: x[1] || 'none', id: x[2] }] }.to_h %>
+<% done = TranslationProgress.where(translation_project_id: translation_project_id, deliverable_id: deliverable_id).pluck(:chapter_id, :month, :id).map{ |x| [x[0], { month: x[1] || 'none', id: x[2] }] }.to_h %>
 
 <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 
@@ -21,12 +21,12 @@
               <% book.chapters.to_a.sort_by{ |c| c.number }.each do |chapter| %>
                 <label id="chapter-label-<%= chapter.id %>"
                        class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
-                       for="chapter-<%= chapter.id %>"
+                       for="chapter-<%= chapter.id %>-<%= translation_project_id %>"
                        <% if done[chapter.id] then %> data-month="<%= done[chapter.id][:month] %>" <% end %>
                 >
-                  <input type="checkbox" id="chapter-<%= chapter.id %>" class="mdl-checkbox__input"
+                  <input type="checkbox" id="chapter-<%= chapter.id %>-<%= translation_project_id %>" class="mdl-checkbox__input"
                          data-chapter="<%= chapter.id %>"
-                         data-language="<%= language_id %>"
+                         data-translation_project="<%= translation_project_id %>"
                          data-deliverable="<%= deliverable_id %>"
                          <% if done[chapter.id] %>
                           checked

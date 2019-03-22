@@ -17,8 +17,8 @@ class TranslationProgress < ActiveRecord::Base
   belongs_to :chapter
   belongs_to :deliverable
 
-  validates :language, presence: true
-  validates :chapter, presence: true, uniqueness: { scope: [:language, :month, :deliverable_id] }
+  validates :translation_project, presence: true
+  validates :chapter, presence: true, uniqueness: { scope: [:translation_project, :month, :deliverable_id] }
   validates :month, allow_nil: true, format: { with: /\A[2-9]\d{3}-(0|1)[0-9]\z/, message: "should be in the format 'YYYY-MM'" }
   validates :deliverable, presence: true
   validate :deliverable_is_for_translation, if: Proc.new{ |tp| tp.deliverable.present? }
