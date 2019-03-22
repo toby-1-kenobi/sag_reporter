@@ -1,4 +1,5 @@
 <div class="mdl-tabs__panel" id="translation-project-<%= translation_project.id %>-panel">
+  <div class="translation-project-errors"></div>
   <div class="translation-project-controls" data-update-path="<%= translation_project_path translation_project %>">
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
       <input class="mdl-textfield__input" type="text" id="translation_project-name" data-field="name" data-auto-update value="<%= translation_project.name %>">
