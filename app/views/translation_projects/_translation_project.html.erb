@@ -1,5 +1,10 @@
-<div class="mdl-tabs__panel" id="<%= translation_project.name.parameterize.dasherize %>-panel">
+<div class="mdl-tabs__panel" id="translation-project-<%= translation_project.id %>-panel">
   <div class="translation-project-controls" data-update-path="<%= translation_project_path translation_project %>">
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      <input class="mdl-textfield__input" type="text" id="translation_project-name" data-field="name" data-auto-update value="<%= translation_project.name %>">
+      <label class="mdl-textfield__label" for="translation_project-name">Name</label>
+    </div>
+    <br>
     <% text_fields = {
         'office_location' => 'Location of the project office',
         'survey_findings' => 'Details of Research/Survey findings done if any',
