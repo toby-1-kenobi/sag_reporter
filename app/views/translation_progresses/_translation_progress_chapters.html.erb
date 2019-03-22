@@ -21,10 +21,10 @@
               <% book.chapters.to_a.sort_by{ |c| c.number }.each do |chapter| %>
                 <label id="chapter-label-<%= chapter.id %>"
                        class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
-                       for="chapter-<%= chapter.id %>-<%= translation_project_id %>"
+                       for="chapter-<%= chapter.id %>-<%= translation_project_id %>-<%= lang_stream_id %>"
                        <% if done[chapter.id] then %> data-month="<%= done[chapter.id][:month] %>" <% end %>
                 >
-                  <input type="checkbox" id="chapter-<%= chapter.id %>-<%= translation_project_id %>" class="mdl-checkbox__input"
+                  <input type="checkbox" id="chapter-<%= chapter.id %>-<%= translation_project_id %>-<%= lang_stream_id %>" class="mdl-checkbox__input"
                          data-chapter="<%= chapter.id %>"
                          data-translation_project="<%= translation_project_id %>"
                          data-deliverable="<%= deliverable_id %>"

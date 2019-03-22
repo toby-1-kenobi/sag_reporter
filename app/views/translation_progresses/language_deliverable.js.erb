@@ -12,7 +12,7 @@ function disableChapters(container, month) {
 var transProgContainer = $('.translation-progress[data-translation-project="<%= @translation_project.id %>"][data-language="<%= @translation_project.language_id %>"]');
 var specTransProgContainer = $('.translation-progress[data-translation-project="<%= @translation_project.id %>"][data-lang-stream="<%= @lang_stream_id %>"]');
 transProgContainer.find('.books').empty();
-specTransProgContainer.find('.books').html("<%= j render partial: 'translation_progress_chapters', locals: { translation_project_id: @translation_project.id, deliverable_id: @deliverable_id } %>");
+specTransProgContainer.find('.books').html("<%= j render partial: 'translation_progress_chapters', locals: { translation_project_id: @translation_project.id, deliverable_id: @deliverable_id, lang_stream_id: @lang_stream_id } %>");
 componentHandler.upgradeElements(specTransProgContainer.find('.books .mdl-tabs').get());
 componentHandler.upgradeElements(specTransProgContainer.find('.books .mdlext-accordion').get());
 componentHandler.upgradeElements(specTransProgContainer.find('.books .mdl-checkbox').get());

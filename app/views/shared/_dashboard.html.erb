@@ -1,5 +1,4 @@
 
-<% Rails.logger.debug local_assigns %>
 <div class="mdl-tabs mdl-js-tabs dashboard-tabs">
   <div class="mdl-tabs__tab-bar">
     <% tabs.each do |tab| %>
@@ -68,7 +67,6 @@
   <% end %>
 
   <% if tabs.include? :languages %>
-    <% Rails.logger.debug 'languages tab' %>
     <%
       case @dashboard_type
       when :state
@@ -88,11 +86,12 @@
   <% end %>
 
   <% if tabs.include? :translation %>
-    <%= render partial: 'languages/translation' %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'translation' %>" id="translation-tab">
+      <%= render partial: 'languages/translation', locals: {lang_stream: nil} %>
+    </div>
   <% end %>
 
   <% if tabs.include? :organisations %>
-    <% Rails.logger.debug 'org tab' %>
     <%
       case @dashboard_type
       when :language
