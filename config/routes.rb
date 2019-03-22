@@ -108,6 +108,7 @@ Rails.application.routes.draw do
       get 'populations'
       get :load_flm_overview
       get :load_transformation_chart
+      get :fetch_translation_tab
     end
   end
   get 'outcomes/get_language_chart/:id' => 'languages#get_chart', as: 'language_outcomes_chart'

@@ -145,6 +145,13 @@ class LanguagesController < ApplicationController
     @iso = params[:iso]
   end
 
+  # nested tabs in MDL are broken unless you add the inner tabs dynamically
+  # this is for ajax to add the inner tabs in the translation tab of language dash
+  def fetch_translation_tab
+    @language = Language.find(params[:id])
+    respond_to :js
+  end
+
   def set_champion
     @language = Language.find params[:id]
     @champion = User.find_by_name params[:champion]

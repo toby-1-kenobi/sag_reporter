@@ -1,5 +1,5 @@
 $('.translation-projects .mdl-tabs__tab-bar').append("<%= j render partial: 'translation_projects/translation_project_tab', object: @translation_project %>");
-$('.translation-projects').append("<%= j render @translation_project %>");
+$('.translation-projects').append("<%= j render @translation_project, lang_stream: nil %>");
 var tabsElement = $('.translation-projects').get(0);
 componentHandler.downgradeElements(tabsElement);
 componentHandler.upgradeElement(tabsElement);
