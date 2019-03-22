@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190321055610) do
+ActiveRecord::Schema.define(version: 20190321235720) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -938,6 +938,22 @@ ActiveRecord::Schema.define(version: 20190321055610) do
   add_index "translation_progresses", ["deliverable_id"], name: "index_translation_progresses_on_deliverable_id", using: :btree
   add_index "translation_progresses", ["language_id"], name: "index_translation_progresses_on_language_id", using: :btree
 
+  create_table "translation_projects", force: :cascade do |t|
+    t.integer  "language_id"
+    t.string   "name",              null: false
+    t.text     "office_location"
+    t.text     "survey_findings"
+    t.text     "orthography_notes"
+    t.string   "publisher"
+    t.string   "copyright"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "translation_projects", ["language_id", "name"], name: "index_translation_projects_unique", unique: true, using: :btree
+  add_index "translation_projects", ["language_id"], name: "index_translation_projects_on_language_id", using: :btree
+  add_index "translation_projects", ["name"], name: "index_translation_projects_on_name", using: :btree
+
   create_table "translations", force: :cascade do |t|
     t.integer  "language_id",                         null: false
     t.text     "content",                             null: false
@@ -1130,6 +1146,7 @@ ActiveRecord::Schema.define(version: 20190321055610) do
   add_foreign_key "translation_progresses", "chapters"
   add_foreign_key "translation_progresses", "deliverables"
   add_foreign_key "translation_progresses", "languages"
+  add_foreign_key "translation_projects", "languages"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translation_codes"
   add_foreign_key "uploaded_files", "reports"
