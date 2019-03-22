@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190322000657) do
+ActiveRecord::Schema.define(version: 20190322004559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -918,20 +918,20 @@ ActiveRecord::Schema.define(version: 20190322000657) do
   add_index "translation_distributions", ["language_id"], name: "index_translation_distributions_on_language_id", using: :btree
 
   create_table "translation_progresses", force: :cascade do |t|
-    t.integer  "language_id"
     t.integer  "chapter_id"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
-    t.integer  "deliverable_id",                 null: false
-    t.integer  "translation_method", default: 0, null: false
-    t.integer  "translation_tool",   default: 0, null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.integer  "deliverable_id",                     null: false
+    t.integer  "translation_method",     default: 0, null: false
+    t.integer  "translation_tool",       default: 0, null: false
     t.string   "month"
+    t.integer  "translation_project_id",             null: false
   end
 
-  add_index "translation_progresses", ["chapter_id", "language_id", "deliverable_id"], name: "index_translation_progress_unique", unique: true, using: :btree
+  add_index "translation_progresses", ["chapter_id", "translation_project_id", "deliverable_id"], name: "index_translation_progress_unique", unique: true, using: :btree
   add_index "translation_progresses", ["chapter_id"], name: "index_translation_progresses_on_chapter_id", using: :btree
   add_index "translation_progresses", ["deliverable_id"], name: "index_translation_progresses_on_deliverable_id", using: :btree
-  add_index "translation_progresses", ["language_id"], name: "index_translation_progresses_on_language_id", using: :btree
+  add_index "translation_progresses", ["translation_project_id"], name: "index_translation_progresses_on_translation_project_id", using: :btree
 
   create_table "translation_projects", force: :cascade do |t|
     t.integer  "language_id"
@@ -1140,7 +1140,7 @@ ActiveRecord::Schema.define(version: 20190322000657) do
   add_foreign_key "translation_distributions", "languages"
   add_foreign_key "translation_progresses", "chapters"
   add_foreign_key "translation_progresses", "deliverables"
-  add_foreign_key "translation_progresses", "languages"
+  add_foreign_key "translation_progresses", "translation_projects"
   add_foreign_key "translation_projects", "languages"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translation_codes"

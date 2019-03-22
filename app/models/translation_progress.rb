@@ -13,7 +13,7 @@ class TranslationProgress < ActiveRecord::Base
       other: 10
   }
 
-  belongs_to :language
+  belongs_to :translation_project
   belongs_to :chapter
   belongs_to :deliverable
 
