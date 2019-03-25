@@ -1,49 +1,42 @@
-<div class="mdl-tabs__panel" id="translation-project-<%= translation_project.id %>-panel">
-  <% if lang_stream.blank? %>
-    <div class="translation-project-errors"></div>
-    <div class="translation-project-controls" data-update-path="<%= translation_project_path translation_project %>">
+<% if lang_stream.blank? %>
+  <div class="translation-project-errors"></div>
+  <div class="translation-project-controls" data-update-path="<%= translation_project_path translation_project %>">
+    <% text_fields = {
+        'office_location' => 'Location of the project office',
+        'survey_findings' => 'Details of Research/Survey findings done if any',
+        'orthography_notes' => 'Details of Orthography considered in translation'
+    } %>
+    <% text_fields.each do |field, label| %>
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        <input class="mdl-textfield__input" type="text" id="translation_project-name" data-field="name" data-auto-update value="<%= translation_project.name %>">
-        <label class="mdl-textfield__label" for="translation_project-name">Name</label>
+        <textarea class="mdl-textfield__input" type="text" rows= "2" id="<%= field.dasherize %>" data-field="<%= field %>" data-auto-update><%= translation_project.send(field) %></textarea>
+        <label class="mdl-textfield__label" for="<%= field.dasherize %>">
+          <%= label %>
+        </label>
       </div>
       <br>
-      <% text_fields = {
-          'office_location' => 'Location of the project office',
-          'survey_findings' => 'Details of Research/Survey findings done if any',
-          'orthography_notes' => 'Details of Orthography considered in translation'
-      } %>
-      <% text_fields.each do |field, label| %>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <textarea class="mdl-textfield__input" type="text" rows= "2" id="<%= field.dasherize %>" data-field="<%= field %>" data-auto-update><%= translation_project.send(field) %></textarea>
-          <label class="mdl-textfield__label" for="<%= field.dasherize %>">
-            <%= label %>
-          </label>
-        </div>
-        <br>
-      <% end %>
-
-      <% text_fields = {
-          'publisher' => 'Proposed Publisher',
-          'copyright' => 'Copyright policy and to be held by'
-      } %>
-      <% text_fields.each do |field, label| %>
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input class="mdl-textfield__input" type="text" id="<%= field.dasherize %>" data-field="<%= field %>" data-auto-update value="<%= translation_project.send(field) %>">
-          <label class="mdl-textfield__label" for="<%= field.dasherize %>">
-            <%= label %>
-          </label>
-        </div>
-        <br>
-      <% end %>
-    </div>
-    <h4>Distribution Plans</h4>
-    <% DistributionMethod.find_each do |dist_method| %>
-      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="distribution-method-<%= dist_method.id %>">
-        <input type="checkbox" id="distribution-method-<%= dist_method.id %>" class="mdl-checkbox__input">
-        <span class="mdl-checkbox__label"><%= dist_method.name %></span>
-      </label>
     <% end %>
-  <% end %>
 
+    <% text_fields = {
+        'publisher' => 'Proposed Publisher',
+        'copyright' => 'Copyright policy and to be held by'
+    } %>
+    <% text_fields.each do |field, label| %>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input class="mdl-textfield__input" type="text" id="<%= field.dasherize %>" data-field="<%= field %>" data-auto-update value="<%= translation_project.send(field) %>">
+        <label class="mdl-textfield__label" for="<%= field.dasherize %>">
+          <%= label %>
+        </label>
+      </div>
+      <br>
+    <% end %>
+  </div>
+  <h4>Distribution Plans</h4>
+  <% DistributionMethod.find_each do |dist_method| %>
+    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="distribution-method-<%= dist_method.id %>">
+      <input type="checkbox" id="distribution-method-<%= dist_method.id %>" class="mdl-checkbox__input">
+      <span class="mdl-checkbox__label"><%= dist_method.name %></span>
+    </label>
+  <% end %>
+<% else %>
   <%= render partial: 'translation_progresses/translation_progress', locals: { translation_project: translation_project, lang_stream: lang_stream } %>
-</div>
+<% end %>

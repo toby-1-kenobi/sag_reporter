@@ -125,6 +125,6 @@
   </tbody>
 </table>
 
-<% if lang_stream.ministry.code == 'TR' && lang_stream.state_language.language.translation_projects.any? %>
-  <%= render partial: 'languages/translation', locals: { lang_stream: lang_stream } %>
+<% if lang_stream.ministry.code == 'TR' %>
+  <%= render TranslationProject.find_or_create_by(language: lang_stream.state_language.language, project: lang_stream.project), lang_stream: lang_stream %>
 <% end %>
