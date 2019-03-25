@@ -250,7 +250,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :translation_projects, only: [:create, :show, :update]
+  resources :translation_projects, only: [:show, :update]
 
   resources :users, except: [:destroy] do
     member do

@@ -1,2 +1,14 @@
 $('#translation-panel').html("<%= j render partial: 'languages/translation', locals: {lang_stream: nil} %>");
 componentHandler.upgradeElements($('#translation-panel').find('.mdl-tabs').get());
+
+$('.translation-project-controls [data-auto-update]').on('input', function() {
+    $(this).addClass('dirty');
+});
+
+$('.translation-project-controls [data-auto-update]').on('change', function() {
+    const field = $(this).data('field');
+    var data = {translation_project: {}};
+    data['translation_project'][field] = $(this).val();
+    const url = $(this).closest('.translation-project-controls').data('update-path');
+    $.ajax(url, {method: "PATCH", data: data});
+});

@@ -1,18 +1,5 @@
 <% language = @language || lang_stream.state_language.language %>
 
-<% if lang_stream.blank? %>
-  <p>Press this button to add a new translation project to this language
-  <button class="add-translation-project mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-    <i class="material-icons">add</i>
-  </button></p>
-  <script>
-      $('.add-translation-project').on('click', function () {
-          const data = {translation_project: {language_id: <%= language.id %>}};
-          const url = "<%= translation_projects_path %>";
-          $.ajax(url, {data: data, method: 'POST'});
-      });
-  </script>
-<% end %>
 
 <div class="translation-projects mdl-tabs mdl-js-tabs mdl-js-ripple-effect" data-language-id="<%= language.id %>">
   <div class="mdl-tabs__tab-bar">
