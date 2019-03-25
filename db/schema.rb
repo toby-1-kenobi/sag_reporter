@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190322004559) do
+ActiveRecord::Schema.define(version: 20190325033026) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -935,7 +935,6 @@ ActiveRecord::Schema.define(version: 20190322004559) do
 
   create_table "translation_projects", force: :cascade do |t|
     t.integer  "language_id"
-    t.string   "name",              null: false
     t.text     "office_location"
     t.text     "survey_findings"
     t.text     "orthography_notes"
@@ -943,11 +942,12 @@ ActiveRecord::Schema.define(version: 20190322004559) do
     t.string   "copyright"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+    t.integer  "project_id",        null: false
   end
 
-  add_index "translation_projects", ["language_id", "name"], name: "index_translation_projects_unique", unique: true, using: :btree
+  add_index "translation_projects", ["language_id", "project_id"], name: "index_translation_projects_unique", unique: true, using: :btree
   add_index "translation_projects", ["language_id"], name: "index_translation_projects_on_language_id", using: :btree
-  add_index "translation_projects", ["name"], name: "index_translation_projects_on_name", using: :btree
+  add_index "translation_projects", ["project_id"], name: "index_translation_projects_on_project_id", using: :btree
 
   create_table "translations", force: :cascade do |t|
     t.integer  "language_id",                         null: false
@@ -1142,6 +1142,7 @@ ActiveRecord::Schema.define(version: 20190322004559) do
   add_foreign_key "translation_progresses", "deliverables"
   add_foreign_key "translation_progresses", "translation_projects"
   add_foreign_key "translation_projects", "languages"
+  add_foreign_key "translation_projects", "projects"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translation_codes"
   add_foreign_key "uploaded_files", "reports"
