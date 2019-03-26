@@ -30,6 +30,20 @@ class TranslationProgressesController < ApplicationController
     respond_to :js
   end
 
+  def unselect_book
+    @book_id = params[:book]
+    chapters = Chapter.where(book_id: @book_id).pluck :id
+    @tp_ids = TranslationProgress.where(
+        month: params[:month],
+        translation_project_id: params[:translation_project],
+        deliverable_id: params[:deliverable],
+        chapter_id: chapters
+    ).pluck :id
+    Rails.logger.debug @tp_ids
+    TranslationProgress.where(id: @tp_ids).destroy_all
+    respond_to :js
+  end
+
   def language_deliverable
     @translation_project = TranslationProject.find params[:translation_project]
     @deliverable_id = params[:deliverable]

@@ -43,9 +43,20 @@ specTransProgContainer.find('.books input').on('click', function() {
            data: {translation_progress: tpData}
        });
     } else {
-        console.log($(this).data('id'));
-        var path = '<%= translation_progress_path('id_placeholder') %>';
-        path = path.replace('id_placeholder', $(this).data('id'));
+        var path;
+        if ($(this).data('book')) {
+            path = '<%= unselect_book_translation_progresses_path(
+              'tp_placeholder', 'd_placeholder', 'b_placeholder', 'm_placeholder'
+            ) %>';
+            var month = $('#translation-progress-month-select-<%= @translation_project.id %>-<%= @lang_stream_id %>').val();
+            path = path.replace('tp_placeholder', '<%= @translation_project.id %>');
+            path = path.replace('d_placeholder', '<%= @deliverable_id %>');
+            path = path.replace('b_placeholder', $(this).data('book'));
+            path = path.replace('m_placeholder', month);
+        } else {
+            path = '<%= translation_progress_path('id_placeholder') %>';
+            path = path.replace('id_placeholder', $(this).data('id'));
+        }
         $.ajax({
             url: path,
             type: 'delete'

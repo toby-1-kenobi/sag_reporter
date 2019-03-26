@@ -247,6 +247,7 @@ Rails.application.routes.draw do
   resources :translation_progresses, only: [:create, :destroy] do
     collection do
       get 'translation/:translation_project/deliverable/:deliverable/:lang_stream', action: 'language_deliverable', as: 'language'
+      delete 'unselect_book/:translation_project/:deliverable/:book/:month', action: 'unselect_book', as: 'unselect_book'
     end
   end
 
