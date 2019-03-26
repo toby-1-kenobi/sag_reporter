@@ -665,6 +665,7 @@ class AndroidSyncController < ApplicationController
      facilitator: :user,
      team_member: :user,
      supervisor: :user,
+     marker: :sign_of_transformation_marker,
      observer: :person}[table_name.to_sym]&.to_s || table_name
   end
 
