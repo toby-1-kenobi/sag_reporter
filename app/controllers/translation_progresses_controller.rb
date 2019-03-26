@@ -3,8 +3,20 @@ class TranslationProgressesController < ApplicationController
   before_action :require_login
 
   def create
-    @translation_progress = TranslationProgress.create(translation_progress_params)
-    count_verses(@translation_progress.translation_project_id, @translation_progress.deliverable_id)
+    if params[:translation_progress][:book_id]
+      @translation_project_id = params[:translation_progress][:translation_project_id]
+      @book = Book.find params[:translation_progress].delete(:book_id)
+      @progressed = []
+      @book.chapter_ids.each do |ch_id|
+        params[:translation_progress][:chapter_id] = ch_id
+        tp = TranslationProgress.create(translation_progress_params)
+        @progressed << tp.chapter_id if tp.persisted?
+      end
+      count_verses(@translation_project_id, params[:translation_progress][:deliverable_id])
+    else
+      @translation_progress = TranslationProgress.create(translation_progress_params)
+      count_verses(@translation_progress.translation_project_id, @translation_progress.deliverable_id)
+    end
     respond_to :js
   end
 

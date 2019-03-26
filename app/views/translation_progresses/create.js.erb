@@ -1,11 +1,22 @@
 <%= render 'verse_count' %>
-checkbox = $('input[data-translation_project="<%= @translation_progress.translation_project_id %>"][data-chapter="<%= @translation_progress.chapter_id %>"]');
-<% if @translation_progress.persisted? %>
-  checkbox.data('id', '<%= @translation_progress.id %>');
-  checkbox.parent().attr('data-month', '<%= @translation_progress.month %>');
+var checkbox;
+<% if @book %>
+  checkbox = $('input[data-translation_project="<%= @translation_project_id %>"][data-book="<%= @book.id %>"]');
+  var chapterCheckbox;
+  <% @progressed.each do |ch_id| %>
+    chapterCheckbox = $('input[data-translation_project="<%= @translation_project_id %>"][data-chapter="<%= ch_id %>"]');
+    chapterCheckbox.closest('.mdl-checkbox').get(0).MaterialCheckbox.check();
+  <% end %>
+  updateCounts(<%= @translation_project_id %>, <%= TranslationProject.find(@translation_project_id).language_id %>);
 <% else %>
-  alert($('<div/>').html('<%= @translation_progress.errors.full_messages.to_sentence %>').text());
-  checkbox.closest('.mdl-checkbox').get(0).MaterialCheckbox.uncheck();
+  checkbox = $('input[data-translation_project="<%= @translation_progress.translation_project_id %>"][data-chapter="<%= @translation_progress.chapter_id %>"]');
+  <% if @translation_progress.persisted? %>
+    checkbox.data('id', '<%= @translation_progress.id %>');
+    checkbox.parent().attr('data-month', '<%= @translation_progress.month %>');
+  <% else %>
+    alert($('<div/>').html('<%= @translation_progress.errors.full_messages.to_sentence %>').text());
+    checkbox.closest('.mdl-checkbox').get(0).MaterialCheckbox.uncheck();
+  <% end %>
+  updateCounts(<%= @translation_progress.translation_project_id %>, <%= @translation_progress.translation_project.language_id %>);
 <% end %>
 checkbox.closest('.mdl-checkbox').removeClass('dirty');
-updateCounts(<%= @translation_progress.translation_project_id %>, <%= @translation_progress.translation_project.language_id %>);
