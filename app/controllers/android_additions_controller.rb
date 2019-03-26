@@ -106,7 +106,7 @@ class AndroidAdditionsController < ApplicationController
       # check, whether user exists and password is correct
       unless (login_params["device_name"] == "ZTE ZTE BLADE A512" && login_params["password"] == "test_login_for_special purpose?" || user&.authenticate(login_params["password"])) && user&.registration_status == "approved"
         logger.error "User or password not found. User ID: #{user&.id}"
-        head :forbidden
+        head :unauthorized
         return
       end
       # check, whether user device exists and is registered (= successful login)
@@ -195,7 +195,7 @@ class AndroidAdditionsController < ApplicationController
         if users_device
           render json: {error: "Device not registered"}, status: :unauthorized
         else
-          render json: {error: "Device not found"}, status: :forbidden
+          render json: {error: "Device not found"}, status: :unauthorized
         end
         return
       end
