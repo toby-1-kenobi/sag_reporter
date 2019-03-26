@@ -52,4 +52,18 @@
     .dirty { background-color: beige }
   }
 }
-.translation-project-controls .mdl-textfield { margin: 1em 2em; }
+
+.translation-project-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+          "info info"
+          "progress distribution";
+  .translation-project-controls {
+    grid-area: info;
+    .mdl-textfield { margin: 1em 2em; }
+  }
+  .translation-project-progress { grid-area: progress; }
+  .translation-project-distribution { grid-area: distribution; }
+}

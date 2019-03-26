@@ -1,8 +1,8 @@
 <div class="mdl-tabs__panel" id="translation-project-<%= translation_project.id %>-panel">
-  <div class="translation-project-errors"></div>
-
-  <h4>Translation Project Details</h4>
+<div class="translation-project-panel">
   <div class="translation-project-controls" data-update-path="<%= translation_project_path translation_project %>">
+    <div class="translation-project-errors"></div>
+    <h4>Translation Project Details</h4>
     <% text_fields = {
         'office_location' => 'Location of the project office',
         'survey_findings' => 'Details of Research/Survey findings done if any',
@@ -30,34 +30,41 @@
       </div>
     <% end %>
   </div>
-  <h4>Distribution Plans</h4>
-  <% DistributionMethod.find_each do |dist_method| %>
-    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="distribution-method-<%= translation_project.id %>-<%= dist_method.id %>">
-      <input type="checkbox"
-             id="distribution-method-<%= translation_project.id %>-<%= dist_method.id %>"
-             class="mdl-checkbox__input distribution-method-checkbox"
-             data-translation-project="<%= translation_project.id %>"
-             data-dist-method="<%= dist_method.id %>"
-             <%= 'checked' if translation_project.distribution_method_ids.include? dist_method.id %>
-      >
-      <span class="mdl-checkbox__label"><%= dist_method.name %></span>
-    </label>
-  <% end %>
-  <h4>Progress</h4>
-  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-    <thead>
-    <tr>
-      <th class="mdl-data-table__cell--non-numeric">Stage</th>
-      <th>Verses done</th>
-    </tr>
-    </thead>
-    <tbody>
-    <% verse_count = translation_project.translation_progresses.
-       includes(:chapter).group_by{ |tp| tp.deliverable_id}.
-       map{ |d, tps| [d, tps.reduce(0){ |sum, tp| sum + tp.chapter.verses }] }.to_h %>
-    <% Deliverable.translation_progress.each do |deliverable| %>
-      <tr><td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td><td><%= verse_count[deliverable.id] || 0%></td></tr>
+
+  <div class="translation-project-distribution">
+    <h4>Distribution Plans</h4>
+    <% DistributionMethod.find_each do |dist_method| %>
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="distribution-method-<%= translation_project.id %>-<%= dist_method.id %>">
+        <input type="checkbox"
+               id="distribution-method-<%= translation_project.id %>-<%= dist_method.id %>"
+               class="mdl-checkbox__input distribution-method-checkbox"
+               data-translation-project="<%= translation_project.id %>"
+               data-dist-method="<%= dist_method.id %>"
+               <%= 'checked' if translation_project.distribution_method_ids.include? dist_method.id %>
+        >
+        <span class="mdl-checkbox__label"><%= dist_method.name %></span>
+      </label>
     <% end %>
-    </tbody>
-  </table>
+  </div>
+
+  <div class="translation-project-progress">
+    <h4>Progress</h4>
+    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+      <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Stage</th>
+        <th>Verses done</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% verse_count = translation_project.translation_progresses.
+          includes(:chapter).group_by{ |tp| tp.deliverable_id}.
+          map{ |d, tps| [d, tps.reduce(0){ |sum, tp| sum + tp.chapter.verses }] }.to_h %>
+      <% Deliverable.translation_progress.each do |deliverable| %>
+        <tr><td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td><td><%= verse_count[deliverable.id] || 0%></td></tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
 </div>
