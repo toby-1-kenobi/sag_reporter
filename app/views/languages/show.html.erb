@@ -28,12 +28,12 @@
   <% end %>
 </div>
 
-<% tabs = [:progress, :translation, :organisations, :reports, :details] %>
+<% tabs = [:details, :progress, :translation, :organisations ] %>
 <% @tab ||= 'progress' %>
 
 <% @dashboard_type = :language %>
 <%= render partial: 'shared/dashboard', locals: { tabs: tabs, dashboard_object: @language } %>
 
-<%= render 'edit_dialogs' if editable %>
+<%= render 'edit_dialogs' %>
 
 <div id="future_year_dialogs"></div>

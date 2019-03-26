@@ -1,5 +1,7 @@
-<% if lang_stream.blank? %>
+<div class="mdl-tabs__panel" id="translation-project-<%= translation_project.id %>-panel">
   <div class="translation-project-errors"></div>
+
+  <h4>Translation Project Details</h4>
   <div class="translation-project-controls" data-update-path="<%= translation_project_path translation_project %>">
     <% text_fields = {
         'office_location' => 'Location of the project office',
@@ -13,9 +15,8 @@
           <%= label %>
         </label>
       </div>
-      <br>
     <% end %>
-
+<br>
     <% text_fields = {
         'publisher' => 'Proposed Publisher',
         'copyright' => 'Copyright policy and to be held by'
@@ -27,7 +28,6 @@
           <%= label %>
         </label>
       </div>
-      <br>
     <% end %>
   </div>
   <h4>Distribution Plans</h4>
@@ -37,6 +37,21 @@
       <span class="mdl-checkbox__label"><%= dist_method.name %></span>
     </label>
   <% end %>
-<% else %>
-  <%= render partial: 'translation_progresses/translation_progress', locals: { translation_project: translation_project, lang_stream: lang_stream } %>
-<% end %>
+  <h4>Progress</h4>
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+    <thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Stage</th>
+      <th>Verses done</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% verse_count = translation_project.translation_progresses.
+       includes(:chapter).group_by{ |tp| tp.deliverable_id}.
+       map{ |d, tps| [d, tps.reduce(0){ |sum, tp| sum + tp.chapter.verses }] }.to_h %>
+    <% Deliverable.translation_progress.each do |deliverable| %>
+      <tr><td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td><td><%= verse_count[deliverable.id] || 0%></td></tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
