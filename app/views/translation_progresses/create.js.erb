@@ -3,8 +3,9 @@ var checkbox;
 <% if @book %>
   checkbox = $('input[data-translation_project="<%= @translation_project_id %>"][data-book="<%= @book.id %>"]');
   var chapterCheckbox;
-  <% @progressed.each do |ch_id| %>
+  <% @progressed.each do |ch_id, tp_id| %>
     chapterCheckbox = $('input[data-translation_project="<%= @translation_project_id %>"][data-chapter="<%= ch_id %>"]');
+    chapterCheckbox.data('id', '<%= tp_id %>');
     chapterCheckbox.closest('.mdl-checkbox').get(0).MaterialCheckbox.check();
   <% end %>
   updateCounts(<%= @translation_project_id %>, <%= TranslationProject.find(@translation_project_id).language_id %>);

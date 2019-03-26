@@ -6,11 +6,11 @@ class TranslationProgressesController < ApplicationController
     if params[:translation_progress][:book_id]
       @translation_project_id = params[:translation_progress][:translation_project_id]
       @book = Book.find params[:translation_progress].delete(:book_id)
-      @progressed = []
+      @progressed = {}
       @book.chapter_ids.each do |ch_id|
         params[:translation_progress][:chapter_id] = ch_id
         tp = TranslationProgress.create(translation_progress_params)
-        @progressed << tp.chapter_id if tp.persisted?
+        @progressed[tp.chapter_id] = tp.id if tp.persisted?
       end
       count_verses(@translation_project_id, params[:translation_progress][:deliverable_id])
     else
