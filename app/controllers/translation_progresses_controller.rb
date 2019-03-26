@@ -5,6 +5,7 @@ class TranslationProgressesController < ApplicationController
   def create
     if params[:translation_progress][:book_id]
       @translation_project_id = params[:translation_progress][:translation_project_id]
+      @month = params[:translation_progress][:month] || 'none'
       @book = Book.find params[:translation_progress].delete(:book_id)
       @progressed = {}
       @book.chapter_ids.each do |ch_id|
@@ -15,6 +16,7 @@ class TranslationProgressesController < ApplicationController
       end
       count_verses(@translation_project_id, params[:translation_progress][:deliverable_id])
     else
+      Rails.logger.debug translation_progress_params
       @translation_progress = TranslationProgress.create(translation_progress_params)
       count_verses(@translation_progress.translation_project_id, @translation_progress.deliverable_id)
     end
@@ -68,6 +70,8 @@ class TranslationProgressesController < ApplicationController
   end
 
   def translation_progress_params
+    params['translation_progress']['month'] = nil if params['translation_progress'] && params['translation_progress']['month'] == 'none'
+    Rails.logger.debug(params)
     params.require(:translation_progress).permit([
                                                      :deliverable_id,
                                                      :translation_project_id,
