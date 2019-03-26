@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190318043004) do
+ActiveRecord::Schema.define(version: 20190326040740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -169,6 +169,14 @@ ActiveRecord::Schema.define(version: 20190318043004) do
   add_index "dialects", ["language_id", "name"], name: "language_dialect_names", unique: true, using: :btree
   add_index "dialects", ["language_id"], name: "index_dialects_on_language_id", using: :btree
   add_index "dialects", ["name"], name: "index_dialects_on_name", using: :btree
+
+  create_table "distribution_methods", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "distribution_methods", ["name"], name: "index_distribution_methods_on_name", using: :btree
 
   create_table "districts", force: :cascade do |t|
     t.string   "name",         null: false
@@ -898,21 +906,48 @@ ActiveRecord::Schema.define(version: 20190318043004) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "translation_progresses", force: :cascade do |t|
-    t.integer  "language_id"
-    t.integer  "chapter_id"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
-    t.integer  "deliverable_id",                 null: false
-    t.integer  "translation_method", default: 0, null: false
-    t.integer  "translation_tool",   default: 0, null: false
-    t.string   "month"
+  create_table "translation_distributions", force: :cascade do |t|
+    t.integer  "distribution_method_id", null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "translation_project_id", null: false
   end
 
-  add_index "translation_progresses", ["chapter_id", "language_id", "deliverable_id"], name: "index_translation_progress_unique", unique: true, using: :btree
+  add_index "translation_distributions", ["distribution_method_id", "translation_project_id"], name: "index_translation_distribution_uniq", unique: true, using: :btree
+  add_index "translation_distributions", ["distribution_method_id"], name: "index_translation_distributions_on_distribution_method_id", using: :btree
+  add_index "translation_distributions", ["translation_project_id"], name: "index_translation_distributions_on_translation_project_id", using: :btree
+
+  create_table "translation_progresses", force: :cascade do |t|
+    t.integer  "chapter_id"
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.integer  "deliverable_id",                     null: false
+    t.integer  "translation_method",     default: 0, null: false
+    t.integer  "translation_tool",       default: 0, null: false
+    t.string   "month"
+    t.integer  "translation_project_id",             null: false
+  end
+
+  add_index "translation_progresses", ["chapter_id", "translation_project_id", "deliverable_id"], name: "index_translation_progress_unique", unique: true, using: :btree
   add_index "translation_progresses", ["chapter_id"], name: "index_translation_progresses_on_chapter_id", using: :btree
   add_index "translation_progresses", ["deliverable_id"], name: "index_translation_progresses_on_deliverable_id", using: :btree
-  add_index "translation_progresses", ["language_id"], name: "index_translation_progresses_on_language_id", using: :btree
+  add_index "translation_progresses", ["translation_project_id"], name: "index_translation_progresses_on_translation_project_id", using: :btree
+
+  create_table "translation_projects", force: :cascade do |t|
+    t.integer  "language_id"
+    t.text     "office_location"
+    t.text     "survey_findings"
+    t.text     "orthography_notes"
+    t.string   "publisher"
+    t.string   "copyright"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.integer  "project_id",        null: false
+  end
+
+  add_index "translation_projects", ["language_id", "project_id"], name: "index_translation_projects_unique", unique: true, using: :btree
+  add_index "translation_projects", ["language_id"], name: "index_translation_projects_on_language_id", using: :btree
+  add_index "translation_projects", ["project_id"], name: "index_translation_projects_on_project_id", using: :btree
 
   create_table "translations", force: :cascade do |t|
     t.integer  "language_id",                         null: false
@@ -1101,9 +1136,13 @@ ActiveRecord::Schema.define(version: 20190318043004) do
   add_foreign_key "tools", "finish_line_markers"
   add_foreign_key "tools", "languages"
   add_foreign_key "tools", "users", column: "creator_id"
+  add_foreign_key "translation_distributions", "distribution_methods"
+  add_foreign_key "translation_distributions", "translation_projects"
   add_foreign_key "translation_progresses", "chapters"
   add_foreign_key "translation_progresses", "deliverables"
-  add_foreign_key "translation_progresses", "languages"
+  add_foreign_key "translation_progresses", "translation_projects"
+  add_foreign_key "translation_projects", "languages"
+  add_foreign_key "translation_projects", "projects"
   add_foreign_key "translations", "languages"
   add_foreign_key "translations", "translation_codes"
   add_foreign_key "uploaded_files", "reports"

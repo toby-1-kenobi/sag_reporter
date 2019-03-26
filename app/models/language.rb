@@ -62,6 +62,7 @@ class Language < ActiveRecord::Base
   has_many :progress_markers, through: :language_progresses
   has_many :geo_states, through: :state_languages
   has_many :zones, through: :geo_states
+  has_many :language_streams, through: :state_languages
   has_many :organisation_engagements, dependent: :destroy
   has_many :engaged_organisations, through: :organisation_engagements, source: :organisation
   has_many :organisation_translations, dependent: :destroy
@@ -74,7 +75,8 @@ class Language < ActiveRecord::Base
   has_many :finish_line_markers, through: :finish_line_progresses
   belongs_to :champion, class_name: 'User', inverse_of: :championed_languages
   has_many :populations, dependent: :destroy, inverse_of: :language
-  has_many :translation_progresses, dependent: :destroy
+  has_many :translation_projects, dependent: :destroy
+  has_many :translation_progresses, through: :translation_projects
   has_many :chapters, through: :translation_progresses
 
   delegate :name, to: :family, prefix: true, allow_nil: true

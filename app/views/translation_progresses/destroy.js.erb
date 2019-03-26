@@ -1,0 +1,8 @@
+<%= render 'verse_count' %>
+checkbox = $('input').filter(function(){
+    return $(this).data('id') === '<%= @translation_progress_id %>';
+});
+checkbox.removeData('id');
+checkbox.closest('.mdl-checkbox').removeClass('dirty');
+checkbox.closest('.mdl-checkbox').removeAttr('data-month');
+updateCounts(<%= @translation_project.id %>, <%= @translation_project.language_id %>);

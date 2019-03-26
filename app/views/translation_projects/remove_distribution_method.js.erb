@@ -1,0 +1,5 @@
+var checkbox = $('.distribution-method-checkbox[data-distribution-method="<%= @dm_id %>"]');
+checkbox.removeClass('dirty');
+<% if @translation_project.distribution_method_ids.include? @dm_id %>
+  checkbox.closest('.mdl-checkbox').get(0).MaterialCheckbox.check();
+<% end %>

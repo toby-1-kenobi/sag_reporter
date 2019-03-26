@@ -1,9 +1,18 @@
-
 <% provide(:title, "#{@language.name} Dashboard") %>
 <% provide(:context_title, @language.name) %>
 <% provide(:container_class, 'no-iso') if @language.iso.blank? %>
 
-<% editable = (logged_in_user.national? or Language.user_limited(logged_in_user).include?(@language)) %>
+<% sl = StateLanguage.where(language: @language, primary: true).take %>
+<% if sl %>
+  <ul class="breadcrumbs">
+    <li><%=	link_to SagReporter::Application::NATION, nation_path %></li>
+    <li><%= link_to "#{sl.geo_state.zone_name} Zone", zone_path(sl.geo_state.zone) %></li>
+    <li><%= link_to sl.state_name, geo_state_path(sl.geo_state) %></li>
+    <li><%= link_to @language.name, language_path(@language) %></li>
+  </ul>
+<% end %>
+
+<% editable = true %>
 
 <div id="edit-response"></div>
 <div id="pending-edits" class="mdl-grid">
@@ -19,162 +28,12 @@
   <% end %>
 </div>
 
-<div class="mdl-grid">
-  <div class="mdl-cell mdl-cell--6-col mdl-cell--2-col-phone">
-    <h1>Language Overview</h1>
-    <%= link_to show_details_language_path(@language), id: 'more-details-link' do %>
-        <i class="material-icons">pageview</i> More details
-    <% end %>
-  </div>
-  <div class="mdl-cell mdl-cell--4-offset-desktop mdl-cell--2-col">
-    <div class="language-name"><h2 id="language-name" class="<%= 'editable' if editable %>"><%= @language.name %><%= render 'shared/edit_icon' if editable %></h2></div>
-    <div id="language-iso" class="iso-code <%= 'editable' if editable %>">[<%= @language.iso %>]<%= render 'shared/edit_icon' if editable %></div>
-  </div>
-</div>
+<% tabs = [:details, :progress, :translation, :organisations ] %>
+<% @tab ||= 'progress' %>
 
-<div class="mdl-grid language-dashboard">
+<% @dashboard_type = :language %>
+<%= render partial: 'shared/dashboard', locals: { tabs: tabs, dashboard_object: @language } %>
 
-  <!-- finish line markers -->
-  <div class="finish-line-status mdl-cell mdl-cell--12-col">
-
-    <table class="finish-line-status mdl-data-table mdl-js-data-table" id="finish-line-status-table">
-      <thead>
-        <tr id="title_row_id">
-          <th class="mdl-data-table__cell--non-numeric" colspan="2" id="finish-line-status-title">Finish Line Status</th>
-          <th>
-            <% if logged_in_user.can_future_plan? or logged_in_user?(@language.champion) %>
-              <%= link_to add_finish_line_progress_path(language_id: @language.id), method: :get, remote: true do %>
-                <button class="reject-edit mdl-button mdl-js-button mdl-button--accent">
-                  Add Year
-                </button>
-              <% end %>
-            <% end %>
-          </th>
-          <% if logged_in_user.can_future_plan? or logged_in_user?(@language.champion) %>
-            <% @future_years.each do |fy| %>
-              <% if fy != nil %>
-                <th></th>
-              <% end %>
-            <% end %>
-          <% end %>
-        </tr>
-        <tr id="head_row_id">
-          <th class="mdl-data-table__cell--non-numeric">Finish Line Marker</th>
-          <th class="mdl-data-table__cell--non-numeric">Category</th>
-          <th class="mdl-data-table__cell--non-numeric">Status</th>
-          <% if logged_in_user.can_future_plan? or logged_in_user?(@language.champion) %>
-            <% @future_years.each do |fy| %>
-              <% if fy != nil %>
-                <th class="mdl-data-table__cell--non-numeric"><%= fy %></th>
-              <% end %>
-            <% end %>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody>
-        <% FinishLineMarker.order(:number).each do |marker| %>
-          <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil)%>
-          <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
-            <td id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-              <%= link_to marker.name, show_details_language_path(@language, anchor: marker.name.parameterize('-')), class: "finish-line-marker-#{marker.number}-name" %>
-            </td>
-            <td class="mdl-data-table__cell--non-numeric">
-              <button class="mdl-button mdl-js-button mdl-button--icon finish-line-progress-icon <%= 'church-engagement' if marker.number == 0 %>">
-                <%= finish_line_progress_icon(progress.category) %>
-              </button>
-            </td>
-            <% @future_years.each do |fy| %>
-              <% if logged_in_user.can_future_plan? or fy == nil or logged_in_user?(@language.champion) %>
-                <% future_progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: fy) %>
-                <% if future_progress %>
-                  <td
-                    id="finish-line-progress-status-<%= marker.number %><%= fy %>"
-                    class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if editable %> <%= 'church-engagement' if marker.number == 0 %>"
-                    data-status-category="<%= future_progress.category.to_s %>">
-                      <%= future_progress.simple_human_status %><%= render 'shared/edit_icon' if editable %>
-                  </td>
-                <% else %>
-                  <td><!-- Missing Finish Line Progress (this shouldn't happen) --></td>
-                <% end %>
-              <% end %>
-            <% end %>
-          </tr>
-          <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
-        <% end %>
-      </tbody>
-    </table>
-
-  </div>
-  <div class="mdl-cell mdl-cell--7-col">
-    <div class="mdl-grid language-dashboard-right">
-
-      <div class="mdl-cell mdl-cell--7-col">
-        <div id="more-language-details-title">More Language Details</div>
-        <ul class="mdl-list" id="more-language-details-list">
-          <li class="language-names mdl-list__item">
-            <%= link_to 'Alternate Names', show_details_language_path(@language, anchor: 'language-names'), class: 'mdl-list__item-primary-content' %>
-            <%= link_to show_details_language_path(@language, anchor: 'language-names'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
-                <span class="mdl-chip__text"><%= @language.language_names.count %></span>
-            <% end %>
-          </li>
-          <li class="language-outcome-progress mdl-list__item">
-            <%= link_to 'Classification', show_details_language_path(@language, anchor: 'classification'), class: 'mdl-list__item-primary-content' %>
-            <% if @language.family %>
-              <%= link_to show_details_language_path(@language, anchor: 'classification'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
-                  <span class="mdl-chip__text"><%= @language.family_name %></span>
-              <% end %>
-            <% end %>
-          </li>
-          <li class="language-engaged-organisations mdl-list__item">
-            <%= link_to 'Engaged Organisations', show_details_language_path(@language, anchor: 'engaged-organisations'), class: 'mdl-list__item-primary-content' %>
-            <%= link_to show_details_language_path(@language, anchor: 'engaged-organisations'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
-                <span class="mdl-chip__text"><%= @language.engaged_organisations.count %></span>
-            <% end %>
-          </li>
-          <li class="language-translating-organisations mdl-list__item">
-            <%= link_to 'Translating Organisations', show_details_language_path(@language, anchor: 'translating-organisations'), class: 'mdl-list__item-primary-content' %>
-            <%= link_to show_details_language_path(@language, anchor: 'translating-organisations'), class: 'mdl-list__item-secondary-content mdl-chip' do %>
-                <span class="mdl-chip__text"><%= @language.translating_organisations.count %></span>
-            <% end %>
-          </li>
-          <li class="language-reports mdl-list__item">
-            <%= link_to 'Impact and Planning Reports', reports_language_path(@language), class: 'mdl-list__item-primary-content' %>
-            <%= link_to reports_language_path(@language), class: 'mdl-list__item-secondary-content mdl-chip' do %>
-                <span class="mdl-chip__text"><%= Report.language(@language).count %></span>
-            <% end %>
-          </li>
-        </ul>
-      </div>
-
-      <!-- map -->
-      <div class="mdl-cell mdl-cell--5-col">
-        <% map = get_map(@language) %>
-        <% if map %>
-          <%= image_tag(map, alt: "Map for #{@language.name}", class: 'language-map mdl-shadow--2dp') %>
-        <% end %>
-      </div>
-
-      <!-- transformation -->
-      <div class="mdl-cell mdl-cell--12-col">
-        <% @language.state_languages.in_project.each do |state_language| %>
-            <h4>Transformation for <%= @language.name %> in <%= link_to state_language.state_name, state_language.geo_state %></h4>
-            <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
-            <div class="chart-<%= state_language.id %>"></div>
-        <% end %>
-        <% non_project_states = @language.state_languages.joins(:geo_state).where(project: false).map{ |sl| link_to sl.state_name, sl.geo_state }.to_sentence.html_safe %>
-        <% if non_project_states.present? %>
-            <p><%= @language.name %> is spoken in <%= non_project_states %>, but LCI does not yet track it's transformation there.</p>
-        <% end %>
-      </div>
-
-
-
-    </div>
-  </div>
-
-
-</div>
-
-<%= render 'edit_dialogs' if editable %>
+<%= render 'edit_dialogs' %>
 
 <div id="future_year_dialogs"></div>

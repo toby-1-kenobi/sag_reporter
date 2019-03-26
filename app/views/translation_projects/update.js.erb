@@ -1,0 +1,6 @@
+<% if @translation_project.valid? %>
+  $('.translation-project-controls [data-auto-update]').removeClass('dirty');
+  $('.translation-project-errors').empty();
+<% else %>
+  $('.translation-project-errors').text("<%= @translation_project.errors.full_messages.to_sentence %>");
+<% end %>

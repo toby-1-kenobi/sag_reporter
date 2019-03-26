@@ -106,6 +106,9 @@ Rails.application.routes.draw do
       # This is a hack to work around something I haven't worked out yet.
       get 'set_finish_line_progress/:marker/:progress', to: 'languages#show'
       get 'populations'
+      get :load_flm_overview
+      get :load_transformation_chart
+      get :fetch_translation_tab
     end
   end
   get 'outcomes/get_language_chart/:id' => 'languages#get_chart', as: 'language_outcomes_chart'
@@ -240,6 +243,20 @@ Rails.application.routes.draw do
   get 'about' => 'static_pages#about'
 
   resources :tools, except: [:index]
+
+  resources :translation_progresses, only: [:create, :destroy] do
+    collection do
+      get 'translation/:translation_project/deliverable/:deliverable/:lang_stream', action: 'language_deliverable', as: 'language'
+      delete 'unselect_book/:translation_project/:deliverable/:book/:month', action: 'unselect_book', as: 'unselect_book'
+    end
+  end
+
+  resources :translation_projects, only: [:show, :update] do
+    member do
+      patch 'add_distribution_method/:dist_method', action: 'add_distribution_method', as: 'add_distribution_method_to'
+      patch 'remove_distribution_method/:dist_method', action: 'remove_distribution_method', as: 'remove_distribution_method_from'
+    end
+  end
 
   resources :users, except: [:destroy] do
     member do

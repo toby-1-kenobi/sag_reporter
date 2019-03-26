@@ -1,0 +1,69 @@
+
+.translation-progress {
+  margin: 1em;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+          "header header counters"
+          "controls controls counters"
+          "measurables books books";
+  .header {
+    grid-area: header;
+    font-size: x-large;
+    text-align: center;
+    padding: 1em;
+  }
+  .controls {
+    grid-area: controls;
+    display: flex;
+    justify-content: space-around;
+    .mdlext-selectfield {
+      width: 10em;
+    }
+  }
+  .counters {
+    grid-area: counters;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-evenly;
+    padding-right: 2em;
+  }
+  .measurables {
+    grid-area: measurables;
+    padding-top: 48px;
+    display: flex;
+    flex-direction: column;
+    .mdl-button i { display: none; }
+    .mdl-button.selected i { display: inline; }
+  }
+  .books {
+    grid-area: books;
+    .mdl-tabs__panel {
+      max-height: 400px;
+      overflow: auto;
+    }
+    .mdlext-accordion__tabpanel {
+      display: flex;
+      flex-wrap: wrap;
+      .mdl-checkbox { width: 5em; }
+    }
+    .dirty { background-color: beige }
+  }
+}
+
+.translation-project-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+          "info info"
+          "progress distribution";
+  .translation-project-controls {
+    grid-area: info;
+    .mdl-textfield { margin: 1em 2em; }
+  }
+  .translation-project-progress { grid-area: progress; }
+  .translation-project-distribution { grid-area: distribution; }
+}

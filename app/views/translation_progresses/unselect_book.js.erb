@@ -1,0 +1,8 @@
+const tpIDs = <%= @tp_ids %>;
+$('section[data-book="<%= @book_id %>"] input.chapter').each(function(){
+   if (tpIDs.includes(parseInt($(this).data('id')))) {
+       $(this).closest('.mdl-checkbox').get(0).MaterialCheckbox.uncheck();
+       $(this).closest('.mdl-checkbox').removeAttr('data-month');
+   }
+});
+$('section[data-book="<%= @book_id %>"] input.book').closest('.mdl-checkbox').removeClass('dirty');

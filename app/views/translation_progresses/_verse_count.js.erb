@@ -1,0 +1,21 @@
+function updateMonthVerseCounts(transProjID, languageID){
+    var transProgContainer = $('.translation-progress[data-translation-project="' + transProjID + '"][data-language="' + languageID + '"]');
+    var verseByMonthOT = JSON.parse(localStorage.monthVerseCountOT);
+    var verseByMonthNT = JSON.parse(localStorage.monthVerseCountNT);
+    transProgContainer.each(function() {
+        var langStreamId = $(this).data('lang-stream');
+        var month = $('#translation-progress-month-select-' + transProjID + '-' + langStreamId).val();
+        $(this).find('.month-verse-count-ot').text(verseByMonthOT[month]);
+        $(this).find('.month-verse-count-nt').text(verseByMonthNT[month]);
+    });
+}
+
+function updateCounts(langProjID, languageID) {
+    localStorage.monthVerseCountOT = "<%= raw j @counts[:ot][:by_month].to_json %>";
+    localStorage.monthVerseCountNT = "<%= raw j @counts[:nt][:by_month].to_json %>";
+    transProgContainer.find('.total-verse-count-ot').text('<%= @counts[:ot][:total_verses] %>');
+    transProgContainer.find('.total-verse-count-nt').text('<%= @counts[:nt][:total_verses] %>');
+    updateMonthVerseCounts(langProjID, languageID);
+    transProgContainer.find('.remaining-verse-count-ot').text('<%= @counts[:ot][:remaining_verses] %>');
+    transProgContainer.find('.remaining-verse-count-nt').text('<%= @counts[:nt][:remaining_verses] %>');
+}

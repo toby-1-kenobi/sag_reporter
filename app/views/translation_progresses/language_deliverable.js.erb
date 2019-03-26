@@ -1,0 +1,72 @@
+<%= render 'verse_count' %>
+
+function disableChapters(container, month) {
+    container.find('.mdl-checkbox[data-month]').each(function(){
+        this.MaterialCheckbox.disable();
+    });
+    container.find('.mdl-checkbox[data-month="' + month + '"]').each(function(){
+        this.MaterialCheckbox.enable();
+    });
+}
+
+var transProgContainer = $('.translation-progress[data-translation-project="<%= @translation_project.id %>"][data-language="<%= @translation_project.language_id %>"]');
+var specTransProgContainer = $('.translation-progress[data-translation-project="<%= @translation_project.id %>"][data-lang-stream="<%= @lang_stream_id %>"]');
+transProgContainer.find('.books').empty();
+specTransProgContainer.find('.books').html("<%= j render partial: 'translation_progress_chapters', locals: { translation_project_id: @translation_project.id, deliverable_id: @deliverable_id, lang_stream_id: @lang_stream_id } %>");
+componentHandler.upgradeElements(specTransProgContainer.find('.books .mdl-tabs').get());
+componentHandler.upgradeElements(specTransProgContainer.find('.books .mdlext-accordion').get());
+componentHandler.upgradeElements(specTransProgContainer.find('.books .mdl-checkbox').get());
+
+disableChapters(specTransProgContainer.find('.books'), $('#translation-progress-month-select-<%= @translation_project.id %>-<%= @lang_stream_id %>').val());
+
+transProgContainer.find('.measurables .mdl-button').removeClass('selected mdl-button--colored');
+specTransProgContainer.find('.measurables .mdl-button[data-deliverable="<%= @deliverable_id %>"]').addClass('selected mdl-button--colored');
+
+updateCounts(<%= @translation_project.id %>, <%= @translation_project.language_id %>);
+
+specTransProgContainer.find('.books input').on('click', function() {
+    $(this).closest('.mdl-checkbox').addClass('dirty')
+    if ($(this).prop('checked')) {
+       const data = $(this).data();
+       var tpData = {};
+       for (var key in data) {
+           if (data.hasOwnProperty(key)) {
+               tpData[key + '_id'] = data[key]
+           }
+       }
+       tpData['month'] = $('#translation-progress-month-select-<%= @translation_project.id %>-<%= @lang_stream_id %>').val();
+       tpData['translation_method'] = $('#translation-progress-method-select-<%= @translation_project.id %>-<%= @lang_stream_id %>').val();
+       tpData['translation_tool'] = $('#translation-progress-tool-select-<%= @translation_project.id %>-<%= @lang_stream_id %>').val();
+       $.ajax({
+           url: '<%= translation_progresses_path %>',
+           type: 'post',
+           data: {translation_progress: tpData}
+       });
+    } else {
+        var path;
+        if ($(this).data('book')) {
+            path = '<%= unselect_book_translation_progresses_path(
+              'tp_placeholder', 'd_placeholder', 'b_placeholder', 'm_placeholder'
+            ) %>';
+            var month = $('#translation-progress-month-select-<%= @translation_project.id %>-<%= @lang_stream_id %>').val();
+            path = path.replace('tp_placeholder', '<%= @translation_project.id %>');
+            path = path.replace('d_placeholder', '<%= @deliverable_id %>');
+            path = path.replace('b_placeholder', $(this).data('book'));
+            path = path.replace('m_placeholder', month);
+        } else {
+            path = '<%= translation_progress_path('id_placeholder') %>';
+            path = path.replace('id_placeholder', $(this).data('id'));
+        }
+        $.ajax({
+            url: path,
+            type: 'delete'
+        });
+    }
+});
+
+$('#translation-progress-month-select-<%= @translation_project.id %>-<%= @lang_stream_id %>').on('change', function () {
+    var month = $(this).val();
+    var container = $('.translation-progress[data-translation-project="<%= @translation_project.id %>"][data-lang-stream="<%= @lang_stream_id %>"] .books')
+    disableChapters(container, month);
+    updateMonthVerseCounts(<%= @translation_project.id %>, <%= @translation_project.language_id %>);
+})

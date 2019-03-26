@@ -10,8 +10,8 @@
       color: white;
       text-decoration: none;
       padding: 10px 0 10px 65px;
-      background: brown; /* fallback colour */
-      background: hsla(34, 85%, 35%, 1);
+      background: rgb(63, 81, 181); /* fallback colour */
+      background: hsla(231, 48%, 48%, 1);
       position: relative;
       display: block;
       float: left;
@@ -23,7 +23,7 @@
         border: {
           top: 50px solid transparent; /* Go big on the size and let overflow hide */
           bottom: 50px solid transparent;
-          left: 30px solid hsla(34, 85%, 35%, 1);
+          left: 30px solid hsla(231, 48%, 48%, 1);
         }
         position: absolute;
         top: 50%;
@@ -48,9 +48,9 @@
         z-index: 1;
       }
       &:hover {
-        background: hsla(34, 85%, 25%, 1) !important;
+        background: hsla(231, 48%, 35%, 1) !important;
         &:after {
-          border-left-color:  hsla(34, 85%, 25%, 1) !important;
+          border-left-color:  hsla(231, 48%, 35%, 1) !important;
         }
       }
     }
@@ -58,21 +58,21 @@
       padding-left: 10px;
     }
     &:nth-child(2) a {
-      background: hsla(34, 85%, 45%, 1);
+      background: hsla(231, 48%, 58%, 1);
       &::after {
-        border-left-color: hsla(34, 85%, 45%, 1);
+        border-left-color: hsla(231, 48%, 58%, 1);
       }
     }
     &:nth-child(3) a {
-      background: hsla(34, 85%, 55%, 1);
+      background: hsla(231, 48%, 68%, 1);
       &::after {
-        border-left-color: hsla(34, 85%, 55%, 1);
+        border-left-color: hsla(231, 48%, 68%, 1);
       }
     }
     &:nth-child(4) a {
-      background: hsla(34, 85%, 65%, 1);
+      background: hsla(231, 48%, 78%, 1);
       &::after {
-        border-left-color: hsla(34, 85%, 65%, 1);
+        border-left-color: hsla(231, 48%, 78%, 1);
       }
     }
     &:last-child a {

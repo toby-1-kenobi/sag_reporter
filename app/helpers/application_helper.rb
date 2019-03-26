@@ -37,15 +37,17 @@ module ApplicationHelper
 
 	def tab_names
     {
-        progress: 'Finish Line Status',
+        progress: 'Finish Line Plan',
         zones: 'Zones',
         states: 'States',
         languages: 'Languages',
+				translation: 'Translation',
 				projects: @dashboard_type == :nation ? 'Projects' : 'My Projects',
 				projects_overview: 'Projects Overview',
-        organisations: 'Agencies',
+        organisations: 'Organisations',
         reports: 'Impact Stories',
-        board: 'All Access Report'
+        board: 'All Access Report',
+				details: 'Details'
     }
   end
 

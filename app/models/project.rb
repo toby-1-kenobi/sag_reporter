@@ -16,6 +16,7 @@ class Project < ActiveRecord::Base
   has_many :language_streams, dependent: :nullify
   has_many :facilitators, through: :language_streams, class_name: 'User'
   has_many :quarterly_evaluations, dependent: :restrict_with_error
+  has_many :translation_projects, dependent: :restrict_with_error
 
   validates :name, presence: true, uniqueness: true
 

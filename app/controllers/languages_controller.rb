@@ -42,6 +42,8 @@ class LanguagesController < ApplicationController
     # attributes with pending edits should be visually distinct in the form
     @pending_attributes = @user_pending_edits.pluck :attribute_name
     @future_years = get_future_years(@language)
+    @filters = {since: 3.month.ago.strftime('%d %B, %Y'), until: Date.today.strftime('%d %B, %Y')}
+    @tab = params[:tab]
   end
 
   def show_details
@@ -77,6 +79,7 @@ class LanguagesController < ApplicationController
       @pending_flm_ids << flp.finish_line_marker_id
     end
     @future_years = get_future_years(@language)
+    respond_to :js
   end
 
   def reports
@@ -118,6 +121,18 @@ class LanguagesController < ApplicationController
     end
   end
 
+  def load_flm_overview
+    @language = Language.find(params[:id])
+    @future_years = get_future_years(@language)
+    respond_to :js
+  end
+
+  def load_transformation_chart
+    @language = Language.find(params[:id])
+    @outcome_areas = Topic.all
+    respond_to :js
+  end
+
   def get_chart
     @outcome_areas = Topic.all
     @state_language = StateLanguage.find(params[:id])
@@ -128,6 +143,13 @@ class LanguagesController < ApplicationController
 
   def fetch_jp_data
     @iso = params[:iso]
+  end
+
+  # nested tabs in MDL are broken unless you add the inner tabs dynamically
+  # this is for ajax to add the inner tabs in the translation tab of language dash
+  def fetch_translation_tab
+    @language = Language.find(params[:id])
+    respond_to :js
   end
 
   def set_champion
@@ -395,6 +417,11 @@ class LanguagesController < ApplicationController
         :translation_need,
         :translation_progress,
         :project_id
+    )
+  end
+
+  def lang_translation_params
+    params.require(:language).permit(
     )
   end
 

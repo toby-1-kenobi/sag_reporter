@@ -153,5 +153,6 @@ $(document).on "ready page:change", ->
   $('#language-project-select').on 'change', ->
     $(this).closest('form').submit()
     $('#project-input-row').slideUp()
+    return
 
   return

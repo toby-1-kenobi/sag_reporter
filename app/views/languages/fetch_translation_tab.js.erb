@@ -1,0 +1,30 @@
+$('#translation-panel').html("<%= j render partial: 'languages/translation', locals: {lang_stream: nil} %>");
+componentHandler.upgradeElements($('#translation-panel').find('.mdl-tabs').get());
+
+$('.translation-project-controls [data-auto-update]').on('input', function() {
+    $(this).addClass('dirty');
+});
+
+$('.translation-project-controls [data-auto-update]').on('change', function() {
+    const field = $(this).data('field');
+    var data = {translation_project: {}};
+    data['translation_project'][field] = $(this).val();
+    const url = $(this).closest('.translation-project-controls').data('update-path');
+    $.ajax(url, {method: "PATCH", data: data});
+});
+
+$('.distribution-method-checkbox').on('click', function() {
+    var url;
+    $(this).addClass('dirty');
+    if ($(this).prop('checked')) {
+        url = "<%= add_distribution_method_to_translation_project_path('proj-placeholder', 'dm-placeholder') %>";
+    } else {
+        url = "<%= remove_distribution_method_from_translation_project_path('proj-placeholder', 'dm-placeholder') %>";
+    }
+    url = url.replace('proj-placeholder', $(this).data('translation-project'));
+    url = url.replace('dm-placeholder', $(this).data('dist-method'));
+    $.ajax(url, {
+        method: 'PATCH',
+        remote: true
+    });
+});

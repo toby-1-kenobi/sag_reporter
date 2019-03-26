@@ -1,0 +1,10 @@
+<div id="transformation-charts">
+  <% @language.state_languages.in_project.each do |state_language| %>
+    <h4>Transformation for <%= @language.name %> in <%= link_to state_language.state_name, state_language.geo_state %></h4>
+    <div class="chart-<%= state_language.id %>"></div>
+  <% end %>
+  <% non_project_states = @language.state_languages.joins(:geo_state).where(project: false).map{ |sl| link_to sl.state_name, sl.geo_state }.to_sentence.html_safe %>
+  <% if non_project_states.present? %>
+    <p><%= @language.name %> is also spoken in <%= non_project_states %>, but its transformation is not yet tracked there.</p>
+  <% end %>
+</div>

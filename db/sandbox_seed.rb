@@ -169,6 +169,11 @@ family_ids = []
   family_ids << LanguageFamily.create(name: family).id
 end
 
+# distribution methods
+%w(Print Audio Web Mobile\ app Other).each do |dist|
+  DistributionMethod.create(name: dist)
+end
+
 # create between 510 and 520 languages
 language_count = short_seed ? 50 : rand(510..520)
 language_names = {}

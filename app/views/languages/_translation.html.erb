@@ -1,0 +1,9 @@
+<% language = @language || lang_stream.state_language.language %>
+
+
+<div class="translation-projects mdl-tabs mdl-js-tabs mdl-js-ripple-effect" data-language-id="<%= language.id %>">
+  <div class="mdl-tabs__tab-bar">
+    <%= render partial: 'translation_projects/translation_project_tab', collection: language.translation_projects %>
+  </div>
+  <%= render language.translation_projects, lang_stream: lang_stream %>
+</div>
