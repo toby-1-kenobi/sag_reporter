@@ -250,7 +250,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :translation_projects, only: [:show, :update]
+  resources :translation_projects, only: [:show, :update] do
+    member do
+      patch 'add_distribution_method/:dist_method', action: 'add_distribution_method', as: 'add_distribution_method_to'
+      patch 'remove_distribution_method/:dist_method', action: 'remove_distribution_method', as: 'remove_distribution_method_from'
+    end
+  end
 
   resources :users, except: [:destroy] do
     member do

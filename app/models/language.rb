@@ -78,8 +78,6 @@ class Language < ActiveRecord::Base
   has_many :translation_projects, dependent: :destroy
   has_many :translation_progresses, through: :translation_projects
   has_many :chapters, through: :translation_progresses
-  has_many :translation_distributions, dependent: :destroy
-  has_many :distribution_methods, through: :translation_distributions
 
   delegate :name, to: :family, prefix: true, allow_nil: true
 

@@ -6,6 +6,20 @@ class TranslationProjectsController < ApplicationController
     respond_to :js
   end
 
+  def add_distribution_method
+    @translation_project = TranslationProject.find(params[:id])
+    @dm_id = params[:dist_method]
+    @translation_project.distribution_method_ids += [@dm_id]
+    respond_to :js
+  end
+
+  def remove_distribution_method
+    @translation_project = TranslationProject.find(params[:id])
+    @dm_id = params[:dist_method]
+    @translation_project.distribution_methods.delete(DistributionMethod.find @dm_id)
+    respond_to :js
+  end
+
   private
 
   def translation_project_params

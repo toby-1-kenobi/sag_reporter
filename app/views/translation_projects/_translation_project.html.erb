@@ -32,8 +32,14 @@
   </div>
   <h4>Distribution Plans</h4>
   <% DistributionMethod.find_each do |dist_method| %>
-    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="distribution-method-<%= dist_method.id %>">
-      <input type="checkbox" id="distribution-method-<%= dist_method.id %>" class="mdl-checkbox__input">
+    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="distribution-method-<%= translation_project.id %>-<%= dist_method.id %>">
+      <input type="checkbox"
+             id="distribution-method-<%= translation_project.id %>-<%= dist_method.id %>"
+             class="mdl-checkbox__input distribution-method-checkbox"
+             data-translation-project="<%= translation_project.id %>"
+             data-dist-method="<%= dist_method.id %>"
+             <%= 'checked' if translation_project.distribution_method_ids.include? dist_method.id %>
+      >
       <span class="mdl-checkbox__label"><%= dist_method.name %></span>
     </label>
   <% end %>

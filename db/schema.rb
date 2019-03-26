@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190325033026) do
+ActiveRecord::Schema.define(version: 20190326040740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -908,14 +908,14 @@ ActiveRecord::Schema.define(version: 20190325033026) do
 
   create_table "translation_distributions", force: :cascade do |t|
     t.integer  "distribution_method_id", null: false
-    t.integer  "language_id",            null: false
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.integer  "translation_project_id", null: false
   end
 
-  add_index "translation_distributions", ["distribution_method_id", "language_id"], name: "index_translation_distribution_uniq", unique: true, using: :btree
+  add_index "translation_distributions", ["distribution_method_id", "translation_project_id"], name: "index_translation_distribution_uniq", unique: true, using: :btree
   add_index "translation_distributions", ["distribution_method_id"], name: "index_translation_distributions_on_distribution_method_id", using: :btree
-  add_index "translation_distributions", ["language_id"], name: "index_translation_distributions_on_language_id", using: :btree
+  add_index "translation_distributions", ["translation_project_id"], name: "index_translation_distributions_on_translation_project_id", using: :btree
 
   create_table "translation_progresses", force: :cascade do |t|
     t.integer  "chapter_id"
@@ -1137,7 +1137,7 @@ ActiveRecord::Schema.define(version: 20190325033026) do
   add_foreign_key "tools", "languages"
   add_foreign_key "tools", "users", column: "creator_id"
   add_foreign_key "translation_distributions", "distribution_methods"
-  add_foreign_key "translation_distributions", "languages"
+  add_foreign_key "translation_distributions", "translation_projects"
   add_foreign_key "translation_progresses", "chapters"
   add_foreign_key "translation_progresses", "deliverables"
   add_foreign_key "translation_progresses", "translation_projects"
