@@ -239,7 +239,7 @@ class AndroidSyncController < ApplicationController
     tables[Book] = %w(name abbreviation number nt) if @version >= "1.5"
     tables[Chapter] = %w(book_id number verses) if @version >= "1.5"
     tables[SignOfTransformation] = %w(church_ministry_id month other) if @version >= "1.5"
-    tables[SignOfTransformationMarker] = %w(name_id) if @version >= "1.5.0:116"
+    tables[SignOfTransformationMarker] = %w(name_id ministry_id) if @version >= "1.5.0:116"
     tables[SignOfTransformation] << %w(marker_id) if @version >= "1.5.0:116"
     tables[BiblePassage] = %w(church_ministry_id chapter_id verse month) if @version >= "1.5"
     formatted_evaluation_info = ""
