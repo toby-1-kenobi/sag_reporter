@@ -9,7 +9,8 @@ class TranslationProgressesController < ApplicationController
       @progressed = {}
       @book.chapter_ids.each do |ch_id|
         params[:translation_progress][:chapter_id] = ch_id
-        tp = TranslationProgress.create(translation_progress_params)
+        tp = TranslationProgress.new(translation_progress_params)
+        tp.save if tp.valid?
         @progressed[tp.chapter_id] = tp.id if tp.persisted?
       end
       count_verses(@translation_project_id, params[:translation_progress][:deliverable_id])
