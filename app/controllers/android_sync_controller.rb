@@ -584,7 +584,7 @@ class AndroidSyncController < ApplicationController
               :id,
               :old_id,
               :church_ministry_id,
-              :progress_marker_id,
+              :marker_id,
               :other,
               :month
           ],
