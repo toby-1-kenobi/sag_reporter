@@ -41,6 +41,7 @@ class AndroidSyncController < ApplicationController
         Book => nil,
         Chapter => nil,
         SignOfTransformation => nil,
+        SignOfTransformationMarker => nil,
         BiblePassage => nil,
         AggregateMinistryOutput => %w(deliverable_id month value actual creator_id comment state_language_id),
         QuarterlyTarget => %w(state_language_id deliverable_id quarter value),
@@ -237,7 +238,9 @@ class AndroidSyncController < ApplicationController
     tables[ImpactReport] << "shareable" if @version >= "1.4.4:102"
     tables[Book] = %w(name abbreviation number nt) if @version >= "1.5"
     tables[Chapter] = %w(book_id number verses) if @version >= "1.5"
-    tables[SignOfTransformation] = %w(church_ministry_id month progress_marker_id other) if @version >= "1.5"
+    tables[SignOfTransformation] = %w(church_ministry_id month other) if @version >= "1.5"
+    tables[SignOfTransformationMarker] = %w(name_id) if @version >= "1.5.0:116"
+    tables[SignOfTransformation] << %w(marker_id) if @version >= "1.5.0:116"
     tables[BiblePassage] = %w(church_ministry_id chapter_id verse month) if @version >= "1.5"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
