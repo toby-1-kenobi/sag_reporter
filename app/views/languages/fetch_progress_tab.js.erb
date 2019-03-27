@@ -7,3 +7,15 @@ $.ajax('<%= load_transformation_chart_language_path(@language) %>');
 $('#translation-tab').on('click', function () {
     $.ajax("<%= fetch_translation_tab_language_path(@language) %>");
 });
+
+$('.project-language-input').on('input', function () {
+   $(this).closest('.mdl-textfield').addClass('dirty');
+});
+
+$('.project-language-input').on('change', function () {
+    var url = '<%= project_language_path('pl-placeholder') %>';
+    url = url.replace('pl-placeholder', $(this).data('project-language'));
+    var data = {project_language: {}};
+    data.project_language[$(this).data('field')] = $(this).val();
+    $.ajax(url, {data: data, method: 'PATCH'});
+});
