@@ -1,0 +1,9 @@
+$('#progress-panel').html("<%= j render partial: 'languages/finish_line_tabs' %>");
+componentHandler.upgradeElements($('#progress-panel').find('.mdl-tabs').get());
+
+$.ajax('<%= load_flm_overview_language_path(@language) %>');
+$.ajax('<%= load_transformation_chart_language_path(@language) %>');
+
+$('#translation-tab').on('click', function () {
+    $.ajax("<%= fetch_translation_tab_language_path(@language) %>");
+});

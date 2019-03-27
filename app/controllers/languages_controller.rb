@@ -152,6 +152,11 @@ class LanguagesController < ApplicationController
     respond_to :js
   end
 
+  def fetch_progress_tab
+    @language = Language.find(params[:id])
+    respond_to :js
+  end
+
   def set_champion
     @language = Language.find params[:id]
     @champion = User.find_by_name params[:champion]

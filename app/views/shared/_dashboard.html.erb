@@ -7,23 +7,27 @@
   </div>
 
   <% if tabs.include? :progress %>
-    <%
-      case @dashboard_type
-      when :language
-        flm_summary_path = load_flm_overview_language_path(@language)
-        flt_summary_path = load_transformation_chart_language_path(@language)
-      when :state
-        flm_summary_path = load_flm_summary_geo_state_path(@geo_state)
-        flt_summary_path = load_flt_summary_geo_state_path(@geo_state)
-      when :zone
-        flm_summary_path = load_flm_summary_zone_path(@zone)
-        flt_summary_path = load_flt_summary_zone_path(@zone)
-      else # nation
-        flm_summary_path = load_national_flm_summary_path
-        flt_summary_path = load_national_flt_summary_path
-      end
-    %>
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'progress' %>" id="progress-panel">
+      <% if @dashboard_type == :language %>
+        <script>
+            $('#progress-tab').on('click.load-content', function () {
+                $(this).off('click.load-content');
+                $.ajax("<%= fetch_progress_tab_language_path(@language) %>");
+            });
+        </script>
+      <% else
+        case @dashboard_type
+        when :state
+          flm_summary_path = load_flm_summary_geo_state_path(@geo_state)
+          flt_summary_path = load_flt_summary_geo_state_path(@geo_state)
+        when :zone
+          flm_summary_path = load_flm_summary_zone_path(@zone)
+          flt_summary_path = load_flt_summary_zone_path(@zone)
+        else # nation
+          flm_summary_path = load_national_flm_summary_path
+          flt_summary_path = load_national_flt_summary_path
+        end
+      %>
       <div class="grid-layout">
         <div id="flm-table">
           <%= link_to 'get flm table', flm_summary_path, remote: true, class: 'content-fetch-trigger' %>
@@ -34,6 +38,7 @@
           <div class="mdl-spinner mdl-js-spinner"></div>
         </div>
       </div>
+      <% end %>
     </div>
   <% end %>
 
@@ -82,16 +87,6 @@
         <%= link_to 'get language flm table', language_table_path, remote: true, class: 'content-fetch-trigger' %>
         <div class="mdl-spinner mdl-js-spinner"></div>
       </div>
-    </div>
-  <% end %>
-
-  <% if tabs.include? :translation %>
-    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'translation' %>" id="translation-panel">
-      <script>
-        $('#translation-tab').on('click', function () {
-           $.ajax("<%= fetch_translation_tab_language_path(@language) %>");
-        });
-      </script>
     </div>
   <% end %>
 

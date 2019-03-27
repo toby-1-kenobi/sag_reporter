@@ -44,10 +44,11 @@ module ApplicationHelper
 				translation: 'Translation',
 				projects: @dashboard_type == :nation ? 'Projects' : 'My Projects',
 				projects_overview: 'Projects Overview',
+				products: 'Language Products',
         organisations: 'Organisations',
         reports: 'Impact Stories',
         board: 'All Access Report',
-				details: 'Details'
+				details: 'Language Info'
     }
   end
 
