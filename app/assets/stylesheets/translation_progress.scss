@@ -55,15 +55,16 @@
 
 .translation-project-panel {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto;
   grid-template-areas:
-          "info info"
-          "progress distribution";
+          "info info info"
+          "progress completion distribution";
   .translation-project-controls {
     grid-area: info;
-    .mdl-textfield { margin: 1em 2em; }
+    .mdl-textfield { margin: 0 2em; }
   }
   .translation-project-progress { grid-area: progress; }
+  .translation-project-completion { grid-area: completion; }
   .translation-project-distribution { grid-area: distribution; }
 }

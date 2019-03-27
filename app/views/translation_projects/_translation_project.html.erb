@@ -47,6 +47,22 @@
     <% end %>
   </div>
 
+  <div class="translation-project-completion">
+    <h4>Expected Completion Year</h4>
+    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+      <% done_status = [4, 5, 6] %>
+      <tbody>
+      <%# Gospel is FLM number 5, NT is FLM number 6, OT is FLM number 7 %>
+      <% FinishLineMarker.where(number: [5, 6, 7]).each do |flm| %>
+        <tr>
+          <td><%= flm.name %></td>
+          <td><%= translation_project.language.finish_line_progresses.where(status: done_status, finish_line_marker: flm).where.not(year: nil).pluck(:year).min %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
   <div class="translation-project-progress">
     <h4>Progress</h4>
     <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
