@@ -20,13 +20,13 @@ $(".editable").hover(
     }
 );
 
-$(".editable").click(function(){
+$(".editable").on('click', function(){
     var id = this.id
     if($(this).hasClass('finish-line-progress-status')) {
         var number = id.substring(id.lastIndexOf('-') + 1)
         $("dialog#finish-line-dialog-"+number).get(0).showModal()
     }else {
-        $("dialog[data-for=\"#{id}\"]").get(0).showModal()
+        $('dialog[data-for="' +id + '"]').get(0).showModal()
     }
 });
 

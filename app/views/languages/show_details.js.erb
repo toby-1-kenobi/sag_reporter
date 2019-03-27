@@ -1,1 +1,20 @@
 $('#language-details-container').replaceWith('<%= j render partial: 'languages/details' %>');
+
+$(".editable").hover(
+    function () {
+        $(this).find('.edit-icon').removeClass('hide')
+    },
+    function () {
+        $(this).find('.edit-icon').addClass('hide')
+    }
+);
+
+$(".editable").on('click', function(){
+    var id = this.id
+    if($(this).hasClass('finish-line-progress-status')) {
+        var number = id.substring(id.lastIndexOf('-') + 1)
+        $("dialog#finish-line-dialog-"+number).get(0).showModal()
+    }else {
+        $('dialog[data-for="' +id + '"]').get(0).showModal()
+    }
+});
