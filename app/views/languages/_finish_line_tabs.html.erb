@@ -19,6 +19,87 @@
 
   </div>
   <div class="mdl-tabs__panel" id="church-engagement-panel">
+    <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical mdlext-js-ripple-effect"
+        role="tablist" aria-multiselectable="true">
 
+      <% @project_languages.each do |pl| %>
+        <li class="mdlext-accordion__panel" role="presentation">
+          <header class="mdlext-accordion__tab" role="tab" aria-expanded="false">
+            <span class="mdlext-accordion__tab__caption"><%= pl.project.name %></span>
+          </header>
+          <section class="mdlext-accordion__tabpanel" role="tabpanel" aria-hidden="true" hidden>
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+              <tbody>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric">Number of Church Teams that reported last month</td>
+                <% last_month = 1.month.ago.strftime('%Y-%m') %>
+                <td>
+                  <%=
+                    ChurchTeam.active.
+                    joins(:state_language, { church_ministries: :ministry_outputs }).
+                    where(ministry_outputs: { month: last_month }).
+                    where(state_language: pl.state_language).
+                    select('church_teams.id').distinct.count
+                  %>
+                </td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric">Number of Church Committee meetings reported in the past 6 months</td>
+                <% ch_partnerships = Ministry.find_by_code('CH') %>
+                <% ch_meeting = ch_partnerships.deliverables.find_by_number(8) %>
+                <% facilitators = LanguageStream.where(ministry: ch_partnerships, state_language: pl.state_language, project: pl.project).pluck :facilitator_id %>
+                <td><%=
+                  AggregateMinistryOutput.
+                  where(actual: true, deliverable: ch_meeting, state_language: pl.state_language, creator: facilitators).
+                  where('month >= ?', 6.months.ago.strftime('%Y-%m')).pluck(:value).sum
+                %></td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric">Number of Churches generally reported</td>
+                <td>
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input project-language-input"
+                           type="text" pattern="[0-9]+"
+                           data-project-language="<%= pl.id %>"
+                           data-field="churches_reported"
+                           value="<%= pl.churches_reported %>"
+                    >
+                    <span class="mdl-textfield__error">Enter a number</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric">Number of people attending churches</td>
+                <td>
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input project-language-input"
+                           type="text" pattern="[0-9]+"
+                           data-project-language="<%= pl.id %>"
+                           data-field="people_in_churches"
+                           value="<%= pl.people_in_churches %>"
+                    >
+                    <span class="mdl-textfield__error">Enter a number</span>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="mdl-data-table__cell--non-numeric">For followup questions, office or person to be contacted</td>
+                <td>
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <textarea class="mdl-textfield__input project-language-input"
+                           type="text" rows="2"
+                           data-project-language="<%= pl.id %>"
+                           data-field="followup_contact"
+                    ><%= pl.followup_contact %></textarea>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </section>
+        </li>
+      <% end %>
+
+    </ul>
   </div>
 </div>

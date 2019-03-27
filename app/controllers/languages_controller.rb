@@ -154,6 +154,8 @@ class LanguagesController < ApplicationController
 
   def fetch_progress_tab
     @language = Language.find(params[:id])
+    sl = @language.state_languages.find_by(primary: true)
+    @project_languages = sl ? sl.project_languages : ProjectLanguage.none
     respond_to :js
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190327002231) do
+ActiveRecord::Schema.define(version: 20190327102509) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -673,10 +673,13 @@ ActiveRecord::Schema.define(version: 20190327002231) do
   add_index "progress_updates", ["year"], name: "index_progress_updates_on_year", using: :btree
 
   create_table "project_languages", force: :cascade do |t|
-    t.integer  "project_id",        null: false
-    t.integer  "state_language_id", null: false
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.integer  "project_id",         null: false
+    t.integer  "state_language_id",  null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.integer  "churches_reported"
+    t.integer  "people_in_churches"
+    t.text     "followup_contact"
   end
 
   add_index "project_languages", ["project_id", "state_language_id"], name: "index_project_language", unique: true, using: :btree
