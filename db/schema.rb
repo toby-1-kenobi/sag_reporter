@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190326040740) do
+ActiveRecord::Schema.define(version: 20190327002231) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,18 @@ ActiveRecord::Schema.define(version: 20190326040740) do
   add_index "aggregate_ministry_outputs", ["creator_id"], name: "index_aggregate_ministry_outputs_on_creator_id", using: :btree
   add_index "aggregate_ministry_outputs", ["deliverable_id"], name: "index_aggregate_ministry_outputs_on_deliverable_id", using: :btree
   add_index "aggregate_ministry_outputs", ["state_language_id"], name: "index_aggregate_ministry_outputs_on_state_language_id", using: :btree
+
+  create_table "bible_passages", force: :cascade do |t|
+    t.integer  "church_ministry_id", null: false
+    t.integer  "chapter_id",         null: false
+    t.string   "month",              null: false
+    t.integer  "verse",              null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+  end
+
+  add_index "bible_passages", ["chapter_id"], name: "index_bible_passages_on_chapter_id", using: :btree
+  add_index "bible_passages", ["church_ministry_id"], name: "index_bible_passages_on_church_ministry_id", using: :btree
 
   create_table "books", force: :cascade do |t|
     t.string   "name",         null: false
@@ -151,6 +163,7 @@ ActiveRecord::Schema.define(version: 20190326040740) do
     t.integer  "plan_form_id",                      null: false
     t.integer  "result_form_id",                    null: false
     t.boolean  "funder_interest",    default: true, null: false
+    t.integer  "ui_order"
   end
 
   add_index "deliverables", ["ministry_id"], name: "index_deliverables_on_ministry_id", using: :btree
@@ -820,6 +833,28 @@ ActiveRecord::Schema.define(version: 20190326040740) do
 
   add_index "reports_topics", ["report_id", "topic_id"], name: "index_reports_topics_on_report_id_and_topic_id", unique: true, using: :btree
 
+  create_table "sign_of_transformation_markers", force: :cascade do |t|
+    t.integer  "name_id",     null: false
+    t.integer  "ministry_id", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "sign_of_transformation_markers", ["ministry_id"], name: "index_sign_of_transformation_markers_on_ministry_id", using: :btree
+  add_index "sign_of_transformation_markers", ["name_id"], name: "index_sign_of_transformation_markers_on_name_id", using: :btree
+
+  create_table "sign_of_transformations", force: :cascade do |t|
+    t.integer  "church_ministry_id", null: false
+    t.string   "month",              null: false
+    t.string   "other"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.integer  "marker_id"
+  end
+
+  add_index "sign_of_transformations", ["church_ministry_id"], name: "index_sign_of_transformations_on_church_ministry_id", using: :btree
+  add_index "sign_of_transformations", ["marker_id"], name: "index_sign_of_transformations_on_marker_id", using: :btree
+
   create_table "state_languages", force: :cascade do |t|
     t.integer  "geo_state_id"
     t.integer  "language_id"
@@ -1037,6 +1072,8 @@ ActiveRecord::Schema.define(version: 20190326040740) do
   add_foreign_key "aggregate_ministry_outputs", "deliverables"
   add_foreign_key "aggregate_ministry_outputs", "state_languages"
   add_foreign_key "aggregate_ministry_outputs", "users", column: "creator_id"
+  add_foreign_key "bible_passages", "chapters"
+  add_foreign_key "bible_passages", "church_ministries"
   add_foreign_key "chapters", "books"
   add_foreign_key "church_ministries", "church_teams"
   add_foreign_key "church_ministries", "ministries"
@@ -1126,6 +1163,10 @@ ActiveRecord::Schema.define(version: 20190326040740) do
   add_foreign_key "reports", "planning_reports"
   add_foreign_key "reports", "projects"
   add_foreign_key "reports", "sub_districts"
+  add_foreign_key "sign_of_transformation_markers", "ministries"
+  add_foreign_key "sign_of_transformation_markers", "translation_codes", column: "name_id"
+  add_foreign_key "sign_of_transformations", "church_ministries"
+  add_foreign_key "sign_of_transformations", "sign_of_transformation_markers", column: "marker_id"
   add_foreign_key "state_languages", "geo_states"
   add_foreign_key "state_languages", "languages"
   add_foreign_key "sub_districts", "districts"

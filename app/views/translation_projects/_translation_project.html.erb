@@ -60,7 +60,7 @@
       <% verse_count = translation_project.translation_progresses.
           includes(:chapter).group_by{ |tp| tp.deliverable_id}.
           map{ |d, tps| [d, tps.reduce(0){ |sum, tp| sum + tp.chapter.verses }] }.to_h %>
-      <% Deliverable.translation_progress.each do |deliverable| %>
+      <% Deliverable.translation_progress.order(:ui_order).each do |deliverable| %>
         <tr><td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td><td><%= verse_count[deliverable.id] || 0%></td></tr>
       <% end %>
       </tbody>
