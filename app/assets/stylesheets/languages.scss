@@ -427,3 +427,8 @@ table td.check {
 .tool-finish-line-marker { font-weight: bold }
 
 #general-language-dialog { width: 600px; }
+
+.church-engagement-table {
+  .mdl-textfield.number { max-width: 5em; }
+  .mdl-textfield.dirty { background: beige; }
+}

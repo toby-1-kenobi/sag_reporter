@@ -1,1 +1,6 @@
-
+<% @project_language.previous_changes.each do |k, v| %>
+$('.project-language-input[data-field="<%= k %>"]').each(function () {
+    $(this).val('<%= v[1] %>');
+    $(this).closest('.mdl-textfield').removeClass('dirty');
+});
+<% end %>

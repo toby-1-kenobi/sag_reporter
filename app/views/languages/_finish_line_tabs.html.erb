@@ -22,13 +22,13 @@
     <ul class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical mdlext-js-ripple-effect"
         role="tablist" aria-multiselectable="true">
 
-      <% @project_languages.each do |pl| %>
+      <% @project_languages.sort_by{ |pl| pl.project.name }.each do |pl| %>
         <li class="mdlext-accordion__panel" role="presentation">
           <header class="mdlext-accordion__tab" role="tab" aria-expanded="false">
             <span class="mdlext-accordion__tab__caption"><%= pl.project.name %></span>
           </header>
           <section class="mdlext-accordion__tabpanel" role="tabpanel" aria-hidden="true" hidden>
-            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+            <table class="church-engagement-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
               <tbody>
               <tr>
                 <td class="mdl-data-table__cell--non-numeric">Number of Church Teams that reported last month</td>
@@ -57,7 +57,7 @@
               <tr>
                 <td class="mdl-data-table__cell--non-numeric">Number of Churches generally reported</td>
                 <td>
-                  <div class="mdl-textfield mdl-js-textfield">
+                  <div class="mdl-textfield mdl-js-textfield number">
                     <input class="mdl-textfield__input project-language-input"
                            type="text" pattern="[0-9]+"
                            data-project-language="<%= pl.id %>"
@@ -71,7 +71,7 @@
               <tr>
                 <td class="mdl-data-table__cell--non-numeric">Number of people attending churches</td>
                 <td>
-                  <div class="mdl-textfield mdl-js-textfield">
+                  <div class="mdl-textfield mdl-js-textfield number">
                     <input class="mdl-textfield__input project-language-input"
                            type="text" pattern="[0-9]+"
                            data-project-language="<%= pl.id %>"
