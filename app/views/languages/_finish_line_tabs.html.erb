@@ -28,10 +28,11 @@
             <span class="mdlext-accordion__tab__caption"><%= pl.project.name %></span>
           </header>
           <section class="mdlext-accordion__tabpanel" role="tabpanel" aria-hidden="true" hidden>
+            <h4>Reported in a Rev79 project</h4>
             <table class="church-engagement-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
               <tbody>
               <tr>
-                <td class="mdl-data-table__cell--non-numeric">Number of Church Teams that reported last month</td>
+                <td class="mdl-data-table__cell--non-numeric">1. Number of Church Teams that reported ministries in Rev79, last month:</td>
                 <% last_month = 1.month.ago.strftime('%Y-%m') %>
                 <td>
                   <%=
@@ -44,7 +45,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="mdl-data-table__cell--non-numeric">Number of Church Committee meetings reported in the past 6 months</td>
+                <td class="mdl-data-table__cell--non-numeric">2. Number of Church Committee meetings reported in Rev79, in the past 6 months:</td>
                 <% ch_partnerships = Ministry.find_by_code('CH') %>
                 <% ch_meeting = ch_partnerships.deliverables.find_by_number(8) %>
                 <% facilitators = LanguageStream.where(ministry: ch_partnerships, state_language: pl.state_language, project: pl.project).pluck :facilitator_id %>
@@ -54,8 +55,14 @@
                   where('month >= ?', 6.months.ago.strftime('%Y-%m')).pluck(:value).sum
                 %></td>
               </tr>
+              </tbody>
+            </table>
+
+            <h4>Fillable information by Organisation</h4>
+            <table class="church-engagement-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+              <tbody>
               <tr>
-                <td class="mdl-data-table__cell--non-numeric">Number of Churches generally reported</td>
+                <td class="mdl-data-table__cell--non-numeric">1. Number of Churches generally reported:</td>
                 <td>
                   <div class="mdl-textfield mdl-js-textfield number">
                     <input class="mdl-textfield__input project-language-input"
@@ -69,7 +76,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="mdl-data-table__cell--non-numeric">Number of people attending churches</td>
+                <td class="mdl-data-table__cell--non-numeric">2. Number of people generally reported in Churches:</td>
                 <td>
                   <div class="mdl-textfield mdl-js-textfield number">
                     <input class="mdl-textfield__input project-language-input"
@@ -83,7 +90,7 @@
                 </td>
               </tr>
               <tr>
-                <td class="mdl-data-table__cell--non-numeric">For followup questions, office or person to be contacted</td>
+                <td class="mdl-data-table__cell--non-numeric">3. For followup questions, office or person to be contacted:</td>
                 <td>
                   <div class="mdl-textfield mdl-js-textfield">
                     <textarea class="mdl-textfield__input project-language-input"
