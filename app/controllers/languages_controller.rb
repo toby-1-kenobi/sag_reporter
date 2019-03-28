@@ -53,17 +53,12 @@ class LanguagesController < ApplicationController
             :dialects,
             :pop_source,
             :family,
-            :engaged_organisations,
-            :translating_organisations,
-            :mt_resources,
             {:state_languages => {:geo_state => :zone}}
         ).
         find(params[:id])
-    @all_orgs = Organisation.all.order(:name)
     @user_pending_edits = Edit.pending.where(model_klass_name: 'Language', record_id: @language.id)
     @user_pending_fl_edits = Edit.pending.where(model_klass_name: 'FinishLineProgress')
     unless logged_in_user.curates_for?(@language)
-      logger.debug "limiting edits"
       @user_pending_edits = @user_pending_edits.where(user: logged_in_user)
       @user_pending_fl_edits = @user_pending_fl_edits.where(user: logged_in_user)
     end

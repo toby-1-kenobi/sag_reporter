@@ -54,107 +54,6 @@
       <% end %>
     </table>
 
-    <a name="church-engagement"><h3>Church Engagement</h3></a>
-    <table class="language-data">
-      <% marker = FinishLineMarker.find_by_number(0) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
-      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
-        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
-        </th>
-        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
-      </tr>
-      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
-    </table>
-
-    <a name="bible-materials"><h3>Bible Materials</h3></a>
-    <table class="language-data">
-      <% marker = FinishLineMarker.find_by_number(1) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
-      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
-        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
-        </th>
-        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
-      </tr>
-      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
-      <% marker = FinishLineMarker.find_by_number(2) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
-      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
-        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
-        </th>
-        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
-      </tr>
-      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
-      <% marker = FinishLineMarker.find_by_number(3) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
-      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
-        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
-        </th>
-        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
-      </tr>
-      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
-      <% marker = FinishLineMarker.find_by_number(4) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
-      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
-        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
-        </th>
-        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
-      </tr>
-      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
-    </table>
-
-
-    <a name="bible-translation"><h3>Bible Translation</h3></a>
-
-    <table class="language-data">
-      <% marker = FinishLineMarker.find_by_number(5) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
-      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
-        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
-        </th>
-        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
-      </tr>
-      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
-      <% marker = FinishLineMarker.find_by_number(6) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
-      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
-        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
-        </th>
-        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
-      </tr>
-      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
-      <% marker = FinishLineMarker.find_by_number(7) %>
-      <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
-      <tr id="finish-line-marker-<%= marker.number %>-row" class="<%= progress.category.to_s %>">
-        <th id="finish-line-marker-<%= marker.number %>-name" class="mdl-data-table__cell--non-numeric">
-          <span class="finish-line-marker-<%= marker.number %>-name"><%= marker.name %></span>
-        </th>
-        <td id="finish-line-progress-status-<%= marker.number %>" class="finish-line-progress-status mdl-data-table__cell--non-numeric <%= 'editable' if @editable %> <%= 'pending-field' if @pending_flm_ids.include? marker.id %> <%= 'church-engagement' if marker.number == 0 %>"><%= progress.human_status %><%= render 'shared/edit_icon' if @editable %></td>
-      </tr>
-      <span id="finish-line-marker-<%= marker.number %>-description" for="finish-line-marker-<%= marker.number %>-row" class="mdl-tooltip"><%= marker.description %></span>
-      <%= render 'attribute_table_row',
-                 title: 'Number of ongoing translation projects',
-                 attribute_name: 'number_of_translations',
-                 tooltip: 'Is there more than one organization working in the language for translation (this is to track duplication effort)?'
-      %>
-      <% if logged_in_user.trusted? %>
-          <%= render 'attribute_table_row',
-                     title: 'Translation information',
-                     attribute_name: 'translation_info'
-          %>
-      <% end %>
-      <%= render 'attribute_table_row',
-                 title: 'Translation committee established',
-                 attribute_name: 'tr_committee_established'
-      %>
-    </table>
-
     <h4>Publication dates</h4>
     <table class="mdl-data-table mdl-js-data-table">
       <thead>
@@ -213,20 +112,8 @@
         </table>
     <% end %>
 
-    <% if logged_in_user.trusted? %>
-        <h4>People involved</h4>
-        <table class="language-data">
-          <% if @editable or @language.translation_consultants.present? %>
-            <%= render 'attribute_table_row',
-                       title: 'Translation consultants',
-                       attribute_name: 'translation_consultants'
-            %>
-          <% end %>
-        </table>
-    <% end %>
 
-
-    <a name="literacy"><h3>Literacy</h3></a>
+    <h3>Literacy</h3>
     <table class="language-data">
       <% marker = FinishLineMarker.find_by_number(8) %>
       <% progress = FinishLineProgress.find_or_create_by(language: @language, finish_line_marker: marker, year: nil) %>
@@ -284,20 +171,6 @@
       <% end %>
     </table>
 
-    <a name="mt-resources"><h3>Resources</h3></a>
-    <% if @language.tools.active.any? %>
-      <ul class="mdl-list tools-list">
-        <%= render partial: 'tools/tool', collection: @language.tools.active.includes(:product_categories) %>
-      </ul>
-    <% else %>
-        <p>None recorded</p>
-    <% end %>
-    <%= link_to new_tool_path, remote: true do %>
-      <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
-        <i class="material-icons">add</i>
-      </button>
-    <% end %>
-
     <h3>Religion</h3>
     <table class="language-data">
       <% if @editable or @language.religion.present? %>
@@ -324,18 +197,8 @@
       <%= image_tag(map, alt: "Map for #{@language.name}", class: 'language-map mdl-shadow--2dp') %>
     <% end %>
 
-    <a name="outcome-progress"><h3>Outcome transformation</h3></a>
-    <% @language.state_languages.in_project.each do |state_language| %>
-        <h4><%= state_language.state_name %></h4>
-        <%= link_to "#{state_language.state_name} chart", language_outcomes_chart_path(id: state_language.id), remote: true, method: 'GET', class: "mdl-button mdl-js-button get-chart-button chart-#{state_language.id}-button" %>
-        <div class="chart-<%= state_language.id %>"></div>
-    <% end %>
-    <% non_project_states = @language.state_languages.joins(:geo_state).where(project: false).map{ |sl| link_to sl.state_name, sl.geo_state }.to_sentence.html_safe %>
-    <% if non_project_states.present? %>
-        <p><%= @language.name %> is spoken in <%= non_project_states %>, but LCI does not yet track it's transformation there.</p>
-    <% end %>
 
-        <a name="language-names"><h3>Alternate Names</h3></a>
+        <h3>Alternate Names</h3>
         <% if @language.language_names.any? %>
             <% check_mark = '<i class="material-icons">done</i>'.html_safe %>
             <table class="mdl-data-table mdl-js-data-table">
@@ -489,73 +352,6 @@
           <% end %>
         </table>
 
-
-    <a name="engaged-organisations"><h3>Organisations engaged</h3></a>
-    <% if @editable or @language.engaged_organisations.any? %>
-        <ul class="engaged-orgs mdl-list">
-          <% @language.engaged_organisations.each do |org| %>
-              <li class="org-<%= org.id %> mdl-list__item">
-                <%= link_to org.name_with_abbr_or_not(logged_in_user), org, class: 'org-name mdl-list__item-primary-content' %>
-                <% if @editable %>
-                    <%= link_to remove_engaged_org_from_language_path(@language, org),
-                                method: :patch,
-                                remote: true,
-                                class: 'mdl-list__item-secondary-content' do %>
-                        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
-                          <i class="material-icons">clear</i>
-                        </button>
-                    <% end %>
-                <% end %>
-              </li>
-          <% end %>
-          <% if @editable and logged_in_user.trusted? %>
-              <li class="add-another mdl-list__item">
-                <span class="mdl-list__item-primary-content">...</span>
-                <span class="mdl-list__item-secondary-content">
-                  <button class="add-engaged-org-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored" title="Add engaged organisation">
-                    <i class="material-icons">add</i>
-                  </button>
-                </span>
-              </li>
-          <% end %>
-        </ul>
-    <% else %>
-        <p><em>No organisations engaged with this language.</em></p>
-    <% end %>
-
-
-      <a name="translating-organisations"><h3>Organisations involved with translation</h3></a>
-      <% if @editable or @language.translating_organisations.any? %>
-          <ul class="translating-orgs mdl-list">
-            <% @language.translating_organisations.each do |org| %>
-                <li class="org-<%= org.id %> mdl-list__item">
-                  <%= link_to org.name_with_abbr_or_not(logged_in_user), org, class: 'org-name mdl-list__item-primary-content' %>
-                  <% if @editable %>
-                      <%= link_to remove_translating_org_from_language_path(@language, org),
-                                  method: :patch,
-                                  remote: true,
-                                  class: 'remove-button mdl-list__item-secondary-content' do %>
-                          <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored">
-                            <i class="material-icons">clear</i>
-                          </button>
-                      <% end %>
-                  <% end %>
-                </li>
-            <% end %>
-            <% if @editable and logged_in_user.trusted? %>
-                <li class="add-another mdl-list__item">
-                  <span class="mdl-list__item-primary-content">...</span>
-                <span class="mdl-list__item-secondary-content">
-                  <button class="add-translating-org-button mdl-button mdl-js-button mdl-button--icon mdl-button--colored" title="Add translating organisation">
-                    <i class="material-icons">add</i>
-                  </button>
-                </span>
-                </li>
-            <% end %>
-          </ul>
-      <% else %>
-          <p><em>No organisations engaged with translating for this language.</em></p>
-      <% end %>
 
       <% if @impact_report %>
           <div class="impact-story mdl-card mdl-shadow--2dp">
