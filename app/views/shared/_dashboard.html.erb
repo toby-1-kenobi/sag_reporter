@@ -127,6 +127,23 @@
     </div>
   <% end %>
 
+  <% if tabs.include? :products %>
+    <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'products' %>" id="products-panel">
+      <% if @language.tools.active.any? %>
+        <ul class="mdl-list tools-list">
+          <%= render partial: 'tools/tool', collection: @language.tools.active.includes(:product_categories) %>
+        </ul>
+      <% else %>
+        <p>None recorded</p>
+      <% end %>
+      <%= link_to new_tool_path, remote: true do %>
+        <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab">
+          <i class="material-icons">add</i>
+        </button>
+      <% end %>
+    </div>
+  <% end %>
+
   <% if tabs.include? :projects %>
     <div class="mdl-tabs__panel <%= 'is-active' if @tab == 'projects' %>" id="projects-panel">
       <% projects = defined?(dashboard_object) ? dashboard_object.projects.order(:name).uniq : Project.all.order(:name) %>
