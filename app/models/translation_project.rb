@@ -9,8 +9,10 @@ class TranslationProject < ActiveRecord::Base
   validates :language_id, presence: true
   validates :project_id, presence: true, uniqueness: {scope: :language_id}
 
-  def count_verses(deliverable, month)
-    translation_progresses.includes(:chapter).where(month: month, deliverable: deliverable).
+  def count_verses(deliverable, first_month, last_month = nil)
+    last_month ||= first_month
+    translation_progresses.includes(:chapter).
+        where(deliverable: deliverable).where('month BETWEEN ? AND ?', first_month, last_month).
         map{ |tp| tp.chapter.verses }.sum
   end
 

@@ -54,6 +54,9 @@ module StateLanguagesHelper
         end
         outputs.inject(0) { |sum, mo| sum + mo.value }
       end
+    when 'translation_progress'
+      tp = TranslationProject.find_by(project: project, language: StateLanguage.find(state_language_id).language)
+      tp ? tp.count_verses(deliverable, first_month, last_month) : '?'
     when 'auto'
       auto_actuals(nil, [state_language_id], deliverable, first_month, last_month) or '!'
     else
