@@ -28,7 +28,8 @@
   <% end %>
 </div>
 
-<% tabs = [:details, :progress, :products, :organisations ] %>
+<% tabs = [:details, :progress, :products] %>
+<% tabs << :language_orgs if logged_in_user.trusted? %>
 <% @tab ||= 'progress' %>
 
 <% @dashboard_type = :language %>

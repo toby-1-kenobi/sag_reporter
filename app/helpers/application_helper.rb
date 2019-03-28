@@ -46,6 +46,7 @@ module ApplicationHelper
 				projects_overview: 'Projects Overview',
 				products: 'Language Products',
         organisations: 'Organisations',
+				language_orgs: 'Organisations',
         reports: 'Impact Stories',
         board: 'All Access Report',
 				details: 'Language Info'
