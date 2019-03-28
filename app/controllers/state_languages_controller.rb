@@ -217,6 +217,13 @@ class StateLanguagesController < ApplicationController
         ministry_id: params[:stream],
         quarter: params[:quarter]
     )
+    stream = Ministry.find params[:stream]
+    if stream.code == 'TR'
+      Rails.logger.debug 'translation stream quarterly report'
+      lang_id = StateLanguage.find(params[:id]).language_id
+      @translation_project = TranslationProject.find_by(project_id: params[:project], language_id: lang_id)
+      Rails.logger.debug @translation_project ? "project found #{@translation_project.id}" : 'no project found'
+    end
     @reports = Report.joins(:languages).where('languages.id = ?', @quarterly_evaluation.state_language.language)
     @church_teams = ChurchTeam.active.joins(:church_ministries).where(state_language_id: params[:id], church_ministries: {ministry_id: params[:stream], status: 0}).uniq
     respond_to :js

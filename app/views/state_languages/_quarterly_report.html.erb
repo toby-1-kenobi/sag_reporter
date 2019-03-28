@@ -4,7 +4,7 @@
 
   <table class="quarterly-results-table mdl-data-table mdl-js-data-table mdl-shadow--2dp">
     <thead>
-    <% data, meta = measurables_data(@quarterly_evaluation) %>
+    <% data, meta = measurables_data(@quarterly_evaluation, @translation_project) %>
     <tr class="table-head-row-top">
       <th rowspan="2">Deliverable</th>
       <th><%= meta[:start_month].strftime("%b") %></th>

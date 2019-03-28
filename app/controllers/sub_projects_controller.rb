@@ -98,9 +98,10 @@ class SubProjectsController < ApplicationController
   def stream_summary
     if SubProject.exists?(params[:id])
       sub_project = SubProject.includes(:project).find(params[:id])
+      @project = sub_project.project
     else
       # if no sub-project has been selected the id will be the project id prefixed with a single character
-      project = Project.find(params[:id][1..-1])
+      @project = Project.find(params[:id][1..-1])
     end
     @stream = Ministry.find params[:stream]
 
@@ -108,7 +109,7 @@ class SubProjectsController < ApplicationController
     if sub_project
       @state_languages = sub_project.project.state_languages.pluck(:id).select {|sl_id| sub_project.language_streams.exists?(state_language_id: sl_id, ministry_id: @stream.id)}
     else
-      @state_languages = project.state_languages.pluck :id
+      @state_languages = @project.state_languages.pluck :id
     end
     @quarter = params[:quarter]
     church_mins = ChurchMinistry.joins(:church_team).
@@ -119,7 +120,7 @@ class SubProjectsController < ApplicationController
     if sub_project
       lang_streams = LanguageStream.where(sub_project: sub_project, state_language_id: @state_languages, ministry: @stream)
     else
-      lang_streams = LanguageStream.where(project: project, state_language_id: @state_languages, ministry: @stream)
+      lang_streams = LanguageStream.where(project: @project, state_language_id: @state_languages, ministry: @stream)
     end
     @aggregate_outputs = AggregateMinistryOutput.
         where(actual: true, state_language_id: @state_languages, creator_id: lang_streams.pluck(:facilitator_id))

@@ -9,7 +9,7 @@ module QuarterlyEvaluationsHelper
         quarterly_evaluation.project.stream_supervisors.where(project_streams: { ministry: @quarterly_evaluation.ministry }).include?(user)
   end
 
-  def measurables_data(qe)
+  def measurables_data(qe, translation_project = nil)
     meta = {}
     meta[:quarter] = []
     meta[:quarter][0] = qe.quarter
@@ -40,11 +40,20 @@ module QuarterlyEvaluationsHelper
         (0..2).each do |m|
           row << fac_outputs.select{ |o| o.month == m.months.since(meta[:start_month]).strftime('%Y-%m') and o.deliverable_id == deliverable.id }.sum{ |o| o.value }
         end
+      when 'translation_progress'
+        if translation_project
+          (0..2).each do |m|
+            row <<  translation_project.count_verses(deliverable, m.months.since(meta[:start_month]).strftime('%Y-%m'))
+          end
+        else
+          row += ['0', '0', '0']
+        end
       when 'auto'
         (0..2).each do |m|
           row << auto_actuals(nil, [qe.state_language_id], deliverable, m.months.since(meta[:start_month]).strftime('%Y-%m'), m.months.since(meta[:start_month]).strftime('%Y-%m'))
         end
       else
+        Rails.logger.warn "unknown type for deliverable #{deliverable.id} - #{deliverable.reporter}"
         row += ['', '', '']
       end
       row << targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == meta[:quarter][0] }.sum{ |t| t.value }

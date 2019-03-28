@@ -57,6 +57,7 @@ module StateLanguagesHelper
     when 'auto'
       auto_actuals(nil, [state_language_id], deliverable, first_month, last_month) or '!'
     else
+      Rails.logger.warn("Unknown type for deliverable #{deliverable.id} - #{deliverable.reporter}")
       '?'
     end
   end
