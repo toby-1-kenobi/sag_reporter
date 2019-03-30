@@ -564,6 +564,7 @@ class AndroidSyncController < ApplicationController
               :version,
           ],
           uploaded_file: [
+              :id,
               :old_id,
               :data,
               :report_id
