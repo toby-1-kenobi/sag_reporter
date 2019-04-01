@@ -20,10 +20,17 @@ class PasswordResetsController < ApplicationController
       @user = User.find_by(phone: username)
     end
     if @user
-      if @user.reset_password?
-        flash[:info] = 'Your password reset request is already awaiting approval'
+      token = @user.generate_pwd_reset_token
+      if token
+        if send_pwd_reset_instructions(@user, token)
+          flash[:success] = 'Password reset initiated. Please check your email for further instructions'
+        else
+          flash[:error] = "Unable to send password reset instructions to email #{@user.email}"
+        end
       else
+        @user.update_attribute(reset_password_token: nil)
         @user.update_attribute(:reset_password, true)
+        Rails.logger.error ("failed to generate token for #{@user.name} for password reset approval")
         flash[:success] = 'Password reset request submitted. If approved you will receive further instructions by email'
       end
       redirect_to login_path
