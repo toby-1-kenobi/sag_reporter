@@ -365,7 +365,7 @@ class AndroidSyncController < ApplicationController
       end
       send_file file_path, status: :ok
     rescue => e
-      send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
+      send_message = {error: e.to_s}.to_json
       logger.error send_message
       render json: send_message, status: :internal_server_error
     end
