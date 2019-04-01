@@ -274,7 +274,7 @@ class AndroidSyncController < ApplicationController
           file.write "UPDATE app SET last_sync = #{this_sync.to_i}#{formatted_evaluation_info};"
           raise "No last sync variable" unless send_request_params["last_sync"]
           deleted_entries = Hash.new
-          Octopus.using(:follower) do
+          #Octopus.using(:follower) do
             tables.each do |table, attributes|
               next unless attributes
 
@@ -322,7 +322,7 @@ class AndroidSyncController < ApplicationController
               end
               ActiveRecord::Base.connection.query_cache.clear
             end
-          end
+          #end
           unless deleted_entries.empty?
             deleted_entries.each do |table, ids|
               file.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.select{|id| id < 1000000}.join ","});"
@@ -564,6 +564,7 @@ class AndroidSyncController < ApplicationController
               :version,
           ],
           uploaded_file: [
+              :id,
               :old_id,
               :data,
               :report_id
@@ -704,7 +705,7 @@ class AndroidSyncController < ApplicationController
             @id_changes.dig(foreign_table, element) || foreign_table.constantize.find(element)
           end
           hash.delete k
-        elsif k.last(3) == "_id" && !not_connected_table.include?(k)
+        elsif k.last(3) == "_id" && !not_connected_table.include?(k) && v
           foreign_table = k.remove("_id")
           foreign_table = foreign_key_names(foreign_table)
           foreign_table = foreign_table.camelcase
