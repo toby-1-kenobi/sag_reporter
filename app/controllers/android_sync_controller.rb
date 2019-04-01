@@ -322,7 +322,7 @@ class AndroidSyncController < ApplicationController
                 file.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
                                  "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
               end
-              ActiveRecord::Base.connection.query_cache.clear
+              #ActiveRecord::Base.connection.query_cache.clear
             end
           #end
           unless deleted_entries.empty?
@@ -340,12 +340,12 @@ class AndroidSyncController < ApplicationController
         @final_file.write send_message
       ensure
         @final_file.close unless @final_file.closed?
-        logger.debug "File writing finished"
         #@final_file.open
         #logger.debug @final_file.read
         #@final_file.close
         File.rename(@final_file, "#{@final_file.path}.txt")
-        ActiveRecord::Base.connection.close
+        logger.debug "File writing finished: #{@final_file.path}.txt"
+        #ActiveRecord::Base.connection.close
       end
     end
   end
