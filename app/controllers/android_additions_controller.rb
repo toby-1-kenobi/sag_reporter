@@ -73,10 +73,17 @@ class AndroidAdditionsController < ApplicationController
 
       @user = get_user forgot_password_params["user_name"]
       if @user
-        if @user.reset_password?
-          logger.debug "Password request was already submitted"
+        token = @user.generate_pwd_reset_token
+        if token
+          if send_pwd_reset_instructions(@user, token)
+            logger.debug 'Password reset initiated. Please check your email for further instructions'
+          else
+            logger.error "Unable to send password reset instructions to email #{@user.email}"
+          end
         else
+          @user.update_attribute(reset_password_token: nil)
           @user.update_attribute(:reset_password, true)
+          logger.error ("failed to generate token for #{@user.name} for password reset approval")
           logger.debug "Password request submitted"
         end
       else
