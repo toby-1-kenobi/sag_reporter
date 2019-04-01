@@ -16,7 +16,7 @@ module MinistriesHelper
           where('aggregate_ministry_outputs.month >= ?', first_month).
           where('aggregate_ministry_outputs.month <= ?', last_month).
           where(actual: true, deliverables: {ministry_id: stream, reporter: 1, calculation_method: 0}).
-          to_a.group_by(&:deliverable_id)
+          pluck_to_struct(:deliverable_id, :state_language_id, :month, :value).group_by(&:deliverable_id)
       amos.each do |del_id, amo_list|
         grouped_amo_list = amo_list.group_by(&:state_language_id)
         data[zone.id][del_id] = 0
