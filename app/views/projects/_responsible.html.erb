@@ -57,19 +57,21 @@
       </td>
       <% project_streams.each do |ps| %>
         <td data-ministry="<%= ps.ministry.id %>" data-state-language="<%= state_language.id %>" class="mdl-data-table__cell--non-numeric">
-          <ul class="mdl-list facilitator-list">
-            <%= render partial: 'project_facilitator',
-                       collection: @project.language_streams.where(ministry: ps.ministry, state_language: state_language),
-                       locals: { stream_id: ps.ministry.id, state_language_id: state_language.id }
-            %>
-          </ul>
-          <div class="add-facilitator-controls" data-ministry="<%= ps.ministry.id %>" data-state-language="<%= state_language.id %>">
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-              <input class="mdl-textfield__input add-facilitator-input" type="text" id="add-facilitator-input-<%= state_language.id %>-<%= ps.ministry.id %>">
-              <label class="mdl-textfield__label" for="add-facilitator-input-<%= state_language.id %>-<%= ps.ministry.id %>">Add facilitator</label>
+          <% unless ps.ministry.code == 'AS' and not state_language.primary %>
+            <ul class="mdl-list facilitator-list">
+              <%= render partial: 'project_facilitator',
+                         collection: @project.language_streams.where(ministry: ps.ministry, state_language: state_language),
+                         locals: { stream_id: ps.ministry.id, state_language_id: state_language.id }
+              %>
+            </ul>
+            <div class="add-facilitator-controls" data-ministry="<%= ps.ministry.id %>" data-state-language="<%= state_language.id %>">
+              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input add-facilitator-input" type="text" id="add-facilitator-input-<%= state_language.id %>-<%= ps.ministry.id %>">
+                <label class="mdl-textfield__label" for="add-facilitator-input-<%= state_language.id %>-<%= ps.ministry.id %>">Add facilitator</label>
+              </div>
+              <div class="add-facilitator-choices" id="add-facilitator-choices-<%= state_language.id %>-<%= ps.ministry.id %>"></div>
             </div>
-            <div class="add-facilitator-choices" id="add-facilitator-choices-<%= state_language.id %>-<%= ps.ministry.id %>"></div>
-          </div>
+          <% end %>
         </td>
       <% end %>
     </tr>
