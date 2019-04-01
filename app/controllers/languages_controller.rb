@@ -144,6 +144,7 @@ class LanguagesController < ApplicationController
   # this is for ajax to add the inner tabs in the translation tab of language dash
   def fetch_translation_tab
     @language = Language.find(params[:id])
+    @nt_chapters = Chapter.joins(:book).where(books: {nt: true}).pluck :id
     respond_to :js
   end
 
