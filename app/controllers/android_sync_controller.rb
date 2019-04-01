@@ -286,27 +286,29 @@ class AndroidSyncController < ApplicationController
               offline_ids = send_request_params[table.name] || [0]
               restricted_ids = restrict(table)
               logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
-              table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
-                          last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
-                  .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
-                entry_data = Hash.new
-                begin
-                  entry_values = entry.attributes.slice(*(["id"] + attributes)).values.map {|e| convert_value e}
-                  entry_data.merge!(entry.attributes.slice(*(["id"] + attributes)))
-                  join_tables[table_name]&.each do |join_table|
-                    foreign_ids = entry.send(join_table.singularize.foreign_key.pluralize)
-                    entry_data.merge!({join_table => foreign_ids})
-                    identifier = [table.name.underscore, join_table]
-                    join_table_data[identifier] ||= Array.new
-                    join_table_data[identifier] += foreign_ids.map{|foreign_id| [entry.id,foreign_id]}
+              Octopus.using(:follower) do
+                table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
+                            last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
+                    .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
+                  entry_data = Hash.new
+                  begin
+                    entry_values = entry.attributes.slice(*(["id"] + attributes)).values.map {|e| convert_value e}
+                    entry_data.merge!(entry.attributes.slice(*(["id"] + attributes)))
+                    join_tables[table_name]&.each do |join_table|
+                      foreign_ids = entry.send(join_table.singularize.foreign_key.pluralize)
+                      entry_data.merge!({join_table => foreign_ids})
+                      identifier = [table.name.underscore, join_table]
+                      join_table_data[identifier] ||= Array.new
+                      join_table_data[identifier] += foreign_ids.map{|foreign_id| [entry.id,foreign_id]}
+                    end
+                    additions = additional_tables(entry)
+                    entry_data.merge! additions
+                    entry_values += additions.map{|k,v| columns << k.to_s; convert_value(v)}
+                    values << entry_values
+                  rescue => e
+                    logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
+                    logger.error e.backtrace
                   end
-                  additions = additional_tables(entry)
-                  entry_data.merge! additions
-                  entry_values += additions.map{|k,v| columns << k.to_s; convert_value(v)}
-                  values << entry_values
-                rescue => e
-                  logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
-                  logger.error e.backtrace
                 end
               end
               unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
