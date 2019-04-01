@@ -89,7 +89,7 @@ class AndroidAdditionsController < ApplicationController
       else
         logger.error "Could not find user for: #{user_name}"
       end
-      head :ok
+      render json: {status: "ok"}.to_json, status: :ok
     rescue => e
       send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       logger.error send_message
