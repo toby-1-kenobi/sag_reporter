@@ -87,7 +87,7 @@ class AndroidSyncController < ApplicationController
     @all_restricted_ids = Hash.new
     def restrict(table)
       table_implementation = table.new
-      unless @project_ids && @state_language_ids && @language_ids && 
+      unless @project_ids && @state_language_ids && @language_ids && @geo_state_ids
         #Octopus.using(:follower) do
           @project_ids = ProjectStream.where(supervisor: @external_user).map(&:project_id) +
               ProjectSupervisor.where(user: @external_user).map(&:project_id)
