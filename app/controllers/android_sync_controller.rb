@@ -284,10 +284,10 @@ class AndroidSyncController < ApplicationController
 
               table_name = table.name.to_sym
               offline_ids = send_request_params[table.name] || [0]
-              Octopus.using(:follower) do
-                restricted_ids = restrict(table)
+              #Octopus.using(:follower) do
+                restricted_ids = restrict(table.using(:follower))
                 logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
-                table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
+                table.using(:follower).where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
                             last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
                     .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
                   entry_data = Hash.new
@@ -313,7 +313,7 @@ class AndroidSyncController < ApplicationController
                 unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
                   deleted_entries[table_name] = offline_ids - restricted_ids
                 end
-              end
+              #end
               columns << "is_online"
               values.map! {|value| "(#{(value+[1]).join(",")})"}
               file.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
