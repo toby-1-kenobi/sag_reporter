@@ -310,9 +310,9 @@ class AndroidSyncController < ApplicationController
                     logger.error e.backtrace
                   end
                 end
-              end
-              unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
-                deleted_entries[table_name] = offline_ids - restricted_ids
+                unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
+                  deleted_entries[table_name] = offline_ids - restricted_ids
+                end
               end
               columns << "is_online"
               values.map! {|value| "(#{(value+[1]).join(",")})"}
