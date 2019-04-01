@@ -87,17 +87,19 @@ class AndroidSyncController < ApplicationController
     @all_restricted_ids = Hash.new
     def restrict(table)
       table_implementation = table.new
-      unless @project_ids && @state_language_ids && @language_ids && @geo_state_ids
-        @project_ids = ProjectStream.where(supervisor: @external_user).map(&:project_id) +
-            ProjectSupervisor.where(user: @external_user).map(&:project_id)
-        user_geo_state_ids = @external_user.national? ? GeoState.ids : @external_user.geo_state_ids
-        @state_language_ids = Project.includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
-            LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
-            ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id) +
-            StateLanguage.where(geo_state_id: user_geo_state_ids).ids
-        state_languages = StateLanguage.where(id: @state_language_ids)
-        @language_ids = state_languages.map &:language_id
-        @geo_state_ids = state_languages.map(&:geo_state_id)
+      unless @project_ids && @state_language_ids && @language_ids && 
+        #Octopus.using(:follower) do
+          @project_ids = ProjectStream.where(supervisor: @external_user).map(&:project_id) +
+              ProjectSupervisor.where(user: @external_user).map(&:project_id)
+          user_geo_state_ids = @external_user.national? ? GeoState.ids : @external_user.geo_state_ids
+          @state_language_ids = Project.includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
+              LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
+              ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id) +
+              StateLanguage.where(geo_state_id: user_geo_state_ids).ids
+          state_languages = StateLanguage.where(id: @state_language_ids)
+          @language_ids = state_languages.map &:language_id
+          @geo_state_ids = state_languages.map(&:geo_state_id)
+        #end
       end
       restricted_ids =
         case table_implementation
@@ -105,6 +107,7 @@ class AndroidSyncController < ApplicationController
           if @project_ids.empty?
             [@external_user.id]
           else
+            #LanguageStream.using(:follower).where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.using(:follower).where(id: @all_restricted_ids[Report]).map(&:reporter_id)
             LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.where(id: @all_restricted_ids[Report]).map(&:reporter_id)
           end
         when Language
@@ -274,57 +277,55 @@ class AndroidSyncController < ApplicationController
           file.write "UPDATE app SET last_sync = #{this_sync.to_i}#{formatted_evaluation_info};"
           raise "No last sync variable" unless send_request_params["last_sync"]
           deleted_entries = Hash.new
-          #Octopus.using(:follower) do
-            tables.each do |table, attributes|
-              next unless attributes
+          tables.each do |table, attributes|
+            next unless attributes
 
-              join_table_data = Hash.new
-              columns = Set.new ["id"] + attributes
-              values = Array.new
+            join_table_data = Hash.new
+            columns = Set.new ["id"] + attributes
+            values = Array.new
 
-              table_name = table.name.to_sym
-              offline_ids = send_request_params[table.name] || [0]
-              #Octopus.using(:follower) do
-                restricted_ids = restrict(table.using(:follower))
-                logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
-                table.using(:follower).where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
-                            last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
-                    .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
-                  entry_data = Hash.new
-                  begin
-                    entry_values = entry.attributes.slice(*(["id"] + attributes)).values.map {|e| convert_value e}
-                    entry_data.merge!(entry.attributes.slice(*(["id"] + attributes)))
-                    join_tables[table_name]&.each do |join_table|
-                      foreign_ids = entry.send(join_table.singularize.foreign_key.pluralize)
-                      entry_data.merge!({join_table => foreign_ids})
-                      identifier = [table.name.underscore, join_table]
-                      join_table_data[identifier] ||= Array.new
-                      join_table_data[identifier] += foreign_ids.map{|foreign_id| [entry.id,foreign_id]}
-                    end
-                    additions = additional_tables(entry)
-                    entry_data.merge! additions
-                    entry_values += additions.map{|k,v| columns << k.to_s; convert_value(v)}
-                    values << entry_values
-                  rescue => e
-                    logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
-                    logger.error e.backtrace
-                  end
+            table_name = table.name.to_sym
+            offline_ids = send_request_params[table.name] || [0]
+            #restricted_ids = restrict(table.using(:follower))
+            restricted_ids = restrict(table)
+            logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
+            #table.using(:follower).where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
+            table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
+                        last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
+                .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
+              entry_data = Hash.new
+              begin
+                entry_values = entry.attributes.slice(*(["id"] + attributes)).values.map {|e| convert_value e}
+                entry_data.merge!(entry.attributes.slice(*(["id"] + attributes)))
+                join_tables[table_name]&.each do |join_table|
+                  foreign_ids = entry.send(join_table.singularize.foreign_key.pluralize)
+                  entry_data.merge!({join_table => foreign_ids})
+                  identifier = [table.name.underscore, join_table]
+                  join_table_data[identifier] ||= Array.new
+                  join_table_data[identifier] += foreign_ids.map{|foreign_id| [entry.id,foreign_id]}
                 end
-                unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
-                  deleted_entries[table_name] = offline_ids - restricted_ids
-                end
-              #end
-              columns << "is_online"
-              values.map! {|value| "(#{(value+[1]).join(",")})"}
-              file.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
-              join_table_data.each do |join_table_names, data|
-          file.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{values.map{|e|e.split(',')[0].split('(')[1]}.uniq.join ","});"
-                file.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
-                                 "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
+                additions = additional_tables(entry)
+                entry_data.merge! additions
+                entry_values += additions.map{|k,v| columns << k.to_s; convert_value(v)}
+                values << entry_values
+              rescue => e
+                logger.error "Error in table entries for #{entry.class}: #{entry.attributes}" + e.to_s
+                logger.error e.backtrace
               end
-              #ActiveRecord::Base.connection.query_cache.clear
             end
-          #end
+            unless (offline_ids - restricted_ids).empty? || offline_ids == [0]
+              deleted_entries[table_name] = offline_ids - restricted_ids
+            end
+            columns << "is_online"
+            values.map! {|value| "(#{(value+[1]).join(",")})"}
+            file.write "INSERT OR REPLACE INTO #{table.name.underscore}(#{columns.map(&:underscore).join ","})VALUES#{values.join ","};" unless values.empty?
+            join_table_data.each do |join_table_names, data|
+        file.write "DELETE FROM #{join_table_names.join "_"} WHERE #{join_table_names.first}_id IN (#{values.map{|e|e.split(',')[0].split('(')[1]}.uniq.join ","});"
+              file.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
+                               "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
+            end
+            ActiveRecord::Base.connection.query_cache.clear
+          end
           unless deleted_entries.empty?
             deleted_entries.each do |table, ids|
               file.write "DELETE FROM #{table.to_s.underscore} WHERE id IN (#{ids.select{|id| id < 1000000}.join ","});"
@@ -345,7 +346,7 @@ class AndroidSyncController < ApplicationController
         #@final_file.close
         File.rename(@final_file, "#{@final_file.path}.txt")
         logger.debug "File writing finished: #{@final_file.path}.txt"
-        #ActiveRecord::Base.connection.close
+        ActiveRecord::Base.connection.close
       end
     end
   end
