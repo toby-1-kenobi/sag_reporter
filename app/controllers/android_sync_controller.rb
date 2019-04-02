@@ -88,7 +88,7 @@ class AndroidSyncController < ApplicationController
     def restrict(table)
       table_implementation = table.new
       unless @project_ids && @state_language_ids && @language_ids && @geo_state_ids
-        #Octopus.using(:follower) do
+        Octopus.using(:follower) do
           @project_ids = ProjectStream.where(supervisor: @external_user).map(&:project_id) +
               ProjectSupervisor.where(user: @external_user).map(&:project_id)
           user_geo_state_ids = @external_user.national? ? GeoState.ids : @external_user.geo_state_ids
@@ -99,7 +99,7 @@ class AndroidSyncController < ApplicationController
           state_languages = StateLanguage.where(id: @state_language_ids)
           @language_ids = state_languages.map &:language_id
           @geo_state_ids = state_languages.map(&:geo_state_id)
-        #end
+        end
       end
       restricted_ids =
         case table_implementation
@@ -107,8 +107,7 @@ class AndroidSyncController < ApplicationController
           if @project_ids.empty?
             [@external_user.id]
           else
-            #LanguageStream.using(:follower).where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.using(:follower).where(id: @all_restricted_ids[Report]).map(&:reporter_id)
-            LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.where(id: @all_restricted_ids[Report]).map(&:reporter_id)
+            LanguageStream.using(:follower).where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.using(:follower).where(id: @all_restricted_ids[Report]).map(&:reporter_id)
           end
         when Language
           table.where(id: @language_ids).ids
@@ -286,11 +285,9 @@ class AndroidSyncController < ApplicationController
 
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
-            #restricted_ids = restrict(table.using(:follower))
-            restricted_ids = restrict(table)
+            restricted_ids = restrict(table.using(:follower))
             logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
-            #table.using(:follower).where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
-            table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
+            table.using(:follower).where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
                         last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
                 .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
               entry_data = Hash.new
@@ -324,7 +321,7 @@ class AndroidSyncController < ApplicationController
               file.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
                                "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
             end
-            ActiveRecord::Base.connection.query_cache.clear
+            #ActiveRecord::Base.connection.query_cache.clear
           end
           unless deleted_entries.empty?
             deleted_entries.each do |table, ids|
@@ -346,7 +343,7 @@ class AndroidSyncController < ApplicationController
         #@final_file.close
         File.rename(@final_file, "#{@final_file.path}.txt")
         logger.debug "File writing finished: #{@final_file.path}.txt"
-        ActiveRecord::Base.connection.close
+        #ActiveRecord::Base.connection.close
       end
     end
   end
