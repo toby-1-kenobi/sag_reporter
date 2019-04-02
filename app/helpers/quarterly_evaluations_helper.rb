@@ -11,23 +11,28 @@ module QuarterlyEvaluationsHelper
 
   def measurables_data(qe, translation_project = nil)
     meta = {}
-    meta[:quarter] = []
+    meta[:quarter] = {}
     meta[:quarter][0] = qe.quarter
+    meta[:quarter][-1] = previous_quarter(meta[:quarter][0])
+    meta[:quarter][-2] = previous_quarter(meta[:quarter][-1])
     meta[:first_month], meta[:last_month] = quarter_to_range(meta[:quarter][0])
     meta[:start_month] = Date.new(meta[:first_month][0..3].to_i, meta[:first_month][-2..-1].to_i)
     church_mins = ChurchMinistry.joins(:church_team).
-        where(church_teams: { status: 0, state_language_id: qe.state_language_id }, ministry: qe.ministry)
+        where(church_teams: { status: 0, state_language_id: qe.state_language_id }, ministry: qe.ministry).pluck :id
     ct_outputs = MinistryOutput.
-        where(actual: true, church_ministry: church_mins).
-        where('month BETWEEN ? AND ?', meta[:first_month], meta[:last_month])
+        where(actual: true, church_ministry_id: church_mins).
+        where('month BETWEEN ? AND ?', meta[:first_month], meta[:last_month]).
+        pluck_to_struct(:month, :deliverable_id, :value)
     lang_streams = LanguageStream.where(project: qe.project, state_language_id: qe.state_language_id, ministry: qe.ministry)
     if qe.sub_project.present?
       lang_streams = lang_streams.where(sub_project: qe.sub_project)
     end
     fac_outputs = AggregateMinistryOutput.
         where(actual: true, state_language_id: qe.state_language_id, creator_id: lang_streams.pluck(:facilitator_id)).
-        where('month BETWEEN ? AND ?', meta[:first_month], meta[:last_month])
-    targets = QuarterlyTarget.joins(:deliverable).where(state_language: qe.state_language, deliverables: { ministry_id: qe.ministry_id }).to_a
+        where('month BETWEEN ? AND ?', meta[:first_month], meta[:last_month]).
+        pluck_to_struct(:month, :deliverable_id, :value)
+    targets = QuarterlyTarget.joins(:deliverable).where(state_language: qe.state_language, deliverables: { ministry_id: qe.ministry_id }).
+        pluck_to_struct(:deliverable_id, :quarter, :value)
     table_data = {}
     qe.ministry.deliverables.active.order(:number).each do |deliverable|
       row = [deliverable.short_form.en]
