@@ -15,9 +15,8 @@ module QuarterlyEvaluationsHelper
     meta[:quarter][0] = qe.quarter
     meta[:quarter][-1] = previous_quarter(meta[:quarter][0])
     meta[:quarter][-2] = previous_quarter(meta[:quarter][-1])
-    # meta[:first_month] = quarter_to_range(meta[:quarter][-2])[0]
-    # meta[:last_month] = quarter_to_range(meta[:quarter][0])[1]
-    meta[:first_month], meta[:last_month] = quarter_to_range(meta[:quarter][0])
+    meta[:first_month] = quarter_to_range(meta[:quarter][-2])[0]
+    meta[:last_month] = quarter_to_range(meta[:quarter][0])[1]
     meta[:start_month] = Date.new(meta[:first_month][0..3].to_i, meta[:first_month][-2..-1].to_i)
     church_mins = ChurchMinistry.joins(:church_team).
         where(church_teams: { status: 0, state_language_id: qe.state_language_id }, ministry: qe.ministry).pluck :id
@@ -44,19 +43,30 @@ module QuarterlyEvaluationsHelper
     }
     qe.ministry.deliverables.active.order(:number).each do |deliverable|
       row = [deliverable.short_form.en]
+      monthly_actuals = []
       if calculations[deliverable.reporter]
-        (0..2).each do |m|
-          row << calculations[deliverable.reporter].call(m, deliverable)
+        (0..8).each do |m|
+          monthly_actuals << calculations[deliverable.reporter].call(m, deliverable)
         end
       else
         Rails.logger.warn "unknown type for deliverable #{deliverable.id} - #{deliverable.reporter}"
-        row += ['', '', '']
+        monthly_actuals += Array.new(9){ '' }
       end
+      (-2..-1).each do |q|
+        row << targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == meta[:quarter][q] }.sum{ |t| t.value }
+        q_actuals = monthly_actuals.shift(3)
+        if deliverable.sum_of_all?
+          row << q_actuals.inject(:+)
+        else
+          row << q_actuals.last
+        end
+      end
+      row += monthly_actuals
       row << targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == meta[:quarter][0] }.sum{ |t| t.value }
       if deliverable.sum_of_all?
-        row << row[1..3].inject(:+)
+        row << monthly_actuals.inject(:+)
       else
-        row << row[3]
+        row << monthly_actuals.last
       end
       (1..3).each do |i|
         meta[:quarter][i] = next_quarter(meta[:quarter][i-1])
@@ -64,6 +74,7 @@ module QuarterlyEvaluationsHelper
       end
       table_data[deliverable.id] = row
     end
+    Rails.logger.debug table_data
     [table_data, meta]
   end
 

@@ -7,16 +7,18 @@
     <% data, meta = measurables_data(@quarterly_evaluation, @translation_project) %>
     <tr class="table-head-row-top">
       <th rowspan="2">Deliverable</th>
-      <th><%= meta[:start_month].strftime("%b") %></th>
-      <th><%= 1.month.since(meta[:start_month]).strftime("%b") %></th>
-      <th><%= 2.months.since(meta[:start_month]).strftime("%b") %></th>
+      <th><%= pretty_quarter(meta[:quarter][-2], true).sub('to ', 'to<br>').html_safe %></th>
+      <th><%= pretty_quarter(meta[:quarter][-1], true).sub('to ', 'to<br>').html_safe %></th>
+      <% (6..8).each do |n| %>
+        <th><%= n.month.since(meta[:start_month]).strftime("%b") %></th>
+      <% end %>
       <th colspan="2"><%= pretty_quarter(meta[:quarter][0], true).sub('to ', 'to<br>').html_safe %></th>
       <% (1..3).each do |q| %>
         <th><%= pretty_quarter(meta[:quarter][q], true).sub('to ', 'to<br>').html_safe %></th>
       <% end %>
     </tr>
     <tr class="table-head-row-bottom">
-      <th>Actual</th><th>Actual</th><th>Actual</th>
+      <th>Actual</th><th>Actual</th><th>Actual</th><th>Actual</th><th>Actual</th>
       <th class="target">Target</th><th>Actual</th>
       <th class="target">Target</th><th class="target">Target</th><th class="target">Target</th>
     </tr>
@@ -24,12 +26,17 @@
     <tbody>
     <% data.each do |del_id, row| %>
     <tr>
+      <td><%= row.shift %></td>
+      <% 2.times do %>
+        <% target, actual = row.shift 2 %>
+        <td data-assessment="<%= assessment target, actual %>"><%= actual %></td>
+      <% end %>
       <% row.each_with_index do |col, i| %>
-        <% if i == 4 %>
+        <% if i == 3 %>
           <td class="target"><%= col %></td>
-        <% elsif i == 5 %>
+        <% elsif i == 4 %>
           <td data-assessment="<%= assessment row[i-1], col %>"><%= col %></td>
-        <% elsif i > 5 and logged_in_user.can_edit_project?(@quarterly_evaluation.project) %>
+        <% elsif i > 4 and logged_in_user.can_edit_project?(@quarterly_evaluation.project) %>
           <td class="quarterly-target target"
               data-state-language="<%= @quarterly_evaluation.state_language_id %>"
               data-deliverable="<%= del_id %>"
