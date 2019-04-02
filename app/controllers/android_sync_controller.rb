@@ -770,6 +770,7 @@ class AndroidSyncController < ApplicationController
       end
       if delivery_success
         # also send it to the reporter
+        return unless report.reporter.email&.include?('@') == true
         UserMailer.user_report(report.reporter, report).deliver_now
       end
     else
