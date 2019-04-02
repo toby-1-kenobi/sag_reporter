@@ -744,6 +744,7 @@ class AndroidSyncController < ApplicationController
   end
 
   def send_mail(report, email)
+    return unless email&.include?('@') == true
     # make sure TLS gets used for delivering this email
     if SendGridV3.enforce_tls
       recipient = User.find_by_email email
