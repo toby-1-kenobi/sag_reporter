@@ -648,7 +648,7 @@ class AndroidSyncController < ApplicationController
       if @is_only_test
         send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.valid?] }.to_h] }.to_h
       else
-        send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.id] }.to_h] }.to_h
+        send_message = @id_changes.map{|k,v| [k, v.select{|k,v2| v2.id}.map{|k2,v2| [k2, v2.id] }.to_h] }.to_h
       end
       send_message.merge!({error: @errors}) unless @errors.empty?
       logger.debug send_message
