@@ -1,8 +1,10 @@
 <%
-  first_month, last_month = quarter_to_range(@quarter)
+  2.times{ @quarters.unshift(previous_quarter(@quarters.first)) }
+  first_month, _ = quarter_to_range(@quarters.first)
+  _, last_month = quarter_to_range(@quarters.last)
   @start_month = Date.new(first_month[0..3].to_i, first_month[-2..-1].to_i)
-  @outputs = @outputs.where('month BETWEEN ? AND ?', first_month, last_month).to_a
-  @aggregate_outputs = @aggregate_outputs.where('month BETWEEN ? AND ?', first_month, last_month).to_a
+  @outputs = @outputs.where('month BETWEEN ? AND ?', first_month, last_month).pluck_to_struct(:month, :deliverable_id, :value)
+  @aggregate_outputs = @aggregate_outputs.where('month BETWEEN ? AND ?', first_month, last_month).pluck_to_struct(:month, :deliverable_id, :value)
 %>
 
 var container = $('.quarterly-stream-summary-content[data-stream="<%= @stream.id %>"]');

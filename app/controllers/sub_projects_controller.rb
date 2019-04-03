@@ -111,7 +111,7 @@ class SubProjectsController < ApplicationController
     else
       @state_languages = @project.state_languages.pluck :id
     end
-    @quarter = params[:quarter]
+    @quarters = [params[:quarter]]
     church_mins = ChurchMinistry.joins(:church_team).
         where(church_teams: { status: 0, state_language_id: @state_languages }, ministry: @stream)
     @outputs = MinistryOutput.where(actual: true, church_ministry: church_mins)

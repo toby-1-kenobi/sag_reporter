@@ -74,7 +74,6 @@ module QuarterlyEvaluationsHelper
       end
       table_data[deliverable.id] = row
     end
-    Rails.logger.debug table_data
     [table_data, meta]
   end
 
