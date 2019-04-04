@@ -748,36 +748,38 @@ class AndroidSyncController < ApplicationController
 
   def send_mail(report, email)
     return unless email&.include?('@') == true
-    # make sure TLS gets used for delivering this email
-    if SendGridV3.enforce_tls
-      recipient = User.find_by_email email
-      recipient ||= email
-      delivery_success = false
-      begin
-        UserMailer.user_report(recipient, report).deliver_now
-        delivery_success = true
-      rescue EOFError,
-            IOError,
-            TimeoutError,
-            Errno::ECONNRESET,
-            Errno::ECONNABORTED,
-            Errno::EPIPE,
-            Errno::ETIMEDOUT,
-            Net::SMTPAuthenticationError,
-            Net::SMTPServerBusy,
-            Net::SMTPSyntaxError,
-            Net::SMTPUnknownError,
-            OpenSSL::SSL::SSLError => e
-        logger.error e
-        logger.error e.backtrace
+    Thread.new do
+      # make sure TLS gets used for delivering this email
+      if SendGridV3.enforce_tls
+        recipient = User.find_by_email email
+        recipient ||= email
+        delivery_success = false
+        begin
+          UserMailer.user_report(recipient, report).deliver_now
+          delivery_success = true
+        rescue EOFError,
+              IOError,
+              TimeoutError,
+              Errno::ECONNRESET,
+              Errno::ECONNABORTED,
+              Errno::EPIPE,
+              Errno::ETIMEDOUT,
+              Net::SMTPAuthenticationError,
+              Net::SMTPServerBusy,
+              Net::SMTPSyntaxError,
+              Net::SMTPUnknownError,
+              OpenSSL::SSL::SSLError => e
+          logger.error e
+          logger.error e.backtrace
+        end
+        if delivery_success
+          # also send it to the reporter
+          return unless report.reporter.email&.include?('@') == true
+          UserMailer.user_report(report.reporter, report).deliver_now
+        end
+      else
+        logger.error 'Could not enforce TLS with SendGrid'
       end
-      if delivery_success
-        # also send it to the reporter
-        return unless report.reporter.email&.include?('@') == true
-        UserMailer.user_report(report.reporter, report).deliver_now
-      end
-    else
-      logger.error 'Could not enforce TLS with SendGrid'
     end
   end
 
