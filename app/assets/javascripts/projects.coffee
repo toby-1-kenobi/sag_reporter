@@ -17,6 +17,8 @@ $(document).on "ready page:change", ->
     if e.detail.state == 'open'
       panel = $(e.detail.tabpanel)
       if !$.trim(panel.html())
+        panel.html('<div class="mdl-spinner mdl-js-spinner is-active"></div>')
+        componentHandler.upgradeElements(panel.find('.mdl-spinner').get());
         quarterButton = document.querySelector('#quarter-menu-button')
         selectedQuarter = quarterButton.MaterialExtMenuButton.getSelectedMenuItem()
         quarter = $(selectedQuarter).data('quarter')
