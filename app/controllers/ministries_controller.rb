@@ -11,9 +11,12 @@ class MinistriesController < ApplicationController
             reporter: d.reporter,
             calc_method: d.calculation_method
         } }
-    state_languages = StateLanguage.includes(:geo_state).map{ |sl| [sl.id, sl.geo_state.zone_id]}
+    state_languages = StateLanguage.includes(:geo_state).map{ |sl| [sl.id, sl.geo_state.zone_id] }
     @sl_by_zone = Hash.new(Array.new)
     state_languages.each{ |sl| @sl_by_zone[sl[1]] += [sl[0]] }
+    church_ministries = ChurchMinistry.includes(church_team: {state_language: :geo_state}).map{ |cm| [cm.id, cm.church_team.state_language.geo_state.zone_id] }
+    @cm_by_zone = Hash.new(Array.new)
+    church_ministries.each{ |cm| @cm_by_zone[cm[1]] += [cm[0]] }
     @zones = Zone.all
     @quarter = params[:quarter]
     respond_to :js

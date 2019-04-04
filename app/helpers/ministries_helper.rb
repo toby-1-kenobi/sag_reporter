@@ -1,11 +1,15 @@
 module MinistriesHelper
 
-  def projects_overview_data(zones, stream, quarter, deliverables, sl_by_zone)
+  def projects_overview_data(zones, stream, quarter, deliverables, sl_by_zone, cm_by_zone)
     first_month, last_month  = quarter_to_range(quarter)
     amos = AggregateMinistryOutput.
         where('month BETWEEN ? AND ?', first_month, last_month).
         where(deliverable_id: deliverables.map{ |d| d[:id] }, actual: true).
         pluck_to_struct :state_language_id, :deliverable_id, :month, :value
+    mos = MinistryOutput.
+        where('month BETWEEN ? AND ?', first_month, last_month).
+        where(deliverable_id: deliverables.map{ |d| d[:id] }, actual: true).
+        pluck_to_struct :church_ministry_id, :deliverable_id, :month, :value
     data = {}
     group_del = deliverables.group_by{ |d| [d[:reporter], d[:calc_method]] }
     zones.each do |zone|
@@ -37,16 +41,12 @@ module MinistriesHelper
         end
       end
 
-
-      mos = MinistryOutput.
-          where('month BETWEEN ? AND ?', first_month, last_month).
-          where(deliverable_id: deliverables.map{ |d| d[:id] }, actual: true).
-          pluck_to_struct :church_ministry_id, :deliverable_id, :month, :value
+      church_mins = cm_by_zone[zone.id]
       # church team, sum of all
       ct_sum_del = group_del[['church_team', 'sum_of_all']]
       if ct_sum_del
         ct_values = mos.
-            select{ |amo| state_languages.include? amo.state_language_id and ct_sum_del.map{ |d| d[:id] }.include? amo.deliverable_id }.
+            select{ |amo| church_mins.include? amo.church_ministry_id and ct_sum_del.map{ |d| d[:id] }.include? amo.deliverable_id }.
             group_by(&:deliverable_id).map{ |d, v| [d, v.sum(&:value)] }.to_h
         data[zone.id].merge!(ct_values)
       end
