@@ -1,4 +1,4 @@
-<% data = Rails.cache.fetch("aggregated-actuals-#{@ministry.id}-#{@quarter}", expires_in: 1.day, backup: true){ projects_overview_data(@zones, @ministry, @quarter, @deliverables, @sl_by_zone, @cm_by_zone) } %>
+<% data = Rails.cache.fetch("aggregated-actuals-#{@ministry.id}-#{@quarter}", expires_in: 1.day, backup: true){ projects_overview_data(@zones, @ministry, @quarter, @deliverables, @sl_by_zone, @cm_by_zone, @cm_to_sl) } %>
 <% targets = Rails.cache.fetch("aggregated-targets-#{@ministry.id}-#{@quarter}", expires_in: 1.day, backup: true){ aggregate_targets(@zones, @quarter, @deliverables, @sl_by_zone) } %>
 
 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
@@ -7,17 +7,15 @@
     <% @zones.each do |zone| %>
       <th><%= zone.name %></th>
     <% end %>
-    <% @ministry.deliverables.each do |deliverable| %>
-      <% unless deliverable.disabled? %>
-        <tr>
-          <td class="mdl-data-table__cell--non-numeric"><%= deliverable.short_form.en %></td>
-          <% data.each do |zone_id, deliverable_values| %>
-            <td id="overview-<%= @ministry.id %>-<%= zone_id %>-<%= deliverable.id %>" data-assessment="<%= assessment(targets[zone_id][deliverable.id], deliverable_values[deliverable.id]) if targets[zone_id][deliverable.id] and deliverable_values[deliverable.id] %>">
-              <%= deliverable_values[deliverable.id] %>
-            </td>
-          <% end %>
-        </tr>
-      <% end %>
+    <% @deliverables.each do |deliverable| %>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric"><%= deliverable[:short_form] %></td>
+        <% data.each do |zone_id, deliverable_values| %>
+          <td id="overview-<%= @ministry.id %>-<%= zone_id %>-<%= deliverable[:id] %>" data-assessment="<%= assessment(targets[zone_id][deliverable[:id]], deliverable_values[deliverable[:id]]) if targets[zone_id][deliverable[:id]] and deliverable_values[deliverable[:id]] %>">
+            <%= deliverable_values[deliverable[:id]] %>
+          </td>
+        <% end %>
+      </tr>
     <% end %>
   </tr>
 </table>

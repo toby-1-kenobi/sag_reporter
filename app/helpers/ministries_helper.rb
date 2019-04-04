@@ -1,6 +1,6 @@
 module MinistriesHelper
 
-  def projects_overview_data(zones, stream, quarter, deliverables, sl_by_zone, cm_by_zone)
+  def projects_overview_data(zones, stream, quarter, deliverables, sl_by_zone, cm_by_zone, cm_to_sl)
     first_month, last_month  = quarter_to_range(quarter)
     amos = AggregateMinistryOutput.
         where('month BETWEEN ? AND ?', first_month, last_month).
@@ -56,10 +56,10 @@ module MinistriesHelper
       ct_rec_del = group_del[['church_team', 'most_recent']]
       if ct_rec_del
         ct_mos = mos.
-            select{ |amo| state_languages.include? amo.state_language_id and ct_rec_del.map{ |d| d[:id] }.include? amo.deliverable_id }.
+            select{ |mo| church_mins.include? mo.church_ministry_id and ct_rec_del.map{ |d| d[:id] }.include? mo.deliverable_id }.
             group_by(&:deliverable_id)
         ct_mos.each do |del_id, mo_list|
-          grouped_amo_list = mo_list.group_by{ |mo| mo.church_ministry.church_team.state_language_id }
+          grouped_amo_list = mo_list.group_by{ |mo| cm_to_sl[mo.church_ministry_id] }
           data[zone.id][del_id] = 0
           grouped_amo_list.values.each do |mo_sub_list|
             max_month = mo_sub_list.max_by{ |mo| mo.month }.month
@@ -77,11 +77,12 @@ module MinistriesHelper
 
   def aggregate_targets(zones, quarter, deliverables, sl_by_zone)
     targets = {}
+    q_targets = QuarterlyTarget.
+        where(quarter: quarter, deliverable: deliverables.map{ |d| d[:id] }).
+        pluck_to_struct(:state_language_id, :deliverable_id, :value)
     zones.each do |zone|
       state_languages = sl_by_zone[zone.id]
-      targets[zone.id] = QuarterlyTarget.
-          where(state_language_id: state_languages, quarter: quarter, deliverable: deliverables.map{ |d| d[:id] }).
-          pluck_to_struct(:deliverable_id, :value).
+      targets[zone.id] = q_targets.select{ |t| state_languages.include? t.state_language_id }.
           group_by(&:deliverable_id).map{ |d, v| [d, v.sum(&:value)] }.to_h
     end
     targets
