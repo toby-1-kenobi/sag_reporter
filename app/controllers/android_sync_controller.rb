@@ -726,7 +726,7 @@ class AndroidSyncController < ApplicationController
       elsif (old_id = hash.delete "old_id")
         email = hash.delete("significant")
         new_entry = table.new hash
-        if table == Report && email&.empty? == false
+        if table == Report && email&.empty? == false && email != "0"
           new_entry.significant = true
           send_mail new_entry, email
         end
