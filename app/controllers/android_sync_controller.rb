@@ -89,15 +89,15 @@ class AndroidSyncController < ApplicationController
       table_implementation = table.new
       unless @project_ids && @state_language_ids && @language_ids && @geo_state_ids
         #Octopus.using(:follower) do
-          @project_ids = ProjectStream.where(supervisor: @external_user).pluck(:project_id) +
-              ProjectSupervisor.where(user: @external_user).pluck(:project_id)
-          user_geo_state_ids = @external_user.national? ? GeoState.ids : @external_user.geo_state_ids
-          church_team_ids = ChurchTeamMembership.where(user: @external_user).pluck :church_team_id
-          @state_language_ids = ProjectLanguage.where(project_id: @project_ids).pluck(:state_language_id) +
-              LanguageStream.where(facilitator: @external_user).pluck(:state_language_id) +
-              ChurchTeam.where(id: church_team_ids).pluck(:state_language_id) +
-              StateLanguage.where(geo_state_id: user_geo_state_ids).ids
-          state_languages = StateLanguage.where(id: @state_language_ids)
+          @project_ids = ProjectStream.using(:follower).where(supervisor: @external_user).pluck(:project_id) +
+              ProjectSupervisor.using(:follower).where(user: @external_user).pluck(:project_id)
+          user_geo_state_ids = @external_user.national? ? GeoState.using(:follower).ids : @external_user.geo_state_ids
+          church_team_ids = ChurchTeamMembership.using(:follower).where(user: @external_user).pluck :church_team_id
+          @state_language_ids = ProjectLanguage.using(:follower).where(project_id: @project_ids).pluck(:state_language_id) +
+              LanguageStream.using(:follower).where(facilitator: @external_user).pluck(:state_language_id) +
+              ChurchTeam.using(:follower).where(id: church_team_ids).pluck(:state_language_id) +
+              StateLanguage.using(:follower).where(geo_state_id: user_geo_state_ids).ids
+          state_languages = StateLanguage.using(:follower).where(id: @state_language_ids)
           @language_ids = state_languages.pluck :language_id
           @geo_state_ids = state_languages.pluck :geo_state_id
         #end
@@ -108,7 +108,7 @@ class AndroidSyncController < ApplicationController
           if @project_ids.empty?
             [@external_user.id]
           else
-            LanguageStream.using(:follower).where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.using(:follower).where(id: @all_restricted_ids[Report]).map(&:reporter_id)
+            LanguageStream.using(:follower).where(project_id: @project_ids).pluck(:facilitator_id) + [@external_user.id] + Report.using(:follower).where(id: @all_restricted_ids[Report]).pluck(:reporter_id)
           end
         when Language
           table.where(id: @language_ids).ids
