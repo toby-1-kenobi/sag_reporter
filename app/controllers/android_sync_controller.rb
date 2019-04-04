@@ -625,34 +625,36 @@ class AndroidSyncController < ApplicationController
       @errors = []
       @id_changes = {}
       
-      safe_params.second.keys.each do |key|
-        table = key.to_s.camelcase.constantize
-        receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
-      end
-      @id_changes.each do |table, entries|
-        entries.each do |old_id, new_entry|
-          begin
-            if @is_only_test
-              @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.valid?
-            else
-              @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
+      ActiveRecord::Base.transaction do
+        safe_params.second.keys.each do |key|
+          table = key.to_s.camelcase.constantize
+          receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
+        end
+        @id_changes.each do |table, entries|
+          entries.each do |old_id, new_entry|
+            begin
+              if @is_only_test
+                @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.valid?
+              else
+                @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
+              end
+            rescue => e
+              logger.error e
+              logger.error e.backtrace
+              @errors << {"#{table}:#{old_id}" => e.message}
             end
-          rescue => e
-            logger.error e
-            logger.error e.backtrace
-            @errors << {"#{table}:#{old_id}" => e.message}
           end
         end
+        # Send back all the ID changes (as only the whole entries were saved, the ID has to be retrieved here)
+        if @is_only_test
+          send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.valid?] }.to_h] }.to_h
+        else
+          send_message = @id_changes.map{|k,v| [k, v.select{|k,v2| v2.id}.map{|k2,v2| [k2, v2.id] }.to_h] }.to_h
+        end
+        send_message.merge!({error: @errors}) unless @errors.empty?
+        logger.debug send_message
+        render json: send_message, status: :created
       end
-      # Send back all the ID changes (as only the whole entries were saved, the ID has to be retrieved here)
-      if @is_only_test
-        send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.valid?] }.to_h] }.to_h
-      else
-        send_message = @id_changes.map{|k,v| [k, v.select{|k,v2| v2.id}.map{|k2,v2| [k2, v2.id] }.to_h] }.to_h
-      end
-      send_message.merge!({error: @errors}) unless @errors.empty?
-      logger.debug send_message
-      render json: send_message, status: :created
     rescue => e
       send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       logger.error send_message
