@@ -1,5 +1,5 @@
-<% data = Rails.cache.fetch("aggregated-actuals-#{@ministry.id}-#{@quarter}", expires_in: 1.day, backup: true){ projects_overview_data(@zones, @ministry, @quarter) } %>
-<% targets = Rails.cache.fetch("aggregated-targets-#{@ministry.id}-#{@quarter}", expires_in: 1.day, backup: true){ aggregate_targets(@zones, @ministry, @quarter) } %>
+<% data = Rails.cache.fetch("aggregated-actuals-#{@ministry.id}-#{@quarter}", expires_in: 1.day, backup: true){ projects_overview_data(@zones, @ministry, @quarter, @deliverables, @sl_by_zone) } %>
+<% targets = Rails.cache.fetch("aggregated-targets-#{@ministry.id}-#{@quarter}", expires_in: 1.day, backup: true){ aggregate_targets(@zones, @quarter, @deliverables, @sl_by_zone) } %>
 <% GC.start %>
 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <tr>

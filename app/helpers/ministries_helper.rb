@@ -1,23 +1,28 @@
 module MinistriesHelper
 
-  def projects_overview_data(zones, stream, quarter)
+  def projects_overview_data(zones, stream, quarter, deliverables, sl_by_zone)
     first_month, last_month  = quarter_to_range(quarter)
+    amos = AggregateMinistryOutput.
+        where('month BETWEEN ? AND ?', first_month, last_month).
+        where(deliverable_id: deliverables.map{ |d| d[:id] }, actual: true).
+        pluck_to_struct :state_language_id, :deliverable_id, :month, :value
     data = {}
+    group_del = deliverables.group_by{ |d| [d[:reporter], d[:calc_method]] }
     zones.each do |zone|
+      state_languages = sl_by_zone[zone.id]
       # facilitator, sum of all
-      data[zone.id] = zone.aggregate_ministry_outputs.joins(:deliverable).
-          where('aggregate_ministry_outputs.month >= ?', first_month).
-          where('aggregate_ministry_outputs.month <= ?', last_month).
-          where(actual: true, deliverables: {ministry_id: stream, reporter: 1,  calculation_method: 1}).
-          group(:deliverable_id).sum(:value)
+      fac_sum_del = group_del[['facilitator', 'sum_of_all']]
+      data[zone.id] = amos.
+          select{ |amo| state_languages.include? amo.state_language_id and fac_sum_del.map{ |d| d[:id] }.include? amo.deliverable_id }.
+          group_by(&:deliverable_id).map{ |d, v| [d, v.sum(&:value)] }.to_h
+
       # facilitator, most recent
       # we must find the most recent month reported in each state-language and sum those
-      amos = zone.aggregate_ministry_outputs.joins(:deliverable).
-          where('aggregate_ministry_outputs.month >= ?', first_month).
-          where('aggregate_ministry_outputs.month <= ?', last_month).
-          where(actual: true, deliverables: {ministry_id: stream, reporter: 1, calculation_method: 0}).
-          pluck_to_struct(:deliverable_id, :state_language_id, :month, :value).group_by(&:deliverable_id)
-      amos.each do |del_id, amo_list|
+      fac_rec_del = group_del[['facilitator', 'most_recent']]
+      fac_amos = amos.
+          select{ |amo| state_languages.include? amo.state_language_id and fac_rec_del.map{ |d| d[:id] }.include? amo.deliverable_id }.
+          group_by(&:deliverable_id)
+      fac_amos.each do |del_id, amo_list|
         grouped_amo_list = amo_list.group_by(&:state_language_id)
         data[zone.id][del_id] = 0
         grouped_amo_list.values.each do |amo_sub_list|
@@ -25,21 +30,24 @@ module MinistriesHelper
           data[zone.id][del_id] += amo_sub_list.select{ |amo| amo.month == max_month }.sum(&:value)
         end
       end
+
+      mos = MinistryOutput.
+          where('month BETWEEN ? AND ?', first_month, last_month).
+          where(deliverable_id: deliverables.map{ |d| d[:id] }, actual: true).
+          pluck_to_struct :church_ministry_id, :deliverable_id, :month, :value
       # church team, sum of all
-      ct_values = zone.ministry_outputs.joins(:deliverable).
-          where('ministry_outputs.month >= ?', first_month).
-          where('ministry_outputs.month <= ?', last_month).
-          where(actual: true, deliverables: {ministry_id: stream, reporter: 0, calculation_method: 1}).
-          group(:deliverable_id).sum(:value)
+      ct_sum_del = group_del[['church_team', 'sum_of_all']]
+      ct_values = mos.
+          select{ |amo| state_languages.include? amo.state_language_id and ct_sum_del.map{ |d| d[:id] }.include? amo.deliverable_id }.
+          group_by(&:deliverable_id).map{ |d, v| [d, v.sum(&:value)] }.to_h
       data[zone.id].merge!(ct_values)
       # church team, most recent
       # we must find the most recent month reported in each state-language and sum those
-      mos = zone.ministry_outputs.includes(:deliverable, church_ministry: :church_team).
-          where('ministry_outputs.month >= ?', first_month).
-          where('ministry_outputs.month <= ?', last_month).
-          where(actual: true, deliverables: {ministry_id: stream, reporter: 0, calculation_method: 0}).
-          to_a.group_by(&:deliverable_id)
-      mos.each do |del_id, mo_list|
+      ct_rec_del = group_del[['church_team', 'most_recent']]
+      ct_mos = mos.
+          select{ |amo| state_languages.include? amo.state_language_id and ct_rec_del.map{ |d| d[:id] }.include? amo.deliverable_id }.
+          group_by(&:deliverable_id)
+      ct_mos.each do |del_id, mo_list|
         grouped_amo_list = mo_list.group_by{ |mo| mo.church_ministry.church_team.state_language_id }
         data[zone.id][del_id] = 0
         grouped_amo_list.values.each do |mo_sub_list|
@@ -55,10 +63,14 @@ module MinistriesHelper
     data
   end
 
-  def aggregate_targets(zones, stream, quarter)
+  def aggregate_targets(zones, quarter, deliverables, sl_by_zone)
     targets = {}
     zones.each do |zone|
-      targets[zone.id] = zone.quarterly_targets.where(quarter: quarter, deliverable: stream.deliverables).group(:deliverable_id).sum(:value)
+      state_languages = sl_by_zone[zone.id]
+      targets[zone.id] = QuarterlyTarget.
+          where(state_language_id: state_languages, quarter: quarter, deliverable: deliverables.map{ |d| d[:id] }).
+          pluck_to_struct(:deliverable_id, :value).
+          group_by(&:deliverable_id).map{ |d, v| [d, v.sum(&:value)] }.to_h
     end
     targets
   end
