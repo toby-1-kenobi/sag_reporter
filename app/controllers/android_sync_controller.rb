@@ -89,14 +89,14 @@ class AndroidSyncController < ApplicationController
       table_implementation = table.new
       unless @project_ids && @state_language_ids && @language_ids && @geo_state_ids
         #Octopus.using(:follower) do
-          @project_ids = ProjectStream.where(supervisor: @external_user).map(&:project_id) +
-              ProjectSupervisor.where(user: @external_user).map(&:project_id)
-          user_geo_state_ids = @external_user.national? ? GeoState.ids : @external_user.geo_state_ids
-          @state_language_ids = Project.includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
-              LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
-              ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id) +
-              StateLanguage.where(geo_state_id: user_geo_state_ids).ids
-          state_languages = StateLanguage.where(id: @state_language_ids)
+          @project_ids = ProjectStream.using(:follower).where(supervisor: @external_user).map(&:project_id) +
+              ProjectSupervisor.using(:follower).where(user: @external_user).map(&:project_id)
+          user_geo_state_ids = @external_user.national? ? GeoState.using(:follower).ids : @external_user.geo_state_ids
+          @state_language_ids = Project.using(:follower).includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
+              LanguageStream.using(:follower).where(facilitator: @external_user).map(&:state_language_id) +
+              ChurchTeamMembership.using(:follower).includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id) +
+              StateLanguage.using(:follower).where(geo_state_id: user_geo_state_ids).ids
+          state_languages = StateLanguage.using(:follower).where(id: @state_language_ids)
           @language_ids = state_languages.map &:language_id
           @geo_state_ids = state_languages.map(&:geo_state_id)
         #end
@@ -107,8 +107,7 @@ class AndroidSyncController < ApplicationController
           if @project_ids.empty?
             [@external_user.id]
           else
-            #LanguageStream.using(:follower).where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.using(:follower).where(id: @all_restricted_ids[Report]).map(&:reporter_id)
-            LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.where(id: @all_restricted_ids[Report]).map(&:reporter_id)
+            LanguageStream.using(:follower).where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.using(:follower).where(id: @all_restricted_ids[Report]).map(&:reporter_id)
           end
         when Language
           table.where(id: @language_ids).ids
@@ -286,11 +285,9 @@ class AndroidSyncController < ApplicationController
 
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
-            #restricted_ids = restrict(table.using(:follower))
-            restricted_ids = restrict(table)
+            restricted_ids = restrict(table.using(:follower))
             logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
-            #table.using(:follower).where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
-            table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
+            table.using(:follower).where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
                         last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
                 .includes(join_tables[table_name].to_a + additional_join_tables[table_name].to_a).each do |entry|
               entry_data = Hash.new
@@ -324,7 +321,7 @@ class AndroidSyncController < ApplicationController
               file.write "INSERT INTO #{join_table_names.join "_"}(#{join_table_names.first}_id,#{foreign_key_names(join_table_names.second.singularize)}_id)" +
                                "VALUES#{data.map{|d|"(#{d.first},#{d.second})"}.join ","};" unless data.empty?
             end
-            ActiveRecord::Base.connection.query_cache.clear
+            #ActiveRecord::Base.connection.query_cache.clear
           end
           unless deleted_entries.empty?
             deleted_entries.each do |table, ids|
@@ -346,7 +343,7 @@ class AndroidSyncController < ApplicationController
         #@final_file.close
         File.rename(@final_file, "#{@final_file.path}.txt")
         logger.debug "File writing finished: #{@final_file.path}.txt"
-        ActiveRecord::Base.connection.close
+        #ActiveRecord::Base.connection.close
       end
     end
   end
@@ -625,34 +622,36 @@ class AndroidSyncController < ApplicationController
       @errors = []
       @id_changes = {}
       
-      safe_params.second.keys.each do |key|
-        table = key.to_s.camelcase.constantize
-        receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
-      end
-      @id_changes.each do |table, entries|
-        entries.each do |old_id, new_entry|
-          begin
-            if @is_only_test
-              @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.valid?
-            else
-              @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
+      ActiveRecord::Base.transaction do
+        safe_params.second.keys.each do |key|
+          table = key.to_s.camelcase.constantize
+          receive_request_params[table.name.underscore]&.each {|entry| build table, entry.to_h}
+        end
+        @id_changes.each do |table, entries|
+          entries.each do |old_id, new_entry|
+            begin
+              if @is_only_test
+                @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.valid?
+              else
+                @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
+              end
+            rescue => e
+              logger.error e
+              logger.error e.backtrace
+              @errors << {"#{table}:#{old_id}" => e.message}
             end
-          rescue => e
-            logger.error e
-            logger.error e.backtrace
-            @errors << {"#{table}:#{old_id}" => e.message}
           end
         end
+        # Send back all the ID changes (as only the whole entries were saved, the ID has to be retrieved here)
+        if @is_only_test
+          send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.valid?] }.to_h] }.to_h
+        else
+          send_message = @id_changes.map{|k,v| [k, v.select{|k,v2| v2.id}.map{|k2,v2| [k2, v2.id] }.to_h] }.to_h
+        end
+        send_message.merge!({error: @errors}) unless @errors.empty?
+        logger.debug send_message
+        render json: send_message, status: :created
       end
-      # Send back all the ID changes (as only the whole entries were saved, the ID has to be retrieved here)
-      if @is_only_test
-        send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.valid?] }.to_h] }.to_h
-      else
-        send_message = @id_changes.map{|k,v| [k, v.map{|k2,v2| [k2, v2.id] }.to_h] }.to_h
-      end
-      send_message.merge!({error: @errors}) unless @errors.empty?
-      logger.debug send_message
-      render json: send_message, status: :created
     rescue => e
       send_message = {error: e.to_s, where: e.backtrace.to_s}.to_json
       logger.error send_message
@@ -726,7 +725,7 @@ class AndroidSyncController < ApplicationController
       elsif (old_id = hash.delete "old_id")
         email = hash.delete("significant")
         new_entry = table.new hash
-        if table == Report && email&.empty? == false
+        if table == Report && email&.empty? == false && email != "0"
           new_entry.significant = true
           send_mail new_entry, email
         end
@@ -748,36 +747,38 @@ class AndroidSyncController < ApplicationController
 
   def send_mail(report, email)
     return unless email&.include?('@') == true
-    # make sure TLS gets used for delivering this email
-    if SendGridV3.enforce_tls
-      recipient = User.find_by_email email
-      recipient ||= email
-      delivery_success = false
-      begin
-        UserMailer.user_report(recipient, report).deliver_now
-        delivery_success = true
-      rescue EOFError,
-            IOError,
-            TimeoutError,
-            Errno::ECONNRESET,
-            Errno::ECONNABORTED,
-            Errno::EPIPE,
-            Errno::ETIMEDOUT,
-            Net::SMTPAuthenticationError,
-            Net::SMTPServerBusy,
-            Net::SMTPSyntaxError,
-            Net::SMTPUnknownError,
-            OpenSSL::SSL::SSLError => e
-        logger.error e
-        logger.error e.backtrace
+    Thread.new do
+      # make sure TLS gets used for delivering this email
+      if SendGridV3.enforce_tls
+        recipient = User.find_by_email email
+        recipient ||= email
+        delivery_success = false
+        begin
+          UserMailer.user_report(recipient, report).deliver_now
+          delivery_success = true
+        rescue EOFError,
+              IOError,
+              TimeoutError,
+              Errno::ECONNRESET,
+              Errno::ECONNABORTED,
+              Errno::EPIPE,
+              Errno::ETIMEDOUT,
+              Net::SMTPAuthenticationError,
+              Net::SMTPServerBusy,
+              Net::SMTPSyntaxError,
+              Net::SMTPUnknownError,
+              OpenSSL::SSL::SSLError => e
+          logger.error e
+          logger.error e.backtrace
+        end
+        if delivery_success
+          # also send it to the reporter
+          return unless report.reporter.email&.include?('@') == true
+          UserMailer.user_report(report.reporter, report).deliver_now
+        end
+      else
+        logger.error 'Could not enforce TLS with SendGrid'
       end
-      if delivery_success
-        # also send it to the reporter
-        return unless report.reporter.email&.include?('@') == true
-        UserMailer.user_report(report.reporter, report).deliver_now
-      end
-    else
-      logger.error 'Could not enforce TLS with SendGrid'
     end
   end
 
