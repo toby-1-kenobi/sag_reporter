@@ -88,18 +88,18 @@ class AndroidSyncController < ApplicationController
     def restrict(table)
       table_implementation = table.new
       unless @project_ids && @state_language_ids && @language_ids && @geo_state_ids
-        Octopus.using(:follower) do
-          @project_ids = ProjectStream.where(supervisor: @external_user).map(&:project_id) +
-              ProjectSupervisor.where(user: @external_user).map(&:project_id)
-          user_geo_state_ids = @external_user.national? ? GeoState.ids : @external_user.geo_state_ids
-          @state_language_ids = Project.includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
-              LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
-              ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id) +
-              StateLanguage.where(geo_state_id: user_geo_state_ids).ids
-          state_languages = StateLanguage.where(id: @state_language_ids)
+        #Octopus.using(:follower) do
+          @project_ids = ProjectStream.using(:follower).where(supervisor: @external_user).map(&:project_id) +
+              ProjectSupervisor.using(:follower).where(user: @external_user).map(&:project_id)
+          user_geo_state_ids = @external_user.national? ? GeoState.using(:follower).ids : @external_user.geo_state_ids
+          @state_language_ids = Project.using(:follower).includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
+              LanguageStream.using(:follower).where(facilitator: @external_user).map(&:state_language_id) +
+              ChurchTeamMembership.using(:follower).includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id) +
+              StateLanguage.using(:follower).where(geo_state_id: user_geo_state_ids).ids
+          state_languages = StateLanguage.using(:follower).where(id: @state_language_ids)
           @language_ids = state_languages.map &:language_id
           @geo_state_ids = state_languages.map(&:geo_state_id)
-        end
+        #end
       end
       restricted_ids =
         case table_implementation
