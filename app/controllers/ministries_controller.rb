@@ -14,7 +14,7 @@ class MinistriesController < ApplicationController
     state_languages = StateLanguage.includes(:geo_state).map{ |sl| [sl.id, sl.geo_state.zone_id]}
     @sl_by_zone = Hash.new(Array.new)
     state_languages.each{ |sl| @sl_by_zone[sl[1]] += [sl[0]] }
-    @zones = Zone.includes(:aggregate_ministry_outputs, :ministry_outputs, :quarterly_targets)
+    @zones = Zone.all
     @quarter = params[:quarter]
     respond_to :js
   end
