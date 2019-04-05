@@ -88,17 +88,18 @@ class AndroidSyncController < ApplicationController
     def restrict(table)
       table_implementation = table.new
       unless @project_ids && @state_language_ids && @language_ids && @geo_state_ids
-        #Octopus.using(:follower) do
-          @project_ids = ProjectStream.where(supervisor: @external_user).map(&:project_id) +
-              ProjectSupervisor.where(user: @external_user).map(&:project_id)
+        #Octopus do
+          @project_ids = ProjectStream.where(supervisor: @external_user).pluck(:project_id) +
+              ProjectSupervisor.where(user: @external_user).pluck(:project_id)
           user_geo_state_ids = @external_user.national? ? GeoState.ids : @external_user.geo_state_ids
-          @state_language_ids = Project.includes(:state_languages).where(id: @project_ids).map(&:state_language_ids).flatten +
-              LanguageStream.where(facilitator: @external_user).map(&:state_language_id) +
-              ChurchTeamMembership.includes(:church_team).where(user: @external_user).map(&:church_team).map(&:state_language_id) +
+          church_team_ids = ChurchTeamMembership.where(user: @external_user).pluck :church_team_id
+          @state_language_ids = ProjectLanguage.where(project_id: @project_ids).pluck(:state_language_id) +
+              LanguageStream.where(facilitator: @external_user).pluck(:state_language_id) +
+              ChurchTeam.where(id: church_team_ids).pluck(:state_language_id) +
               StateLanguage.where(geo_state_id: user_geo_state_ids).ids
           state_languages = StateLanguage.where(id: @state_language_ids)
-          @language_ids = state_languages.map &:language_id
-          @geo_state_ids = state_languages.map(&:geo_state_id)
+          @language_ids = state_languages.pluck :language_id
+          @geo_state_ids = state_languages.pluck :geo_state_id
         #end
       end
       restricted_ids =
@@ -107,7 +108,7 @@ class AndroidSyncController < ApplicationController
           if @project_ids.empty?
             [@external_user.id]
           else
-            LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.where(id: @all_restricted_ids[Report]).map(&:reporter_id)
+            LanguageStream.where(project_id: @project_ids).pluck(:facilitator_id) + [@external_user.id] + Report.where(id: @all_restricted_ids[Report]).pluck(:reporter_id)
           end
         when Language
           table.where(id: @language_ids).ids
@@ -285,7 +286,7 @@ class AndroidSyncController < ApplicationController
 
             table_name = table.name.to_sym
             offline_ids = send_request_params[table.name] || [0]
-            restricted_ids = restrict(table.using(:follower))
+            restricted_ids = restrict(table)
             logger.debug "Update #{table.name} at: #{restricted_ids.size}. Those are offline already: #{offline_ids.size}"
             table.where("updated_at BETWEEN ? AND ? AND id IN (?) OR id IN (?)",
                         last_sync, this_sync, restricted_ids & offline_ids, restricted_ids - offline_ids)
