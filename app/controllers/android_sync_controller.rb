@@ -107,7 +107,7 @@ class AndroidSyncController < ApplicationController
           if @project_ids.empty?
             [@external_user.id]
           else
-            LanguageStream.where(project_id: @project_ids).pluck(:facilitator_id) + [@external_user.id] + Report.where(id: @all_restricted_ids[Report]).pluck(:reporter_id)
+            LanguageStream.where(project_id: @project_ids).map(&:facilitator_id) + [@external_user.id] + Report.where(id: @all_restricted_ids[Report]).map(&:reporter_id)
           end
         when Language
           table.where(id: @language_ids).ids
