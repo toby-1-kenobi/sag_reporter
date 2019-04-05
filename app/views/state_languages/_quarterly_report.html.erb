@@ -40,9 +40,9 @@
           <td class="quarterly-target target"
               data-state-language="<%= @quarterly_evaluation.state_language_id %>"
               data-deliverable="<%= del_id %>"
-              data-quarter="<%= meta[:quarter][i-5] %>"
+              data-quarter="<%= meta[:quarter][i-4] %>"
           >
-            <%= form_tag set_target_in_state_language_path(@quarterly_evaluation.state_language_id, del_id, meta[:quarter][i-5]), method: :patch, remote: true do %>
+            <%= form_tag set_target_in_state_language_path(@quarterly_evaluation.state_language_id, del_id, meta[:quarter][i-4]), method: :patch, remote: true do %>
               <div class="mdl-textfield mdl-js-textfield quarterly-target-input">
                 <input class="mdl-textfield__input"
                        type="text"
