@@ -252,7 +252,7 @@
         <% end %>
       </ul>
       <ul id="projects-overview" class="mdlext-accordion mdlext-js-accordion mdlext-accordion--vertical">
-        <% Ministry.all.each do |stream| %>
+        <% Ministry.order(:ui_order).each do |stream| %>
           <li class="mdlext-accordion__panel">
             <header class="mdlext-accordion__tab">
               <span class="mdlext-accordion__tab__caption"><%= stream.name.en %></span>

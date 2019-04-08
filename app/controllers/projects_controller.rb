@@ -54,7 +54,7 @@ class ProjectsController < ApplicationController
     locale = logged_in_user.interface_language.locale_tag
     @project = Project.find(params[:id])
     head :forbidden unless logged_in_user.can_view_project?(@project)
-    @streams = @project.ministries.pluck(:id).map{ |s| {id: s, name: Ministry.stream_name(s, locale)} }.sort_by{ |s| s[:name] }
+    @streams = @project.ministries.order(:ui_order).pluck(:id).map{ |s| {id: s, name: Ministry.stream_name(s, locale)} }
     @project_streams = @project.project_streams.pluck_to_struct :id, :ministry_id
     @project_progresses = ProjectProgress.where(project_stream: @project_streams.map{ |ps| ps.id }).
         pluck_to_struct(:id, :project_stream_id, :month, :progress, :approved, :comment, :updated_at).

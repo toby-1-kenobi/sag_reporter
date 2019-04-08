@@ -1,8 +1,8 @@
 
 <% if @sub_project %>
-  <% streams = @project.ministries.order(:code).to_a.select {|s| @sub_project.language_streams.exists?(ministry_id: s.id)} %>
+  <% streams = @project.ministries.order(:ui_order).to_a.select {|s| @sub_project.language_streams.exists?(ministry_id: s.id)} %>
 <% else %>
-  <% streams = @project.ministries.order(:code) %>
+  <% streams = @project.ministries.order(:ui_order) %>
 <% end %>
 
 <button id="download-quarterly-report" class="mdl-button">
