@@ -13,7 +13,7 @@
   <table class="team-results mdl-data-table mdl-js-data-table mdl-shadow--2dp">
     <thead>
     <tr>
-      <th rowspan="2" class="mdl-data-table__cell--non-numeric">Deliverable</th>
+      <th rowspan="2" class="mdl-data-table__cell--non-numeric deliverable-name-col">Deliverable</th>
       <% [last_q, current_q].each do |quarter| %>
         <% months_in_quarter(quarter).each do |month| %>
           <th class="mdl-data-table__cell--non-numeric">
@@ -55,7 +55,7 @@
     <tbody>
     <% stream.deliverables.church_team.order(:ui_order).each do |deliverable| %>
       <tr>
-        <td class="mdl-data-table__cell--non-numeric">
+        <td class="mdl-data-table__cell--non-numeric deliverable-name-col">
           <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>
         </td>
         <% [last_q, current_q].each do |quarter| %>
