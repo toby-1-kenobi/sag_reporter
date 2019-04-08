@@ -4,7 +4,7 @@ class MinistriesController < ApplicationController
 
   def projects_overview
     @ministry = Ministry.find params[:id]
-    @deliverables = @ministry.deliverables.where.not(reporter: 4).includes(short_form: :translations).
+    @deliverables = @ministry.deliverables.active.includes(short_form: :translations).order(:ui_order).
         map{ |d|  {
             id: d.id,
             short_form: d.short_form.send(logged_in_user.interface_language.locale_tag),

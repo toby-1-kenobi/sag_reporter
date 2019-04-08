@@ -53,7 +53,7 @@
     </tr>
     </thead>
     <tbody>
-    <% stream.deliverables.church_team.order(:number).each do |deliverable| %>
+    <% stream.deliverables.church_team.order(:ui_order).each do |deliverable| %>
       <tr>
         <td class="mdl-data-table__cell--non-numeric">
           <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>

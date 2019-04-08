@@ -41,7 +41,7 @@ module QuarterlyEvaluationsHelper
         'translation_progress' => lambda{ |m, d| translation_project ? translation_project.count_verses(d, m.months.since(meta[:start_month]).strftime('%Y-%m')) : '0' },
         'auto' => lambda { |m, d| auto_actuals(nil, [qe.state_language_id], d, m.months.since(meta[:start_month]).strftime('%Y-%m'), m.months.since(meta[:start_month]).strftime('%Y-%m')) }
     }
-    qe.ministry.deliverables.active.order(:number).each do |deliverable|
+    qe.ministry.deliverables.active.order(:ui_order).each do |deliverable|
       row = [deliverable.short_form.en]
       monthly_actuals = []
       if calculations[deliverable.reporter]
