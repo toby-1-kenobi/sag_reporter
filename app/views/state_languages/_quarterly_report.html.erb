@@ -36,7 +36,7 @@
           <td class="target"><%= col %></td>
         <% elsif i == 4 %>
           <td data-assessment="<%= assessment row[i-1], col %>"><%= col %></td>
-        <% elsif i > 4 and logged_in_user.can_edit_project?(@quarterly_evaluation.project) %>
+        <% elsif i > 4 and logged_in_user.can_edit_project_stream?(@quarterly_evaluation.project, @quarterly_evaluation.ministry) %>
           <td class="quarterly-target target"
               data-state-language="<%= @quarterly_evaluation.state_language_id %>"
               data-deliverable="<%= del_id %>"
