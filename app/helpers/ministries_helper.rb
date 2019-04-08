@@ -1,6 +1,6 @@
 module MinistriesHelper
 
-  def projects_overview_data(zones, stream, quarter, deliverables, sl_by_zone, cm_by_zone, cm_to_sl)
+  def projects_overview_data(zones, stream, quarter, deliverables, sl_by_zone, l_by_zone, cm_by_zone, cm_to_sl)
     first_month, last_month  = quarter_to_range(quarter)
     amos = AggregateMinistryOutput.
         where('month BETWEEN ? AND ?', first_month, last_month).
@@ -10,10 +10,27 @@ module MinistriesHelper
         where('month BETWEEN ? AND ?', first_month, last_month).
         where(deliverable_id: deliverables.map{ |d| d[:id] }, actual: true).
         pluck_to_struct :church_ministry_id, :deliverable_id, :month, :value
+    if stream.code == 'TR'
+      tp_by_zone = Hash.new(Array.new)
+      TranslationProject.joins(language: {state_languages: :geo_state}).
+          where(state_languages: {primary: true}).
+          pluck(:zone_id, :id).
+          each{ |zid, tpid| tp_by_zone[zid] += [tpid] }
+      logger.debug "tp by zone: #{tp_by_zone}"
+      ch_verses = Chapter.all.pluck(:id, :verses).to_h
+      logger.debug "ch verses: #{ch_verses}"
+      tr_prog = TranslationProgress.
+          where('month BETWEEN ? AND ?', first_month, last_month).
+          pluck_to_struct :chapter_id, :deliverable_id, :translation_project_id
+      logger.debug "tr prog: #{tr_prog}"
+    end
+
     data = {}
     group_del = deliverables.group_by{ |d| [d[:reporter], d[:calc_method]] }
+
     zones.each do |zone|
       state_languages = sl_by_zone[zone.id]
+
       # facilitator, sum of all
       fac_sum_del = group_del[['facilitator', 'sum_of_all']]
       if fac_sum_del
@@ -67,6 +84,15 @@ module MinistriesHelper
           end
         end
       end
+
+      # translation deliverables
+      if stream.code == 'TR'
+        progresses = tr_prog.
+            select{ |tp| tp_by_zone[zone.id].include? tp.translation_project_id }.
+            group_by(&:deliverable_id).map{ |d, v| [d, v.sum{ |t| ch_verses[t.chapter_id] }] }.to_h
+        data[zone.id].merge!(progresses)
+      end
+
       # auto calculated deliverables
       stream.deliverables.auto.each do |deliverable|
         data[zone.id][deliverable.id] = auto_actuals(zone, nil, deliverable, first_month, last_month)
