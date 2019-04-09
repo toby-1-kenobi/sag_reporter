@@ -42,4 +42,18 @@ class ChurchTeamsController < ApplicationController
     respond_to :js
   end
 
+  def add_bible_verse
+    @bible_verse = BiblePassage.parse(params[:bible_ref])
+    if @bible_verse
+      @bible_verse.church_ministry_id = params[:church_min]
+      @bible_verse.month = params[:month]
+      if @bible_verse.valid?
+        old_verse = BiblePassage.find_by(church_ministry_id: params[:church_min], month: params[:month])
+        old_verse&.destroy
+        @bible_verse.save
+      end
+    end
+    respond_to :js
+  end
+
 end

@@ -1,0 +1,7 @@
+<% if @bible_verse&.persisted? %>
+  var input_field = $('.team-input[data-church-min="<%= @bible_verse.church_ministry_id %>"]').find('.bible-verse-input');
+  input_field.val('<%= @bible_verse.bible_ref %>');
+  input_field.removeClass('dirty');
+<% else %>
+  console.log('invalid Bible reference');
+<% end %>

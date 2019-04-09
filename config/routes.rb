@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     end
     collection do
       get 'edit_impact/:church_min/:month', action: :edit_impact, as: 'edit_impact_for'
+      post 'add_bible_verse', action: :add_bible_verse, as: 'add_bible_verse_for'
     end
   end
 

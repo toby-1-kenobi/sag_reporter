@@ -1,8 +1,18 @@
 var container = $('.team-input[data-church-min="<%= @church_min_id %>"]');
+
 if (container.data('month') == '<%= @month %>') {
     container.slideUp();
 } else {
     container.data('month', '<%= @month %>');
     container.html('<%= j render 'edit_impact' %>');
+    componentHandler.upgradeElements(container.find('.mdl-textfield').get());
+    container.find('.bible-verse-input').on('input', function () {
+        $(this).addClass('dirty');
+    });
+
+    container.find('.bible-verse-input').on('change', function () {
+        const data = {church_min: <%= @church_min_id %>, month: '<%= @month %>', bible_ref: $(this).val()};
+        $.ajax({url: '<%= add_bible_verse_for_church_teams_path %>', data: data, method: 'POST'});
+    });
     container.slideDown();
 }
