@@ -179,21 +179,8 @@ td.annual-target {
   font-weight: bold;
 }
 
-.team-stream-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-rows: auto;
-  grid-column-gap: 1em;
-  grid-template-areas:
-          "table inputs";
-  .team-stream-header {
-    grid-area: table;
-  }
-  .team-results {
-    grid-area: table;
-  }
+.team-stream-container {
   .team-input {
-    grid-area: inputs;
     padding: 0 1em;
   }
 }

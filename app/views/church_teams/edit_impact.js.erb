@@ -1,0 +1,8 @@
+var container = $('.team-input[data-church-min="<%= @church_min_id %>"]');
+if (container.data('month') == '<%= @month %>') {
+    container.slideUp();
+} else {
+    container.data('month', '<%= @month %>');
+    container.html('<%= j render 'edit_impact' %>');
+    container.slideDown();
+}

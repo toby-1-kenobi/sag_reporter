@@ -36,4 +36,10 @@ class ChurchTeamsController < ApplicationController
     respond_to :js
   end
 
+  def edit_impact
+    @church_min_id = params[:church_min]
+    @month = params[:month]
+    respond_to :js
+  end
+
 end

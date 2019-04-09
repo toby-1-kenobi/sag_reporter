@@ -35,6 +35,9 @@ Rails.application.routes.draw do
       get 'project_table/:project_id', action: :project_table, as: 'table_for'
       get 'qr_table/:project_id/:stream_id/:first_month', action: :quarterly_table, as: 'quarterly_table_for'
     end
+    collection do
+      get 'edit_impact/:church_min/:month', action: :edit_impact, as: 'edit_impact_for'
+    end
   end
 
   resources :edits, only: [:create, :destroy] do

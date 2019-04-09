@@ -4,7 +4,7 @@
 <% q_year[last_q] = last_q < current_q ? q_year[current_q] : q_year[current_q] - 1 %>
 <% church_team.church_ministries.active.each do |church_min| %>
   <% stream = church_min.ministry %>
-  <div class="team-stream-grid">
+  <div class="team-stream-container">
     <div class="team-results">
       <div class="team-stream-header">
         <%= stream.name.en %> results
@@ -25,6 +25,13 @@
                 <% img_html_data[:hidden] = '' unless fac_feedback and fac_feedback.report_approved? %>
                 <%= image_tag 'approved.png', img_html_data %>
                 <%= Date::MONTHNAMES[month] %>
+                <button
+                  class="team-impact-input-trigger mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
+                  data-church-min-id="<%= church_min.id %>"
+                  data-month="<%= year_month %>"
+                >
+                  <i class="material-icons">album</i>
+                </button>
                 <% if logged_in_user.can_edit_project_stream?(@project, stream) %>
                   <button
                     id="fac-feedback-button-<%= church_min.id %>-<%= year_month %>"
@@ -117,24 +124,6 @@
         </tbody>
       </table>
     </div>
-    <div class="team-input mdl-shadow--2dp">
-      <h4>For this church team, in this month:</h4>
-      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-        Report an impact story
-      </button><br>
-      <div class="mdlext-selectfield mdlext-js-selectfield mdlext-selectfield--floating-label">
-        <select id="some-id" class="mdlext-selectfield__select">
-          <option value=""></option>
-          <option value="option1">option 1</option>
-          <option value="option2">option 2</option>
-          <option value="option3">option 3</option>
-        </select>
-        <label for="some-id" class="mdlext-selectfield__label">Signs of transformation seen</label>
-      </div>
-      <div class="bible-verse-input mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        <input class="mdl-textfield__input" type="text" id="bible-verse-<%= church_min.id %>">
-        <label class="mdl-textfield__label" for="bible-verse-<%= church_min.id %>">A Bible verse that impacted the team</label>
-      </div>
-    </div>
+    <div class="team-input mdl-shadow--2dp" hidden data-church-min="<%= church_min.id %>"></div>
   </div>
 <% end %>
