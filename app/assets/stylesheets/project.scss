@@ -64,6 +64,10 @@
 }
 
 .facilitator-results, .team-results {
+  .team-stream-header {
+    font-size: large;
+    padding: 1ex;
+  }
   th {
     padding-left: 8px !important;
     padding-right: 8px !important;
@@ -173,6 +177,25 @@ td.quarterly-target, td.amo-actual, td.mo-actual {
 td.annual-target {
   font-size: large;
   font-weight: bold;
+}
+
+.team-stream-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto;
+  grid-column-gap: 1em;
+  grid-template-areas:
+          "table inputs";
+  .team-stream-header {
+    grid-area: table;
+  }
+  .team-results {
+    grid-area: table;
+  }
+  .team-input {
+    grid-area: inputs;
+    padding: 0 1em;
+  }
 }
 
 .quarterly-stream-content .container {

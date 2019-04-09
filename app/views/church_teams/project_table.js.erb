@@ -3,6 +3,7 @@ container.html('<%= j render @church_team %>');
 
 componentHandler.upgradeElements(container.find('.mdl-tooltip').get());
 componentHandler.upgradeElements(container.find('.mdl-textfield').get());
+componentHandler.upgradeElements(container.find('.mdlext-selectfield').get());
 
 $('.mo-actual-input').on('input', function(){
     $(this).find('input').addClass('dirty');
