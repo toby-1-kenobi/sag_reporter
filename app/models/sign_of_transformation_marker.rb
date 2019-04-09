@@ -2,6 +2,7 @@ class SignOfTransformationMarker < ActiveRecord::Base
 
   belongs_to :ministry
   belongs_to :name, class_name: 'TranslationCode', dependent: :destroy
+  has_many :sign_of_transformations, dependent: :destroy
   before_create :create_translation_codes
 
   # Method for reading and writing all translation values (e.g. name_en = "?" or name_value)

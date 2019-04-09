@@ -181,7 +181,31 @@ td.annual-target {
 
 .team-stream-container {
   .team-input {
-    padding: 0 1em;
+    padding: 1em;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-column-gap: 1em;
+    grid-row-gap: 1ex;
+    grid-template-areas:
+            "header transformation impact"
+            "verse transformation impact"
+            "done transformation impact";
+  }
+  .team-input-header {
+    grid-area: header;
+  }
+  .team-bible-verse-input {
+    grid-area: verse;
+  }
+  .close {
+    grid-area: done;
+  }
+  .team-transformation-input {
+    grid-area: transformation;
+  }
+  .team-impact-story-input {
+    grid-area: impact;
   }
   .bible-verse-input.dirty{
     background: beige;

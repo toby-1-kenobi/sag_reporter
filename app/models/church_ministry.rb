@@ -12,6 +12,8 @@ class ChurchMinistry < ActiveRecord::Base
   belongs_to :facilitator, class_name: 'User'
   has_many :ministry_outputs, dependent: :restrict_with_exception
   has_many :facilitator_feedbacks, dependent: :destroy
+  has_many :sign_of_transformations, dependent: :destroy
+  has_many :markers, through: :sign_of_transformations
 
   validates :church_team, presence: true
   validates :ministry, presence: true

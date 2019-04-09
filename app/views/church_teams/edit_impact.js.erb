@@ -6,6 +6,7 @@ if (container.data('month') == '<%= @month %>') {
     container.data('month', '<%= @month %>');
     container.html('<%= j render 'edit_impact' %>');
     componentHandler.upgradeElements(container.find('.mdl-textfield').get());
+    componentHandler.upgradeElements(container.find('.mdl-checkbox').get());
     container.find('.bible-verse-input').on('input', function () {
         $(this).addClass('dirty');
     });
@@ -13,6 +14,10 @@ if (container.data('month') == '<%= @month %>') {
     container.find('.bible-verse-input').on('change', function () {
         const data = {church_min: <%= @church_min_id %>, month: '<%= @month %>', bible_ref: $(this).val()};
         $.ajax({url: '<%= add_bible_verse_for_church_teams_path %>', data: data, method: 'POST'});
+    });
+
+    container.find('.close').on('click', function () {
+       $(this).closest('.team-input').slideUp();
     });
     container.slideDown();
 }
