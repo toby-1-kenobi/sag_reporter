@@ -245,6 +245,8 @@ class AndroidSyncController < ApplicationController
     tables[SignOfTransformationMarker] = %w(name_id ministry_id) if @version >= "1.5.0:116"
     tables[SignOfTransformation] << "marker_id" if @version >= "1.5.0:116"
     tables[BiblePassage] = %w(church_ministry_id chapter_id verse month) if @version >= "1.5"
+    tables[Ministry] << "ui_order" if @version >= "1.5.2"
+    tables[Deliverable] << "ui_order" if @version >= "1.5.2"
     formatted_evaluation_info = ""
     formatted_evaluation_info = ", ministry_benchmark_criteria = 'COUNT(CASE " +
         "WHEN deliverable_id = 5 AND value > 0 THEN 1 " +
