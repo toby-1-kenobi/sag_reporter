@@ -106,7 +106,7 @@ end
 
 def narrative_questions(quarterly_evaluation)
   narrative_questions = []
-  [3, 4].each do |i|
+  [3].each do |i|
     answer = quarterly_evaluation.send("question_#{i}")
     if answer.present?
       narrative_questions << [clean_narrative_q(i)]
