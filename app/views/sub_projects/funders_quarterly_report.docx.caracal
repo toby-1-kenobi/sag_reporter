@@ -73,7 +73,16 @@ def measurables(stream, state_language, quarter, project, sub_project)
       actual = quarterly_actual(state_language.id, deliverable, quarter, project, sub_project)
       next_target = targets.select{ |t| t.deliverable_id == deliverable.id and t.quarter == next_quarter(quarter) }.first
       next_target_value = next_target ? next_target.value : ''
-      values_table << [deliverable.short_form.en, target_value, actual, '', next_target_value]
+      if deliverable.translation_progress? and actual.to_i > 0
+        first_month, last_month = quarter_to_range(quarter)
+        tr_proj = TranslationProject.find_by(language: state_language.language, project: project)
+        col3 = tr_proj.chapters.
+            where(translation_progresses: {deliverable: deliverable}).
+            where('translation_progresses.month BETWEEN ? AND ?', first_month, last_month).to_ref
+      else
+        col3 = ''
+      end
+      values_table << [deliverable.short_form.en, target_value, actual, col3, next_target_value]
     end
   end
   # story names column is only for storying and esther streams
