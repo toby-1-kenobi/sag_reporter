@@ -636,7 +636,9 @@ class AndroidSyncController < ApplicationController
               if @is_only_test
                 @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.valid?
               else
-                @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
+                ActiveRecord::Base.transaction do
+                  @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s} unless new_entry&.save
+                end
               end
             rescue => e
               logger.error e
