@@ -59,7 +59,7 @@ class ChurchTeamsController < ApplicationController
   def update_transformation_sign
     @church_min_id = params[:church_min]
     @transformation_sign_id = params[:transformation_sign]
-    if params[:activate]
+    if params[:activate] == 'true'
       SignOfTransformation.create(
           church_ministry_id: @church_min_id,
           marker_id: @transformation_sign_id,
