@@ -685,7 +685,7 @@ class AndroidSyncController < ApplicationController
       if table == Report && hash["reporter_id"] != @external_user.id && !@external_user.admin
         Report.find(hash["id"]).touch if hash["id"]
         raise "User is not allowed to edit report #{hash["id"]}"
-      elsif table == UploadedFile
+      elsif table == UploadedFile && hash["data"]
         filename = "external_uploaded_image"
         @tempfile = Tempfile.new filename
         @tempfile.binmode
