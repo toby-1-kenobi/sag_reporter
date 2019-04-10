@@ -9,7 +9,7 @@
   <% church_min = ChurchMinistry.find @church_min_id %>
   <%= collection_check_boxes :church_ministry, :marker_ids, SignOfTransformationMarker.where(ministry: church_min.ministry), :id, "name_#{logged_in_user.interface_language.locale_tag}" do |box| %>
     <%= box.label class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
-      <%= box.check_box class: 'mdl-checkbox__input' %>
+      <%= box.check_box class: 'transformation-sign-input mdl-checkbox__input', data: {church_min: @church_min_id} %>
       <span class="mdl-checkbox__label"><%= box.text %></span>
     <% end %>
   <% end %>

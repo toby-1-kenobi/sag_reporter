@@ -13,7 +13,18 @@ if (container.data('month') == '<%= @month %>') {
 
     container.find('.bible-verse-input').on('change', function () {
         const data = {church_min: <%= @church_min_id %>, month: '<%= @month %>', bible_ref: $(this).val()};
-        $.ajax({url: '<%= add_bible_verse_for_church_teams_path %>', data: data, method: 'POST'});
+        $.ajax({url: '<%= add_bible_verse_for_church_teams_url %>', data: data, method: 'POST'});
+    });
+
+    container.find('.transformation-sign-input').on('click', function () {
+        const url = '<%= update_transformation_sign_for_church_teams_url %>';
+        const data = {
+          church_min: <%= @church_min_id %>,
+          month: '<%= @month %>',
+          transformation_sign: $(this).val(),
+          activate: $(this).prop('checked')
+        };
+        $.ajax({url: url, data: data, method: 'PATCH'});
     });
 
     container.find('.close').on('click', function () {
