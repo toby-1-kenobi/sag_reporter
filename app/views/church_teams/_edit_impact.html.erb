@@ -14,6 +14,16 @@
       <span class="mdl-checkbox__label"><%= box.text %></span>
     <% end %>
   <% end %>
+  <% church_min.sign_of_transformations.where(month: @month, marker: nil).each do |trans_sign| %>
+    <div class="other-transformation-sign-input">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="trans-sign-<%= trans_sign.id %>-checkbox">
+        <input type="checkbox" id="trans-sign-<%= trans_sign.id %>-checkbox" class="mdl-checkbox__input" checked>
+      </label>
+      <div class="mdl-textfield mdl-js-textfield">
+        <input class="bible-verse-input mdl-textfield__input" type="text" id="trans-sign-<%= trans_sign.id %>-text" value="<%= trans_sign.other %>">
+      </div>
+    </div>
+  <% end %>
 </div>
 <div class="team-bible-verse-input">
   <% bible_verse = BiblePassage.find_by(church_ministry_id: @church_min_id, month: @month) %>

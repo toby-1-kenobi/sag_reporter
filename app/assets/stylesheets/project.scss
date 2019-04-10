@@ -203,6 +203,11 @@ td.annual-target {
   }
   .team-transformation-input {
     grid-area: transformation;
+    .other-transformation-sign-input {
+      display: flex;
+      .mdl-checkbox { width: 20px; }
+      .mdl-textfield { padding: 0; }
+    }
   }
   .team-impact-story-input {
     grid-area: impact;
