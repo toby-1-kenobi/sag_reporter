@@ -58,26 +58,44 @@ class ChurchTeamsController < ApplicationController
 
   def update_transformation_sign
     @church_min_id = params[:church_min]
-    @transformation_sign_id = params[:transformation_sign]
-    if params[:activate] == 'true'
-      SignOfTransformation.create(
-          church_ministry_id: @church_min_id,
-          marker_id: @transformation_sign_id,
-          month: params[:month]
-      )
+    @sign_marker_id = params[:transformation_sign]
+    if @sign_marker_id == 'other'
+      if params[:text].present?
+        @trans_sign = SignOfTransformation.create(
+            church_ministry_id: @church_min_id,
+            other: params[:text],
+            month: params[:month]
+        )
+      end
     else
-      SignOfTransformation.where(
-          church_ministry_id: @church_min_id,
-          marker_id: @transformation_sign_id,
-          month: params[:month]
-      ).destroy_all
+      if params[:activate] == 'true'
+        SignOfTransformation.create(
+            church_ministry_id: @church_min_id,
+            marker_id: @sign_marker_id,
+            month: params[:month]
+        )
+      else
+        SignOfTransformation.where(
+            church_ministry_id: @church_min_id,
+            marker_id: @sign_marker_id,
+            month: params[:month]
+        ).destroy_all
+      end
     end
     respond_to :js
   end
 
   def update_other_transformation_sign
-    @sign = SignOfTransformation.find params[:sign_id]
-    @sign.update_attributes(other: params[:text])
+    if params[:sign_id] == 'potential'
+      @sign = SignOfTransformation.create(
+          church_ministry_id: params[:church_min],
+          month: params[:month],
+          other: params[:text]
+      )
+    else
+      @sign = SignOfTransformation.find params[:sign_id]
+      @sign.update_attributes(other: params[:text])
+    end
     respond_to :js
   end
 

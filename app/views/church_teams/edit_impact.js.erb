@@ -18,7 +18,19 @@ if (container.data('month') == '<%= @month %>') {
     });
 
     container.find('input.other-sign').on('change', function () {
-        const data = {sign_id: $(this).closest('.other-transformation-sign-input').data('sign-id'), text: $(this).val()};
+        const signID = $(this).closest('.other-transformation-sign-input').data('sign-id');
+        var data;
+        if (signID == 'potential') {
+            data = {
+                church_min: <%= @church_min_id %>,
+                month: '<%= @month %>',
+                text: $(this).val(),
+                sign_id: signID
+            };
+        } else {
+            data = {sign_id: signID, text: $(this).val()};
+        }
+        console.log('url: <%= update_other_transformation_sign_for_church_teams_url %>');
         $.ajax({url: '<%= update_other_transformation_sign_for_church_teams_url %>', data: data, method: 'PATCH'});
     });
 
@@ -34,12 +46,26 @@ if (container.data('month') == '<%= @month %>') {
     });
 
     container.find('.other-transformation-sign-input input[type="checkbox"]').on('click', function () {
+        var container = $(this).closest('.other-transformation-sign-input');
         if ($(this).prop('checked')){
-
+            var text = container.find('input.other-sign').val();
+            if (text.length > 0) {
+                const url = '<%= update_transformation_sign_for_church_teams_url %>';
+                const data = {
+                    church_min: <%= @church_min_id %>,
+                    month: '<%= @month %>',
+                    transformation_sign: 'other',
+                    text: text
+                };
+                container.attr('data-creating', '');
+                $.ajax({url: url, data: data, method: 'PATCH'});
+            } else {
+                container.find('input.other-sign').prop('disabled', false).focus();
+            }
         } else {
             $.ajax({
                 url: '<%= remove_other_transformation_sign_from_church_teams_url %>',
-                data: {sign_id: $(this).closest('.other-transformation-sign-input').data('sign-id')},
+                data: {sign_id: container.data('sign-id')},
                 method: 'DELETE'
             });
         }

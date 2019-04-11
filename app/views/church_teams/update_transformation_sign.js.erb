@@ -1,1 +1,7 @@
-console.log('<%= @church_min_id %> <%= @transformation_sign_id %>');
+console.log('<%= @church_min_id %> <%= @sign_marker_id %>');
+<% if @sign_marker_id == 'other' %>
+  var container = $('.other-transformation-sign-input[data-creating]');
+  container.attr('data-sign-id', '<%= @trans_sign.id %>');
+  container.data('sign-id', '<%= @trans_sign.id %>');
+  container.find('input.other-sign').prop('disabled', false);
+<% end %>
