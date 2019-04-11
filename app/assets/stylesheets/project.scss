@@ -219,6 +219,8 @@ td.annual-target {
   }
   .team-impact-story-input {
     grid-area: impact;
+    padding: 1em;
+    border: dashed 1px rgb(63,81,181);
   }
   input.dirty{
     background: beige;

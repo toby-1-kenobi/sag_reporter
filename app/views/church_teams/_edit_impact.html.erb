@@ -1,7 +1,7 @@
 <h4 class="team-input-header">For this church team<br>in <%= pretty_month(@month) %>:</h4>
 <div class="team-impact-story-input">
+  <h4>Impact story</h4>
   <% if @reports.any? %>
-    <h4>Impact story</h4>
     <p><%= simple_format @reports.last.content %></p>
   <% end %>
 </div>
