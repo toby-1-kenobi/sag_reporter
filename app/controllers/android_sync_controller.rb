@@ -224,7 +224,7 @@ class AndroidSyncController < ApplicationController
     send_request_params = params.require(:external_device).permit(safe_params)
     
     @version = send_request_params["version"] || ""
-    @final_file = Tempfile.new
+    @final_file = Tempfile.new Time.now.to_i.to_s + ";"
     render json: {data: "#{@final_file.path}.txt"}, status: :ok
     tables[Report] << "church_team_id" if @version > "1.4"
     join_tables[:Report] << "ministries" if @version > "1.4"
@@ -359,7 +359,14 @@ class AndroidSyncController < ApplicationController
       get_file_params = params.require(:external_device).permit(safe_params)
 
       size = 0
-      Dir.glob(File.join("/tmp", '**', '*')) { |file| size+=File.size(file) }
+      Dir.glob(File.join("/tmp", '**', '*')) do |file_path|
+        file_changed = File.basename(file_path, ".*").split(';').first.to_i
+        if Time.now.to_i - file_changed > 7 * 60 && file_changed != 0
+          File.delete(file_path)
+        else
+          size += File.size(file_path)
+        end
+      end
       logger.debug "Existing files (#{size}): #{Dir.entries("/tmp")}"
       file_path = get_file_params["file_path"]
       deadline = Time.now + 27.seconds
@@ -367,7 +374,10 @@ class AndroidSyncController < ApplicationController
         sleep 1
         raise "Creating of the file took too long" if Time.now > deadline
       end
-      send_file file_path, status: :ok
+      File.open(file_path, 'r') do |file|
+        send_data file.read, status: :ok
+      end
+      File.delete(file_path)
     rescue => e
       send_message = {error: e.to_s}.to_json
       logger.error send_message
@@ -381,12 +391,12 @@ class AndroidSyncController < ApplicationController
     ]
     get_uploaded_file_params = params.require(:external_device).permit(safe_params)
 
-    @all_data = Tempfile.new
+    @all_data = Tempfile.new Time.now.to_i.to_s + ";"
     render json: {data: "#{@all_data.path}.txt"}, status: :ok
     Thread.new do
       begin
         uploaded_file_ids = get_uploaded_file_params["uploaded_files"].map {|key, _| key.to_i}
-        pictures_data, errors = Array.new(2) {Tempfile.new}
+        pictures_data, errors = Array.new(2) {Tempfile.new(Time.now.to_i.to_s + ";")}
         UploadedFile.includes(:report).find(uploaded_file_ids).each do |uploaded_file|
           image_data = if uploaded_file&.ref.file.exists?
                          Base64.encode64(uploaded_file.ref.read)
@@ -427,7 +437,7 @@ class AndroidSyncController < ApplicationController
     begin
       uploaded_file = UploadedFile.find(get_uploaded_file_params["uploaded_file"])
       unless uploaded_file&.ref&.file&.exists?
-        send_file Tempfile.new, status: :ok
+        send_file Tempfile.new(Time.now.to_i.to_s + ";"), status: :ok
         return
       end
       unless @external_user.trusted? || uploaded_file.report.reporter == @external_user
@@ -689,7 +699,7 @@ class AndroidSyncController < ApplicationController
         Report.find(hash["id"]).touch if hash["id"]
         raise "User is not allowed to edit report #{hash["id"]}"
       elsif table == UploadedFile && hash["data"]
-        filename = "external_uploaded_image"
+        filename = Time.now.to_i.to_s + ";image"
         @tempfile = Tempfile.new filename
         @tempfile.binmode
         @tempfile.write Base64.decode64 hash.delete("data")
