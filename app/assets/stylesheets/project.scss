@@ -190,7 +190,7 @@ td.annual-target {
     grid-template-areas:
             "header transformation impact"
             "verse transformation impact"
-            "done transformation impact";
+            "months transformation impact";
   }
   .team-input-header {
     grid-area: header;
@@ -198,8 +198,8 @@ td.annual-target {
   .team-bible-verse-input {
     grid-area: verse;
   }
-  .close {
-    grid-area: done;
+  .month-select {
+    grid-area: months;
   }
   .team-transformation-input {
     grid-area: transformation;

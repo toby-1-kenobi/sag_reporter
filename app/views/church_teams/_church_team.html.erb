@@ -18,39 +18,17 @@
           <th rowspan="2" class="mdl-data-table__cell--non-numeric deliverable-name-col">Deliverable</th>
           <% [last_q, current_q].each do |quarter| %>
             <% months_in_quarter(quarter).each do |month| %>
-              <th class="mdl-data-table__cell--non-numeric">
-                <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
-                <% fac_feedback = church_min.facilitator_feedbacks.find_by_month(year_month) %>
-                <% img_html_data = {class: 'approved-stamp'} %>
-                <% img_html_data[:hidden] = '' unless fac_feedback and fac_feedback.report_approved? %>
-                <%= image_tag 'approved.png', img_html_data %>
-                <%= Date::MONTHNAMES[month] %>
-                <button
-                  class="team-impact-input-trigger mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
+              <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
+              <% fac_feedback = church_min.facilitator_feedbacks.find_by_month(year_month) %>
+              <% img_html_data = {class: 'approved-stamp'} %>
+              <% img_html_data[:hidden] = '' unless fac_feedback and fac_feedback.report_approved? %>
+              <th class="team-impact-input-trigger mdl-data-table__cell--non-numeric"
                   data-church-min-id="<%= church_min.id %>"
                   data-month="<%= year_month %>"
-                >
-                  <i class="material-icons">album</i>
-                </button>
-                <% if logged_in_user.can_edit_project_stream?(@project, stream) %>
-                  <button
-                    id="fac-feedback-button-<%= church_min.id %>-<%= year_month %>"
-                    class="<%= 'empty' unless fac_feedback and fac_feedback.result_feedback.present? %> fac-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
-                    data-church-min-id="<%= church_min.id %>"
-                    data-month="<%= year_month %>"
-                    data-fac-feedback-id="<%= fac_feedback ? fac_feedback.id : 'new' %>"
-                    <% if fac_feedback %>
-                    data-team-progress="<%= fac_feedback.progress %>"
-                    <%= 'data-sup-approved' if fac_feedback.report_approved? %>
-                    <% end %>
-                    >
-                    <i class="material-icons">edit</i>
-                    <div hidden class="fac-feedback"><%= fac_feedback.result_feedback if fac_feedback %></div>
-                  </button>
-                  <div class="mdl-tooltip" data-mdl-for="fac-feedback-button-<%= church_min.id %>-<%= year_month %>">
-                    Facilitator feedback and approval
-                  </div>
-                <% end %>
+              >
+                <%= image_tag 'approved.png', img_html_data %>
+                <%= Date::MONTHNAMES[month] %>
+
               </th>
             <% end %>
             <th>Quarterly</th>

@@ -42,4 +42,6 @@ container.find('.team-impact-input-trigger').on('click', function () {
     $.ajax(url);
 });
 
+$('.team-impact-input-trigger[data-month="<%= @active_month %>"]').trigger('click');
+
 container.slideDown();

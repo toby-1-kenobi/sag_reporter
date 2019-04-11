@@ -43,4 +43,18 @@
     <label class="mdl-textfield__label" for="bible-verse-<%= @church_min_id %>">A Bible verse that impacted the team</label>
   </div>
 </div>
-<button class="close mdl-button mdl-js-button mdl-js-ripple-effect">Done</button>
+<% q_year = {} %>
+<% current_q, q_year[current_q] = quarter_for_month(Date.today.month), FinishLineProgress.get_current_year %>
+<% last_q = (current_q - 2) % 4 + 1 %>
+<% q_year[last_q] = last_q < current_q ? q_year[current_q] : q_year[current_q] - 1 %>
+<div class="month-select mdlext-selectfield mdlext-js-selectfield">
+  <select id="team-input-month-select" class="mdlext-selectfield__select" data-church-min="<%= @church_min_id %>">
+    <% [last_q, current_q].each do |quarter| %>
+      <% months_in_quarter(quarter).each do |month| %>
+        <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
+        <option value="<%= year_month %>" <%= 'selected' if year_month == @month %>><%= pretty_month(year_month) %></option>
+      <% end %>
+    <% end %>
+  </select>
+  <label for="team-input-month-select" class="mdlext-selectfield__label">Month</label>
+</div>

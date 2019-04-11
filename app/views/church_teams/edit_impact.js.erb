@@ -7,6 +7,7 @@ if (container.data('month') == '<%= @month %>') {
     container.html('<%= j render 'edit_impact' %>');
     componentHandler.upgradeElements(container.find('.mdl-textfield').get());
     componentHandler.upgradeElements(container.find('.mdl-checkbox').get());
+    componentHandler.upgradeElements(container.find('.mdlext-selectfield').get());
 
     container.find('.bible-verse-input, input.other-sign').on('input', function () {
         $(this).addClass('dirty');
@@ -69,6 +70,13 @@ if (container.data('month') == '<%= @month %>') {
                 method: 'DELETE'
             });
         }
+    });
+
+    container.find('.month-select select').on('change', function () {
+        const churchMin = $(this).data('church-min');
+        const month = $(this).val();
+        console.log(churchMin + ' ' + month);
+        $('.team-impact-input-trigger[data-church-min-id="' + churchMin + '"][data-month="' + month + '"]').trigger('click');
     });
 
     container.find('.close').on('click', function () {

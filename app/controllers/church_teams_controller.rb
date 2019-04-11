@@ -16,6 +16,7 @@ class ChurchTeamsController < ApplicationController
         end
       end
     end
+    @active_month = 1.month.ago.strftime('%Y-%m')
     respond_to :js
   end
 
