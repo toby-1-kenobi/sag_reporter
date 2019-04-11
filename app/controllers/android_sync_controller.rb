@@ -358,8 +358,11 @@ class AndroidSyncController < ApplicationController
       ]
       get_file_params = params.require(:external_device).permit(safe_params)
 
+      size = 0
+      Dir.glob(File.join("/tmp", '**', '*')) { |file| size+=File.size(file) }
+      logger.debug "Existing files (#{size}): #{Dir.entries("/tmp")}"
       file_path = get_file_params["file_path"]
-      deadline = Time.now + 29.seconds
+      deadline = Time.now + 27.seconds
       until File.exists?(file_path)
         sleep 1
         raise "Creating of the file took too long" if Time.now > deadline
