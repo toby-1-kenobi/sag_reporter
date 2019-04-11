@@ -75,4 +75,16 @@ class ChurchTeamsController < ApplicationController
     respond_to :js
   end
 
+  def update_other_transformation_sign
+    @sign = SignOfTransformation.find params[:sign_id]
+    @sign.update_attributes(other: params[:text])
+    respond_to :js
+  end
+
+  def remove_other_transformation_sign
+    @sign_id = params[:sign_id]
+    SignOfTransformation.find(@sign_id).destroy
+    respond_to :js
+  end
+
 end

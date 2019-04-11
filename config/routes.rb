@@ -39,6 +39,8 @@ Rails.application.routes.draw do
       get 'edit_impact/:church_min/:month', action: :edit_impact, as: 'edit_impact_for'
       post 'add_bible_verse', action: :add_bible_verse, as: 'add_bible_verse_for'
       patch 'update_transformation_sign', action: :update_transformation_sign, as: 'update_transformation_sign_for'
+      patch 'update_other_transformation_sign', action: :update_other_transformation_sign, as: 'update_other_transformation_sign_for'
+      delete 'remove_other_transformation_sign', action: :remove_other_transformation_sign, as: 'remove_other_transformation_sign_from'
     end
   end
 

@@ -1,0 +1,4 @@
+var container = $('.other-transformation-sign-input[data-sign-id="<%= @sign_id %>"]');
+container.attr('data-sign-id', 'potential');
+container.data('sign-id', 'potential');
+container.find('input.other-sign').prop('disabled', true);

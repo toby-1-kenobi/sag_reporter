@@ -1,19 +1,25 @@
 var container = $('.team-input[data-church-min="<%= @church_min_id %>"]');
 
 if (container.data('month') == '<%= @month %>') {
-    container.slideUp();
+    container.slideToggle();
 } else {
     container.data('month', '<%= @month %>');
     container.html('<%= j render 'edit_impact' %>');
     componentHandler.upgradeElements(container.find('.mdl-textfield').get());
     componentHandler.upgradeElements(container.find('.mdl-checkbox').get());
-    container.find('.bible-verse-input').on('input', function () {
+
+    container.find('.bible-verse-input, input.other-sign').on('input', function () {
         $(this).addClass('dirty');
     });
 
     container.find('.bible-verse-input').on('change', function () {
         const data = {church_min: <%= @church_min_id %>, month: '<%= @month %>', bible_ref: $(this).val()};
         $.ajax({url: '<%= add_bible_verse_for_church_teams_url %>', data: data, method: 'POST'});
+    });
+
+    container.find('input.other-sign').on('change', function () {
+        const data = {sign_id: $(this).closest('.other-transformation-sign-input').data('sign-id'), text: $(this).val()};
+        $.ajax({url: '<%= update_other_transformation_sign_for_church_teams_url %>', data: data, method: 'PATCH'});
     });
 
     container.find('.transformation-sign-input').on('click', function () {
@@ -25,6 +31,18 @@ if (container.data('month') == '<%= @month %>') {
           activate: $(this).prop('checked')
         };
         $.ajax({url: url, data: data, method: 'PATCH'});
+    });
+
+    container.find('.other-transformation-sign-input input[type="checkbox"]').on('click', function () {
+        if ($(this).prop('checked')){
+
+        } else {
+            $.ajax({
+                url: '<%= remove_other_transformation_sign_from_church_teams_url %>',
+                data: {sign_id: $(this).closest('.other-transformation-sign-input').data('sign-id')},
+                method: 'DELETE'
+            });
+        }
     });
 
     container.find('.close').on('click', function () {
