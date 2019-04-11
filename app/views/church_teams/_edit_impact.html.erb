@@ -1,8 +1,9 @@
-<h4 class="team-input-header">For this church team, in <%= pretty_month(@month) %>:</h4>
+<h4 class="team-input-header">For this church team<br>in <%= pretty_month(@month) %>:</h4>
 <div class="team-impact-story-input">
-  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-    Report an impact story
-  </button>
+  <% if @reports.any? %>
+    <h4>Impact story</h4>
+    <p><%= simple_format @reports.last.content %></p>
+  <% end %>
 </div>
 <div class="team-transformation-input">
   <p>Signs of transformation seen:</p>

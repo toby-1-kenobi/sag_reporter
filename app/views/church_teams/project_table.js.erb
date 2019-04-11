@@ -33,7 +33,10 @@ $('.fac-feedback-button').on('click', function() {
 
 container.find('.team-impact-input-trigger').on('click', function () {
     const churchMinID = $(this).data('church-min-id');
-    $('.team-input[data-church-min="' + churchMinID + '"]').slideUp().removeAttr('hidden');
+    var container = $('.team-input[data-church-min="' + churchMinID + '"]')
+    if(container[0].hasAttribute('hidden')){
+        container.slideUp().removeAttr('hidden');
+    }
     var url = '<%= edit_impact_for_church_teams_path('ch-min-placeholder', 'month-placeholder') %>';
     url = url.replace('ch-min-placeholder', churchMinID).replace('month-placeholder', $(this).data('month'));
     $.ajax(url);

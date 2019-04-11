@@ -39,6 +39,15 @@ class ChurchTeamsController < ApplicationController
   def edit_impact
     @church_min_id = params[:church_min]
     @month = params[:month]
+    start_day = Date.strptime(@month, '%Y-%m').beginning_of_month
+    end_day = start_day.end_of_month
+    church_min = ChurchMinistry.find @church_min_id
+    @reports = Report.joins(:report_streams, :languages).where(
+        church_team: church_min.church_team,
+        geo_state: church_min.church_team.state_language.geo_state,
+        languages: { id: church_min.church_team.state_language.language_id },
+        report_streams: { ministry_id: church_min.ministry_id }
+    ).where('report_date BETWEEN ? AND ?', start_day, end_day).order(:report_date)
     respond_to :js
   end
 
