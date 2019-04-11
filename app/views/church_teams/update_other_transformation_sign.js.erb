@@ -1,0 +1,7 @@
+$('.other-transformation-sign-input[data-sign-id="<%= @sign.id %>"] input.other-sign').removeClass('dirty');
+<% if @sign.other.present? %>
+  var container = $('input.other-sign.dirty').closest('.other-transformation-sign-input');
+  container.attr('data-sign-id', '<%= @sign.id %>');
+  container.data('sign-id', '<%= @sign.id %>');
+  container.find('input.dirty').removeClass('dirty');
+<% end %>

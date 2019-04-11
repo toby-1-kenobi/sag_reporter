@@ -1,0 +1,46 @@
+<h4 class="team-input-header">For this church team<br>in <%= pretty_month(@month) %>:</h4>
+<div class="team-impact-story-input">
+  <% if @reports.any? %>
+    <h4>Impact story</h4>
+    <p><%= simple_format @reports.last.content %></p>
+  <% end %>
+</div>
+<div class="team-transformation-input">
+  <p>Signs of transformation seen:</p>
+  <% church_min = ChurchMinistry.find @church_min_id %>
+  <% marker_ids = church_min.markers.where(sign_of_transformations: {month: @month}).pluck :id %>
+  <%= collection_check_boxes :church_ministry, :marker_ids, SignOfTransformationMarker.where(ministry: church_min.ministry), :id, "name_#{logged_in_user.interface_language.locale_tag}" do |box| %>
+    <%= box.label class: 'mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do %>
+      <%= box.check_box class: 'transformation-sign-input mdl-checkbox__input', data: {church_min: @church_min_id}, checked: marker_ids.include?(box.value) %>
+      <span class="mdl-checkbox__label"><%= box.text %></span>
+    <% end %>
+  <% end %>
+  <% church_min.sign_of_transformations.where(month: @month, marker: nil).each do |trans_sign| %>
+    <div class="other-transformation-sign-input" data-sign-id="<%= trans_sign.id %>">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="trans-sign-<%= trans_sign.id %>-checkbox">
+        <input type="checkbox" id="trans-sign-<%= trans_sign.id %>-checkbox" class="mdl-checkbox__input" checked>
+      </label>
+      <div class="mdl-textfield mdl-js-textfield">
+        <input class="mdl-textfield__input other-sign" type="text" id="trans-sign-<%= trans_sign.id %>-text" value="<%= trans_sign.other %>">
+        <label class="mdl-textfield__label" for="trans-sign-<%= trans_sign.id %>-text">Other</label>
+      </div>
+    </div>
+  <% end %>
+  <div class="other-transformation-sign-input" data-sign-id="potential">
+    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="trans-sign-other-checkbox">
+      <input type="checkbox" id="trans-sign-other-checkbox" class="mdl-checkbox__input">
+    </label>
+    <div class="mdl-textfield mdl-js-textfield">
+      <input class="mdl-textfield__input other-sign" type="text" id="trans-sign-other-text" disabled>
+      <label class="mdl-textfield__label" for="trans-sign-other-text">Other</label>
+    </div>
+  </div>
+</div>
+<div class="team-bible-verse-input">
+  <% bible_verse = BiblePassage.find_by(church_ministry_id: @church_min_id, month: @month) %>
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="bible-verse-input mdl-textfield__input" type="text" id="bible-verse-<%= @church_min_id %>" value="<%= bible_verse&.bible_ref %>">
+    <label class="mdl-textfield__label" for="bible-verse-<%= @church_min_id %>">A Bible verse that impacted the team</label>
+  </div>
+</div>
+<button class="close mdl-button mdl-js-button mdl-js-ripple-effect">Done</button>

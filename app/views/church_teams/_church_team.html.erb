@@ -4,114 +4,126 @@
 <% q_year[last_q] = last_q < current_q ? q_year[current_q] : q_year[current_q] - 1 %>
 <% church_team.church_ministries.active.each do |church_min| %>
   <% stream = church_min.ministry %>
-  <div class="team-stream-header">
-    <%= stream.name.en %> results
-    <% if church_min.facilitator.present? %>
-      facilitated by <%= church_min.facilitator.name %>
-    <% end %>
-  </div>
-  <table class="team-results mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-    <thead>
-    <tr>
-      <th rowspan="2" class="mdl-data-table__cell--non-numeric deliverable-name-col">Deliverable</th>
-      <% [last_q, current_q].each do |quarter| %>
-        <% months_in_quarter(quarter).each do |month| %>
-          <th class="mdl-data-table__cell--non-numeric">
-            <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
-            <% fac_feedback = church_min.facilitator_feedbacks.find_by_month(year_month) %>
-            <% img_html_data = {class: 'approved-stamp'} %>
-            <% img_html_data[:hidden] = '' unless fac_feedback and fac_feedback.report_approved? %>
-            <%= image_tag 'approved.png', img_html_data %>
-            <%= Date::MONTHNAMES[month] %>
-            <% if logged_in_user.can_edit_project_stream?(@project, stream) %>
-              <button
-                id="fac-feedback-button-<%= church_min.id %>-<%= year_month %>"
-                class="<%= 'empty' unless fac_feedback and fac_feedback.result_feedback.present? %> fac-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
-                data-church-min-id="<%= church_min.id %>"
-                data-month="<%= year_month %>"
-                data-fac-feedback-id="<%= fac_feedback ? fac_feedback.id : 'new' %>"
-                <% if fac_feedback %>
-                data-team-progress="<%= fac_feedback.progress %>"
-                <%= 'data-sup-approved' if fac_feedback.report_approved? %>
-                <% end %>
-                >
-                <i class="material-icons">edit</i>
-                <div hidden class="fac-feedback"><%= fac_feedback.result_feedback if fac_feedback %></div>
-              </button>
-              <div class="mdl-tooltip" data-mdl-for="fac-feedback-button-<%= church_min.id %>-<%= year_month %>">
-                Facilitator feedback and approval
-              </div>
-            <% end %>
-          </th>
+  <div class="team-stream-container">
+    <div class="team-results">
+      <div class="team-stream-header">
+        <%= stream.name.en %> results
+        <% if church_min.facilitator.present? %>
+          facilitated by <%= church_min.facilitator.name %>
         <% end %>
-        <th>Quarterly</th>
-        <%# column for annual if we have reached the end of app year %>
-        <% if quarter == 4 %>
-          <th>Annual</th>
-        <% end %>
-      <% end %>
-    </tr>
-    </thead>
-    <tbody>
-    <% stream.deliverables.church_team.order(:ui_order).each do |deliverable| %>
-      <tr>
-        <td class="mdl-data-table__cell--non-numeric deliverable-name-col">
-          <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>
-        </td>
-        <% [last_q, current_q].each do |quarter| %>
-          <% quarterly_actual = 0 %>
-          <% months = months_in_quarter(quarter) %>
-          <% months_with_year(months.first, months.last, months.first != Date.today.month).each do |year_month| %>
-            <% actual_id, actual, _ = @outputs[church_min.id][deliverable.id][year_month] || ['', '', ''] %>
-            <% if actual.present? %>
-              <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
-            <% end %>
-            <% fac_feedback = church_min.facilitator_feedbacks.find_by_month(year_month) %>
-            <td class="mo-actual"
-                <%= "data-mo-id=#{actual_id}" if actual.present? %>
-                data-church-min="<%= church_min.id %>"
-                data-deliverable="<%= deliverable.id %>"
-                data-month="<%= year_month %>"
-                <% if fac_feedback %>
-                  data-progress="<%= fac_feedback.progress %>"
-                <% end %>
-                >
-              <% if logged_in_user.can_edit_project_stream?(@project, stream) %>
-                <% path = actual_id.present? ? ministry_output_path(actual_id) : ministry_outputs_path %>
-                <% method = actual_id.present? ? :patch : :post %>
-                <%= form_tag path, method: method, remote: true do %>
-                  <div class="mdl-textfield mdl-js-textfield mo-actual-input">
-                    <input class="mdl-textfield__input"
-                           type="text"
-                           pattern="[0-9]*(\.[0-9]+)?"
-                           name="ministry_output[value]"
-                           value="<%= actual %>">
-                    <span class="mdl-textfield__error">Enter a number</span>
-                  </div>
-                  <% if actual_id.blank? %>
-                    <%= hidden_field_tag 'ministry_output[church_ministry_id]', church_min.id %>
-                    <%= hidden_field_tag 'ministry_output[deliverable_id]', deliverable.id %>
-                    <%= hidden_field_tag 'ministry_output[creator_id]', logged_in_user.id %>
-                    <%= hidden_field_tag 'ministry_output[month]', year_month %>
-                    <%= hidden_field_tag 'ministry_output[actual]', true %>
-                  <% end %>
-                <% end %>
-              <% else %>
-                <%= actual %>
-              <% end %>
-            </td>
-          <% end %>
-          <td class="quarterly-actual" data-quarter="<%= quarter %>"><%= quarterly_actual %></td>
-          <%# column for annual if we have reached the end of app year %>
-          <% if quarter == 4 %>
-            <td class="annual-actual" data-year="<%= q_year[quarter] %>"><%= calculate_ct_annual_actual(church_min, deliverable, q_year[quarter]) %></td>
-          <% end %>
-        <% end %>
-      </tr>
-      <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="deliverable-name-<%= deliverable.id %>">
-        <%= deliverable.result_form.en %>
       </div>
-    <% end %>
-    </tbody>
-  </table>
+      <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+        <thead>
+        <tr>
+          <th rowspan="2" class="mdl-data-table__cell--non-numeric deliverable-name-col">Deliverable</th>
+          <% [last_q, current_q].each do |quarter| %>
+            <% months_in_quarter(quarter).each do |month| %>
+              <th class="mdl-data-table__cell--non-numeric">
+                <% year_month = "#{year_from_app_year(q_year[quarter], month)}-#{month.to_s.rjust(2, '0')}" %>
+                <% fac_feedback = church_min.facilitator_feedbacks.find_by_month(year_month) %>
+                <% img_html_data = {class: 'approved-stamp'} %>
+                <% img_html_data[:hidden] = '' unless fac_feedback and fac_feedback.report_approved? %>
+                <%= image_tag 'approved.png', img_html_data %>
+                <%= Date::MONTHNAMES[month] %>
+                <button
+                  class="team-impact-input-trigger mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
+                  data-church-min-id="<%= church_min.id %>"
+                  data-month="<%= year_month %>"
+                >
+                  <i class="material-icons">album</i>
+                </button>
+                <% if logged_in_user.can_edit_project_stream?(@project, stream) %>
+                  <button
+                    id="fac-feedback-button-<%= church_min.id %>-<%= year_month %>"
+                    class="<%= 'empty' unless fac_feedback and fac_feedback.result_feedback.present? %> fac-feedback-button mdl-button mdl-js-button mdl-button--icon mdl-button--primary"
+                    data-church-min-id="<%= church_min.id %>"
+                    data-month="<%= year_month %>"
+                    data-fac-feedback-id="<%= fac_feedback ? fac_feedback.id : 'new' %>"
+                    <% if fac_feedback %>
+                    data-team-progress="<%= fac_feedback.progress %>"
+                    <%= 'data-sup-approved' if fac_feedback.report_approved? %>
+                    <% end %>
+                    >
+                    <i class="material-icons">edit</i>
+                    <div hidden class="fac-feedback"><%= fac_feedback.result_feedback if fac_feedback %></div>
+                  </button>
+                  <div class="mdl-tooltip" data-mdl-for="fac-feedback-button-<%= church_min.id %>-<%= year_month %>">
+                    Facilitator feedback and approval
+                  </div>
+                <% end %>
+              </th>
+            <% end %>
+            <th>Quarterly</th>
+            <%# column for annual if we have reached the end of app year %>
+            <% if quarter == 4 %>
+              <th>Annual</th>
+            <% end %>
+          <% end %>
+        </tr>
+        </thead>
+        <tbody>
+        <% stream.deliverables.church_team.order(:ui_order).each do |deliverable| %>
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric deliverable-name-col">
+              <span id="deliverable-name-<%= deliverable.id %>"><%= deliverable.short_form.en %></span>
+            </td>
+            <% [last_q, current_q].each do |quarter| %>
+              <% quarterly_actual = 0 %>
+              <% months = months_in_quarter(quarter) %>
+              <% months_with_year(months.first, months.last, months.first != Date.today.month).each do |year_month| %>
+                <% actual_id, actual, _ = @outputs[church_min.id][deliverable.id][year_month] || ['', '', ''] %>
+                <% if actual.present? %>
+                  <% quarterly_actual = deliverable.most_recent? ? actual.to_i : quarterly_actual + actual.to_i %>
+                <% end %>
+                <% fac_feedback = church_min.facilitator_feedbacks.find_by_month(year_month) %>
+                <td class="mo-actual"
+                    <%= "data-mo-id=#{actual_id}" if actual.present? %>
+                    data-church-min="<%= church_min.id %>"
+                    data-deliverable="<%= deliverable.id %>"
+                    data-month="<%= year_month %>"
+                    <% if fac_feedback %>
+                      data-progress="<%= fac_feedback.progress %>"
+                    <% end %>
+                    >
+                  <% if logged_in_user.can_edit_project_stream?(@project, stream) %>
+                    <% path = actual_id.present? ? ministry_output_path(actual_id) : ministry_outputs_path %>
+                    <% method = actual_id.present? ? :patch : :post %>
+                    <%= form_tag path, method: method, remote: true do %>
+                      <div class="mdl-textfield mdl-js-textfield mo-actual-input">
+                        <input class="mdl-textfield__input"
+                               type="text"
+                               pattern="[0-9]*(\.[0-9]+)?"
+                               name="ministry_output[value]"
+                               value="<%= actual %>">
+                        <span class="mdl-textfield__error">Enter a number</span>
+                      </div>
+                      <% if actual_id.blank? %>
+                        <%= hidden_field_tag 'ministry_output[church_ministry_id]', church_min.id %>
+                        <%= hidden_field_tag 'ministry_output[deliverable_id]', deliverable.id %>
+                        <%= hidden_field_tag 'ministry_output[creator_id]', logged_in_user.id %>
+                        <%= hidden_field_tag 'ministry_output[month]', year_month %>
+                        <%= hidden_field_tag 'ministry_output[actual]', true %>
+                      <% end %>
+                    <% end %>
+                  <% else %>
+                    <%= actual %>
+                  <% end %>
+                </td>
+              <% end %>
+              <td class="quarterly-actual" data-quarter="<%= quarter %>"><%= quarterly_actual %></td>
+              <%# column for annual if we have reached the end of app year %>
+              <% if quarter == 4 %>
+                <td class="annual-actual" data-year="<%= q_year[quarter] %>"><%= calculate_ct_annual_actual(church_min, deliverable, q_year[quarter]) %></td>
+              <% end %>
+            <% end %>
+          </tr>
+          <div class="mdl-tooltip mdl-tooltip--large" data-mdl-for="deliverable-name-<%= deliverable.id %>">
+            <%= deliverable.result_form.en %>
+          </div>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="team-input mdl-shadow--2dp" hidden data-church-min="<%= church_min.id %>"></div>
+  </div>
 <% end %>

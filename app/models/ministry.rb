@@ -12,6 +12,7 @@ class Ministry < ActiveRecord::Base
   has_many :report_streams, dependent: :destroy
   has_many :reports, through: :report_streams
   has_many :quarterly_evaluations, dependent: :restrict_with_error
+  has_many :sign_of_transformation_markers, dependent: :destroy
   belongs_to :topic
   belongs_to :name, class_name: 'TranslationCode', dependent: :destroy
   belongs_to :short_form, class_name: 'TranslationCode', dependent: :destroy
