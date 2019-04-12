@@ -4,7 +4,8 @@ class TranslationProgress < ActiveRecord::Base
 
   enum translation_method: {
     written: 0,
-    oral: 1
+    oral: 1,
+    video: 2
   }
 
   enum translation_tool: {
