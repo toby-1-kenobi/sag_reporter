@@ -371,6 +371,7 @@ class AndroidSyncController < ApplicationController
       logger.debug "Existing files (#{size}): #{Dir.entries("/tmp")}"
       file_path = get_file_params["file_path"]
       deadline = Time.now + 27.seconds
+      raise "Wrong dyno - try again" unless File.exists?(file_path) || File.exists?(file_path.chomp(".txt"))
       until File.exists?(file_path)
         sleep 1
         raise "Creating of the file took too long" if Time.now > deadline
