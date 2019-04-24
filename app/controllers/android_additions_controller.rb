@@ -123,6 +123,7 @@ class AndroidAdditionsController < ApplicationController
             }
         else
           users_device.update registered: true unless users_device.registered
+          user.update_attribute(:user_last_login_dt, Date.today)
           payload = {sub: user.id, iat: user.password_changed.to_i, iss: users_device.device_id}
           send_message = {
               user: user.id,
