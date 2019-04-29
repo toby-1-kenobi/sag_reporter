@@ -111,7 +111,7 @@ class AndroidAdditionsController < ApplicationController
       end
       # check, whether user device exists and is registered (= successful login)
       users_device = user.external_devices.find {|d| d.device_id == login_params["device_id"]}
-      if users_device && (users_device.registered || user.authenticate_otp(login_params["otp"].strip, drift: 300))
+      if users_device # && (users_device.registered || user.authenticate_otp(login_params["otp"].strip, drift: 300))
         device_name = login_params["device_name"]
         users_device.update name: device_name unless users_device.name == device_name
         app_version = login_params["app_version"]
