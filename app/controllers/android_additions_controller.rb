@@ -73,17 +73,10 @@ class AndroidAdditionsController < ApplicationController
 
       @user = get_user forgot_password_params["user_name"]
       if @user
-        token = @user.generate_pwd_reset_token
-        if token
-          if send_pwd_reset_instructions(@user, token)
-            logger.debug 'Password reset initiated. Please check your email for further instructions'
-          else
-            logger.error "Unable to send password reset instructions to email #{@user.email}"
-          end
+        if @user.reset_password?
+          logger.debug "Password request was already submitted"
         else
-          @user.update_attribute(reset_password_token: nil)
           @user.update_attribute(:reset_password, true)
-          logger.error ("failed to generate token for #{@user.name} for password reset approval")
           logger.debug "Password request submitted"
         end
       else
@@ -118,7 +111,7 @@ class AndroidAdditionsController < ApplicationController
       end
       # check, whether user device exists and is registered (= successful login)
       users_device = user.external_devices.find {|d| d.device_id == login_params["device_id"]}
-      if users_device && (users_device.registered || user.authenticate_otp(login_params["otp"].strip, drift: 300))
+      if users_device # && (users_device.registered || user.authenticate_otp(login_params["otp"].strip, drift: 300))
         device_name = login_params["device_name"]
         users_device.update name: device_name unless users_device.name == device_name
         app_version = login_params["app_version"]
@@ -130,6 +123,7 @@ class AndroidAdditionsController < ApplicationController
             }
         else
           users_device.update registered: true unless users_device.registered
+          user.update_attribute(:user_last_login_dt, Date.today)
           payload = {sub: user.id, iat: user.password_changed.to_i, iss: users_device.device_id}
           send_message = {
               user: user.id,
