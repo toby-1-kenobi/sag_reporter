@@ -213,6 +213,7 @@ GEM
     materialize-sass (0.100.2)
       sass (~> 3.3)
     memoist (0.16.0)
+    messagebird-rest (1.4.1)
     metaclass (0.0.4)
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
@@ -431,6 +432,7 @@ DEPENDENCIES
   launchy
   material_design_lite-sass
   materialize-sass
+  messagebird-rest
   mini_magick
   minitest-rails-capybara
   minitest-reporters

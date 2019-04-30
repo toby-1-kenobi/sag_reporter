@@ -44,4 +44,7 @@ function poll(ticket) {
     }, 3000);
 }
 
-poll(<%= @ticket %>);
+//poll(<%#= @ticket %>);
+
+$('#resend-phone-form .mdl-spinner').removeClass('is-active');
+$('#resend-phone-form .resend_otp_to_phone').removeAttr('disabled');

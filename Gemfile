@@ -96,6 +96,9 @@ gem 'active_model_otp'
 gem 'sendgrid_actionmailer_adapter'
 gem 'recaptcha', require: 'recaptcha/rails'
 
+# third party send SMS
+gem 'messagebird-rest'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 

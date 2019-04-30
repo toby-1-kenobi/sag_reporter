@@ -1,3 +1,6 @@
+require 'messagebird'
+
+
 class SessionsController < ApplicationController
 
   before_action :check_user, only: [:two_factor_auth, :new, :resend_otp_to_phone, :resend_otp_to_email]
@@ -40,13 +43,14 @@ class SessionsController < ApplicationController
         @user = User.find_by(phone: username)
       end
       # skip authentication for the development environment and sandbox
-      if @user and (Rails.env.development? or ENV['REV79_VARIETY'].downcase == 'sandbox')
-        log_in @user
-        remember @user
-        redirect_back_or root_path and return
-      end
+      # if @user and (Rails.env.development? or ENV['REV79_VARIETY'].downcase == 'sandbox')
+      #   log_in @user
+      #   remember @user
+      #   redirect_back_or root_path and return
+      # end
       if @user && @user.authenticate(params[:session][:password])
         if @user.registration_status == 'approved'
+          logger.debug 'authenticated, sending OTP'
           session[:temp_user] = @user.id
           send_otp(@user)
         elsif @user.disabled?
@@ -173,9 +177,17 @@ class SessionsController < ApplicationController
   def send_otp_on_phone(user, otp_code)
     begin
       logger.debug("sending otp to: #{user.name}, otp: #{otp_code}")
-      msg = PhoneMessage.create(user: user, content: "#{otp_code} is your Rev79 login code", expiration: 1.minute.from_now)
-      logger.debug("waiting #{msg.id}")
-      return msg.id
+      client = MessageBird::Client.new(ENV['SMS_API_KEY'])
+      response = client.message_create(
+          'Rev79',
+          #TODO: Country code is hardcoded
+          ["+91#{user.phone}"],
+          "#{otp_code} is your Rev79 login code."
+      )
+      return response.recipients['totalSentCount'] >= 1
+      # msg = PhoneMessage.create(user: user, content: "#{otp_code} is your Rev79 login code", expiration: 1.minute.from_now)
+      # logger.debug("waiting #{msg.id}")
+      #return msg.id
     rescue => e
       logger.error("couldn't send OTP to phone: #{e.message}")
       return false
