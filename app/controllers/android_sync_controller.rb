@@ -667,7 +667,7 @@ class AndroidSyncController < ApplicationController
           send_message = @id_changes.map{|k,v| [k, v.select{|k,v2| v2.id}.map{|k2,v2| [k2, v2.id] }.to_h] }.to_h
         end
         send_message.merge!({error: @errors}) unless @errors.empty?
-        logger.debug send_message
+        logger.debug "Changed IDs: #{send_message}"
         render json: send_message, status: :created
       end
     rescue => e
