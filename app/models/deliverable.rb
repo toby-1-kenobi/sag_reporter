@@ -1,5 +1,7 @@
 class Deliverable < ActiveRecord::Base
 
+  has_paper_trail
+
   enum calculation_method: {
       most_recent: 0,
       sum_of_all: 1

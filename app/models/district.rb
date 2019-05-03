@@ -1,4 +1,7 @@
 class District < ActiveRecord::Base
+
+  has_paper_trail
+
   belongs_to :geo_state
   has_many :sub_districts, dependent: :destroy
 

@@ -1,5 +1,7 @@
 class Ministry < ActiveRecord::Base
 
+  has_paper_trail
+
   has_many :deliverables, dependent: :destroy
   has_many :quarterly_targets, through: :deliverables
   has_many :language_streams, dependent: :destroy

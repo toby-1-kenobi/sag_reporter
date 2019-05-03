@@ -1,5 +1,7 @@
 class ProgressMarker < ActiveRecord::Base
 
+  has_paper_trail
+
   enum status: {
       active: 0,
       deprecated: 1

@@ -1,4 +1,7 @@
 class SubDistrict < ActiveRecord::Base
+
+  has_paper_trail
+
   belongs_to :district
   has_many :reports, dependent: :nullify
 

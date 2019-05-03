@@ -1,5 +1,7 @@
 class UploadedFile < ActiveRecord::Base
 
+  has_paper_trail
+
   belongs_to :report, inverse_of: :pictures
   mount_uploader :ref, PictureUploader
   validates :ref, presence: true

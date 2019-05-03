@@ -1,4 +1,7 @@
 class Organisation < ActiveRecord::Base
+
+  has_paper_trail
+
   belongs_to :parent, class_name: 'Organisation', inverse_of: :children
   has_many :children, class_name: 'Organisation', inverse_of: :parent
   has_many :language_engagements, class_name: 'OrganisationEngagement'

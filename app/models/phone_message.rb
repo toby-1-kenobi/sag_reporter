@@ -1,4 +1,7 @@
 class PhoneMessage < ActiveRecord::Base
+
+  has_paper_trail
+
   belongs_to :user
   validates :user, presence: true
   validates :content, presence: true

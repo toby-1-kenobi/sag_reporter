@@ -1,5 +1,7 @@
 class Edit < ActiveRecord::Base
 
+  has_paper_trail
+
   enum status: {
       auto_approved: 0,
       pending_single_approval: 1,

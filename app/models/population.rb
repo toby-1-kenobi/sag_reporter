@@ -1,4 +1,7 @@
 class Population < ActiveRecord::Base
+
+  has_paper_trail
+
   belongs_to :language, inverse_of: :populations
   validates :amount, presence: true
   validates :language, presence: true
