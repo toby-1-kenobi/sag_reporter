@@ -1,5 +1,7 @@
 class ChallengeReport < ActiveRecord::Base
 
+  has_paper_trail
+
   include ReportType
 
   has_one :report, inverse_of: :challenge_report

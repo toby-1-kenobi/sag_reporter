@@ -1,4 +1,7 @@
 class Book < ActiveRecord::Base
+
+  has_paper_trail
+
   has_many :chapters, dependent: :destroy
   validates :name, presence: true, uniqueness: true
   validates :abbreviation, presence: true, uniqueness: true

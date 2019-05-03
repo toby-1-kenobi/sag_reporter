@@ -1,5 +1,7 @@
 class BiblePassage < ActiveRecord::Base
 
+  has_paper_trail
+
   belongs_to :church_ministry
   belongs_to :chapter
 

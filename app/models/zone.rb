@@ -2,6 +2,8 @@ require 'yaml'
 
 class Zone < ActiveRecord::Base
 
+  has_paper_trail
+
   enum pm_description_type: {
       default: 0,
       alternate: 1

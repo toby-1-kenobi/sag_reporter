@@ -1,5 +1,7 @@
 class SignOfTransformationMarker < ActiveRecord::Base
 
+  has_paper_trail
+
   belongs_to :ministry
   belongs_to :name, class_name: 'TranslationCode', dependent: :destroy
   has_many :sign_of_transformations, dependent: :destroy
