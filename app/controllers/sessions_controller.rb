@@ -185,9 +185,6 @@ class SessionsController < ApplicationController
           "#{otp_code} is your Rev79 login code."
       )
       return response.recipients['totalSentCount'] >= 1
-      # msg = PhoneMessage.create(user: user, content: "#{otp_code} is your Rev79 login code", expiration: 1.minute.from_now)
-      # logger.debug("waiting #{msg.id}")
-      #return msg.id
     rescue => e
       logger.error("couldn't send OTP to phone: #{e.message}")
       return false

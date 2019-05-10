@@ -246,8 +246,14 @@ class AndroidAdditionsController < ApplicationController
   def send_otp_on_phone(user, otp_code)
     begin
       logger.debug "Sending otp to #{user.name}, otp: #{otp_code}"
-      msg = PhoneMessage.create(user: user, content: "#{otp_code} is your Rev79 login code", expiration: 1.minute.from_now)
-      msg.id
+      client = MessageBird::Client.new(ENV['SMS_API_KEY'])
+      response = client.message_create(
+          'THREES',
+          #TODO: Country code is hardcoded
+          ["+91#{user.phone}"],
+          "#{otp_code} is your Rev79 login code."
+      )
+      return response.recipients['totalSentCount'] >= 1
     rescue => e
       logger.error "Couldn't send OTP to phone: #{e.message}"
       false
