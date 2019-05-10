@@ -179,7 +179,7 @@ class SessionsController < ApplicationController
       logger.debug("sending otp to: #{user.name}, otp: #{otp_code}")
       client = MessageBird::Client.new(ENV['SMS_API_KEY'])
       response = client.message_create(
-          'Rev79',
+          'THREES',
           #TODO: Country code is hardcoded
           ["+91#{user.phone}"],
           "#{otp_code} is your Rev79 login code."
