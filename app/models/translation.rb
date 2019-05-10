@@ -1,4 +1,7 @@
 class Translation < ActiveRecord::Base
+
+  has_paper_trail
+
   belongs_to :language
   belongs_to :translation_code
 

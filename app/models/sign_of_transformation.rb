@@ -1,4 +1,7 @@
 class SignOfTransformation < ActiveRecord::Base
+
+  has_paper_trail
+
   belongs_to :church_ministry
   belongs_to :marker, class_name: 'SignOfTransformationMarker'
 

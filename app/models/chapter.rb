@@ -1,5 +1,7 @@
 class Chapter < ActiveRecord::Base
 
+  has_paper_trail
+
   belongs_to :book
   has_many :translation_progresses, dependent: :destroy
   has_many :translation_projects, through: :translation_progresses

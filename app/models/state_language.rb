@@ -1,5 +1,7 @@
 class StateLanguage < ActiveRecord::Base
 
+  has_paper_trail
+
   belongs_to :geo_state
   belongs_to :language
   has_many :language_progresses, dependent: :destroy

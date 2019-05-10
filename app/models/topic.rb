@@ -1,5 +1,7 @@
 class Topic < ActiveRecord::Base
 
+  has_paper_trail
+
 	has_and_belongs_to_many :reports
   has_many :progress_markers
   has_many :impact_reports, through: :progress_markers

@@ -1,5 +1,7 @@
 class FinishLineMarker < ActiveRecord::Base
 
+  has_paper_trail
+
   has_many :finish_line_progresses, dependent: :destroy
   has_many :languages, through: :finish_line_progresses
   has_many :tools, dependent: :nullify
