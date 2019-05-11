@@ -832,7 +832,8 @@ class AndroidSyncController < ApplicationController
       user = User.find_by_id @jwt_user_id
       users_device = ExternalDevice.find_by device_id: payload["iss"], user_id: @jwt_user_id
       if user.password_changed.to_i == payload["iat"] && user.registration_status == "approved" && users_device
-        @current_user = user
+        PaperTrail.request.whodunnit = user.id
+        user
       else
         users_device.update registered: false if users_device&.registered
         false
