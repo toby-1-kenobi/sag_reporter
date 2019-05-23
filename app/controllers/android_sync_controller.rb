@@ -544,13 +544,6 @@ class AndroidSyncController < ApplicationController
               :comment,
               :approved
           ],
-          person: [
-              :id,
-              :old_id,
-              :name,
-              :user_id,
-              :geo_state_id
-          ],
           impact_report: [
               :id,
               :old_id,
