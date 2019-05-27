@@ -122,7 +122,7 @@ class AndroidSyncController < ApplicationController
           table.where(language_id: @language_ids, geo_state_id: @geo_state_ids).ids
         when Report
           if @project_ids.empty?
-            table.where("report_date >= ?", Date.new(2018, 9, 1)).where(reporter: @external_user)
+            table.where("report_date >= ?", Date.new(2018, 9, 1)).where(reporter: @external_user).ids
           else
             table.where("report_date >= ?", Date.new(2018, 9, 1))
                 .where(geo_state_id: @geo_state_ids).language(@language_ids).ids
