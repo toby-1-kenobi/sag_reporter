@@ -187,14 +187,6 @@ class AndroidSyncController < ApplicationController
             restricted_ids
         end
       end
-      unless @external_user.trusted
-        restricted_ids = case table_implementation
-          when Report
-            table.where(id: restricted_ids, reporter_id: @external_user.id).ids
-          else
-            restricted_ids
-        end
-      end
       @all_restricted_ids[table] = restricted_ids
     end
 
