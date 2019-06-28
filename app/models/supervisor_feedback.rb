@@ -23,4 +23,15 @@ class SupervisorFeedback < ActiveRecord::Base
 
   scope :not_empty, -> { where('result_feedback IS NOT NULL OR facilitator_progress IS NOT NULL OR report_approved = true') }
 
+  before_create :check_for_duplicates
+
+  def check_for_duplicates
+    entry = self
+    entries = SupervisorFeedback.where(month: entry.month, ministry_id: entry.ministry_id, facilitator_id: entry.facilitator_id, state_language_id: entry.state_language_id).order(updated_at: :desc)
+    if entries.size > 0
+      entry.id = entries.first.id
+      entries.each &:destroy
+    end
+  end
+
 end
