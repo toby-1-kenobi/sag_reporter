@@ -16,7 +16,7 @@ class SupervisorFeedback < ActiveRecord::Base
   belongs_to :facilitator, class_name: 'User'
 
   validates :month, presence: true, format: { with: /\A[2-9]\d{3}-(0|1)[0-9]\z/, message: "should be in the format 'YYYY-MM'" }
-  validates :facilitator, presence: true
+  validates :facilitator, presence: true, uniqueness: { scope: [:ministry_id, :facilitator_id, :month] }
   validates :ministry, presence: true
   validates :supervisor, presence: true
   validates :report_approved, inclusion: [true, false]
