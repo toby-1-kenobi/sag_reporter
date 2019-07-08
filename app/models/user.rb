@@ -132,12 +132,7 @@ class User < ActiveRecord::Base
 
   # Forgets a user.
   def forget
-    ActiveRecord::Base.record_timestamps = false
-    begin
-      update_attribute(:remember_digest, nil)
-    ensure
-      ActiveRecord::Base.record_timestamps = true
-    end
+    update_attribute(:remember_digest, nil)
   end
 
   # Pretty print phone number

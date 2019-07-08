@@ -39,13 +39,8 @@ module SessionsHelper
   # and refreshes login timeout
   def require_login
     if logged_in?
-      ActiveRecord::Base.record_timestamps = false
-      begin
-        remember(logged_in_user)
-        update_login_dt(logged_in_user)
-      ensure
-        ActiveRecord::Base.record_timestamps = true
-      end
+      remember(logged_in_user)
+      update_login_dt(logged_in_user)
     else
       flash['warning'] = 'Please log in.'
       respond_to do |format|
