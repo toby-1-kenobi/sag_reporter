@@ -732,7 +732,7 @@ class AndroidSyncController < ApplicationController
           new_entry.significant = true
           send_mail new_entry, email
         end
-        if new_entry&.valid?
+        if new_entry&.valid? || table == ImpactReport
           @id_changes[table.name].merge!({old_id => new_entry})
         else
           @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s}
