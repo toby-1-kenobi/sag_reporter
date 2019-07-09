@@ -15,7 +15,7 @@ class ImpactReport < ActiveRecord::Base
   validates :translation_impact, :inclusion => {:in => [true, false]}
   validates_presence_of :report
 
-  after_destroy { report.update_columns(impact_report_id: nil) if report.persisted? }
+  after_destroy { report.update_columns(impact_report_id: nil) if report&.persisted? }
 
   def report_type
     'impact'
@@ -27,7 +27,7 @@ class ImpactReport < ActiveRecord::Base
 
   def update_self object
     self.touch if self.persisted?
-    self.report.touch if self.report.persisted?
+    self.report.touch if self.report&.persisted?
   end
 
 end
