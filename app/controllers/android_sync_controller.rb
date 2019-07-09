@@ -733,9 +733,9 @@ class AndroidSyncController < ApplicationController
           send_mail new_entry, email
         end
         if new_entry&.valid?
-          @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s}
-        else
           @id_changes[table.name].merge!({old_id => new_entry})
+        else
+          @errors << {"#{table}:#{old_id}" => new_entry.errors.messages.to_s}
         end
       else
         raise "Entry needs either an ID value or an 'old ID' value"
