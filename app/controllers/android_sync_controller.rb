@@ -716,7 +716,7 @@ class AndroidSyncController < ApplicationController
           foreign_table = foreign_table.camelcase
           foreign_key_name = k.remove("_id")
           hash[foreign_key_name] = @id_changes.dig(foreign_table, v)
-          hash[foreign_key_name] && v.to_i > 1000000 || raise "Creating foreign value didn't work"
+          raise "Creating foreign value didn't work" unless hash[foreign_key_name] || v.to_i < 1000000
           hash[foreign_key_name] ||= foreign_table.constantize.find(v)
           hash.delete k
         elsif v == nil && k.last(4) == "_ids"
