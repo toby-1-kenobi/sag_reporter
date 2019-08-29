@@ -71,7 +71,8 @@ class AndroidAdditionsController < ApplicationController
       ]
       forgot_password_params = params.require(:external_device).permit(safe_params)
 
-      @user = get_user forgot_password_params["user_name"]
+      user_name = forgot_password_params["user_name"]
+      @user = get_user user_name
       if @user
         if @user.reset_password?
           logger.debug "Password request was already submitted"
