@@ -45,7 +45,7 @@ gem 'will_paginate', '~> 3.0.6'
 gem 'groupdate'
 
 # create charts
-gem 'chartkick', '~> 1.3.2'
+gem 'chartkick', '~> 3.3.0'
 
 # autocomplete in text fields
 gem 'rails4-autocomplete'
